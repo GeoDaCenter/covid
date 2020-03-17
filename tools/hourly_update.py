@@ -74,9 +74,10 @@ def read_covid_data(cr):
         date_county_count[confirmed_date][county_name] += confirmed_count
         date_county_deathcount[confirmed_date][county_name] += death_count
 
-    update_geojson(state_count, state_deathcount, date_state_count, date_state_deathcount)
+    update_state_geojson(state_count, state_deathcount, date_state_count, date_state_deathcount)
+    update_county_geojson(county_count, county_deathcount, date_county_count, date_county_deathcount)
 
-def update_geojson(state_count, state_deathcount, date_state_count, date_state_deathcount):
+def update_state_geojson(state_count, state_deathcount, date_state_count, date_state_deathcount):
     with open("states.geojson") as f:
         geojson = json.load(f)
         features = geojson["features"]
@@ -105,6 +106,34 @@ def update_geojson(state_count, state_deathcount, date_state_count, date_state_d
         with open('state_update.geojson', 'w') as outfile:
             json.dump(geojson, outfile)
 
+def update_county_geojson(county_count, county_deathcount, date_county_count, date_county_deathcount):
+    with open("counties.geojson") as f:
+        geojson = json.load(f)
+        features = geojson["features"]
+        for feat in features:
+            county_id = feat["properties"]["NAME"]
+
+            if county_id in county_count:
+                feat["properties"]["confirmed_count"] = county_count[county_id]
+            else:
+                feat["properties"]["confirmed_count"] = 0
+
+            if county_id in county_deathcount:
+                feat["properties"]["death_count"] = county_deathcount[county_id]
+            else:
+                feat["properties"]["death_count"] = 0
+
+            for dat in date_county_count.keys():
+                cnt = 0 if county_id not in date_county_count[dat] else date_county_count[dat][county_id]
+                feat["properties"][dat] = cnt
+
+            for dat in date_county_deathcount.keys():
+                cnt = 0 if county_id not in date_county_deathcount[dat] else date_county_deathcount[dat][county_id]
+                col_name = "d" + dat
+                feat["properties"][col_name] = cnt
+
+        with open('counties_update.geojson', 'w') as outfile:
+            json.dump(geojson, outfile)
 
 fetch_covid_data()
 
