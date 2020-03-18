@@ -1,0 +1,455 @@
+<html>
+  <head>
+    <title>COVID19 USA States</title>
+
+    <script src="https://unpkg.com/deck.gl@^7.0.0/dist.min.js"></script>
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <style type="text/css">
+      body {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        font-family: UberMove,Helvetica Neue,Helvetica,sans-serif!important;
+    font-size: 12px;
+    line-height: 1.833;
+      }
+      #tooltip:empty {
+        display: none;
+      }
+      #tooltip {
+        font-family: Helvetica, Arial, sans-serif;
+        position: absolute;
+        padding: 4px;
+        margin: 8px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        max-width: 300px;
+        font-size: 10px;
+        z-index: 9;
+        pointer-events: none;
+      }
+      
+a {
+    outline: none;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+}
+a, a:visited {
+    color: #00ade6;
+}
+.options-panel {
+    position: relative;
+    width: 344px;
+    background: #fff;
+    box-shadow: 0 0 4px rgba(0,0,0,.15);
+    margin: 24px;
+    padding: 12px 24px;
+    max-height: 96%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overflow-y: overlay;
+    outline: none;
+    z-index: 9;
+}
+.options-panel .legend {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+}
+.options-panel .source-link a {
+    font-weight: 700;
+    color: #5a666d;
+    font-size: 11px;
+}
+.top-right {
+    right: 0;
+}
+.top-left, .top-right {
+    position: absolute;
+    top: 0;
+}
+.layout {
+    display: table;
+    width: 100%;
+}
+.layout>* {
+    display: table-cell!important;
+}
+.layout .col-1-2 {
+    width: 50%;
+}
+.layout button.stat.col-1-2.checked{
+    background-color: rgb(169, 224, 194);
+}
+.stat {
+    width: 100px;
+    height: 30px;
+
+}
+.stat .checked {
+    background-color: aquamarine;
+}
+
+.line {
+		stroke: maroon;
+		fill:none;
+		stroke-width: 3;
+	}
+	
+	.axis path,
+	.axis line {
+		fill: none;
+		stroke: black;
+		shape-rendering: crispEdges;
+	}
+	
+	.axis text {
+		font-size: 10px;
+		font-family: sans-serif;
+	}
+	
+	.text-label {
+		font-size: 10px;
+		font-family: sans-serif;
+	}
+    </style>
+  </head>
+
+  <body>
+    <div id="tooltip"></div>
+    <div class="options-panel top-right " tabindex="0">
+        <div>
+            <h3>COVID19 Map</h3>
+            <p>The convid19 confirmed cases in the United State of America</p>
+            <div class="layout">
+                <button class="stat col-1-2 checked" id="btn-state" onclick="OnStateClick(this)">By State</button>
+                <button class="stat col-1-2" id="btn-county" onclick="OnCountyClick(this)">By County</button>
+            </div>
+            <p>Data:</p>
+            <div class="layout">
+                <button class="stat col-1-2 checked">Confirmed Count</button>
+                <button class="stat col-1-2">Confirmed Count/Population</button>
+                <button class="stat col-1-2">Death Count</button>
+                <button class="stat col-1-2">Death Count/Population</button>
+                <button class="stat col-1-2">Fatality Rate</button>
+                <button class="stat col-1-2">Fatality Rate/Population</button>
+            </div>
+            <p>Map type:</p>
+            <div class="layout">
+                <button class="stat col-1-2 checked">Choropleth</button>
+                <button class="stat col-1-2">Local Clustering</button>
+            </div>
+            <p></p>
+            <div class="layout">
+                <div class="legend" style="background: rgb(255, 237, 160); width: 7.69231%;"></div>
+                <div class="legend" style="background: rgb(254, 217, 118); width: 7.69231%;"></div>
+                <div class="legend" style="background: rgb(254, 178, 76); width: 7.69231%;"></div>
+                <div class="legend" style="background: rgb(253, 141, 60); width: 7.69231%;"></div>
+                <div class="legend" style="background: rgb(252, 78, 42); width: 7.69231%;"></div>
+                <div class="legend" style="background: rgb(227, 26, 28); width: 7.69231%;"></div>
+                <div class="legend" style="background: rgb(189, 0, 38); width: 7.69231%;"></div>
+                <div class="legend" style="background: rgb(128, 0, 38); width: 7.69231%;"></div>
+                <div class="legend" style="background: rgb(128, 0, 38); width: 7.69231%;"></div>
+            </div>
+            <div class="layout">
+                <div style="width: 7.69231%;"><10</div>
+                <div style="width: 7.69231%;"><30</div>
+                <div style="width: 7.69231%;"><80</div>
+                <div style="width: 7.69231%;"><100</div>
+                <div style="width: 7.69231%;"><200</div>
+                <div style="width: 7.69231%;"><400</div>
+                <div style="width: 7.69231%;"><800</div>
+                <div style="width: 7.69231%;">>=800</div>
+            </div>
+            <p>Trend line:</p>
+            <div class="layout" id="linechart">
+
+            </div>
+            <p>Data source:&nbsp;<a href="https://covidvirus.1point3acres.com/">1point3acres.com</a></p>
+        </div>
+        <div class="source-link">
+            <a href="https://spatial.uchicago.edu" target="_new">CSDS UChicago↗</a>
+        </div>
+    </div>
+  </body>
+
+  <script type="text/javascript">
+
+    const {DeckGL, GeoJsonLayer} = deck;
+
+    const COLOR_SCALE = [
+      // positive
+      [255, 255, 204],
+      [255, 237, 160],
+      [254, 217, 118],
+      [254, 178, 76],
+      [253, 141, 60],
+      [252, 78, 42],
+      [227, 26, 28],
+      [189, 0, 38],
+      [128, 0, 38]
+    ];
+
+    var jsondata;
+
+    function loadMap(url, title) {
+        d3.json(url, function(data) {
+
+            jsondata = data;
+
+            const geojsonLayer = new GeoJsonLayer({
+                data: data,
+                opacity: 0.5,
+                stroked: false,
+                filled: true,
+                extruded: true,
+                wireframe: true,
+                fp64: true,
+
+                //getElevation: f => Math.sqrt(f.properties.confirmed_count) * 10,
+                getFillColor: f => colorScale(f.properties.confirmed_count),
+                getLineColor: [255, 255, 255],
+
+                pickable: true,
+                onHover: updateTooltip,
+                onClick: updateTrendLine
+            });
+
+            new DeckGL({
+                mapboxApiAccessToken: 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg',
+                mapStyle: 'mapbox://styles/mapbox/dark-v9',
+                latitude: 41.850033,
+                longitude: -110.6500523,
+                zoom: 3,
+                maxZoom: 16,
+                pitch: 0,
+                layers: [geojsonLayer]
+            });
+
+            addTrendLine(data, title);
+        });
+    }
+
+    loadMap("https://mapcovid19.github.io/data/states.geojson", "new cases: all");
+
+    function OnCountyClick(evt) {
+        evt.classList.add("checked");
+        document.getElementById("btn-state").classList.remove("checked");
+        loadMap("https://mapcovid19.github.io/data/counties.geojson", "new cases: all");
+    }
+
+    function OnStateClick(evt) {
+        evt.classList.add("checked");
+        document.getElementById("btn-county").classList.remove("checked");
+        loadMap("https://mapcovid19.github.io/data/states.geojson", "new cases: all");
+    }
+
+    function colorScale(x) {
+      if (x < 10) {
+        return COLOR_SCALE[0] ;
+      } else if (x < 30) {
+          return COLOR_SCALE[1];
+      } else if (x < 50) {
+          return COLOR_SCALE[2];
+      } else if (x < 80) {
+          return COLOR_SCALE[3];
+      } else if (x < 100) {
+          return COLOR_SCALE[4];
+      } else if (x < 200) {
+          return COLOR_SCALE[5];
+      } else if (x < 400) {
+          return COLOR_SCALE[6];
+      } else if (x < 800) {
+          return COLOR_SCALE[7];
+      } else { // x > 800
+          return COLOR_SCALE[8];
+      }
+    }
+
+    function updateTooltip({x, y, object}) {
+      const tooltip = document.getElementById('tooltip');
+
+      if (object) {
+        tooltip.style.top = `${y}px`;
+        tooltip.style.left = `${x}px`;
+        tooltip.innerHTML = `
+    <div><b>${object.properties.NAME}:</b><br/><br/></div>
+    <div><b>Confirmed cases:</b>${object.properties.confirmed_count}</div>
+    <div><b>Death:</b>${object.properties.death_count}</div>
+    <div><b>Fatality rate: </b>${(object.properties.death_count / object.properties.confirmed_count * 100).toFixed(2)}%</div>
+    `;
+      } else {
+        tooltip.innerHTML = '';
+      }
+    }
+
+    function getDatesFromGeojson(data) {
+        var xLabels = [];
+        for (var col in data["features"][0]["properties"]) {
+            if (col.startsWith("2020")) {
+                xLabels.push(col);
+            }
+        }
+        return xLabels;
+    }
+
+    function getConfirmedCountByDate(data) {    
+        var features = data['features'];
+        var dates = getDatesFromGeojson(data);
+        var counts = [];
+        for (var i=0; i<dates.length; ++i) {
+            var sum = 0;
+            var d = dates[i];
+            for (var j =0; j<features.length; ++j) {
+                sum += features[j]["properties"][d];
+            }
+            counts.push(sum);
+        }
+        return counts;
+    }
+
+    var height = 140;
+    var width = 290;
+    var margin = {top: 10, right:20, bottom: 50, left: 30};
+
+    function addTrendLine(data, title) {
+        
+        d3.select("svg").remove();
+
+        var svg = d3.select("#linechart")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        svg.append("g")
+            .attr("class", "y axis");
+            
+        svg.append("g")
+            .attr("class", "x axis");
+            
+        var xScale = d3.scale.ordinal()
+            .rangeRoundBands([margin.left, width], .1);
+            
+        var yScale = d3.scale.linear()
+            .range([height, 10]);
+        
+        var xAxis = d3.svg.axis()
+            .scale(xScale)
+            .orient("bottom");
+            
+        var yAxis = d3.svg.axis()
+            .scale(yScale)
+            .orient("left");
+
+        // extract the x labels for the axis and scale domain
+		var xLabels = getDatesFromGeojson(data); 
+        xScale.domain(xLabels);
+        
+        var yValues = getConfirmedCountByDate(data);
+        yScale.domain([0, Math.max.apply(null, yValues)]);
+
+        var tmpData = [];
+        for (var i=0; i<xLabels.length; ++i) {
+            tmpData.push({"date":xLabels[i], "confirmedcases":yValues[i]});
+        }
+        var line = d3.svg.line()
+			.x(function(d) { return xScale(d['date']); })
+			.y(function(d) { return yScale(d['confirmedcases']); });
+
+        svg.append("path")
+			.datum(tmpData)
+			.attr("class","line")
+			.attr("d", line);    
+
+        svg.select(".x.axis")
+			.attr("transform", "translate(0," + (height) + ")")
+			.call(xAxis.tickValues(xLabels.filter(function(d, i) { 
+				if (i % 2 == 0)
+					return d;
+				})))
+			.selectAll("text")
+			.style("text-anchor","end")
+			.attr("transform", function(d) {
+				return "rotate(-45)";
+			});
+
+        svg.select(".y.axis")
+			.attr("transform", "translate(" + (margin.left) + ",0)")
+            .call(yAxis.tickFormat(function(e){if(Math.floor(e) != e) return; return e;}));
+
+        // chart title
+		svg.append("text")
+            .attr("class","linetitle")
+			.attr("x", (width + (margin.left + margin.right) )/ 2)
+			.attr("y", 0 + margin.top)
+			.attr("text-anchor", "middle")
+			.style("font-size", "12px")
+			.style("font-family", "sans-serif")
+			.text(title);
+    }
+
+    // ** Update data section (Called from the onclick)
+    function updateTrendLine({x,y,object}) {
+        var xLabels, yValues, title;
+
+        if (object) {
+            xLabels = [];
+            yValues = [];
+            for (var col in object.properties) {
+                if (col.startsWith("2020")) {
+                    xLabels.push(col);
+                    yValues.push(object.properties[col]);
+                }
+            }
+            title = "new cases: " + object.properties["NAME"];
+        } else {
+            xLabels = getDatesFromGeojson(jsondata); 
+            yValues = getConfirmedCountByDate(jsondata);
+            title = "new cases: all";
+        }
+        // Get the data again
+        var tmpData = [];
+        for (var i=0; i<xLabels.length; ++i) {
+            tmpData.push({"date":xLabels[i], "confirmedcases":yValues[i]});
+        }
+
+        var xScale = d3.scale.ordinal()
+            .rangeRoundBands([margin.left, width], .1);
+            
+        var yScale = d3.scale.linear()
+            .range([height, 10]);
+
+        // Scale the range of the data again 
+        xScale.domain(xLabels);
+        yScale.domain([0, Math.max.apply(null, yValues)]);
+
+        // Select the section we want to apply our changes to
+        var svg = d3.select("#linechart").transition();
+
+        var line = d3.svg.line()
+            .x(function(d) { return xScale(d['date']); })
+            .y(function(d) { return yScale(d['confirmedcases']); });
+
+        var xAxis = d3.svg.axis()
+            .scale(xScale)
+            .orient("bottom");
+            
+        var yAxis = d3.svg.axis()
+            .scale(yScale)
+            .orient("left");
+
+        // Make the changes
+        svg.select(".line")   // change the line
+            .duration(750)
+            .attr("d", line(tmpData));
+        svg.select(".y.axis") // change the y axis
+            .duration(750)
+            .call(yAxis);
+        
+        svg.select(".linetitle")
+            .text(title);
+    }
+  </script>
+</html>

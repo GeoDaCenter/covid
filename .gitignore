@@ -1,2 +1,6 @@
 
 .vscode/
+docs/node_modules/
+docs/package-lock.json
+
+*.swp
