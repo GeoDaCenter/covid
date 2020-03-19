@@ -365,7 +365,7 @@ function createTimeSlider(geojson)
 
     var svg = d3.select("#slider-svg")
         .append("svg")
-        .attr("width", width)
+        .attr("width", width + padding*2)
         .attr("height", height);
 
     var xScale = d3.scaleBand()
@@ -376,7 +376,11 @@ function createTimeSlider(geojson)
 
     var xLabels = getDatesFromGeojson(geojson); 
     xScale.domain(xLabels);
+   
+    d3.select("#slider").node().max = xLabels.length;
+    d3.select("#slider").node().value = xLabels.length;
     
+
     var yValues = getConfirmedCountByDate(geojson);
     yScale.domain([0, Math.max.apply(null, yValues)]);
 
@@ -384,6 +388,8 @@ function createTimeSlider(geojson)
     for (var i=0; i<xLabels.length; ++i) {
         tmpData.push({"date":xLabels[i], "confirmedcases":yValues[i]});
     }
+
+    var tooltip = d3.select("#slider-tooltip").style("opacity", 0);
 
     var bars = svg.selectAll(".bars")
         .data(tmpData)
@@ -394,18 +400,31 @@ function createTimeSlider(geojson)
         .attr("y", d => yScale(d.confirmedcases))
         .attr("height", d => height - padding - yScale(d.confirmedcases))
         .text("1")
-        .attr("fill", (d => xLabels[(d3.select("#slider").node().value/20)*tmpData.length] == d.date ? "red" : "gray"));
+        .attr("fill", (d => xLabels[d3.select("#slider").node().value-1] == d.date ? "red" : "white"))
+        .on("mouseover", function(d) {
+            d3.select(this).style("fill", "red")
+            tooltip.text(d.date)
+            .style("opacity", 0.8)
+                    .style("left", (d3.event.pageX)+0 + "px") 
+                    .style("top", (d3.event.pageY)-0 + "px");
+        })
+        .on("mouseout", function(d) {
+            tooltip.style("opacity", 0);
+            d3.select(this).style("fill", "white");
+
+        });
 
     var xAxis = d3.axisBottom(xScale);
-    //var yAxis = d3.axisLeft(yScale);
+    var yAxis = d3.axisRight(yScale);
 
     //var gX = svg.append("g")
     //    .attr("transform", "translate(0," + (height - padding) + ")")
     //    .call(xAxis);
 
-    //var gY = svg.append("g")
-    //    .attr("transform", "translate(" + padding * 2 + ",0)")
-    //    .call(yAxis);
+    var gY = svg.append("g")
+        .attr("class", "axis--y")
+        .attr("transform", "translate(" + (width) + ",0)")
+        .call(yAxis);
 
     d3.select("#slider").on("input", function() {
         var currentValue = this.value;
@@ -418,7 +437,7 @@ function createTimeSlider(geojson)
 
         bars.attr("y", d => yScale(d.confirmedcases))
             .attr("height", d => height - padding - yScale(d.confirmedcases))
-            .attr("fill", (d => xLabels[currentValue/20*tmpData.length] == d.date ? "red" : "gray"));
+            .attr("fill", (d => xLabels[currentValue-1] == d.date ? "red" : "white"));
         //gY.call(yAxis);
     })
 }

@@ -33,7 +33,7 @@ a, a:visited {
 }
 .time-panel {
     position: relative;
-    width: 844px;
+    width: 544px;
     height: 200px;
     margin: 24px;
     padding: 12px 24px;
@@ -41,9 +41,12 @@ a, a:visited {
     overflow-x: auto;
     overflow-x: overlay;
     outline: none;
+    background-color: #999;
+    opacity: 0.5;
+    border-radius: 5px;
     z-index: 9;
 }
-.bottom-left{
+.bottom-left {
     left: 0;
     position: absolute;
     bottom: 0;
@@ -127,8 +130,34 @@ a, a:visited {
 }
 
 #slider {
-    width: 435px;
+    width: 500px;
 }
 #sliderdiv{
-    padding-left: 40px;
+    margin-top: -12px;
+}
+
+rect {
+}
+
+#slider-tooltip {   
+    position: absolute;           
+    text-align: left;           
+    width: auto;                  
+    height: auto;                 
+    padding: 8px;             
+    font: 12px sans-serif;        
+    background: black;   
+    border-radius: 0px;           
+    pointer-events: none;  
+    color: white;      
+    opacity: 0; 
+}
+
+.axis--y path {
+    display: none;
+}
+.axis--y .tick text {
+    font-size: 10px;
+    font-family: sans-serif;
+    color: #fff;
 }
