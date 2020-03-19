@@ -1,0 +1,134 @@
+body {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    font-family: UberMove,Helvetica Neue,Helvetica,sans-serif!important;
+    font-size: 12px;
+    line-height: 1.833;
+}
+#tooltip:empty {
+    display: none;
+}
+#tooltip {
+    font-family: Helvetica, Arial, sans-serif;
+    position: absolute;
+    padding: 4px;
+    margin: 8px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    max-width: 300px;
+    font-size: 10px;
+    z-index: 9;
+    pointer-events: none;
+}
+      
+a {
+    outline: none;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+}
+a, a:visited {
+    color: #00ade6;
+}
+.time-panel {
+    position: relative;
+    width: 844px;
+    height: 200px;
+    margin: 24px;
+    padding: 12px 24px;
+    overflow-y: hidden;
+    overflow-x: auto;
+    overflow-x: overlay;
+    outline: none;
+    z-index: 9;
+}
+.bottom-left{
+    left: 0;
+    position: absolute;
+    bottom: 0;
+}
+.options-panel {
+    position: relative;
+    width: 344px;
+    background: #fff;
+    box-shadow: 0 0 4px rgba(0,0,0,.15);
+    margin: 24px;
+    padding: 12px 24px;
+    max-height: 96%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overflow-y: overlay;
+    outline: none;
+    z-index: 9;
+}
+.options-panel .legend {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+}
+.options-panel .source-link a {
+    font-weight: 700;
+    color: #5a666d;
+    font-size: 11px;
+}
+.top-right {
+    right: 0;
+}
+.top-left, .top-right {
+    position: absolute;
+    top: 0;
+}
+.layout {
+    display: table;
+    width: 100%;
+}
+.layout>* {
+    display: table-cell!important;
+}
+.layout .col-1-2 {
+    width: 50%;
+}
+.layout button.stat.col-1-2.checked{
+    background-color: rgb(169, 224, 194);
+}
+.stat {
+    width: 100px;
+    height: 30px;
+
+}
+.stat .checked {
+    background-color: aquamarine;
+}
+
+.line {
+    stroke: maroon;
+    fill:none;
+    stroke-width: 3;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: white;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-size: 10px;
+    font-family: sans-serif;
+    color: #fff;
+}
+
+.text-label {
+    font-size: 10px;
+    font-family: sans-serif;
+    color: #fff;
+}
+
+#slider {
+    width: 435px;
+}
+#sliderdiv{
+    padding-left: 40px;
+}
