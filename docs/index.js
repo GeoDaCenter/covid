@@ -224,13 +224,19 @@ class GeodaProxy {
     }
   }
 
-var geoda;
+const state_map = "states_update.geojson";
+const county_map = "counties_update.geojson";
 
+var gda_proxy;
+var state_w = null;
+var county_w = null;
 var jsondata;
-var colorScale;
 var feats;
-
 var state = { hoveredObject: null, features:null};
+
+// functions
+var colorScale;
+var getFillColor;
 
 const deckgl = new DeckGL({
     mapboxApiAccessToken: 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg',
@@ -249,8 +255,8 @@ function loadMap(url, title) {
         return response.arrayBuffer();
         })
     .then((ab) => {
-        geoda.ReadGeojsonMap(url, {result: ab});
-
+        gda_proxy.ReadGeojsonMap(url, {result: ab});
+        let w_uid = gda_proxy.CreateQueenWeights(url, 1, 0, 0);
         d3.json(url, function(data) {
 
             jsondata = data;
@@ -271,7 +277,7 @@ function loadMap(url, title) {
                 lineWidthMinPixels:10,
 
                 //getElevation: f => Math.sqrt(f.properties.confirmed_count) * 10,
-                getFillColor: f => colorScale(f.properties.confirmed_count),
+                getFillColor: getFillColor,
                 getLineColor: getLineColor,
                 updateTriggers: {
                     getLineColor: [
@@ -303,7 +309,7 @@ function str2ab(str) {
       bufView[i] = str.charCodeAt(i);
     }
     return buf;
-  }
+}
 
 function getLineColor(f) 
 {
@@ -359,9 +365,12 @@ function OnCountyClick(evt) {
             return COLOR_SCALE[8];
         }
     }
+    getFillColor = function(f) {
+        return colorScale(f.properties.confirmed_count);
+    }
     evt.classList.add("checked");
     document.getElementById("btn-state").classList.remove("checked");
-    loadMap("counties_update.geojson", "new cases: all");
+    loadMap(county_map, "new cases: all");
 }
 
 function OnStateClick(evt) {
@@ -386,13 +395,57 @@ function OnStateClick(evt) {
             return COLOR_SCALE[8];
         }
     }
+    getFillColor = function(f) {
+        return colorScale(f.properties.confirmed_count);
+    }
     evt.classList.add("checked");
     document.getElementById("btn-county").classList.remove("checked");
-    loadMap("states_update.geojson", "new cases: all");
+    loadMap(state_map, "new cases: all");
+}
+
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return  [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)]
+  }
+
+function OnLISAClick(evt) {
+    var map_uuid, w_uuid;
+    var is_state = document.getElementById("btn-state").classList.contains("checked");
+    if (is_state) {
+        map_uuid = state_map;
+        if (state_w == null) {
+            state_w = gda_proxy.CreateQueenWeights(state_map, 1, 0, 0);
+        }
+        w_uuid = state_w.get_uid();
+    } else {
+        map_uuid = county_map;
+        if (county_w == null) {
+            county_w = gda_proxy.CreateQueenWeights(county_map, 1, 0, 0);
+        }
+        w_uuid = county_w.get_uid();
+    }
+    var sel_var = "confirmed_count";
+    var lisa = gda_proxy.local_moran(map_uuid, w_uuid, sel_var);
+    var color_vec = lisa.colors();
+    var labels = lisa.labels();
+    var clusters = lisa.clusters();
+
+    getFillColor = function(f) {
+        var c = clusters.get(f.properties.id);
+        return hexToRgb(color_vec.get(c));
+    }
+
+    if (is_state) {
+        loadMap(state_map, "new cases: all");
+    } else {
+        loadMap(county_map, "new cases: all");
+    }
+    evt.classList.add("checked");
+    document.getElementById("btn-nb").classList.remove("checked");
 }
 
 var Module = { onRuntimeInitialized: function() {
-    geoda = new GeodaProxy();
+    gda_proxy = new GeodaProxy();
     OnStateClick(document.getElementById("btn-state"));
 }};
 
