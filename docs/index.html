@@ -33,11 +33,12 @@
             </div>
             <p>Map type:</p>
             <div class="layout">
-                <button class="stat col-1-2 checked" id="btn-nb">Choropleth</button>
+                <button class="stat col-1-2 checked" id="btn-nb" onclick="OnChoroplethClick(this)">Choropleth</button>
                 <button class="stat col-1-2" id="btn-lisa" onclick="OnLISAClick(this)">Local Clustering</button>
             </div>
             <p></p>
             <div class="layout" id="legend">
+                <div class="legend" style="background: rgb(240, 240, 240); width: 7.69231%;"></div>
                 <div class="legend" style="background: rgb(255, 237, 160); width: 7.69231%;"></div>
                 <div class="legend" style="background: rgb(254, 217, 118); width: 7.69231%;"></div>
                 <div class="legend" style="background: rgb(254, 178, 76); width: 7.69231%;"></div>
@@ -46,28 +47,28 @@
                 <div class="legend" style="background: rgb(227, 26, 28); width: 7.69231%;"></div>
                 <div class="legend" style="background: rgb(189, 0, 38); width: 7.69231%;"></div>
                 <div class="legend" style="background: rgb(128, 0, 38); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(128, 0, 38); width: 7.69231%;"></div>
             </div>
             <div class="layout" id="legend-labels">
-                <div style="width: 7.69231%;"><10</div>
-                <div style="width: 7.69231%;"><30</div>
-                <div style="width: 7.69231%;"><80</div>
-                <div style="width: 7.69231%;"><100</div>
-                <div style="width: 7.69231%;"><200</div>
-                <div style="width: 7.69231%;"><400</div>
-                <div style="width: 7.69231%;"><800</div>
-                <div style="width: 7.69231%;">>=800</div>
+                <div style="width: 7.69231%;"></div>
+                <div style="width: 7.69231%;"></div>
+                <div style="width: 7.69231%;"></div>
+                <div style="width: 7.69231%;"></div>
+                <div style="width: 7.69231%;"></div>
+                <div style="width: 7.69231%;"></div>
+                <div style="width: 7.69231%;"></div>
+                <div style="width: 7.69231%;"></div>
+                <div style="width: 7.69231%;"></div>
             </div>
-            <p>Trend line:</p>
+            <p>Line Chart:</p>
             <div class="layout" id="linechart">
 
             </div>
             <p>Data source:&nbsp;<a href="https://covidvirus.1point3acres.com/">1point3acres.com</a></p>
         </div>
         <div class="source-link">
-            <a href="https://spatial.uchicago.edu" target="_new">CSDS UChicago↗</a>
+            <a href="https://spatial.uchicago.edu" target="_new">By CSDS UChicago</a>
         </div>
-    </div>
+    </div> 
     <div class="time-panel bottom-left">
         <div id="slider-tooltip"></div>
         <div id="slider-svg"></div>

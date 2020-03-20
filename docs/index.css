@@ -95,6 +95,9 @@ a, a:visited {
 .layout button.stat.col-1-2.checked{
     background-color: rgb(169, 224, 194);
 }
+.layout svg{
+    margin-left: -50px;
+}
 .stat {
     width: 100px;
     height: 30px;

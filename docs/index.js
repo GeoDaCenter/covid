@@ -1,6 +1,7 @@
 const {DeckGL, GeoJsonLayer} = deck;
 
 const COLOR_SCALE = [
+    [240, 240, 240],
     // positive
     [255, 255, 204],
     [255, 237, 160],
@@ -16,61 +17,30 @@ const COLOR_SCALE = [
 class GeodaProxy {
     // file_target is evt.target
     constructor() {
-      this.geojson_maps = {};
+        this.geojson_maps = {};
     }
   
     ReadGeojsonMap(map_uid, file_target) {
-      //evt.target.result is an ArrayBuffer. In js, 
-          //you can't do anything with an ArrayBuffer 
-          //so we have to ???cast??? it to an Uint8Array
-          const uint8_t_arr = new Uint8Array(file_target.result);
-  
-          //Right now, we have the file as a unit8array in javascript memory. 
-          //As far as I understand, wasm can't directly access javascript memory. 
-          //Which is why we need to allocate special wasm memory and then
-          //copy the file from javascript memory into wasm memory so our wasm functions 
-          //can work on it.
-  
-          //First we need to allocate the wasm memory. 
-          //_malloc returns the address of the new wasm memory as int32.
-          //This call is probably similar to 
-          //uint8_t * ptr = new uint8_t[sizeof(uint8_t_arr)/sizeof(uint8_t_arr[0])]
-          const uint8_t_ptr = window.Module._malloc(uint8_t_arr.length);
-  
-          //Now that we have a block of memory we can copy the file data into that block
-          //This is probably similar to 
-          //std::memcpy(uint8_t_ptr, uint8_t_arr, sizeof(uint8_t_arr)/sizeof(uint8_t_arr[0]))
-          window.Module.HEAPU8.set(uint8_t_arr, uint8_t_ptr);
-  
-          //The only thing that's now left to do is pass 
-          //the address of the wasm memory we just allocated
-          //to our function as well as the size of our memory.
-          window.Module.new_geojsonmap(map_uid, uint8_t_ptr, uint8_t_arr.length);
-  
-          //At this point we're forced to wait until wasm is done with the memory. 
-          //Your site will now freeze if the memory you're working on is big. 
-          //Maybe we can somehow let our wasm function run on a seperate thread and pass a callback?
-  
-          //Retreiving our (modified) memory is also straight forward. 
-          //First we get some javascript memory and then we copy the 
-          //relevant chunk of the wasm memory into our javascript object.
-      //const returnArr = new Uint8Array(uint8_t_arr.length);
-  
-          //If returnArr is std::vector<uint8_t>, then is probably similar to 
-          //returnArr.assign(ptr, ptr + dataSize)
-          //returnArr.set(window.Module.HEAPU8.subarray(uint8_t_ptr, uint8_t_ptr + uint8_t_arr.length));
-  
-          //Lastly, according to the docs, we should call ._free here.
-          //Do we need to call the gc somehow?
-          window.Module._free(uint8_t_ptr);
-  
-      // store the map and map type
-      let map_type = Module.get_map_type(map_uid);
-      this.geojson_maps[map_uid] = map_type;
-  
-      return map_uid;
+        //evt.target.result is an ArrayBuffer. In js, 
+        const uint8_t_arr = new Uint8Array(file_target.result);
+        //First we need to allocate the wasm memory. 
+        const uint8_t_ptr = window.Module._malloc(uint8_t_arr.length);
+        //Now that we have a block of memory we can copy the file data into that block
+        window.Module.HEAPU8.set(uint8_t_arr, uint8_t_ptr);
+        // pass the address of the wasm memory we just allocated to our function
+        window.Module.new_geojsonmap(map_uid, uint8_t_ptr, uint8_t_arr.length);
+        //Lastly, according to the docs, we should call ._free here.
+        window.Module._free(uint8_t_ptr);
+        // store the map and map type
+        let map_type = Module.get_map_type(map_uid);
+        this.geojson_maps[map_uid] = map_type;
+    return map_uid;
     }
-  
+ 
+    Has(map_uid) {
+        return map_uid in this.geojson_maps;
+    }
+
     GetNumObs(map_uid) {
       let n = Module.get_num_obs(map_uid);
       return n;
@@ -186,15 +156,16 @@ class GeodaProxy {
     custom_breaks(map_uid, break_name, k, sel_field, values) {
       let breaks_vec = Module.custom_breaks(map_uid, k, sel_field, break_name);
       let breaks = this.parseVecDouble(breaks_vec);
+      var orig_breaks = breaks;
 
       let bins = [];
       let id_array = [];
       for (let i=0; i<breaks.length; ++i) {
         id_array.push([]);
-        bins.push(" < " + breaks[i]);
+        bins.push("" + breaks[i]);
       }
       id_array.push([]);
-      bins.push(">= " + breaks[breaks.length-1]);
+      bins.push(">" + breaks[breaks.length-1]);
 
       breaks.unshift(Number.NEGATIVE_INFINITY);
       breaks.push(Number.POSITIVE_INFINITY);
@@ -212,27 +183,32 @@ class GeodaProxy {
       }
 
       for (let i =0; i<bins.length; ++i) {
-        bins[i] += " (" + id_array[i].length + ')';
+        //bins[i] += " (" + id_array[i].length + ')';
       }
 
       return {
         'k' : k,
         'bins' : bins,
+        'breaks' : orig_breaks,
         'id_array' : id_array,
         'col_name' : sel_field
       }
     }
-  }
+}
 
 const state_map = "states_update.geojson";
 const county_map = "counties_update.geojson";
-
+var map_variable = "confirmed_count";
+var choropleth_btn = document.getElementById("btn-nb");
+var lisa_btn = document.getElementById("btn-lisa");
 var gda_proxy;
 var state_w = null;
 var county_w = null;
 var jsondata;
 var feats;
 var state = { hoveredObject: null, features:null};
+var dates;
+var select_date;
 
 // functions
 var colorScale;
@@ -249,19 +225,31 @@ const deckgl = new DeckGL({
     layers: []
 });
 
-function loadMap(url, title) {
-  fetch(url)
+function loadGeoDa(url, evt) {
+  if (gda_proxy.Has(url)) {
+      evt();
+  } else {
+    fetch(url)
     .then((response) => {
         return response.arrayBuffer();
         })
     .then((ab) => {
         gda_proxy.ReadGeojsonMap(url, {result: ab});
-        let w_uid = gda_proxy.CreateQueenWeights(url, 1, 0, 0);
+        evt();
+    });
+  }
+}
+
+function loadMap(url, title) {
         d3.json(url, function(data) {
 
             jsondata = data;
 
             feats = initFeatureSelected(data);
+
+            dates = getDatesFromGeojson(jsondata);
+
+            select_date = dates[dates.length-1];
 
             state.features = feats;
 
@@ -298,7 +286,6 @@ function loadMap(url, title) {
             
             createTimeSlider(data);
         });
-    });
 }
 
 // source: http://stackoverflow.com/a/11058858
@@ -344,69 +331,109 @@ function setFeatureSelected(features, selfeat) {
 }
 
 function OnCountyClick(evt) {
-    colorScale = function(x) {
-        if (x < 10) {
-            return COLOR_SCALE[0] ;
-        } else if (x < 30) {
-            return COLOR_SCALE[1];
-        } else if (x < 50) {
-            return COLOR_SCALE[2];
-        } else if (x < 80) {
-            return COLOR_SCALE[3];
-        } else if (x < 100) {
-            return COLOR_SCALE[4];
-        } else if (x < 200) {
-            return COLOR_SCALE[5];
-        } else if (x < 400) {
-            return COLOR_SCALE[6];
-        } else if (x < 800) {
-            return COLOR_SCALE[7];
-        } else { // x > 800
-            return COLOR_SCALE[8];
+    function init_county(evt) {
+        var vals = gda_proxy.GetNumericCol(county_map, map_variable); 
+        var nb = gda_proxy.custom_breaks(county_map, "natural_breaks", 8, map_variable, gda_proxy.parseVecDouble(vals)); 
+        colorScale = function(x) {
+            if (x==0)  return COLOR_SCALE[0];
+            for (var i=1; i<nb.breaks.length; ++i) {
+                if (x < nb.breaks[i]) 
+                    return COLOR_SCALE[i];
+            }
+        };
+        getFillColor = function(f) {
+            return colorScale(f.properties.confirmed_count);
         }
+        UpdateLegend();
+        UpdateLegendLabels(nb.bins);
+        document.getElementById("btn-county").classList.add("checked");
+        document.getElementById("btn-state").classList.remove("checked");
+        choropleth_btn.classList.add("checked");
+        lisa_btn.classList.remove("checked");
+        loadMap(county_map, "all");
     }
-    getFillColor = function(f) {
-        return colorScale(f.properties.confirmed_count);
-    }
-    evt.classList.add("checked");
-    document.getElementById("btn-state").classList.remove("checked");
-    loadMap(county_map, "new cases: all");
+    loadGeoDa(county_map, init_county);
 }
 
 function OnStateClick(evt) {
-    colorScale = function(x) {
-        if (x < 10) {
-            return COLOR_SCALE[0] ;
-        } else if (x < 30) {
-            return COLOR_SCALE[1];
-        } else if (x < 50) {
-            return COLOR_SCALE[2];
-        } else if (x < 80) {
-            return COLOR_SCALE[3];
-        } else if (x < 100) {
-            return COLOR_SCALE[4];
-        } else if (x < 200) {
-            return COLOR_SCALE[5];
-        } else if (x < 400) {
-            return COLOR_SCALE[6];
-        } else if (x < 800) {
-            return COLOR_SCALE[7];
-        } else { // x > 800
-            return COLOR_SCALE[8];
-        }
+    function init_state() {
+        var vals = gda_proxy.GetNumericCol(state_map, map_variable); 
+        var nb = gda_proxy.custom_breaks(state_map, "natural_breaks", 8, map_variable, gda_proxy.parseVecDouble(vals)); 
+        colorScale = function(x) {
+            if (x==0)  return COLOR_SCALE[0];
+            for (var i=1; i<nb.breaks.length; ++i) {
+                if (x < nb.breaks[i]) 
+                    return COLOR_SCALE[i];
+            }
+        };
+        getFillColor = function(f) {
+            return colorScale(f.properties.confirmed_count);
+        };
+        UpdateLegend();
+        UpdateLegendLabels(nb.bins);
+        document.getElementById("btn-state").classList.add("checked");
+        document.getElementById("btn-county").classList.remove("checked");
+        choropleth_btn.classList.add("checked");
+        lisa_btn.classList.remove("checked");
+        loadMap(state_map, "all");
     }
-    getFillColor = function(f) {
-        return colorScale(f.properties.confirmed_count);
+    loadGeoDa(state_map, init_state);
+}
+
+function UpdateLegend()
+{
+    const div = document.getElementById('legend');
+    div.innerHTML = `<div class="legend" style="background: rgb(240, 240, 240); width: 7.69231%;"></div>
+    <div class="legend" style="background: rgb(255, 237, 160); width: 7.69231%;"></div>
+    <div class="legend" style="background: rgb(254, 217, 118); width: 7.69231%;"></div>
+    <div class="legend" style="background: rgb(254, 178, 76); width: 7.69231%;"></div>
+    <div class="legend" style="background: rgb(253, 141, 60); width: 7.69231%;"></div>
+    <div class="legend" style="background: rgb(252, 78, 42); width: 7.69231%;"></div>
+    <div class="legend" style="background: rgb(227, 26, 28); width: 7.69231%;"></div>
+    <div class="legend" style="background: rgb(189, 0, 38); width: 7.69231%;"></div>
+    <div class="legend" style="background: rgb(128, 0, 38); width: 7.69231%;"></div>
+`;
+}
+function UpdateLegendLabels(breaks) {
+    const div = document.getElementById('legend-labels');
+    var cont = '<div style="width: 7.69231%;text-align:center">0</div>';
+    for (var i=0; i<breaks.length; ++i) {
+        cont += '<div style="width: 7.69231%;text-align:center">' +breaks[i]+ '</div>';
     }
-    evt.classList.add("checked");
-    document.getElementById("btn-county").classList.remove("checked");
-    loadMap(state_map, "new cases: all");
+    div.innerHTML = cont;
+}
+
+function UpdateLisaLegend(colors) {
+    const div = document.getElementById('legend');
+    var cont = '';
+    for (var i=0; i<colors.size(); ++i) {
+        cont += '<div class="legend" style="background: '+colors.get(i)+'; width: 20%;"></div>';
+    }
+    div.innerHTML = cont;
+}
+
+function UpdateLisaLabels(labels) {
+    const div = document.getElementById('legend-labels');
+    var cont = '<div style="width: 20%;text-align:center">Not Sig</div>';
+    for (var i=1; i<5; ++i) {
+        cont += '<div style="width: 20%;text-align:center">' +labels.get(i)+ '</div>';
+    }
+    div.innerHTML = cont;
 }
 
 function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return  [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)]
   }
+
+function OnChoroplethClick(evt) {
+    var is_state = document.getElementById("btn-state").classList.contains("checked");
+    if (is_state) {
+        OnStateClick();
+    } else {
+        OnCountyClick();
+    }
+}
 
 function OnLISAClick(evt) {
     var map_uuid, w_uuid;
@@ -424,7 +451,7 @@ function OnLISAClick(evt) {
         }
         w_uuid = county_w.get_uid();
     }
-    var sel_var = "confirmed_count";
+    var sel_var = map_variable;
     var lisa = gda_proxy.local_moran(map_uuid, w_uuid, sel_var);
     var color_vec = lisa.colors();
     var labels = lisa.labels();
@@ -435,10 +462,13 @@ function OnLISAClick(evt) {
         return hexToRgb(color_vec.get(c));
     }
 
+    UpdateLisaLegend(color_vec);
+    UpdateLisaLabels(labels);
+
     if (is_state) {
-        loadMap(state_map, "new cases: all");
+        loadMap(state_map, "all");
     } else {
-        loadMap(county_map, "new cases: all");
+        loadMap(county_map, "all");
     }
     evt.classList.add("checked");
     document.getElementById("btn-nb").classList.remove("checked");
@@ -462,11 +492,12 @@ function updateTooltip({x, y, object}) {
         if (object.properties.confirmed_count > 0) {
             fat = object.properties.death_count / object.properties.confirmed_count * 100;
         }
+
         tooltip.style.top = `${y}px`;
         tooltip.style.left = `${x}px`;
         tooltip.innerHTML = `
 <div><b>${object.properties.NAME}:</b><br/><br/></div>
-<div><b>Confirmed cases:</b>${object.properties.confirmed_count}</div>
+<div><b>${map_variable}:</b>${object.properties[map_variable]}</div>
 <div><b>Death:</b>${object.properties.death_count}</div>
 <div><b>Fatality rate: </b>${fat.toFixed(2)}%</div>
 `;
@@ -486,21 +517,48 @@ function getDatesFromGeojson(data) {
     return xLabels;
 }
 
-function getConfirmedCountByDate(data) {    
+function getConfirmedCountByDateState(data, state) {
+    var features = data['features'];
+    var dates = getDatesFromGeojson(data);
+    var counts = 0;
+    for (var j =0; j<features.length; ++j) {
+        if (features[j]["properties"]["STUSPS"] == state) {
+            for (var i=0; i<dates.length; ++i) {
+                var d = dates[i];
+                if (d <= select_date) {
+                    counts += features[j]["properties"][d];
+                }
+            }   
+            break;
+        }
+    }
+    return counts;
+}
+
+function getConfirmedCountByDate(data, all) {    
     var features = data['features'];
     var dates = getDatesFromGeojson(data);
     var counts = [];
     for (var i=0; i<dates.length; ++i) {
         var sum = 0;
         var d = dates[i];
-        for (var j =0; j<features.length; ++j) {
-            sum += features[j]["properties"][d];
-        }
+        if (all || d <= select_date) {
+            for (var j =0; j<features.length; ++j) {
+                sum += features[j]["properties"][d];
+            }
+        }   
         counts.push(sum);
     }
     return counts;
 }
 
+function getAccumConfirmedCountByDate(data, all) {    
+    var counts = getConfirmedCountByDate(data, all);
+    for (var i=1; i<counts.length; ++i) {
+        counts[i] = counts[i-1] + counts[i];
+    }
+    return counts;
+}
 
 
 // following code are for LINE CHART
@@ -508,7 +566,7 @@ function addTrendLine(data, title) {
     
     var height = 140;
     var width = 290;
-    var margin = {top: 10, right:20, bottom: 50, left: 30};
+    var margin = {top: 10, right:20, bottom: 50, left: 50};
 
     d3.select("#linechart svg").remove();
 
@@ -517,29 +575,20 @@ function addTrendLine(data, title) {
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    svg.append("g")
-        .attr("class", "y axis");
+
+    svg.append("g").attr("class", "y axis");
+    svg.append("g").attr("class", "x axis");
         
-    svg.append("g")
-        .attr("class", "x axis");
-        
-    var xScale = d3.scaleBand()
-        .range([margin.left, width], .1);
-        
-    var yScale = d3.scaleLinear()
-        .range([height, 10]);
-    
-    var xAxis = d3.axisBottom()
-        .scale(xScale);
-        
-    var yAxis = d3.axisLeft()
-        .scale(yScale);
+    var xScale = d3.scaleBand().range([margin.left, width], .1);
+    var yScale = d3.scaleLinear().range([height, 10]);
+    var xAxis = d3.axisBottom().scale(xScale);
+    var yAxis = d3.axisLeft().scale(yScale);
 
     // extract the x labels for the axis and scale domain
     var xLabels = getDatesFromGeojson(data); 
     xScale.domain(xLabels);
     
-    var yValues = getConfirmedCountByDate(data);
+    var yValues = getAccumConfirmedCountByDate(data, false);
     yScale.domain([0, Math.max.apply(null, yValues)]);
 
     var tmpData = [];
@@ -560,7 +609,9 @@ function addTrendLine(data, title) {
         .call(xAxis.tickValues(xLabels.filter(function(d, i) { 
             if (i % 2 == 0)
                 return d;
-            })))
+            })).tickFormat(function(e){
+                return e.substring(5);
+            }))
         .selectAll("text")
         .style("text-anchor","end")
         .attr("transform", function(d) {
@@ -569,6 +620,7 @@ function addTrendLine(data, title) {
 
     svg.append("g")
         .attr("transform", "translate(" + (margin.left) + ",0)")
+        .attr("class", "yaxis")
         .call(yAxis.tickFormat(function(e){if(Math.floor(e) != e) return; return e;}));
 
 
@@ -584,10 +636,11 @@ function addTrendLine(data, title) {
 }
 
 // ** Update data section (Called from the onclick)
-function updateTrendLine({x,y,object}) {
+function updateTrendLine({x,y,object}) 
+{
     var height = 140;
     var width = 290;
-    var margin = {top: 10, right:20, bottom: 50, left: 30};
+    var margin = {top: 10, right:20, bottom: 50, left: 50};
     var xLabels, yValues, title;
 
     if (object) {
@@ -599,11 +652,14 @@ function updateTrendLine({x,y,object}) {
                 yValues.push(object.properties[col]);
             }
         }
-        title = "new cases: " + object.properties["NAME"];
+        for (var i=1; i<yValues.length; ++i) {
+            yValues[i] = yValues[i-1] + yValues[i];
+        }
+        title = object.properties["NAME"];
     } else {
         xLabels = getDatesFromGeojson(jsondata); 
-        yValues = getConfirmedCountByDate(jsondata);
-        title = "new cases: all";
+        yValues = getAccumConfirmedCountByDate(jsondata, false);
+        title = "all";
     }
     // Get the data again
     var tmpData = [];
@@ -622,7 +678,7 @@ function updateTrendLine({x,y,object}) {
     yScale.domain([0, Math.max.apply(null, yValues)]);
 
     // Select the section we want to apply our changes to
-    var svg = d3.select("#linechart").transition();
+    var svg = d3.select("#linechart svg").transition();
 
     var line = d3.line()
         .x(function(d) { return xScale(d['date']); })
@@ -638,7 +694,7 @@ function updateTrendLine({x,y,object}) {
     svg.select(".line")   // change the line
         .duration(750)
         .attr("d", line(tmpData));
-    svg.select(".y.axis") // change the y axis
+    svg.select(".yaxis") // change the y axis
         .duration(750)
         .call(yAxis);
     
@@ -648,10 +704,12 @@ function updateTrendLine({x,y,object}) {
 
 function createTimeSlider(geojson)
 {
+    if(document.getElementById("slider-svg").innerHTML.length > 0) 
+        return;
 
     var width = 500,
         height = 180,
-        padding = 16;
+        padding = 26;
 
     var svg = d3.select("#slider-svg")
         .append("svg")
@@ -670,8 +728,7 @@ function createTimeSlider(geojson)
     d3.select("#slider").node().max = xLabels.length;
     d3.select("#slider").node().value = xLabels.length;
     
-
-    var yValues = getConfirmedCountByDate(geojson);
+    var yValues = getAccumConfirmedCountByDate(geojson, true);
     yScale.domain([0, Math.max.apply(null, yValues)]);
 
     var tmpData = [];
@@ -690,20 +747,7 @@ function createTimeSlider(geojson)
         .attr("y", d => yScale(d.confirmedcases))
         .attr("height", d => height - padding - yScale(d.confirmedcases))
         .text("1")
-        .attr("fill", (d => xLabels[d3.select("#slider").node().value-1] == d.date ? "red" : "white"))
-        .on("mouseover", function(d) {
-            d3.select(this).style("fill", "red")
-            tooltip.text(d.date)
-            .style("opacity", 0.8)
-                    .style("left", (d3.event.pageX)+0 + "px") 
-                    .style("top", (d3.event.pageY)-0 + "px");
-        })
-        .on("mouseout", function(d) {
-            tooltip.style("opacity", 0);
-            d3.select(this).style("fill", "white");
-
-        });
-
+        .attr("fill", (d => xLabels[d3.select("#slider").node().value-1] == d.date ? "red" : "white"));
     var xAxis = d3.axisBottom(xScale);
     var yAxis = d3.axisRight(yScale);
 
@@ -716,18 +760,37 @@ function createTimeSlider(geojson)
         .attr("transform", "translate(" + (width) + ",0)")
         .call(yAxis);
 
+    svg.append("text")
+        .attr("transform", "translate(" + (width/2) + "," + 0 + ")")
+        .attr("dy", "1em")
+        .attr("class", "slider_text")
+        .attr("text-anchor", "end")
+        .style("fill", "white")
+        .html(select_date);
+
     d3.select("#slider").on("input", function() {
         var currentValue = this.value;
-        
+        select_date = dates[currentValue-1];
+        console.log(select_date);
         var xLabels = getDatesFromGeojson(geojson); 
         xScale.domain(xLabels);
 
-        var yValues = getConfirmedCountByDate(geojson);
+        var yValues = getAccumConfirmedCountByDate(geojson, true);
         yScale.domain([0, Math.max.apply(null, yValues)]);
 
         bars.attr("y", d => yScale(d.confirmedcases))
             .attr("height", d => height - padding - yScale(d.confirmedcases))
             .attr("fill", (d => xLabels[currentValue-1] == d.date ? "red" : "white"));
+
+        d3.select(".slider_text")
+            .html(select_date);
+            
         //gY.call(yAxis);
+        var is_state = document.getElementById("btn-state").classList.contains("checked");
+        if (is_state) {
+            //OnStateClick();
+        } else {
+            //OnCountyClick();
+        }
     })
 }
