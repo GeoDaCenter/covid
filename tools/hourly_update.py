@@ -11,7 +11,7 @@ import json
 from datetime import datetime
 
 def fetch_covid_data():
-    out = open('last_update.txt', 'w') 
+    out = open('../docs/last_update.txt', 'w') 
     now = datetime.now()
     out.write(now.strftime("%d/%m/%Y %H:%M:%S"))
     out.close()
@@ -105,7 +105,7 @@ def update_state_geojson(state_count, state_deathcount, date_state_count, date_s
                 col_name = "d" + dat
                 feat["properties"][col_name] = cnt
 
-        with open('state_update.geojson', 'w') as outfile:
+        with open('../docs/states_update.geojson', 'w') as outfile:
             json.dump(geojson, outfile)
 
 def update_county_geojson(county_count, county_deathcount, date_county_count, date_county_deathcount):
@@ -134,13 +134,13 @@ def update_county_geojson(county_count, county_deathcount, date_county_count, da
                 col_name = "d" + dat
                 feat["properties"][col_name] = cnt
 
-        with open('counties_update.geojson', 'w') as outfile:
+        with open('../docs/counties_update.geojson', 'w') as outfile:
             json.dump(geojson, outfile)
 
-#fetch_covid_data()
-with open("cases.csv") as csvfile:
-    cr = csv.reader(csvfile)
-    read_covid_data(cr)
+fetch_covid_data()
+#with open("cases.csv") as csvfile:
+#    cr = csv.reader(csvfile)
+#    read_covid_data(cr)
 
 #scheduler = BlockingScheduler()
 #scheduler.add_job(fetch_covid_data, 'interval', hours=1)
