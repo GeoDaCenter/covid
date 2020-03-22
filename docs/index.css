@@ -96,7 +96,6 @@ a, a:visited {
     background-color: rgb(169, 224, 194);
 }
 .layout svg{
-    margin-left: -50px;
 }
 .stat {
     width: 100px;
@@ -133,13 +132,11 @@ a, a:visited {
 }
 
 #slider {
-    width: 500px;
+    width: 300px;
 }
 #sliderdiv{
     margin-top: -12px;
-}
-
-rect {
+    margin-left: 26px;
 }
 
 #slider-tooltip {   

@@ -59,10 +59,11 @@
                 <div style="width: 7.69231%;"></div>
                 <div style="width: 7.69231%;"></div>
             </div>
-            <p>Line Chart:</p>
-            <div class="layout" id="linechart">
-
-            </div>
+            <p>New cases:</p>
+            <div class="layout" id="linechart"></div>
+            <p>All cases:</p>
+            <div class="layout" id="slider-svg"></div>
+            <div class="layout" id="sliderdiv"><input id="slider" type="range" min="1" max="100" step="1" value="20"/></div>
             <p>Data source:&nbsp;<a href="https://covidvirus.1point3acres.com/">1point3acres.com</a></p>
         </div>
         <div class="source-link">
@@ -71,8 +72,6 @@
     </div> 
     <div class="time-panel bottom-left">
         <div id="slider-tooltip"></div>
-        <div id="slider-svg"></div>
-        <div id="sliderdiv"><input id="slider" type="range" min="1" max="100" step="1" value="20"/></div>
     </div>
   </body>
   <script async type="text/javascript" src="./gen/jsgeoda.js"></script>

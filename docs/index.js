@@ -28,7 +28,9 @@ class GeodaProxy {
         //Now that we have a block of memory we can copy the file data into that block
         window.Module.HEAPU8.set(uint8_t_arr, uint8_t_ptr);
         // pass the address of the wasm memory we just allocated to our function
-        window.Module.new_geojsonmap(map_uid, uint8_t_ptr, uint8_t_arr.length);
+        //window.Module.new_geojsonmap(map_uid, uint8_t_ptr, uint8_t_arr.length);
+        window.Module.ccall("new_geojsonmap1", null, ["string", "number", "number"], [map_uid, uint8_t_ptr, uint8_t_arr.length]);
+
         //Lastly, according to the docs, we should call ._free here.
         window.Module._free(uint8_t_ptr);
         // store the map and map type
@@ -574,7 +576,7 @@ function addTrendLine(data, title) {
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("transform", "translate(0," + margin.top + ")");
 
     svg.append("g").attr("class", "y axis");
     svg.append("g").attr("class", "x axis");
@@ -588,7 +590,7 @@ function addTrendLine(data, title) {
     var xLabels = getDatesFromGeojson(data); 
     xScale.domain(xLabels);
     
-    var yValues = getAccumConfirmedCountByDate(data, false);
+    var yValues = getConfirmedCountByDate(data, false);
     yScale.domain([0, Math.max.apply(null, yValues)]);
 
     var tmpData = [];
@@ -658,7 +660,7 @@ function updateTrendLine({x,y,object})
         title = object.properties["NAME"];
     } else {
         xLabels = getDatesFromGeojson(jsondata); 
-        yValues = getAccumConfirmedCountByDate(jsondata, false);
+        yValues = getConfirmedCountByDate(jsondata, false);
         title = "all";
     }
     // Get the data again
@@ -707,7 +709,7 @@ function createTimeSlider(geojson)
     if(document.getElementById("slider-svg").innerHTML.length > 0) 
         return;
 
-    var width = 500,
+    var width = 326,
         height = 180,
         padding = 26;
 
@@ -747,7 +749,7 @@ function createTimeSlider(geojson)
         .attr("y", d => yScale(d.confirmedcases))
         .attr("height", d => height - padding - yScale(d.confirmedcases))
         .text("1")
-        .attr("fill", (d => xLabels[d3.select("#slider").node().value-1] == d.date ? "red" : "white"));
+        .attr("fill", (d => xLabels[d3.select("#slider").node().value-1] == d.date ? "red" : "gray"));
     var xAxis = d3.axisBottom(xScale);
     var yAxis = d3.axisRight(yScale);
 
@@ -765,7 +767,7 @@ function createTimeSlider(geojson)
         .attr("dy", "1em")
         .attr("class", "slider_text")
         .attr("text-anchor", "end")
-        .style("fill", "white")
+        .style("fill", "gray")
         .html(select_date);
 
     d3.select("#slider").on("input", function() {
@@ -780,11 +782,11 @@ function createTimeSlider(geojson)
 
         bars.attr("y", d => yScale(d.confirmedcases))
             .attr("height", d => height - padding - yScale(d.confirmedcases))
-            .attr("fill", (d => xLabels[currentValue-1] == d.date ? "red" : "white"));
+            .attr("fill", (d => xLabels[currentValue-1] == d.date ? "red" : "gray"));
 
         d3.select(".slider_text")
             .html(select_date);
-            
+
         //gY.call(yAxis);
         var is_state = document.getElementById("btn-state").classList.contains("checked");
         if (is_state) {
