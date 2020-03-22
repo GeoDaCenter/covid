@@ -79,6 +79,43 @@ def read_covid_data(cr):
     update_state_geojson(state_count, state_deathcount, date_state_count, date_state_deathcount)
     update_county_geojson(county_count, county_deathcount, date_county_count, date_county_deathcount)
 
+def update_state_population(geojson):
+    with open("../data/county_pop.csv") as csvfile:
+        cr = csv.reader(csvfile)
+        next(cr)
+        pop_dict = {}
+        for row in cr:
+            id, geoid, name, total_population, male, female, male_50above, femal_50above = row
+            county_name, state_name = name.split(',')
+            state_name = state_name.strip()
+            pop_dict[state_name] = totoal_population
+
+        features = geojson["features"]
+        for feat in features:
+            state_name = feat["properties"]["NAME"]
+            if state_name in pop_dict:
+                feat["properties"]["population"] = pop_dict[state_name]
+            else
+                feat["properties"]["population"] = 0
+        
+
+def update_county_population(geojson):
+    with open("cases.csv") as csvfile:
+        cr = csv.reader(csvfile)
+        next(cr)
+        pop_dict = {}
+        for row in cr:
+            id, geoid, name, total_population, male, female, male_50above, femal_50above = row
+            pop_dict[geoid] = totoal_population
+
+        features = geojson["features"]
+        for feat in features:
+            geoid= feat["properties"]["GEOID"]
+            if geoid in pop_dict:
+                feat["properties"]["population"] = pop_dict[geoid]
+            else
+                feat["properties"]["population"] = 0
+
 def update_state_geojson(state_count, state_deathcount, date_state_count, date_state_deathcount):
     with open("states.geojson") as f:
         geojson = json.load(f)
@@ -104,6 +141,8 @@ def update_state_geojson(state_count, state_deathcount, date_state_count, date_s
                 cnt = 0 if state_id not in date_state_deathcount[dat] else date_state_deathcount[dat][state_id]
                 col_name = "d" + dat
                 feat["properties"][col_name] = cnt
+
+        update_state_population(geojson)
 
         with open('../docs/states_update.geojson', 'w') as outfile:
             json.dump(geojson, outfile)
@@ -134,6 +173,8 @@ def update_county_geojson(county_count, county_deathcount, date_county_count, da
                 col_name = "d" + dat
                 feat["properties"][col_name] = cnt
 
+        update_county_population(geojson)
+        
         with open('../docs/counties_update.geojson', 'w') as outfile:
             json.dump(geojson, outfile)
 
