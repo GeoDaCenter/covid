@@ -14,6 +14,10 @@ const COLOR_SCALE = [
     [128, 0, 38]
 ];
 
+function isInt(n){
+    return Number(n) === n && n % 1 === 0;
+}
+
 class GeodaProxy {
     // file_target is evt.target
     constructor() {
@@ -184,10 +188,13 @@ class GeodaProxy {
       let id_array = [];
       for (let i=0; i<breaks.length; ++i) {
         id_array.push([]);
-        bins.push("" + breaks[i]);
+        let txt = isInt(breaks[i]) ? breaks[i] : breaks[i].toFixed(2);
+        bins.push("" + txt);
       }
       id_array.push([]);
-      bins.push(">" + breaks[breaks.length-1]);
+      let txt = breaks[breaks.length-1];
+      txt = isInt(txt) ? txt : txt.toFixed(2);
+      bins.push(">" + txt);
 
       breaks.unshift(Number.NEGATIVE_INFINITY);
       breaks.push(Number.POSITIVE_INFINITY);
@@ -382,14 +389,14 @@ function GetFeatureValue(id)
     let txt = data_btn.innerText;
     if (txt == "Confirmed Count") {
         return confirmed_count_data[id];
-    } else if (txt == "Confirmed Count/Population") {
-        if (population_data[id] == 0) return 0;
-        return confirmed_count_data[id] / population_data[id];
+    } else if (txt == "Confirmed Count/1M Population") {
+        if (population_data[id] == undefined || population_data[id] == 0) return 0;
+        return confirmed_count_data[id] / population_data[id] * 1000000;
     } else if (txt == "Death Count") {
         return death_count_data[id];
-    } else if (txt == "Death Count/Population") {
-        if (population_data[id] == 0) return 0;
-        return death_count_data[id] / population_data[id];
+    } else if (txt == "Death Count/1M Population") {
+        if (population_data[id] == undefined || population_data[id] == 0) return 0;
+        return death_count_data[id] / population_data[id] * 1000000;
     } else if (txt == "Fatality Rate") {
         return fatality_data[id];
     }
@@ -401,18 +408,24 @@ function GetDataValues()
     let txt = data_btn.innerText;
     if (txt == "Confirmed Count") {
         return Object.values(confirmed_count_data);
-    } else if (txt == "Confirmed Count/Population") {
+    } else if (txt == "Confirmed Count/1M Population") {
         var vals = [];
         for (var id in confirmed_count_data) {
-            vals.push(confirmed_count_data[id] / population_data[id]);
+            if (population_data[id] == undefined || population_data[id] == 0) 
+                vals.push(0);
+            else
+                vals.push(confirmed_count_data[id] / population_data[id] * 1000000);
         }
         return vals;
     } else if (txt == "Death Count") {
         return Object.values(death_count_data);
-    } else if (txt == "Death Count/Population") {
+    } else if (txt == "Death Count/1M Population") {
         var vals = [];
         for (var id in death_count_data) {
-            vals.push(death_count_data[id] / population_data[id]);
+            if (population_data[id] == undefined || population_data[id] == 0) 
+                vals.push(0);
+            else
+                vals.push(death_count_data[id] / population_data[id] * 1000000);
         }
         return vals;
     } else if (txt == "Fatality Rate") {
@@ -499,6 +512,7 @@ function UpdateLegend()
     <div class="legend" style="background: rgb(128, 0, 38); width: 7.69231%;"></div>
 `;
 }
+
 function UpdateLegendLabels(breaks) {
     const div = document.getElementById('legend-labels');
     var cont = '<div style="width: 7.69231%;text-align:center">0</div>';
