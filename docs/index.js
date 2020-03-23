@@ -96,6 +96,10 @@ class GeodaProxy {
       return Module.local_moran(map_uid, weight_uid, col_name);
     }
 
+    local_moran1(map_uid, weight_uid, values) {
+      return Module.local_moran1(map_uid, weight_uid, this.toVecDouble(values));
+    }
+
     local_g(map_uid, weight_uid, col_name) {
       return Module.local_g(map_uid, weight_uid, col_name);
     }
@@ -141,6 +145,17 @@ class GeodaProxy {
       return vs;
     }
 
+    toVecDouble(input) {
+      let vs = new Module.VectorDouble();
+      for (let i=0; i<input.length; ++i) {
+          if (isNaN(input[i]) || input[i] == Infinity)
+            vs.push_back(0);
+           else
+            vs.push_back(input[i]);
+      }
+      return vs;
+    }
+
     redcap(map_uid, weight_uid, k, sel_fields, bound_var, min_bound, method) {
       let col_names = this.toVecString(sel_fields);
       let clusters_vec = Module.redcap(map_uid, weight_uid, k, col_names, bound_var, min_bound, method);
@@ -156,7 +171,12 @@ class GeodaProxy {
     }
 
     custom_breaks(map_uid, break_name, k, sel_field, values) {
-      let breaks_vec = Module.custom_breaks(map_uid, k, sel_field, break_name);
+      var breaks_vec;
+      if (sel_field == null) {
+        breaks_vec = Module.custom_breaks1(map_uid, k, break_name, this.toVecDouble(values));
+      } else {
+        breaks_vec = Module.custom_breaks(map_uid, k, sel_field, break_name);
+      }
       let breaks = this.parseVecDouble(breaks_vec);
       var orig_breaks = breaks;
 
@@ -192,8 +212,7 @@ class GeodaProxy {
         'k' : k,
         'bins' : bins,
         'breaks' : orig_breaks,
-        'id_array' : id_array,
-        'col_name' : sel_field
+        'id_array' : id_array
       }
     }
 }
@@ -203,14 +222,22 @@ const county_map = "counties_update.geojson";
 var map_variable = "confirmed_count";
 var choropleth_btn = document.getElementById("btn-nb");
 var lisa_btn = document.getElementById("btn-lisa");
+var data_btn = document.getElementById("select-data");
+
 var gda_proxy;
 var state_w = null;
 var county_w = null;
+
 var jsondata;
 var feats;
+
 var state = { hoveredObject: null, features:null};
 var dates;
 var select_date;
+var confirmed_count_data = {};
+var death_count_data = {};
+var population_data = {};
+var fatality_data = {};
 
 // functions
 var colorScale;
@@ -242,20 +269,38 @@ function loadGeoDa(url, evt) {
   }
 }
 
+function parseData(feats)
+{
+    for (let i = 0; i < feats.features.length; i++) {
+        let conf = feats.features[i].properties.confirmed_count;
+        let death = feats.features[i].properties.death_count;
+        let pop = feats.features[i].properties.population;
+        let id = feats.features[i].properties.id;
+
+        confirmed_count_data[id] =  conf;
+        population_data[id] = pop;
+        death_count_data[id] =  death;
+        fatality_data[id] = conf > 0 ? death/conf : 0;
+
+    }
+}
+
 function loadMap(url, title) {
-        d3.json(url, function(data) {
+    d3.json(url, function(data) {
 
-            jsondata = data;
+        jsondata = data;
 
-            feats = initFeatureSelected(data);
+        feats = initFeatureSelected(data);
 
-            dates = getDatesFromGeojson(jsondata);
+        parseData(feats);
 
-            select_date = dates[dates.length-1];
+        dates = getDatesFromGeojson(jsondata);
 
-            state.features = feats;
+        select_date = dates[dates.length-1];
 
-            const layers = [
+        state.features = feats;
+
+        const layers = [
             new GeoJsonLayer({
                 data: feats,
                 opacity: 0.5,
@@ -280,14 +325,14 @@ function loadMap(url, title) {
                 onHover: updateTooltip,
                 onClick: updateTrendLine
             })
-            ];
+        ];
 
-            deckgl.setProps({layers});        
+        deckgl.setProps({layers});        
 
-            addTrendLine(data, title);
-            
-            createTimeSlider(data);
-        });
+        addTrendLine(data, title);
+        
+        createTimeSlider(data);
+    });
 }
 
 // source: http://stackoverflow.com/a/11058858
@@ -332,10 +377,61 @@ function setFeatureSelected(features, selfeat) {
     return features;
 }
 
+function GetFeatureValue(id)
+{
+    let txt = data_btn.innerText;
+    if (txt == "Confirmed Count") {
+        return confirmed_count_data[id];
+    } else if (txt == "Confirmed Count/Population") {
+        if (population_data[id] == 0) return 0;
+        return confirmed_count_data[id] / population_data[id];
+    } else if (txt == "Death Count") {
+        return death_count_data[id];
+    } else if (txt == "Death Count/Population") {
+        if (population_data[id] == 0) return 0;
+        return death_count_data[id] / population_data[id];
+    } else if (txt == "Fatality Rate") {
+        return fatality_data[id];
+    }
+    return 0;
+}
+
+function GetDataValues()
+{
+    let txt = data_btn.innerText;
+    if (txt == "Confirmed Count") {
+        return Object.values(confirmed_count_data);
+    } else if (txt == "Confirmed Count/Population") {
+        var vals = [];
+        for (var id in confirmed_count_data) {
+            vals.push(confirmed_count_data[id] / population_data[id]);
+        }
+        return vals;
+    } else if (txt == "Death Count") {
+        return Object.values(death_count_data);
+    } else if (txt == "Death Count/Population") {
+        var vals = [];
+        for (var id in death_count_data) {
+            vals.push(death_count_data[id] / population_data[id]);
+        }
+        return vals;
+    } else if (txt == "Fatality Rate") {
+        return Object.values(fatality_data);
+    }
+}
+
+
 function OnCountyClick(evt) {
     function init_county(evt) {
-        var vals = gda_proxy.GetNumericCol(county_map, map_variable); 
-        var nb = gda_proxy.custom_breaks(county_map, "natural_breaks", 8, map_variable, gda_proxy.parseVecDouble(vals)); 
+        var vals;
+        var nb;
+        if (jsondata == undefined) {
+            vals = gda_proxy.GetNumericCol(county_map, map_variable); 
+            nb = gda_proxy.custom_breaks(county_map, "natural_breaks", 8, map_variable, gda_proxy.parseVecDouble(vals));
+        } else {
+            vals = GetDataValues();
+            nb = gda_proxy.custom_breaks(county_map, "natural_breaks", 8, null, vals); 
+        }
         colorScale = function(x) {
             if (x==0)  return COLOR_SCALE[0];
             for (var i=1; i<nb.breaks.length; ++i) {
@@ -344,7 +440,7 @@ function OnCountyClick(evt) {
             }
         };
         getFillColor = function(f) {
-            return colorScale(f.properties.confirmed_count);
+            return colorScale(GetFeatureValue(f.properties.id));
         }
         UpdateLegend();
         UpdateLegendLabels(nb.bins);
@@ -359,8 +455,15 @@ function OnCountyClick(evt) {
 
 function OnStateClick(evt) {
     function init_state() {
-        var vals = gda_proxy.GetNumericCol(state_map, map_variable); 
-        var nb = gda_proxy.custom_breaks(state_map, "natural_breaks", 8, map_variable, gda_proxy.parseVecDouble(vals)); 
+        var vals;
+        var nb;
+        if (jsondata == undefined) {
+            vals = gda_proxy.GetNumericCol(state_map, map_variable); 
+            nb = gda_proxy.custom_breaks(state_map, "natural_breaks", 8, map_variable, gda_proxy.parseVecDouble(vals));
+        } else {
+            vals = GetDataValues();
+            nb = gda_proxy.custom_breaks(state_map, "natural_breaks", 8, null, vals); 
+        }
         colorScale = function(x) {
             if (x==0)  return COLOR_SCALE[0];
             for (var i=1; i<nb.breaks.length; ++i) {
@@ -369,7 +472,7 @@ function OnStateClick(evt) {
             }
         };
         getFillColor = function(f) {
-            return colorScale(f.properties.confirmed_count);
+            return colorScale(GetFeatureValue(f.properties.id));
         };
         UpdateLegend();
         UpdateLegendLabels(nb.bins);
@@ -476,10 +579,24 @@ function OnLISAClick(evt) {
     document.getElementById("btn-nb").classList.remove("checked");
 }
 
+// MAIN ENTRY
 var Module = { onRuntimeInitialized: function() {
     gda_proxy = new GeodaProxy();
     OnStateClick(document.getElementById("btn-state"));
 }};
+
+function OnDataClick(evt)
+{
+    data_btn.innerText = evt.innerText; 
+    //evt.parentElement.style.display = 'none';
+    var is_state = document.getElementById("btn-state").classList.contains("checked");
+    
+    if (is_state) {
+        OnStateClick();
+    } else {
+        OnCountyClick();
+    }
+}
 
 function updateTooltip({x, y, object}) {
     const tooltip = document.getElementById('tooltip');
