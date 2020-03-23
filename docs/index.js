@@ -245,6 +245,7 @@ var confirmed_count_data = {};
 var death_count_data = {};
 var population_data = {};
 var fatality_data = {};
+var lisa_data = {};
 
 // functions
 var colorScale;
@@ -391,12 +392,12 @@ function GetFeatureValue(id)
         return confirmed_count_data[id];
     } else if (txt == "Confirmed Count/1M Population") {
         if (population_data[id] == undefined || population_data[id] == 0) return 0;
-        return confirmed_count_data[id] / population_data[id] * 1000000;
+        return Math.round(confirmed_count_data[id] / population_data[id] * 1000000);
     } else if (txt == "Death Count") {
         return death_count_data[id];
     } else if (txt == "Death Count/1M Population") {
         if (population_data[id] == undefined || population_data[id] == 0) return 0;
-        return death_count_data[id] / population_data[id] * 1000000;
+        return Math.round(death_count_data[id] / population_data[id] * 1000000);
     } else if (txt == "Fatality Rate") {
         return fatality_data[id];
     }
@@ -594,6 +595,11 @@ function OnLISAClick(evt) {
     var color_vec = lisa.colors();
     var labels = lisa.labels();
     var clusters = lisa.clusters();
+    var sig = lisa.significances();
+
+    lisa_data['labels'] = labels;
+    lisa_data['clusters'] = clusters;
+    lisa_data['pvalues'] = sig;
 
     getFillColor = function(f) {
         var c = clusters.get(f.properties.id);
@@ -642,19 +648,19 @@ function updateTooltip({x, y, object}) {
         state.hoveredObject = object;
         state.features = feats;
 
-        var fat = 0;
-        if (object.properties.confirmed_count > 0) {
-            fat = object.properties.death_count / object.properties.confirmed_count * 100;
+        let id = object.properties.id;
+        let text = '<div><b>' + object.properties.NAME +':</b><br/><br/></div>';
+        text += '<div><b>' + data_btn.innerText + ':</b>' + GetFeatureValue(id) + '</div>';
+
+        if (isLisa()) {
+            text += '<div><b>' + lisa_data.labels.get(lisa_data.clusters.get(id)) +'</b></div>';
+            text += '<div><b>p-value:</b>' + lisa_data.pvalues.get(id) +'</div>';
+            text += '<div>Queen weights and 999 permutations</div>';
         }
 
         tooltip.style.top = `${y}px`;
         tooltip.style.left = `${x}px`;
-        tooltip.innerHTML = `
-<div><b>${object.properties.NAME}:</b><br/><br/></div>
-<div><b>${map_variable}:</b>${object.properties[map_variable]}</div>
-<div><b>Death:</b>${object.properties.death_count}</div>
-<div><b>Fatality rate: </b>${fat.toFixed(2)}%</div>
-`;
+        tooltip.innerHTML = text;
     } else {
         state.hoveredObject = null;
         tooltip.innerHTML = '';
