@@ -88,32 +88,34 @@ def update_state_population(geojson):
             id, geoid, name, total_population, male, female, male_50above, femal_50above = row
             county_name, state_name = name.split(',')
             state_name = state_name.strip()
-            pop_dict[state_name] = totoal_population
+            if state_name not in pop_dict:
+                pop_dict[state_name] = 0
+            pop_dict[state_name] += (int)(total_population)
 
         features = geojson["features"]
         for feat in features:
             state_name = feat["properties"]["NAME"]
             if state_name in pop_dict:
                 feat["properties"]["population"] = pop_dict[state_name]
-            else
+            else:
                 feat["properties"]["population"] = 0
         
 
 def update_county_population(geojson):
-    with open("cases.csv") as csvfile:
+    with open("../data/county_pop.csv") as csvfile:
         cr = csv.reader(csvfile)
         next(cr)
         pop_dict = {}
         for row in cr:
             id, geoid, name, total_population, male, female, male_50above, femal_50above = row
-            pop_dict[geoid] = totoal_population
+            pop_dict[geoid] = (int)(total_population)
 
         features = geojson["features"]
         for feat in features:
             geoid= feat["properties"]["GEOID"]
             if geoid in pop_dict:
                 feat["properties"]["population"] = pop_dict[geoid]
-            else
+            else:
                 feat["properties"]["population"] = 0
 
 def update_state_geojson(state_count, state_deathcount, date_state_count, date_state_deathcount):
