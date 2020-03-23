@@ -554,10 +554,20 @@ function OnChoroplethClick(evt) {
     }
 }
 
-function OnLISAClick(evt) {
+function isState()
+{
+    return document.getElementById("btn-state").classList.contains("checked");
+}
+
+function isLisa()
+{
+    return document.getElementById("btn-lisa").classList.contains("checked");
+}
+
+function getCurrentWuuid()
+{
     var map_uuid, w_uuid;
-    var is_state = document.getElementById("btn-state").classList.contains("checked");
-    if (is_state) {
+    if (isState()) {
         map_uuid = state_map;
         if (state_w == null) {
             state_w = gda_proxy.CreateQueenWeights(state_map, 1, 0, 0);
@@ -570,8 +580,17 @@ function OnLISAClick(evt) {
         }
         w_uuid = county_w.get_uid();
     }
-    var sel_var = map_variable;
-    var lisa = gda_proxy.local_moran(map_uuid, w_uuid, sel_var);
+    return {'map_uuid':map_uuid, 'w_uuid':w_uuid};
+}
+
+
+function OnLISAClick(evt) {
+    var w = getCurrentWuuid();
+    var data = GetDataValues();
+
+    //var sel_var = map_variable;
+    //var lisa = gda_proxy.local_moran(map_uuid, w_uuid, sel_var);
+    var lisa = gda_proxy.local_moran1(w.map_uuid, w.w_uuid, data);
     var color_vec = lisa.colors();
     var labels = lisa.labels();
     var clusters = lisa.clusters();
@@ -584,7 +603,7 @@ function OnLISAClick(evt) {
     UpdateLisaLegend(color_vec);
     UpdateLisaLabels(labels);
 
-    if (is_state) {
+    if (isState()) {
         loadMap(state_map, "all");
     } else {
         loadMap(county_map, "all");
@@ -602,13 +621,15 @@ var Module = { onRuntimeInitialized: function() {
 function OnDataClick(evt)
 {
     data_btn.innerText = evt.innerText; 
-    //evt.parentElement.style.display = 'none';
-    var is_state = document.getElementById("btn-state").classList.contains("checked");
-    
-    if (is_state) {
-        OnStateClick();
+   
+    if (isLisa()) {
+        OnLISAClick(document.getElementById('btn-lisa'));
     } else {
-        OnCountyClick();
+        if (isState()) {
+            OnStateClick();
+        } else {
+            OnCountyClick();
+        }
     }
 }
 
