@@ -625,21 +625,28 @@ function getCurrentWuuid()
     return {'map_uuid':map_uuid, 'w_uuid':w_uuid};
 }
 
+function getJsonName()
+{
+    return isState() ? 'state' : 'county';
+}
 
 function OnLISAClick(evt) {
     var w = getCurrentWuuid();
     var data = GetDataValues();
     let field = data_btn.innerText;
-
+    let json = getJsonName();
     var color_vec;
     var labels;
     var clusters;
     var sig;
-    if (select_date in lisa_data && field in lisa_data[select_date]) {
-        color_vec = lisa_data[select_date][field].color_vec;
-        labels = lisa_data[select_date][field].labels;
-        clusters = lisa_data[select_date][field].clusters;
-        sig = lisa_data[select_date][field].sig;
+
+    if (!(json in lisa_data)) lisa_data[json] = {};
+
+    if (select_date in lisa_data[json] && field in lisa_data[json][select_date]) {
+        color_vec = lisa_data[json][select_date][field].color_vec;
+        labels = lisa_data[json][select_date][field].labels;
+        clusters = lisa_data[json][select_date][field].clusters;
+        sig = lisa_data[json][select_date][field].sig;
 
     } else {
         var lisa = gda_proxy.local_moran1(w.map_uuid, w.w_uuid, data);
@@ -647,12 +654,12 @@ function OnLISAClick(evt) {
         labels = lisa.labels();
         clusters = lisa.clusters();
         sig = lisa.significances();
-        if (!(select_date in lisa_data)) lisa_data[select_date] = {}
-        if (!(field in lisa_data[select_date])) lisa_data[select_date][field] = {}
-        lisa_data[select_date][field]['labels'] = labels;
-        lisa_data[select_date][field]['color_vec'] = color_vec;
-        lisa_data[select_date][field]['clusters'] = clusters;
-        lisa_data[select_date][field]['pvalues'] = sig;
+        if (!(select_date in lisa_data[json])) lisa_data[json][select_date] = {}
+        if (!(field in lisa_data[json][select_date])) lisa_data[json][select_date][field] = {}
+        lisa_data[json][select_date][field]['labels'] = labels;
+        lisa_data[json][select_date][field]['color_vec'] = color_vec;
+        lisa_data[json][select_date][field]['clusters'] = clusters;
+        lisa_data[json][select_date][field]['pvalues'] = sig;
     }
     
 
@@ -709,10 +716,11 @@ function updateTooltip({x, y, object}) {
         text += '<div><b>' + data_btn.innerText + ':</b>' + GetFeatureValue(id) + '</div>';
 
         if (isLisa()) {
+            let json = getJsonName();
             let field = data_btn.innerText;
-            let c = lisa_data[select_date][field].clusters.get(id);
-            text += '<div><b>' + lisa_data[select_datet][field].labels.get(c) +'</b></div>';
-            text += '<div><b>p-value:</b>' + lisa_data[select_date][field].pvalues.get(id) +'</div>';
+            let c = lisa_data[json][select_date][field].clusters.get(id);
+            text += '<div><b>' + lisa_data[json][select_date][field].labels.get(c) +'</b></div>';
+            text += '<div><b>p-value:</b>' + lisa_data[json][select_date][field].pvalues.get(id) +'</div>';
             text += '<div>Queen weights and 999 permutations</div>';
         }
 
