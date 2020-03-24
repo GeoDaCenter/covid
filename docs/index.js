@@ -302,18 +302,18 @@ function parseData(data)
         } 
         // death count
         for (var j=0; j<dates.length; ++j) {
-            var d = 'd' + dates[j];
+            var d = dates[j];
             if (!(d in death_count_data)) {
                 death_count_data[d] = {};
             }
-            death_count_data[d][id] = data.features[i]["properties"][d];
+            death_count_data[d][id] = data.features[i]["properties"]['d'+d];
         } 
         // accum
         for (var j=1; j<dates.length; ++j) {
             var d1 = dates[j-1];
             var d2 = dates[j];
             confirmed_count_data[d2][id] += confirmed_count_data[d1][id];
-            death_count_data['d'+d2][id] += death_count_data['d'+d1][id];
+            death_count_data[d2][id] += death_count_data[d1][id];
         } 
         // fatality
         for (var j=0; j<dates.length; ++j) {
@@ -323,7 +323,7 @@ function parseData(data)
             }
             fatality_data[d][id] = 0;
             if (confirmed_count_data[d][id] > 0) {
-                fatality_data[d][id] = death_count_data['d'+d][id] / confirmed_count_data[d][id];
+                fatality_data[d][id] = death_count_data[d][id] / confirmed_count_data[d][id];
             }
         }
     }
