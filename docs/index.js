@@ -240,7 +240,7 @@ var feats;
 
 var state = { hoveredObject: null, features:null};
 var dates;
-var select_date;
+var select_date = null;
 var confirmed_count_data = {};
 var death_count_data = {};
 var population_data = {};
@@ -277,19 +277,55 @@ function loadGeoDa(url, evt) {
   }
 }
 
-function parseData(feats)
+function parseData(data)
 {
-    for (let i = 0; i < feats.features.length; i++) {
-        let conf = feats.features[i].properties.confirmed_count;
-        let death = feats.features[i].properties.death_count;
-        let pop = feats.features[i].properties.population;
-        let id = feats.features[i].properties.id;
+    var dates = getDatesFromGeojson(data);
 
-        confirmed_count_data[id] =  conf;
+    for (let i = 0; i < data.features.length; i++) {
+        let conf = data.features[i].properties.confirmed_count;
+        let death = data.features[i].properties.death_count;
+        let pop = data.features[i].properties.population;
+        let id = data.features[i].properties.id;
+
+        //confirmed_count_data[id] =  conf;
         population_data[id] = pop;
-        death_count_data[id] =  death;
-        fatality_data[id] = conf > 0 ? death/conf : 0;
+        //death_count_data[id] =  death;
+        //fatality_data[id] = conf > 0 ? death/conf : 0;
 
+        // confirmed count
+        for (var j=0; j<dates.length; ++j) {
+            var d = dates[j];
+            if (!(d in confirmed_count_data)) {
+                confirmed_count_data[d] = {};
+            }
+            confirmed_count_data[d][id] = data.features[i]["properties"][d];
+        } 
+        // death count
+        for (var j=0; j<dates.length; ++j) {
+            var d = 'd' + dates[j];
+            if (!(d in death_count_data)) {
+                death_count_data[d] = {};
+            }
+            death_count_data[d][id] = data.features[i]["properties"][d];
+        } 
+        // accum
+        for (var j=1; j<dates.length; ++j) {
+            var d1 = dates[j-1];
+            var d2 = dates[j];
+            confirmed_count_data[d2][id] += confirmed_count_data[d1][id];
+            death_count_data['d'+d2][id] += death_count_data['d'+d1][id];
+        } 
+        // fatality
+        for (var j=0; j<dates.length; ++j) {
+            var d = dates[j];
+            if (!(d in fatality_data)) {
+                fatality_data[d] = {};
+            }
+            fatality_data[d][id] = 0;
+            if (confirmed_count_data[d][id] > 0) {
+                fatality_data[d][id] = death_count_data['d'+d][id] / confirmed_count_data[d][id];
+            }
+        }
     }
 }
 
@@ -304,7 +340,8 @@ function loadMap(url, title) {
 
         dates = getDatesFromGeojson(jsondata);
 
-        select_date = dates[dates.length-1];
+        if (select_date == null)  
+            select_date = dates[dates.length-1];
 
         state.features = feats;
 
@@ -328,7 +365,7 @@ function loadMap(url, title) {
                     ]
                 },
                 //autoHighlight: true,
-                //highlightColor: [0,0,0, 0.2],
+                //highlightLineColor: [0,0,0, 0.2],
                 pickable: true,
                 onHover: updateTooltip,
                 onClick: updateTrendLine
@@ -337,7 +374,11 @@ function loadMap(url, title) {
 
         deckgl.setProps({layers});        
 
-        addTrendLine(data, title);
+        if (document.getElementById('linechart').innerHTML == "") {
+            addTrendLine(data, title);
+        } else {
+            updateTrendLine({x:0,y:0,object:null});
+        }
         
         createTimeSlider(data);
     });
@@ -389,17 +430,17 @@ function GetFeatureValue(id)
 {
     let txt = data_btn.innerText;
     if (txt == "Confirmed Count") {
-        return confirmed_count_data[id];
-    } else if (txt == "Confirmed Count/1M Population") {
+        return confirmed_count_data[select_date][id];
+    } else if (txt == "Confirmed Count per 1M Population") {
         if (population_data[id] == undefined || population_data[id] == 0) return 0;
-        return Math.round(confirmed_count_data[id] / population_data[id] * 1000000);
+        return Math.round(confirmed_count_data[select_date][id] / population_data[id] * 1000000);
     } else if (txt == "Death Count") {
-        return death_count_data[id];
-    } else if (txt == "Death Count/1M Population") {
+        return death_count_data[select_date][id];
+    } else if (txt == "Death Count per 1M Population") {
         if (population_data[id] == undefined || population_data[id] == 0) return 0;
-        return Math.round(death_count_data[id] / population_data[id] * 1000000);
+        return Math.round(death_count_data[select_date][id] / population_data[id] * 1000000);
     } else if (txt == "Fatality Rate") {
-        return fatality_data[id];
+        return fatality_data[select_date][id];
     }
     return 0;
 }
@@ -408,29 +449,29 @@ function GetDataValues()
 {
     let txt = data_btn.innerText;
     if (txt == "Confirmed Count") {
-        return Object.values(confirmed_count_data);
-    } else if (txt == "Confirmed Count/1M Population") {
+        return Object.values(confirmed_count_data[select_date]);
+    } else if (txt == "Confirmed Count per 1M Population") {
         var vals = [];
-        for (var id in confirmed_count_data) {
+        for (var id in confirmed_count_data[select_date]) {
             if (population_data[id] == undefined || population_data[id] == 0) 
                 vals.push(0);
             else
-                vals.push(confirmed_count_data[id] / population_data[id] * 1000000);
+                vals.push(confirmed_count_data[select_date][id] / population_data[id] * 1000000);
         }
         return vals;
     } else if (txt == "Death Count") {
-        return Object.values(death_count_data);
-    } else if (txt == "Death Count/1M Population") {
+        return Object.values(death_count_data[select_date]);
+    } else if (txt == "Death Count per 1M Population") {
         var vals = [];
-        for (var id in death_count_data) {
+        for (var id in death_count_data[select_date]) {
             if (population_data[id] == undefined || population_data[id] == 0) 
                 vals.push(0);
             else
-                vals.push(death_count_data[id] / population_data[id] * 1000000);
+                vals.push(death_count_data[select_date][id] / population_data[id] * 1000000);
         }
         return vals;
     } else if (txt == "Fatality Rate") {
-        return Object.values(fatality_data);
+        return Object.values(fatality_data[select_date]);
     }
 }
 
@@ -588,18 +629,33 @@ function getCurrentWuuid()
 function OnLISAClick(evt) {
     var w = getCurrentWuuid();
     var data = GetDataValues();
+    let field = data_btn.innerText;
 
-    //var sel_var = map_variable;
-    //var lisa = gda_proxy.local_moran(map_uuid, w_uuid, sel_var);
-    var lisa = gda_proxy.local_moran1(w.map_uuid, w.w_uuid, data);
-    var color_vec = lisa.colors();
-    var labels = lisa.labels();
-    var clusters = lisa.clusters();
-    var sig = lisa.significances();
+    var color_vec;
+    var labels;
+    var clusters;
+    var sig;
+    if (select_date in lisa_data && field in lisa_data[select_date]) {
+        color_vec = lisa_data[select_date][field].color_vec;
+        labels = lisa_data[select_date][field].labels;
+        clusters = lisa_data[select_date][field].clusters;
+        sig = lisa_data[select_date][field].sig;
 
-    lisa_data['labels'] = labels;
-    lisa_data['clusters'] = clusters;
-    lisa_data['pvalues'] = sig;
+    } else {
+        var lisa = gda_proxy.local_moran1(w.map_uuid, w.w_uuid, data);
+        color_vec = lisa.colors();
+        labels = lisa.labels();
+        clusters = lisa.clusters();
+        sig = lisa.significances();
+        if (!(select_date in lisa_data)) lisa_data[select_date] = {}
+        if (!(field in lisa_data[select_date])) lisa_data[select_date][field] = {}
+        lisa_data[select_date][field]['labels'] = labels;
+        lisa_data[select_date][field]['color_vec'] = color_vec;
+        lisa_data[select_date][field]['clusters'] = clusters;
+        lisa_data[select_date][field]['pvalues'] = sig;
+    }
+    
+
 
     getFillColor = function(f) {
         var c = clusters.get(f.properties.id);
@@ -653,8 +709,10 @@ function updateTooltip({x, y, object}) {
         text += '<div><b>' + data_btn.innerText + ':</b>' + GetFeatureValue(id) + '</div>';
 
         if (isLisa()) {
-            text += '<div><b>' + lisa_data.labels.get(lisa_data.clusters.get(id)) +'</b></div>';
-            text += '<div><b>p-value:</b>' + lisa_data.pvalues.get(id) +'</div>';
+            let field = data_btn.innerText;
+            let c = lisa_data[select_date][field].clusters.get(id);
+            text += '<div><b>' + lisa_data[select_datet][field].labels.get(c) +'</b></div>';
+            text += '<div><b>p-value:</b>' + lisa_data[select_date][field].pvalues.get(id) +'</div>';
             text += '<div>Queen weights and 999 permutations</div>';
         }
 
@@ -774,6 +832,7 @@ function addTrendLine(data, title) {
             }))
         .selectAll("text")
         .style("text-anchor","end")
+        .attr("class", "xaxis")
         .attr("transform", function(d) {
             return "rotate(-45)";
         });
@@ -857,6 +916,9 @@ function updateTrendLine({x,y,object})
     svg.select(".yaxis") // change the y axis
         .duration(750)
         .call(yAxis);
+    svg.select(".xaxis") // change the y axis
+        .duration(750)
+        .call(xAxis);
     
     svg.select(".linetitle")
         .text(title);
@@ -946,11 +1008,14 @@ function createTimeSlider(geojson)
             .html(select_date);
 
         //gY.call(yAxis);
-        var is_state = document.getElementById("btn-state").classList.contains("checked");
-        if (is_state) {
-            //OnStateClick();
+        if (isLisa()) {
+            OnLISAClick(document.getElementById('btn-lisa'));
         } else {
-            //OnCountyClick();
+            if (isState()) {
+                OnStateClick();
+            } else {
+                OnCountyClick();
+            }
         }
     })
 }
