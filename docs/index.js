@@ -235,7 +235,7 @@ var gda_proxy;
 var state_w = null;
 var county_w = null;
 
-var jsondata;
+var jsondata = {};
 var feats;
 
 var state = { hoveredObject: null, features:null};
@@ -279,6 +279,12 @@ function loadGeoDa(url, evt) {
 
 function parseData(data)
 {
+    let json = getJsonName();
+    if (!(json in confirmed_count_data)) confirmed_count_data[json] = {};
+    if (!(json in death_count_data)) death_count_data[json] = {};
+    if (!(json in fatality_data)) fatality_data[json] = {};
+    if (!(json in population_data)) population_data[json] = {};
+
     var dates = getDatesFromGeojson(data);
 
     for (let i = 0; i < data.features.length; i++) {
@@ -287,43 +293,40 @@ function parseData(data)
         let pop = data.features[i].properties.population;
         let id = data.features[i].properties.id;
 
-        //confirmed_count_data[id] =  conf;
-        population_data[id] = pop;
-        //death_count_data[id] =  death;
-        //fatality_data[id] = conf > 0 ? death/conf : 0;
+        population_data[json][id] = pop;
 
         // confirmed count
         for (var j=0; j<dates.length; ++j) {
             var d = dates[j];
-            if (!(d in confirmed_count_data)) {
-                confirmed_count_data[d] = {};
+            if (!(d in confirmed_count_data[json])) {
+                confirmed_count_data[json][d] = {};
             }
-            confirmed_count_data[d][id] = data.features[i]["properties"][d];
+            confirmed_count_data[json][d][id] = data.features[i]["properties"][d];
         } 
         // death count
         for (var j=0; j<dates.length; ++j) {
             var d = dates[j];
-            if (!(d in death_count_data)) {
-                death_count_data[d] = {};
+            if (!(d in death_count_data[json])) {
+                death_count_data[json][d] = {};
             }
-            death_count_data[d][id] = data.features[i]["properties"]['d'+d];
+            death_count_data[json][d][id] = data.features[i]["properties"]['d'+d];
         } 
         // accum
         for (var j=1; j<dates.length; ++j) {
             var d1 = dates[j-1];
             var d2 = dates[j];
-            confirmed_count_data[d2][id] += confirmed_count_data[d1][id];
-            death_count_data[d2][id] += death_count_data[d1][id];
+            confirmed_count_data[json][d2][id] += confirmed_count_data[json][d1][id];
+            death_count_data[json][d2][id] += death_count_data[json][d1][id];
         } 
         // fatality
         for (var j=0; j<dates.length; ++j) {
             var d = dates[j];
-            if (!(d in fatality_data)) {
-                fatality_data[d] = {};
+            if (!(d in fatality_data[json])) {
+                fatality_data[json][d] = {};
             }
-            fatality_data[d][id] = 0;
-            if (confirmed_count_data[d][id] > 0) {
-                fatality_data[d][id] = death_count_data[d][id] / confirmed_count_data[d][id];
+            fatality_data[json][d][id] = 0;
+            if (confirmed_count_data[json][d][id] > 0) {
+                fatality_data[json][d][id] = death_count_data[json][d][id] / confirmed_count_data[json][d][id];
             }
         }
     }
@@ -332,13 +335,16 @@ function parseData(data)
 function loadMap(url, title) {
     d3.json(url, function(data) {
 
-        jsondata = data;
+        if (url.startsWith('state')) 
+            jsondata['state'] = data;
+        else
+            jsondata['county'] = data;
 
         feats = initFeatureSelected(data);
 
         parseData(feats);
 
-        dates = getDatesFromGeojson(jsondata);
+        dates = getDatesFromGeojson(data);
 
         if (select_date == null)  
             select_date = dates[dates.length-1];
@@ -428,50 +434,52 @@ function setFeatureSelected(features, selfeat) {
 
 function GetFeatureValue(id)
 {
+    let json = getJsonName();
     let txt = data_btn.innerText;
     if (txt == "Confirmed Count") {
-        return confirmed_count_data[select_date][id];
+        return confirmed_count_data[json][select_date][id];
     } else if (txt == "Confirmed Count per 1M Population") {
-        if (population_data[id] == undefined || population_data[id] == 0) return 0;
-        return Math.round(confirmed_count_data[select_date][id] / population_data[id] * 1000000);
+        if (population_data[json][id] == undefined || population_data[json][id] == 0) return 0;
+        return Math.round(confirmed_count_data[json][select_date][id] / population_data[json][id] * 1000000);
     } else if (txt == "Death Count") {
-        return death_count_data[select_date][id];
+        return death_count_data[json][select_date][id];
     } else if (txt == "Death Count per 1M Population") {
-        if (population_data[id] == undefined || population_data[id] == 0) return 0;
-        return Math.round(death_count_data[select_date][id] / population_data[id] * 1000000);
+        if (population_data[json][id] == undefined || population_data[json][id] == 0) return 0;
+        return Math.round(death_count_data[json][select_date][id] / population_data[json][id] * 1000000);
     } else if (txt == "Fatality Rate") {
-        return fatality_data[select_date][id];
+        return fatality_data[json][select_date][id];
     }
     return 0;
 }
 
 function GetDataValues()
 {
+    let json = getJsonName();
     let txt = data_btn.innerText;
     if (txt == "Confirmed Count") {
-        return Object.values(confirmed_count_data[select_date]);
+        return Object.values(confirmed_count_data[json][select_date]);
     } else if (txt == "Confirmed Count per 1M Population") {
         var vals = [];
-        for (var id in confirmed_count_data[select_date]) {
-            if (population_data[id] == undefined || population_data[id] == 0) 
+        for (var id in confirmed_count_data[json][select_date]) {
+            if (population_data[json][id] == undefined || population_data[json][id] == 0) 
                 vals.push(0);
             else
-                vals.push(confirmed_count_data[select_date][id] / population_data[id] * 1000000);
+                vals.push(confirmed_count_data[json][select_date][id] / population_data[json][id] * 1000000);
         }
         return vals;
     } else if (txt == "Death Count") {
-        return Object.values(death_count_data[select_date]);
+        return Object.values(death_count_data[json][select_date]);
     } else if (txt == "Death Count per 1M Population") {
         var vals = [];
-        for (var id in death_count_data[select_date]) {
-            if (population_data[id] == undefined || population_data[id] == 0) 
+        for (var id in death_count_data[json][select_date]) {
+            if (population_data[json][id] == undefined || population_data[json][id] == 0) 
                 vals.push(0);
             else
-                vals.push(death_count_data[select_date][id] / population_data[id] * 1000000);
+                vals.push(death_count_data[json][select_date][id] / population_data[json][id] * 1000000);
         }
         return vals;
     } else if (txt == "Fatality Rate") {
-        return Object.values(fatality_data[select_date]);
+        return Object.values(fatality_data[json][select_date]);
     }
 }
 
@@ -480,7 +488,7 @@ function OnCountyClick(evt) {
     function init_county(evt) {
         var vals;
         var nb;
-        if (jsondata == undefined) {
+        if (!('county' in jsondata)) {
             vals = gda_proxy.GetNumericCol(county_map, map_variable); 
             nb = gda_proxy.custom_breaks(county_map, "natural_breaks", 8, map_variable, gda_proxy.parseVecDouble(vals));
         } else {
@@ -499,12 +507,12 @@ function OnCountyClick(evt) {
         }
         UpdateLegend();
         UpdateLegendLabels(nb.bins);
-        document.getElementById("btn-county").classList.add("checked");
-        document.getElementById("btn-state").classList.remove("checked");
         choropleth_btn.classList.add("checked");
         lisa_btn.classList.remove("checked");
         loadMap(county_map, "all");
     }
+    document.getElementById("btn-county").classList.add("checked");
+    document.getElementById("btn-state").classList.remove("checked");
     loadGeoDa(county_map, init_county);
 }
 
@@ -512,7 +520,7 @@ function OnStateClick(evt) {
     function init_state() {
         var vals;
         var nb;
-        if (jsondata == undefined) {
+        if (!('state' in jsondata)) {
             vals = gda_proxy.GetNumericCol(state_map, map_variable); 
             nb = gda_proxy.custom_breaks(state_map, "natural_breaks", 8, map_variable, gda_proxy.parseVecDouble(vals));
         } else {
@@ -531,12 +539,12 @@ function OnStateClick(evt) {
         };
         UpdateLegend();
         UpdateLegendLabels(nb.bins);
-        document.getElementById("btn-state").classList.add("checked");
-        document.getElementById("btn-county").classList.remove("checked");
         choropleth_btn.classList.add("checked");
         lisa_btn.classList.remove("checked");
         loadMap(state_map, "all");
     }
+    document.getElementById("btn-state").classList.add("checked");
+    document.getElementById("btn-county").classList.remove("checked");
     loadGeoDa(state_map, init_state);
 }
 
@@ -869,6 +877,7 @@ function updateTrendLine({x,y,object})
     var width = 290;
     var margin = {top: 10, right:20, bottom: 50, left: 50};
     var xLabels, yValues, title;
+    let  json = getJsonName();
 
     if (object) {
         xLabels = [];
@@ -884,8 +893,8 @@ function updateTrendLine({x,y,object})
         }
         title = object.properties["NAME"];
     } else {
-        xLabels = getDatesFromGeojson(jsondata); 
-        yValues = getConfirmedCountByDate(jsondata, false);
+        xLabels = getDatesFromGeojson(jsondata[json]); 
+        yValues = getConfirmedCountByDate(jsondata[json], false);
         title = "all";
     }
     // Get the data again
