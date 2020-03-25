@@ -256,6 +256,7 @@ var select_date = null;
 var select_variable = null;
 var select_method = null;
 var show_labels = false;
+var select_state_id = -1;
 
 var dates;
 var confirmed_count_data = {};
@@ -264,10 +265,11 @@ var population_data = {};
 var fatality_data = {};
 var lisa_data = {};
 
+
 // functions
 var colorScale;
 var getFillColor;
-
+var getLineColor;
 
 const deckgl = new DeckGL({
     mapboxApiAccessToken: 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg',
@@ -387,14 +389,13 @@ function createMap(data) {
         new GeoJsonLayer({
             id : 'map-layer',
             data: data,
-            opacity: 0.5,
+            opacity: 0.4,
             stroked: true,
             filled: true,
-            extruded: true,
             wireframe: true,
             fp64: true,
-            lineWidthScale: 2000,
-            lineWidthMinPixels: 2,
+            lineWidthScale: 1,
+            lineWidthMinPixels: 1,
             getElevation: getElevation,
             getFillColor: getFillColor,
             getLineColor: getLineColor,
@@ -412,6 +413,21 @@ function createMap(data) {
             onClick: updateTrendLine
         })
     ];
+
+    if (!('name' in data)) {
+        layers.push(
+        new GeoJsonLayer({
+            data: jsondata['state'],
+            opacity: 0.4,
+            stroked: true,
+            filled: false,
+            lineWidthScale: 1,
+            lineWidthMinPixels: 1,
+            getLineColor: [220,220,220],
+            pickable: false
+        })
+        );
+    } 
 
     if (show_labels) {
 
@@ -482,10 +498,7 @@ function loadMap(url) {
     }
 }
 
-function getLineColor(f) 
-{
-    return f.properties.id == select_id ? [255,0,0] : [255, 255, 255];
-}
+
 
 function getElevation(f) 
 {
@@ -577,9 +590,13 @@ function OnCountyClick(evt) {
         };
         getFillColor = function(f) {
             let v = GetFeatureValue(f.properties.id);
-            if (v == 0) return [255, 255, 255];
+            if (v == 0) return [255, 255, 255, 200];
             return colorScale(v);
-        }
+        };
+        getLineColor = function(f) 
+        {
+            return f.properties.id == select_id ? [255,0,0] : [200,200,200];
+        };
         UpdateLegend();
         UpdateLegendLabels(nb.bins);
         choropleth_btn.classList.add("checked");
@@ -614,6 +631,10 @@ function OnStateClick(evt) {
             let v = GetFeatureValue(f.properties.id);
             if (v == 0) return [255, 255, 255];
             return colorScale(v);
+        };
+        getLineColor = function(f) 
+        {
+            return f.properties.id == select_id ? [255,0,0] : [255, 255, 255, 50];
         };
         UpdateLegend();
         UpdateLegendLabels(nb.bins);
@@ -755,9 +776,15 @@ function OnLISAClick(evt) {
 
     getFillColor = function(f) {
         var c = clusters[f.properties.id];
-        if (c == 0) return [255, 255, 255];
+        if (c == 0) return [255, 255, 255, 200];
         return hexToRgb(color_vec[c]);
-    }
+    };
+
+    getLineColor = function(f) 
+    {
+        if (f.properties.STATEFP!=select_state_id) return [255,255,255,0];
+        return f.properties.id == select_id ? [255,0,0] : [255, 255, 255, 50];
+    };
 
     UpdateLisaLegend(color_vec);
     UpdateLisaLabels(labels);
@@ -1118,7 +1145,7 @@ function createTimeSlider(geojson)
         select_date = dates[currentValue-1];
         console.log(select_date);
 
-        document.getElementById('time-container').innerText = select_date;
+        document.getElementById('time-container').innerText = 'Confirmed cases' + select_date;
         var xLabels = getDatesFromGeojson(geojson); 
         xScale.domain(xLabels);
 
