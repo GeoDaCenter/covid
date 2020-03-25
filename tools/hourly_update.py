@@ -3,7 +3,7 @@
 # env:
 # python 3.7
 # pip install apscheduler
-from apscheduler.schedulers.blocking import BlockingScheduler
+#from apscheduler.schedulers.blocking import BlockingScheduler
 import urllib.request
 import csv
 import io
@@ -77,7 +77,7 @@ def read_covid_data(cr):
         if confirmed_date not in date_county_count:
             date_county_count[confirmed_date] = {}
             date_county_deathcount[confirmed_date] = {}
-        if county_name not in date_state_count[confirmed_date]:
+        if county_name not in date_county_count[confirmed_date]:
             date_county_count[confirmed_date][county_name] = 0
         if county_name not in date_county_deathcount[confirmed_date]:
             date_county_deathcount[confirmed_date][county_name] = 0
