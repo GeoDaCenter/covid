@@ -414,23 +414,7 @@ function createMap(data) {
     ];
 
     if (show_labels) {
-        layers.push(
-            new TextLayer({
-                data: labels,
-                pickable: true,
-                getPosition: d => d.position,
-                getText: d => d.text,
-                getSize: 19,
-                fontFamily: 'Gill Sans Extrabold, sans-serif',
-                getTextAnchor: 'middle',
-                getAlignmentBaseline: 'center',
-                getColor: [255, 255, 255],
-                //getPixelOffset: [0, 1],
-                fontSettings: {
-                    buffer: 10
-                }
-            })
-        );
+
         layers.push(
             new TextLayer({
                 data: labels,
@@ -440,8 +424,8 @@ function createMap(data) {
                 getSize: 18,
                 fontFamily: 'Gill Sans Extrabold, sans-serif',
                 getTextAnchor: 'middle',
-                getAlignmentBaseline: 'center',
-                //getColor: [50, 50, 50],
+                getAlignmentBaseline: 'bottom',
+                getColor: [250, 250, 250],
                 fontSettings: {
                     buffer: 20,
                     sdf: true,
