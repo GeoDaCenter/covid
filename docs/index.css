@@ -49,8 +49,8 @@ a, a:visited {
     color: #999;
 }
 .bottom-left {
-    top: 100px;
-    left: 1000px;
+    top: 10px;
+    left: 30%;
     position: absolute;
 }
 .options-panel {
