@@ -16,12 +16,14 @@ body {
     margin: 8px;
     background: rgba(0, 0, 0, 0.8);
     color: #fff;
-    max-width: 300px;
-    font-size: 10px;
+    max-width: 400px;
+    font-size: 14px;
     z-index: 9;
     pointer-events: none;
 }
-      
+#tooltip table {
+    color: #fff;
+}      
 a {
     outline: none;
     text-decoration: none;
@@ -41,16 +43,15 @@ a, a:visited {
     overflow-x: auto;
     overflow-x: overlay;
     outline: none;
-    background-color: #999;
-    opacity: 0.5;
     border-radius: 5px;
     z-index: 7;
-    display: none;
+    font-size: 100px;
+    color: #999;
 }
 .bottom-left {
-    left: 0;
+    top: 100px;
+    left: 1000px;
     position: absolute;
-    bottom: 0;
 }
 .options-panel {
     position: relative;

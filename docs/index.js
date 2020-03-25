@@ -255,6 +255,7 @@ var select_id = null;
 var select_date = null;
 var select_variable = null;
 var select_method = null;
+var show_labels = false;
 
 var dates;
 var confirmed_count_data = {};
@@ -270,7 +271,7 @@ var getFillColor;
 
 const deckgl = new DeckGL({
     mapboxApiAccessToken: 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg',
-    mapStyle: 'mapbox://styles/mapbox/light-v9',
+    mapStyle: 'mapbox://styles/mapbox/dark-v9',
     latitude: 41.850033,
     longitude: -90.6500523,
     zoom: 3,
@@ -382,8 +383,7 @@ function createMap(data) {
         }
     }
 
-    const layers = [
-       
+    var layers = [
         new GeoJsonLayer({
             id : 'map-layer',
             data: data,
@@ -410,20 +410,46 @@ function createMap(data) {
             pickable: true,
             onHover: updateTooltip,
             onClick: updateTrendLine
-        }),
-        new TextLayer({
-            data: labels,
-            pickable: true,
-            getPosition: d => d.position,
-            getText: d => d.text,
-            getSize: 14,
-            backgroundColor: [0,0,0],
-            getColor: [247,248,243],
-            getTextAnchor: 'middle',
-            getAlignmentBaseline: 'center'
         })
- 
     ];
+
+    if (show_labels) {
+        layers.push(
+            new TextLayer({
+                data: labels,
+                pickable: true,
+                getPosition: d => d.position,
+                getText: d => d.text,
+                getSize: 19,
+                fontFamily: 'Gill Sans Extrabold, sans-serif',
+                getTextAnchor: 'middle',
+                getAlignmentBaseline: 'center',
+                getColor: [255, 255, 255],
+                //getPixelOffset: [0, 1],
+                fontSettings: {
+                    buffer: 10
+                }
+            })
+        );
+        layers.push(
+            new TextLayer({
+                data: labels,
+                pickable: true,
+                getPosition: d => d.position,
+                getText: d => d.text,
+                getSize: 18,
+                fontFamily: 'Gill Sans Extrabold, sans-serif',
+                getTextAnchor: 'middle',
+                getAlignmentBaseline: 'center',
+                //getColor: [50, 50, 50],
+                fontSettings: {
+                    buffer: 20,
+                    sdf: true,
+                    radius: 6
+                }
+            })
+        );
+    }
     deckgl.setProps({layers: layers});        
 
     if (document.getElementById('linechart').innerHTML == "") {
@@ -474,7 +500,7 @@ function loadMap(url) {
 
 function getLineColor(f) 
 {
-    return f.properties.id == select_id ? [255,0,0] : [0, 0, 0];
+    return f.properties.id == select_id ? [255,0,0] : [255, 255, 255];
 }
 
 function getElevation(f) 
@@ -566,7 +592,9 @@ function OnCountyClick(evt) {
             }
         };
         getFillColor = function(f) {
-            return colorScale(GetFeatureValue(f.properties.id));
+            let v = GetFeatureValue(f.properties.id);
+            if (v == 0) return [255, 255, 255];
+            return colorScale(v);
         }
         UpdateLegend();
         UpdateLegendLabels(nb.bins);
@@ -599,7 +627,9 @@ function OnStateClick(evt) {
             }
         };
         getFillColor = function(f) {
-            return colorScale(GetFeatureValue(f.properties.id));
+            let v = GetFeatureValue(f.properties.id);
+            if (v == 0) return [255, 255, 255];
+            return colorScale(v);
         };
         UpdateLegend();
         UpdateLegendLabels(nb.bins);
@@ -737,10 +767,11 @@ function OnLISAClick(evt) {
         lisa_data[json][select_date][field]['pvalues'] = sig;
     }
     
-
+    color_vec[0] = '#ffffff';
 
     getFillColor = function(f) {
         var c = clusters[f.properties.id];
+        if (c == 0) return [255, 255, 255];
         return hexToRgb(color_vec[c]);
     }
 
@@ -785,14 +816,36 @@ function updateTooltip({x, y, object}) {
 
     if (object) {
         let id = object.properties.id;
+        let json = getJsonName();
+        let txt = data_btn.innerText;
+
+        //if (txt == "Confirmed Count") {
+        let v1 = confirmed_count_data[json][select_date][id];
+        //} else if (txt == "Confirmed Count per 1M Population") {
+        let v2 = (population_data[json][id] == undefined || population_data[json][id] == 0) ? 0 : Math.round(confirmed_count_data[json][select_date][id] / population_data[json][id] * 1000000);
+        //} else if (txt == "Death Count") {
+        let v3 = death_count_data[json][select_date][id];
+        //} else if (txt == "Death Count per 1M Population") {
+        let v4 = (population_data[json][id] == undefined || population_data[json][id] == 0) ? 0 : Math.round(death_count_data[json][select_date][id] / population_data[json][id] * 1000000);
+        //} else if (txt == "Fatality Rate") {
+        let v5 = fatality_data[json][select_date][id];
+        let v6 = population_data[json][id];
+
         let text = '<div><b>' + object.properties.NAME +':</b><br/><br/></div>';
-        text += '<div><b>' + data_btn.innerText + ':</b>' + GetFeatureValue(id) + '</div>';
+        text += '<table>'
+        text += '<tr><td><b>Confirmed Count:</b></td><td>' + v1 + '</td>';
+        text += '<tr><td><b>Confirmed Count per 1M Population:</b></td><td>' + v2 + '</td>';
+        text += '<tr><td><b>Death Count:</b></td><td>' + v3 + '</td>';
+        text += '<tr><td><b>Death Count per 1M Population:</b></td><td>' + v4 + '</td>';
+        text += '<tr><td><b>Fatality Rate:</b></td><td>' + v5.toFixed(2) + '</td>';
+        text += '<tr><td><b>Population:</b></td><td>' + v6 + '</td>';
+        text += '</table>';
 
         if (isLisa()) {
             let json = getJsonName();
             let field = data_btn.innerText;
             let c = lisa_data[json][select_date][field].clusters[id];
-            text += '<div><b>' + lisa_data[json][select_date][field].labels[c] +'</b></div>';
+            text += '<br/><div><b>' + lisa_data[json][select_date][field].labels[c] +'</b></div>';
             text += '<div><b>p-value:</b>' + lisa_data[json][select_date][field].pvalues[id] +'</div>';
             text += '<div>Queen weights and 999 permutations</div>';
         }
@@ -1080,6 +1133,8 @@ function createTimeSlider(geojson)
         var currentValue = this.value;
         select_date = dates[currentValue-1];
         console.log(select_date);
+
+        document.getElementById('time-container').innerText = select_date;
         var xLabels = getDatesFromGeojson(geojson); 
         xScale.domain(xLabels);
 
@@ -1120,3 +1175,17 @@ function OnSave() {
 d3.json("lisa.json", function(data) {
     lisa_data = data;
 })
+
+function OnShowLabels(el)
+{
+    show_labels = el.checked;
+    if (isLisa()) {
+        OnLISAClick(document.getElementById('btn-lisa'));
+    } else {
+        if (isState()) {
+            OnStateClick();
+        } else {
+            OnCountyClick();
+        }
+    }
+}
