@@ -364,7 +364,26 @@ function createMap(data) {
     if (select_date == null)  
         select_date = dates[dates.length-1];
 
+    var labels = [];
+    var cents;
+    if ('name' in data && data.name.startsWith("state")) 
+        cents = centroids["state"];
+    else 
+        cents = centroids["county"];
+    if (isLisa()) {
+        for (let i=0; i < data.features.length; ++i) {
+            let json = getJsonName();
+            if (json == "county") {
+                let field = data_btn.innerText;
+                let c = lisa_data[json][select_date][field].clusters[i];
+                if ( c== 1) 
+                    labels.push({id: i, position: cents[i], text: data.features[i].properties.NAME});
+            }
+        }
+    }
+
     const layers = [
+       
         new GeoJsonLayer({
             id : 'map-layer',
             data: data,
@@ -393,18 +412,19 @@ function createMap(data) {
             onClick: updateTrendLine
         }),
         new TextLayer({
-            id: 'text-layer',
-            data: data,
-            pickable: false,
-            getPosition: getPosition,
-            getText: "test",
-            getSize: 16,
+            data: labels,
+            pickable: true,
+            getPosition: d => d.position,
+            getText: d => d.text,
+            getSize: 14,
+            backgroundColor: [0,0,0],
             getColor: [247,248,243],
             getTextAnchor: 'middle',
             getAlignmentBaseline: 'center'
         })
+ 
     ];
-    deckgl.setProps({layers});        
+    deckgl.setProps({layers: layers});        
 
     if (document.getElementById('linechart').innerHTML == "") {
         addTrendLine(data, "");
@@ -414,9 +434,21 @@ function createMap(data) {
     
     createTimeSlider(data);
 }
-function getPosition(d)
+function getText(d)
 {
-    return centroids[select_map][d.properties.id];
+    if (isLisa()) {
+        let json = getJsonName();
+        if (json == "county") {
+            let field = data_btn.innerText;
+            let lbl = lisa_data[json][select_date][field].labels[d.id];
+            if (lbl == "High-High") 
+                return d.text;
+            else
+                return d.text;
+        }
+    } else {
+        return ' ';
+    }
 }
 function loadMap(url) {
     if (url.startsWith('state')) {
@@ -715,13 +747,14 @@ function OnLISAClick(evt) {
     UpdateLisaLegend(color_vec);
     UpdateLisaLabels(labels);
 
+    evt.classList.add("checked");
+    document.getElementById("btn-nb").classList.remove("checked");
+
     if (isState()) {
         loadMap(state_map);
     } else {
         loadMap(county_map);
     }
-    evt.classList.add("checked");
-    document.getElementById("btn-nb").classList.remove("checked");
 }
 
 // MAIN ENTRY
