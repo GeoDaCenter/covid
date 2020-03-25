@@ -19,8 +19,16 @@ def fetch_covid_data():
     url = 'https://instant.1point3acres.com/v1/api/coronavirus/us/cases?token=PFl0dpfo'
     response = urllib.request.urlopen(url)
     cr = csv.reader(io.TextIOWrapper(response))
-    
-    read_covid_data(cr)
+
+    f = open("cases.csv", "w")
+    data = response.read() 
+    text = data.decode('utf-8')
+    f.write(text)
+    f.close()
+
+    with open("cases.csv") as csvfile:
+        cr = csv.reader(csvfile)
+        read_covid_data(cr)
 
 
 def read_covid_data(cr):

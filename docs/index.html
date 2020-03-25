@@ -40,6 +40,7 @@
             <div class="layout">
                 <button class="stat col-1-2 checked" id="btn-nb" onclick="OnChoroplethClick(this)">Choropleth</button>
                 <button class="stat col-1-2" id="btn-lisa" onclick="OnLISAClick(this)">Local Clustering</button>
+                <button onclick="OnSave(this)" style="display:none">save</button>
             </div>
             <p></p>
             <div class="layout" id="legend">
@@ -76,7 +77,6 @@
         </div>
     </div> 
     <div class="time-panel bottom-left">
-        <div id="slider-tooltip"></div>
     </div>
   </body>
   <script async type="text/javascript" src="./gen/jsgeoda.js"></script>

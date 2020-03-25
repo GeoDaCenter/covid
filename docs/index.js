@@ -1,4 +1,4 @@
-const {DeckGL, GeoJsonLayer} = deck;
+const {DeckGL, GeoJsonLayer, TextLayer} = deck;
 
 const COLOR_SCALE = [
     [240, 240, 240],
@@ -45,6 +45,17 @@ class GeodaProxy {
  
     Has(map_uid) {
         return map_uid in this.geojson_maps;
+    }
+
+    GetCentroids(map_uid) {
+        let cc = Module.get_centroids(map_uid);
+        let xx = cc.get_x();
+        let yy  = cc.get_y();
+        var centroids = [];
+        for (let i=0; i<xx.size(); ++i) {
+            centroids.push([xx.get(i), yy.get(i)]);
+        }
+        return centroids;
     }
 
     GetNumObs(map_uid) {
@@ -141,6 +152,7 @@ class GeodaProxy {
       return result;
     }
 
+
     toVecString(input) {
       let vs = new Module.VectorString();
       for (let i=0; i<input.length; ++i) {
@@ -236,11 +248,15 @@ var state_w = null;
 var county_w = null;
 
 var jsondata = {};
-var feats;
+var centroids = {};
 
-var state = { hoveredObject: null, features:null};
-var dates;
+var select_map = null;
+var select_id = null;
 var select_date = null;
+var select_variable = null;
+var select_method = null;
+
+var dates;
 var confirmed_count_data = {};
 var death_count_data = {};
 var population_data = {};
@@ -251,11 +267,12 @@ var lisa_data = {};
 var colorScale;
 var getFillColor;
 
+
 const deckgl = new DeckGL({
     mapboxApiAccessToken: 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg',
-    mapStyle: 'mapbox://styles/mapbox/dark-v9',
+    mapStyle: 'mapbox://styles/mapbox/light-v9',
     latitude: 41.850033,
-    longitude: -110.6500523,
+    longitude: -90.6500523,
     zoom: 3,
     maxZoom: 16,
     pitch: 0,
@@ -272,6 +289,13 @@ function loadGeoDa(url, evt) {
         })
     .then((ab) => {
         gda_proxy.ReadGeojsonMap(url, {result: ab});
+        if (url.startsWith('state')) {
+            select_map = 'state';
+            centroids['state'] = gda_proxy.GetCentroids(url);
+        } else {
+            select_map = 'county';
+            centroids['county'] = gda_proxy.GetCentroids(url);
+        }
         evt();
     });
   }
@@ -332,77 +356,98 @@ function parseData(data)
     }
 }
 
-function loadMap(url, title) {
-    d3.json(url, function(data) {
+function createMap(data) {
+    data = initFeatureSelected(data);
+    parseData(data);
+    dates = getDatesFromGeojson(data);
 
-        if (url.startsWith('state')) 
-            jsondata['state'] = data;
-        else
-            jsondata['county'] = data;
+    if (select_date == null)  
+        select_date = dates[dates.length-1];
 
-        feats = initFeatureSelected(data);
+    const layers = [
+        new GeoJsonLayer({
+            id : 'map-layer',
+            data: data,
+            opacity: 0.5,
+            stroked: true,
+            filled: true,
+            extruded: true,
+            wireframe: true,
+            fp64: true,
+            lineWidthScale: 2000,
+            lineWidthMinPixels: 2,
+            getElevation: getElevation,
+            getFillColor: getFillColor,
+            getLineColor: getLineColor,
 
-        parseData(feats);
+            updateTriggers: {
+                getLineColor: [
+                    select_id 
+                ],
+                getFillColor: [
+                    select_date,select_variable, select_method
+                ]
+            },
+            pickable: true,
+            onHover: updateTooltip,
+            onClick: updateTrendLine
+        }),
+        new TextLayer({
+            id: 'text-layer',
+            data: data,
+            pickable: false,
+            getPosition: getPosition,
+            getText: "test",
+            getSize: 16,
+            getColor: [247,248,243],
+            getTextAnchor: 'middle',
+            getAlignmentBaseline: 'center'
+        })
+    ];
+    deckgl.setProps({layers});        
 
-        dates = getDatesFromGeojson(data);
-
-        if (select_date == null)  
-            select_date = dates[dates.length-1];
-
-        state.features = feats;
-
-        const layers = [
-            new GeoJsonLayer({
-                data: feats,
-                opacity: 0.5,
-                stroked: true,
-                filled: true,
-                extruded: true,
-                wireframe: true,
-                fp64: true,
-                lineWidthMinPixels:10,
-
-                //getElevation: f => Math.sqrt(f.properties.confirmed_count) * 10,
-                getFillColor: getFillColor,
-                getLineColor: getLineColor,
-                updateTriggers: {
-                    getLineColor: [
-                    state.hoveredObject ? state.hoveredObject.properties.id : null
-                    ]
-                },
-                //autoHighlight: true,
-                //highlightLineColor: [0,0,0, 0.2],
-                pickable: true,
-                onHover: updateTooltip,
-                onClick: updateTrendLine
-            })
-        ];
-
-        deckgl.setProps({layers});        
-
-        if (document.getElementById('linechart').innerHTML == "") {
-            addTrendLine(data, title);
-        } else {
-            updateTrendLine({x:0,y:0,object:null});
-        }
-        
-        createTimeSlider(data);
-    });
-}
-
-// source: http://stackoverflow.com/a/11058858
-function str2ab(str) {
-    var buf = new ArrayBuffer(str.length); // 1 bytes for each char
-    var bufView = new Uint8Array(buf);
-    for (var i = 0, strLen = str.length; i < strLen; i++) {
-      bufView[i] = str.charCodeAt(i);
+    if (document.getElementById('linechart').innerHTML == "") {
+        addTrendLine(data, "");
+    } else {
+        updateTrendLine({x:0,y:0,object:null});
     }
-    return buf;
+    
+    createTimeSlider(data);
+}
+function getPosition(d)
+{
+    return centroids[select_map][d.properties.id];
+}
+function loadMap(url) {
+    if (url.startsWith('state')) {
+        if (!('state' in jsondata)) {
+            d3.json(url, function(data) {
+                jsondata['state'] = data;
+                createMap(data);
+            });
+        } else {
+            createMap(jsondata['state']);
+        }
+    } else  {
+        if (!('county' in jsondata)) {
+            d3.json(url, function(data) {
+                jsondata['county'] = data;
+                createMap(data);
+            });
+        } else {
+            createMap(jsondata['county']);
+        }
+    }
 }
 
 function getLineColor(f) 
 {
-    return f.properties.selected ? [255,0,0] : [255, 255, 255];
+    return f.properties.id == select_id ? [255,0,0] : [0, 0, 0];
+}
+
+function getElevation(f) 
+{
+    return f.properties.id == select_id ? 90000 : 1;
 }
 
 function buttonClicked(evt) {
@@ -411,23 +456,8 @@ function buttonClicked(evt) {
 
 function initFeatureSelected(features) {
     for (let i = 0; i < features.features.length; i++) {
-        features.features[i].properties.selected = false;
         // Track each feature individually with a unique ID.
         features.features[i].properties.id = i;
-    }
-    return features;
-}
-function setFeatureSelected(features, selfeat) {
-    let selectedID = selfeat.properties.id;
-    for (let i = 0; i < features.features.length; i++) {
-      let currentID = features.features[i].properties.id;
-  
-      if (selectedID === currentID) {
-        features.features[i].properties.selected = true;
-      } else {
-        // Make sure to update the others to be false, so that way only one is ever selected
-        features.features[i].properties.selected = false;
-      }
     }
     return features;
 }
@@ -488,6 +518,7 @@ function OnCountyClick(evt) {
     function init_county(evt) {
         var vals;
         var nb;
+        select_method = "choropleth";
         if (!('county' in jsondata)) {
             vals = gda_proxy.GetNumericCol(county_map, map_variable); 
             nb = gda_proxy.custom_breaks(county_map, "natural_breaks", 8, map_variable, gda_proxy.parseVecDouble(vals));
@@ -509,7 +540,7 @@ function OnCountyClick(evt) {
         UpdateLegendLabels(nb.bins);
         choropleth_btn.classList.add("checked");
         lisa_btn.classList.remove("checked");
-        loadMap(county_map, "all");
+        loadMap(county_map);
     }
     document.getElementById("btn-county").classList.add("checked");
     document.getElementById("btn-state").classList.remove("checked");
@@ -520,6 +551,7 @@ function OnStateClick(evt) {
     function init_state() {
         var vals;
         var nb;
+        select_method = "choropleth";
         if (!('state' in jsondata)) {
             vals = gda_proxy.GetNumericCol(state_map, map_variable); 
             nb = gda_proxy.custom_breaks(state_map, "natural_breaks", 8, map_variable, gda_proxy.parseVecDouble(vals));
@@ -541,7 +573,7 @@ function OnStateClick(evt) {
         UpdateLegendLabels(nb.bins);
         choropleth_btn.classList.add("checked");
         lisa_btn.classList.remove("checked");
-        loadMap(state_map, "all");
+        loadMap(state_map);
     }
     document.getElementById("btn-state").classList.add("checked");
     document.getElementById("btn-county").classList.remove("checked");
@@ -575,8 +607,8 @@ function UpdateLegendLabels(breaks) {
 function UpdateLisaLegend(colors) {
     const div = document.getElementById('legend');
     var cont = '';
-    for (var i=0; i<colors.size(); ++i) {
-        cont += '<div class="legend" style="background: '+colors.get(i)+'; width: 20%;"></div>';
+    for (var i=0; i<colors.length; ++i) {
+        cont += '<div class="legend" style="background: '+colors[i]+'; width: 20%;"></div>';
     }
     div.innerHTML = cont;
 }
@@ -585,7 +617,7 @@ function UpdateLisaLabels(labels) {
     const div = document.getElementById('legend-labels');
     var cont = '<div style="width: 20%;text-align:center">Not Sig</div>';
     for (var i=1; i<5; ++i) {
-        cont += '<div style="width: 20%;text-align:center">' +labels.get(i)+ '</div>';
+        cont += '<div style="width: 20%;text-align:center">' +labels[i]+ '</div>';
     }
     div.innerHTML = cont;
 }
@@ -595,14 +627,6 @@ function hexToRgb(hex) {
     return  [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)]
   }
 
-function OnChoroplethClick(evt) {
-    var is_state = document.getElementById("btn-state").classList.contains("checked");
-    if (is_state) {
-        OnStateClick();
-    } else {
-        OnCountyClick();
-    }
-}
 
 function isState()
 {
@@ -638,7 +662,18 @@ function getJsonName()
     return isState() ? 'state' : 'county';
 }
 
+function OnChoroplethClick(evt) {
+    select_method = "choropleth";
+    if (isState()) {
+        OnStateClick();
+    } else {
+        OnCountyClick();
+    }
+}
+
 function OnLISAClick(evt) {
+    select_method = "lisa";
+
     var w = getCurrentWuuid();
     var data = GetDataValues();
     let field = data_btn.innerText;
@@ -658,10 +693,10 @@ function OnLISAClick(evt) {
 
     } else {
         var lisa = gda_proxy.local_moran1(w.map_uuid, w.w_uuid, data);
-        color_vec = lisa.colors();
-        labels = lisa.labels();
-        clusters = lisa.clusters();
-        sig = lisa.significances();
+        color_vec = gda_proxy.parseVecDouble(lisa.colors());
+        labels = gda_proxy.parseVecDouble(lisa.labels());
+        clusters = gda_proxy.parseVecDouble(lisa.clusters());
+        sig = gda_proxy.parseVecDouble(lisa.significances());
         if (!(select_date in lisa_data[json])) lisa_data[json][select_date] = {}
         if (!(field in lisa_data[json][select_date])) lisa_data[json][select_date][field] = {}
         lisa_data[json][select_date][field]['labels'] = labels;
@@ -673,17 +708,17 @@ function OnLISAClick(evt) {
 
 
     getFillColor = function(f) {
-        var c = clusters.get(f.properties.id);
-        return hexToRgb(color_vec.get(c));
+        var c = clusters[f.properties.id];
+        return hexToRgb(color_vec[c]);
     }
 
     UpdateLisaLegend(color_vec);
     UpdateLisaLabels(labels);
 
     if (isState()) {
-        loadMap(state_map, "all");
+        loadMap(state_map);
     } else {
-        loadMap(county_map, "all");
+        loadMap(county_map);
     }
     evt.classList.add("checked");
     document.getElementById("btn-nb").classList.remove("checked");
@@ -698,10 +733,12 @@ var Module = { onRuntimeInitialized: function() {
 function OnDataClick(evt)
 {
     data_btn.innerText = evt.innerText; 
-   
+    select_variable = evt.innerText;
+
     if (isLisa()) {
         OnLISAClick(document.getElementById('btn-lisa'));
     } else {
+        select_method = "choropleth";
         if (isState()) {
             OnStateClick();
         } else {
@@ -714,11 +751,6 @@ function updateTooltip({x, y, object}) {
     const tooltip = document.getElementById('tooltip');
 
     if (object) {
-        object.properties.selected = true;
-        feats = setFeatureSelected(feats, object);
-        state.hoveredObject = object;
-        state.features = feats;
-
         let id = object.properties.id;
         let text = '<div><b>' + object.properties.NAME +':</b><br/><br/></div>';
         text += '<div><b>' + data_btn.innerText + ':</b>' + GetFeatureValue(id) + '</div>';
@@ -726,9 +758,9 @@ function updateTooltip({x, y, object}) {
         if (isLisa()) {
             let json = getJsonName();
             let field = data_btn.innerText;
-            let c = lisa_data[json][select_date][field].clusters.get(id);
-            text += '<div><b>' + lisa_data[json][select_date][field].labels.get(c) +'</b></div>';
-            text += '<div><b>p-value:</b>' + lisa_data[json][select_date][field].pvalues.get(id) +'</div>';
+            let c = lisa_data[json][select_date][field].clusters[id];
+            text += '<div><b>' + lisa_data[json][select_date][field].labels[c] +'</b></div>';
+            text += '<div><b>p-value:</b>' + lisa_data[json][select_date][field].pvalues[id] +'</div>';
             text += '<div>Queen weights and 999 permutations</div>';
         }
 
@@ -736,7 +768,6 @@ function updateTooltip({x, y, object}) {
         tooltip.style.left = `${x}px`;
         tooltip.innerHTML = text;
     } else {
-        state.hoveredObject = null;
         tooltip.innerHTML = '';
     }
 }
@@ -880,6 +911,12 @@ function updateTrendLine({x,y,object})
     let  json = getJsonName();
 
     if (object) {
+        select_id = object.properties.id;
+        if (isState()) {
+            createMap(jsondata['state']);
+        } else {
+            createMap(jsondata['county']);
+        }
         xLabels = [];
         yValues = [];
         for (var col in object.properties) {
@@ -975,7 +1012,6 @@ function createTimeSlider(geojson)
         tmpData.push({"date":xLabels[i], "confirmedcases":yValues[i]});
     }
 
-    var tooltip = d3.select("#slider-tooltip").style("opacity", 0);
 
     var bars = svg.selectAll(".bars")
         .data(tmpData)
@@ -1036,3 +1072,18 @@ function createTimeSlider(geojson)
         }
     })
 }
+
+function saveText(text, filename){
+    var a = document.createElement('a');
+    a.setAttribute('href', 'data:text/plain;charset=utf-8,'+encodeURIComponent(text));
+    a.setAttribute('download', filename);
+    a.click()
+  }
+
+function OnSave() {
+    saveText( JSON.stringify(lisa_data), "lisa.json" );
+}
+
+d3.json("lisa.json", function(data) {
+    lisa_data = data;
+})

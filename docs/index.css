@@ -44,7 +44,8 @@ a, a:visited {
     background-color: #999;
     opacity: 0.5;
     border-radius: 5px;
-    z-index: 9;
+    z-index: 7;
+    display: none;
 }
 .bottom-left {
     left: 0;
@@ -192,7 +193,7 @@ a, a:visited {
     border-radius: 0px;           
     pointer-events: none;  
     color: white;      
-    opacity: 0; 
+    opacity: 1; 
 }
 
 .axis--y path {
