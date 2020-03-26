@@ -1,4 +1,4 @@
-const {DeckGL, GeoJsonLayer, TextLayer} = deck;
+const {DeckGL, GeoJsonLayer, TextLayer, Controller} = deck;
 
 const COLOR_SCALE = [
     [240, 240, 240],
@@ -281,6 +281,9 @@ const deckgl = new DeckGL({
     pitch: 0,
     layers: []
 });
+
+var mapbox = deckgl.getMapboxMap();
+mapbox.addControl(new mapboxgl.NavigationControl(), 'top-left');
 
 function loadGeoDa(url, evt) {
   if (gda_proxy.Has(url)) {
@@ -984,7 +987,11 @@ function addTrendLine(data, title) {
     svg.append("g")
         .attr("transform", "translate(" + (margin.left) + ",0)")
         .attr("class", "yaxis")
-        .call(yAxis.tickFormat(function(e){if(Math.floor(e) != e) return; return e;}));
+        .call(yAxis.tickFormat(function(e,i) {
+            if(i %2 == 1 || Math.floor(e) != e) 
+                return; 
+            return d3.format(",")(e);
+        }));
 
 
     // chart title
@@ -1082,7 +1089,7 @@ function createTimeSlider(geojson)
 
     var width = 326,
         height = 180,
-        padding = 26;
+        padding = 28;
 
     var svg = d3.select("#slider-svg")
         .append("svg")
@@ -1130,7 +1137,11 @@ function createTimeSlider(geojson)
     var gY = svg.append("g")
         .attr("class", "axis--y")
         .attr("transform", "translate(" + (width) + ",0)")
-        .call(yAxis);
+        .call(yAxis.tickFormat(function(e,i){
+            if(i %2 == 1) 
+                return; 
+            return d3.format(",")(e);
+        }));
 
     svg.append("text")
         .attr("transform", "translate(" + (width/2) + "," + 0 + ")")
