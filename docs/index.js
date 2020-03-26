@@ -274,16 +274,17 @@ var getLineColor;
 const deckgl = new DeckGL({
     mapboxApiAccessToken: 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg',
     mapStyle: 'mapbox://styles/mapbox/dark-v9',
-    latitude: 41.850033,
-    longitude: -90.6500523,
-    zoom: 4,
-    maxZoom: 16,
+    latitude: 32.850033,
+    longitude: -86.6500523,
+    zoom: 3.5,
+    maxZoom: 18,
     pitch: 0,
-    layers: []
+    layers: [],
+    controller: true
 });
 
-var mapbox = deckgl.getMapboxMap();
-mapbox.addControl(new mapboxgl.NavigationControl(), 'top-left');
+//var mapbox = deckgl.getMapboxMap();
+//mapbox.addControl(new mapboxgl.NavigationControl(), 'top-left');
 
 function loadGeoDa(url, evt) {
   if (gda_proxy.Has(url)) {
@@ -392,7 +393,7 @@ function createMap(data) {
         new GeoJsonLayer({
             id : 'map-layer',
             data: data,
-            opacity: 0.4,
+            opacity: 0.5,
             stroked: true,
             filled: true,
             wireframe: true,
@@ -421,7 +422,7 @@ function createMap(data) {
         layers.push(
         new GeoJsonLayer({
             data: jsondata['state'],
-            opacity: 0.4,
+            opacity: 0.5,
             stroked: true,
             filled: false,
             lineWidthScale: 1,
@@ -805,7 +806,7 @@ function OnLISAClick(evt) {
 // MAIN ENTRY
 var Module = { onRuntimeInitialized: function() {
     gda_proxy = new GeodaProxy();
-    OnCountyClick(document.getElementById("btn-county"));
+    OnStateClick(document.getElementById("btn-state"));
 }};
 
 function OnDataClick(evt)
