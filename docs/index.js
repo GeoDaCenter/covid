@@ -1200,3 +1200,9 @@ function OnShowLabels(el)
         }
     }
 }
+
+function OnShowTime(el) 
+{
+    let disp = el.checked ? 'block' : 'none';
+    document.getElementById('time-container').style.display = disp;
+}

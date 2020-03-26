@@ -47,6 +47,7 @@ a, a:visited {
     z-index: 7;
     font-size: 70pt;
     color: #999;
+    display: none;
 }
 .bottom-left {
     top: 10px;

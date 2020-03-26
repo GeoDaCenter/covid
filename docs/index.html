@@ -70,7 +70,10 @@
             <div class="layout" id="slider-svg"></div>
             <div class="layout" id="sliderdiv"><input id="slider" type="range" min="1" max="100" step="1" value="20"/></div>
             <p>Data source:&nbsp;<a href="https://covidvirus.1point3acres.com/">1point3acres.com</a></p>
-            <p><input type="checkbox" onchange="OnShowLabels(this)">Show Labels</p>
+            <p>
+              <input type="checkbox" onchange="OnShowLabels(this)">Show Labels of Hotspots
+              <input type="checkbox" onchange="OnShowTime(this)">Show Time Label
+            </p>
         </div>
         <div class="source-link">
             <a href="https://spatial.uchicago.edu" target="_new">By CSDS UChicago</a>
