@@ -276,7 +276,7 @@ const deckgl = new DeckGL({
     mapStyle: 'mapbox://styles/mapbox/dark-v9',
     latitude: 41.850033,
     longitude: -90.6500523,
-    zoom: 3,
+    zoom: 4,
     maxZoom: 16,
     pitch: 0,
     layers: []
@@ -802,7 +802,7 @@ function OnLISAClick(evt) {
 // MAIN ENTRY
 var Module = { onRuntimeInitialized: function() {
     gda_proxy = new GeodaProxy();
-    OnStateClick(document.getElementById("btn-state"));
+    OnCountyClick(document.getElementById("btn-county"));
 }};
 
 function OnDataClick(evt)
