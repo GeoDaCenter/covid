@@ -47,28 +47,62 @@
 
 <div class="container-fluid">  
 
-      <div class="jumbotron jumbotron-fluid ">
+    <div class="row">
+
+      <div class="jumbotron jumbotron-fluid col-lg-8">
         <h1 class="display-3">The U.S. COVID-19 Atlas</h1>
 
-        <p>In a rapidly changing pandemic landscape, access to state and county-level data for quick visualizations and analytics can prove crucial to understanding needs and planning efforts. County-level visualizations show a dramatically more detailed pandemic landscape, as using aggregate data alone can miss local hotspots of surging COVID cases. </p>
+        <p>In a quickly changing pandemic landscape, access to state and county-level data with rapid regional analysis is crucial to understanding needs and supporting planning efforts. County-level visualizations show a dramatically more detailed pandemic landscape, as using aggregate data alone can miss local hotspots of surging COVID cases. </p>
 
         <hr class="my-5">
         
-        <p>This atlas is constant development by The Center for Spatial Data Science at the <a href="https://spatial.uchicago.edu"> University of Chicago</a>. We hope to provide more refined, county-level data visualizations and analytics to better identify and track COVID hot spots as they develop and change on a daily basis. </p><br>
+       This atlas is in constant development by <a href="https://spatial.uchicago.edu">the Center for Spatial Data Science</a> at the  University of Chicago, with collaboration from the <a href="https://datascience.wisc.edu/institute">UW-Madison Data Science Institute.</a>  County-level data sources include 1P3A, Covidtracker, and USAFacts (<a href="methods.html">see more</a>). 
 
       </div>
 
+      <div class="col-lg-4">
+        <img src="LA.png" width=100% alt="">
+      </div>
+    </div>
+
     <div class="row">
-        <h1 class="text-center"> Features </h1>
+        <h1 class="text-center"> Atlas Features </h1>
         <br>
+    <div class="row">
+
+            <div class="col-sm-1">
+            </div>
+
+            <div class="col-sm-4 text-center">
+              <h1 p class="lead"> <b> Interactive Exploration </h1></b>
+              <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+                <br><br>
+
+              <p class="lead">On the Map: <p> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+            <br><br><br>
+            </div>
+
+            <div class="col-sm-2">
+            </div>
+
+            <div class="col-sm-4 text-center">
+              <h1 p class="lead"><b> Change Over Time </h1></b>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+                    <p>  <br><br>
+
+              <p class="lead">On the Map: <p> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.  
+            <br><br><br>
+            </div>
+
+            <div class="col-sm-1">
+            </div>
+        </div>
 
             <div class="col-sm-1">
             </div>
 
             <div class="col-sm-4 text-center">
               <h1 p class="lead"> <b> COVID Clusters </h1></b>
-              <p> We show hot spots two ways: using the total number of confirmed cases, and then by adjusting for population. Because of the infectious nature of COVID, high numbers of cases anywhere will be of concern. At the same time, identifying areas that have a disproportionately high number of cases within the population is needed to locate areas hardest hit by the pandemic.
-                <br><br>
+              <p> We show COVID-19 hot spots two ways: using the total number of confirmed cases, and then by adjusting for population. Because of the infectious nature of COVID, high numbers of cases anywhere will be of concern. At the same time, identifying areas that have a disproportionately high number of cases within the population is needed to locate areas hardest hit by the pandemic. <i><a href="methods.html"> More Details </a></i><br><br>
 
               <p class="lead">On the Map: <p> Click on the <b>Data</b> you're interested (eg. confirmed cases per 1 million persons), and then click on <b>Local Clustering</b>. <br>Hot spot clusters appear red. 
             <br><br><br>
@@ -79,7 +113,7 @@
 
             <div class="col-sm-4 text-center">
               <h1 p class="lead"><b> Emerging Risk </h1></b>
-                    <p> Clusters are groups of counties that have a high number of cases, neighbored by counties with a high number of cases. Outliers are areas that have a high number of cases within the county and fewer cases in neighboring counties, highlighting an emerging risk or priority for containment. <br><br>
+                    <p> Clusters are groups of counties that have a high number of cases, neighbored by counties with a high number of cases. Outliers are areas that have a high number of cases within the county and fewer cases in neighboring counties, highlighting an emerging risk or priority for containment. <i><a href="methods.html"> More Details </a></i><br><br>
 
               <p class="lead">On the Map: <p> Click on the <b>Data</b> you're interested (eg. confirmed cases per 1 million persons), and then click on <b>Local Clustering</b>. <br>Spatial outliers appear pink. 
             <br><br><br>
@@ -90,34 +124,7 @@
             <br><br>
       </div>
 
-      <div class="row">
-
-            <div class="col-sm-1">
-            </div>
-
-            <div class="col-sm-4 text-center">
-              <h1 p class="lead"> <b> Interactive Exploration </h1></b>
-              <p> 
-                <br><br>
-
-              <p class="lead">On the Map: <p> 
-            <br><br><br>
-            </div>
-
-            <div class="col-sm-2">
-            </div>
-
-            <div class="col-sm-4 text-center">
-              <h1 p class="lead"><b> Change Over Time </h1></b>
-                    <p>  <br><br>
-
-              <p class="lead">On the Map: <p>  
-            <br><br><br>
-            </div>
-
-            <div class="col-sm-1">
-            </div>
-        </div>
+      
 
   <hr>
 
@@ -151,7 +158,7 @@
   </div>
 
 <footer class="container-fluid text-center">
-  <p>Brought to you by <a href="https://makosak.github.io/">MK</a> at the Center for Spatial Data Science <a href="https://spatial.uchicago.edu" style="color: rgb(104,178,226)"> @UChicago</a></p>
+  <p>Brought to you by <a href="https://www.linkedin.com/in/xun-li-794a5b18">XL</a> at the Center for Spatial Data Science <a href="https://spatial.uchicago.edu" style="color: rgb(104,178,226)"> @UChicago</a></p>
 </footer>
 
 </body>
