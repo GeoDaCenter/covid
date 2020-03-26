@@ -969,7 +969,7 @@ function addTrendLine(data, title) {
     svg.append("g")
         .attr("transform", "translate(0," + (height) + ")")
         .call(xAxis.tickValues(xLabels.filter(function(d, i) { 
-            if (i % 2 == 0)
+            if (i % 3 == 0)
                 return d;
             })).tickFormat(function(e){
                 return e.substring(5);
@@ -1115,7 +1115,7 @@ function createTimeSlider(geojson)
         .enter()
         .append("rect")
         .attr("x", d => xScale(d.date))
-        .attr("width", xScale.bandwidth())
+        .attr("width", xScale.bandwidth() - 1)
         .attr("y", d => yScale(d.confirmedcases))
         .attr("height", d => height - padding - yScale(d.confirmedcases))
         .text("1")
@@ -1145,7 +1145,7 @@ function createTimeSlider(geojson)
         select_date = dates[currentValue-1];
         console.log(select_date);
 
-        document.getElementById('time-container').innerText = 'Confirmed cases' + select_date;
+        document.getElementById('time-container').innerText = select_date;
         var xLabels = getDatesFromGeojson(geojson); 
         xScale.domain(xLabels);
 
@@ -1204,5 +1204,5 @@ function OnShowLabels(el)
 function OnShowTime(el) 
 {
     let disp = el.checked ? 'block' : 'none';
-    document.getElementById('time-container').style.display = disp;
+    document.getElementById('time-container').parentElement.style.display = disp;
 }

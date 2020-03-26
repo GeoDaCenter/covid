@@ -49,6 +49,14 @@ a, a:visited {
     color: #999;
     display: none;
 }
+.unselectable{
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+}
 .bottom-left {
     top: 10px;
     left: 30%;
