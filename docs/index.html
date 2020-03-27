@@ -29,7 +29,6 @@
 </nav>
 
 <body>
-
   <!-- If Needed Left and Right Padding in 'md' and 'lg' screen means use
             <div class="row">
                 <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
@@ -48,25 +47,18 @@
 <div class="container-fluid">  
 
     <div class="row">
-    <div class="jumbotron jumbotron-fluid col-lg-12">
+      <div class="jumbotron jumbotron-fluid col-lg-8">
         <h1 class="display-3">The U.S. COVID-19 Atlas</h1>
-
         <p>In a quickly changing pandemic landscape, access to current county-level data and analysis is crucial to understanding needs and supporting planning efforts. County-level visualizations and analytics reveal a more detailed pandemic landscape with local hotspots of surging COVID cases that are missed by state-level data. </p>
-
         <hr class="my-5">
-        
        This atlas is in constant development by <a href="https://spatial.uchicago.edu">the Center for Spatial Data Science</a> at the  University of Chicago, with collaboration from the <a href="https://datascience.wisc.edu/institute">UW-Madison Data Science Institute.</a>  County-level data sources include 1P3A but will soon be updated with Covidtracker, USAFacts, and health department validations (<a href="methods.html">see more</a>). <br>
        </div>
-     </div>
 
-     <div class "row">
-      <div class="col-lg-12">
-        <video width=100% autoplay="autoplay" muted loop>
-          <source src="lisa.mp4" type="video/mp4">
-        </video>
-        <br>
-     </div>
-   </div>
+      <div class="col-lg-4" style="text-align: center">
+        <img src="lisa.gif">
+        <div style="text-align: center;"> Dynamic county cluster hot spots <br/>using population-weighted adjustment of COVID-19 cases</div>
+      </div>
+    </div>
  </div>
 
 
@@ -181,7 +173,7 @@
 
 
     <div class="container-fluid text-center">
-          <iframe scrolling="no" width="100%" height="900" frameborder="0" src="atlas.html" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
+          <iframe scrolling="no" width="100%" height="900" frameborder="0" src="map.html" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
     </div>
 
 </div>
