@@ -214,3 +214,6 @@ a, a:visited {
     font-family: sans-serif;
     color: #fff;
 }
+.collapse {
+    display: none;
+}

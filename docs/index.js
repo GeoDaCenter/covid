@@ -1249,3 +1249,14 @@ function OnShowTime(el)
     let disp = el.checked ? 'block' : 'none';
     document.getElementById('time-container').parentElement.style.display = disp;
 }
+
+function collapse(el)
+{
+    if (document.getElementById("toolbox").classList.contains("collapse")) {
+        document.getElementById('toolbox').classList.remove("collapse");
+        el.src="collapse.png";
+    } else {
+        document.getElementById('toolbox').classList.add("collapse");
+        el.src="expand.png";
+    }
+}
