@@ -68,16 +68,15 @@
             <p>All cases:</p>
             <div class="layout" id="slider-svg"></div>
             <div class="layout" id="sliderdiv"><input id="slider" type="range" min="1" max="100" step="1" value="20"/></div>
-            <p>Data source:&nbsp;<a href="https://covidvirus.1point3acres.com/">1point3acres.com</a></p>
+            <p><n><b>Data</b>:&nbsp;<a href="https://covidvirus.1point3acres.com/">1point3acres.com</a> with more sources coming soon.</p>
             <p>
-              <input type="checkbox" onchange="OnShowLabels(this)">Show Labels of Hotspots
+              <input type="checkbox" onchange="OnShowLabels(this)">Show Hotspot Label
               <input type="checkbox" onchange="OnShowTime(this)">Show Time Label
             </p>
-        </div>
-        <div class="source-link">
-            <a href="https://spatial.uchicago.edu" target="_new">By CSDS UChicago</a>
-                <button onclick="OnSave(this)" style="display:none">save</button>
-        </div>
+           <div class="source-link" align="center">
+              <a href="https://spatial.uchicago.edu" target="_new"><img align="center" src="logo_gray.png"  width=200px alt="Center for Spatial Data Science logo"/></a><br>
+            <button onclick="OnSave(this)" style="display:none">save</button>
+          </div>
     </div> 
     <div class="time-panel bottom-left" >
       <label class="unselectable" id="time-container">2020-03-23</label>
