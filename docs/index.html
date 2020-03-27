@@ -1,99 +1,194 @@
-<html>
-  <head>
-    <title>COVID19 USA States</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>The U.S. COVID-19 Atlas</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
 
-    <link rel="stylesheet" href="index.css"></link>
 
-    <script src="https://unpkg.com/deck.gl@^7.0.0/dist.min.js"></script>
-    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-
-    <style type="text/css">
-
-    </style>
-  </head>
-
-  <body>
-    <div id="tooltip"></div>
-    <div class="options-panel top-right " tabindex="0">
-        <div>
-            <p>Select Data:</p>
-            <div class="layout">
-                <button class="stat col-1-2 checked" id="btn-state" onclick="OnStateClick(this)">By State</button>
-                <button class="stat col-1-2" id="btn-county" onclick="OnCountyClick(this)">By County</button>
-            </div>
-            <p>Select Variable:</p>
-            <div class="layout">
-                <div class="dropdown">
-                    <button class="dropbtn" id="select-data">Confirmed Count</button>
-                    <div class="dropdown-content">
-                      <a href="#" onclick="OnDataClick(this)">Confirmed Count</a>
-                      <a href="#" onclick="OnDataClick(this)">Confirmed Count per 1M Population</a>
-                      <a href="#" onclick="OnDataClick(this)">Death Count</a>
-                      <a href="#" onclick="OnDataClick(this)">Death Count per 1M Population</a>
-                      <a href="#" onclick="OnDataClick(this)">Fatality Rate</a>
-                    </div>
-                  </div>
-            </div>
-            <p>Select Map Type:</p>
-            <div class="layout">
-                <button class="stat col-1-2 checked" id="btn-nb" onclick="OnChoroplethClick(this)">Choropleth</button>
-                <button class="stat col-1-2" id="btn-lisa" onclick="OnLISAClick(this)">Local Clustering</button>
-            </div>
-            <p></p>
-            <div class="layout" id="legend">
-                <div class="legend" style="background: rgb(240, 240, 240); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(255, 237, 160); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(254, 217, 118); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(254, 178, 76); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(253, 141, 60); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(252, 78, 42); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(227, 26, 28); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(189, 0, 38); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(128, 0, 38); width: 7.69231%;"></div>
-            </div>
-            <div class="layout" id="legend-labels">
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-            </div>
-            <p>New cases:</p>
-            <div class="layout" id="linechart"></div>
-            <p>All cases:</p>
-            <div class="layout" id="slider-svg"></div>
-            <div class="layout" id="sliderdiv"><input id="slider" type="range" min="1" max="100" step="1" value="20"/></div>
-            <p>Data source:&nbsp;<a href="https://covidvirus.1point3acres.com/">1point3acres.com</a></p>
-            <p>
-              <input type="checkbox" onchange="OnShowLabels(this)">Show Labels of Hotspots
-              <input type="checkbox" onchange="OnShowTime(this)">Show Time Label
-            </p>
-        </div>
-        <div class="source-link">
-            <a href="https://spatial.uchicago.edu" target="_new">By CSDS UChicago</a>
-                <button onclick="OnSave(this)" style="display:none">save</button>
-        </div>
-    </div> 
-    <div class="time-panel bottom-left" >
-      <label class="unselectable" id="time-container">2020-03-23</label>
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand" href="atlas.html">U.S. COVID-19 Atlas</a>
     </div>
-  </body>
-  <script async type="text/javascript" src="./gen/jsgeoda.js"></script>
-  <script src="index.js"></script>
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-72724100-4"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="intro.html">Home</a></li>
+        <li><a href="methods.html">Methods</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
 
-    gtag('config', 'UA-72724100-4');
-  </script>
+<body>
 
-  
+  <!-- If Needed Left and Right Padding in 'md' and 'lg' screen means use
+            <div class="row">
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                    <a href="#">About</a>
+                </div>
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                    Test
+                </div>
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                    <a href="#myModal1" data-toggle="modal">SHARE</a>
+                </div>
+            </div>
+        </div> -->
+
+<div class="container-fluid">
+<div class="container-fluid">  
+
+    <div class="row">
+    <div class="jumbotron jumbotron-fluid col-lg-12">
+        <h1 class="display-3">The U.S. COVID-19 Atlas</h1>
+
+        <p>In a quickly changing pandemic landscape, access to current county-level data and analysis is crucial to understanding needs and supporting planning efforts. County-level visualizations and analytics reveal a more detailed pandemic landscape with local hotspots of surging COVID cases that are missed by state-level data. </p>
+
+        <hr class="my-5">
+        
+       This atlas is in constant development by <a href="https://spatial.uchicago.edu">the Center for Spatial Data Science</a> at the  University of Chicago, with collaboration from the <a href="https://datascience.wisc.edu/institute">UW-Madison Data Science Institute.</a>  County-level data sources include 1P3A but will soon be updated with Covidtracker, USAFacts, and health department validations (<a href="methods.html">see more</a>). <br>
+       </div>
+     </div>
+
+     <div class "row">
+      <div class="col-lg-12">
+        <video width=100% autoplay="autoplay" muted loop>
+          <source src="lisa.mp4" type="video/mp4">
+        </video>
+        <br>
+     </div>
+   </div>
+ </div>
+
+
+<hr> 
+    <div class="row">
+
+        <h1 class="text-center"><b> Atlas Features </h1></b>
+        <br><br>
+    </div>
+
+    <div class="row">
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-5 text-justify"">
+              <h3 class="text-primary text-center"> <b> Interactive Exploration </h3></b><br>
+              <p> Our COVID-19 choropleth and local clustering map of the US allows for spatiotemporal visualization of the spread of COVID across the country by the state or county level. Explore total counts or rates for both prevalence and deaths due to COVID. <i><a href="methods.html"> More Details </a></i></p>
+            </div>
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-4 text-center">
+              <p class="lead">On the Map:</p> 
+              <ul class="text-justify"> 
+                <li>Click on the <b>Data</b> you're interested in exploring with the data dropdown menu (eg. confirmed cases per 1 million persons), and then click on the map type, either <b>Choropleth or Local Clustering</b>.</li> 
+                <li> Higher counts or rates appear dark red, and lower counts or rates appear orange or yellow (or gray if there is no prevalence). Hot spots appear red, and cold spots appear blue.</li>
+              </ul>
+            </div>
+            <div class="col-sm-1">
+            </div>
+        </div>
+
+    <div class="row">
+      <br><br>
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-5 text-justify">
+              <h3 class="text-primary text-center"><b> Change Over Time </h3></b>
+              <p>  In order to understand the distribution and spread of COVID in the US throughout the pandemic, visualizing temporal changes is beneficial. Witnessing COVID around the US as the pandemic progresses is especially useful to analyze patterns of the spread for resource distribution. <i><a href="methods.html"> More Details </a></i></p>  
+            </div>
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-4 text-center">
+              <p class="lead">On the Map:</p> 
+              <ul class="text-justify"> 
+                <li>Click on the <b>Data</b> you're interested in exploring, and then use the <b>All Cases Slider</b> to select a date of interest.</li> 
+                <li> Move the slider from left to right to visualize day to day changes.</li>
+              </ul>
+            </div>
+            <div class="col-sm-1">
+            </div>
+        </div>
+
+    <div class="row text-justify">
+      <br><br>
+        <div class="col-sm-1">
+            </div>
+            <div class="col-sm-5">
+              <h3 class="text-primary text-center"> <b> COVID Clusters </h3></b><br>
+              <p> We show COVID-19 hot spots two ways: 1) using the total number of confirmed cases, and 2) adjusting for population. Because of the infectious nature of COVID, high numbers of cases anywhere will be of concern. At the same time, identifying areas that have a disproportionately high number of cases within the population is necessary to locate areas hit hardest by the pandemic.<i><a href="methods.html"> More Details </a></i></p>
+              </div>
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-4 text-center">
+              <p class="lead">On the Map:</p> 
+              <ul class="text-justify"> 
+                <li>Click on the <b>Data</b> you're interested in exploring, and then click on <b>Local Clustering</b>.</li> 
+                <li> Hot spot clusters appear red.</li>
+            </div>
+            <div class="col-sm-1">
+            </div>
+          </div>
+
+    <div class="row text-justify">
+      <br><br>
+       <div class="col-sm-1">
+            </div>
+            <div class="col-sm-5">
+              <h3 class="text-primary text-center"><b> Emerging Risk </h3></b>
+              <p> While clusters are groups of counties that have a high number of cases that are neighbored by counties with a high number of cases, outliers are areas that have a high number of cases within the county and fewer cases in neighboring counties. Counties that are outliers highlight an emerging risk, indicating potential priorities for containment.<i><a href="methods.html"> More Details </a></i></p>
+              </div>
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-4 text-center">
+              <p class="lead">On the Map:</p> 
+              <ul class="text-justify"> 
+                <li>Click on the <b>Data</b> you're interested in exploring, and then click on <b>Local Clustering</b>.</li> 
+                <li>  Spatial outliers appear pink.</li>
+            </div>
+            <div class="col-sm-1">
+            </div>
+          </div>
+          <br><br>
+    <hr>
+
+<!--   <div class="row text-center">
+      
+      <div class="col-sm-1">
+      </div>
+
+      <div class="col-md-6">
+        <h2> <b> Explore </b> different dimensions of the COVID-19 pandemic at state and county scale across the United States. </h2>
+      </div>
+      <div class="col-sm-4 text-left">
+        <h4> Tips: </h4>
+        <li >Zoom to your area of interest.</li>
+        <li>Click layers on and off. </li>
+        <li>Click on the map to get more information. </li>
+        <li>Toggle the filters for each index on the right to view customized maps.</li>
+        <br><br><br>
+      </div> 
+      <div class="col-sm-1">
+      </div> -->
+
+
+    <div class="container-fluid text-center">
+          <iframe scrolling="no" width="100%" height="900" frameborder="0" src="atlas.html" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
+    </div>
+
+</div>
+
+<footer class="container-fluid text-center">
+  <p>Brought to you by the <a>Center for Spatial Data Science <a href="https://spatial.uchicago.edu"> @UChicago</a>. Powered by <a href="https://geodacenter.github.io/">GeoDa</a>.</p>
+</footer>
+
+</body>
 </html>
