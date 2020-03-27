@@ -370,7 +370,7 @@ var mapbox = deckgl.getMapboxMap();
 mapbox.addControl(new mapboxgl.NavigationControl(), 'top-left');
 
 
-mapbox.on('zoom', () => {
+mapbox.on('zoomend', () => {
     const currentZoom = mapbox.getZoom();
     let lat = current_view == null? deckgl.viewState.latitude : current_view.latitude;
     let lon = current_view == null? deckgl.viewState.longitude : current_view.longitude;
