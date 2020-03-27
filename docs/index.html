@@ -16,7 +16,7 @@
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
         <span class="icon-bar"></span>                        
       </button>
-      <a class="navbar-brand" href="atlas.html">U.S. COVID-19 Atlas</a>
+      <a class="navbar-brand" href="map.html">U.S. COVID-19 Atlas</a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
@@ -47,18 +47,31 @@
 <div class="container-fluid">  
 
     <div class="row">
-      <div class="jumbotron jumbotron-fluid col-lg-8">
-        <h1 class="display-3">The U.S. COVID-19 Atlas</h1>
-        <p>In a quickly changing pandemic landscape, access to current county-level data and analysis is crucial to understanding needs and supporting planning efforts. County-level visualizations and analytics reveal a more detailed pandemic landscape with local hotspots of surging COVID cases that are missed by state-level data. </p>
-        <hr class="my-5">
-       This atlas is in constant development by <a href="https://spatial.uchicago.edu">the Center for Spatial Data Science</a> at the  University of Chicago, with collaboration from the <a href="https://datascience.wisc.edu/institute">UW-Madison Data Science Institute.</a>  County-level data sources include 1P3A but will soon be updated with Covidtracker, USAFacts, and health department validations (<a href="methods.html">see more</a>). <br>
+      <div class="jumbotron jumbotron-fluid col-lg-7">
+        <h1 class="display-3">U.S. COVID-19 Atlas</h1>
+        <p>In a quickly changing pandemic landscape, access to current, validated county-level data and analysis is crucial to understanding needs and supporting planning efforts. County-level visualizations and analytics reveal a more detailed pandemic landscape with local hotspots of surging COVID cases that are missed by state-level data. </p><br><br>
+
+        <p class="lead" align="center">
+          <a class="btn btn-success btn-lg" href="#mapapp" role="button">
+          Explore the COVID Atlas</a>
+        </p>
+
+        <br>
        </div>
 
-      <div class="col-lg-4" style="text-align: center">
-        <img src="lisa.gif">
+      <div class="col-lg-5" style="text-align: center">
+        <a href="#mapapp"><img src="lisa.gif"></a>
+        
         <div style="text-align: center;"> 
-          Dynamic county cluster hot spots <br/>using population-weighted adjustment of COVID-19 cases
-          <br/><a href='#mapapp'> Try COVID-19 Atlas</a>
+         <h5> Find our Latest Research Brief and Summary Stats
+         <a href="https://spatial.uchicago.edu/content/us-covid-19-atlas"> Here.</a></h5>
+        </div>
+
+        <hr class="my-5">
+
+        <div style="text-align: justify-all;"
+          <p class="text-muted" align="text-justify">This atlas is in constant development by <a href="https://spatial.uchicago.edu">the Center for Spatial Data Science</a> at the  University of Chicago, with collaboration from the <a href="https://datascience.wisc.edu/institute">UW-Madison Data Science Institute.</a>  County-level data sources include 1P3A but will soon be updated with Covidtracker, USAFacts, and health department validations.</p>
+
         </div>
       </div>
     </div>
@@ -174,9 +187,6 @@
       <div class="col-sm-1">
       </div> -->
 
-  <div style="width:100%; text-align: center;">
-    <img src="logo_gray.png">
-  </div>
       <a name="mapapp"></a>
     <div class="container-fluid text-center">
           <iframe scrolling="no" width="100%" height="900" frameborder="0" src="map.html" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
