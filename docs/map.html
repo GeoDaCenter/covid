@@ -16,7 +16,7 @@
   <body>
     <div id="tooltip"></div>
     <div class="options-panel top-right " tabindex="0">
-        <div style="float: right;"><img src="collapse.png" style="height: 24px; width: 24;" onclick="collapse(this)"></div>
+        <div style="float: right;"><img src="img/collapse.png" style="height: 24px; width: 24;" onclick="collapse(this)"></div>
         <div id="toolbox">
             <p>Select Data:</p>
             <div class="layout">
@@ -36,10 +36,14 @@
                     </div>
                   </div>
             </div>
-            <p>Select Map Type:</p>
+            <p>
+              Select Map Type:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <input type="checkbox" id="cartogram-ckb" onchange="OnCartogramClick(this)">Using Cartogram</p>
             <div class="layout">
                 <button class="stat col-1-2 checked" id="btn-nb" onclick="OnChoroplethClick(this)">Choropleth</button>
                 <button class="stat col-1-2" id="btn-lisa" onclick="OnLISAClick(this)">Local Clustering</button>
+                
             </div>
             <p></p>
             <div class="layout" id="legend">
@@ -75,7 +79,7 @@
               <input type="checkbox" onchange="OnShowTime(this)">Show Time Label
             </p>
            <div class="source-link" align="center">
-              <a href="https://spatial.uchicago.edu" target="_new"><img align="center" src="logo_gray.png"  width=200px alt="Center for Spatial Data Science logo"/></a><br>
+              <a href="https://spatial.uchicago.edu" target="_new"><img align="center" src="img/logo_gray.png"  width=200px alt="Center for Spatial Data Science logo"/></a><br>
             <button onclick="OnSave(this)" style="display:none">save</button>
           </div>
     </div> 

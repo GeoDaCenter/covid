@@ -1,4 +1,4 @@
-const {DeckGL, GeoJsonLayer, TextLayer, MapController} = deck;
+const {DeckGL, GeoJsonLayer, TextLayer, ScatterplotLayer} = deck;
 
 const COLOR_SCALE = [
     [240, 240, 240],
@@ -234,6 +234,39 @@ class GeodaProxy {
         'id_array' : id_array
       }
     }
+
+    cartogram(map_uid, values) {
+        let cart = Module.cartogram(map_uid, this.toVecDouble(values));
+        let x = cart.get_x();
+        let y = cart.get_y();
+        let r = cart.get_radius();
+        // rescale x, y [-100,0], [0, 45]
+        let min_x = x.get(0);
+        let max_x = x.get(0);
+        let min_y = y.get(0);
+        let max_y = y.get(0);
+        for (let i=0; i<x.size(); ++i) {
+            if (min_x > x.get(i)) min_x = x.get(i);
+            if (max_x < x.get(i)) max_x = x.get(i);
+            if (min_y > y.get(i)) min_y = y.get(i);
+            if (max_y < y.get(i)) max_y = y.get(i);
+        }
+        let scale_x = 100.0 / (max_x - min_x);
+        let scale_y = 45.0 / (max_y - min_y);
+
+
+        var result = [];
+        for (let i=0; i<x.size(); ++i) {
+            let xx = (x.get(i) - min_x) * scale_x;
+            let yy = (y.get(i) - min_y) * scale_y;
+            result.push({
+                'properties': {'id' : i},
+                'position' : [x.get(i)/10000.0, y.get(i)/10000.0],
+                'radius' : r.get(i) 
+            });
+        }
+        return result;
+    }
 }
 
 
@@ -341,8 +374,10 @@ var death_count_data = {};
 var population_data = {};
 var fatality_data = {};
 var lisa_data = {};
+var cartogram_data;
 
 var current_view = null;
+
 
 // functions
 var colorScale;
@@ -369,7 +404,6 @@ const deckgl = new DeckGL({
 var mapbox = deckgl.getMapboxMap();
 mapbox.addControl(new mapboxgl.NavigationControl(), 'top-left');
 
-
 mapbox.on('zoomend', () => {
     const currentZoom = mapbox.getZoom();
     let lat = current_view == null? deckgl.viewState.latitude : current_view.latitude;
@@ -382,6 +416,47 @@ mapbox.on('zoomend', () => {
         }
     });
 });
+
+function resetView(layers)
+{
+    deckgl.setProps({
+        layers : layers,
+        viewState : {
+            zoom: 3.5,
+            latitude: 32.850033,
+            longitude: -86.6500523,
+                transitionInterpolator: new LinearInterpolator(['bearing']),
+                transitionDuration: 500
+        }
+    });
+}
+
+function setCartogramView(layers)
+{
+    if (isState()) {
+        deckgl.setProps({
+            layers : layers,
+            viewState : {
+                zoom: 6.6,
+                latitude: 3.726726,
+                longitude: -8.854194,
+                transitionInterpolator: new LinearInterpolator(['bearing']),
+                transitionDuration: 500
+            }
+        });
+    } else {
+        deckgl.setProps({
+            layers : layers,
+            viewState : {
+                zoom: 5.6,
+                latitude: 13.510908,
+                longitude: -28.190367,
+                transitionInterpolator: new LinearInterpolator(['bearing']),
+                transitionDuration: 500
+            }
+        }); 
+    }
+}
 
 function createMap(data) {
     data = initFeatureSelected(data);
@@ -407,74 +482,118 @@ function createMap(data) {
                     labels.push({id: i, position: cents[i], text: data.features[i].properties.NAME});
             }
         }
-    }
-
-    var layers = [
-        new GeoJsonLayer({
-            id : 'map-layer',
-            data: data,
-            opacity: 0.5,
-            stroked: true,
-            filled: true,
-            wireframe: true,
-            fp64: true,
-            lineWidthScale: 1,
-            lineWidthMinPixels: 1,
-            getElevation: getElevation,
-            getFillColor: getFillColor,
-            getLineColor: getLineColor,
-
-            updateTriggers: {
-                getLineColor: [
-                    select_id 
-                ],
-                getFillColor: [
-                    select_date,select_variable, select_method
-                ]
-            },
-            pickable: true,
-            onHover: updateTooltip,
-            onClick: updateTrendLine
-        })
-    ];
-
-    if (!('name' in data)) {
-        layers.push(
-        new GeoJsonLayer({
-            data: jsondata['state'],
-            opacity: 0.5,
-            stroked: true,
-            filled: false,
-            lineWidthScale: 1,
-            lineWidthMinPixels: 1,
-            getLineColor: [220,220,220],
-            pickable: false
-        })
-        );
     } 
 
-    if (show_labels) {
+    var layers = [];
 
+    if (isCartogram()) {
+        mapbox.getCanvas().hidden = true;
+        if ('name' in data && data.name.startsWith("state"))  {
+            for (let i=0; i < data.features.length; ++i) {
+                labels.push({id: i, position: cartogram_data[i].position, text: data.features[i].properties.NAME});
+            } 
+        }
+        layers.push(
+            new ScatterplotLayer({
+                data: cartogram_data,
+                getPosition: d => d.position,
+                getFillColor: getFillColor,
+                getLineColor: getLineColor,
+                getRadius: d => d.radius * 10,
+                onHover: updateTooltip,
+                onClick: updateTrendLine,
+                pickable: true,
+                updateTriggers: {
+                    getLineColor: [
+                        select_id 
+                    ],
+                    getFillColor: [
+                        select_date,select_variable, select_method
+                    ]
+                },
+            })
+        );
         layers.push(
             new TextLayer({
                 data: labels,
                 pickable: true,
                 getPosition: d => d.position,
                 getText: d => d.text,
-                getSize: 18,
+                getSize: 12,
                 fontFamily: 'Gill Sans Extrabold, sans-serif',
                 getTextAnchor: 'middle',
                 getAlignmentBaseline: 'bottom',
-                getColor: [250, 250, 250],
-                fontSettings: {
-                    buffer: 20,
-                    sdf: true,
-                    radius: 6
-                }
+                getColor: [20, 20, 20]
             })
         );
+        setCartogramView(layers);
+
+    } else {
+        mapbox.getCanvas().hidden = false;
+        layers.push(
+            new GeoJsonLayer({
+                id : 'map-layer',
+                data: data,
+                opacity: 0.5,
+                stroked: true,
+                filled: true,
+                wireframe: true,
+                fp64: true,
+                lineWidthScale: 1,
+                lineWidthMinPixels: 1,
+                getElevation: getElevation,
+                getFillColor: getFillColor,
+                getLineColor: getLineColor,
+
+                updateTriggers: {
+                    getLineColor: [
+                        select_id 
+                    ],
+                    getFillColor: [
+                        select_date,select_variable, select_method
+                    ]
+                },
+                pickable: true,
+                onHover: updateTooltip,
+                onClick: updateTrendLine
+            })
+        );
+        if (!('name' in data)) {
+            layers.push(
+                new GeoJsonLayer({
+                    data: jsondata['state'],
+                    opacity: 0.5,
+                    stroked: true,
+                    filled: false,
+                    lineWidthScale: 1,
+                    lineWidthMinPixels: 1,
+                    getLineColor: [220,220,220],
+                    pickable: false
+                })
+            );
+        } 
+        if (show_labels) {
+            layers.push(
+                new TextLayer({
+                    data: labels,
+                    pickable: true,
+                    getPosition: d => d.position,
+                    getText: d => d.text,
+                    getSize: 18,
+                    fontFamily: 'Gill Sans Extrabold, sans-serif',
+                    getTextAnchor: 'middle',
+                    getAlignmentBaseline: 'bottom',
+                    getColor: [250, 250, 250],
+                    fontSettings: {
+                        buffer: 20,
+                        sdf: true,
+                        radius: 6
+                    }
+                })
+            );
+        }
+        resetView(layers);
     }
-    deckgl.setProps({layers: layers});        
 
     if (document.getElementById('linechart').innerHTML == "") {
         addTrendLine(data, "");
@@ -522,7 +641,10 @@ function loadMap(url) {
     }
 }
 
-
+function isCartogram()
+{
+    return document.getElementById('cartogram-ckb').checked;
+}
 
 function getElevation(f) 
 {
@@ -625,6 +747,10 @@ function OnCountyClick(evt) {
         UpdateLegendLabels(nb.bins);
         choropleth_btn.classList.add("checked");
         lisa_btn.classList.remove("checked");
+
+        if (isCartogram()) {
+            cartogram_data = gda_proxy.cartogram(county_map, vals);
+        }
         loadMap(county_map);
     }
     document.getElementById("btn-county").classList.add("checked");
@@ -664,6 +790,11 @@ function OnStateClick(evt) {
         UpdateLegendLabels(nb.bins);
         choropleth_btn.classList.add("checked");
         lisa_btn.classList.remove("checked");
+
+        if (isCartogram()) {
+            cartogram_data = gda_proxy.cartogram(state_map, vals);
+        }
+
         loadMap(state_map);
     }
     document.getElementById("btn-state").classList.add("checked");
@@ -756,6 +887,18 @@ function getJsonName()
 function OnChoroplethClick(evt) {
     select_method = "choropleth";
     if (isState()) {
+        OnStateClick();
+    } else {
+        OnCountyClick();
+    }
+}
+
+function OnCartogramClick(evt)
+{
+    select_method = "cartogram";
+    if (isState()) {
+        var data = GetDataValues();
+        var cart = gda_proxy.cartogram(state_map, data);
         OnStateClick();
     } else {
         OnCountyClick();
@@ -857,6 +1000,19 @@ function OnDataClick(evt)
     }
 }
 
+function OnCartogramClick(el)
+{
+    if (isLisa()) {
+        OnLISAClick(document.getElementById('btn-lisa'));
+    } else {
+        if (isState()) {
+            OnStateClick();
+        } else {
+            OnCountyClick();
+        }
+    }
+}
+
 function updateTooltip({x, y, object}) {
     const tooltip = document.getElementById('tooltip');
 
@@ -877,7 +1033,13 @@ function updateTooltip({x, y, object}) {
         let v5 = fatality_data[json][select_date][id];
         let v6 = population_data[json][id];
 
-        let text = '<div><b>' + object.properties.NAME +':</b><br/><br/></div>';
+        let name = "";
+        if ('NAME' in object.properties) 
+            name =  object.properties.NAME;
+        else 
+            name = jsondata[json].features[id].properties.NAME;
+
+        let text = '<div><b>' + name +':</b><br/><br/></div>';
         text += '<table>'
         text += '<tr><td><b>Confirmed Count:</b></td><td>' + v1 + '</td>';
         text += '<tr><td><b>Confirmed Count per 1M Population:</b></td><td>' + v2 + '</td>';
@@ -1254,9 +1416,9 @@ function collapse(el)
 {
     if (document.getElementById("toolbox").classList.contains("collapse")) {
         document.getElementById('toolbox').classList.remove("collapse");
-        el.src="collapse.png";
+        el.src="img/collapse.png";
     } else {
         document.getElementById('toolbox').classList.add("collapse");
-        el.src="expand.png";
+        el.src="img/expand.png";
     }
 }
