@@ -17,13 +17,12 @@
     <div id="tooltip"></div>
     <div class="options-panel top-right " tabindex="0">
         <div>
-            <h3>COVID19 Map</h3>
-            <p>The covid19 confirmed cases in the United States of America</p>
+            <p>Select Data:</p>
             <div class="layout">
                 <button class="stat col-1-2 checked" id="btn-state" onclick="OnStateClick(this)">By State</button>
                 <button class="stat col-1-2" id="btn-county" onclick="OnCountyClick(this)">By County</button>
             </div>
-            <p>Data:</p>
+            <p>Select Variable:</p>
             <div class="layout">
                 <div class="dropdown">
                     <button class="dropbtn" id="select-data">Confirmed Count</button>
@@ -36,7 +35,7 @@
                     </div>
                   </div>
             </div>
-            <p>Map type:</p>
+            <p>Select Map Type:</p>
             <div class="layout">
                 <button class="stat col-1-2 checked" id="btn-nb" onclick="OnChoroplethClick(this)">Choropleth</button>
                 <button class="stat col-1-2" id="btn-lisa" onclick="OnLISAClick(this)">Local Clustering</button>

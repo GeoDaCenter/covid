@@ -1,4 +1,4 @@
-const {DeckGL, GeoJsonLayer, TextLayer, Controller} = deck;
+const {DeckGL, GeoJsonLayer, TextLayer, MapController} = deck;
 
 const COLOR_SCALE = [
     [240, 240, 240],
@@ -236,55 +236,6 @@ class GeodaProxy {
     }
 }
 
-const state_map = "states_update.geojson";
-const county_map = "counties_update.geojson";
-var map_variable = "confirmed_count";
-var choropleth_btn = document.getElementById("btn-nb");
-var lisa_btn = document.getElementById("btn-lisa");
-var data_btn = document.getElementById("select-data");
-
-var gda_proxy;
-var state_w = null;
-var county_w = null;
-
-var jsondata = {};
-var centroids = {};
-
-var select_map = null;
-var select_id = null;
-var select_date = null;
-var select_variable = null;
-var select_method = null;
-var show_labels = false;
-var select_state_id = -1;
-
-var dates;
-var confirmed_count_data = {};
-var death_count_data = {};
-var population_data = {};
-var fatality_data = {};
-var lisa_data = {};
-
-
-// functions
-var colorScale;
-var getFillColor;
-var getLineColor;
-
-const deckgl = new DeckGL({
-    mapboxApiAccessToken: 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg',
-    mapStyle: 'mapbox://styles/mapbox/dark-v9',
-    latitude: 32.850033,
-    longitude: -86.6500523,
-    zoom: 3.5,
-    maxZoom: 18,
-    pitch: 0,
-    layers: [],
-    controller: true
-});
-
-//var mapbox = deckgl.getMapboxMap();
-//mapbox.addControl(new mapboxgl.NavigationControl(), 'top-left');
 
 function loadGeoDa(url, evt) {
   if (gda_proxy.Has(url)) {
@@ -362,6 +313,75 @@ function parseData(data)
         }
     }
 }
+const state_map = "states_update.geojson";
+const county_map = "counties_update.geojson";
+var map_variable = "confirmed_count";
+var choropleth_btn = document.getElementById("btn-nb");
+var lisa_btn = document.getElementById("btn-lisa");
+var data_btn = document.getElementById("select-data");
+
+var gda_proxy;
+var state_w = null;
+var county_w = null;
+
+var jsondata = {};
+var centroids = {};
+
+var select_map = null;
+var select_id = null;
+var select_date = null;
+var select_variable = null;
+var select_method = null;
+var show_labels = false;
+var select_state_id = -1;
+
+var dates;
+var confirmed_count_data = {};
+var death_count_data = {};
+var population_data = {};
+var fatality_data = {};
+var lisa_data = {};
+
+var current_view = null;
+
+// functions
+var colorScale;
+var getFillColor;
+var getLineColor;
+
+function OnViewChange(view) {
+    current_view = view.viewState;
+}
+
+const deckgl = new DeckGL({
+    mapboxApiAccessToken: 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg',
+    mapStyle: 'mapbox://styles/mapbox/dark-v9',
+    latitude: 32.850033,
+    longitude: -86.6500523,
+    zoom: 3.5,
+    maxZoom: 18,
+    pitch: 0,
+    controller: true,
+    onViewStateChange: OnViewChange,
+    layers: []
+});
+
+var mapbox = deckgl.getMapboxMap();
+mapbox.addControl(new mapboxgl.NavigationControl(), 'top-left');
+
+
+mapbox.on('zoom', () => {
+    const currentZoom = mapbox.getZoom();
+    let lat = current_view == null? deckgl.viewState.latitude : current_view.latitude;
+    let lon = current_view == null? deckgl.viewState.longitude : current_view.longitude;
+    deckgl.setProps({
+        viewState : {
+            zoom: currentZoom,
+            latitude: lat,
+            longitude: lon
+        }
+    });
+});
 
 function createMap(data) {
     data = initFeatureSelected(data);
@@ -802,6 +822,17 @@ function OnLISAClick(evt) {
         loadMap(county_map);
     }
 }
+
+function loadScript(url) {
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = url;
+    const head = document.querySelector('head');
+    head.appendChild(script);
+    return new Promise(resolve => {
+      script.onload = resolve;
+    });
+  }
 
 // MAIN ENTRY
 var Module = { onRuntimeInitialized: function() {
