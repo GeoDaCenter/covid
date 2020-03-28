@@ -821,7 +821,10 @@ function UpdateLegendLabels(breaks) {
     const div = document.getElementById('legend-labels');
     var cont = '<div style="width: 7.69231%;text-align:center">0</div>';
     for (var i=0; i<breaks.length; ++i) {
-        cont += '<div style="width: 7.69231%;text-align:center">' +breaks[i]+ '</div>';
+        if (isNaN(breaks[i])) 
+            cont += '<div style="width: 7.69231%;text-align:center">' +Math.round(breaks[i])+ '</div>';
+        else
+            cont += '<div style="width: 7.69231%;text-align:center">' +breaks[i]+ '</div>';
     }
     div.innerHTML = cont;
 }
