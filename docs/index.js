@@ -677,7 +677,7 @@ function GetFeatureValue(id)
     } else if (txt == "Death Count per 1M Population") {
         if (population_data[json][id] == undefined || population_data[json][id] == 0) return 0;
         return Math.round(death_count_data[json][select_date][id] / population_data[json][id] * 1000000);
-    } else if (txt == "Fatality Rate") {
+    } else if (txt == "Death Count/Confirmed Count") {
         return fatality_data[json][select_date][id];
     }
     return 0;
@@ -709,7 +709,7 @@ function GetDataValues()
                 vals.push(death_count_data[json][select_date][id] / population_data[json][id] * 1000000);
         }
         return vals;
-    } else if (txt == "Fatality Rate") {
+    } else if (txt == "Death Count/Confirmed Count") {
         return Object.values(fatality_data[json][select_date]);
     }
 }
@@ -1048,7 +1048,7 @@ function updateTooltip({x, y, object}) {
         text += '<tr><td><b>Confirmed Count per 1M Population:</b></td><td>' + v2 + '</td>';
         text += '<tr><td><b>Death Count:</b></td><td>' + v3 + '</td>';
         text += '<tr><td><b>Death Count per 1M Population:</b></td><td>' + v4 + '</td>';
-        text += '<tr><td><b>Fatality Rate:</b></td><td>' + v5.toFixed(2) + '</td>';
+        text += '<tr><td><b>Death Count/Confirmed Count:</b></td><td>' + v5.toFixed(2) + '</td>';
         text += '<tr><td><b>Population:</b></td><td>' + v6 + '</td>';
         text += '</table>';
 
