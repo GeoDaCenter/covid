@@ -1292,7 +1292,7 @@ function createTimeSlider(geojson)
     if(document.getElementById("slider-svg").innerHTML.length > 0) 
         return;
 
-    var width = 326,
+    var width = 320,
         height = 180,
         padding = 28;
 
