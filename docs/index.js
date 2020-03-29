@@ -374,6 +374,8 @@ var death_count_data = {};
 var population_data = {};
 var fatality_data = {};
 var lisa_data = {};
+var lisa_labels = ["Not significant","High-High","Low-Low","High-Low","Low-High","Undefined","Isolated"];
+var lisa_colors = ["#ffffff","#FF0000","#0000FF","#a7adf9","#f4ada8","#464646","#999999"];
 var cartogram_data;
 
 var current_view = null;
@@ -609,7 +611,7 @@ function getText(d)
         let json = getJsonName();
         if (json == "county") {
             let field = data_btn.innerText;
-            let lbl = lisa_data[json][select_date][field].labels[d.id];
+            let lbl = lisa_labels[d.id];
             if (lbl == "High-High") 
                 return d.text;
             else
@@ -669,14 +671,14 @@ function GetFeatureValue(id)
     let txt = data_btn.innerText;
     if (txt == "Confirmed Count") {
         return confirmed_count_data[json][select_date][id];
-    } else if (txt == "Confirmed Count per 1M Population") {
+    } else if (txt == "Confirmed Count per 10K Population") {
         if (population_data[json][id] == undefined || population_data[json][id] == 0) return 0;
-        return Math.round(confirmed_count_data[json][select_date][id] / population_data[json][id] * 1000000);
+        return (confirmed_count_data[json][select_date][id] / population_data[json][id] * 10000).toFixed(3);
     } else if (txt == "Death Count") {
         return death_count_data[json][select_date][id];
-    } else if (txt == "Death Count per 1M Population") {
+    } else if (txt == "Death Count per 10K Population") {
         if (population_data[json][id] == undefined || population_data[json][id] == 0) return 0;
-        return Math.round(death_count_data[json][select_date][id] / population_data[json][id] * 1000000);
+        return (death_count_data[json][select_date][id] / population_data[json][id] * 10000).toFixed(3);
     } else if (txt == "Death Count/Confirmed Count") {
         return fatality_data[json][select_date][id];
     }
@@ -689,24 +691,24 @@ function GetDataValues()
     let txt = data_btn.innerText;
     if (txt == "Confirmed Count") {
         return Object.values(confirmed_count_data[json][select_date]);
-    } else if (txt == "Confirmed Count per 1M Population") {
+    } else if (txt == "Confirmed Count per 10K Population") {
         var vals = [];
         for (var id in confirmed_count_data[json][select_date]) {
             if (population_data[json][id] == undefined || population_data[json][id] == 0) 
                 vals.push(0);
             else
-                vals.push(confirmed_count_data[json][select_date][id] / population_data[json][id] * 1000000);
+                vals.push(confirmed_count_data[json][select_date][id] / population_data[json][id] * 10000);
         }
         return vals;
     } else if (txt == "Death Count") {
         return Object.values(death_count_data[json][select_date]);
-    } else if (txt == "Death Count per 1M Population") {
+    } else if (txt == "Death Count per 10K Population") {
         var vals = [];
         for (var id in death_count_data[json][select_date]) {
             if (population_data[json][id] == undefined || population_data[json][id] == 0) 
                 vals.push(0);
             else
-                vals.push(death_count_data[json][select_date][id] / population_data[json][id] * 1000000);
+                vals.push(death_count_data[json][select_date][id] / population_data[json][id] * 10000);
         }
         return vals;
     } else if (txt == "Death Count/Confirmed Count") {
@@ -828,9 +830,17 @@ function UpdateLegendLabels(breaks) {
         } else {
             if (val[0] == '>') {
                 val = val.substring(1, val.length-1);
-                cont += '<div style="width: 7.69231%;text-align:center">>' + Math.ceil(val) + '</div>';
+                if (val.indexOf('.') >= 0) {
+                    val = parseFloat(val);
+                    val = val.toFixed(2);
+                }
+                cont += '<div style="width: 7.69231%;text-align:center">>' + val + '</div>';
             } else {
-                cont += '<div style="width: 7.69231%;text-align:center">' + Math.ceil(val)+ '</div>';
+                if (val.indexOf('.') >= 0) {
+                    val = parseFloat(val);
+                    val = val.toFixed(2);
+                }
+                cont += '<div style="width: 7.69231%;text-align:center">' + val + '</div>';
             }
         }
     }
@@ -923,29 +933,23 @@ function OnLISAClick(evt) {
     var data = GetDataValues();
     let field = data_btn.innerText;
     let json = getJsonName();
-    var color_vec;
-    var labels;
+    var color_vec = lisa_colors;
+    var labels = lisa_labels;
     var clusters;
     var sig;
 
     if (!(json in lisa_data)) lisa_data[json] = {};
 
     if (select_date in lisa_data[json] && field in lisa_data[json][select_date]) {
-        color_vec = lisa_data[json][select_date][field].color_vec;
-        labels = lisa_data[json][select_date][field].labels;
         clusters = lisa_data[json][select_date][field].clusters;
         sig = lisa_data[json][select_date][field].sig;
 
     } else {
         var lisa = gda_proxy.local_moran1(w.map_uuid, w.w_uuid, data);
-        color_vec = gda_proxy.parseVecDouble(lisa.colors());
-        labels = gda_proxy.parseVecDouble(lisa.labels());
         clusters = gda_proxy.parseVecDouble(lisa.clusters());
         sig = gda_proxy.parseVecDouble(lisa.significances());
         if (!(select_date in lisa_data[json])) lisa_data[json][select_date] = {}
         if (!(field in lisa_data[json][select_date])) lisa_data[json][select_date][field] = {}
-        lisa_data[json][select_date][field]['labels'] = labels;
-        lisa_data[json][select_date][field]['color_vec'] = color_vec;
         lisa_data[json][select_date][field]['clusters'] = clusters;
         lisa_data[json][select_date][field]['pvalues'] = sig;
     }
@@ -1034,12 +1038,12 @@ function updateTooltip({x, y, object}) {
 
         //if (txt == "Confirmed Count") {
         let v1 = confirmed_count_data[json][select_date][id];
-        //} else if (txt == "Confirmed Count per 1M Population") {
-        let v2 = (population_data[json][id] == undefined || population_data[json][id] == 0) ? 0 : Math.round(confirmed_count_data[json][select_date][id] / population_data[json][id] * 1000000);
+        //} else if (txt == "Confirmed Count per 10K Population") {
+        let v2 = (population_data[json][id] == undefined || population_data[json][id] == 0) ? 0 : (confirmed_count_data[json][select_date][id] / population_data[json][id] * 10000);
         //} else if (txt == "Death Count") {
         let v3 = death_count_data[json][select_date][id];
-        //} else if (txt == "Death Count per 1M Population") {
-        let v4 = (population_data[json][id] == undefined || population_data[json][id] == 0) ? 0 : Math.round(death_count_data[json][select_date][id] / population_data[json][id] * 1000000);
+        //} else if (txt == "Death Count per 10K Population") {
+        let v4 = (population_data[json][id] == undefined || population_data[json][id] == 0) ? 0 : (death_count_data[json][select_date][id] / population_data[json][id] * 10000);
         //} else if (txt == "Fatality Rate") {
         let v5 = fatality_data[json][select_date][id];
         let v6 = population_data[json][id];
@@ -1050,12 +1054,15 @@ function updateTooltip({x, y, object}) {
         else 
             name = jsondata[json].features[id].properties.NAME;
 
+        if (!isInt(v2)) v2 = parseFloat(v2).toFixed(2);
+        if (!isInt(v4)) v4 = parseFloat(v4).toFixed(2);
+
         let text = '<div><b>' + name +':</b><br/><br/></div>';
         text += '<table>'
         text += '<tr><td><b>Confirmed Count:</b></td><td>' + v1 + '</td>';
-        text += '<tr><td><b>Confirmed Count per 1M Population:</b></td><td>' + v2 + '</td>';
+        text += '<tr><td><b>Confirmed Count per 10K Population:</b></td><td>' + v2 + '</td>';
         text += '<tr><td><b>Death Count:</b></td><td>' + v3 + '</td>';
-        text += '<tr><td><b>Death Count per 1M Population:</b></td><td>' + v4 + '</td>';
+        text += '<tr><td><b>Death Count per 10K Population:</b></td><td>' + v4 + '</td>';
         text += '<tr><td><b>Death Count/Confirmed Count:</b></td><td>' + v5.toFixed(2) + '</td>';
         text += '<tr><td><b>Population:</b></td><td>' + v6 + '</td>';
         text += '</table>';
@@ -1064,7 +1071,7 @@ function updateTooltip({x, y, object}) {
             let json = getJsonName();
             let field = data_btn.innerText;
             let c = lisa_data[json][select_date][field].clusters[id];
-            text += '<br/><div><b>' + lisa_data[json][select_date][field].labels[c] +'</b></div>';
+            text += '<br/><div><b>' + lisa_labels[c] +'</b></div>';
             text += '<div><b>p-value:</b>' + lisa_data[json][select_date][field].pvalues[id] +'</div>';
             text += '<div>Queen weights and 999 permutations</div>';
         }
