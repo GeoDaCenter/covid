@@ -801,6 +801,8 @@ function OnCountyClick(evt) {
         var nb;
         select_method = "choropleth";
         if (!('county' in jsondata)) {
+            data_btn.innerText = "Confirmed Count";
+            select_variable = "Confirmed Count";
             vals = gda_proxy.GetNumericCol(county_map, map_variable); 
             nb = gda_proxy.custom_breaks(county_map, "natural_breaks", 8, map_variable, gda_proxy.parseVecDouble(vals));
         } else {
