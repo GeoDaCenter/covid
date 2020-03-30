@@ -801,10 +801,14 @@ function OnCountyClick(evt) {
         var nb;
         select_method = "choropleth";
         if (!('county' in jsondata)) {
-            data_btn.innerText = "Confirmed Count";
-            select_variable = "Confirmed Count";
-            vals = gda_proxy.GetNumericCol(county_map, map_variable); 
-            nb = gda_proxy.custom_breaks(county_map, "natural_breaks", 8, map_variable, gda_proxy.parseVecDouble(vals));
+            data_btn.innerText = "Confirmed Count per 10K Population";
+            select_variable = "Confirmed Count per 10K Population";
+            vals = gda_proxy.parseVecDouble(gda_proxy.GetNumericCol(county_map, map_variable)); 
+            let pop = gda_proxy.parseVecDouble(gda_proxy.GetNumericCol(county_map, "population"));
+            for (let i=0; i<vals.length; ++i) {
+                vals[i] =  vals[i] / pop[i] * 10000; 
+            }
+            nb = gda_proxy.custom_breaks(county_map, "natural_breaks", 8, null, vals);
         } else {
             vals = GetDataValues();
             nb = gda_proxy.custom_breaks(county_map, "natural_breaks", 8, null, vals); 
@@ -846,8 +850,10 @@ function OnStateClick(evt) {
         var nb;
         select_method = "choropleth";
         if (!('state' in jsondata)) {
-            vals = gda_proxy.GetNumericCol(state_map, map_variable); 
-            nb = gda_proxy.custom_breaks(state_map, "natural_breaks", 8, map_variable, gda_proxy.parseVecDouble(vals));
+            data_btn.innerText = "Confirmed Count";
+            select_variable = "Confirmed Count";
+            vals = gda_proxy.parseVecDouble(gda_proxy.GetNumericCol(state_map, map_variable)); 
+            nb = gda_proxy.custom_breaks(state_map, "natural_breaks", 8, map_variable, vals);
         } else {
             vals = GetDataValues();
             nb = gda_proxy.custom_breaks(state_map, "natural_breaks", 8, null, vals); 
@@ -1063,7 +1069,7 @@ function loadScript(url) {
 // MAIN ENTRY
 var Module = { onRuntimeInitialized: function() {
     gda_proxy = new GeodaProxy();
-    OnStateClick(document.getElementById("btn-state"));
+    OnCountyClick(document.getElementById("btn-county"));
 }};
 
 function OnDataClick(evt)
