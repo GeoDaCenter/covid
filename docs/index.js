@@ -1323,9 +1323,9 @@ function updateTrendLine({x,y,object})
     if (object) {
         select_id = object.properties.id;
         if (isState()) {
-            createMap(jsondata['state']);
+            //createMap(jsondata['state']);
         } else {
-            createMap(jsondata['county']);
+            //createMap(jsondata['county']);
         }
         xLabels = [];
         yValues = [];
