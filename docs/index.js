@@ -681,7 +681,38 @@ function GetFeatureValue(id)
         return (death_count_data[json][select_date][id] / population_data[json][id] * 10000).toFixed(3);
     } else if (txt == "Death Count/Confirmed Count") {
         return fatality_data[json][select_date][id];
-    }
+    } else if (txt == "Daily New Confirmed Count") {
+        let dt_idx = dates.indexOf(select_date);
+        if (dt_idx == 0) return 0;
+        let prev_date = dates[dt_idx-1];
+        var cur_vals = confirmed_count_data[json][select_date];
+        var pre_vals = confirmed_count_data[json][prev_date];
+        return cur_vals[id] - pre_vals[id];
+
+    } else if (txt == "Daily New Confirmed Count per 10K Pop") {
+        let dt_idx = dates.indexOf(select_date);
+        if (dt_idx == 0) return 0;
+        let prev_date = dates[dt_idx-1];
+        var cur_vals = confirmed_count_data[json][select_date];
+        var pre_vals = confirmed_count_data[json][prev_date];
+        return ((cur_vals[id] - pre_vals[id]) / population_data[json][id] * 10000).toFixed(3);
+
+    } else if (txt == "Daily New Death Count") {
+        let dt_idx = dates.indexOf(select_date);
+        if (dt_idx == 0) return 0;
+        let prev_date = dates[dt_idx-1];
+        var cur_vals = death_count_data[json][select_date];
+        var pre_vals = death_count_data[json][prev_date];
+        return cur_vals[id] - pre_vals[id];
+
+    } else if (txt == "Daily New Death Count per 10K Pop") {
+        let dt_idx = dates.indexOf(select_date);
+        if (dt_idx == 0) return 0;
+        let prev_date = dates[dt_idx-1];
+        var cur_vals = death_count_data[json][select_date];
+        var pre_vals = death_count_data[json][prev_date];
+        return ((cur_vals[id] - pre_vals[id]) / population_data[json][id] * 10000).toFixed(3);
+    } 
     return 0;
 }
 
@@ -713,7 +744,54 @@ function GetDataValues()
         return vals;
     } else if (txt == "Death Count/Confirmed Count") {
         return Object.values(fatality_data[json][select_date]);
-    }
+    } else if (txt == "Daily New Confirmed Count") {
+        let dt_idx = dates.indexOf(select_date);
+        if (dt_idx == 0) return;
+        let prev_date = dates[dt_idx-1];
+        var cur_vals = confirmed_count_data[json][select_date];
+        var pre_vals = confirmed_count_data[json][prev_date];
+        var rt_vals = [];
+        for (let i in cur_vals) {
+            rt_vals.push(cur_vals[i] - pre_vals[i]);
+        }
+        return rt_vals;
+
+    } else if (txt == "Daily New Confirmed Count per 10K Pop") {
+        let dt_idx = dates.indexOf(select_date);
+        if (dt_idx == 0) return 0;
+        let prev_date = dates[dt_idx-1];
+        var cur_vals = confirmed_count_data[json][select_date];
+        var pre_vals = confirmed_count_data[json][prev_date];
+        var rt_vals = [];
+        for (let i in cur_vals) {
+            rt_vals.push((cur_vals[i] - pre_vals[i]) / population_data[json][i] * 10000);
+        }
+        return rt_vals;
+
+    } else if (txt == "Daily New Death Count") {
+        let dt_idx = dates.indexOf(select_date);
+        if (dt_idx == 0) return 0;
+        let prev_date = dates[dt_idx-1];
+        var cur_vals = death_count_data[json][select_date];
+        var pre_vals = death_count_data[json][prev_date];
+        var rt_vals = [];
+        for (let i in cur_vals) {
+            rt_vals.push(cur_vals[i] - pre_vals[i]);
+        }
+        return rt_vals;
+
+    } else if (txt == "Daily New Death Count per 10K Pop") {
+        let dt_idx = dates.indexOf(select_date);
+        if (dt_idx == 0) return 0;
+        let prev_date = dates[dt_idx-1];
+        var cur_vals = death_count_data[json][select_date];
+        var pre_vals = death_count_data[json][prev_date];
+        var rt_vals = [];
+        for (let i in cur_vals) {
+            rt_vals.push((cur_vals[i] - pre_vals[i]) / population_data[json][i] * 10000);
+        }
+        return rt_vals;
+    } 
 }
 
 
@@ -723,8 +801,14 @@ function OnCountyClick(evt) {
         var nb;
         select_method = "choropleth";
         if (!('county' in jsondata)) {
-            vals = gda_proxy.GetNumericCol(county_map, map_variable); 
-            nb = gda_proxy.custom_breaks(county_map, "natural_breaks", 8, map_variable, gda_proxy.parseVecDouble(vals));
+            data_btn.innerText = "Confirmed Count per 10K Population";
+            select_variable = "Confirmed Count per 10K Population";
+            vals = gda_proxy.parseVecDouble(gda_proxy.GetNumericCol(county_map, map_variable)); 
+            let pop = gda_proxy.parseVecDouble(gda_proxy.GetNumericCol(county_map, "population"));
+            for (let i=0; i<vals.length; ++i) {
+                vals[i] =  vals[i] / pop[i] * 10000; 
+            }
+            nb = gda_proxy.custom_breaks(county_map, "natural_breaks", 8, null, vals);
         } else {
             vals = GetDataValues();
             nb = gda_proxy.custom_breaks(county_map, "natural_breaks", 8, null, vals); 
@@ -766,8 +850,10 @@ function OnStateClick(evt) {
         var nb;
         select_method = "choropleth";
         if (!('state' in jsondata)) {
-            vals = gda_proxy.GetNumericCol(state_map, map_variable); 
-            nb = gda_proxy.custom_breaks(state_map, "natural_breaks", 8, map_variable, gda_proxy.parseVecDouble(vals));
+            data_btn.innerText = "Confirmed Count";
+            select_variable = "Confirmed Count";
+            vals = gda_proxy.parseVecDouble(gda_proxy.GetNumericCol(state_map, map_variable)); 
+            nb = gda_proxy.custom_breaks(state_map, "natural_breaks", 8, map_variable, vals);
         } else {
             vals = GetDataValues();
             nb = gda_proxy.custom_breaks(state_map, "natural_breaks", 8, null, vals); 
@@ -914,18 +1000,6 @@ function OnChoroplethClick(evt) {
     }
 }
 
-function OnCartogramClick(evt)
-{
-    select_method = "cartogram";
-    if (isState()) {
-        var data = GetDataValues();
-        var cart = gda_proxy.cartogram(state_map, data);
-        OnStateClick();
-    } else {
-        OnCountyClick();
-    }
-}
-
 function OnLISAClick(evt) {
     select_method = "lisa";
 
@@ -995,7 +1069,7 @@ function loadScript(url) {
 // MAIN ENTRY
 var Module = { onRuntimeInitialized: function() {
     gda_proxy = new GeodaProxy();
-    OnStateClick(document.getElementById("btn-state"));
+    OnCountyClick(document.getElementById("btn-county"));
 }};
 
 function OnDataClick(evt)
@@ -1017,15 +1091,12 @@ function OnDataClick(evt)
 
 function OnCartogramClick(el)
 {
-    if (isLisa()) {
-        OnLISAClick(document.getElementById('btn-lisa'));
-    } else {
+        select_method = "choropleth";
         if (isState()) {
             OnStateClick();
         } else {
             OnCountyClick();
         }
-    }
 }
 
 function updateTooltip({x, y, object}) {
@@ -1048,6 +1119,25 @@ function updateTooltip({x, y, object}) {
         let v5 = fatality_data[json][select_date][id];
         let v6 = population_data[json][id];
 
+        let v7 = 0;
+        let dt_idx = dates.indexOf(select_date);
+        if (dt_idx > 0) {
+            let prev_date = dates[dt_idx-1];
+            var cur_vals = confirmed_count_data[json][select_date];
+            var pre_vals = confirmed_count_data[json][prev_date];
+            v7 = cur_vals[id] - pre_vals[id];
+        }
+        let v8 = (population_data[json][id] == undefined || population_data[json][id] == 0) ? 0 : (v7 / population_data[json][id] * 10000);
+
+        let v9 = 0;
+        if (dt_idx > 0) {
+            let prev_date = dates[dt_idx-1];
+            var cur_vals = death_count_data[json][select_date];
+            var pre_vals = death_count_data[json][prev_date];
+            v9 = cur_vals[id] - pre_vals[id];
+        }
+        let v10 = (population_data[json][id] == undefined || population_data[json][id] == 0) ? 0 : (v9 / population_data[json][id] * 10000);
+
         let name = "";
         if ('NAME' in object.properties) 
             name =  object.properties.NAME;
@@ -1065,6 +1155,10 @@ function updateTooltip({x, y, object}) {
         text += '<tr><td><b>Death Count per 10K Population:</b></td><td>' + v4 + '</td>';
         text += '<tr><td><b>Death Count/Confirmed Count:</b></td><td>' + v5.toFixed(2) + '</td>';
         text += '<tr><td><b>Population:</b></td><td>' + v6 + '</td>';
+        text += '<tr><td><b>Daily New Confirmed Count:</b></td><td>' + v7 + '</td>';
+        text += '<tr><td><b>Daily New Confirmed Count per 10K Pop:</b></td><td>' + v8.toFixed(2) + '</td>';
+        text += '<tr><td><b>Daily New Death Count:</b></td><td>' + v9 + '</td>';
+        text += '<tr><td><b>Daily New Confirmed Count per 10K Pop:</b></td><td>' + v10.toFixed(2) + '</td>';
         text += '</table>';
 
         if (isLisa()) {

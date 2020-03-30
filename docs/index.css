@@ -105,7 +105,8 @@ a, a:visited {
     width: 50%;
 }
 .layout button.stat.col-1-2.checked{
-    background-color: rgb(169, 224, 194);
+    background-color: rgb(146, 146, 146);
+    color: #fff;
 }
 .layout svg{
 }
@@ -120,10 +121,11 @@ a, a:visited {
 
 /* Style The Dropdown Button */
 .dropbtn {
-    background-color: rgb(169, 224, 194);
+    background-color: rgb(146, 146, 146);
     padding: 8px;
     width: 100%;
     cursor: pointer;
+    color: #fff;
   }
   
   /* The container <div> - needed to position the dropdown content */
@@ -152,7 +154,7 @@ a, a:visited {
   }
   
   /* Change color of dropdown links on hover */
-  .dropdown-content a:hover {background-color: rgb(169, 224, 194)}
+  .dropdown-content a:hover {background-color: rgb(146, 146, 146)}
   
   /* Show the dropdown menu on hover */
   .dropdown:hover .dropdown-content {

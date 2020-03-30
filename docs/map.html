@@ -28,11 +28,15 @@
                 <div class="dropdown">
                     <button class="dropbtn" id="select-data">Confirmed Count</button>
                     <div class="dropdown-content">
-                      <a href="#" onclick="OnDataClick(this)">Confirmed Count</a>
+                      <a href="#" onclick="OnDataClick(this)" id="btn-conf-count">Confirmed Count</a>
                       <a href="#" onclick="OnDataClick(this)">Confirmed Count per 10K Population</a>
                       <a href="#" onclick="OnDataClick(this)">Death Count</a>
                       <a href="#" onclick="OnDataClick(this)">Death Count per 10K Population</a>
                       <a href="#" onclick="OnDataClick(this)">Death Count/Confirmed Count</a>
+                      <a href="#" onclick="OnDataClick(this)">Daily New Confirmed Count</a>
+                      <a href="#" onclick="OnDataClick(this)">Daily New Confirmed Count per 10K Pop</a>
+                      <a href="#" onclick="OnDataClick(this)">Daily New Death Count</a>
+                      <a href="#" onclick="OnDataClick(this)">Daily New Death Count per 10K Pop</a>
                     </div>
                   </div>
             </div>
@@ -80,7 +84,7 @@
             </p>
            <div class="source-link" align="center">
               <a href="https://spatial.uchicago.edu" target="_new"><img align="center" src="img/logo_gray.png"  width=200px alt="Center for Spatial Data Science logo"/></a><br>
-            <button onclick="OnSave(this)" style="display:">save</button>
+            <button onclick="OnSave(this)" style="display:none">save</button>
           </div>
     </div> 
     <div class="time-panel bottom-left" >
