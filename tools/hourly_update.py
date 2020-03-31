@@ -87,6 +87,29 @@ def read_covid_data(cr):
     update_state_geojson(state_count, state_deathcount, date_state_count, date_state_deathcount)
     update_county_geojson(county_count, county_deathcount, date_county_count, date_county_deathcount)
 
+def update_state_beds(geojson):
+    with open("../data/state_beds.csv") as csvfile:
+        cr = csv.reader(csvfile)
+        next(cr)
+        beds_dict = {}
+        for row in cr:
+            state_abb = row[0]
+            #staff_beds = row[2]
+            #icu_beds = row[3]
+            all_beds = row[4]
+
+            if state_abb not in beds_dict:
+                beds_dict[state_abb] = 0
+            beds_dict[state_abb] += (int)((float)(all_beds))
+
+        features = geojson["features"]
+        for feat in features:
+            state_abb = feat["properties"]["STUSPS"]
+            if state_abb in beds_dict:
+                feat["properties"]["beds"] = beds_dict[state_abb]
+            else:
+                feat["properties"]["beds"] = 0
+
 def update_state_population(geojson):
     with open("../data/county_pop.csv") as csvfile:
         cr = csv.reader(csvfile)
@@ -108,6 +131,31 @@ def update_state_population(geojson):
             else:
                 feat["properties"]["population"] = 0
         
+def update_county_beds(geojson):
+    with open("../data/county_beds.csv") as csvfile:
+        cr = csv.reader(csvfile)
+        next(cr)
+        beds_dict = {}
+        for row in cr:
+            state_abb = row[0]
+            county_nm = row[1]
+            #icu_beds = row[3]
+            all_beds = row[4]
+            county_key = state_abb + county_nm
+            if county_key not in beds_dict:
+                beds_dict[county_key] = 0
+            beds_dict[county_key] += (int)((float)(all_beds))
+
+        features = geojson["features"]
+        for feat in features:
+            state_abb = feat["properties"]["state_abbr"]
+            county_nm = feat["properties"]["NAME"]
+            county_key = state_abb + county_nm
+
+            if county_key in beds_dict:
+                feat["properties"]["beds"] = beds_dict[county_key]
+            else:
+                feat["properties"]["beds"] = 0
 
 def update_county_population(geojson):
     with open("../data/county_pop.csv") as csvfile:
@@ -153,6 +201,7 @@ def update_state_geojson(state_count, state_deathcount, date_state_count, date_s
                 feat["properties"][col_name] = cnt
 
         update_state_population(geojson)
+        update_state_beds(geojson)
 
         with open('../docs/states_update.geojson', 'w') as outfile:
             json.dump(geojson, outfile)
@@ -184,6 +233,7 @@ def update_county_geojson(county_count, county_deathcount, date_county_count, da
                 feat["properties"][col_name] = cnt
 
         update_county_population(geojson)
+        update_county_beds(geojson)
         
         with open('../docs/counties_update.geojson', 'w') as outfile:
             json.dump(geojson, outfile)

@@ -299,6 +299,7 @@ function parseData(data)
     if (!(json in death_count_data)) death_count_data[json] = {};
     if (!(json in fatality_data)) fatality_data[json] = {};
     if (!(json in population_data)) population_data[json] = {};
+    if (!(json in beds_data)) beds_data[json] = {};
 
     var dates = getDatesFromGeojson(data);
 
@@ -307,8 +308,10 @@ function parseData(data)
         let death = data.features[i].properties.death_count;
         let pop = data.features[i].properties.population;
         let id = data.features[i].properties.id;
+        let beds = data.features[i].properties.beds;
 
         population_data[json][id] = pop;
+        beds_data[json][id] = beds;
 
         // confirmed count
         for (var j=0; j<dates.length; ++j) {
@@ -372,6 +375,7 @@ var dates;
 var confirmed_count_data = {};
 var death_count_data = {};
 var population_data = {};
+var beds_data = {};
 var fatality_data = {};
 var lisa_data = {};
 var lisa_labels = ["Not significant","High-High","Low-Low","High-Low","Low-High","Undefined","Isolated"];
@@ -674,6 +678,9 @@ function GetFeatureValue(id)
     } else if (txt == "Confirmed Count per 10K Population") {
         if (population_data[json][id] == undefined || population_data[json][id] == 0) return 0;
         return (confirmed_count_data[json][select_date][id] / population_data[json][id] * 10000).toFixed(3);
+    } else if (txt == "Confirmed Count per Licensed Bed") {
+        if (beds_data[json][id] == undefined || beds_data[json][id] == 0) return 0;
+        return ( confirmed_count_data[json][select_date][id] / beds_data[json][id]).toFixed(3);
     } else if (txt == "Death Count") {
         return death_count_data[json][select_date][id];
     } else if (txt == "Death Count per 10K Population") {
@@ -731,6 +738,17 @@ function GetDataValues()
                 vals.push(confirmed_count_data[json][select_date][id] / population_data[json][id] * 10000);
         }
         return vals;
+
+    } else if (txt == "Confirmed Count per Licensed Bed") {
+        var vals = [];
+        for (var id in confirmed_count_data[json][select_date]) {
+            if (beds_data[json][id] == undefined || beds_data[json][id] == 0) 
+                vals.push(0);
+            else
+                vals.push(confirmed_count_data[json][select_date][id] / beds_data[json][id]);
+        }
+        return vals;
+
     } else if (txt == "Death Count") {
         return Object.values(death_count_data[json][select_date]);
     } else if (txt == "Death Count per 10K Population") {
@@ -1137,6 +1155,8 @@ function updateTooltip({x, y, object}) {
             v9 = cur_vals[id] - pre_vals[id];
         }
         let v10 = (population_data[json][id] == undefined || population_data[json][id] == 0) ? 0 : (v9 / population_data[json][id] * 10000);
+        let v11 = (beds_data[json][id] == undefined || beds_data[json][id] == 0) ? 0 : (confirmed_count_data[json][select_date][id] / beds_data[json][id]);
+        let v12 = beds_data[json][id];
 
         let name = "";
         if ('NAME' in object.properties) 
@@ -1151,6 +1171,8 @@ function updateTooltip({x, y, object}) {
         text += '<table>'
         text += '<tr><td><b>Confirmed Count:</b></td><td>' + v1 + '</td>';
         text += '<tr><td><b>Confirmed Count per 10K Population:</b></td><td>' + v2 + '</td>';
+        text += '<tr><td><b># Licensed Hosptial Beds:</b></td><td>' + v12 + '</td>';
+        text += '<tr><td><b>Confirmed Count per Licensed Bed:</b></td><td>' + v11.toFixed(2) + '</td>';
         text += '<tr><td><b>Death Count:</b></td><td>' + v3 + '</td>';
         text += '<tr><td><b>Death Count per 10K Population:</b></td><td>' + v4 + '</td>';
         text += '<tr><td><b>Death Count/Confirmed Count:</b></td><td>' + v5.toFixed(2) + '</td>';
