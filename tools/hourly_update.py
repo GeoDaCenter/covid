@@ -10,6 +10,42 @@ import io
 import json
 from datetime import datetime
 
+county_fix_code = {
+    'weber-morganut':	'weberut',
+    'wayne--detroitmi' : 'waynemi',
+    'puerto ricopr':'san juanpr',
+    'navajo, aznn':'navajoaz',
+    'sewardak':'kenai peninsulaak',
+    'la salleil':'lasalleil',
+    'filmoremn':'fillmoremn',
+    'dona ananm':'doña ananm',
+    'el paso--fort blisstx':'el pasotx',
+    'soldotnaak':'kenai peninsulaak',
+    'sterlingak':'kenai peninsulaak',
+    'mckinley, nmnn':'mckinleynm',
+    'coconino, aznn':'coconinoaz',
+    'apache, aznn':'apacheaz',
+    'cibola, nmnn':'cibolanm',
+    'san juan, nmnn':'san juannm',
+    'san juan, utnn':'san juanut',
+    'charkeva':'clarkeva',
+    'homerak':'kenai peninsulaak',
+    'eagle riverak':'anchorageak',
+    'north poleak':'fairbanks north starak',
+    'gridwoodak':'anchorageak',
+    'palmerak':'matanuska-susitnaak',
+    'manassas cityva':'manassasva',
+    'la sallela':'lasallela',
+    'verm.in':'vermillionin',
+    'joplinmo':'jaspermo',
+    'manchesternh':'hillsboroughnh',
+    'kenaiak':'kenai peninsulaak',
+    'nashuanh':'hillsboroughnh',
+    'adamid':'adamsid',
+    'dukes and nantucketma':'dukesma',
+    'chambersga':'fultonga',
+}
+
 def fetch_covid_data():
     out = open('../docs/last_update.txt', 'w') 
     now = datetime.now()
@@ -46,7 +82,9 @@ def read_covid_data(cr):
 
     # case_id, confirmed_date,state_name,county_name,confirmed_count,death_count
     next(cr)
+    i = 0
     for row in cr:
+        i += 1
         case_id, confirmed_date,state_name,county_name,confirmed_count,death_count = row
         confirmed_count = (int)(confirmed_count)
         death_count = (int)(death_count)
@@ -57,7 +95,13 @@ def read_covid_data(cr):
         state_count[state_name] += confirmed_count
         state_deathcount[state_name] += death_count
 
-        county_name = county_name + state_name
+        county_name = county_name.encode('ascii', 'ignore').decode("utf-8")
+        county_name = county_name.strip().lower() + state_name.strip().lower()
+
+        # fix any known issue from 1p3a
+        if county_name in county_fix_code:
+            county_name = county_fix_code[county_name]
+
         if county_name not in county_count:
             county_count[county_name] = 0
             county_deathcount[county_name] = 0
@@ -141,7 +185,7 @@ def update_county_beds(geojson):
             county_nm = row[1]
             #icu_beds = row[3]
             all_beds = row[4]
-            county_key = state_abb + county_nm
+            county_key = state_abb.lower() + county_nm.lower()
             if county_key not in beds_dict:
                 beds_dict[county_key] = 0
             beds_dict[county_key] += (int)((float)(all_beds))
@@ -150,7 +194,7 @@ def update_county_beds(geojson):
         for feat in features:
             state_abb = feat["properties"]["state_abbr"]
             county_nm = feat["properties"]["NAME"]
-            county_key = state_abb + county_nm
+            county_key = state_abb.lower() + county_nm.lower()
 
             if county_key in beds_dict:
                 feat["properties"]["beds"] = beds_dict[county_key]
@@ -210,9 +254,13 @@ def update_county_geojson(county_count, county_deathcount, date_county_count, da
     with open("../data/county_2018.geojson") as f:
         geojson = json.load(f)
         features = geojson["features"]
-        for feat in features:
-            county_id = feat["properties"]["NAME"] + feat["properties"]["state_abbr"]
+        county_id_dict = {}
 
+        i = 0
+        for feat in features:
+            i += 1
+            county_id = feat["properties"]["NAME"].lower() + feat["properties"]["state_abbr"].lower()
+            county_id_dict[county_id] = 1
             if county_id in county_count:
                 feat["properties"]["confirmed_count"] = county_count[county_id]
             else:
@@ -238,10 +286,15 @@ def update_county_geojson(county_count, county_deathcount, date_county_count, da
         with open('../docs/counties_update.geojson', 'w') as outfile:
             json.dump(geojson, outfile)
 
-fetch_covid_data()
-#with open("cases.csv") as csvfile:
-#    cr = csv.reader(csvfile)
-#    read_covid_data(cr)
+        # check input county
+        for ct in county_count.keys():
+            if ct not in county_id_dict:
+                print(ct)
+
+#fetch_covid_data()
+with open("cases.csv") as csvfile:
+    cr = csv.reader(csvfile)
+    read_covid_data(cr)
 
 #scheduler = BlockingScheduler()
 #scheduler.add_job(fetch_covid_data, 'interval', hours=1)
