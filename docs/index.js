@@ -1513,17 +1513,36 @@ function createTimeSlider(geojson)
 
 function saveText(text, filename){
     var a = document.createElement('a');
+    a.setAttribute("id", filename);
     a.setAttribute('href', 'data:text/plain;charset=utf-8,'+encodeURIComponent(text));
     a.setAttribute('download', filename);
     a.click()
   }
 
 function OnSave() {
-    saveText( JSON.stringify(lisa_data), "lisa.json" );
+    // save since 3-10-2019
+    for (let i=29; i<dates.length; ++i) {
+        let d = dates[i];
+        if (d in lisa_data["county"]) {
+            console.log('lisa'+d+'.json');
+            setTimeout(function(){saveText( JSON.stringify(lisa_data["county"][d]), "lisa"+d+".json" );}, 100*(i-28));
+        }
+    }
 }
 
-d3.json("lisa.json", function(data) {
-    lisa_data = data;
+d3.json("lisa_dates.json", function(ds) {
+    //lisa_data = data;
+    if (!('county' in lisa_data))
+        lisa_data['county'] = {};
+
+    for (let i=29; i<ds.length; ++i) {
+        let d = ds[i];
+        d3.json("lisa/lisa"+d+'.json', function(data){
+            if (data != null) {
+                lisa_data['county'][d] = data;
+            }
+        });
+    }
 })
 
 function OnShowLabels(el)
