@@ -409,6 +409,10 @@ const deckgl = new DeckGL({
 
 var mapbox = deckgl.getMapboxMap();
 mapbox.addControl(new mapboxgl.NavigationControl(), 'top-left');
+mapbox.on('load', () => {
+    var att = document.getElementsByClassName("mapboxgl-ctrl-attrib")[0];
+    att.innerHTML = '<a href="https://lixun910.github.io" class="mapbox-improve-map">Dev by #lixun910&nbsp;</a>' + att.innerHTML;
+})
 
 mapbox.on('zoomend', () => {
     const currentZoom = mapbox.getZoom();

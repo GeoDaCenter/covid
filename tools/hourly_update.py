@@ -291,10 +291,10 @@ def update_county_geojson(county_count, county_deathcount, date_county_count, da
             if ct not in county_id_dict:
                 print(ct)
 
-#fetch_covid_data()
-with open("cases.csv") as csvfile:
-    cr = csv.reader(csvfile)
-    read_covid_data(cr)
+fetch_covid_data()
+#with open("cases.csv") as csvfile:
+#    cr = csv.reader(csvfile)
+#    read_covid_data(cr)
 
 #scheduler = BlockingScheduler()
 #scheduler.add_job(fetch_covid_data, 'interval', hours=1)
