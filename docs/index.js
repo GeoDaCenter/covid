@@ -924,16 +924,24 @@ function UpdateLegendLabels(breaks) {
             cont += '<div style="width: 7.69231%;text-align:center">' + val + '</div>';
         } else {
             if (val[0] == '>') {
-                val = val.substring(1, val.length-1);
+                val = val.substring(1, val.length);
                 if (val.indexOf('.') >= 0) {
+                    // format float number
                     val = parseFloat(val);
                     val = val.toFixed(2);
+                } else {
+                    val = parseInt(val);
+                    if (val > 10000) val = d3.format(".2s")(val);
                 }
                 cont += '<div style="width: 7.69231%;text-align:center">>' + val + '</div>';
             } else {
                 if (val.indexOf('.') >= 0) {
+                    // format float number
                     val = parseFloat(val);
                     val = val.toFixed(2);
+                } else {
+                    val = parseInt(val);
+                    if (val > 10000) val = d3.format(".2s")(val);
                 }
                 cont += '<div style="width: 7.69231%;text-align:center">' + val + '</div>';
             }
