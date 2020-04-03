@@ -3,7 +3,7 @@
     <title>COVID19 USA States</title>
 
     <link rel="stylesheet" href="index.css"></link>
-
+    <!-- minimum list of deps to make it fast -->
     <script src="https://unpkg.com/deck.gl@^7.0.0/dist.min.js"></script>
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
     <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -15,6 +15,9 @@
 
   <body>
     <div id="tooltip"></div>
+    <div class="time-panel bottom-left" >
+      <label class="unselectable" id="time-container">2020-03-23</label>
+    </div>
     <div class="options-panel top-right " tabindex="0">
         <div style="float: right;"><img src="img/collapse.png" style="height: 24px; width: 24;" onclick="collapse(this)"></div>
         <div id="toolbox">
@@ -88,10 +91,8 @@
             <button onclick="OnSave(this)" style="display:none">save</button>
           </div>
     </div> 
-    <div class="time-panel bottom-left" >
-      <label class="unselectable" id="time-container">2020-03-23</label>
-    </div>
   </body>
+  <!-- Main entry index.js, depends on jsgeoda WASM -->
   <script async type="text/javascript" src="./gen/jsgeoda.js"></script>
   <script src="index.js"></script>
   <!-- Global site tag (gtag.js) - Google Analytics -->

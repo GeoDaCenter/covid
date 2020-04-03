@@ -349,6 +349,7 @@ function parseData(data)
         }
     }
 }
+
 const state_map = "states_update.geojson";
 const county_map = "counties_update.geojson";
 var map_variable = "confirmed_count";
@@ -407,7 +408,7 @@ const deckgl = new DeckGL({
     layers: []
 });
 
-var mapbox = deckgl.getMapboxMap();
+const mapbox = deckgl.getMapboxMap();
 mapbox.addControl(new mapboxgl.NavigationControl(), 'top-left');
 mapbox.on('load', () => {
     var att = document.getElementsByClassName("mapboxgl-ctrl-attrib")[0];
@@ -613,22 +614,8 @@ function createMap(data) {
     
     createTimeSlider(data);
 }
-function getText(d)
-{
-    if (isLisa()) {
-        let json = getJsonName();
-        if (json == "county") {
-            let field = data_btn.innerText;
-            let lbl = lisa_labels[d.id];
-            if (lbl == "High-High") 
-                return d.text;
-            else
-                return d.text;
-        }
-    } else {
-        return ' ';
-    }
-}
+
+
 function loadMap(url) {
     if (url.startsWith('state')) {
         if (!('state' in jsondata)) {
@@ -1525,20 +1512,25 @@ function saveText(text, filename){
 
 function OnSave() {
     // save since 3-10-2019
-    for (let i=29; i<dates.length; ++i) {
-        let d = dates[i];
-        if (d in lisa_data["county"]) {
-            console.log('lisa'+d+'.json');
-            setTimeout(function(){saveText( JSON.stringify(lisa_data["county"][d]), "lisa"+d+".json" );}, 100*(i-28));
+    d3.json("lisa_dates.json", function(ds) {
+        // only new lisa results will be saved
+        for (let i=ds.length; i<dates.length; ++i) {
+            let d = dates[i];
+            if (d in lisa_data["county"]) {
+                console.log('lisa'+d+'.json');
+                setTimeout(function(){saveText( JSON.stringify(lisa_data["county"][d]), "lisa"+d+".json" );}, 100*(i-ds.length));
+            }
         }
-    }
+        // update dates
+        saveText( JSON.stringify(dates), "lisa_dates.json");
+    });
 }
 
 d3.json("lisa_dates.json", function(ds) {
     //lisa_data = data;
     if (!('county' in lisa_data))
         lisa_data['county'] = {};
-
+    // start from 3-10-2019  index=29
     for (let i=29; i<ds.length; ++i) {
         let d = ds[i];
         d3.json("lisa/lisa"+d+'.json', function(data){
