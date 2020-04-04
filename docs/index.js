@@ -1538,8 +1538,8 @@ d3.json("lisa_dates.json", function(ds) {
     //lisa_data = data;
     if (!('county' in lisa_data))
         lisa_data['county'] = {};
-    // start from 3-10-2019  index=29
-    for (let i=29; i<ds.length; ++i) {
+    // start from 3-10-2019  index=30
+    for (let i=30; i<ds.length; ++i) {
         let d = ds[i];
         d3.json("lisa/lisa"+d+'.json', function(data){
             if (data != null) {
