@@ -63,7 +63,8 @@ county_fix_code = {
     'navajonn':'navajoaz',
     'coconinonn':'coconinoaz',
     'mckinleynn':'mckinleynm',
-    'obrienia':'o\'brienia'
+    'obrienia':'o\'brienia',
+    'buena vista cityva':'buena vistava'
 }
 
 def fetch_covid_data():
