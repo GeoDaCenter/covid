@@ -284,46 +284,50 @@ function loadGeoDa(url, evt) {
     fetch(url + ".zip")
         .then((response) => {
             return response.blob();
-            })
+        })
         .then((blob) => {
             // use a BlobReader to read the zip from a Blob object
             zip.createReader(new zip.BlobReader(blob), function(reader) {
                 // get all entries from the zip
                 reader.getEntries(function(entries) {
                 if (entries.length) {
-                    // get first entry content as text
+                    // uncompress first entry content as blob
                     entries[0].getData(new zip.BlobWriter(), function(bb) {
+                        // read as bytearray for GeoDaWASM
+                        var fileReader = new FileReader();
+                        fileReader.onload = function(event) {
+                            var ab = event.target.result;
+                            gda_proxy.ReadGeojsonMap(url, {result: ab});
+                            let sel_map = url.startsWith('state') ? 'state' : 'county';
+                            centroids[sel_map] = gda_proxy.GetCentroids(url);
+                            evt();
+                        };
+                        fileReader.readAsArrayBuffer(bb);
 
-var fileReader = new FileReader();
-fileReader.onload = function(event) {
-    var ab = event.target.result;
-    gda_proxy.ReadGeojsonMap(url, {result: ab});
-        if (url.startsWith('state')) {
-            select_map = 'state';
-            centroids['state'] = gda_proxy.GetCentroids(url);
-        } else {
-            select_map = 'county';
-            centroids['county'] = gda_proxy.GetCentroids(url);
-        }
-        evt();
-};
-fileReader.readAsArrayBuffer(bb);
+                        // read as json
+                        var jsonReader = new FileReader();
+                        jsonReader.onload = function(event) {
+                            let data = JSON.parse(event.target.result);
+                            let sel_map = url.startsWith('state') ? 'state' : 'county';
+                            jsondata[sel_map] = data;
+                            createMap(data);
+                        };
+                        jsonReader.readAsText(bb); 
 
-                                // close the zip reader
-                                reader.close(function() {
-                                    // onclose callback
-                                });
-                            }, function(current, total) {
-                            // onprogress callback
-                            });
-                        }
+                        // close the zip reader
+                        reader.close(function() {
+                            // onclose callback
                         });
-                    }, function(error) {
-                        // onerror callback
-                        console.log("zip wrong");
+                    }, function(current, total) {
+                        // onprogress callback
                     });
+                }
                 });
-            
+            }, function(error) {
+                // onerror callback
+                console.log("zip wrong");
+            });
+        });
   }
 }
 
@@ -446,8 +450,9 @@ const deckgl = new DeckGL({
 const mapbox = deckgl.getMapboxMap();
 mapbox.addControl(new mapboxgl.NavigationControl(), 'top-left');
 mapbox.on('load', () => {
+    // add developers name
     var att = document.getElementsByClassName("mapboxgl-ctrl-attrib")[0];
-    att.innerHTML = '<a href="https://lixun910.github.io" class="mapbox-improve-map">Dev by #lixun910&nbsp;</a>' + att.innerHTML;
+    att.innerHTML = '<a href="https://lixun910.github.io" class="mapbox-improve-map">Dev by #lixun910&nbsp;</a>';
 })
 
 mapbox.on('zoomend', () => {
@@ -654,71 +659,11 @@ function createMap(data) {
 
 function loadMap(url) {
     if (url.startsWith('state')) {
-        if (!('state' in jsondata)) {
-            fetch(url + ".zip")
-                .then((response) => {
-                    return response.blob();
-                    })
-                .then((blob) => {
-                    // use a BlobReader to read the zip from a Blob object
-                    zip.createReader(new zip.BlobReader(blob), function(reader) {
-                        // get all entries from the zip
-                        reader.getEntries(function(entries) {
-                        if (entries.length) {
-                            // get first entry content as text
-                            entries[0].getData(new zip.TextWriter(), function(text) {
-                                // text contains the entry data as a String
-                                var data = JSON.parse(text);
-                                jsondata['state'] = data;
-                                createMap(data);
-                                // close the zip reader
-                                reader.close(function() {
-                                    // onclose callback
-                                });
-                            }, function(current, total) {
-                            // onprogress callback
-                            });
-                        }
-                        });
-                    }, function(error) {
-                        // onerror callback
-                    });
-                });
-        } else {
+        if ('state' in jsondata) {
             createMap(jsondata['state']);
         }
     } else  {
-        if (!('county' in jsondata)) {
-            fetch(url + ".zip")
-                .then((response) => {
-                    return response.blob();
-                    })
-                .then((blob) => {
-                    // use a BlobReader to read the zip from a Blob object
-                    zip.createReader(new zip.BlobReader(blob), function(reader) {
-                        // get all entries from the zip
-                        reader.getEntries(function(entries) {
-                        if (entries.length) {
-                            // get first entry content as text
-                            entries[0].getData(new zip.TextWriter(), function(text) {
-                                // text contains the entry data as a String
-                                var data = JSON.parse(text);
-                                jsondata['county'] = data;
-                                createMap(data);
-                                // close the zip reader
-                                reader.close(function() {
-                                    // onclose callback
-                                });
-                            }, function(current, total) {
-                            // onprogress callback
-                            });
-                        }
-                        });
-                    }, function(error) {
-                        // onerror callback
-                    });
-                });
-        } else {
+        if ('county' in jsondata) {
             createMap(jsondata['county']);
         }
     }
@@ -1172,6 +1117,7 @@ function loadScript(url) {
 // MAIN ENTRY
 var Module = { onRuntimeInitialized: function() {
     gda_proxy = new GeodaProxy();
+    //OnStateClick(document.getElementById("btn-state"));
     OnCountyClick(document.getElementById("btn-county"));
 }};
 
