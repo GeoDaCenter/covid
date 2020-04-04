@@ -14,6 +14,12 @@ const COLOR_SCALE = [
     [128, 0, 38]
 ];
 
+zip.workerScriptsPath = "./js/";
+//zip.workerScripts = {
+//  deflater: ['./js/z-worker.js', './js/zlib-asm/zlib.js', './js/zlib-asm/codecs.js'],
+ //   inflater: ['./js/z-worker.js', './js/zlib-asm/zlib.js', './js/zlib-asm/codecs.js']
+ // };
+
 function isInt(n){
     return Number(n) === n && n % 1 === 0;
 }
@@ -274,12 +280,22 @@ function loadGeoDa(url, evt) {
   if (gda_proxy.Has(url)) {
       evt();
   } else {
-    fetch(url)
-    .then((response) => {
-        return response.arrayBuffer();
-        })
-    .then((ab) => {
-        gda_proxy.ReadGeojsonMap(url, {result: ab});
+    
+    fetch(url + ".zip")
+                .then((response) => {
+                    return response.blob();
+                    })
+                .then((blob) => {
+                    // use a BlobReader to read the zip from a Blob object
+                    zip.createReader(new zip.BlobReader(blob), function(reader) {
+                        // get all entries from the zip
+                        reader.getEntries(function(entries) {
+                        if (entries.length) {
+                            // get first entry content as text
+                            entries[0].getData(new zip.BlobWriter(), function(bb) {
+                                bb.arrayBuffer().then((ab) => {
+
+gda_proxy.ReadGeojsonMap(url, {result: ab});
         if (url.startsWith('state')) {
             select_map = 'state';
             centroids['state'] = gda_proxy.GetCentroids(url);
@@ -288,7 +304,22 @@ function loadGeoDa(url, evt) {
             centroids['county'] = gda_proxy.GetCentroids(url);
         }
         evt();
-    });
+                                });
+                                // close the zip reader
+                                reader.close(function() {
+                                    // onclose callback
+                                });
+                            }, function(current, total) {
+                            // onprogress callback
+                            });
+                        }
+                        });
+                    }, function(error) {
+                        // onerror callback
+                        console.log("zip wrong");
+                    });
+                });
+            
   }
 }
 
@@ -615,7 +646,7 @@ function createMap(data) {
     createTimeSlider(data);
 }
 
-zip.workerScriptsPath = "./js/";
+
 
 function loadMap(url) {
     if (url.startsWith('state')) {
