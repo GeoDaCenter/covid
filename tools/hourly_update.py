@@ -44,6 +44,26 @@ county_fix_code = {
     'adamid':'adamsid',
     'dukes and nantucketma':'dukesma',
     'chambersga':'fultonga',
+    'fairbanks north star--north poleak':'fairbanks north starak',
+    'harris--houstontx':'harristx',
+    'harris--non houstontx':'harristx',
+    'hillsborough-othernh':'hillsboroughnh',
+    'hillsborough-nashuanh':'hillsboroughnh',
+    'hillsborough-manchesternh':'hillsboroughnh',
+    'kenai peninsula--sewardak':'kenai peninsulaak',
+    'kenai peninsula--soldotnaak':'kenai peninsulaak',
+    'kenai peninsula--sterlingak':'kenai peninsulaak',
+    'kenai peninsula--homerak':'kenai peninsulaak',
+    'anchorage--eagle riverak':'anchorageak',
+    'anchorage--gridwoodak':'anchorageak',
+    'apachenn':'apacheaz',
+    'cibolann':'cibolanm',
+    'matanuska-susitna--wasillaak':'matanuska-susitnaak',
+    'staunton cityva':'stauntonva',
+    'navajonn':'navajoaz',
+    'coconinonn':'coconinoaz',
+    'mckinleynn':'mckinleynm',
+    'obrienia':'o\'brienia'
 }
 
 def fetch_covid_data():
@@ -56,11 +76,11 @@ def fetch_covid_data():
     response = urllib.request.urlopen(url)
     cr = csv.reader(io.TextIOWrapper(response))
 
-    f = open("cases.csv", "w")
-    data = response.read() 
-    text = data.decode('utf-8')
-    f.write(text)
-    f.close()
+    with io.open('cases.csv', 'w', encoding='utf-8') as file:
+        data = response.read() 
+        text = data.decode('utf-8')
+        file.write(text)
+
 
     with open("cases.csv") as csvfile:
         cr = csv.reader(csvfile)
@@ -84,6 +104,9 @@ def read_covid_data(cr):
     next(cr)
     i = 0
     for row in cr:
+        if len(row) ==0:
+            continue
+
         i += 1
         case_id, confirmed_date,state_name,county_name,confirmed_count,death_count = row
         confirmed_count = (int)(confirmed_count)
@@ -251,7 +274,8 @@ def update_state_geojson(state_count, state_deathcount, date_state_count, date_s
             json.dump(geojson, outfile)
 
 def update_county_geojson(county_count, county_deathcount, date_county_count, date_county_deathcount):
-    with open("../data/county_2018.geojson") as f:
+    with io.open("../data/county_2018.geojson", 'r', encoding='utf-8') as f:
+    #with open("../data/county_2018.geojson") as f:
         geojson = json.load(f)
         features = geojson["features"]
         county_id_dict = {}
@@ -287,9 +311,13 @@ def update_county_geojson(county_count, county_deathcount, date_county_count, da
             json.dump(geojson, outfile)
 
         # check input county
-        for ct in county_count.keys():
-            if ct not in county_id_dict:
-                print(ct)
+        with io.open('unmatched.txt', 'w', encoding='utf-8') as o:
+            for ct in county_count.keys():
+                if ct not in county_id_dict:
+                    if 'unknown' in ct or 'unassigned' in ct or 'princess' in ct or 'out-of-state' in ct or 'out of state' in ct:
+                        continue
+                    else:
+                        o.write(ct + '\n')
 
 fetch_covid_data()
 #with open("cases.csv") as csvfile:
