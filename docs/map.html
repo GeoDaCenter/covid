@@ -93,7 +93,19 @@
     </div> 
   </body>
   <!-- Main entry index.js, depends on jsgeoda WASM -->
-  <script async type="text/javascript" src="./gen/jsgeoda.js"></script>
+  <script>
+  function loadGeoDaWasm() {
+    var element=document.createElement('script');
+    if (navigator.userAgent.search("Chrome") >= 0) {
+      element.setAttribute('src', './chrome/jsgeoda.js');
+    } else {
+      element.setAttribute('src', './gen/jsgeoda.js');
+    }
+    document.body.appendChild(element);
+  }
+  loadGeoDaWasm();
+  </script>
+  <!--<script async type="text/javascript" src="./gen/jsgeoda.js"></script>-->
   <script src="index.js"></script>
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-72724100-4"></script>
