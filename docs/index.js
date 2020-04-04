@@ -476,8 +476,8 @@ function resetView(layers)
             zoom: 3.5,
             latitude: 32.850033,
             longitude: -86.6500523,
-                transitionInterpolator: new LinearInterpolator(['bearing']),
-                transitionDuration: 500
+            transitionInterpolator: new LinearInterpolator(['bearing']),
+            transitionDuration: 500
         }
     });
 }
@@ -588,8 +588,8 @@ function createMap(data) {
                 opacity: 0.5,
                 stroked: true,
                 filled: true,
-                wireframe: true,
-                fp64: true,
+                //wireframe: true,
+                //fp64: true,
                 lineWidthScale: 1,
                 lineWidthMinPixels: 1,
                 getElevation: getElevation,
@@ -598,7 +598,6 @@ function createMap(data) {
 
                 updateTriggers: {
                     getLineColor: [
-                        select_id 
                     ],
                     getFillColor: [
                         select_date,select_variable, select_method
@@ -612,7 +611,7 @@ function createMap(data) {
         if (!('name' in data)) {
             layers.push(
                 new GeoJsonLayer({
-                    data: jsondata['state'],
+                    data: './states.geojson',
                     opacity: 0.5,
                     stroked: true,
                     filled: false,
@@ -623,6 +622,7 @@ function createMap(data) {
                 })
             );
         } 
+
         if (show_labels) {
             layers.push(
                 new TextLayer({
@@ -890,10 +890,14 @@ function OnStateClick(evt) {
         var nb;
         select_method = "choropleth";
         if (!('state' in jsondata)) {
-            data_btn.innerText = "Confirmed Count";
-            select_variable = "Confirmed Count";
+            data_btn.innerText = "Confirmed Count per 10K Population";
+            select_variable = "Confirmed Count per 10K Population";
             vals = gda_proxy.parseVecDouble(gda_proxy.GetNumericCol(state_map, map_variable)); 
-            nb = gda_proxy.custom_breaks(state_map, "natural_breaks", 8, map_variable, vals);
+            let pop = gda_proxy.parseVecDouble(gda_proxy.GetNumericCol(state_map, "population"));
+            for (let i=0; i<vals.length; ++i) {
+                vals[i] =  vals[i] / pop[i] * 10000; 
+            }
+            nb = gda_proxy.custom_breaks(state_map, "natural_breaks", 8, null, vals);
         } else {
             vals = GetDataValues();
             nb = gda_proxy.custom_breaks(state_map, "natural_breaks", 8, null, vals); 
@@ -983,8 +987,8 @@ function UpdateLegendLabels(breaks) {
 
 function UpdateLisaLegend(colors) {
     const div = document.getElementById('legend');
-    var cont = '';
-    for (var i=0; i<colors.length; ++i) {
+    var cont = '<div class="legend" style="background: #eee; width: 20%;"></div>';
+    for (var i=1; i<colors.length; ++i) {
         cont += '<div class="legend" style="background: '+colors[i]+'; width: 20%;"></div>';
     }
     div.innerHTML = cont;
