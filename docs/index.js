@@ -615,23 +615,74 @@ function createMap(data) {
     createTimeSlider(data);
 }
 
+zip.workerScriptsPath = "./js/";
 
 function loadMap(url) {
     if (url.startsWith('state')) {
         if (!('state' in jsondata)) {
-            d3.json(url, function(data) {
-                jsondata['state'] = data;
-                createMap(data);
-            });
+            fetch(url + ".zip")
+                .then((response) => {
+                    return response.blob();
+                    })
+                .then((blob) => {
+                    // use a BlobReader to read the zip from a Blob object
+                    zip.createReader(new zip.BlobReader(blob), function(reader) {
+                        // get all entries from the zip
+                        reader.getEntries(function(entries) {
+                        if (entries.length) {
+                            // get first entry content as text
+                            entries[0].getData(new zip.TextWriter(), function(text) {
+                                // text contains the entry data as a String
+                                var data = JSON.parse(text);
+                                jsondata['state'] = data;
+                                createMap(data);
+                                // close the zip reader
+                                reader.close(function() {
+                                    // onclose callback
+                                });
+                            }, function(current, total) {
+                            // onprogress callback
+                            });
+                        }
+                        });
+                    }, function(error) {
+                        // onerror callback
+                    });
+                });
         } else {
             createMap(jsondata['state']);
         }
     } else  {
         if (!('county' in jsondata)) {
-            d3.json(url, function(data) {
-                jsondata['county'] = data;
-                createMap(data);
-            });
+            fetch(url + ".zip")
+                .then((response) => {
+                    return response.blob();
+                    })
+                .then((blob) => {
+                    // use a BlobReader to read the zip from a Blob object
+                    zip.createReader(new zip.BlobReader(blob), function(reader) {
+                        // get all entries from the zip
+                        reader.getEntries(function(entries) {
+                        if (entries.length) {
+                            // get first entry content as text
+                            entries[0].getData(new zip.TextWriter(), function(text) {
+                                // text contains the entry data as a String
+                                var data = JSON.parse(text);
+                                jsondata['county'] = data;
+                                createMap(data);
+                                // close the zip reader
+                                reader.close(function() {
+                                    // onclose callback
+                                });
+                            }, function(current, total) {
+                            // onprogress callback
+                            });
+                        }
+                        });
+                    }, function(error) {
+                        // onerror callback
+                    });
+                });
         } else {
             createMap(jsondata['county']);
         }

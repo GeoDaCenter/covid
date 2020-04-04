@@ -7,7 +7,7 @@
     <script src="https://unpkg.com/deck.gl@^7.0.0/dist.min.js"></script>
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
     <script src="https://d3js.org/d3.v4.min.js"></script>
-
+    <script type="text/javascript" src="./js/zip.js"></script>
     <style type="text/css">
 
     </style>
@@ -97,7 +97,7 @@
   function loadGeoDaWasm() {
     var element=document.createElement('script');
     if (navigator.userAgent.search("Chrome") >= 0) {
-      element.setAttribute('src', './chrome/jsgeoda.js');
+      element.setAttribute('src', './gen/jsgeoda.js');
     } else {
       element.setAttribute('src', './gen/jsgeoda.js');
     }
