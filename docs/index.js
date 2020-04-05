@@ -278,9 +278,9 @@ class GeodaProxy {
 
 function loadGeoDa(url, loadmap_evt) {
   if (gda_proxy.Has(url)) {
-      evt();
+    loadmap_evt();
   } else {
-    
+    // load 1P3A data 
     fetch(url + ".zip")
         .then((response) => {
             return response.blob();
@@ -306,7 +306,7 @@ function loadGeoDa(url, loadmap_evt) {
                                 let data = JSON.parse(event.target.result);
 
                                 data = initFeatureSelected(data);
-                                parseData(data);
+                                parse1P3AData(data);
 
                                 jsondata[sel_map] = data;
 
@@ -336,7 +336,7 @@ function loadGeoDa(url, loadmap_evt) {
   }
 }
 
-function parseData(data)
+function parse1P3AData(data)
 {
     let json = getJsonName();
     if (!(json in confirmed_count_data)) confirmed_count_data[json] = {};
