@@ -276,7 +276,7 @@ class GeodaProxy {
 }
 
 
-function loadGeoDa(url, evt) {
+function loadGeoDa(url, loadmap_evt) {
   if (gda_proxy.Has(url)) {
       evt();
   } else {
@@ -298,21 +298,26 @@ function loadGeoDa(url, evt) {
                         fileReader.onload = function(event) {
                             var ab = event.target.result;
                             gda_proxy.ReadGeojsonMap(url, {result: ab});
+
                             let sel_map = url.startsWith('state') ? 'state' : 'county';
+                            // read as json
+                            var jsonReader = new FileReader();
+                            jsonReader.onload = function(event) {
+                                let data = JSON.parse(event.target.result);
+
+                                data = initFeatureSelected(data);
+                                parseData(data);
+
+                                jsondata[sel_map] = data;
+
+                                loadmap_evt();
+                            };
+                            jsonReader.readAsText(bb); 
+
                             centroids[sel_map] = gda_proxy.GetCentroids(url);
-                            evt();
+                            
                         };
                         fileReader.readAsArrayBuffer(bb);
-
-                        // read as json
-                        var jsonReader = new FileReader();
-                        jsonReader.onload = function(event) {
-                            let data = JSON.parse(event.target.result);
-                            let sel_map = url.startsWith('state') ? 'state' : 'county';
-                            jsondata[sel_map] = data;
-                            createMap(data);
-                        };
-                        jsonReader.readAsText(bb); 
 
                         // close the zip reader
                         reader.close(function() {
@@ -341,6 +346,7 @@ function parseData(data)
     if (!(json in beds_data)) beds_data[json] = {};
 
     var dates = getDatesFromGeojson(data);
+    select_date = dates[dates.length-1];
 
     for (let i = 0; i < data.features.length; i++) {
         let conf = data.features[i].properties.confirmed_count;
@@ -510,8 +516,7 @@ function setCartogramView(layers)
 }
 
 function createMap(data) {
-    data = initFeatureSelected(data);
-    parseData(data);
+    
     dates = getDatesFromGeojson(data);
 
     if (select_date == null)  
@@ -851,6 +856,7 @@ function OnCountyClick(evt) {
             nb = gda_proxy.custom_breaks(county_map, "natural_breaks", 8, null, vals);
         } else {
             vals = GetDataValues();
+            console.log(vals);
             nb = gda_proxy.custom_breaks(county_map, "natural_breaks", 8, null, vals); 
         }
         colorScale = function(x) {
