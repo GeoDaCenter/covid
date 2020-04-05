@@ -616,7 +616,7 @@ function createMap(data) {
                     stroked: true,
                     filled: false,
                     lineWidthScale: 1,
-                    lineWidthMinPixels: 1,
+                    lineWidthMinPixels: 1.5,
                     getLineColor: [220,220,220],
                     pickable: false
                 })
