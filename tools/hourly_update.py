@@ -64,8 +64,13 @@ county_fix_code = {
     'coconinonn':'coconinoaz',
     'mckinleynn':'mckinleynm',
     'obrienia':'o\'brienia',
-    'buena vista cityva':'buena vistava'
+    'buena vista cityva':'buena vistava',
+    'de kalbin' : 'dekalbin',
+    'adamoh' : 'adamsoh',
+    'socorro-nmnn' : 'socorronm'
 }
+
+# la portein is a city in IN
 
 def fetch_covid_data():
     out = open('../docs/last_update.txt', 'w') 
