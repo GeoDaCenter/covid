@@ -427,8 +427,8 @@ var current_view = null;
 
 // functions
 var colorScale;
-var getFillColor;
-var getLineColor;
+var getFillColor = function(){return [255,255,255,200];};
+var getLineColor = function(){return [220,220,220];};
 
 function OnViewChange(view) {
     current_view = view.viewState;
