@@ -66,6 +66,30 @@ a, a:visited {
     position: absolute;
     text-align: center;
 }
+
+.logo {
+    top: 0px;
+    left: 10px;
+    position: absolute;
+    color: white;
+    z-index: 10;
+    background: url(./img/geoda-logo.png) no-repeat;
+    background-size: 30px 29px;
+    margin: 10px;
+    height: 34px;
+}
+
+.logo a {
+    color: white;
+    font-size: medium;
+    margin-left: 33px;
+}
+
+.mapboxgl-ctrl-top-left {
+    top: 50;
+    left: 0;
+}
+
 .options-panel {
     position: relative;
     width: 344px;
