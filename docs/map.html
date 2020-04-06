@@ -23,8 +23,14 @@
         <div id="toolbox">
             <p>Select Data:</p>
             <div class="layout">
-                <button class="stat col-1-2 checked" id="btn-state" onclick="OnStateClick(this)">By State</button>
-                <button class="stat col-1-2" id="btn-county" onclick="OnCountyClick(this)">By County</button>
+                <div class="dropdown">
+                  <button class="dropbtn" id="select-source">By County (UsaFacts.com)</button>
+                  <div class="dropdown-content">
+                    <a href="#" onclick="OnSourceClick(this)">By County (UsaFacts.com)</a>
+                    <a href="#" onclick="OnSourceClick(this)">By County (1Point3Acres.com)</a>
+                    <a href="#" onclick="OnSourceClick(this)">By State  (1Point3Acres.com)</a>
+                  </div>
+                </div>
             </div>
             <p>Select Variable:</p>
             <div class="layout">
