@@ -1,28 +1,8 @@
-const {DeckGL, GeoJsonLayer, TextLayer, ScatterplotLayer} = deck;
-
-const COLOR_SCALE = [
-    [240, 240, 240],
-    // positive
-    [255, 255, 204],
-    [255, 237, 160],
-    [254, 217, 118],
-    [254, 178, 76],
-    [253, 141, 60],
-    [252, 78, 42],
-    [227, 26, 28],
-    [189, 0, 38],
-    [128, 0, 38]
-];
-
-//zip.workerScriptsPath = "./js/";
-zip.workerScripts = {
-    deflater: ['./js/z-worker.js', './js/pako/pako_deflate.min.js', './js/pako/codecs.js'],
-    inflater: ['./js/z-worker.js', './js/pako/pako_inflate.min.js', './js/pako/codecs.js']
-  };
-
-function isInt(n){
-    return Number(n) === n && n % 1 === 0;
-}
+/**
+ * Main functions for Covid atlas map app (map.html)
+ * 
+ * Authors: Xun Li (lixun910@gmail.com),
+ */
 
 class GeodaProxy {
     // file_target is evt.target
@@ -275,6 +255,32 @@ class GeodaProxy {
     }
 }
 
+const {DeckGL, GeoJsonLayer, TextLayer, ScatterplotLayer} = deck;
+
+const COLOR_SCALE = [
+    [240, 240, 240],
+    // positive
+    [255, 255, 204],
+    [255, 237, 160],
+    [254, 217, 118],
+    [254, 178, 76],
+    [253, 141, 60],
+    [252, 78, 42],
+    [227, 26, 28],
+    [189, 0, 38],
+    [128, 0, 38]
+];
+
+//zip.workerScriptsPath = "./js/";
+zip.workerScripts = {
+    deflater: ['./js/z-worker.js', './js/pako/pako_deflate.min.js', './js/pako/codecs.js'],
+    inflater: ['./js/z-worker.js', './js/pako/pako_inflate.min.js', './js/pako/codecs.js']
+  };
+
+function isInt(n){
+    return Number(n) === n && n % 1 === 0;
+}
+
 // global variables
 var usfacts_confirm_data;
 var usfacts_death_data;
@@ -320,15 +326,26 @@ var colorScale;
 var getFillColor = function(){return [255,255,255,200];};
 var getLineColor = function(){return [220,220,220];};
 
+function updateDates()
+{
+    // since 1P3A has different date format than usafacts
+    if (select_map  == 'county_usfacts.geojson') {
+        // todo: the following line should be updated to current date
+        dates[select_map] = getDatesFromUsaFacts(usfacts_confirm_data);
+        if (select_date == null || select_date.indexOf('-')>=0) 
+            select_date = dates[select_map][dates[select_map].length-1];
+    } else {
+        dates[select_map] = getDatesFromGeojson(onep3a_jsondata);
+        // todo: the following line should be updated to current date
+        if (select_date == null || select_date.indexOf('/')>=0) 
+            select_date = dates[select_map][dates[select_map].length-1];
+    }
+}
 
 function loadGeoDa(url, loadmap_evt) {
   if (gda_proxy.Has(url)) {
     if (url.endsWith('county_usfacts.geojson')) {
         select_map  = 'county_usfacts.geojson';
-        // todo: the following line should be updated to current date
-        dates[select_map] = getDatesFromUsaFacts(usfacts_confirm_data);
-        if (select_date == null || select_date.indexOf('-')>=0) 
-            select_date = dates[select_map][dates[select_map].length-1];
 
     } else { 
         if (url.endsWith('counties_update.geojson')) {
@@ -336,11 +353,8 @@ function loadGeoDa(url, loadmap_evt) {
         } else {
             select_map  = 'states_update.geojson';
         }
-        dates[select_map] = getDatesFromGeojson(onep3a_jsondata);
-        // todo: the following line should be updated to current date
-        if (select_date == null || select_date.indexOf('/')>=0) 
-            select_date = dates[select_map][dates[select_map].length-1];
     }
+    updateDates();
     loadmap_evt();
 
   } else if (url.endsWith('county_usfacts.geojson')) {
@@ -357,7 +371,7 @@ function loadGeoDa(url, loadmap_evt) {
                 gda_proxy.ReadGeojsonMap(url, {result: ab});
 
                 let sel_map = url.indexOf('state') >=0 ? 'state' : 'county';
-                select_map  = 'counties_update.geojson'; // only  has county from UsaFacts
+                select_map  = 'county_usfacts.geojson'; // only  has county from UsaFacts
 
                 // read as geojson for map
                 var jsonReader = new FileReader();
@@ -666,12 +680,12 @@ function createMap(data) {
     if (isLisa()) {
         for (let i=0; i < data.features.length; ++i) {
             let json = getJsonName();
-            if (json == "county") {
+            //if (json == "county") {
                 let field = data_btn.innerText;
                 let c = lisa_data[json][select_date][field].clusters[i];
                 if ( c== 1) 
                     labels.push({id: i, position: cents[i], text: data.features[i].properties.NAME});
-            }
+            //}
         }
     } 
 
@@ -1233,17 +1247,27 @@ var Module = { onRuntimeInitialized: function() {
 function OnSourceClick(evt)
 {
     source_btn.innerText = evt.innerText; 
-
-    if (isLisa()) {
-        OnLISAClick(document.getElementById('btn-lisa'));
+    if (evt.innerText.indexOf('UsaFacts')>=0) {
+        select_map = 'county_usfacts.geojson';
+    } else if (evt.innerText.indexOf('County (1Point3Arces.com)')>=0) {
+        select_map = 'counties_update.geojson';
     } else {
-        select_method = "choropleth";
+        select_map = 'states_update.geojson';
+    }
+
         if (isState()) {
             OnStateClick();
         } else {
             OnCountyClick(evt);
         }
-    }
+
+    // force back to choropleth
+    select_method = "choropleth";
+    //updateDates();
+    //if (isLisa()) {
+    //    OnLISAClick(document.getElementById('btn-lisa'));
+    //} else {
+   // }
 }
 
 function OnDataClick(evt)
