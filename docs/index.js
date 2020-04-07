@@ -455,7 +455,7 @@ function getDatesFromUsaFacts(confirm_data)
     var xLabels = [];
     let n = confirm_data.length;
     for (let col in confirm_data[0]) {
-        if (col.endsWith("2020")) {
+        if (col.endsWith("20")) {
             xLabels.push(col);
         }
     }
