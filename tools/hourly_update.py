@@ -68,7 +68,8 @@ county_fix_code = {
     'de kalbin' : 'dekalbin',
     'adamoh' : 'adamsoh',
     'socorro-nmnn' : 'socorronm',
-    'socorro, nmnn' : 'socorronm'
+    'socorro, nmnn' : 'socorronm',
+    'guesnseyoh':'guernseyoh'
 }
 
 # la portein is a city in IN
