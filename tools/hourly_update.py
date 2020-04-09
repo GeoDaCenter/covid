@@ -69,10 +69,15 @@ county_fix_code = {
     'adamoh' : 'adamsoh',
     'socorro-nmnn' : 'socorronm',
     'socorro, nmnn' : 'socorronm',
-    'guesnseyoh':'guernseyoh'
+    'guesnseyoh':'guernseyoh',
+    'bernalillo, nmnn':'bernalillonm',
+    'dewittil':'de wittil'
 }
 
 # la portein is a city in IN
+# russellga did not find russell in ga
+# edgefieldga did not find edgefield in ga
+# tallapoosaga tallapoosaga is a city in ga
 
 def fetch_covid_data():
     out = open('../docs/last_update.txt', 'w') 
@@ -327,10 +332,10 @@ def update_county_geojson(county_count, county_deathcount, date_county_count, da
                     else:
                         o.write(ct + '\n')
 
-#fetch_covid_data()
-with open("cases.csv") as csvfile:
-    cr = csv.reader(csvfile)
-    read_covid_data(cr)
+fetch_covid_data()
+#with open("cases.csv") as csvfile:
+#    cr = csv.reader(csvfile)
+#    read_covid_data(cr)
 
 #scheduler = BlockingScheduler()
 #scheduler.add_job(fetch_covid_data, 'interval', hours=1)
