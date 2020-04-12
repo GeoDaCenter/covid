@@ -989,7 +989,6 @@ function OnCountyClick(evt) {
         var nb;
         select_method = "choropleth";
             vals = GetDataValues();
-            console.log(vals);
             nb = gda_proxy.custom_breaks(county_map, "natural_breaks", 8, null, vals); 
         colorScale = function(x) {
             if (x==0)  return COLOR_SCALE[0];
@@ -1394,12 +1393,13 @@ function getConfirmedCountByDateState(data, state) {
     var features = data['features'];
     var dates = getDatesFromGeojson(data);
     var counts = 0;
+    var sel_dt = Date.parse(select_date);
     for (var j =0; j<features.length; ++j) {
         if (features[j]["properties"]["STUSPS"] == state) {
             for (var i=0; i<dates.length; ++i) {
-                var d = dates[i];
-                if (d <= select_date) {
-                    counts += features[j]["properties"][d];
+                var d = Date.parse(dates[i]);
+                if (d <= sel_dt) {
+                    counts += features[j]["properties"][dates[i]];
                 }
             }   
             break;
@@ -1412,13 +1412,14 @@ function getConfirmedCountByDateCounty(county_id, all) {
     let json = getJsonName();
     let n_count = Object.keys(confirmed_count_data[json][select_date]).length;
     var counts = [];
-    let d0 = dates[select_map][0];
+    let d = dates[select_map][0];
     let sum = 0;
-    if (all || d0 <= select_date) {
-        sum = confirmed_count_data[json][d0][county_id];
+    let sel_dt = Date.parse(select_date);
+
+    if (all || Date.parse(d) <= sel_dt ) {
+        sum = confirmed_count_data[json][d][county_id];
     }
-   counts.push(sum);
-   let sel_dt = Date.parse(select_date);
+    counts.push(sum);
     for (let i=1; i<dates[select_map].length; ++i) {
         let sum = 0;
         let d0 = dates[select_map][i-1];
@@ -1439,16 +1440,16 @@ function getConfirmedCountByDate(data, all) {
     let json = getJsonName();
     let n_count = Object.keys(confirmed_count_data[json][select_date]).length;
     var counts = [];
-    let d0 = dates[select_map][0];
+    let d = dates[select_map][0];
     // get total count for 1st day
     let sum = 0;
+    let sel_dt = Date.parse(select_date);
     for (let j =0; j<n_count; ++j) {
-        if (all || d0 <= select_date) {
-           sum = confirmed_count_data[json][d0][j];
+        if (all || Date.parse(d) <= sel_dt) {
+           sum = confirmed_count_data[json][d][j];
        }
    }   
    counts.push(sum);
-   let sel_dt = Date.parse(select_date);
     for (let i=1; i<dates[select_map].length; ++i) {
         let pre_sum = 0;
         let cur_sum = 0;
@@ -1735,7 +1736,8 @@ function OnSave() {
     d3.json("lisa_dates.json", function(ds) {
         // only new lisa results will be saved
         let save_dates = [];
-        for (let i=ds.length; i<dates[select_map].length; ++i) {
+        let start_pos = dates[select_map].indexOf(ds[ds.length-1])+1;
+        for (let i=start_pos; i<dates[select_map].length; ++i) {
             let d = dates[select_map][i];
             if (d in lisa_data[select_map]) {
                 console.log('lisa'+d+'.json');
