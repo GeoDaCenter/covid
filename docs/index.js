@@ -1418,12 +1418,17 @@ function getConfirmedCountByDateCounty(county_id, all) {
         sum = confirmed_count_data[json][d0][county_id];
     }
    counts.push(sum);
+   let sel_dt = Date.parse(select_date);
     for (let i=1; i<dates[select_map].length; ++i) {
         let sum = 0;
         let d0 = dates[select_map][i-1];
         let d1 = dates[select_map][i];
-        if (all || d1 <= select_date) {
+        if (all || Date.parse(d1) <= sel_dt) {
             sum = (confirmed_count_data[json][d1][county_id] - confirmed_count_data[json][d0][county_id]);
+        }
+        if (sum < 0) { 
+            console.log("USAFacts data issue at ", jsondata[json].features[county_id].properties.NAME);
+            sum = 0;
         }
         counts.push(sum);
     }
@@ -1443,13 +1448,13 @@ function getConfirmedCountByDate(data, all) {
        }
    }   
    counts.push(sum);
-
+   let sel_dt = Date.parse(select_date);
     for (let i=1; i<dates[select_map].length; ++i) {
         let pre_sum = 0;
         let cur_sum = 0;
         let d0 = dates[select_map][i-1];
         let d1 = dates[select_map][i];
-        if (all || d1 <= select_date) {
+        if (all || Date.parse(d1) <= sel_dt) {
             for (let j =0; j<n_count; ++j) {
                 pre_sum += confirmed_count_data[json][d0][j];
                 cur_sum += confirmed_count_data[json][d1][j];
