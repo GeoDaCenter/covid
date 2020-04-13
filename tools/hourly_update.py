@@ -71,7 +71,8 @@ county_fix_code = {
     'socorro, nmnn' : 'socorronm',
     'guesnseyoh':'guernseyoh',
     'bernalillo, nmnn':'bernalillonm',
-    'dewittil':'de wittil'
+    'dewittil':'de wittil',
+    'boxne':'box buttene'
 }
 
 # la portein is a city in IN
