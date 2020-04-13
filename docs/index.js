@@ -1350,7 +1350,7 @@ function updateTooltip({x, y, object}) {
         text += '<table>'
         text += '<tr><td><b>Confirmed Count:</b></td><td>' + v1 + '</td>';
         text += '<tr><td><b>Confirmed Count per 10K Population:</b></td><td>' + v2 + '</td>';
-        text += '<tr><td><b># Licensed Hosptial Beds:</b></td><td>' + v12 + '</td>';
+        text += '<tr><td><b># Licensed Hospital Beds:</b></td><td>' + v12 + '</td>';
         text += '<tr><td><b>Confirmed Count per Licensed Bed:</b></td><td>' + v11.toFixed(2) + '</td>';
         text += '<tr><td><b>Death Count:</b></td><td>' + v3 + '</td>';
         text += '<tr><td><b>Death Count per 10K Population:</b></td><td>' + v4 + '</td>';
