@@ -117,6 +117,19 @@ class GeodaProxy {
       return Module.local_joincount(map_uid, weight_uid, col_name);
     }
 
+    GetNeighbors(map_uid, weight_uid, idx) {
+        let nbrs = Module.get_neighbors(map_uid, weight_uid, idx); 
+        return this.parseVecInt(nbrs);
+    }
+
+    parseVecInt(vi) {
+        let result = []; 
+        for (let j=0; j<vi.size(); ++j) {
+            result.push( vi.get(j) );
+        }
+        return result;
+    }
+
     parseVecVecInt(vvi) {
       let result = []; 
       for (let i=0; i<vvi.size(); ++i) {
