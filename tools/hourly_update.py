@@ -72,7 +72,8 @@ county_fix_code = {
     'guesnseyoh':'guernseyoh',
     'bernalillo, nmnn':'bernalillonm',
     'dewittil':'de wittil',
-    'boxne':'box buttene'
+    'boxne':'box buttene',
+    'sandoval, nmnn':'sandovalnm'
 }
 
 # la portein is a city in IN
