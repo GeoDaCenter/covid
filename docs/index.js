@@ -1346,20 +1346,24 @@ function updateTooltip({x, y, object}) {
         if (!isInt(v2)) v2 = parseFloat(v2).toFixed(2);
         if (!isInt(v4)) v4 = parseFloat(v4).toFixed(2);
 
-        let text = '<div><b>' + name +':</b><br/><br/></div>';
+        let text = '<div><h3 style=display:inline>' + name + ' County </h3></div>';
+        text += '<hr>';
         text += '<table>'
-        text += '<tr><td><b>Confirmed Count:</b></td><td>' + v1 + '</td>';
-        text += '<tr><td><b>Confirmed Count per 10K Population:</b></td><td>' + v2 + '</td>';
-        text += '<tr><td><b># Licensed Hospital Beds:</b></td><td>' + v12 + '</td>';
-        text += '<tr><td><b>Confirmed Count per Licensed Bed:</b></td><td>' + v11.toFixed(2) + '</td>';
-        text += '<tr><td><b>Death Count:</b></td><td>' + v3 + '</td>';
-        text += '<tr><td><b>Death Count per 10K Population:</b></td><td>' + v4 + '</td>';
-        text += '<tr><td><b>Death Count/Confirmed Count:</b></td><td>' + v5.toFixed(2) + '</td>';
-        text += '<tr><td><b>Population:</b></td><td>' + v6 + '</td>';
-        text += '<tr><td><b>Daily New Confirmed Count:</b></td><td>' + v7 + '</td>';
-        text += '<tr><td><b>Daily New Confirmed Count per 10K Pop:</b></td><td>' + v8.toFixed(2) + '</td>';
-        text += '<tr><td><b>Daily New Death Count:</b></td><td>' + v9 + '</td>';
-        text += '<tr><td><b>Daily New Confirmed Count per 10K Pop:</b></td><td>' + v10.toFixed(2) + '</td>';
+        text += '<tr><td><h5 style=display:inline>Confirmed Count:</h5></td><td><h5 style=display:inline>' + v1 + '</h5></td>';
+        text += '<tr><td><h5 style=display:inline>Confirmed Count per 10K Population:</h5></td><td><h5 style=display:inline>' + v2 + '</h5></td>';
+        text += '<tr><td><h5 style=display:inline># Licensed Hospital Beds:</h5></td><td><h5 style=display:inline>' + v12 + '</h5></td>';
+        text += '<tr><td><h5 style=display:inline>Confirmed Count per Licensed Bed:</h5></td><td><h5 style=display:inline>' + v11.toFixed(2) + '</h5></td>';
+        text += '<tr><td><h5 style=display:inline>Death Count:</h5></td><td><h5 style=display:inline>' + v3 + '</h5></td>';
+        text += '<tr><td><h5 style=display:inline>Death Count per 10K Population:</h5></td><td><h5 style=display:inline>' + v4 + '</h5></td>';
+        text += '<tr><td><h5 style=display:inline>Death Count/Confirmed Count:</h5></td><td><h5 style=display:inline>' + v5.toFixed(2) + '</h5></td>';
+        text += '<tr><td><h5 style=display:inline>Daily New Confirmed Count:</h5></td><td><h5 style=display:inline>' + v7 + '</h5></td>';
+        text += '<tr><td><h5 style=display:inline>Daily New Confirmed Count per 10K Pop:</h5></td><td><h5 style=display:inline>' + v8.toFixed(2) + '</h5></td>';
+        text += '<tr><td><h5 style=display:inline>Daily New Death Count:</h5></td><td><h5 style=display:inline>' + v9 + '</h5></td>';
+        text += '<tr><td><h5 style=display:inline>Daily New Confirmed Count per 10K Pop:</h5></td><td><h5 style=display:inline>' + v10.toFixed(2) + '</h5></td>';
+        text += '</table>';
+        text += '<hr>';
+        text += '<table>'
+        text += '<tr><td><h5 style=display:inline>Population:</h5></td><td><h5 style=display:inline>' + v6 + '</h5></td>';
         text += '</table>';
 
         if (isLisa()) {
