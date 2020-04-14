@@ -1359,7 +1359,7 @@ function updateTooltip({x, y, object}) {
         if (!isInt(v2)) v2 = parseFloat(v2).toFixed(2);
         if (!isInt(v4)) v4 = parseFloat(v4).toFixed(2);
 
-        let text = '<div><h3 style=display:inline>' + name + ' County </h3></div>';
+        let text = '<div><h3 style=display:inline>' + name + '</h3></div>';
         text += '<hr>';
         text += '<table>'
         text += '<tr><td><h5 style=display:inline>Confirmed Count:</h5></td><td><h5 style=display:inline>' + v1 + '</h5></td>';
