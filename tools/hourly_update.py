@@ -73,7 +73,12 @@ county_fix_code = {
     'bernalillo, nmnn':'bernalillonm',
     'dewittil':'de wittil',
     'boxne':'box buttene',
-    'sandoval, nmnn':'sandovalnm'
+    'sandoval, nmnn':'sandovalnm',
+    'philipsco':'phillipsco',
+    'st. marysmd':'st. mary\'smd',
+    'queen annesmd':'queen anne\'smd',
+    'de witttx':'dewitttx',
+    'prince georgesmd':'prince george\'smd'
 }
 
 # la portein is a city in IN
