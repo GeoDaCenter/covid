@@ -78,7 +78,8 @@ county_fix_code = {
     'st. marysmd':'st. mary\'smd',
     'queen annesmd':'queen anne\'smd',
     'de witttx':'dewitttx',
-    'prince georgesmd':'prince george\'smd'
+    'prince georgesmd':'prince george\'smd',
+    'wayne--non detroitmi':'waynemi'
 }
 
 # la portein is a city in IN
