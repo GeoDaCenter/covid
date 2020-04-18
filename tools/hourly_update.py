@@ -79,13 +79,16 @@ county_fix_code = {
     'queen annesmd':'queen anne\'smd',
     'de witttx':'dewitttx',
     'prince georgesmd':'prince george\'smd',
-    'wayne--non detroitmi':'waynemi'
+    'wayne--non detroitmi':'waynemi',
+    'bear riverut':'box elderut'
 }
 
 # la portein is a city in IN
 # russellga did not find russell in ga
 # edgefieldga did not find edgefield in ga
 # tallapoosaga tallapoosaga is a city in ga
+# bear river ut is treated as bear river city in box elder (considering the nubmer of cases)
+# tricounty covers Duchesne, Uintah, Daggett counties, thus not included
 
 def fetch_covid_data():
     out = open('../docs/last_update.txt', 'w') 
