@@ -89,6 +89,7 @@ county_fix_code = {
 # tallapoosaga tallapoosaga is a city in ga
 # bear river ut is treated as bear river city in box elder (considering the nubmer of cases)
 # tricounty covers Duchesne, Uintah, Daggett counties, thus not included
+# benton and franklinwa includes more than one county
 
 def fetch_covid_data():
     out = open('../docs/last_update.txt', 'w') 
