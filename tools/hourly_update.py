@@ -133,7 +133,7 @@ def read_covid_data(cr):
             continue
 
         i += 1
-        case_id, confirmed_date,state_name,county_name,confirmed_count,death_count = row
+        case_id, confirmed_date,state_name,county_name,confirmed_count,death_count = row[:6]
         confirmed_count = (int)(confirmed_count)
         death_count = (int)(death_count)
 
