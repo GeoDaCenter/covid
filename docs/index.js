@@ -1771,15 +1771,18 @@ d3.json("lisa_dates.json", function(ds) {
     // load lisa from cache
     if (!('county_usfacts.geojson' in lisa_data))
         lisa_data['county_usfacts.geojson'] = {};
-    for (let i=0; i<ds.length; ++i) {
-        let d = ds[i];
-        let d_fn = d.replace(/\//g, '_');
-        d3.json("lisa/lisa"+d_fn+'.json', function(data){
-            if (data != null) {
-                lisa_data['county_usfacts.geojson'][d] = data;
-            }
-        });
-    }
+
+    setTimeout(function() {
+        for (let i=0; i<ds.length; ++i) {
+            let d = ds[i];
+            let d_fn = d.replace(/\//g, '_');
+            d3.json("lisa/lisa"+d_fn+'.json', function(data){
+                if (data != null) {
+                    lisa_data['county_usfacts.geojson'][d] = data;
+                }
+            });
+        }
+    }, 5000); // download cached files after 5 seconds;
 })
 
 function OnShowLabels(el)
