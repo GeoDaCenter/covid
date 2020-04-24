@@ -284,11 +284,7 @@ const COLOR_SCALE = [
     [128, 0, 38]
 ];
 
-//zip.workerScriptsPath = "./js/";
-zip.workerScripts = {
-    deflater: ['./js/z-worker.js', './js/pako/pako_deflate.min.js', './js/pako/codecs.js'],
-    inflater: ['./js/z-worker.js', './js/pako/pako_inflate.min.js', './js/pako/codecs.js']
-  };
+
 
 function isInt(n){
     return Number(n) === n && n % 1 === 0;
@@ -415,6 +411,11 @@ function loadGeoDa(url, loadmap_evt) {
         });
   } else {
     // load 1P3A data 
+    //zip.workerScriptsPath = "./js/";
+    zip.workerScripts = {
+        deflater: ['./js/z-worker.js', './js/pako/pako_deflate.min.js', './js/pako/codecs.js'],
+        inflater: ['./js/z-worker.js', './js/pako/pako_inflate.min.js', './js/pako/codecs.js']
+    };
     fetch(url + ".zip")
         .then((response) => {
             return response.blob();
