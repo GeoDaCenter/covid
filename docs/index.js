@@ -72,7 +72,7 @@ function saveText(text, filename) {
 // data
 var usafactsCases;
 var usaFactsDeaths;
-var usfacts_jsondata;
+var usafactsData;
 var onep3a_jsondata;
 var population_data = {};
 var beds_data = {};
@@ -186,7 +186,7 @@ function loadGeoDa(url, loadmap_evt) {
           jsonReader.onload = function (event) {
             let data = JSON.parse(event.target.result);
             data = initFeatureSelected(data);
-            usfacts_jsondata = data;
+            usafactsData = data;
             // load usfacts csv data
             let csv_conf_url = "covid_confirmed_usafacts.csv";
             let csv_death_url = "covid_deaths_usafacts.csv";
