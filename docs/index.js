@@ -86,7 +86,6 @@ var lisa_data = {};
 // dataset name constants
 var state_map = "states_update.geojson";
 var county_map = "county_usfacts.geojson";
-var map_variable = "confirmed_count";
 
 // ui elements
 var choropleth_btn = document.getElementById("btn-nb");
