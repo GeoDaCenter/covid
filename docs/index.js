@@ -81,6 +81,7 @@ var gda_proxy;
 var gda_weights = {};
 var jsondata = {};
 var centroids = {};
+// the selected data source (e.g. county_usfacts.geojson)
 var select_map = null;
 var select_id = null;
 var select_date = null;
@@ -119,10 +120,6 @@ function isState() {
 
 function isLisa() {
   return document.getElementById("btn-lisa").classList.contains("checked");
-}
-
-function getJsonName() {
-  return select_map;
 }
 
 function getCurrentWuuid() {
@@ -269,7 +266,7 @@ function getDatesFromUsaFacts(confirm_data) {
 }
 
 function parseUsaFactsData(data, confirm_data, death_data) {
-  let json = getJsonName();
+  let json = select_map;
   if (!(json in confirmed_count_data)) confirmed_count_data[json] = {};
   if (!(json in death_count_data)) death_count_data[json] = {};
   if (!(json in fatality_data)) fatality_data[json] = {};
@@ -334,7 +331,7 @@ function parseUsaFactsData(data, confirm_data, death_data) {
 }
 
 function parse1P3AData(data) {
-  let json = getJsonName();
+  let json = select_map;
   if (!(json in confirmed_count_data)) confirmed_count_data[json] = {};
   if (!(json in death_count_data)) death_count_data[json] = {};
   if (!(json in fatality_data)) fatality_data[json] = {};
@@ -679,7 +676,7 @@ function createMap(data) {
 
   if (isLisa()) {
     for (let i = 0; i < data.features.length; ++i) {
-      let json = getJsonName();
+      let json = select_map;
       //if (json == "county") {
       let field = data_btn.innerText;
       let c = lisa_data[json][select_date][field].clusters[i];
@@ -846,7 +843,7 @@ function initFeatureSelected(features) {
 }
 
 function GetFeatureValue(id) {
-  let json = getJsonName();
+  let json = select_map;
   let txt = data_btn.innerText;
   if (txt == "Confirmed Count") {
     return confirmed_count_data[json][select_date][id];
@@ -899,7 +896,7 @@ function GetFeatureValue(id) {
 }
 
 function GetDataValues() {
-  let json = getJsonName();
+  let json = select_map;
   let txt = data_btn.innerText;
   if (txt == "Confirmed Count") {
     return Object.values(confirmed_count_data[json][select_date]);
@@ -1069,7 +1066,7 @@ function OnLISAClick(evt) {
   var w = getCurrentWuuid();
   var data = GetDataValues();
   let field = data_btn.innerText;
-  let json = getJsonName();
+  let json = select_map;
   var color_vec = lisa_colors;
   var labels = lisa_labels;
   var clusters;
@@ -1137,7 +1134,7 @@ function updateTooltip({
 
   if (object) {
     let id = object.properties.id;
-    let json = getJsonName();
+    let json = select_map;
     let txt = data_btn.innerText;
 
     //if (txt == "Confirmed Count") {
@@ -1203,7 +1200,7 @@ function updateTooltip({
     text += '</table>';
 
     if (isLisa()) {
-      let json = getJsonName();
+      let json = select_map;
       let field = data_btn.innerText;
       let c = lisa_data[json][select_date][field].clusters[id];
       text += '<br/><div><b>' + lisa_labels[c] + '</b></div>';
@@ -1239,7 +1236,7 @@ function getConfirmedCountByDateState(data, state) {
 }
 
 function getConfirmedCountByDateCounty(county_id, all) {
-  let json = getJsonName();
+  let json = select_map;
   let n_count = Object.keys(confirmed_count_data[json][select_date]).length;
   var counts = [];
   let d = dates[select_map][0];
@@ -1267,7 +1264,7 @@ function getConfirmedCountByDateCounty(county_id, all) {
 }
 
 function getConfirmedCountByDate(data, all) {
-  let json = getJsonName();
+  let json = select_map;
   let n_count = Object.keys(confirmed_count_data[json][select_date]).length;
   var counts = [];
   let d = dates[select_map][0];
@@ -1416,7 +1413,7 @@ function updateTrendLine({
     left: 50
   };
   var xLabels, yValues, title;
-  let json = getJsonName();
+  let json = select_map;
 
   xLabels = dates[select_map];
   if (object) {
