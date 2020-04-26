@@ -122,8 +122,6 @@ var selectedDate = null;
 var selectedVariable = null;
 var selectedMethod = null;
 var shouldShowLabels = false;
-// TODO this doesn't seem to get used
-var selectedStateId = -1;
 
 function isState() {
   return source_btn.innerText.indexOf('State') >= 0;
@@ -1107,8 +1105,6 @@ function OnLISAClick(evt) {
   };
 
   getLineColor = function(f) {
-    // TODO selectedStateId seems to always be -1?
-    if (f.properties.STATEFP != selectedStateId) return [255, 255, 255, 0];
     return f.properties.id == selectedId ? [255, 0, 0] : [255, 255, 255, 50];
   };
 
