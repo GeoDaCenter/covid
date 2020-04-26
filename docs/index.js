@@ -71,7 +71,7 @@ function saveText(text, filename) {
 
 // data
 var usafactsCases;
-var usfacts_death_data;
+var usaFactsDeaths;
 var usfacts_jsondata;
 var onep3a_jsondata;
 var population_data = {};
@@ -194,7 +194,7 @@ function loadGeoDa(url, loadmap_evt) {
               d3.csv(csv_death_url, function (death_data) {
                 selectedDataset = 'county_usfacts.geojson';
                 usafactsCases = confirm_data;
-                usfacts_death_data = death_data;
+                usaFactsDeaths = death_data;
                 // merge usfacts csv data
                 parseUsaFactsData(data, confirm_data, death_data);
                 jsondata[selectedDataset] = data;
