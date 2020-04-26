@@ -38,6 +38,29 @@ function isInt(n) {
   return Number(n) === n && n % 1 === 0;
 }
 
+function hexToRgb(hex) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)]
+}
+
+function getDatesFromGeojson(data) {
+  var xLabels = [];
+  for (var col in data["features"][0]["properties"]) {
+    if (col.startsWith("2020")) {
+      xLabels.push(col);
+    }
+  }
+  return xLabels;
+}
+
+function saveText(text, filename) {
+  var a = document.createElement('a');
+  a.setAttribute("id", filename);
+  a.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  a.setAttribute('download', filename);
+  a.click()
+}
+
 
 /*
  * GLOBALS
@@ -85,6 +108,33 @@ var getLineColor = function() {
   return [220, 220, 220];
 };
 
+
+/*
+ * STATE
+*/
+
+function isState() {
+  return source_btn.innerText.indexOf('State') >= 0;
+}
+
+function isLisa() {
+  return document.getElementById("btn-lisa").classList.contains("checked");
+}
+
+function getJsonName() {
+  return select_map;
+}
+
+function getCurrentWuuid() {
+  if (!(select_map in gda_weights)) {
+    var w = gda_proxy.CreateQueenWeights(select_map, 1, 0, 0);
+    gda_weights[select_map] = w;
+  }
+  return {
+    'map_uuid': select_map,
+    'w_uuid': gda_weights[select_map].get_uid()
+  };
+}
 
 /*
  * DATA LOADING
@@ -488,6 +538,54 @@ function OnStateClick(evt) {
     loadMap(state_map);
   }
   loadGeoDa(state_map, init_state);
+}
+
+function OnShowLabels(el) {
+  show_labels = el.checked;
+  if (isLisa()) {
+    OnLISAClick(document.getElementById('btn-lisa'));
+  } else {
+    if (isState()) {
+      OnStateClick();
+    } else {
+      OnCountyClick();
+    }
+  }
+}
+
+function collapse(el) {
+  if (document.getElementById("toolbox").classList.contains("collapse")) {
+    document.getElementById('toolbox').classList.remove("collapse");
+    el.src = "img/collapse.png";
+  } else {
+    document.getElementById('toolbox').classList.add("collapse");
+    el.src = "img/expand.png";
+  }
+}
+
+function OnShowTime(el) {
+  let disp = el.checked ? 'block' : 'none';
+  document.getElementById('time-container').parentElement.style.display = disp;
+}
+
+function OnSave() {
+  d3.json("lisa_dates.json", function (ds) {
+    // only new lisa results will be saved
+    let save_dates = [];
+    let start_pos = dates[select_map].indexOf(ds[ds.length - 1]) + 1;
+    for (let i = start_pos; i < dates[select_map].length; ++i) {
+      let d = dates[select_map][i];
+      if (d in lisa_data[select_map]) {
+        console.log('lisa' + d + '.json');
+        save_dates.push(d);
+        setTimeout(function () {
+          saveText(JSON.stringify(lisa_data[select_map][d]), "lisa" + d + ".json");
+        }, 100 * (i - ds.length));
+      }
+    }
+    // update dates
+    saveText(JSON.stringify(save_dates), "lisa_dates.json");
+  });
 }
 
 
@@ -954,34 +1052,6 @@ function UpdateLisaLabels(labels) {
   div.innerHTML = cont;
 }
 
-function hexToRgb(hex) {
-  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)]
-}
-
-function isState() {
-  return source_btn.innerText.indexOf('State') >= 0;
-}
-
-function isLisa() {
-  return document.getElementById("btn-lisa").classList.contains("checked");
-}
-
-function getCurrentWuuid() {
-  if (!(select_map in gda_weights)) {
-    var w = gda_proxy.CreateQueenWeights(select_map, 1, 0, 0);
-    gda_weights[select_map] = w;
-  }
-  return {
-    'map_uuid': select_map,
-    'w_uuid': gda_weights[select_map].get_uid()
-  };
-}
-
-function getJsonName() {
-  return select_map;
-}
-
 function OnChoroplethClick(evt) {
   select_method = "choropleth";
   if (isState()) {
@@ -1145,16 +1215,6 @@ function updateTooltip({
   } else {
     tooltip.innerHTML = '';
   }
-}
-
-function getDatesFromGeojson(data) {
-  var xLabels = [];
-  for (var col in data["features"][0]["properties"]) {
-    if (col.startsWith("2020")) {
-      xLabels.push(col);
-    }
-  }
-  return xLabels;
 }
 
 function getConfirmedCountByDateState(data, state) {
@@ -1522,34 +1582,6 @@ function createTimeSlider(geojson) {
   })
 }
 
-function saveText(text, filename) {
-  var a = document.createElement('a');
-  a.setAttribute("id", filename);
-  a.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-  a.setAttribute('download', filename);
-  a.click()
-}
-
-function OnSave() {
-  d3.json("lisa_dates.json", function(ds) {
-    // only new lisa results will be saved
-    let save_dates = [];
-    let start_pos = dates[select_map].indexOf(ds[ds.length - 1]) + 1;
-    for (let i = start_pos; i < dates[select_map].length; ++i) {
-      let d = dates[select_map][i];
-      if (d in lisa_data[select_map]) {
-        console.log('lisa' + d + '.json');
-        save_dates.push(d);
-        setTimeout(function() {
-          saveText(JSON.stringify(lisa_data[select_map][d]), "lisa" + d + ".json");
-        }, 100 * (i - ds.length));
-      }
-    }
-    // update dates
-    saveText(JSON.stringify(save_dates), "lisa_dates.json");
-  });
-}
-
 d3.json("lisa_dates.json", function(ds) {
   // load lisa from cache
   if (!('county_usfacts.geojson' in lisa_data))
@@ -1568,33 +1600,6 @@ d3.json("lisa_dates.json", function(ds) {
   }, 5000); // download cached files after 5 seconds;
 })
 
-function OnShowLabels(el) {
-  show_labels = el.checked;
-  if (isLisa()) {
-    OnLISAClick(document.getElementById('btn-lisa'));
-  } else {
-    if (isState()) {
-      OnStateClick();
-    } else {
-      OnCountyClick();
-    }
-  }
-}
-
-function OnShowTime(el) {
-  let disp = el.checked ? 'block' : 'none';
-  document.getElementById('time-container').parentElement.style.display = disp;
-}
-
-function collapse(el) {
-  if (document.getElementById("toolbox").classList.contains("collapse")) {
-    document.getElementById('toolbox').classList.remove("collapse");
-    el.src = "img/collapse.png";
-  } else {
-    document.getElementById('toolbox').classList.add("collapse");
-    el.src = "img/expand.png";
-  }
-}
 
 /*
  * ENTRY POINT
