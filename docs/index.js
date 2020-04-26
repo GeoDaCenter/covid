@@ -121,7 +121,7 @@ var selectedDataset = null;
 var selectedId = null;
 var selectedDate = null;
 var selectedVariable = null;
-var select_method = null;
+var selectedMethod = null;
 var show_labels = false;
 var select_state_id = -1;
 
@@ -435,7 +435,7 @@ function OnCountyClick(target) {
 function init_county() {
   var vals;
   var nb;
-  select_method = "choropleth";
+  selectedMethod = "choropleth";
   vals = GetDataValues();
   nb = gda_proxy.custom_breaks(county_map, "natural_breaks", 8, null, vals);
   colorScale = function (x) {
@@ -471,7 +471,7 @@ function OnStateClick() {
 function init_state() {
   var vals;
   var nb;
-  select_method = "choropleth";
+  selectedMethod = "choropleth";
   vals = GetDataValues();
   nb = gda_proxy.custom_breaks(state_map, "natural_breaks", 8, null, vals);
   colorScale = function (x) {
@@ -518,7 +518,7 @@ function OnSourceClick(evt) {
   }
 
   // force back to choropleth
-  select_method = "choropleth";
+  selectedMethod = "choropleth";
   //updateDates();
   //if (isLisa()) {
   //    OnLISAClick(document.getElementById('btn-lisa'));
@@ -533,7 +533,7 @@ function OnDataClick(evt) {
   if (isLisa()) {
     OnLISAClick(document.getElementById('btn-lisa'));
   } else {
-    select_method = "choropleth";
+    selectedMethod = "choropleth";
     if (isState()) {
       OnStateClick();
     } else {
@@ -543,7 +543,7 @@ function OnDataClick(evt) {
 }
 
 function OnCartogramClick() {
-  select_method = "choropleth";
+  selectedMethod = "choropleth";
   if (isState()) {
     OnStateClick();
   } else {
@@ -728,7 +728,7 @@ function createMap(data) {
             selectedId
           ],
           getFillColor: [
-            selectedDate, selectedVariable, select_method
+            selectedDate, selectedVariable, selectedMethod
           ]
         },
       })
@@ -768,7 +768,7 @@ function createMap(data) {
         updateTriggers: {
           getLineColor: [],
           getFillColor: [
-            selectedDate, selectedVariable, select_method
+            selectedDate, selectedVariable, selectedMethod
           ]
         },
         pickable: true,
@@ -1062,7 +1062,7 @@ function UpdateLisaLabels(labels) {
 }
 
 function OnChoroplethClick(evt) {
-  select_method = "choropleth";
+  selectedMethod = "choropleth";
   if (isState()) {
     OnStateClick();
   } else {
@@ -1071,7 +1071,7 @@ function OnChoroplethClick(evt) {
 }
 
 function OnLISAClick(evt) {
-  select_method = "lisa";
+  selectedMethod = "lisa";
 
   var w = getCurrentWuuid();
   var data = GetDataValues();
