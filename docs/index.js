@@ -140,21 +140,6 @@ function getCurrentWuuid() {
  * DATA LOADING
 */
 
-function updateDates() {
-  // since 1P3A has different date format than usafacts
-  if (select_map == 'county_usfacts.geojson') {
-    // todo: the following line should be updated to current date
-    dates[select_map] = getDatesFromUsaFacts(usfacts_confirm_data);
-    if (select_date == null || select_date.indexOf('-') >= 0)
-      select_date = dates[select_map][dates[select_map].length - 1];
-  } else {
-    dates[select_map] = getDatesFromGeojson(onep3a_jsondata);
-    // todo: the following line should be updated to current date
-    if (select_date == null || select_date.indexOf('/') >= 0)
-      select_date = dates[select_map][dates[select_map].length - 1];
-  }
-}
-
 function loadGeoDa(url, loadmap_evt) {
   if (gda_proxy.Has(url)) {
     if (url.endsWith('county_usfacts.geojson')) {
@@ -407,10 +392,107 @@ function parse1P3AData(data) {
   }
 }
 
+function updateDates() {
+  // since 1P3A has different date format than usafacts
+  if (select_map == 'county_usfacts.geojson') {
+    // todo: the following line should be updated to current date
+    dates[select_map] = getDatesFromUsaFacts(usfacts_confirm_data);
+    if (select_date == null || select_date.indexOf('-') >= 0)
+      select_date = dates[select_map][dates[select_map].length - 1];
+  } else {
+    dates[select_map] = getDatesFromGeojson(onep3a_jsondata);
+    // todo: the following line should be updated to current date
+    if (select_date == null || select_date.indexOf('/') >= 0)
+      select_date = dates[select_map][dates[select_map].length - 1];
+  }
+}
+
 
 /*
  * UI / EVENT HANDLERS
 */
+
+// this is the callback for when a county dataset is selected. it is also the
+// rendering function that gets called on load.
+function OnCountyClick(target) {
+  if (target != undefined) {
+    if (target.innerText.indexOf('UsaFacts') >= 0) {
+      county_map = "county_usfacts.geojson";
+    } else {
+      county_map = "counties_update.geojson";
+    }
+  }
+  loadGeoDa(county_map, init_county);
+}
+
+function init_county(evt) {
+  var vals;
+  var nb;
+  select_method = "choropleth";
+  vals = GetDataValues();
+  nb = gda_proxy.custom_breaks(county_map, "natural_breaks", 8, null, vals);
+  colorScale = function (x) {
+    if (x == 0) return COLOR_SCALE[0];
+    for (var i = 1; i < nb.breaks.length; ++i) {
+      if (x < nb.breaks[i])
+        return COLOR_SCALE[i];
+    }
+  };
+  getFillColor = function (f) {
+    let v = GetFeatureValue(f.properties.id);
+    if (v == 0) return [255, 255, 255, 200];
+    return colorScale(v);
+  };
+  getLineColor = function (f) {
+    return f.properties.id == select_id ? [255, 0, 0] : [200, 200, 200];
+  };
+  UpdateLegend();
+  UpdateLegendLabels(nb.bins);
+  choropleth_btn.classList.add("checked");
+  lisa_btn.classList.remove("checked");
+
+  if (isCartogram()) {
+    cartogram_data = gda_proxy.cartogram(county_map, vals);
+  }
+  loadMap(county_map);
+}
+
+function OnStateClick() {
+  loadGeoDa(state_map, init_state);
+}
+
+function init_state() {
+  var vals;
+  var nb;
+  select_method = "choropleth";
+  vals = GetDataValues();
+  nb = gda_proxy.custom_breaks(state_map, "natural_breaks", 8, null, vals);
+  colorScale = function (x) {
+    if (x == 0) return COLOR_SCALE[0];
+    for (var i = 1; i < nb.breaks.length; ++i) {
+      if (x < nb.breaks[i])
+        return COLOR_SCALE[i];
+    }
+  };
+  getFillColor = function (f) {
+    let v = GetFeatureValue(f.properties.id);
+    if (v == 0) return [255, 255, 255];
+    return colorScale(v);
+  };
+  getLineColor = function (f) {
+    return f.properties.id == select_id ? [255, 0, 0] : [255, 255, 255, 50];
+  };
+  UpdateLegend();
+  UpdateLegendLabels(nb.bins);
+  choropleth_btn.classList.add("checked");
+  lisa_btn.classList.remove("checked");
+
+  if (isCartogram()) {
+    cartogram_data = gda_proxy.cartogram(state_map, vals);
+  }
+
+  loadMap(state_map);
+}
 
 function OnSourceClick(evt) {
   source_btn.innerText = evt.innerText;
@@ -460,84 +542,6 @@ function OnCartogramClick(el) {
   } else {
     OnCountyClick();
   }
-}
-
-function OnCountyClick(evt) {
-  function init_county(evt) {
-    var vals;
-    var nb;
-    select_method = "choropleth";
-    vals = GetDataValues();
-    nb = gda_proxy.custom_breaks(county_map, "natural_breaks", 8, null, vals);
-    colorScale = function (x) {
-      if (x == 0) return COLOR_SCALE[0];
-      for (var i = 1; i < nb.breaks.length; ++i) {
-        if (x < nb.breaks[i])
-          return COLOR_SCALE[i];
-      }
-    };
-    getFillColor = function (f) {
-      let v = GetFeatureValue(f.properties.id);
-      if (v == 0) return [255, 255, 255, 200];
-      return colorScale(v);
-    };
-    getLineColor = function (f) {
-      return f.properties.id == select_id ? [255, 0, 0] : [200, 200, 200];
-    };
-    UpdateLegend();
-    UpdateLegendLabels(nb.bins);
-    choropleth_btn.classList.add("checked");
-    lisa_btn.classList.remove("checked");
-
-    if (isCartogram()) {
-      cartogram_data = gda_proxy.cartogram(county_map, vals);
-    }
-    loadMap(county_map);
-  }
-  if (evt != undefined) {
-    if (evt.innerText.indexOf('UsaFacts') >= 0) {
-      county_map = "county_usfacts.geojson";
-    } else {
-      county_map = "counties_update.geojson";
-    }
-  }
-  loadGeoDa(county_map, init_county);
-}
-
-function OnStateClick(evt) {
-  function init_state() {
-    var vals;
-    var nb;
-    select_method = "choropleth";
-    vals = GetDataValues();
-    nb = gda_proxy.custom_breaks(state_map, "natural_breaks", 8, null, vals);
-    colorScale = function (x) {
-      if (x == 0) return COLOR_SCALE[0];
-      for (var i = 1; i < nb.breaks.length; ++i) {
-        if (x < nb.breaks[i])
-          return COLOR_SCALE[i];
-      }
-    };
-    getFillColor = function (f) {
-      let v = GetFeatureValue(f.properties.id);
-      if (v == 0) return [255, 255, 255];
-      return colorScale(v);
-    };
-    getLineColor = function (f) {
-      return f.properties.id == select_id ? [255, 0, 0] : [255, 255, 255, 50];
-    };
-    UpdateLegend();
-    UpdateLegendLabels(nb.bins);
-    choropleth_btn.classList.add("checked");
-    lisa_btn.classList.remove("checked");
-
-    if (isCartogram()) {
-      cartogram_data = gda_proxy.cartogram(state_map, vals);
-    }
-
-    loadMap(state_map);
-  }
-  loadGeoDa(state_map, init_state);
 }
 
 function OnShowLabels(el) {
