@@ -87,39 +87,8 @@ var getLineColor = function() {
 
 
 /*
- * APPLICATION
+ * DATA LOADING
 */
-
-// set up deck/mapbox
-const deckgl = new DeckGL({
-  mapboxApiAccessToken: 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg',
-  mapStyle: 'mapbox://styles/mapbox/dark-v9',
-  latitude: 32.850033,
-  longitude: -86.6500523,
-  zoom: 3.5,
-  maxZoom: 18,
-  pitch: 0,
-  controller: true,
-  onViewStateChange: OnViewChange,
-  layers: []
-});
-
-const mapbox = deckgl.getMapboxMap();
-
-mapbox.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
-
-mapbox.on('zoomend', () => {
-  const currentZoom = mapbox.getZoom();
-  let lat = current_view == null ? deckgl.viewState.latitude : current_view.latitude;
-  let lon = current_view == null ? deckgl.viewState.longitude : current_view.longitude;
-  deckgl.setProps({
-    viewState: {
-      zoom: currentZoom,
-      latitude: lat,
-      longitude: lon
-    }
-  });
-});
 
 function updateDates() {
   // since 1P3A has different date format than usafacts
@@ -387,6 +356,175 @@ function parse1P3AData(data) {
     }
   }
 }
+
+
+/*
+ * UI / EVENT HANDLERS
+*/
+
+function OnSourceClick(evt) {
+  source_btn.innerText = evt.innerText;
+  if (evt.innerText.indexOf('UsaFacts') >= 0) {
+    select_map = 'county_usfacts.geojson';
+  } else if (evt.innerText.indexOf('County (1Point3Arces.com)') >= 0) {
+    select_map = 'counties_update.geojson';
+  } else {
+    select_map = 'states_update.geojson';
+  }
+
+  if (isState()) {
+    OnStateClick();
+  } else {
+    OnCountyClick(evt);
+  }
+
+  // force back to choropleth
+  select_method = "choropleth";
+  //updateDates();
+  //if (isLisa()) {
+  //    OnLISAClick(document.getElementById('btn-lisa'));
+  //} else {
+  // }
+}
+
+function OnDataClick(evt) {
+  data_btn.innerText = evt.innerText;
+  select_variable = evt.innerText;
+
+  if (isLisa()) {
+    OnLISAClick(document.getElementById('btn-lisa'));
+  } else {
+    select_method = "choropleth";
+    if (isState()) {
+      OnStateClick();
+    } else {
+      OnCountyClick();
+    }
+  }
+}
+
+function OnCartogramClick(el) {
+  select_method = "choropleth";
+  if (isState()) {
+    OnStateClick();
+  } else {
+    OnCountyClick();
+  }
+}
+
+function OnCountyClick(evt) {
+  function init_county(evt) {
+    var vals;
+    var nb;
+    select_method = "choropleth";
+    vals = GetDataValues();
+    nb = gda_proxy.custom_breaks(county_map, "natural_breaks", 8, null, vals);
+    colorScale = function (x) {
+      if (x == 0) return COLOR_SCALE[0];
+      for (var i = 1; i < nb.breaks.length; ++i) {
+        if (x < nb.breaks[i])
+          return COLOR_SCALE[i];
+      }
+    };
+    getFillColor = function (f) {
+      let v = GetFeatureValue(f.properties.id);
+      if (v == 0) return [255, 255, 255, 200];
+      return colorScale(v);
+    };
+    getLineColor = function (f) {
+      return f.properties.id == select_id ? [255, 0, 0] : [200, 200, 200];
+    };
+    UpdateLegend();
+    UpdateLegendLabels(nb.bins);
+    choropleth_btn.classList.add("checked");
+    lisa_btn.classList.remove("checked");
+
+    if (isCartogram()) {
+      cartogram_data = gda_proxy.cartogram(county_map, vals);
+    }
+    loadMap(county_map);
+  }
+  if (evt != undefined) {
+    if (evt.innerText.indexOf('UsaFacts') >= 0) {
+      county_map = "county_usfacts.geojson";
+    } else {
+      county_map = "counties_update.geojson";
+    }
+  }
+  loadGeoDa(county_map, init_county);
+}
+
+function OnStateClick(evt) {
+  function init_state() {
+    var vals;
+    var nb;
+    select_method = "choropleth";
+    vals = GetDataValues();
+    nb = gda_proxy.custom_breaks(state_map, "natural_breaks", 8, null, vals);
+    colorScale = function (x) {
+      if (x == 0) return COLOR_SCALE[0];
+      for (var i = 1; i < nb.breaks.length; ++i) {
+        if (x < nb.breaks[i])
+          return COLOR_SCALE[i];
+      }
+    };
+    getFillColor = function (f) {
+      let v = GetFeatureValue(f.properties.id);
+      if (v == 0) return [255, 255, 255];
+      return colorScale(v);
+    };
+    getLineColor = function (f) {
+      return f.properties.id == select_id ? [255, 0, 0] : [255, 255, 255, 50];
+    };
+    UpdateLegend();
+    UpdateLegendLabels(nb.bins);
+    choropleth_btn.classList.add("checked");
+    lisa_btn.classList.remove("checked");
+
+    if (isCartogram()) {
+      cartogram_data = gda_proxy.cartogram(state_map, vals);
+    }
+
+    loadMap(state_map);
+  }
+  loadGeoDa(state_map, init_state);
+}
+
+
+/*
+ * APPLICATION
+*/
+
+// set up deck/mapbox
+const deckgl = new DeckGL({
+  mapboxApiAccessToken: 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg',
+  mapStyle: 'mapbox://styles/mapbox/dark-v9',
+  latitude: 32.850033,
+  longitude: -86.6500523,
+  zoom: 3.5,
+  maxZoom: 18,
+  pitch: 0,
+  controller: true,
+  onViewStateChange: OnViewChange,
+  layers: []
+});
+
+const mapbox = deckgl.getMapboxMap();
+
+mapbox.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+
+mapbox.on('zoomend', () => {
+  const currentZoom = mapbox.getZoom();
+  let lat = current_view == null ? deckgl.viewState.latitude : current_view.latitude;
+  let lon = current_view == null ? deckgl.viewState.longitude : current_view.longitude;
+  deckgl.setProps({
+    viewState: {
+      zoom: currentZoom,
+      latitude: lat,
+      longitude: lon
+    }
+  });
+});
 
 function OnViewChange(view) {
   current_view = view.viewState;
@@ -748,84 +886,6 @@ function GetDataValues() {
   }
 }
 
-function OnCountyClick(evt) {
-  function init_county(evt) {
-    var vals;
-    var nb;
-    select_method = "choropleth";
-    vals = GetDataValues();
-    nb = gda_proxy.custom_breaks(county_map, "natural_breaks", 8, null, vals);
-    colorScale = function(x) {
-      if (x == 0) return COLOR_SCALE[0];
-      for (var i = 1; i < nb.breaks.length; ++i) {
-        if (x < nb.breaks[i])
-          return COLOR_SCALE[i];
-      }
-    };
-    getFillColor = function(f) {
-      let v = GetFeatureValue(f.properties.id);
-      if (v == 0) return [255, 255, 255, 200];
-      return colorScale(v);
-    };
-    getLineColor = function(f) {
-      return f.properties.id == select_id ? [255, 0, 0] : [200, 200, 200];
-    };
-    UpdateLegend();
-    UpdateLegendLabels(nb.bins);
-    choropleth_btn.classList.add("checked");
-    lisa_btn.classList.remove("checked");
-
-    if (isCartogram()) {
-      cartogram_data = gda_proxy.cartogram(county_map, vals);
-    }
-    loadMap(county_map);
-  }
-  if (evt != undefined) {
-    if (evt.innerText.indexOf('UsaFacts') >= 0) {
-      county_map = "county_usfacts.geojson";
-    } else {
-      county_map = "counties_update.geojson";
-    }
-  }
-  loadGeoDa(county_map, init_county);
-}
-
-function OnStateClick(evt) {
-  function init_state() {
-    var vals;
-    var nb;
-    select_method = "choropleth";
-    vals = GetDataValues();
-    nb = gda_proxy.custom_breaks(state_map, "natural_breaks", 8, null, vals);
-    colorScale = function(x) {
-      if (x == 0) return COLOR_SCALE[0];
-      for (var i = 1; i < nb.breaks.length; ++i) {
-        if (x < nb.breaks[i])
-          return COLOR_SCALE[i];
-      }
-    };
-    getFillColor = function(f) {
-      let v = GetFeatureValue(f.properties.id);
-      if (v == 0) return [255, 255, 255];
-      return colorScale(v);
-    };
-    getLineColor = function(f) {
-      return f.properties.id == select_id ? [255, 0, 0] : [255, 255, 255, 50];
-    };
-    UpdateLegend();
-    UpdateLegendLabels(nb.bins);
-    choropleth_btn.classList.add("checked");
-    lisa_btn.classList.remove("checked");
-
-    if (isCartogram()) {
-      cartogram_data = gda_proxy.cartogram(state_map, vals);
-    }
-
-    loadMap(state_map);
-  }
-  loadGeoDa(state_map, init_state);
-}
-
 function UpdateLegend() {
   const div = document.getElementById('legend');
   div.innerHTML = `<div class="legend" style="background: rgb(240, 240, 240); width: 7.69231%;"></div>
@@ -994,56 +1054,6 @@ function loadScript(url) {
   return new Promise(resolve => {
     script.onload = resolve;
   });
-}
-
-function OnSourceClick(evt) {
-  source_btn.innerText = evt.innerText;
-  if (evt.innerText.indexOf('UsaFacts') >= 0) {
-    select_map = 'county_usfacts.geojson';
-  } else if (evt.innerText.indexOf('County (1Point3Arces.com)') >= 0) {
-    select_map = 'counties_update.geojson';
-  } else {
-    select_map = 'states_update.geojson';
-  }
-
-  if (isState()) {
-    OnStateClick();
-  } else {
-    OnCountyClick(evt);
-  }
-
-  // force back to choropleth
-  select_method = "choropleth";
-  //updateDates();
-  //if (isLisa()) {
-  //    OnLISAClick(document.getElementById('btn-lisa'));
-  //} else {
-  // }
-}
-
-function OnDataClick(evt) {
-  data_btn.innerText = evt.innerText;
-  select_variable = evt.innerText;
-
-  if (isLisa()) {
-    OnLISAClick(document.getElementById('btn-lisa'));
-  } else {
-    select_method = "choropleth";
-    if (isState()) {
-      OnStateClick();
-    } else {
-      OnCountyClick();
-    }
-  }
-}
-
-function OnCartogramClick(el) {
-  select_method = "choropleth";
-  if (isState()) {
-    OnStateClick();
-  } else {
-    OnCountyClick();
-  }
 }
 
 function updateTooltip({
