@@ -425,7 +425,7 @@ function OnCountyClick(target) {
   loadGeoDa(county_map, init_county);
 }
 
-function init_county(evt) {
+function init_county() {
   var vals;
   var nb;
   select_method = "choropleth";
@@ -535,7 +535,7 @@ function OnDataClick(evt) {
   }
 }
 
-function OnCartogramClick(el) {
+function OnCartogramClick() {
   select_method = "choropleth";
   if (isState()) {
     OnStateClick();
