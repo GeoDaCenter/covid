@@ -119,7 +119,7 @@ var getLineColor = function() {
 // the selected data source (e.g. county_usfacts.geojson)
 var selectedDataset = null;
 var selectedId = null;
-var select_date = null;
+var selectedDate = null;
 var select_variable = null;
 var select_method = null;
 var show_labels = false;
@@ -284,8 +284,8 @@ function parseUsaFactsData(data, confirm_data, death_data) {
   if (!(json in beds_data)) beds_data[json] = {};
 
   dates[selectedDataset] = getDatesFromUsaFacts(confirm_data);
-  if (select_date == null || select_date.indexOf('-') >= 0)
-    select_date = dates[selectedDataset][dates[selectedDataset].length - 1];
+  if (selectedDate == null || selectedDate.indexOf('-') >= 0)
+    selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
 
   let conf_dict = {};
   let death_dict = {};
@@ -349,8 +349,8 @@ function parse1P3AData(data) {
   if (!(json in beds_data)) beds_data[json] = {};
 
   dates[selectedDataset] = getDatesFromGeojson(data);
-  if (select_date == null || select_date.indexOf('/'))
-    select_date = dates[selectedDataset][dates[selectedDataset].length - 1];
+  if (selectedDate == null || selectedDate.indexOf('/'))
+    selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
 
   for (let i = 0; i < data.features.length; i++) {
     let conf = data.features[i].properties.confirmed_count;
@@ -404,13 +404,13 @@ function updateDates() {
   if (selectedDataset == 'county_usfacts.geojson') {
     // todo: the following line should be updated to current date
     dates[selectedDataset] = getDatesFromUsaFacts(usfacts_confirm_data);
-    if (select_date == null || select_date.indexOf('-') >= 0)
-      select_date = dates[selectedDataset][dates[selectedDataset].length - 1];
+    if (selectedDate == null || selectedDate.indexOf('-') >= 0)
+      selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
   } else {
     dates[selectedDataset] = getDatesFromGeojson(onep3a_jsondata);
     // todo: the following line should be updated to current date
-    if (select_date == null || select_date.indexOf('/') >= 0)
-      select_date = dates[selectedDataset][dates[selectedDataset].length - 1];
+    if (selectedDate == null || selectedDate.indexOf('/') >= 0)
+      selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
   }
 }
 
@@ -677,8 +677,8 @@ function setCartogramView(layers) {
 }
 
 function createMap(data) {
-  if (select_date == null)
-    select_date = dates[selectedDataset][dates[selectedDataset].length - 1];
+  if (selectedDate == null)
+    selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
 
   var labels = [];
   var cents = centroids[selectedDataset];
@@ -689,7 +689,7 @@ function createMap(data) {
       let json = selectedDataset;
       //if (json == "county") {
       let field = data_btn.innerText;
-      let c = lisa_data[json][select_date][field].clusters[i];
+      let c = lisa_data[json][selectedDate][field].clusters[i];
       if (c == 1)
         labels.push({
           id: i,
@@ -728,7 +728,7 @@ function createMap(data) {
             selectedId
           ],
           getFillColor: [
-            select_date, select_variable, select_method
+            selectedDate, select_variable, select_method
           ]
         },
       })
@@ -768,7 +768,7 @@ function createMap(data) {
         updateTriggers: {
           getLineColor: [],
           getFillColor: [
-            select_date, select_variable, select_method
+            selectedDate, select_variable, select_method
           ]
         },
         pickable: true,
@@ -856,49 +856,49 @@ function GetFeatureValue(id) {
   let json = selectedDataset;
   let txt = data_btn.innerText;
   if (txt == "Confirmed Count") {
-    return confirmed_count_data[json][select_date][id];
+    return confirmed_count_data[json][selectedDate][id];
   } else if (txt == "Confirmed Count per 10K Population") {
     if (population_data[json][id] == undefined || population_data[json][id] == 0) return 0;
-    return (confirmed_count_data[json][select_date][id] / population_data[json][id] * 10000).toFixed(3);
+    return (confirmed_count_data[json][selectedDate][id] / population_data[json][id] * 10000).toFixed(3);
   } else if (txt == "Confirmed Count per Licensed Bed") {
     if (beds_data[json][id] == undefined || beds_data[json][id] == 0) return 0;
-    return (confirmed_count_data[json][select_date][id] / beds_data[json][id]).toFixed(3);
+    return (confirmed_count_data[json][selectedDate][id] / beds_data[json][id]).toFixed(3);
   } else if (txt == "Death Count") {
-    return death_count_data[json][select_date][id];
+    return death_count_data[json][selectedDate][id];
   } else if (txt == "Death Count per 10K Population") {
     if (population_data[json][id] == undefined || population_data[json][id] == 0) return 0;
-    return (death_count_data[json][select_date][id] / population_data[json][id] * 10000).toFixed(3);
+    return (death_count_data[json][selectedDate][id] / population_data[json][id] * 10000).toFixed(3);
   } else if (txt == "Death Count/Confirmed Count") {
-    return fatality_data[json][select_date][id];
+    return fatality_data[json][selectedDate][id];
   } else if (txt == "Daily New Confirmed Count") {
-    let dt_idx = dates[selectedDataset].indexOf(select_date);
+    let dt_idx = dates[selectedDataset].indexOf(selectedDate);
     if (dt_idx == 0) return 0;
     let prev_date = dates[selectedDataset][dt_idx - 1];
-    var cur_vals = confirmed_count_data[json][select_date];
+    var cur_vals = confirmed_count_data[json][selectedDate];
     var pre_vals = confirmed_count_data[json][prev_date];
     return cur_vals[id] - pre_vals[id];
 
   } else if (txt == "Daily New Confirmed Count per 10K Pop") {
-    let dt_idx = dates[selectedDataset].indexOf(select_date);
+    let dt_idx = dates[selectedDataset].indexOf(selectedDate);
     if (dt_idx == 0) return 0;
     let prev_date = dates[selectedDataset][dt_idx - 1];
-    var cur_vals = confirmed_count_data[json][select_date];
+    var cur_vals = confirmed_count_data[json][selectedDate];
     var pre_vals = confirmed_count_data[json][prev_date];
     return ((cur_vals[id] - pre_vals[id]) / population_data[json][id] * 10000).toFixed(3);
 
   } else if (txt == "Daily New Death Count") {
-    let dt_idx = dates[selectedDataset].indexOf(select_date);
+    let dt_idx = dates[selectedDataset].indexOf(selectedDate);
     if (dt_idx == 0) return 0;
     let prev_date = dates[selectedDataset][dt_idx - 1];
-    var cur_vals = death_count_data[json][select_date];
+    var cur_vals = death_count_data[json][selectedDate];
     var pre_vals = death_count_data[json][prev_date];
     return cur_vals[id] - pre_vals[id];
 
   } else if (txt == "Daily New Death Count per 10K Pop") {
-    let dt_idx = dates[selectedDataset].indexOf(select_date);
+    let dt_idx = dates[selectedDataset].indexOf(selectedDate);
     if (dt_idx == 0) return 0;
     let prev_date = dates[selectedDataset][dt_idx - 1];
-    var cur_vals = death_count_data[json][select_date];
+    var cur_vals = death_count_data[json][selectedDate];
     var pre_vals = death_count_data[json][prev_date];
     return ((cur_vals[id] - pre_vals[id]) / population_data[json][id] * 10000).toFixed(3);
   }
@@ -909,45 +909,45 @@ function GetDataValues() {
   let json = selectedDataset;
   let txt = data_btn.innerText;
   if (txt == "Confirmed Count") {
-    return Object.values(confirmed_count_data[json][select_date]);
+    return Object.values(confirmed_count_data[json][selectedDate]);
   } else if (txt == "Confirmed Count per 10K Population") {
     var vals = [];
-    for (var id in confirmed_count_data[json][select_date]) {
+    for (var id in confirmed_count_data[json][selectedDate]) {
       if (population_data[json][id] == undefined || population_data[json][id] == 0)
         vals.push(0);
       else
-        vals.push(confirmed_count_data[json][select_date][id] / population_data[json][id] * 10000);
+        vals.push(confirmed_count_data[json][selectedDate][id] / population_data[json][id] * 10000);
     }
     return vals;
 
   } else if (txt == "Confirmed Count per Licensed Bed") {
     var vals = [];
-    for (var id in confirmed_count_data[json][select_date]) {
+    for (var id in confirmed_count_data[json][selectedDate]) {
       if (beds_data[json][id] == undefined || beds_data[json][id] == 0)
         vals.push(0);
       else
-        vals.push(confirmed_count_data[json][select_date][id] / beds_data[json][id]);
+        vals.push(confirmed_count_data[json][selectedDate][id] / beds_data[json][id]);
     }
     return vals;
 
   } else if (txt == "Death Count") {
-    return Object.values(death_count_data[json][select_date]);
+    return Object.values(death_count_data[json][selectedDate]);
   } else if (txt == "Death Count per 10K Population") {
     var vals = [];
-    for (var id in death_count_data[json][select_date]) {
+    for (var id in death_count_data[json][selectedDate]) {
       if (population_data[json][id] == undefined || population_data[json][id] == 0)
         vals.push(0);
       else
-        vals.push(death_count_data[json][select_date][id] / population_data[json][id] * 10000);
+        vals.push(death_count_data[json][selectedDate][id] / population_data[json][id] * 10000);
     }
     return vals;
   } else if (txt == "Death Count/Confirmed Count") {
-    return Object.values(fatality_data[json][select_date]);
+    return Object.values(fatality_data[json][selectedDate]);
   } else if (txt == "Daily New Confirmed Count") {
-    let dt_idx = dates[selectedDataset].indexOf(select_date);
+    let dt_idx = dates[selectedDataset].indexOf(selectedDate);
     if (dt_idx == 0) return;
     let prev_date = dates[selectedDataset][dt_idx - 1];
-    var cur_vals = confirmed_count_data[json][select_date];
+    var cur_vals = confirmed_count_data[json][selectedDate];
     var pre_vals = confirmed_count_data[json][prev_date];
     var rt_vals = [];
     for (let i in cur_vals) {
@@ -956,10 +956,10 @@ function GetDataValues() {
     return rt_vals;
 
   } else if (txt == "Daily New Confirmed Count per 10K Pop") {
-    let dt_idx = dates[selectedDataset].indexOf(select_date);
+    let dt_idx = dates[selectedDataset].indexOf(selectedDate);
     if (dt_idx == 0) return 0;
     let prev_date = dates[selectedDataset][dt_idx - 1];
-    var cur_vals = confirmed_count_data[json][select_date];
+    var cur_vals = confirmed_count_data[json][selectedDate];
     var pre_vals = confirmed_count_data[json][prev_date];
     var rt_vals = [];
     for (let i in cur_vals) {
@@ -968,10 +968,10 @@ function GetDataValues() {
     return rt_vals;
 
   } else if (txt == "Daily New Death Count") {
-    let dt_idx = dates[selectedDataset].indexOf(select_date);
+    let dt_idx = dates[selectedDataset].indexOf(selectedDate);
     if (dt_idx == 0) return 0;
     let prev_date = dates[selectedDataset][dt_idx - 1];
-    var cur_vals = death_count_data[json][select_date];
+    var cur_vals = death_count_data[json][selectedDate];
     var pre_vals = death_count_data[json][prev_date];
     var rt_vals = [];
     for (let i in cur_vals) {
@@ -980,10 +980,10 @@ function GetDataValues() {
     return rt_vals;
 
   } else if (txt == "Daily New Death Count per 10K Pop") {
-    let dt_idx = dates[selectedDataset].indexOf(select_date);
+    let dt_idx = dates[selectedDataset].indexOf(selectedDate);
     if (dt_idx == 0) return 0;
     let prev_date = dates[selectedDataset][dt_idx - 1];
-    var cur_vals = death_count_data[json][select_date];
+    var cur_vals = death_count_data[json][selectedDate];
     var pre_vals = death_count_data[json][prev_date];
     var rt_vals = [];
     for (let i in cur_vals) {
@@ -1084,18 +1084,18 @@ function OnLISAClick(evt) {
 
   if (!(json in lisa_data)) lisa_data[json] = {};
 
-  if (select_date in lisa_data[json] && field in lisa_data[json][select_date]) {
-    clusters = lisa_data[json][select_date][field].clusters;
-    sig = lisa_data[json][select_date][field].sig;
+  if (selectedDate in lisa_data[json] && field in lisa_data[json][selectedDate]) {
+    clusters = lisa_data[json][selectedDate][field].clusters;
+    sig = lisa_data[json][selectedDate][field].sig;
 
   } else {
     var lisa = gda_proxy.local_moran1(w.map_uuid, w.w_uuid, data);
     clusters = gda_proxy.parseVecDouble(lisa.clusters());
     sig = gda_proxy.parseVecDouble(lisa.significances());
-    if (!(select_date in lisa_data[json])) lisa_data[json][select_date] = {}
-    if (!(field in lisa_data[json][select_date])) lisa_data[json][select_date][field] = {}
-    lisa_data[json][select_date][field]['clusters'] = clusters;
-    lisa_data[json][select_date][field]['pvalues'] = sig;
+    if (!(selectedDate in lisa_data[json])) lisa_data[json][selectedDate] = {}
+    if (!(field in lisa_data[json][selectedDate])) lisa_data[json][selectedDate][field] = {}
+    lisa_data[json][selectedDate][field]['clusters'] = clusters;
+    lisa_data[json][selectedDate][field]['pvalues'] = sig;
   }
 
   color_vec[0] = '#ffffff';
@@ -1148,22 +1148,22 @@ function updateTooltip({
     let txt = data_btn.innerText;
 
     //if (txt == "Confirmed Count") {
-    let v1 = confirmed_count_data[json][select_date][id];
+    let v1 = confirmed_count_data[json][selectedDate][id];
     //} else if (txt == "Confirmed Count per 10K Population") {
-    let v2 = (population_data[json][id] == undefined || population_data[json][id] == 0) ? 0 : (confirmed_count_data[json][select_date][id] / population_data[json][id] * 10000);
+    let v2 = (population_data[json][id] == undefined || population_data[json][id] == 0) ? 0 : (confirmed_count_data[json][selectedDate][id] / population_data[json][id] * 10000);
     //} else if (txt == "Death Count") {
-    let v3 = death_count_data[json][select_date][id];
+    let v3 = death_count_data[json][selectedDate][id];
     //} else if (txt == "Death Count per 10K Population") {
-    let v4 = (population_data[json][id] == undefined || population_data[json][id] == 0) ? 0 : (death_count_data[json][select_date][id] / population_data[json][id] * 10000);
+    let v4 = (population_data[json][id] == undefined || population_data[json][id] == 0) ? 0 : (death_count_data[json][selectedDate][id] / population_data[json][id] * 10000);
     //} else if (txt == "Fatality Rate") {
-    let v5 = fatality_data[json][select_date][id];
+    let v5 = fatality_data[json][selectedDate][id];
     let v6 = population_data[json][id];
 
     let v7 = 0;
-    let dt_idx = dates[selectedDataset].indexOf(select_date);
+    let dt_idx = dates[selectedDataset].indexOf(selectedDate);
     if (dt_idx > 0) {
       let prev_date = dates[selectedDataset][dt_idx - 1];
-      var cur_vals = confirmed_count_data[json][select_date];
+      var cur_vals = confirmed_count_data[json][selectedDate];
       var pre_vals = confirmed_count_data[json][prev_date];
       v7 = cur_vals[id] - pre_vals[id];
     }
@@ -1172,12 +1172,12 @@ function updateTooltip({
     let v9 = 0;
     if (dt_idx > 0) {
       let prev_date = dates[selectedDataset][dt_idx - 1];
-      var cur_vals = death_count_data[json][select_date];
+      var cur_vals = death_count_data[json][selectedDate];
       var pre_vals = death_count_data[json][prev_date];
       v9 = cur_vals[id] - pre_vals[id];
     }
     let v10 = (population_data[json][id] == undefined || population_data[json][id] == 0) ? 0 : (v9 / population_data[json][id] * 10000);
-    let v11 = (beds_data[json][id] == undefined || beds_data[json][id] == 0) ? 0 : (confirmed_count_data[json][select_date][id] / beds_data[json][id]);
+    let v11 = (beds_data[json][id] == undefined || beds_data[json][id] == 0) ? 0 : (confirmed_count_data[json][selectedDate][id] / beds_data[json][id]);
     let v12 = beds_data[json][id];
 
     let name = "";
@@ -1212,9 +1212,9 @@ function updateTooltip({
     if (isLisa()) {
       let json = selectedDataset;
       let field = data_btn.innerText;
-      let c = lisa_data[json][select_date][field].clusters[id];
+      let c = lisa_data[json][selectedDate][field].clusters[id];
       text += '<br/><div><b>' + lisa_labels[c] + '</b></div>';
-      text += '<div><b>p-value:</b>' + lisa_data[json][select_date][field].pvalues[id] + '</div>';
+      text += '<div><b>p-value:</b>' + lisa_data[json][selectedDate][field].pvalues[id] + '</div>';
       text += '<div>Queen weights and 999 permutations</div>';
     }
 
@@ -1230,7 +1230,7 @@ function getConfirmedCountByDateState(data, state) {
   var features = data['features'];
   var dates = getDatesFromGeojson(data);
   var counts = 0;
-  var sel_dt = Date.parse(select_date);
+  var sel_dt = Date.parse(selectedDate);
   for (var j = 0; j < features.length; ++j) {
     if (features[j]["properties"]["STUSPS"] == state) {
       for (var i = 0; i < dates.length; ++i) {
@@ -1247,11 +1247,11 @@ function getConfirmedCountByDateState(data, state) {
 
 function getConfirmedCountByDateCounty(county_id, all) {
   let json = selectedDataset;
-  let n_count = Object.keys(confirmed_count_data[json][select_date]).length;
+  let n_count = Object.keys(confirmed_count_data[json][selectedDate]).length;
   var counts = [];
   let d = dates[selectedDataset][0];
   let sum = 0;
-  let sel_dt = Date.parse(select_date);
+  let sel_dt = Date.parse(selectedDate);
 
   if (all || Date.parse(d) <= sel_dt) {
     sum = confirmed_count_data[json][d][county_id];
@@ -1275,12 +1275,12 @@ function getConfirmedCountByDateCounty(county_id, all) {
 
 function getConfirmedCountByDate(data, all) {
   let json = selectedDataset;
-  let n_count = Object.keys(confirmed_count_data[json][select_date]).length;
+  let n_count = Object.keys(confirmed_count_data[json][selectedDate]).length;
   var counts = [];
   let d = dates[selectedDataset][0];
   // get total count for 1st day
   let sum = 0;
-  let sel_dt = Date.parse(select_date);
+  let sel_dt = Date.parse(selectedDate);
   for (let j = 0; j < n_count; ++j) {
     if (all || Date.parse(d) <= sel_dt) {
       sum = confirmed_count_data[json][d][j];
@@ -1557,14 +1557,14 @@ function createTimeSlider(geojson) {
     .attr("class", "slider_text")
     .attr("text-anchor", "end")
     .style("fill", "gray")
-    .html(select_date);
+    .html(selectedDate);
 
   d3.select("#slider").on("input", function() {
     var currentValue = parseInt(this.value);
-    select_date = dates[selectedDataset][currentValue - 1];
-    console.log(select_date);
+    selectedDate = dates[selectedDataset][currentValue - 1];
+    console.log(selectedDate);
 
-    document.getElementById('time-container').innerText = select_date;
+    document.getElementById('time-container').innerText = selectedDate;
     var xLabels = dates[selectedDataset];
     xScale.domain(xLabels);
 
@@ -1576,7 +1576,7 @@ function createTimeSlider(geojson) {
       .attr("fill", (d => xLabels[currentValue - 1] == d.date ? "red" : "gray"));
 
     d3.select(".slider_text")
-      .html(select_date);
+      .html(selectedDate);
 
     //gY.call(yAxis);
     if (isLisa()) {
