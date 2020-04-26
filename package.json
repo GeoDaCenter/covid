@@ -1,0 +1,23 @@
+{
+  "name": "covid-atlas",
+  "version": "0.0.0",
+  "description": "COVID Atlas [Alpha]",
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  },
+  "scripts": {
+    "dev": "npx live-server ./docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GeoDaCenter/covid.git"
+  },
+  "author": "Spatial@UChicago <spatial@uchicago.edu>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/GeoDaCenter/covid/issues"
+  },
+  "homepage": "https://github.com/GeoDaCenter/covid#readme"
+}
