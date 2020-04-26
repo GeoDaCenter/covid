@@ -89,6 +89,38 @@ var getLineColor = function() {
 /*
  * APPLICATION
 */
+
+// set up deck/mapbox
+const deckgl = new DeckGL({
+  mapboxApiAccessToken: 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg',
+  mapStyle: 'mapbox://styles/mapbox/dark-v9',
+  latitude: 32.850033,
+  longitude: -86.6500523,
+  zoom: 3.5,
+  maxZoom: 18,
+  pitch: 0,
+  controller: true,
+  onViewStateChange: OnViewChange,
+  layers: []
+});
+
+const mapbox = deckgl.getMapboxMap();
+
+mapbox.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+
+mapbox.on('zoomend', () => {
+  const currentZoom = mapbox.getZoom();
+  let lat = current_view == null ? deckgl.viewState.latitude : current_view.latitude;
+  let lon = current_view == null ? deckgl.viewState.longitude : current_view.longitude;
+  deckgl.setProps({
+    viewState: {
+      zoom: currentZoom,
+      latitude: lat,
+      longitude: lon
+    }
+  });
+});
+
 function updateDates() {
   // since 1P3A has different date format than usafacts
   if (select_map == 'county_usfacts.geojson') {
@@ -359,36 +391,6 @@ function parse1P3AData(data) {
 function OnViewChange(view) {
   current_view = view.viewState;
 }
-
-const deckgl = new DeckGL({
-  mapboxApiAccessToken: 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg',
-  mapStyle: 'mapbox://styles/mapbox/dark-v9',
-  latitude: 32.850033,
-  longitude: -86.6500523,
-  zoom: 3.5,
-  maxZoom: 18,
-  pitch: 0,
-  controller: true,
-  onViewStateChange: OnViewChange,
-  layers: []
-});
-
-const mapbox = deckgl.getMapboxMap();
-
-mapbox.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
-
-mapbox.on('zoomend', () => {
-  const currentZoom = mapbox.getZoom();
-  let lat = current_view == null ? deckgl.viewState.latitude : current_view.latitude;
-  let lon = current_view == null ? deckgl.viewState.longitude : current_view.longitude;
-  deckgl.setProps({
-    viewState: {
-      zoom: currentZoom,
-      latitude: lat,
-      longitude: lon
-    }
-  });
-});
 
 function resetView(layers) {
   deckgl.setProps({
