@@ -142,7 +142,7 @@ function getCurrentWuuid() {
   };
 }
 
-function updateSelectedDataset(url) {
+function updateSelectedDataset(url, callback) {
   // update selected dataset
   if (url.endsWith('county_usfacts.geojson')) {
     selectedDataset = 'county_usfacts.geojson';
@@ -267,7 +267,7 @@ function load1p3aData(url, callback) {
 function loadData(url, callback) {
   // check if the data has already been loaded (it goes into the geoda proxy)
   if (gda_proxy.Has(url)) {
-    updateSelectedDataset(url);
+    updateSelectedDataset(url, callback);
     return;
   }
   // otherwise, we need to fetch the data  
