@@ -160,7 +160,7 @@ function loadGeoDa(url, loadmap_evt) {
       .then((bb) => {
         // read as bytearray for GeoDaWASM
         var fileReader = new FileReader();
-        fileReader.onload = function(event) {
+        fileReader.onload = function (event) {
           var ab = event.target.result;
           gda_proxy.ReadGeojsonMap(url, {
             result: ab
@@ -171,15 +171,15 @@ function loadGeoDa(url, loadmap_evt) {
 
           // read as geojson for map
           var jsonReader = new FileReader();
-          jsonReader.onload = function(event) {
+          jsonReader.onload = function (event) {
             let data = JSON.parse(event.target.result);
             data = initFeatureSelected(data);
             usfacts_jsondata = data;
             // load usfacts csv data
             let csv_conf_url = "covid_confirmed_usafacts.csv";
             let csv_death_url = "covid_deaths_usafacts.csv";
-            d3.csv(csv_conf_url, function(confirm_data) {
-              d3.csv(csv_death_url, function(death_data) {
+            d3.csv(csv_conf_url, function (confirm_data) {
+              d3.csv(csv_death_url, function (death_data) {
                 select_map = 'county_usfacts.geojson';
                 usfacts_confirm_data = confirm_data;
                 usfacts_death_data = death_data;
@@ -209,15 +209,15 @@ function loadGeoDa(url, loadmap_evt) {
       })
       .then((blob) => {
         // use a BlobReader to read the zip from a Blob object
-        zip.createReader(new zip.BlobReader(blob), function(reader) {
+        zip.createReader(new zip.BlobReader(blob), function (reader) {
           // get all entries from the zip
-          reader.getEntries(function(entries) {
+          reader.getEntries(function (entries) {
             if (entries.length) {
               // uncompress first entry content as blob
-              entries[0].getData(new zip.BlobWriter(), function(bb) {
+              entries[0].getData(new zip.BlobWriter(), function (bb) {
                 // read as bytearray for GeoDaWASM
                 var fileReader = new FileReader();
-                fileReader.onload = function(event) {
+                fileReader.onload = function (event) {
                   var ab = event.target.result;
                   gda_proxy.ReadGeojsonMap(url, {
                     result: ab
@@ -227,7 +227,7 @@ function loadGeoDa(url, loadmap_evt) {
                   select_map = sel_map == 'state' ? 'states_update.geojson' : 'counties_update.geojson';
                   // read as json
                   var jsonReader = new FileReader();
-                  jsonReader.onload = function(event) {
+                  jsonReader.onload = function (event) {
                     let data = JSON.parse(event.target.result);
                     data = initFeatureSelected(data);
                     onep3a_jsondata = data;
@@ -240,13 +240,13 @@ function loadGeoDa(url, loadmap_evt) {
                 };
                 fileReader.readAsArrayBuffer(bb);
                 // close the zip reader
-                reader.close(function() { // onclose callback
+                reader.close(function () { // onclose callback
                 });
-              }, function(current, total) { // onprogress callback
+              }, function (current, total) { // onprogress callback
               });
             }
           });
-        }, function(error) { // onerror callback
+        }, function (error) { // onerror callback
           console.log("zip wrong");
         });
       });
