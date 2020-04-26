@@ -82,7 +82,7 @@ var gda_weights = {};
 var jsondata = {};
 var centroids = {};
 // the selected data source (e.g. county_usfacts.geojson)
-var select_map = null;
+var selectedDataset = null;
 var select_id = null;
 var select_date = null;
 var select_variable = null;
@@ -123,13 +123,13 @@ function isLisa() {
 }
 
 function getCurrentWuuid() {
-  if (!(select_map in gda_weights)) {
-    var w = gda_proxy.CreateQueenWeights(select_map, 1, 0, 0);
-    gda_weights[select_map] = w;
+  if (!(selectedDataset in gda_weights)) {
+    var w = gda_proxy.CreateQueenWeights(selectedDataset, 1, 0, 0);
+    gda_weights[selectedDataset] = w;
   }
   return {
-    'map_uuid': select_map,
-    'w_uuid': gda_weights[select_map].get_uid()
+    'map_uuid': selectedDataset,
+    'w_uuid': gda_weights[selectedDataset].get_uid()
   };
 }
 
@@ -140,13 +140,12 @@ function getCurrentWuuid() {
 function loadGeoDa(url, loadmap_evt) {
   if (gda_proxy.Has(url)) {
     if (url.endsWith('county_usfacts.geojson')) {
-      select_map = 'county_usfacts.geojson';
-
+      selectedDataset = 'county_usfacts.geojson';
     } else {
       if (url.endsWith('counties_update.geojson')) {
-        select_map = 'counties_update.geojson';
+        selectedDataset = 'counties_update.geojson';
       } else {
-        select_map = 'states_update.geojson';
+        selectedDataset = 'states_update.geojson';
       }
     }
     updateDates();
@@ -168,7 +167,7 @@ function loadGeoDa(url, loadmap_evt) {
           });
 
           let sel_map = url.indexOf('state') >= 0 ? 'state' : 'county';
-          select_map = 'county_usfacts.geojson'; // only  has county from UsaFacts
+          selectedDataset = 'county_usfacts.geojson'; // only  has county from UsaFacts
 
           // read as geojson for map
           var jsonReader = new FileReader();
@@ -181,19 +180,19 @@ function loadGeoDa(url, loadmap_evt) {
             let csv_death_url = "covid_deaths_usafacts.csv";
             d3.csv(csv_conf_url, function (confirm_data) {
               d3.csv(csv_death_url, function (death_data) {
-                select_map = 'county_usfacts.geojson';
+                selectedDataset = 'county_usfacts.geojson';
                 usfacts_confirm_data = confirm_data;
                 usfacts_death_data = death_data;
                 // merge usfacts csv data
                 parseUsaFactsData(data, confirm_data, death_data);
-                jsondata[select_map] = data;
+                jsondata[selectedDataset] = data;
                 loadmap_evt();
               });
             });
           };
           jsonReader.readAsText(bb);
           // get centroids for Cartogram
-          centroids[select_map] = gda_proxy.GetCentroids(url);
+          centroids[selectedDataset] = gda_proxy.GetCentroids(url);
         };
         fileReader.readAsArrayBuffer(bb);
       });
@@ -225,7 +224,7 @@ function loadGeoDa(url, loadmap_evt) {
                   });
 
                   let sel_map = url.startsWith('state') ? 'state' : 'county';
-                  select_map = sel_map == 'state' ? 'states_update.geojson' : 'counties_update.geojson';
+                  selectedDataset = sel_map == 'state' ? 'states_update.geojson' : 'counties_update.geojson';
                   // read as json
                   var jsonReader = new FileReader();
                   jsonReader.onload = function (event) {
@@ -233,11 +232,11 @@ function loadGeoDa(url, loadmap_evt) {
                     data = initFeatureSelected(data);
                     onep3a_jsondata = data;
                     parse1P3AData(data);
-                    jsondata[select_map] = data;
+                    jsondata[selectedDataset] = data;
                     loadmap_evt();
                   };
                   jsonReader.readAsText(bb);
-                  centroids[select_map] = gda_proxy.GetCentroids(url);
+                  centroids[selectedDataset] = gda_proxy.GetCentroids(url);
                 };
                 fileReader.readAsArrayBuffer(bb);
                 // close the zip reader
@@ -266,16 +265,16 @@ function getDatesFromUsaFacts(confirm_data) {
 }
 
 function parseUsaFactsData(data, confirm_data, death_data) {
-  let json = select_map;
+  let json = selectedDataset;
   if (!(json in confirmed_count_data)) confirmed_count_data[json] = {};
   if (!(json in death_count_data)) death_count_data[json] = {};
   if (!(json in fatality_data)) fatality_data[json] = {};
   if (!(json in population_data)) population_data[json] = {};
   if (!(json in beds_data)) beds_data[json] = {};
 
-  dates[select_map] = getDatesFromUsaFacts(confirm_data);
+  dates[selectedDataset] = getDatesFromUsaFacts(confirm_data);
   if (select_date == null || select_date.indexOf('-') >= 0)
-    select_date = dates[select_map][dates[select_map].length - 1];
+    select_date = dates[selectedDataset][dates[selectedDataset].length - 1];
 
   let conf_dict = {};
   let death_dict = {};
@@ -289,8 +288,8 @@ function parseUsaFactsData(data, confirm_data, death_data) {
     let beds = data.features[i].properties.beds;
     if (!(geoid in conf_dict)) {
       console.log("UsaFacts does not have:", data.features[i].properties);
-      for (let j = 0; j < dates[select_map].length; ++j) {
-        let d = dates[select_map][j];
+      for (let j = 0; j < dates[selectedDataset].length; ++j) {
+        let d = dates[selectedDataset][j];
         confirmed_count_data[json][d][i] = 0;
         death_count_data[json][d][i] = 0;
         fatality_data[json][d][i] = 0;
@@ -301,24 +300,24 @@ function parseUsaFactsData(data, confirm_data, death_data) {
     beds_data[json][i] = beds;
 
     // confirmed count
-    for (let j = 0; j < dates[select_map].length; ++j) {
-      let d = dates[select_map][j];
+    for (let j = 0; j < dates[selectedDataset].length; ++j) {
+      let d = dates[selectedDataset][j];
       if (!(d in confirmed_count_data[json])) {
         confirmed_count_data[json][d] = {};
       }
       confirmed_count_data[json][d][i] = conf_dict[geoid][d] == '' ? 0 : parseInt(conf_dict[geoid][d]);
     }
     // death count
-    for (var j = 0; j < dates[select_map].length; ++j) {
-      var d = dates[select_map][j];
+    for (var j = 0; j < dates[selectedDataset].length; ++j) {
+      var d = dates[selectedDataset][j];
       if (!(d in death_count_data[json])) {
         death_count_data[json][d] = {};
       }
       death_count_data[json][d][i] = death_dict[geoid][d] == '' ? 0 : parseInt(death_dict[geoid][d]);
     }
     // fatality
-    for (var j = 0; j < dates[select_map].length; ++j) {
-      var d = dates[select_map][j];
+    for (var j = 0; j < dates[selectedDataset].length; ++j) {
+      var d = dates[selectedDataset][j];
       if (!(d in fatality_data[json])) {
         fatality_data[json][d] = {};
       }
@@ -331,16 +330,16 @@ function parseUsaFactsData(data, confirm_data, death_data) {
 }
 
 function parse1P3AData(data) {
-  let json = select_map;
+  let json = selectedDataset;
   if (!(json in confirmed_count_data)) confirmed_count_data[json] = {};
   if (!(json in death_count_data)) death_count_data[json] = {};
   if (!(json in fatality_data)) fatality_data[json] = {};
   if (!(json in population_data)) population_data[json] = {};
   if (!(json in beds_data)) beds_data[json] = {};
 
-  dates[select_map] = getDatesFromGeojson(data);
+  dates[selectedDataset] = getDatesFromGeojson(data);
   if (select_date == null || select_date.indexOf('/'))
-    select_date = dates[select_map][dates[select_map].length - 1];
+    select_date = dates[selectedDataset][dates[selectedDataset].length - 1];
 
   for (let i = 0; i < data.features.length; i++) {
     let conf = data.features[i].properties.confirmed_count;
@@ -353,31 +352,31 @@ function parse1P3AData(data) {
     beds_data[json][id] = beds;
 
     // confirmed count
-    for (var j = 0; j < dates[select_map].length; ++j) {
-      var d = dates[select_map][j];
+    for (var j = 0; j < dates[selectedDataset].length; ++j) {
+      var d = dates[selectedDataset][j];
       if (!(d in confirmed_count_data[json])) {
         confirmed_count_data[json][d] = {};
       }
       confirmed_count_data[json][d][id] = data.features[i]["properties"][d];
     }
     // death count
-    for (var j = 0; j < dates[select_map].length; ++j) {
-      var d = dates[select_map][j];
+    for (var j = 0; j < dates[selectedDataset].length; ++j) {
+      var d = dates[selectedDataset][j];
       if (!(d in death_count_data[json])) {
         death_count_data[json][d] = {};
       }
       death_count_data[json][d][id] = data.features[i]["properties"]['d' + d];
     }
     // accum
-    for (var j = 1; j < dates[select_map].length; ++j) {
-      var d1 = dates[select_map][j - 1];
-      var d2 = dates[select_map][j];
+    for (var j = 1; j < dates[selectedDataset].length; ++j) {
+      var d1 = dates[selectedDataset][j - 1];
+      var d2 = dates[selectedDataset][j];
       confirmed_count_data[json][d2][id] += confirmed_count_data[json][d1][id];
       death_count_data[json][d2][id] += death_count_data[json][d1][id];
     }
     // fatality
-    for (var j = 0; j < dates[select_map].length; ++j) {
-      var d = dates[select_map][j];
+    for (var j = 0; j < dates[selectedDataset].length; ++j) {
+      var d = dates[selectedDataset][j];
       if (!(d in fatality_data[json])) {
         fatality_data[json][d] = {};
       }
@@ -391,16 +390,16 @@ function parse1P3AData(data) {
 
 function updateDates() {
   // since 1P3A has different date format than usafacts
-  if (select_map == 'county_usfacts.geojson') {
+  if (selectedDataset == 'county_usfacts.geojson') {
     // todo: the following line should be updated to current date
-    dates[select_map] = getDatesFromUsaFacts(usfacts_confirm_data);
+    dates[selectedDataset] = getDatesFromUsaFacts(usfacts_confirm_data);
     if (select_date == null || select_date.indexOf('-') >= 0)
-      select_date = dates[select_map][dates[select_map].length - 1];
+      select_date = dates[selectedDataset][dates[selectedDataset].length - 1];
   } else {
-    dates[select_map] = getDatesFromGeojson(onep3a_jsondata);
+    dates[selectedDataset] = getDatesFromGeojson(onep3a_jsondata);
     // todo: the following line should be updated to current date
     if (select_date == null || select_date.indexOf('/') >= 0)
-      select_date = dates[select_map][dates[select_map].length - 1];
+      select_date = dates[selectedDataset][dates[selectedDataset].length - 1];
   }
 }
 
@@ -494,11 +493,11 @@ function init_state() {
 function OnSourceClick(evt) {
   source_btn.innerText = evt.innerText;
   if (evt.innerText.indexOf('UsaFacts') >= 0) {
-    select_map = 'county_usfacts.geojson';
+    selectedDataset = 'county_usfacts.geojson';
   } else if (evt.innerText.indexOf('County (1Point3Arces.com)') >= 0) {
-    select_map = 'counties_update.geojson';
+    selectedDataset = 'counties_update.geojson';
   } else {
-    select_map = 'states_update.geojson';
+    selectedDataset = 'states_update.geojson';
   }
 
   if (isState()) {
@@ -573,14 +572,14 @@ function OnSave() {
   d3.json("lisa_dates.json", function (ds) {
     // only new lisa results will be saved
     let save_dates = [];
-    let start_pos = dates[select_map].indexOf(ds[ds.length - 1]) + 1;
-    for (let i = start_pos; i < dates[select_map].length; ++i) {
-      let d = dates[select_map][i];
-      if (d in lisa_data[select_map]) {
+    let start_pos = dates[selectedDataset].indexOf(ds[ds.length - 1]) + 1;
+    for (let i = start_pos; i < dates[selectedDataset].length; ++i) {
+      let d = dates[selectedDataset][i];
+      if (d in lisa_data[selectedDataset]) {
         console.log('lisa' + d + '.json');
         save_dates.push(d);
         setTimeout(function () {
-          saveText(JSON.stringify(lisa_data[select_map][d]), "lisa" + d + ".json");
+          saveText(JSON.stringify(lisa_data[selectedDataset][d]), "lisa" + d + ".json");
         }, 100 * (i - ds.length));
       }
     }
@@ -668,15 +667,15 @@ function setCartogramView(layers) {
 
 function createMap(data) {
   if (select_date == null)
-    select_date = dates[select_map][dates[select_map].length - 1];
+    select_date = dates[selectedDataset][dates[selectedDataset].length - 1];
 
   var labels = [];
-  var cents = centroids[select_map];
-  console.log("centroids from :", select_map);
+  var cents = centroids[selectedDataset];
+  console.log("centroids from :", selectedDataset);
 
   if (isLisa()) {
     for (let i = 0; i < data.features.length; ++i) {
-      let json = select_map;
+      let json = selectedDataset;
       //if (json == "county") {
       let field = data_btn.innerText;
       let c = lisa_data[json][select_date][field].clusters[i];
@@ -805,7 +804,7 @@ function createMap(data) {
   }
 
   if (document.getElementById('linechart').innerHTML == "" ||
-    d3.select("#slider").node().max != dates[select_map].length) {
+    d3.select("#slider").node().max != dates[selectedDataset].length) {
     addTrendLine(data, "");
   } else {
     updateTrendLine({
@@ -819,7 +818,7 @@ function createMap(data) {
 }
 
 function loadMap() {
-  createMap(jsondata[select_map]);
+  createMap(jsondata[selectedDataset]);
 }
 
 function isCartogram() {
@@ -843,7 +842,7 @@ function initFeatureSelected(features) {
 }
 
 function GetFeatureValue(id) {
-  let json = select_map;
+  let json = selectedDataset;
   let txt = data_btn.innerText;
   if (txt == "Confirmed Count") {
     return confirmed_count_data[json][select_date][id];
@@ -861,33 +860,33 @@ function GetFeatureValue(id) {
   } else if (txt == "Death Count/Confirmed Count") {
     return fatality_data[json][select_date][id];
   } else if (txt == "Daily New Confirmed Count") {
-    let dt_idx = dates[select_map].indexOf(select_date);
+    let dt_idx = dates[selectedDataset].indexOf(select_date);
     if (dt_idx == 0) return 0;
-    let prev_date = dates[select_map][dt_idx - 1];
+    let prev_date = dates[selectedDataset][dt_idx - 1];
     var cur_vals = confirmed_count_data[json][select_date];
     var pre_vals = confirmed_count_data[json][prev_date];
     return cur_vals[id] - pre_vals[id];
 
   } else if (txt == "Daily New Confirmed Count per 10K Pop") {
-    let dt_idx = dates[select_map].indexOf(select_date);
+    let dt_idx = dates[selectedDataset].indexOf(select_date);
     if (dt_idx == 0) return 0;
-    let prev_date = dates[select_map][dt_idx - 1];
+    let prev_date = dates[selectedDataset][dt_idx - 1];
     var cur_vals = confirmed_count_data[json][select_date];
     var pre_vals = confirmed_count_data[json][prev_date];
     return ((cur_vals[id] - pre_vals[id]) / population_data[json][id] * 10000).toFixed(3);
 
   } else if (txt == "Daily New Death Count") {
-    let dt_idx = dates[select_map].indexOf(select_date);
+    let dt_idx = dates[selectedDataset].indexOf(select_date);
     if (dt_idx == 0) return 0;
-    let prev_date = dates[select_map][dt_idx - 1];
+    let prev_date = dates[selectedDataset][dt_idx - 1];
     var cur_vals = death_count_data[json][select_date];
     var pre_vals = death_count_data[json][prev_date];
     return cur_vals[id] - pre_vals[id];
 
   } else if (txt == "Daily New Death Count per 10K Pop") {
-    let dt_idx = dates[select_map].indexOf(select_date);
+    let dt_idx = dates[selectedDataset].indexOf(select_date);
     if (dt_idx == 0) return 0;
-    let prev_date = dates[select_map][dt_idx - 1];
+    let prev_date = dates[selectedDataset][dt_idx - 1];
     var cur_vals = death_count_data[json][select_date];
     var pre_vals = death_count_data[json][prev_date];
     return ((cur_vals[id] - pre_vals[id]) / population_data[json][id] * 10000).toFixed(3);
@@ -896,7 +895,7 @@ function GetFeatureValue(id) {
 }
 
 function GetDataValues() {
-  let json = select_map;
+  let json = selectedDataset;
   let txt = data_btn.innerText;
   if (txt == "Confirmed Count") {
     return Object.values(confirmed_count_data[json][select_date]);
@@ -934,9 +933,9 @@ function GetDataValues() {
   } else if (txt == "Death Count/Confirmed Count") {
     return Object.values(fatality_data[json][select_date]);
   } else if (txt == "Daily New Confirmed Count") {
-    let dt_idx = dates[select_map].indexOf(select_date);
+    let dt_idx = dates[selectedDataset].indexOf(select_date);
     if (dt_idx == 0) return;
-    let prev_date = dates[select_map][dt_idx - 1];
+    let prev_date = dates[selectedDataset][dt_idx - 1];
     var cur_vals = confirmed_count_data[json][select_date];
     var pre_vals = confirmed_count_data[json][prev_date];
     var rt_vals = [];
@@ -946,9 +945,9 @@ function GetDataValues() {
     return rt_vals;
 
   } else if (txt == "Daily New Confirmed Count per 10K Pop") {
-    let dt_idx = dates[select_map].indexOf(select_date);
+    let dt_idx = dates[selectedDataset].indexOf(select_date);
     if (dt_idx == 0) return 0;
-    let prev_date = dates[select_map][dt_idx - 1];
+    let prev_date = dates[selectedDataset][dt_idx - 1];
     var cur_vals = confirmed_count_data[json][select_date];
     var pre_vals = confirmed_count_data[json][prev_date];
     var rt_vals = [];
@@ -958,9 +957,9 @@ function GetDataValues() {
     return rt_vals;
 
   } else if (txt == "Daily New Death Count") {
-    let dt_idx = dates[select_map].indexOf(select_date);
+    let dt_idx = dates[selectedDataset].indexOf(select_date);
     if (dt_idx == 0) return 0;
-    let prev_date = dates[select_map][dt_idx - 1];
+    let prev_date = dates[selectedDataset][dt_idx - 1];
     var cur_vals = death_count_data[json][select_date];
     var pre_vals = death_count_data[json][prev_date];
     var rt_vals = [];
@@ -970,9 +969,9 @@ function GetDataValues() {
     return rt_vals;
 
   } else if (txt == "Daily New Death Count per 10K Pop") {
-    let dt_idx = dates[select_map].indexOf(select_date);
+    let dt_idx = dates[selectedDataset].indexOf(select_date);
     if (dt_idx == 0) return 0;
-    let prev_date = dates[select_map][dt_idx - 1];
+    let prev_date = dates[selectedDataset][dt_idx - 1];
     var cur_vals = death_count_data[json][select_date];
     var pre_vals = death_count_data[json][prev_date];
     var rt_vals = [];
@@ -1066,7 +1065,7 @@ function OnLISAClick(evt) {
   var w = getCurrentWuuid();
   var data = GetDataValues();
   let field = data_btn.innerText;
-  let json = select_map;
+  let json = selectedDataset;
   var color_vec = lisa_colors;
   var labels = lisa_labels;
   var clusters;
@@ -1134,7 +1133,7 @@ function updateTooltip({
 
   if (object) {
     let id = object.properties.id;
-    let json = select_map;
+    let json = selectedDataset;
     let txt = data_btn.innerText;
 
     //if (txt == "Confirmed Count") {
@@ -1150,9 +1149,9 @@ function updateTooltip({
     let v6 = population_data[json][id];
 
     let v7 = 0;
-    let dt_idx = dates[select_map].indexOf(select_date);
+    let dt_idx = dates[selectedDataset].indexOf(select_date);
     if (dt_idx > 0) {
-      let prev_date = dates[select_map][dt_idx - 1];
+      let prev_date = dates[selectedDataset][dt_idx - 1];
       var cur_vals = confirmed_count_data[json][select_date];
       var pre_vals = confirmed_count_data[json][prev_date];
       v7 = cur_vals[id] - pre_vals[id];
@@ -1161,7 +1160,7 @@ function updateTooltip({
 
     let v9 = 0;
     if (dt_idx > 0) {
-      let prev_date = dates[select_map][dt_idx - 1];
+      let prev_date = dates[selectedDataset][dt_idx - 1];
       var cur_vals = death_count_data[json][select_date];
       var pre_vals = death_count_data[json][prev_date];
       v9 = cur_vals[id] - pre_vals[id];
@@ -1200,7 +1199,7 @@ function updateTooltip({
     text += '</table>';
 
     if (isLisa()) {
-      let json = select_map;
+      let json = selectedDataset;
       let field = data_btn.innerText;
       let c = lisa_data[json][select_date][field].clusters[id];
       text += '<br/><div><b>' + lisa_labels[c] + '</b></div>';
@@ -1236,10 +1235,10 @@ function getConfirmedCountByDateState(data, state) {
 }
 
 function getConfirmedCountByDateCounty(county_id, all) {
-  let json = select_map;
+  let json = selectedDataset;
   let n_count = Object.keys(confirmed_count_data[json][select_date]).length;
   var counts = [];
-  let d = dates[select_map][0];
+  let d = dates[selectedDataset][0];
   let sum = 0;
   let sel_dt = Date.parse(select_date);
 
@@ -1247,10 +1246,10 @@ function getConfirmedCountByDateCounty(county_id, all) {
     sum = confirmed_count_data[json][d][county_id];
   }
   counts.push(sum);
-  for (let i = 1; i < dates[select_map].length; ++i) {
+  for (let i = 1; i < dates[selectedDataset].length; ++i) {
     let sum = 0;
-    let d0 = dates[select_map][i - 1];
-    let d1 = dates[select_map][i];
+    let d0 = dates[selectedDataset][i - 1];
+    let d1 = dates[selectedDataset][i];
     if (all || Date.parse(d1) <= sel_dt) {
       sum = (confirmed_count_data[json][d1][county_id] - confirmed_count_data[json][d0][county_id]);
     }
@@ -1264,10 +1263,10 @@ function getConfirmedCountByDateCounty(county_id, all) {
 }
 
 function getConfirmedCountByDate(data, all) {
-  let json = select_map;
+  let json = selectedDataset;
   let n_count = Object.keys(confirmed_count_data[json][select_date]).length;
   var counts = [];
-  let d = dates[select_map][0];
+  let d = dates[selectedDataset][0];
   // get total count for 1st day
   let sum = 0;
   let sel_dt = Date.parse(select_date);
@@ -1277,11 +1276,11 @@ function getConfirmedCountByDate(data, all) {
     }
   }
   counts.push(sum);
-  for (let i = 1; i < dates[select_map].length; ++i) {
+  for (let i = 1; i < dates[selectedDataset].length; ++i) {
     let pre_sum = 0;
     let cur_sum = 0;
-    let d0 = dates[select_map][i - 1];
-    let d1 = dates[select_map][i];
+    let d0 = dates[selectedDataset][i - 1];
+    let d1 = dates[selectedDataset][i];
     if (all || Date.parse(d1) <= sel_dt) {
       for (let j = 0; j < n_count; ++j) {
         pre_sum += confirmed_count_data[json][d0][j];
@@ -1329,7 +1328,7 @@ function addTrendLine(data, title) {
   var yAxis = d3.axisLeft().scale(yScale);
 
   // extract the x labels for the axis and scale domain
-  var xLabels = dates[select_map];
+  var xLabels = dates[selectedDataset];
   xScale.domain(xLabels);
 
   var yValues = getConfirmedCountByDate(data, false);
@@ -1413,9 +1412,9 @@ function updateTrendLine({
     left: 50
   };
   var xLabels, yValues, title;
-  let json = select_map;
+  let json = selectedDataset;
 
-  xLabels = dates[select_map];
+  xLabels = dates[selectedDataset];
   if (object) {
     yValues = getConfirmedCountByDateCounty(object.properties.id, false);
   } else {
@@ -1476,7 +1475,7 @@ function updateTrendLine({
 
 function createTimeSlider(geojson) {
   if (document.getElementById("slider-svg").innerHTML.length > 0) {
-    if (d3.select("#slider").node().max != dates[select_map].length) {
+    if (d3.select("#slider").node().max != dates[selectedDataset].length) {
       d3.select("#slider-svg").select("svg").remove();
     } else {
       return;
@@ -1498,7 +1497,7 @@ function createTimeSlider(geojson) {
   var yScale = d3.scaleLinear()
     .range([height - padding, padding]);
 
-  var xLabels = dates[select_map];
+  var xLabels = dates[selectedDataset];
   xScale.domain(xLabels);
 
   d3.select("#slider").node().max = xLabels.length;
@@ -1551,11 +1550,11 @@ function createTimeSlider(geojson) {
 
   d3.select("#slider").on("input", function() {
     var currentValue = parseInt(this.value);
-    select_date = dates[select_map][currentValue - 1];
+    select_date = dates[selectedDataset][currentValue - 1];
     console.log(select_date);
 
     document.getElementById('time-container').innerText = select_date;
-    var xLabels = dates[select_map];
+    var xLabels = dates[selectedDataset];
     xScale.domain(xLabels);
 
     var yValues = getAccumConfirmedCountByDate(geojson, true);
