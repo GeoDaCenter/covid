@@ -443,10 +443,10 @@ function OnCountyClick(target) {
       countyMap = "counties_update.geojson";
     }
   }
-  loadData(countyMap, init_county);
+  loadData(countyMap, initCounty);
 }
 
-function init_county() {
+function initCounty() {
   var vals;
   var nb;
   selectedMethod = "choropleth";
