@@ -1,7 +1,5 @@
-/**
+/*
  * Main functions for Covid atlas map app (map.html)
- * 
- * Authors: Xun Li (lixun910@gmail.com),
  */
 
 class GeodaProxy {
