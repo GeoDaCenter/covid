@@ -603,7 +603,9 @@ const deckgl = new DeckGL({
   maxZoom: 18,
   pitch: 0,
   controller: true,
-  onViewStateChange: OnViewChange,
+  onViewStateChange: (view) => {
+    current_view = view.viewState;
+  },
   layers: []
 });
 
@@ -623,10 +625,6 @@ mapbox.on('zoomend', () => {
     }
   });
 });
-
-function OnViewChange(view) {
-  current_view = view.viewState;
-}
 
 function resetView(layers) {
   deckgl.setProps({
