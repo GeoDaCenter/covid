@@ -1,6 +1,7 @@
 /*
- * Main functions for Covid atlas map app (map.html)
- */
+/*
+ * DEPENDENCIES
+*/
 
 const {
   DeckGL,
@@ -8,6 +9,11 @@ const {
   TextLayer,
   ScatterplotLayer
 } = deck;
+
+
+/*
+ * CONFIG
+*/
 
 const COLOR_SCALE = [
   [240, 240, 240],
@@ -24,12 +30,19 @@ const COLOR_SCALE = [
 ];
 
 
+/*
+ * UTILITIES
+*/
 
 function isInt(n) {
   return Number(n) === n && n % 1 === 0;
 }
 
-// global variables
+
+/*
+ * GLOBALS
+*/
+
 var usfacts_confirm_data;
 var usfacts_death_data;
 var usfacts_jsondata;
@@ -63,9 +76,8 @@ var lisa_labels = ["Not significant", "High-High", "Low-Low", "High-Low", "Low-H
 var lisa_colors = ["#ffffff", "#FF0000", "#0000FF", "#a7adf9", "#f4ada8", "#464646", "#999999"];
 var cartogram_data;
 var current_view = null;
-
-// global functions
 var colorScale;
+
 var getFillColor = function() {
   return [255, 255, 255, 200];
 };
@@ -73,6 +85,10 @@ var getLineColor = function() {
   return [220, 220, 220];
 };
 
+
+/*
+ * APPLICATION
+*/
 function updateDates() {
   // since 1P3A has different date format than usafacts
   if (select_map == 'county_usfacts.geojson') {
@@ -1569,7 +1585,7 @@ function collapse(el) {
 }
 
 /*
-entry point
+ * ENTRY POINT
 */
 var Module = {
   onRuntimeInitialized: function () {
