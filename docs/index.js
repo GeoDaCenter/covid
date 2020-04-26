@@ -146,7 +146,8 @@ function getCurrentWuuid() {
  * DATA LOADING
 */
 
-function loadData(url, loadmap_evt) {
+function loadData(url, callback) {
+  // check if the data has already been loaded (it goes into the geoda proxy)
   if (gda_proxy.Has(url)) {
     if (url.endsWith('county_usfacts.geojson')) {
       selectedDataset = 'county_usfacts.geojson';
@@ -158,7 +159,7 @@ function loadData(url, loadmap_evt) {
       }
     }
     updateDates();
-    loadmap_evt();
+    callback();
 
   } else if (url.endsWith('county_usfacts.geojson')) {
     // load usfacts geojson data
@@ -195,7 +196,7 @@ function loadData(url, loadmap_evt) {
                 // merge usfacts csv data
                 parseUsaFactsData(data, confirm_data, death_data);
                 jsondata[selectedDataset] = data;
-                loadmap_evt();
+                callback();
               });
             });
           };
@@ -242,7 +243,7 @@ function loadData(url, loadmap_evt) {
                     onep3aData = data;
                     parse1P3AData(data);
                     jsondata[selectedDataset] = data;
-                    loadmap_evt();
+                    callback();
                   };
                   jsonReader.readAsText(bb);
                   centroids[selectedDataset] = gda_proxy.GetCentroids(url);
