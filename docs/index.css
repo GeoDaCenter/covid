@@ -49,6 +49,11 @@ a, a:visited {
     font-size: 70pt;
     color: #999;
     display: none;
+    top: 0px;
+    width: 50%;
+    min-width: 495px;
+    position: absolute;
+    text-align: center;
 }
 .unselectable{
     -webkit-touch-callout: none;
@@ -57,14 +62,6 @@ a, a:visited {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-}
-
-.bottom-left {
-    top: 0px;
-    width: 50%;
-    min-width: 495px;
-    position: absolute;
-    text-align: center;
 }
 
 .logo {
