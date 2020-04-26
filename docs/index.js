@@ -451,7 +451,7 @@ function init_county() {
     return colorScale(v);
   };
   getLineColor = function (f) {
-    return f.properties.id == select_id ? [255, 0, 0] : [200, 200, 200];
+    return f.properties.id == selectedId ? [255, 0, 0] : [200, 200, 200];
   };
   UpdateLegend();
   UpdateLegendLabels(nb.bins);
@@ -487,7 +487,7 @@ function init_state() {
     return colorScale(v);
   };
   getLineColor = function (f) {
-    return f.properties.id == select_id ? [255, 0, 0] : [255, 255, 255, 50];
+    return f.properties.id == selectedId ? [255, 0, 0] : [255, 255, 255, 50];
   };
   UpdateLegend();
   UpdateLegendLabels(nb.bins);
@@ -725,7 +725,7 @@ function createMap(data) {
         pickable: true,
         updateTriggers: {
           getLineColor: [
-            select_id
+            selectedId
           ],
           getFillColor: [
             select_date, select_variable, select_method
@@ -837,7 +837,7 @@ function isCartogram() {
 }
 
 function getElevation(f) {
-  return f.properties.id == select_id ? 90000 : 1;
+  return f.properties.id == selectedId ? 90000 : 1;
 }
 
 function buttonClicked(evt) {
@@ -1108,7 +1108,7 @@ function OnLISAClick(evt) {
 
   getLineColor = function(f) {
     if (f.properties.STATEFP != select_state_id) return [255, 255, 255, 0];
-    return f.properties.id == select_id ? [255, 0, 0] : [255, 255, 255, 50];
+    return f.properties.id == selectedId ? [255, 0, 0] : [255, 255, 255, 50];
   };
 
   UpdateLisaLegend(color_vec);
