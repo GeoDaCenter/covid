@@ -622,7 +622,7 @@ const deckgl = new DeckGL({
 
 const mapbox = deckgl.getMapboxMap();
 
-mapbox.addControl(new mapboxgl.NavigationControl(), 'bottom-left');
+mapbox.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
 mapbox.on('zoomend', () => {
     const currentZoom = mapbox.getZoom();
