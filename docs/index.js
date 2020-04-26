@@ -583,7 +583,7 @@ function createMap(data) {
   createTimeSlider(data);
 }
 
-function loadMap(url) {
+function loadMap() {
   createMap(jsondata[select_map]);
 }
 
