@@ -29,6 +29,9 @@ const COLOR_SCALE = [
   [128, 0, 38]
 ];
 
+var lisa_labels = ["Not significant", "High-High", "Low-Low", "High-Low", "Low-High", "Undefined", "Isolated"];
+var lisa_colors = ["#ffffff", "#FF0000", "#0000FF", "#a7adf9", "#f4ada8", "#464646", "#999999"];
+
 
 /*
  * UTILITIES
@@ -66,39 +69,38 @@ function saveText(text, filename) {
  * GLOBALS
 */
 
+// data
 var usfacts_confirm_data;
 var usfacts_death_data;
 var usfacts_jsondata;
 var onep3a_jsondata;
+var population_data = {};
+var beds_data = {};
+var cartogram_data;
+var dates = {};
+var confirmed_count_data = {};
+var death_count_data = {};
+var fatality_data = {};
+var lisa_data = {};
+
+// dataset name constants
 var state_map = "states_update.geojson";
 var county_map = "county_usfacts.geojson";
 var map_variable = "confirmed_count";
+
+// ui elements
 var choropleth_btn = document.getElementById("btn-nb");
 var lisa_btn = document.getElementById("btn-lisa");
 var data_btn = document.getElementById("select-data");
 var source_btn = document.getElementById("select-source");
+
+// geoda
 var gda_proxy;
 var gda_weights = {};
 var jsondata = {};
 var centroids = {};
-// the selected data source (e.g. county_usfacts.geojson)
-var selectedDataset = null;
-var select_id = null;
-var select_date = null;
-var select_variable = null;
-var select_method = null;
-var show_labels = false;
-var select_state_id = -1;
-var dates = {};
-var confirmed_count_data = {};
-var death_count_data = {};
-var population_data = {};
-var beds_data = {};
-var fatality_data = {};
-var lisa_data = {};
-var lisa_labels = ["Not significant", "High-High", "Low-Low", "High-Low", "Low-High", "Undefined", "Isolated"];
-var lisa_colors = ["#ffffff", "#FF0000", "#0000FF", "#a7adf9", "#f4ada8", "#464646", "#999999"];
-var cartogram_data;
+
+// misc
 var current_view = null;
 var colorScale;
 
@@ -113,6 +115,15 @@ var getLineColor = function() {
 /*
  * STATE
 */
+
+// the selected data source (e.g. county_usfacts.geojson)
+var selectedDataset = null;
+var selectedId = null;
+var select_date = null;
+var select_variable = null;
+var select_method = null;
+var show_labels = false;
+var select_state_id = -1;
 
 function isState() {
   return source_btn.innerText.indexOf('State') >= 0;
