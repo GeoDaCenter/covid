@@ -270,10 +270,10 @@ function loadData(url, callback) {
   }
 }
 
-function getDatesFromUsaFacts(confirm_data) {
+function getDatesFromUsaFacts(cases) {
   var xLabels = [];
-  let n = confirm_data.length;
-  for (let col in confirm_data[0]) {
+  let n = cases.length;
+  for (let col in cases[0]) {
     if (col.endsWith("20")) {
       xLabels.push(col);
     }
