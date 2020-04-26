@@ -173,11 +173,11 @@ async function loadUsafactsData(url, callback) {
   const featuresWithIds = assignIdsToFeatures(json);
   usafactsData = featuresWithIds;
 
-  // load cases
-  usafactsCases = await d3.csv('covid_confirmed_usafacts.csv');
-
-  // load deaths
-  usafactsDeaths = await d3.csv('covid_deaths_usafacts.csv');
+  // load cases and deaths in parallel
+  [ usafactsCases, usafactsDeaths ] = await Promise.all([
+    d3.csv('covid_confirmed_usafacts.csv'),
+    d3.csv('covid_deaths_usafacts.csv'),
+  ]);
 
   // update state
   // TODO isn't there a function that does this?
