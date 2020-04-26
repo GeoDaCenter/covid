@@ -241,7 +241,7 @@ function load1p3aData(url, callback) {
                 var jsonReader = new FileReader();
                 jsonReader.onload = function (event) {
                   let data = JSON.parse(event.target.result);
-                  data = initFeatureSelected(data);
+                  data = assignIdsToFeatures(data);
                   onep3aData = data;
                   parse1P3AData(data);
                   jsondata[selectedDataset] = data;
@@ -858,7 +858,7 @@ function buttonClicked(evt) {
   console.log(evt);
 }
 
-function initFeatureSelected(features) {
+function assignIdsToFeatures(features) {
   for (let i = 0; i < features.features.length; i++) {
     // Track each feature individually with a unique ID.
     features.features[i].properties.id = i;
