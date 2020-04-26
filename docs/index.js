@@ -142,125 +142,140 @@ function getCurrentWuuid() {
   };
 }
 
+function updateSelectedDataset(url) {
+  // update selected dataset
+  if (url.endsWith('county_usfacts.geojson')) {
+    selectedDataset = 'county_usfacts.geojson';
+  } else {
+    if (url.endsWith('counties_update.geojson')) {
+      selectedDataset = 'counties_update.geojson';
+    } else {
+      selectedDataset = 'states_update.geojson';
+    }
+  }
+  updateDates();
+  callback();
+}
+
+
 /*
  * DATA LOADING
 */
 
+function loadUsafactsData(url, callback) {
+  // load usfacts geojson data
+  fetch(url)
+    .then((response) => {
+      return response.blob();
+    })
+    .then((bb) => {
+      // read as bytearray for GeoDaWASM
+      var fileReader = new FileReader();
+      fileReader.onload = function (event) {
+        var ab = event.target.result;
+        gda_proxy.ReadGeojsonMap(url, {
+          result: ab
+        });
+
+        let sel_map = url.indexOf('state') >= 0 ? 'state' : 'county';
+        selectedDataset = 'county_usfacts.geojson'; // only  has county from UsaFacts
+
+        // read as geojson for map
+        var jsonReader = new FileReader();
+        jsonReader.onload = function (event) {
+          let data = JSON.parse(event.target.result);
+          data = initFeatureSelected(data);
+          usafactsData = data;
+          // load usfacts csv data
+          let csv_conf_url = "covid_confirmed_usafacts.csv";
+          let csv_death_url = "covid_deaths_usafacts.csv";
+          d3.csv(csv_conf_url, function (confirm_data) {
+            d3.csv(csv_death_url, function (death_data) {
+              selectedDataset = 'county_usfacts.geojson';
+              usafactsCases = confirm_data;
+              usafactsDeaths = death_data;
+              // merge usfacts csv data
+              parseUsaFactsData(data, confirm_data, death_data);
+              jsondata[selectedDataset] = data;
+              callback();
+            });
+          });
+        };
+        jsonReader.readAsText(bb);
+        // get centroids for Cartogram
+        centroids[selectedDataset] = gda_proxy.GetCentroids(url);
+      };
+      fileReader.readAsArrayBuffer(bb);
+    });
+}
+
+function load1p3aData(url, callback) {
+  // load 1P3A data 
+  zip.workerScripts = {
+    deflater: ['./js/z-worker.js', './js/pako/pako_deflate.min.js', './js/pako/codecs.js'],
+    inflater: ['./js/z-worker.js', './js/pako/pako_inflate.min.js', './js/pako/codecs.js']
+  };
+  fetch(url + ".zip")
+    .then((response) => {
+      return response.blob();
+    })
+    .then((blob) => {
+      // use a BlobReader to read the zip from a Blob object
+      zip.createReader(new zip.BlobReader(blob), function (reader) {
+        // get all entries from the zip
+        reader.getEntries(function (entries) {
+          if (entries.length) {
+            // uncompress first entry content as blob
+            entries[0].getData(new zip.BlobWriter(), function (bb) {
+              // read as bytearray for GeoDaWASM
+              var fileReader = new FileReader();
+              fileReader.onload = function (event) {
+                var ab = event.target.result;
+                gda_proxy.ReadGeojsonMap(url, {
+                  result: ab
+                });
+
+                let sel_map = url.startsWith('state') ? 'state' : 'county';
+                selectedDataset = sel_map == 'state' ? 'states_update.geojson' : 'counties_update.geojson';
+                // read as json
+                var jsonReader = new FileReader();
+                jsonReader.onload = function (event) {
+                  let data = JSON.parse(event.target.result);
+                  data = initFeatureSelected(data);
+                  onep3aData = data;
+                  parse1P3AData(data);
+                  jsondata[selectedDataset] = data;
+                  callback();
+                };
+                jsonReader.readAsText(bb);
+                centroids[selectedDataset] = gda_proxy.GetCentroids(url);
+              };
+              fileReader.readAsArrayBuffer(bb);
+              // close the zip reader
+              reader.close(function () { // onclose callback
+              });
+            }, function (current, total) { // onprogress callback
+            });
+          }
+        });
+      }, function (error) { // onerror callback
+        console.log("zip wrong");
+      });
+    });
+}
+
 function loadData(url, callback) {
   // check if the data has already been loaded (it goes into the geoda proxy)
   if (gda_proxy.Has(url)) {
-    if (url.endsWith('county_usfacts.geojson')) {
-      selectedDataset = 'county_usfacts.geojson';
-    } else {
-      if (url.endsWith('counties_update.geojson')) {
-        selectedDataset = 'counties_update.geojson';
-      } else {
-        selectedDataset = 'states_update.geojson';
-      }
-    }
-    updateDates();
-    callback();
-
-  } else if (url.endsWith('county_usfacts.geojson')) {
-    // load usfacts geojson data
-    fetch(url)
-      .then((response) => {
-        return response.blob();
-      })
-      .then((bb) => {
-        // read as bytearray for GeoDaWASM
-        var fileReader = new FileReader();
-        fileReader.onload = function (event) {
-          var ab = event.target.result;
-          gda_proxy.ReadGeojsonMap(url, {
-            result: ab
-          });
-
-          let sel_map = url.indexOf('state') >= 0 ? 'state' : 'county';
-          selectedDataset = 'county_usfacts.geojson'; // only  has county from UsaFacts
-
-          // read as geojson for map
-          var jsonReader = new FileReader();
-          jsonReader.onload = function (event) {
-            let data = JSON.parse(event.target.result);
-            data = initFeatureSelected(data);
-            usafactsData = data;
-            // load usfacts csv data
-            let csv_conf_url = "covid_confirmed_usafacts.csv";
-            let csv_death_url = "covid_deaths_usafacts.csv";
-            d3.csv(csv_conf_url, function (confirm_data) {
-              d3.csv(csv_death_url, function (death_data) {
-                selectedDataset = 'county_usfacts.geojson';
-                usafactsCases = confirm_data;
-                usafactsDeaths = death_data;
-                // merge usfacts csv data
-                parseUsaFactsData(data, confirm_data, death_data);
-                jsondata[selectedDataset] = data;
-                callback();
-              });
-            });
-          };
-          jsonReader.readAsText(bb);
-          // get centroids for Cartogram
-          centroids[selectedDataset] = gda_proxy.GetCentroids(url);
-        };
-        fileReader.readAsArrayBuffer(bb);
-      });
+    updateSelectedDataset(url);
+    return;
+  }
+  // otherwise, we need to fetch the data  
+  if (url.endsWith('county_usfacts.geojson')) {
+    loadUsafactsData(url, callback);
   } else {
-    // load 1P3A data 
-    //zip.workerScriptsPath = "./js/";
-    zip.workerScripts = {
-      deflater: ['./js/z-worker.js', './js/pako/pako_deflate.min.js', './js/pako/codecs.js'],
-      inflater: ['./js/z-worker.js', './js/pako/pako_inflate.min.js', './js/pako/codecs.js']
-    };
-    fetch(url + ".zip")
-      .then((response) => {
-        return response.blob();
-      })
-      .then((blob) => {
-        // use a BlobReader to read the zip from a Blob object
-        zip.createReader(new zip.BlobReader(blob), function (reader) {
-          // get all entries from the zip
-          reader.getEntries(function (entries) {
-            if (entries.length) {
-              // uncompress first entry content as blob
-              entries[0].getData(new zip.BlobWriter(), function (bb) {
-                // read as bytearray for GeoDaWASM
-                var fileReader = new FileReader();
-                fileReader.onload = function (event) {
-                  var ab = event.target.result;
-                  gda_proxy.ReadGeojsonMap(url, {
-                    result: ab
-                  });
-
-                  let sel_map = url.startsWith('state') ? 'state' : 'county';
-                  selectedDataset = sel_map == 'state' ? 'states_update.geojson' : 'counties_update.geojson';
-                  // read as json
-                  var jsonReader = new FileReader();
-                  jsonReader.onload = function (event) {
-                    let data = JSON.parse(event.target.result);
-                    data = initFeatureSelected(data);
-                    onep3aData = data;
-                    parse1P3AData(data);
-                    jsondata[selectedDataset] = data;
-                    callback();
-                  };
-                  jsonReader.readAsText(bb);
-                  centroids[selectedDataset] = gda_proxy.GetCentroids(url);
-                };
-                fileReader.readAsArrayBuffer(bb);
-                // close the zip reader
-                reader.close(function () { // onclose callback
-                });
-              }, function (current, total) { // onprogress callback
-              });
-            }
-          });
-        }, function (error) { // onerror callback
-          console.log("zip wrong");
-        });
-      });
-  } // end else
+    load1p3aData(url, callback);
+  }
 }
 
 function getDatesFromUsaFacts(confirm_data) {
