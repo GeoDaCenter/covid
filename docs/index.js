@@ -96,6 +96,7 @@ var source_btn = document.getElementById("select-source");
 // geoda
 var gda_proxy;
 var gda_weights = {};
+// TODO what is this?
 var jsondata = {};
 var centroids = {};
 
@@ -162,51 +163,41 @@ function updateSelectedDataset(url, callback) {
  * DATA LOADING
 */
 
-function loadUsafactsData(url, callback) {
+async function loadUsafactsData(url, callback) {
   // load usfacts geojson data
-  fetch(url)
-    .then((response) => {
-      return response.blob();
-    })
-    .then((bb) => {
-      // read as bytearray for GeoDaWASM
-      var fileReader = new FileReader();
-      fileReader.onload = function (event) {
-        var ab = event.target.result;
-        gda_proxy.ReadGeojsonMap(url, {
-          result: ab
-        });
+  const responseForJson = await fetch(url);
+  const responseForArrayBuffer = responseForJson.clone();
+  
+  // read as geojson for map
+  const json = await responseForJson.json();
+  const featuresWithIds = assignIdsToFeatures(json);
+  usafactsData = featuresWithIds;
 
-        let sel_map = url.indexOf('state') >= 0 ? 'state' : 'county';
-        selectedDataset = 'county_usfacts.geojson'; // only  has county from UsaFacts
+  // load cases
+  usafactsCases = await d3.csv('covid_confirmed_usafacts.csv');
 
-        // read as geojson for map
-        var jsonReader = new FileReader();
-        jsonReader.onload = function (event) {
-          let data = JSON.parse(event.target.result);
-          data = initFeatureSelected(data);
-          usafactsData = data;
-          // load usfacts csv data
-          let csv_conf_url = "covid_confirmed_usafacts.csv";
-          let csv_death_url = "covid_deaths_usafacts.csv";
-          d3.csv(csv_conf_url, function (confirm_data) {
-            d3.csv(csv_death_url, function (death_data) {
-              selectedDataset = 'county_usfacts.geojson';
-              usafactsCases = confirm_data;
-              usafactsDeaths = death_data;
-              // merge usfacts csv data
-              parseUsaFactsData(data, confirm_data, death_data);
-              jsondata[selectedDataset] = data;
-              callback();
-            });
-          });
-        };
-        jsonReader.readAsText(bb);
-        // get centroids for Cartogram
-        centroids[selectedDataset] = gda_proxy.GetCentroids(url);
-      };
-      fileReader.readAsArrayBuffer(bb);
-    });
+  // load deaths
+  usafactsDeaths = await d3.csv('covid_deaths_usafacts.csv');
+
+  // update state
+  // TODO isn't there a function that does this?
+  selectedDataset = 'county_usfacts.geojson';
+
+  // merge usfacts csv data
+  parseUsaFactsData(featuresWithIds, usafactsCases, usafactsDeaths);
+  jsondata[selectedDataset] = featuresWithIds;
+
+  // read as bytearray for GeoDaWASM
+  const arrayBuffer = await responseForArrayBuffer.arrayBuffer();
+
+  gda_proxy.ReadGeojsonMap(url, {
+    result: arrayBuffer,
+  });
+
+  // get centroids for cartogram
+  centroids[selectedDataset] = gda_proxy.GetCentroids(url);
+
+  callback();
 }
 
 function load1p3aData(url, callback) {
@@ -264,6 +255,7 @@ function load1p3aData(url, callback) {
     });
 }
 
+// this takes a url and loads the data source (if it hasn't been already)
 function loadData(url, callback) {
   // check if the data has already been loaded (it goes into the geoda proxy)
   if (gda_proxy.Has(url)) {
