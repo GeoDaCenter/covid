@@ -122,7 +122,7 @@ var selectedId = null;
 var selectedDate = null;
 var selectedVariable = null;
 var selectedMethod = null;
-var show_labels = false;
+var shouldShowLabels = false;
 var select_state_id = -1;
 
 function isState() {
@@ -552,7 +552,7 @@ function OnCartogramClick() {
 }
 
 function OnShowLabels(el) {
-  show_labels = el.checked;
+  shouldShowLabels = el.checked;
   if (isLisa()) {
     OnLISAClick(document.getElementById('btn-lisa'));
   } else {
@@ -791,7 +791,7 @@ function createMap(data) {
       );
     }
 
-    if (show_labels) {
+    if (shouldShowLabels) {
       layers.push(
         new TextLayer({
           data: labels,
