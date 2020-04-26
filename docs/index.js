@@ -146,7 +146,7 @@ function getCurrentWuuid() {
  * DATA LOADING
 */
 
-function loadGeoDa(url, loadmap_evt) {
+function loadData(url, loadmap_evt) {
   if (gda_proxy.Has(url)) {
     if (url.endsWith('county_usfacts.geojson')) {
       selectedDataset = 'county_usfacts.geojson';
@@ -427,7 +427,7 @@ function OnCountyClick(target) {
       countyMap = "counties_update.geojson";
     }
   }
-  loadGeoDa(countyMap, init_county);
+  loadData(countyMap, init_county);
 }
 
 function init_county() {
@@ -463,7 +463,7 @@ function init_county() {
 }
 
 function OnStateClick() {
-  loadGeoDa(stateMap, init_state);
+  loadData(stateMap, init_state);
 }
 
 function init_state() {
