@@ -989,14 +989,6 @@ function loadScript(url) {
   });
 }
 
-// MAIN ENTRY
-var Module = {
-  onRuntimeInitialized: function() {
-    gda_proxy = new GeodaProxy();
-    OnCountyClick();
-  }
-};
-
 function OnSourceClick(evt) {
   source_btn.innerText = evt.innerText;
   if (evt.innerText.indexOf('UsaFacts') >= 0) {
@@ -1589,3 +1581,13 @@ function collapse(el) {
     el.src = "img/expand.png";
   }
 }
+
+/*
+entry point
+*/
+var Module = {
+  onRuntimeInitialized: function () {
+    gda_proxy = new GeodaProxy();
+    OnCountyClick();
+  }
+};
