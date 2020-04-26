@@ -41,13 +41,10 @@ var choropleth_btn = document.getElementById("btn-nb");
 var lisa_btn = document.getElementById("btn-lisa");
 var data_btn = document.getElementById("select-data");
 var source_btn = document.getElementById("select-source");
-
 var gda_proxy;
 var gda_weights = {};
-
 var jsondata = {};
 var centroids = {};
-
 var select_map = null;
 var select_id = null;
 var select_date = null;
@@ -55,7 +52,6 @@ var select_variable = null;
 var select_method = null;
 var show_labels = false;
 var select_state_id = -1;
-
 var dates = {};
 var confirmed_count_data = {};
 var death_count_data = {};
@@ -66,7 +62,6 @@ var lisa_data = {};
 var lisa_labels = ["Not significant", "High-High", "Low-Low", "High-Low", "Low-High", "Undefined", "Isolated"];
 var lisa_colors = ["#ffffff", "#FF0000", "#0000FF", "#a7adf9", "#f4ada8", "#464646", "#999999"];
 var cartogram_data;
-
 var current_view = null;
 
 // global functions
@@ -345,7 +340,6 @@ function parse1P3AData(data) {
   }
 }
 
-
 function OnViewChange(view) {
   current_view = view.viewState;
 }
@@ -420,7 +414,6 @@ function setCartogramView(layers) {
 }
 
 function createMap(data) {
-
   if (select_date == null)
     select_date = dates[select_map][dates[select_map].length - 1];
 
@@ -571,8 +564,6 @@ function createMap(data) {
 
   createTimeSlider(data);
 }
-
-
 
 function loadMap(url) {
   createMap(jsondata[select_map]);
@@ -739,7 +730,6 @@ function GetDataValues() {
   }
 }
 
-
 function OnCountyClick(evt) {
   function init_county(evt) {
     var vals;
@@ -890,7 +880,6 @@ function hexToRgb(hex) {
   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)]
 }
-
 
 function isState() {
   return source_btn.innerText.indexOf('State') >= 0;
@@ -1225,10 +1214,8 @@ function getAccumConfirmedCountByDate(data, all) {
   return counts;
 }
 
-
 // following code are for LINE CHART
 function addTrendLine(data, title) {
-
   var height = 140;
   var width = 290;
   var margin = {
@@ -1440,7 +1427,6 @@ function createTimeSlider(geojson) {
       "confirmedcases": yValues[i]
     });
   }
-
 
   var bars = svg.selectAll(".bars")
     .data(tmpData)
