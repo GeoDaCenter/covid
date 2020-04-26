@@ -270,11 +270,11 @@ function loadData(url, callback) {
   }
 }
 
-function getDatesFromUsaFacts(cases) {
+function getDatesFromUsafacts(cases) {
   var xLabels = [];
   let n = cases.length;
   for (let col in cases[0]) {
-    if (col.endsWith("20")) {
+    if (col.endsWith('20')) {
       xLabels.push(col);
     }
   }
@@ -289,7 +289,7 @@ function parseUsaFactsData(data, confirm_data, death_data) {
   if (!(json in populationData)) populationData[json] = {};
   if (!(json in bedsData)) bedsData[json] = {};
 
-  dates[selectedDataset] = getDatesFromUsaFacts(confirm_data);
+  dates[selectedDataset] = getDatesFromUsafacts(confirm_data);
   if (selectedDate == null || selectedDate.indexOf('-') >= 0)
     selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
 
@@ -409,7 +409,7 @@ function updateDates() {
   // since 1P3A has different date format than usafacts
   if (selectedDataset == 'county_usfacts.geojson') {
     // todo: the following line should be updated to current date
-    dates[selectedDataset] = getDatesFromUsaFacts(usafactsCases);
+    dates[selectedDataset] = getDatesFromUsafacts(usafactsCases);
     if (selectedDate == null || selectedDate.indexOf('-') >= 0)
       selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
   } else {
