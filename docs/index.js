@@ -120,7 +120,7 @@ var getLineColor = function() {
 var selectedDataset = null;
 var selectedId = null;
 var selectedDate = null;
-var select_variable = null;
+var selectedVariable = null;
 var select_method = null;
 var show_labels = false;
 var select_state_id = -1;
@@ -528,7 +528,7 @@ function OnSourceClick(evt) {
 
 function OnDataClick(evt) {
   data_btn.innerText = evt.innerText;
-  select_variable = evt.innerText;
+  selectedVariable = evt.innerText;
 
   if (isLisa()) {
     OnLISAClick(document.getElementById('btn-lisa'));
@@ -728,7 +728,7 @@ function createMap(data) {
             selectedId
           ],
           getFillColor: [
-            selectedDate, select_variable, select_method
+            selectedDate, selectedVariable, select_method
           ]
         },
       })
@@ -768,7 +768,7 @@ function createMap(data) {
         updateTriggers: {
           getLineColor: [],
           getFillColor: [
-            selectedDate, select_variable, select_method
+            selectedDate, selectedVariable, select_method
           ]
         },
         pickable: true,
