@@ -70,7 +70,7 @@ function saveText(text, filename) {
 */
 
 // data
-var usfacts_confirm_data;
+var usafactsCases;
 var usfacts_death_data;
 var usfacts_jsondata;
 var onep3a_jsondata;
@@ -193,7 +193,7 @@ function loadGeoDa(url, loadmap_evt) {
             d3.csv(csv_conf_url, function (confirm_data) {
               d3.csv(csv_death_url, function (death_data) {
                 selectedDataset = 'county_usfacts.geojson';
-                usfacts_confirm_data = confirm_data;
+                usafactsCases = confirm_data;
                 usfacts_death_data = death_data;
                 // merge usfacts csv data
                 parseUsaFactsData(data, confirm_data, death_data);
@@ -404,7 +404,7 @@ function updateDates() {
   // since 1P3A has different date format than usafacts
   if (selectedDataset == 'county_usfacts.geojson') {
     // todo: the following line should be updated to current date
-    dates[selectedDataset] = getDatesFromUsaFacts(usfacts_confirm_data);
+    dates[selectedDataset] = getDatesFromUsaFacts(usafactsCases);
     if (selectedDate == null || selectedDate.indexOf('-') >= 0)
       selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
   } else {
