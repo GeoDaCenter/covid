@@ -913,7 +913,7 @@ function createMap(data) {
           ]
         },
         pickable: true,
-        onHover: updateTooltip,
+        onHover: handleMapHover,
         onClick: updateTrendLine
       })
     );
