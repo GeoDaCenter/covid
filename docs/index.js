@@ -681,7 +681,8 @@ function updateTooltip(e) {
     return;
   }
 
-  // source/calculate tooltip values  
+  // get the entity id
+  // TODO rename this to entityId to be consistent with entityName
   const id = object.properties.id;
 
   // get the state/county name
