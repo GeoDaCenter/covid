@@ -8,10 +8,6 @@ body {
   background-color: #000;
 }
 
-#tooltip:empty {
-  display: none;
-}
-
 #tooltip {
   font-family: Helvetica, Arial, sans-serif;
   position: absolute;
@@ -25,8 +21,16 @@ body {
   pointer-events: none;
 }
 
+#tooltip:empty {
+  display: none;
+}
+
 #tooltip table {
   color: #fff;
+}
+
+#tooltip h3, #tooltip h5 {
+  display: inline;
 }
 
 a {

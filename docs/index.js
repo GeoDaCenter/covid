@@ -637,87 +637,134 @@ function OnSave() {
   });
 }
 
+function getTooltipHtml(values) {
+  let text = '<div><h3>' + values.entityName + '</h3></div>';
+  text += '<hr>';
+  text += '<table>'
+  text += '<tr><td><h5>Confirmed Count:</h5></td><td><h5>' + values.cases + '</h5></td>';
+  text += '<tr><td><h5>Confirmed Count per 10K Population:</h5></td><td><h5>' + values.casesPer10k + '</h5></td>';
+  text += '<tr><td><h5># Licensed Hospital Beds:</h5></td><td><h5>' + values.beds + '</h5></td>';
+  text += '<tr><td><h5>Confirmed Count per Licensed Bed:</h5></td><td><h5>' + values.casesPerBed + '</h5></td>';
+  text += '<tr><td><h5>Death Count:</h5></td><td><h5>' + values.deaths + '</h5></td>';
+  text += '<tr><td><h5>Death Count per 10K Population:</h5></td><td><h5>' + values.deathsPer10k + '</h5></td>';
+  text += '<tr><td><h5>Death Count/Confirmed Count:</h5></td><td><h5>' + values.fatalityRate + '</h5></td>';
+  text += '<tr><td><h5>Daily New Confirmed Count:</h5></td><td><h5>' + values.newCases + '</h5></td>';
+  text += '<tr><td><h5>Daily New Confirmed Count per 10K Pop:</h5></td><td><h5>' + values.newCasesPer10k + '</h5></td>';
+  text += '<tr><td><h5>Daily New Death Count:</h5></td><td><h5>' + values.newDeaths + '</h5></td>';
+  text += '<tr><td><h5>Daily New Confirmed Count per 10K Pop:</h5></td><td><h5>' + values.newDeathsPer10k + '</h5></td>';
+  text += '</table>';
+  text += '<hr>';
+  text += '<table>'
+  text += '<tr><td><h5>Population:</h5></td><td><h5>' + values.population + '</h5></td>';
+  text += '</table>';
+
+  if (isLisa()) {
+    let field = data_btn.innerText;
+    let c = lisaData[selectedDataset][selectedDate][field].clusters[id];
+    text += '<br/><div><b>' + lisa_labels[c] + '</b></div>';
+    text += '<div><b>p-value:</b>' + lisaData[selectedDataset][selectedDate][field].pvalues[id] + '</div>';
+    text += '<div>Queen weights and 999 permutations</div>';
+  }
+
+  return text;
+}
+
 // this is the callback for when you hover over a feature on the map
 function updateTooltip(e) {
   const { x, y, object } = e;
   const tooltip = document.getElementById('tooltip');
 
-  if (object) {
-    let id = object.properties.id;
-    let json = selectedDataset;
-
-    let v1 = caseData[json][selectedDate][id];
-    let v2 = (populationData[json][id] == undefined || populationData[json][id] == 0) ? 0 : (caseData[json][selectedDate][id] / populationData[json][id] * 10000);
-    let v3 = deathsData[json][selectedDate][id];
-    let v4 = (populationData[json][id] == undefined || populationData[json][id] == 0) ? 0 : (deathsData[json][selectedDate][id] / populationData[json][id] * 10000);
-    let v5 = fatalityData[json][selectedDate][id];
-    let v6 = populationData[json][id];
-
-    let v7 = 0;
-    let dt_idx = dates[selectedDataset].indexOf(selectedDate);
-    if (dt_idx > 0) {
-      let prev_date = dates[selectedDataset][dt_idx - 1];
-      var cur_vals = caseData[json][selectedDate];
-      var pre_vals = caseData[json][prev_date];
-      v7 = cur_vals[id] - pre_vals[id];
-    }
-    let v8 = (populationData[json][id] == undefined || populationData[json][id] == 0) ? 0 : (v7 / populationData[json][id] * 10000);
-
-    let v9 = 0;
-    if (dt_idx > 0) {
-      let prev_date = dates[selectedDataset][dt_idx - 1];
-      var cur_vals = deathsData[json][selectedDate];
-      var pre_vals = deathsData[json][prev_date];
-      v9 = cur_vals[id] - pre_vals[id];
-    }
-    let v10 = (populationData[json][id] == undefined || populationData[json][id] == 0) ? 0 : (v9 / populationData[json][id] * 10000);
-    let v11 = (bedsData[json][id] == undefined || bedsData[json][id] == 0) ? 0 : (caseData[json][selectedDate][id] / bedsData[json][id]);
-    let v12 = bedsData[json][id];
-
-    let name = "";
-    if ('NAME' in object.properties)
-      name = object.properties.NAME;
-    else
-      name = jsondata[json].features[id].properties.NAME;
-
-    if (!isInt(v2)) v2 = parseFloat(v2).toFixed(2);
-    if (!isInt(v4)) v4 = parseFloat(v4).toFixed(2);
-
-    let text = '<div><h3 style=display:inline>' + name + '</h3></div>';
-    text += '<hr>';
-    text += '<table>'
-    text += '<tr><td><h5 style=display:inline>Confirmed Count:</h5></td><td><h5 style=display:inline>' + v1 + '</h5></td>';
-    text += '<tr><td><h5 style=display:inline>Confirmed Count per 10K Population:</h5></td><td><h5 style=display:inline>' + v2 + '</h5></td>';
-    text += '<tr><td><h5 style=display:inline># Licensed Hospital Beds:</h5></td><td><h5 style=display:inline>' + v12 + '</h5></td>';
-    text += '<tr><td><h5 style=display:inline>Confirmed Count per Licensed Bed:</h5></td><td><h5 style=display:inline>' + v11.toFixed(2) + '</h5></td>';
-    text += '<tr><td><h5 style=display:inline>Death Count:</h5></td><td><h5 style=display:inline>' + v3 + '</h5></td>';
-    text += '<tr><td><h5 style=display:inline>Death Count per 10K Population:</h5></td><td><h5 style=display:inline>' + v4 + '</h5></td>';
-    text += '<tr><td><h5 style=display:inline>Death Count/Confirmed Count:</h5></td><td><h5 style=display:inline>' + v5.toFixed(2) + '</h5></td>';
-    text += '<tr><td><h5 style=display:inline>Daily New Confirmed Count:</h5></td><td><h5 style=display:inline>' + v7 + '</h5></td>';
-    text += '<tr><td><h5 style=display:inline>Daily New Confirmed Count per 10K Pop:</h5></td><td><h5 style=display:inline>' + v8.toFixed(2) + '</h5></td>';
-    text += '<tr><td><h5 style=display:inline>Daily New Death Count:</h5></td><td><h5 style=display:inline>' + v9 + '</h5></td>';
-    text += '<tr><td><h5 style=display:inline>Daily New Confirmed Count per 10K Pop:</h5></td><td><h5 style=display:inline>' + v10.toFixed(2) + '</h5></td>';
-    text += '</table>';
-    text += '<hr>';
-    text += '<table>'
-    text += '<tr><td><h5 style=display:inline>Population:</h5></td><td><h5 style=display:inline>' + v6 + '</h5></td>';
-    text += '</table>';
-
-    if (isLisa()) {
-      let json = selectedDataset;
-      let field = data_btn.innerText;
-      let c = lisaData[json][selectedDate][field].clusters[id];
-      text += '<br/><div><b>' + lisa_labels[c] + '</b></div>';
-      text += '<div><b>p-value:</b>' + lisaData[json][selectedDate][field].pvalues[id] + '</div>';
-      text += '<div>Queen weights and 999 permutations</div>';
-    }
-
-    tooltip.style.top = `${y}px`;
-    tooltip.style.left = `${x}px`;
-    tooltip.innerHTML = text;
-  } else {
+  // if they aren't hovered over an object, empty the tooltip (this effectively)
+  // hides it
+  if (!object) {
     tooltip.innerHTML = '';
+    return;
   }
+
+  // source/calculate tooltip values  
+  const id = object.properties.id;
+
+  // get the state/county name
+  let entityName = '';
+  if ('NAME' in object.properties) {
+    entityName = object.properties.NAME;
+  } else {
+    entityName = jsondata[selectedDataset].features[id].properties.NAME;
+  }
+
+  // get population
+  const population = populationData[selectedDataset][id];
+  const populationDataExists = (population && population > 0);
+
+  // get beds
+  const beds = bedsData[selectedDataset][id];
+  const bedsDataExists = (beds && beds > 0);
+
+  // cases
+  let cases = caseData[selectedDataset][selectedDate][id];
+  let casesPer10k = populationDataExists ? (cases / population * 10000) : 0;
+  
+  // deaths
+  let deaths = deathsData[selectedDataset][selectedDate][id];
+  let deathsPer10k = populationDataExists ? (deaths / population * 10000) : 0;
+  let fatalityRate = fatalityData[selectedDataset][selectedDate][id];
+  
+  // new cases
+  let newCases = 0;
+  let dt_idx = dates[selectedDataset].indexOf(selectedDate);
+  if (dt_idx > 0) {
+    let prev_date = dates[selectedDataset][dt_idx - 1];
+    var cur_vals = caseData[selectedDataset][selectedDate];
+    var pre_vals = caseData[selectedDataset][prev_date];
+    newCases = cur_vals[id] - pre_vals[id];
+  }
+  let newCasesPer10k = populationDataExists ? (newCases / population * 10000) : 0;
+
+  // new deaths
+  let newDeaths = 0;
+  if (dt_idx > 0) {
+    let prev_date = dates[selectedDataset][dt_idx - 1];
+    var cur_vals = deathsData[selectedDataset][selectedDate];
+    var pre_vals = deathsData[selectedDataset][prev_date];
+    newDeaths = cur_vals[id] - pre_vals[id];
+  }
+  let newDeathsPer10k = populationDataExists ? (newDeaths / population * 10000) : 0;
+
+  // cases per bed
+  let casesPerBed = bedsDataExists ? (cases / beds) : 0;
+
+  // handle decimals
+  casesPer10k = parseFloat(casesPer10k).toFixed(2);
+  deathsPer10k = parseFloat(deathsPer10k).toFixed(2);
+  casesPerBed = parseFloat(casesPerBed).toFixed(2);
+  fatalityRate = parseFloat(fatalityRate).toFixed(2);
+  newCasesPer10k = parseFloat(newCasesPer10k).toFixed(2);
+  newDeathsPer10k = parseFloat(newDeathsPer10k).toFixed(2);
+
+  // render html
+  const values = {
+    entityName,
+    cases,
+    casesPer10k,
+    beds,
+    casesPerBed,
+    deaths,
+    deathsPer10k,
+    fatalityRate,
+    newCases,
+    newCasesPer10k,
+    newDeaths,
+    newDeathsPer10k,
+    population
+  };
+  const text = getTooltipHtml(values);
+
+  // set html
+  tooltip.innerHTML = text;
+
+  // position tooltip over mouse location
+  tooltip.style.top = `${y}px`;
+  tooltip.style.left = `${x}px`;
 }
 
 function handleMapHover(e) {
