@@ -973,14 +973,8 @@ function loadMap() {
   createMap(jsondata[selectedDataset]);
 }
 
-}
-
 function getElevation(f) {
   return f.properties.id == selectedId ? 90000 : 1;
-}
-
-function buttonClicked(evt) {
-  console.log(evt);
 }
 
 function assignIdsToFeatures(features) {
