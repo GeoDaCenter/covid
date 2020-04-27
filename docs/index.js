@@ -641,21 +641,21 @@ function getTooltipHtml(values) {
   let text = '<div><h3>' + values.entityName + '</h3></div>';
   text += '<hr>';
   text += '<table>'
-  text += '<tr><td><h5>Confirmed Count:</h5></td><td><h5>' + values.cases + '</h5></td>';
-  text += '<tr><td><h5>Confirmed Count per 10K Population:</h5></td><td><h5>' + values.casesPer10k + '</h5></td>';
-  text += '<tr><td><h5># Licensed Hospital Beds:</h5></td><td><h5>' + values.beds + '</h5></td>';
-  text += '<tr><td><h5>Confirmed Count per Licensed Bed:</h5></td><td><h5>' + values.casesPerBed + '</h5></td>';
-  text += '<tr><td><h5>Death Count:</h5></td><td><h5>' + values.deaths + '</h5></td>';
-  text += '<tr><td><h5>Death Count per 10K Population:</h5></td><td><h5>' + values.deathsPer10k + '</h5></td>';
-  text += '<tr><td><h5>Death Count/Confirmed Count:</h5></td><td><h5>' + values.fatalityRate + '</h5></td>';
-  text += '<tr><td><h5>Daily New Confirmed Count:</h5></td><td><h5>' + values.newCases + '</h5></td>';
-  text += '<tr><td><h5>Daily New Confirmed Count per 10K Pop:</h5></td><td><h5>' + values.newCasesPer10k + '</h5></td>';
-  text += '<tr><td><h5>Daily New Death Count:</h5></td><td><h5>' + values.newDeaths + '</h5></td>';
-  text += '<tr><td><h5>Daily New Confirmed Count per 10K Pop:</h5></td><td><h5>' + values.newDeathsPer10k + '</h5></td>';
+  text += '<tr><th>Confirmed Count:</th><td>' + values.cases + '</td>';
+  text += '<tr><th>Confirmed Count per 10K Population:</th><td>' + values.casesPer10k + '</td>';
+  text += '<tr><th># Licensed Hospital Beds:</th><td>' + values.beds + '</td>';
+  text += '<tr><th>Confirmed Count per Licensed Bed:</th><td>' + values.casesPerBed + '</td>';
+  text += '<tr><th>Death Count:</th><td>' + values.deaths + '</td>';
+  text += '<tr><th>Death Count per 10K Population:</th><td>' + values.deathsPer10k + '</td>';
+  text += '<tr><th>Death Count/Confirmed Count:</th><td>' + values.fatalityRate + '</td>';
+  text += '<tr><th>Daily New Confirmed Count:</th><td>' + values.newCases + '</td>';
+  text += '<tr><th>Daily New Confirmed Count per 10K Pop:</th><td>' + values.newCasesPer10k + '</td>';
+  text += '<tr><th>Daily New Death Count:</th><td>' + values.newDeaths + '</td>';
+  text += '<tr><th>Daily New Confirmed Count per 10K Pop:</th><td>' + values.newDeathsPer10k + '</td>';
   text += '</table>';
   text += '<hr>';
   text += '<table>'
-  text += '<tr><td><h5>Population:</h5></td><td><h5>' + values.population + '</h5></td>';
+  text += '<tr><th>Population:</th><td>' + values.population + '</td>';
   text += '</table>';
 
   if (isLisa()) {

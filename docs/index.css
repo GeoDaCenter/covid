@@ -28,6 +28,11 @@ body {
   color: #fff;
 }
 
+#tooltip table th {
+  text-align: left;
+  padding-right: 10px;
+}
+
 #tooltip h3, #tooltip h5 {
   display: inline;
 }
