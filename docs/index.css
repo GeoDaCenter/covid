@@ -79,11 +79,6 @@ a:visited {
   height: 1rem;
 }
 
-.mapboxgl-ctrl-top-left {
-  top: 50;
-  left: 0;
-}
-
 .options-panel {
   position: absolute;
   top: 24px;
