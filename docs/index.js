@@ -137,6 +137,10 @@ function isLisa() {
   return document.getElementById("btn-lisa").classList.contains("checked");
 }
 
+function isCartogram() {
+  return document.getElementById('cartogram-ckb').checked;
+}
+
 function getCurrentWuuid() {
   if (!(selectedDataset in gda_weights)) {
     var w = gda_proxy.CreateQueenWeights(selectedDataset, 1, 0, 0);
@@ -866,8 +870,6 @@ function loadMap() {
   createMap(jsondata[selectedDataset]);
 }
 
-function isCartogram() {
-  return document.getElementById('cartogram-ckb').checked;
 }
 
 function getElevation(f) {
