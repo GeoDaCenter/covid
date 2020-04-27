@@ -9,7 +9,6 @@ body {
 }
 
 #tooltip {
-  font-family: Helvetica, Arial, sans-serif;
   position: absolute;
   padding: 4px;
   margin: 8px;
