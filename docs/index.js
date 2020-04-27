@@ -82,6 +82,9 @@ var caseData = {};
 var deathsData = {};
 var fatalityData = {};
 var lisaData = {};
+// socioeconomic indicators from the county health rankings group (aka chr).
+// this is an object indexed by county fips.
+var chrData = {};
 
 // ui elements
 var choropleth_btn = document.getElementById("btn-nb");
@@ -165,6 +168,19 @@ function updateSelectedDataset(url, callback) {
  * DATA LOADING
 */
 
+// fetch county health rankings social indicators (aka chr)
+async function fetchChrData() {
+  const rows = await d3.csv('chr_social_indicators.csv');
+
+  // index rows by "fips" (unique id)
+  const rowsIndexed = rows.reduce((acc, row) => {
+    acc[row.FIPS] = row;
+    return acc;
+  }, {});
+
+  return rowsIndexed;
+}
+
 async function loadUsafactsData(url, callback) {
   // load usfacts geojson data
   const responseForJson = await fetch(url);
@@ -175,10 +191,17 @@ async function loadUsafactsData(url, callback) {
   const featuresWithIds = assignIdsToFeatures(json);
   usafactsData = featuresWithIds;
 
-  // load cases and deaths in parallel
-  [ usafactsCases, usafactsDeaths ] = await Promise.all([
+  // load cases and deaths in parallel. also load "supplemental" data (e.g. chr)
+  // note that because these are being destructured to pre-defined globals,
+  // this has the side effect of loading data into state.
+  [
+    usafactsCases,
+    usafactsDeaths,
+    chrData,
+  ] = await Promise.all([
     d3.csv('covid_confirmed_usafacts.csv'),
     d3.csv('covid_deaths_usafacts.csv'),
+    fetchChrData(),
   ]);
 
   // update state
