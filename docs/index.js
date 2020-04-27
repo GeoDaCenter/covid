@@ -83,10 +83,6 @@ var deathsData = {};
 var fatalityData = {};
 var lisaData = {};
 
-// dataset name constants
-var stateMap = "states_update.geojson";
-var countyMap = "county_usfacts.geojson";
-
 // ui elements
 var choropleth_btn = document.getElementById("btn-nb");
 var lisa_btn = document.getElementById("btn-lisa");
@@ -123,6 +119,12 @@ var selectedDate = null;
 var selectedVariable = null;
 var selectedMethod = null;
 var shouldShowLabels = false;
+
+// these look like dataset file name constants, but they are actually default
+// values for state variables. for example, countyMap can change when switching
+// between 1p3a counties and usafacts counties.
+var stateMap = 'states_update.geojson';
+var countyMap = 'county_usfacts.geojson';
 
 function isState() {
   return source_btn.innerText.indexOf('State') >= 0;
