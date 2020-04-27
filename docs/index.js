@@ -638,27 +638,18 @@ function OnSave() {
 }
 
 // this is the callback for when you hover over a feature on the map
-function updateTooltip({
-  x,
-  y,
-  object
-}) {
+function updateTooltip(e) {
+  const { x, y, object } = e;
   const tooltip = document.getElementById('tooltip');
 
   if (object) {
     let id = object.properties.id;
     let json = selectedDataset;
-    let txt = data_btn.innerText;
 
-    //if (txt == "Confirmed Count") {
     let v1 = caseData[json][selectedDate][id];
-    //} else if (txt == "Confirmed Count per 10K Population") {
     let v2 = (populationData[json][id] == undefined || populationData[json][id] == 0) ? 0 : (caseData[json][selectedDate][id] / populationData[json][id] * 10000);
-    //} else if (txt == "Death Count") {
     let v3 = deathsData[json][selectedDate][id];
-    //} else if (txt == "Death Count per 10K Population") {
     let v4 = (populationData[json][id] == undefined || populationData[json][id] == 0) ? 0 : (deathsData[json][selectedDate][id] / populationData[json][id] * 10000);
-    //} else if (txt == "Fatality Rate") {
     let v5 = fatalityData[json][selectedDate][id];
     let v6 = populationData[json][id];
 
@@ -735,9 +726,7 @@ function handleMapHover(e) {
 }
 
 function updateDataPanel(e) {
-  console.log('update data panel', e);
-
-  // TODO update data panel :)
+  // TODO render chr data
 }
 
 
