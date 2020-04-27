@@ -148,7 +148,7 @@ function getCurrentWuuid() {
   };
 }
 
-function updateSelectedDataset(url, callback) {
+function updateSelectedDataset(url, callback = () => {}) {
   // update selected dataset
   if (url.endsWith('county_usfacts.geojson')) {
     selectedDataset = 'county_usfacts.geojson';
@@ -181,6 +181,9 @@ async function fetchChrData() {
   return rowsIndexed;
 }
 
+// this is effectively the entry point for data loading, since usafacts is the
+// dataset selected by default. note that it has side effects unrelated to data
+// fetching, namely updating selectedDataset.
 async function loadUsafactsData(url, callback) {
   // load usfacts geojson data
   const responseForJson = await fetch(url);
@@ -206,7 +209,7 @@ async function loadUsafactsData(url, callback) {
 
   // update state
   // TODO isn't there a function that does this?
-  selectedDataset = 'county_usfacts.geojson';
+  updateSelectedDataset(countyMap);
 
   // merge usfacts csv data
   parseUsaFactsData(featuresWithIds, usafactsCases, usafactsDeaths);
