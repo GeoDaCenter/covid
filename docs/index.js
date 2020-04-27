@@ -977,6 +977,7 @@ function getElevation(f) {
   return f.properties.id == selectedId ? 90000 : 1;
 }
 
+// TODO move to utils or data loading section
 function assignIdsToFeatures(features) {
   for (let i = 0; i < features.features.length; i++) {
     // Track each feature individually with a unique ID.
@@ -985,6 +986,7 @@ function assignIdsToFeatures(features) {
   return features;
 }
 
+// TODO move to state section
 function GetFeatureValue(id) {
   let json = selectedDataset;
   let txt = data_btn.innerText;
