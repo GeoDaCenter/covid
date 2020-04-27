@@ -256,14 +256,14 @@ function load1p3aData(url, callback) {
 }
 
 // this takes a url and loads the data source (if it hasn't been already)
+// note: the url is generally just the file name, since these are local to the
+// project
 function loadData(url, callback) {
   // check if the data has already been loaded (it goes into the geoda proxy)
   if (gda_proxy.Has(url)) {
     updateSelectedDataset(url, callback);
-    return;
-  }
   // otherwise, we need to fetch the data  
-  if (url.endsWith('county_usfacts.geojson')) {
+  } else if (url.endsWith('county_usfacts.geojson')) {
     loadUsafactsData(url, callback);
   } else {
     load1p3aData(url, callback);
