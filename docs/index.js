@@ -637,6 +637,109 @@ function OnSave() {
   });
 }
 
+// this is the callback for when you hover over a feature on the map
+function updateTooltip({
+  x,
+  y,
+  object
+}) {
+  const tooltip = document.getElementById('tooltip');
+
+  if (object) {
+    let id = object.properties.id;
+    let json = selectedDataset;
+    let txt = data_btn.innerText;
+
+    //if (txt == "Confirmed Count") {
+    let v1 = caseData[json][selectedDate][id];
+    //} else if (txt == "Confirmed Count per 10K Population") {
+    let v2 = (populationData[json][id] == undefined || populationData[json][id] == 0) ? 0 : (caseData[json][selectedDate][id] / populationData[json][id] * 10000);
+    //} else if (txt == "Death Count") {
+    let v3 = deathsData[json][selectedDate][id];
+    //} else if (txt == "Death Count per 10K Population") {
+    let v4 = (populationData[json][id] == undefined || populationData[json][id] == 0) ? 0 : (deathsData[json][selectedDate][id] / populationData[json][id] * 10000);
+    //} else if (txt == "Fatality Rate") {
+    let v5 = fatalityData[json][selectedDate][id];
+    let v6 = populationData[json][id];
+
+    let v7 = 0;
+    let dt_idx = dates[selectedDataset].indexOf(selectedDate);
+    if (dt_idx > 0) {
+      let prev_date = dates[selectedDataset][dt_idx - 1];
+      var cur_vals = caseData[json][selectedDate];
+      var pre_vals = caseData[json][prev_date];
+      v7 = cur_vals[id] - pre_vals[id];
+    }
+    let v8 = (populationData[json][id] == undefined || populationData[json][id] == 0) ? 0 : (v7 / populationData[json][id] * 10000);
+
+    let v9 = 0;
+    if (dt_idx > 0) {
+      let prev_date = dates[selectedDataset][dt_idx - 1];
+      var cur_vals = deathsData[json][selectedDate];
+      var pre_vals = deathsData[json][prev_date];
+      v9 = cur_vals[id] - pre_vals[id];
+    }
+    let v10 = (populationData[json][id] == undefined || populationData[json][id] == 0) ? 0 : (v9 / populationData[json][id] * 10000);
+    let v11 = (bedsData[json][id] == undefined || bedsData[json][id] == 0) ? 0 : (caseData[json][selectedDate][id] / bedsData[json][id]);
+    let v12 = bedsData[json][id];
+
+    let name = "";
+    if ('NAME' in object.properties)
+      name = object.properties.NAME;
+    else
+      name = jsondata[json].features[id].properties.NAME;
+
+    if (!isInt(v2)) v2 = parseFloat(v2).toFixed(2);
+    if (!isInt(v4)) v4 = parseFloat(v4).toFixed(2);
+
+    let text = '<div><h3 style=display:inline>' + name + '</h3></div>';
+    text += '<hr>';
+    text += '<table>'
+    text += '<tr><td><h5 style=display:inline>Confirmed Count:</h5></td><td><h5 style=display:inline>' + v1 + '</h5></td>';
+    text += '<tr><td><h5 style=display:inline>Confirmed Count per 10K Population:</h5></td><td><h5 style=display:inline>' + v2 + '</h5></td>';
+    text += '<tr><td><h5 style=display:inline># Licensed Hospital Beds:</h5></td><td><h5 style=display:inline>' + v12 + '</h5></td>';
+    text += '<tr><td><h5 style=display:inline>Confirmed Count per Licensed Bed:</h5></td><td><h5 style=display:inline>' + v11.toFixed(2) + '</h5></td>';
+    text += '<tr><td><h5 style=display:inline>Death Count:</h5></td><td><h5 style=display:inline>' + v3 + '</h5></td>';
+    text += '<tr><td><h5 style=display:inline>Death Count per 10K Population:</h5></td><td><h5 style=display:inline>' + v4 + '</h5></td>';
+    text += '<tr><td><h5 style=display:inline>Death Count/Confirmed Count:</h5></td><td><h5 style=display:inline>' + v5.toFixed(2) + '</h5></td>';
+    text += '<tr><td><h5 style=display:inline>Daily New Confirmed Count:</h5></td><td><h5 style=display:inline>' + v7 + '</h5></td>';
+    text += '<tr><td><h5 style=display:inline>Daily New Confirmed Count per 10K Pop:</h5></td><td><h5 style=display:inline>' + v8.toFixed(2) + '</h5></td>';
+    text += '<tr><td><h5 style=display:inline>Daily New Death Count:</h5></td><td><h5 style=display:inline>' + v9 + '</h5></td>';
+    text += '<tr><td><h5 style=display:inline>Daily New Confirmed Count per 10K Pop:</h5></td><td><h5 style=display:inline>' + v10.toFixed(2) + '</h5></td>';
+    text += '</table>';
+    text += '<hr>';
+    text += '<table>'
+    text += '<tr><td><h5 style=display:inline>Population:</h5></td><td><h5 style=display:inline>' + v6 + '</h5></td>';
+    text += '</table>';
+
+    if (isLisa()) {
+      let json = selectedDataset;
+      let field = data_btn.innerText;
+      let c = lisaData[json][selectedDate][field].clusters[id];
+      text += '<br/><div><b>' + lisa_labels[c] + '</b></div>';
+      text += '<div><b>p-value:</b>' + lisaData[json][selectedDate][field].pvalues[id] + '</div>';
+      text += '<div>Queen weights and 999 permutations</div>';
+    }
+
+    tooltip.style.top = `${y}px`;
+    tooltip.style.left = `${x}px`;
+    tooltip.innerHTML = text;
+  } else {
+    tooltip.innerHTML = '';
+  }
+}
+
+function handleMapHover(e) {
+  updateTooltip(e);
+  updateDataPanel(e);
+}
+
+function updateDataPanel(e) {
+  console.log('update data panel', e);
+
+  // TODO update data panel :)
+}
+
 
 /*
  * APPLICATION
@@ -1168,97 +1271,6 @@ function loadScript(url) {
   return new Promise(resolve => {
     script.onload = resolve;
   });
-}
-
-function updateTooltip({
-  x,
-  y,
-  object
-}) {
-  const tooltip = document.getElementById('tooltip');
-
-  if (object) {
-    let id = object.properties.id;
-    let json = selectedDataset;
-    let txt = data_btn.innerText;
-
-    //if (txt == "Confirmed Count") {
-    let v1 = caseData[json][selectedDate][id];
-    //} else if (txt == "Confirmed Count per 10K Population") {
-    let v2 = (populationData[json][id] == undefined || populationData[json][id] == 0) ? 0 : (caseData[json][selectedDate][id] / populationData[json][id] * 10000);
-    //} else if (txt == "Death Count") {
-    let v3 = deathsData[json][selectedDate][id];
-    //} else if (txt == "Death Count per 10K Population") {
-    let v4 = (populationData[json][id] == undefined || populationData[json][id] == 0) ? 0 : (deathsData[json][selectedDate][id] / populationData[json][id] * 10000);
-    //} else if (txt == "Fatality Rate") {
-    let v5 = fatalityData[json][selectedDate][id];
-    let v6 = populationData[json][id];
-
-    let v7 = 0;
-    let dt_idx = dates[selectedDataset].indexOf(selectedDate);
-    if (dt_idx > 0) {
-      let prev_date = dates[selectedDataset][dt_idx - 1];
-      var cur_vals = caseData[json][selectedDate];
-      var pre_vals = caseData[json][prev_date];
-      v7 = cur_vals[id] - pre_vals[id];
-    }
-    let v8 = (populationData[json][id] == undefined || populationData[json][id] == 0) ? 0 : (v7 / populationData[json][id] * 10000);
-
-    let v9 = 0;
-    if (dt_idx > 0) {
-      let prev_date = dates[selectedDataset][dt_idx - 1];
-      var cur_vals = deathsData[json][selectedDate];
-      var pre_vals = deathsData[json][prev_date];
-      v9 = cur_vals[id] - pre_vals[id];
-    }
-    let v10 = (populationData[json][id] == undefined || populationData[json][id] == 0) ? 0 : (v9 / populationData[json][id] * 10000);
-    let v11 = (bedsData[json][id] == undefined || bedsData[json][id] == 0) ? 0 : (caseData[json][selectedDate][id] / bedsData[json][id]);
-    let v12 = bedsData[json][id];
-
-    let name = "";
-    if ('NAME' in object.properties)
-      name = object.properties.NAME;
-    else
-      name = jsondata[json].features[id].properties.NAME;
-
-    if (!isInt(v2)) v2 = parseFloat(v2).toFixed(2);
-    if (!isInt(v4)) v4 = parseFloat(v4).toFixed(2);
-
-    let text = '<div><h3 style=display:inline>' + name + '</h3></div>';
-    text += '<hr>';
-    text += '<table>'
-    text += '<tr><td><h5 style=display:inline>Confirmed Count:</h5></td><td><h5 style=display:inline>' + v1 + '</h5></td>';
-    text += '<tr><td><h5 style=display:inline>Confirmed Count per 10K Population:</h5></td><td><h5 style=display:inline>' + v2 + '</h5></td>';
-    text += '<tr><td><h5 style=display:inline># Licensed Hospital Beds:</h5></td><td><h5 style=display:inline>' + v12 + '</h5></td>';
-    text += '<tr><td><h5 style=display:inline>Confirmed Count per Licensed Bed:</h5></td><td><h5 style=display:inline>' + v11.toFixed(2) + '</h5></td>';
-    text += '<tr><td><h5 style=display:inline>Death Count:</h5></td><td><h5 style=display:inline>' + v3 + '</h5></td>';
-    text += '<tr><td><h5 style=display:inline>Death Count per 10K Population:</h5></td><td><h5 style=display:inline>' + v4 + '</h5></td>';
-    text += '<tr><td><h5 style=display:inline>Death Count/Confirmed Count:</h5></td><td><h5 style=display:inline>' + v5.toFixed(2) + '</h5></td>';
-    text += '<tr><td><h5 style=display:inline>Daily New Confirmed Count:</h5></td><td><h5 style=display:inline>' + v7 + '</h5></td>';
-    text += '<tr><td><h5 style=display:inline>Daily New Confirmed Count per 10K Pop:</h5></td><td><h5 style=display:inline>' + v8.toFixed(2) + '</h5></td>';
-    text += '<tr><td><h5 style=display:inline>Daily New Death Count:</h5></td><td><h5 style=display:inline>' + v9 + '</h5></td>';
-    text += '<tr><td><h5 style=display:inline>Daily New Confirmed Count per 10K Pop:</h5></td><td><h5 style=display:inline>' + v10.toFixed(2) + '</h5></td>';
-    text += '</table>';
-    text += '<hr>';
-    text += '<table>'
-    text += '<tr><td><h5 style=display:inline>Population:</h5></td><td><h5 style=display:inline>' + v6 + '</h5></td>';
-    text += '</table>';
-
-    if (isLisa()) {
-      let json = selectedDataset;
-      let field = data_btn.innerText;
-      let c = lisaData[json][selectedDate][field].clusters[id];
-      text += '<br/><div><b>' + lisa_labels[c] + '</b></div>';
-      text += '<div><b>p-value:</b>' + lisaData[json][selectedDate][field].pvalues[id] + '</div>';
-      text += '<div>Queen weights and 999 permutations</div>';
-    }
-
-    tooltip.style.top = `${y}px`;
-    tooltip.style.left = `${x}px`;
-    tooltip.innerHTML = text;
-  } else {
-    tooltip.innerHTML = '';
-  }
 }
 
 function getConfirmedCountByDateState(data, state) {
