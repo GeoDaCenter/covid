@@ -636,7 +636,7 @@ function OnSave() {
   });
 }
 
-function getTooltipHtml(values) {
+function getTooltipHtml(id, values) {
   let text = '<div><h3>' + values.entityName + '</h3></div>';
   text += '<hr>';
   text += '<table>'
@@ -757,7 +757,7 @@ function updateTooltip(e) {
     newDeathsPer10k,
     population
   };
-  const text = getTooltipHtml(values);
+  const text = getTooltipHtml(id, values);
 
   // set html
   tooltip.innerHTML = text;
