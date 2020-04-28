@@ -797,11 +797,17 @@ function updateDataPanel(e) {
     PrevHospRt: 'Preventable Hospitalizations', 
     PrevHospQ: 'Preventable Hospitalizations Quartile'
   };
+
+  const col1 = ['PovChldPrc', 'IncInq20', 'IncRtio', 'PrmPhysRt', 'PrevHospRt', 'UninPrc'];
+  const col2 = ['PovChldQ', 'IncInq80', 'PrmPhysCt', 'PrmPhysQ', 'PrevHospQ', 'UninQ'];
+
   html += `<h2>${County}, ${State}</h2><hr>`;  
-  Object.keys(labels).forEach((key) => {
-    html += `<div><b>${labels[key]}</b>: ${chrData[geoId][key]}</div>`
-  });
-  
+  html += `<div style="float: left; width: 50%">`
+  const rowHtml = (key) => `<div><b>${labels[key]}</b>: ${chrData[geoId][key]}</div>`;
+  col1.forEach((key) => html += rowHtml(key));
+  html += `</div><div style="float: right; width: 50%;">`
+  col2.forEach((key) => html += rowHtml(key));
+  html += `</div>`
   elem.removeAttribute('hidden');
   elem.innerHTML = html;
 }
