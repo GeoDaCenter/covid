@@ -794,8 +794,8 @@ function updateDataPanel(e) {
     PrmPhysCt: 'Primary Care Count',
     PrmPhysRt: 'Primary Care Rate',
     PrmPhysQ: 'Primary Care Quartile',
-    PrevHospRt: 'Previous Hospitalizations', 
-    PrevHospQ: 'Previous Hospitalizations Quartile'
+    PrevHospRt: 'Preventable Hospitalizations', 
+    PrevHospQ: 'Preventable Hospitalizations Quartile'
   };
   html += `<h2>${County}, ${State}</h2><hr>`;  
   Object.keys(labels).forEach((key) => {
