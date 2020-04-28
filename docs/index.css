@@ -2,14 +2,12 @@ body {
   width: 100vw;
   height: 100vh;
   margin: 0;
-  font-family: UberMove, Helvetica Neue, Helvetica, sans-serif!important;
+  font-family: 'Helvetica Neue', Helvetica, sans-serif !important;
   font-size: 12px;
-  line-height: 1.833;
   background-color: #000;
 }
 
 #tooltip {
-  font-family: Helvetica, Arial, sans-serif;
   position: absolute;
   padding: 4px;
   margin: 8px;
@@ -27,6 +25,11 @@ body {
 
 #tooltip table {
   color: #fff;
+}
+
+#tooltip table th {
+  text-align: left;
+  padding-right: 10px;
 }
 
 #tooltip h3, #tooltip h5 {
@@ -78,11 +81,6 @@ a:visited {
 
 .geoda-link img {
   height: 1rem;
-}
-
-.mapboxgl-ctrl-top-left {
-  top: 50;
-  left: 0;
 }
 
 .options-panel {
