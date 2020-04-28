@@ -178,10 +178,9 @@ async function fetchChrData() {
 
   // index rows by "fips" (unique id)
   const rowsIndexed = rows.reduce((acc, row) => {
-    acc[row.FIPS] = row;
+    acc[parseInt(row.FIPS)] = row;
     return acc;
   }, {});
-
   return rowsIndexed;
 }
 
@@ -770,11 +769,41 @@ function updateTooltip(e) {
 
 function handleMapHover(e) {
   updateTooltip(e);
+}
+
+function handleMapClick(e) {
+  updateTrendLine(e);
   updateDataPanel(e);
 }
 
 function updateDataPanel(e) {
-  // TODO render chr data
+  if (!e.picked) return; // limit to events with an object.properties
+  const geoId = parseInt(e.object.properties.GEOID); // most are numbers but a few are strings
+  if (!chrData[geoId]) return console.log('No CHR data for geoId', geoId);
+  let html = '';
+  const elem = document.querySelector('.data-panel');
+  const { State, County } = chrData[geoId];
+  const labels = { // Help me with abbreviations, these were all guesses
+    PovChldPrc: 'Child Poverty Rate',
+    PovChldQ: 'Child Poverty Quartile',
+    IncInq20: 'Bottom 20% Income',
+    IncInq80: 'Top 20% Income',
+    IncRtio: 'Income Ratio',
+    UninPrc: 'Uninsured Percentage',
+    UninQ: 'Uninsured Quartile',
+    PrmPhysCt: 'Primary Care Count',
+    PrmPhysRt: 'Primary Care Rate',
+    PrmPhysQ: 'Primary Care Quartile',
+    PrevHospRt: 'Previous Hospitalizations', 
+    PrevHospQ: 'Previous Hospitalizations Quartile'
+  };
+  html += `<h2>${County}, ${State}</h2><hr>`;  
+  Object.keys(labels).forEach((key) => {
+    html += `<div><b>${labels[key]}</b>: ${chrData[geoId][key]}</div>`
+  });
+  
+  elem.removeAttribute('hidden');
+  elem.innerHTML = html;
 }
 
 
@@ -951,7 +980,7 @@ function createMap(data) {
         },
         pickable: true,
         onHover: handleMapHover,
-        onClick: updateTrendLine
+        onClick: handleMapClick
       })
     );
     if (!('name' in data)) {
