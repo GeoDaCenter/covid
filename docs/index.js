@@ -192,11 +192,11 @@ async function fetchPredictionsData() {
 
   // index by fips
   const rowsIndexed = rows.reduce((acc, row) => {
-    const { fips, name, state_abbr, surge_index, ...dates } = row;
+    const { fips, name, state_abbr, surge_index, ...predictedDeaths } = row;
     const fipsInt = parseInt(fips);
     acc[fipsInt] = {
       surge_index,
-      dates,
+      predictedDeaths,
     };
     return acc;
   }, {});
