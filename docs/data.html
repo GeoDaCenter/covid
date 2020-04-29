@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>The U.S. COVID-19 Atlas</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand" href="map.html">U.S. COVID-19 Atlas</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li><a href="index.html">Home</a></li>
+        <li class="active"><a href="data.html">Data</a></li>
+        <li><a href="methods.html">Methods</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<body>
+
+
+<div class="container-fluid">    
+
+    <div class="col-lg-12"> 
+      <h1 class="text-center"> Data </h1>
+
+      <h2> Current Release </h1>
+      <hr>
+ 
+      <h4> Confirmed COVID Cases and Deaths </h4>
+        <p> Because there is no one single validated source for county-level COVID cases and deaths for real-time analysis, we incorporate multiple datasets from multiple projects to allow for comparisons. </p>
+
+        <li><b><a href="https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/?utm_source=MailChimp&utm_campaign=census-covid2">USAFacts.</a></b> This dataset is provided by a non-profit organization. The data are aggregated from CDC, state- and local-level public health agencies. County-level data is confirmed by referencing state and local agencies directly. <br><br>
+
+        <li><b><a href="https://coronavirus.1point3acres.com/en">1P3A.</a></b>This was the initial, crowdsourced data project that served as a volunteer project led by 1P3acres.com and Dr. Yu Gao, Head of Machine Learning Platform at Uber. We access this data stream using a token provided by the group.<br><br>
+
+
+      <h4> Population, Demographic, and Socioeconomic Data </h4>
+
+      <li><b><a href="#">American Community Survey.</a></b> We incorporate population data used to generate rates, and will add more information as needed in future iterations.<br><br>
+
+      <h4> Health System Capacity </h4>
+      <li><b><a href="https://github.com/covidcaremap/covid19-healthsystemcapacity/tree/v0.2/data">COVIDCareMap.</a></b>  Healthcare System Capacity includes Staffed beds, Staffed ICU beds, Licensed Beds by County. The data is from 2018 facility reports with additions/edits allowed in real-time. <br><br>
+
+      <h2> Future Release </h1>
+      <hr>
+
+      <h4>Confirmed COVID Cases and Deaths </h4>
+      
+      <li><b><a href="https://github.com/nytimes/covid-19-data">NYTimes.</a></b> The data is the product of dozens of journalists working across several time zones to monitor news conferences, analyze data release and seek clarification from public officials on how they categorize cases. <br><br>
+
+      <h4> Forecasting statistics </h4>
+
+      <li><b><a href="https://github.com/Yu-Group/covid19-severity-prediction">Hospital Severity Index.</a></b> The <a href="https://www.stat.berkeley.edu/~yugroup/people.html">Yu Group</a> at UC Berkeley Statistics and EECS has compiled, cleaned and continues to update a large corpus of hospital- and county-level data from a variety of public sources to aid data science efforts to combat COVID-19 (see <a href="http://covidseverity.com/">covidseverity.com</a>). <br><br>
+
+       <p>At the hospital level, their data include the location of the hospital, the number of ICU beds, the total number of employees, and the hospital type. At the county level, their data include COVID-19 cases/deaths from USA Facts and NYT, automatically updated every day, along with demographic information, health resource availability, COVID-19 health risk factors, and social mobility information.</p>
+
+      <p>An overview of each data set in this corpus is provided <a href="https://github.com/Yu-Group/covid-19-geographic-risk-prediction">here</a>. We will be adding more relevant data sets as they are found. We prepared this data to support healthcare supply distribution efforts through short-term (days) prediction of COVID-19 deaths (and cases) at the county level. We are using the predictions and hospital data to arrive at a covid Pandemic Severity Index (c-PSI) for each hospital. This project is in partnership with <a href="https://response4life.org/">Response4Life</a>. A paper on the current approaches can be found <a href="https://www.stat.berkeley.edu/~binyu/ps/papers2020/covid19_paper.pdf">at this link</a>. The more detailed information with data source descriptions is provided <a href="https://github.com/Yu-Group/covid19-severity-prediction">on the github.</a></p><br>
+
+
+      <h4> Population, Demographic, and Socioeconomic Data </h4>
+      
+      <li><b><a href="https://www.countyhealthrankings.org/explore-health-rankings/rankings-data-documentation">County Health Rankings & Roadmaps (CHR&R).</a></b> The CHR&R is a collaboration between the Robert Wood Johnson Foundation and the University of Wisconsin Population Health Institute. The goal is to improve health outcomes for all and to close the health gaps between those with the most and least opportunities for good health. Based on our discussion with their group, we will include following focus areas and related measures for inclusion in the Atlas: income and economic hardship, children living in poverty, median household income, income inequality, access to health care, uninsured, preventable hospital stays, ratio of population to primary care physicians, housing cost and quality, Black/White residential segregation (missing, populations at risk, percentage of 65 and older.<br><br>
+
+      <h4>Social Distancing Proxies</h4>
+
+      <li><b><a href="https://github.com/descarteslabs/DL-COVID-19">DesCartes Lab:</a></b> Mobility index by County to represent the distance a typical member of a given population moves in a day.
+
+      <li><b><a href="https://github.com/COVIDExposureIndices/COVIDExposureIndices">PlaceIQ, Couture et al:</a></b> Limited Exposure Index by County is an approximately 2000-by-2000 matrix in which each cell reports, among devices that pinged today in the column county, the share of devices that pinged in the row county at least once during the previous 14 days. The data is updated daily.<br><br>
+
+
+      <h2> Data Details </h1>
+      <hr>
+
+      <h4>USAFacts</h4>
+      You can download the most updated county level data merged with USAFacts <a href="https://github.com/GeoDaCenter/covid/tree/master/download">here</a>:
+
+      <li>usafacts_confirmed_<i>date</i>.geojson: the county level data (confirmed cases) using <a href="https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/?utm_source=MailChimp&utm_campaign=census-covid2">USAFacts</a>, together with population and number of hospital beds.</li>
+      <li>usafacts_deaths_<i>date</i>.geojson: the county level data (death counts) using <a href="https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/?utm_source=MailChimp&utm_campaign=census-covid2">USAFacts</a>, together with population and number of hospital beds.</li>
+      <li><i>date</i>_confirm_per10K_usafacts.gif: the animation (.gif) showing how the pandemic has been changing over time (using confirmed cases per 10K population), which is also displayed in the Atlas.</li><br><br>
+
+      <h4>1P3A</h4>
+      <p>To access raw 1P3A data, you must contact the 1P3A for a token directly.</p>
+
+      <p>Not all cases from 1P3A data can be assigned to a particular county, see following. (<i>Note: the list is being updated as new data comes in everyday)</i></p>
+
+      <li>1P3A does NOT assign cases in New York to specific counties, which includes New York City, Kings, Bronx, and Richmond.</li>
+      <li>Cases reported for US Virgin Islands, Guam are NOT included.</li>
+      <li>Cases in the following areas can NOT be assigned and hence are NOT included: Southwest Utah; Southeast Utah; Central Utah; Tri County, Utah; Kansas City, MO; Benton and Franklin, WA.</li>
+      <li>Other unassigned cases (or “cases to be assigned”) are NOT included.</li>
+      <li>Cases reported in the Military and some Correctional Centers are NOT included.</li><br><br>
+
+</div>
+
+<br><br>
+</body>
+
+
+<footer class="container-fluid text-center">
+  <p>Brought to you by the <a>Center for Spatial Data Science <a href="https://spatial.uchicago.edu"> @UChicago</a>. Powered by <a href="https://geodacenter.github.io/">GeoDa</a>.</p>
+</footer>
+
+</body>
+
+
+</html>
