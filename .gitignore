@@ -1,9 +1,5 @@
-
 .vscode/
-docs/node_modules/
-docs/package-lock.json
-
+node_modules
 *.swp
 .DS_Store
-.DS_Store
-docs/.DS_Store
+.netlify
