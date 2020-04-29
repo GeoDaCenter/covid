@@ -190,7 +190,7 @@ async function fetchChrData() {
 async function fetchPredictionsData() {
   const rows = await d3.csv('berkeley_counties_forecast_demo.csv');
 
-  // index by fips
+  // index by fips and put predictions in nested object
   const rowsIndexed = rows.reduce((acc, row) => {
     const { fips, name, state_abbr, surge_index, ...predictedDeaths } = row;
     const fipsInt = parseInt(fips);
