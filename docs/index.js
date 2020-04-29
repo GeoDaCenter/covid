@@ -798,13 +798,9 @@ function handleMapClick(e) {
   updateDataPanel(e);
 }
 
-function updateDataPanel(e) {
-  if (!e.picked) return; // limit to events with an object.properties
-  const geoId = parseInt(e.object.properties.GEOID); // most are numbers but a few are strings
-  if (!chrData[geoId]) return console.log('No CHR data for geoId', geoId);
+// builds HTML for socioeconomic indicator tab in data panel
+function socioeconomicIndicatorsHtml(geoId) {
   let html = '';
-  const elem = document.querySelector('.data-panel');
-  const { State, County } = chrData[geoId];
   const labels = { // Help me with abbreviations, these were all guesses
     PovChldPrc: 'Child Poverty Rate',
     PovChldQ: 'Child Poverty Quartile',
@@ -819,19 +815,73 @@ function updateDataPanel(e) {
     PrevHospRt: 'Preventable Hospitalizations', 
     PrevHospQ: 'Preventable Hospitalizations Quartile'
   };
-
   const col1 = ['PovChldPrc', 'IncInq20', 'IncRtio', 'PrmPhysRt', 'PrevHospRt', 'UninPrc'];
   const col2 = ['PovChldQ', 'IncInq80', 'PrmPhysCt', 'PrmPhysQ', 'PrevHospQ', 'UninQ'];
-
-  html += `<h2>${County}, ${State}</h2><hr>`;  
   html += `<div style="float: left; width: 50%">`
   const rowHtml = (key) => `<div><b>${labels[key]}</b>: ${chrData[geoId][key]}</div>`;
   col1.forEach((key) => html += rowHtml(key));
   html += `</div><div style="float: right; width: 50%;">`
   col2.forEach((key) => html += rowHtml(key));
   html += `</div>`
-  elem.removeAttribute('hidden');
-  elem.innerHTML = html;
+  return html;
+}
+
+// builds HTML for covid forecasting/predictions tab in data panel
+function covidForecastingHtml(geoId) {
+  let html = ''
+  console.log(predictionsData[geoId]);
+  const surgeIndex = predictionsData[geoId].surge_index;
+  const surgeIndexColor = () => (surgeIndex > 0) ? '#f08686' : '#a6c2f7';
+  const predictions = predictionsData[geoId].predictedDeaths;
+  html += `
+  <div style="display:flex">
+    <div style="flex: 50%">
+      `
+  for (let date in predictions) {
+    console.log(date);
+    html += `<div style="font-size: 11px"><b>${date}</b>: ${[predictions[date]]} predicted deaths</div>`;
+  }
+
+  html += `      
+    </div>
+    <div style="flex: 50%">
+      <div><b>Severity Index:</b></div>
+      <div style="font-size: 60px;color:${surgeIndexColor()}">${surgeIndex}</div>
+      </div>
+  </div>`
+
+  return html;
+}
+
+function updateDataPanel(e) {
+
+  let html;
+  let geoId; 
+  const geoIdElem = document.querySelector('#geoid');
+
+  if (e.object) geoId = parseInt(e.object.properties.GEOID);
+  if (!geoId) geoId = geoIdElem.value;
+  
+  const panelElem = document.querySelector('.data-panel');
+  const headerElem = document.querySelector('#data-panel__header')
+  const bodyElem = document.querySelector('#data-panel__body');
+  const selectElem = document.querySelector('#data-panel__select')
+  const getSelected = (e) => e.options[e.selectedIndex].value;
+  switch(getSelected(selectElem)) {
+    case 'socioeconomic_indicators':
+      if (!chrData[geoId]) return console.log('No CHR data for geoId', geoId);
+      html = socioeconomicIndicatorsHtml(geoId);
+      break;
+    case 'covid_forecasting':
+      if (!predictionsData[geoId]) return console.log('No predictions data for', geoId);
+      html = covidForecastingHtml(geoId);
+      break;
+  }
+
+  geoIdElem.value = geoId; // store geoid in hidden input so we can load data on select change
+  headerElem.innerHTML = `${chrData[geoId].County}, ${chrData[geoId].State}`;
+  bodyElem.innerHTML = html;
+  panelElem.removeAttribute('hidden');
 }
 
 
