@@ -85,6 +85,8 @@ var lisaData = {};
 // socioeconomic indicators from the county health rankings group (aka chr).
 // this is an object indexed by county fips.
 var chrData = {};
+// county-level death predictions from the berkeley yu group
+var predictionsData = {};
 
 // ui elements
 var choropleth_btn = document.getElementById("btn-nb");
@@ -184,6 +186,21 @@ async function fetchChrData() {
   return rowsIndexed;
 }
 
+// fetch berkeley group predictions
+async function fetchPredictionsData() {
+  const rows = await d3.csv('berkeley_counties_forecast_demo.csv');
+
+  // index by fips
+  const rowsIndexed = rows.reduce((acc, row) => {
+    const { fips } = row;
+    const fipsInt = parseInt(fips);
+    acc[fipsInt] = row;
+    return acc;
+  }, {});
+
+  return rowsIndexed;
+}
+
 // this is effectively the entry point for data loading, since usafacts is the
 // dataset selected by default. note that it has side effects unrelated to data
 // fetching, namely updating selectedDataset.
@@ -204,10 +221,12 @@ async function loadUsafactsData(url, callback) {
     usafactsCases,
     usafactsDeaths,
     chrData,
+    predictionsData,
   ] = await Promise.all([
     d3.csv('covid_confirmed_usafacts.csv'),
     d3.csv('covid_deaths_usafacts.csv'),
     fetchChrData(),
+    fetchPredictionsData(),
   ]);
 
   // update state
