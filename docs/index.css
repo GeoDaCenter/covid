@@ -86,7 +86,7 @@ a:visited {
 .options-panel {
   position: absolute;
   top: 24px;
-  right: 24px;
+  left: 24px;
   width: 344px;
   background: #fff;
   box-shadow: 0 0 4px rgba(0, 0, 0, .15);
@@ -261,6 +261,6 @@ data panel
   width: 500px;
   position: absolute;
   bottom: 35px;
-  left: 55px;
+  right: 55px;
   z-index: 1;
 }

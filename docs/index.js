@@ -893,8 +893,8 @@ function updateDataPanel(e) {
 const deckgl = new DeckGL({
   mapboxApiAccessToken: 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg',
   mapStyle: 'mapbox://styles/mapbox/dark-v9',
-  latitude: 32.850033,
-  longitude: -86.6500523,
+  latitude: 35.850033,
+  longitude: -105.6500523,
   zoom: 3.5,
   maxZoom: 18,
   pitch: 0,
@@ -907,7 +907,7 @@ const deckgl = new DeckGL({
 
 const mapbox = deckgl.getMapboxMap();
 
-mapbox.addControl(new mapboxgl.NavigationControl(), 'bottom-left');
+mapbox.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
 mapbox.on('zoomend', () => {
   const currentZoom = mapbox.getZoom();
@@ -927,8 +927,8 @@ function resetView(layers) {
     layers: layers,
     viewState: {
       zoom: 3.5,
-      latitude: 32.850033,
-      longitude: -86.6500523,
+      latitude: 35.850033,
+      longitude: -105.6500523,
       transitionInterpolator: new LinearInterpolator(['bearing']),
       transitionDuration: 500
     }
