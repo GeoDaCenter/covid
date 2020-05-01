@@ -659,25 +659,28 @@ function OnSave() {
 }
 
 function getTooltipHtml(id, values) {
-  let text = '<div><h3>' + values.entityName + '</h3></div>';
-  text += '<hr>';
-  text += '<table>'
-  text += '<tr><th>Confirmed Count:</th><td>' + values.cases + '</td>';
-  text += '<tr><th>Confirmed Count per 10K Population:</th><td>' + values.casesPer10k + '</td>';
-  text += '<tr><th># Licensed Hospital Beds:</th><td>' + values.beds + '</td>';
-  text += '<tr><th>Confirmed Count per Licensed Bed:</th><td>' + values.casesPerBed + '</td>';
-  text += '<tr><th>Death Count:</th><td>' + values.deaths + '</td>';
-  text += '<tr><th>Death Count per 10K Population:</th><td>' + values.deathsPer10k + '</td>';
-  text += '<tr><th>Death Count/Confirmed Count:</th><td>' + values.fatalityRate + '</td>';
-  text += '<tr><th>Daily New Confirmed Count:</th><td>' + values.newCases + '</td>';
-  text += '<tr><th>Daily New Confirmed Count per 10K Pop:</th><td>' + values.newCasesPer10k + '</td>';
-  text += '<tr><th>Daily New Death Count:</th><td>' + values.newDeaths + '</td>';
-  text += '<tr><th>Daily New Confirmed Count per 10K Pop:</th><td>' + values.newDeathsPer10k + '</td>';
-  text += '</table>';
-  text += '<hr>';
-  text += '<table>'
-  text += '<tr><th>Population:</th><td>' + values.population + '</td>';
-  text += '</table>';
+  const handle = val => val >= 0 ? val : 'N/A'; // dont show negative values
+  let text = 
+  `<div><h3>${values.entityName}</h3></div>
+  <hr>
+  <table>
+    <tr><th>Confirmed Count:</th><td> ${handle(values.cases)}</td></tr>
+    <tr><th>Confirmed Count per 10K Population:</th><td> ${handle(values.casesPer10k)}</td></tr>
+    <tr><th># Licensed Hospital Beds:</th><td> ${handle(values.beds)}</td></tr>
+    <tr><th>Confirmed Count per Licensed Bed:</th><td> ${handle(values.casesPerBed)}</td></tr>
+    <tr><th>Death Count:</th><td> ${handle(values.deaths)}</td></tr>
+    <tr><th>Death Count per 10K Population:</th><td> ${handle(values.deathsPer10k)}</td></tr>
+    <tr><th>Death Count/Confirmed Count:</th><td> ${handle(values.fatalityRate)}</td></tr>
+    <tr><th>Daily New Confirmed Count:</th><td> ${handle(values.newCases)}</td></tr>
+    <tr><th>Daily New Confirmed Count per 10K Pop:</th><td> ${handle(values.newCasesPer10k)}</td></tr>
+    <tr><th>Daily New Death Count:</th><td> ${handle(values.newDeaths)}</td></tr>
+    <tr><th>Daily New Confirmed Count per 10K Pop:</th><td> ${handle(values.newDeathsPer10k)} </td></tr>
+  </table>
+  <hr>
+  <table>
+  <tr><th>Population:</th><td>${handle(values.population)}</td></tr>
+  </table>`
+
 
   if (isLisa()) {
     let field = data_btn.innerText;
