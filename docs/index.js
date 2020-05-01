@@ -895,7 +895,7 @@ function updateDataPanel(e) {
 // set up deck/mapbox
 const deckgl = new DeckGL({
   mapboxApiAccessToken: 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg',
-  mapStyle: 'mapbox://styles/mapbox/dark-v9',
+  mapStyle: 'mapbox://styles/mapbox/light-v9',
   latitude: 35.850033,
   longitude: -105.6500523,
   zoom: 3.5,
