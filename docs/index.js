@@ -962,31 +962,33 @@ function setCartogramView(layers) {
 }
 
 function createMap(data) {
-  if (selectedDate == null)
+  // if no date has been selected, default to most recent
+  if (!selectedDate) {
     selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
+  }
 
+  // this is where the deck layers are accumulated before adding to the canvas
+  var layers = [];
   var labels = [];
-  var cents = centroids[selectedDataset];
-  console.log("centroids from :", selectedDataset);
 
+  // if local clusters is selected, create labels
   if (isLisa()) {
+    var datasetCentroids = centroids[selectedDataset];
+
     for (let i = 0; i < data.features.length; ++i) {
-      let json = selectedDataset;
-      //if (json == "county") {
       let field = data_btn.innerText;
-      let c = lisaData[json][selectedDate][field].clusters[i];
-      if (c == 1)
+      let c = lisaData[selectedDataset][selectedDate][field].clusters[i];
+      if (c == 1) {
         labels.push({
           id: i,
-          position: cents[i],
+          position: datasetCentroids[i],
           text: data.features[i].properties.NAME
         });
-      //}
+      }
     }
   }
 
-  var layers = [];
-
+  // if cartogram is selected
   if (isCartogram()) {
     mapbox.getCanvas().hidden = true;
     if ('name' in data && data.name.startsWith("state")) {
@@ -1032,9 +1034,11 @@ function createMap(data) {
       })
     );
     setCartogramView(layers);
-
+  // set up the regular map view
   } else {
     mapbox.getCanvas().hidden = false;
+
+    // TODO figure out what this adds and document
     layers.push(
       new GeoJsonLayer({
         id: 'map-layer',
@@ -1042,8 +1046,6 @@ function createMap(data) {
         opacity: 0.5,
         stroked: true,
         filled: true,
-        //wireframe: true,
-        //fp64: true,
         lineWidthScale: 1,
         lineWidthMinPixels: 1,
         getElevation: getElevation,
@@ -1061,6 +1063,9 @@ function createMap(data) {
         onClick: handleMapClick
       })
     );
+
+    // this seems to be a proxy for targeting when states are being shown
+    // TODO shouldn't we use isState() ?
     if (!('name' in data)) {
       layers.push(
         new GeoJsonLayer({
@@ -1096,6 +1101,7 @@ function createMap(data) {
         })
       );
     }
+
     resetView(layers);
   }
 
