@@ -117,10 +117,17 @@
           <div class="layout" id="slider-svg"></div>
           <div class="layout" id="sliderdiv"><input id="slider" type="range" min="1" max="100" step="1" value="20"/></div>
           <p><n><b>Data</b><a href="https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/?utm_source=MailChimp&utm_campaign=census-covid2">USAFacts</a> and <a href="https://covidvirus.1point3acres.com/">1point3acres</a>. In case of data discrepancy, local health departments are considered most acccurate by CDC recommendations.</p>
-          <p>
-            <input type="checkbox" onchange="OnShowLabels(this)">Show Hotspot Label
-            <input type="checkbox" onchange="OnShowTime(this)">Show Time Label
-          </p>
+          <div class="map-overlay-toggles">
+            <!-- TODO using these unstyled divs is a bit of a kludge to get the
+            first two checkboxes to appear on the same line -->
+            <div>
+              <input id="hotspot-labels-toggle" type="checkbox" onchange="OnShowLabels(this)">
+              <label for="hotspot-labels-toggle">Show Hotspot Labels</label>
+
+              <input id="time-label-toggle" type="checkbox" onchange="OnShowTime(this)">
+              <label for="time-label-toggle">Show Time Label</label>
+            </div>
+          </div>
           <div class="source-link" align="center">
             <a href="https://spatial.uchicago.edu" target="_new"><img align="center" src="img/logo_gray.png"  width=200px alt="Center for Spatial Data Science logo"/></a><br>
           <button onclick="OnSave(this)" style="display:none">save</button>
