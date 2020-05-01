@@ -955,8 +955,8 @@ function setCartogramView(layers) {
       layers: layers,
       viewState: {
         zoom: 5.6,
-        latitude: 13.510908,
-        longitude: -28.190367,
+        latitude: 10.510908,
+        longitude: -30.190367,
         transitionInterpolator: new LinearInterpolator(['bearing']),
         transitionDuration: 500
       }
