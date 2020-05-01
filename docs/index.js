@@ -7,13 +7,15 @@ const {
   DeckGL,
   GeoJsonLayer,
   TextLayer,
-  ScatterplotLayer
+  ScatterplotLayer,
+  TileLayer,
 } = deck;
-
 
 /*
  * CONFIG
 */
+
+const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg';
 
 const COLOR_SCALE = [
   [240, 240, 240],
@@ -124,6 +126,7 @@ var selectedDate = null;
 var selectedVariable = null;
 var selectedMethod = null;
 var shouldShowLabels = false;
+var shouldShowReservations = false;
 
 // these look like dataset file name constants, but they are actually default
 // values for state variables. for example, countyMap can change when switching
@@ -623,6 +626,16 @@ function OnShowLabels(el) {
   }
 }
 
+function OnShowReservations() {
+  shouldShowReservations = !shouldShowReservations;
+
+  if (isState()) {
+    OnStateClick();
+  } else {
+    OnCountyClick();
+  }
+}
+
 function collapse(el) {
   if (document.getElementById("toolbox").classList.contains("collapse")) {
     document.getElementById('toolbox').classList.remove("collapse");
@@ -891,7 +904,7 @@ function updateDataPanel(e) {
 
 // set up deck/mapbox
 const deckgl = new DeckGL({
-  mapboxApiAccessToken: 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg',
+  mapboxApiAccessToken: MAPBOX_ACCESS_TOKEN,
   mapStyle: 'mapbox://styles/mapbox/dark-v9',
   latitude: 35.850033,
   longitude: -105.6500523,
@@ -1098,6 +1111,49 @@ function createMap(data) {
             sdf: true,
             radius: 6
           }
+        })
+      );
+    }
+
+    // add reservations if we should
+    if (shouldShowReservations) {
+      layers.push(
+        // adapted from https://tgorkin.github.io/docs/layers/tile-layer
+        new TileLayer({
+          stroked: false,
+          getLineColor: [0, 0, 0],
+          getFillColor: [53, 152, 255],
+          opacity: 0.5,
+          getLineWidth() {
+            return 3;
+          },
+          lineWidthMinPixels: 3,
+          getTileData: async ({ x, y, z }) => {
+            const mapSource = `https://api.mapbox.com/v4/lixun910.4j9fklls/${z}/${x}/${y}.vector.pbf?access_token=${MAPBOX_ACCESS_TOKEN}`;
+            
+            const response = await fetch(mapSource);
+
+            if (response.status >= 400) {
+              return;
+            }
+
+            const buffer = await response.arrayBuffer();
+
+            const tile = new VectorTile(new Pbf(buffer));
+            const features = [];
+
+            for (const layerName in tile.layers) {
+              const vectorTileLayer = tile.layers[layerName];
+
+              for (let i = 0; i < vectorTileLayer.length; i++) {
+                const vectorTileFeature = vectorTileLayer.feature(i);
+                const feature = vectorTileFeature.toGeoJSON(x, y, z);
+                features.push(feature);
+              }
+            }
+            
+            return features;
+          },
         })
       );
     }
