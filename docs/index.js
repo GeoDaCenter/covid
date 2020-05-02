@@ -895,7 +895,7 @@ function updateDataPanel(e) {
 // set up deck/mapbox
 const deckgl = new DeckGL({
   mapboxApiAccessToken: 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg',
-  mapStyle: 'mapbox://styles/mapbox/light-v9',
+  mapStyle: 'mapbox://styles/mapbox/dark-v9',
   latitude: 35.850033,
   longitude: -105.6500523,
   zoom: 3.5,
@@ -1519,7 +1519,7 @@ function addTrendLine(data, title) {
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .attr("transform", "translate(0," + margin.top + ")");
-
+    
   svg.append("g").attr("class", "y axis");
   svg.append("g").attr("class", "x axis");
 
@@ -1553,7 +1553,8 @@ function addTrendLine(data, title) {
   svg.append("path")
     .datum(tmpData)
     .attr("class", "line")
-    .attr("d", line);
+    .attr("d", line)
+    .attr("stroke", "red");
 
   svg.append("g")
     .attr("transform", "translate(0," + (height) + ")")
@@ -1592,6 +1593,7 @@ function addTrendLine(data, title) {
     .attr("class", "linetitle")
     .attr("x", (width + (margin.left + margin.right)) / 2)
     .attr("y", 0 + margin.top)
+    .attr("fill", "white")
     .attr("text-anchor", "middle")
     .style("font-size", "12px")
     .style("font-family", "sans-serif")
@@ -1621,7 +1623,7 @@ function updateTrendLine({
   } else {
     yValues = getConfirmedCountByDate(jsondata[json], false);
   }
-  title = object ? object.properties["NAME"] : "all";
+  title = object ? object.properties["NAME"] : "U.S.";
 
   // Get the data again
   var tmpData = [];
