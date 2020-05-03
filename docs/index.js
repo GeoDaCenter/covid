@@ -1686,7 +1686,7 @@ function createTimeSlider(geojson) {
     }
   }
 
-  var width = 320,
+  var width = 280,
     height = 180,
     padding = 28;
 
