@@ -564,11 +564,12 @@ function OnSourceClick(evt) {
   source_btn.innerText = evt.innerText;
   if (evt.innerText.indexOf('UsaFacts') >= 0) {
     selectedDataset = 'county_usfacts.geojson';
-  } else if (evt.innerText.indexOf('County (1Point3Arces.com)') >= 0) {
+  } else if (evt.innerText.indexOf('County (1Point3Acres.com)') >= 0) {
     selectedDataset = 'counties_update.geojson';
   } else {
     selectedDataset = 'states_update.geojson';
   }
+
 
   if (isState()) {
     OnStateClick();
