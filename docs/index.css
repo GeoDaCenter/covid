@@ -94,7 +94,7 @@ a:visited {
   color: #fff;
   box-shadow: 0 0 4px rgba(0, 0, 0, .15);
   padding: 12px 24px;
-  max-height: 96%;
+  max-height: 90%;
   overflow-x: hidden;
   overflow-y: auto;
   overflow-y: overlay;
