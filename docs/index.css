@@ -261,9 +261,10 @@ data panel
   background-color: #2C2C2B;
   color: #fff;
   padding: 1.2rem;
-  width: 500px;
+  width: 250px;
+  height: 90%;
   position: absolute;
-  bottom: 35px;
-  right: 55px;
+  top: 25px;
+  right: 0px;
   z-index: 1;
 }

@@ -662,34 +662,20 @@ function OnSave() {
 function getTooltipHtml(id, values) {
   const handle = val => val >= 0 ? val : 'N/A'; // dont show negative values
   let text = 
-  `<div><h3>${values.entityName}</h3></div>
-  <hr>
-  <table>
-    <tr><th>Confirmed Count:</th><td> ${handle(values.cases)}</td></tr>
-    <tr><th>Confirmed Count per 10K Population:</th><td> ${handle(values.casesPer10k)}</td></tr>
-    <tr><th># Licensed Hospital Beds:</th><td> ${handle(values.beds)}</td></tr>
-    <tr><th>Confirmed Count per Licensed Bed:</th><td> ${handle(values.casesPerBed)}</td></tr>
-    <tr><th>Death Count:</th><td> ${handle(values.deaths)}</td></tr>
-    <tr><th>Death Count per 10K Population:</th><td> ${handle(values.deathsPer10k)}</td></tr>
-    <tr><th>Death Count/Confirmed Count:</th><td> ${handle(values.fatalityRate)}</td></tr>
-    <tr><th>Daily New Confirmed Count:</th><td> ${handle(values.newCases)}</td></tr>
-    <tr><th>Daily New Confirmed Count per 10K Pop:</th><td> ${handle(values.newCasesPer10k)}</td></tr>
-    <tr><th>Daily New Death Count:</th><td> ${handle(values.newDeaths)}</td></tr>
-    <tr><th>Daily New Confirmed Count per 10K Pop:</th><td> ${handle(values.newDeathsPer10k)} </td></tr>
-  </table>
-  <hr>
-  <table>
-  <tr><th>Population:</th><td>${handle(values.population)}</td></tr>
-  </table>`
+  ` <h3>${values.entityName}</h3>
+    <div>Cases: ${handle(values.cases)}</div>
+    <div>Deaths: ${handle(values.deaths)}</div>
+    <div>New Cases ${handle(values.newCases)}</div>
+    <div>New Deaths: ${handle(values.newDeaths)}</div>
+  `
 
-
-  if (isLisa()) {
-    let field = data_btn.innerText;
-    let c = lisaData[selectedDataset][selectedDate][field].clusters[id];
-    text += '<br/><div><b>' + lisa_labels[c] + '</b></div>';
-    text += '<div><b>p-value:</b>' + lisaData[selectedDataset][selectedDate][field].pvalues[id] + '</div>';
-    text += '<div>Queen weights and 999 permutations</div>';
-  }
+  // if (isLisa()) {
+  //   let field = data_btn.innerText;
+  //   let c = lisaData[selectedDataset][selectedDate][field].clusters[id];
+  //   text += '<br/><div><b>' + lisa_labels[c] + '</b></div>';
+  //   text += '<div><b>p-value:</b>' + lisaData[selectedDataset][selectedDate][field].pvalues[id] + '</div>';
+  //   text += '<div>Queen weights and 999 permutations</div>';
+  // }
 
   return text;
 }
@@ -717,6 +703,125 @@ function updateTooltip(e) {
   } else {
     entityName = jsondata[selectedDataset].features[id].properties.NAME;
   }
+
+ 
+  // cases
+  let cases = caseData[selectedDataset][selectedDate][id];
+  let casesPer10k = populationDataExists ? (cases / population * 10000) : 0;
+  
+  // deaths
+  let deaths = deathsData[selectedDataset][selectedDate][id];
+  let deathsPer10k = populationDataExists ? (deaths / population * 10000) : 0;
+  let fatalityRate = fatalityData[selectedDataset][selectedDate][id];
+  
+  // new cases
+  let newCases = 0;
+  let dt_idx = dates[selectedDataset].indexOf(selectedDate);
+  if (dt_idx > 0) {
+    let prev_date = dates[selectedDataset][dt_idx - 1];
+    var cur_vals = caseData[selectedDataset][selectedDate];
+    var pre_vals = caseData[selectedDataset][prev_date];
+    newCases = cur_vals[id] - pre_vals[id];
+  }
+  let newCasesPer10k = populationDataExists ? (newCases / population * 10000) : 0;
+
+  // new deaths
+  let newDeaths = 0;
+  if (dt_idx > 0) {
+    let prev_date = dates[selectedDataset][dt_idx - 1];
+    var cur_vals = deathsData[selectedDataset][selectedDate];
+    var pre_vals = deathsData[selectedDataset][prev_date];
+    newDeaths = cur_vals[id] - pre_vals[id];
+  }
+
+  // render html
+  const values = {
+    entityName,
+    cases,
+    deaths,
+    newCases,
+    newDeaths,
+  };
+  const text = getTooltipHtml(id, values);
+
+
+  // set html
+  tooltip.innerHTML = text;
+
+  // position tooltip over mouse location
+  tooltip.style.top = `${y}px`;
+  tooltip.style.left = `${x}px`;
+}
+
+function pandemicDataHtml(values) {
+  console.log(values);
+}
+
+function handleMapHover(e) {
+  updateTooltip(e);
+}
+
+function handleMapClick(e) {
+  updateTrendLine(e);
+  updateDataPanel(e);
+}
+
+// builds HTML for socioeconomic indicator tab in data panel
+function socioeconomicIndicatorsHtml(geoId) {
+  let html = '';
+  const labels = { // Help me with abbreviations, these were all guesses
+    PovChldPrc: 'Child Poverty Rate',
+    PovChldQ: 'Child Poverty Quartile',
+    IncInq20: 'Bottom 20% Income',
+    IncInq80: 'Top 20% Income',
+    IncRtio: 'Income Ratio',
+    UninPrc: 'Uninsured Percentage',
+    UninQ: 'Uninsured Quartile',
+    PrmPhysCt: 'Primary Care Count',
+    PrmPhysRt: 'Primary Care Rate',
+    PrmPhysQ: 'Primary Care Quartile',
+    PrevHospRt: 'Preventable Hospitalizations', 
+    PrevHospQ: 'Preventable Hospitalizations Quartile'
+  };
+  const ordered = ['PovChldPrc', 'PovChldQ', 'IncInq20', 'IncInq80', 'IncRtio', 'UninPrc', 'UninQ', 'PrmPhysCt', 'PrmPhysRt', 'PrmPhysQ', 'PrevHospRt', 'PrevHospQ'];
+  html += `<div><h3>Socioeconomic Indicators</h3>`
+  const rowHtml = (key) => `<div><b>${labels[key]}</b>: ${chrData[geoId][key]}</div>`;
+  ordered.forEach(key => html += rowHtml(key));
+  html += `</div>`
+  return html;
+}
+
+// builds HTML for covid forecasting/predictions tab in data panel
+function covidForecastingHtml(geoId) {
+  let html = ''
+  const surgeIndex = predictionsData[geoId].surge_index;
+  const surgeIndexColor = () => (surgeIndex > 0) ? '#f08686' : '#a6c2f7';
+  const predictions = predictionsData[geoId].predictedDeaths;
+  html += `<div><h3>Forecasting</h3>`
+  html += `<div><b>Surge Index:</b> <span style="color:${surgeIndexColor()}">${surgeIndex}</span></div></div>`;
+  for (let date in predictions) {
+    html += `<div><b>${date}</b>: ${[predictions[date]]} predicted deaths</div>`;
+  }
+
+
+  return html;
+}
+
+function updateDataPanel(e) {
+
+  let geoId; 
+  let html = '';
+  const geoIdElem = document.querySelector('#geoid');
+
+  if (e.object) geoId = parseInt(e.object.properties.GEOID);
+  if (!geoId) geoId = geoIdElem.value;
+
+  const id = e.object.properties.id;
+  const stateAbbr = e.object.properties.state_abbr;
+  
+  const panelElem = document.querySelector('.data-panel');
+  const headerElem = document.querySelector('#data-panel__header')
+  const bodyElem = document.querySelector('#data-panel__body');
 
   // get population
   const population = populationData[selectedDataset][id];
@@ -767,128 +872,29 @@ function updateTooltip(e) {
   newCasesPer10k = parseFloat(newCasesPer10k).toFixed(2);
   newDeathsPer10k = parseFloat(newDeathsPer10k).toFixed(2);
 
-  // render html
-  const values = {
-    entityName,
-    cases,
-    casesPer10k,
-    beds,
-    casesPerBed,
-    deaths,
-    deathsPer10k,
-    fatalityRate,
-    newCases,
-    newCasesPer10k,
-    newDeaths,
-    newDeathsPer10k,
-    population
-  };
-  const text = getTooltipHtml(id, values);
+  html += 
+  `
+  <div><b>Population:</b> ${population}</div>
+  <br>
+  <div><b>Total Cases:</b> ${cases}</div>
+  <div><b>Total Deaths:</b> ${deaths}</div>
+  <div><b>Cases per 10k Population:</b> ${casesPer10k}</div>
+  <div><b>Deaths per 10k Population:</b> ${deathsPer10k}</div>
+  <div><b>New Cases per 10k Population:</b> ${newCasesPer10k}</div>
+  <div><b>New Deaths per 10k Population</b> ${newDeathsPer10k}</div>
+  <div><b>Licensed Hospital Beds:</b> ${beds}</div>
+  <div><b>Cases per Bed</b> ${casesPerBed}</div>
+  <div><b>Fatality Rate:</b> ${fatalityRate}%</div>
+  `
 
-  // set html
-  tooltip.innerHTML = text;
-
-  // position tooltip over mouse location
-  tooltip.style.top = `${y}px`;
-  tooltip.style.left = `${x}px`;
-}
-
-function handleMapHover(e) {
-  updateTooltip(e);
-}
-
-function handleMapClick(e) {
-  updateTrendLine(e);
-  updateDataPanel(e);
-}
-
-// builds HTML for socioeconomic indicator tab in data panel
-function socioeconomicIndicatorsHtml(geoId) {
-  let html = '';
-  const labels = { // Help me with abbreviations, these were all guesses
-    PovChldPrc: 'Child Poverty Rate',
-    PovChldQ: 'Child Poverty Quartile',
-    IncInq20: 'Bottom 20% Income',
-    IncInq80: 'Top 20% Income',
-    IncRtio: 'Income Ratio',
-    UninPrc: 'Uninsured Percentage',
-    UninQ: 'Uninsured Quartile',
-    PrmPhysCt: 'Primary Care Count',
-    PrmPhysRt: 'Primary Care Rate',
-    PrmPhysQ: 'Primary Care Quartile',
-    PrevHospRt: 'Preventable Hospitalizations', 
-    PrevHospQ: 'Preventable Hospitalizations Quartile'
-  };
-  const col1 = ['PovChldPrc', 'IncInq20', 'IncRtio', 'PrmPhysRt', 'PrevHospRt', 'UninPrc'];
-  const col2 = ['PovChldQ', 'IncInq80', 'PrmPhysCt', 'PrmPhysQ', 'PrevHospQ', 'UninQ'];
-  html += `<div style="float: left; width: 50%">`
-  const rowHtml = (key) => `<div><b>${labels[key]}</b>: ${chrData[geoId][key]}</div>`;
-  col1.forEach((key) => html += rowHtml(key));
-  html += `</div><div style="float: right; width: 50%;">`
-  col2.forEach((key) => html += rowHtml(key));
-  html += `</div>`
-  return html;
-}
-
-// builds HTML for covid forecasting/predictions tab in data panel
-function covidForecastingHtml(geoId) {
-  let html = ''
-  console.log(predictionsData[geoId]);
-  const surgeIndex = predictionsData[geoId].surge_index;
-  const surgeIndexColor = () => (surgeIndex > 0) ? '#f08686' : '#a6c2f7';
-  const predictions = predictionsData[geoId].predictedDeaths;
-  html += `
-  <div style="display:flex">
-    <div style="flex: 50%">
-      `
-  for (let date in predictions) {
-    console.log(date);
-    html += `<div style="font-size: 11px"><b>${date}</b>: ${[predictions[date]]} predicted deaths</div>`;
-  }
-
-  html += `      
-    </div>
-    <div style="flex: 50%">
-      <div><b>Severity Index:</b></div>
-      <div style="font-size: 60px;color:${surgeIndexColor()}">${surgeIndex}</div>
-      </div>
-  </div>`
-
-  return html;
-}
-
-function updateDataPanel(e) {
-
-  let html;
-  let geoId; 
-  const geoIdElem = document.querySelector('#geoid');
-
-  if (e.object) geoId = parseInt(e.object.properties.GEOID);
-  if (!geoId) geoId = geoIdElem.value;
-  
-  const panelElem = document.querySelector('.data-panel');
-  const headerElem = document.querySelector('#data-panel__header')
-  const bodyElem = document.querySelector('#data-panel__body');
-  const selectElem = document.querySelector('#data-panel__select')
-  const getSelected = (e) => e.options[e.selectedIndex].value;
-  switch(getSelected(selectElem)) {
-    case 'socioeconomic_indicators':
-      if (!chrData[geoId]) return console.log('No CHR data for geoId', geoId);
-      html = socioeconomicIndicatorsHtml(geoId);
-      break;
-    case 'covid_forecasting':
-      if (!predictionsData[geoId]) return console.log('No predictions data for', geoId);
-      html = covidForecastingHtml(geoId);
-      break;
-  }
+  if (chrData[geoId]) html += socioeconomicIndicatorsHtml(geoId);
+  if (predictionsData[geoId]) html += covidForecastingHtml(geoId);
 
   geoIdElem.value = geoId; // store geoid in hidden input so we can load data on select change
-  headerElem.innerHTML = `${chrData[geoId].County}, ${chrData[geoId].State}`;
+  headerElem.innerHTML = `${chrData[geoId].County} County, ${stateAbbr}`;
   bodyElem.innerHTML = html;
   panelElem.removeAttribute('hidden');
 }
-
-
 /*
  * APPLICATION
 */
