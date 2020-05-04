@@ -1124,14 +1124,11 @@ function createMap(data) {
       layers.push(
         // adapted from https://tgorkin.github.io/docs/layers/tile-layer
         new TileLayer({
-          stroked: false,
-          getLineColor: [0, 0, 0],
-          getFillColor: [53, 152, 255],
-          opacity: 0.5,
-          getLineWidth() {
-            return 3;
-          },
-          lineWidthMinPixels: 3,
+          stroked: true,
+          getLineColor: [0, 255, 255],
+          getFillColor: [100, 100, 100],
+          opacity: 0.25,
+          lineWidthMinPixels: 2.5,
           getTileData: async ({ x, y, z }) => {
             const mapSource = `https://api.mapbox.com/v4/lixun910.7luxiq9n/${z}/${x}/${y}.vector.pbf?access_token=${MAPBOX_ACCESS_TOKEN}`;
             
