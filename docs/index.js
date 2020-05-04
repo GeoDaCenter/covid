@@ -1133,7 +1133,7 @@ function createMap(data) {
           },
           lineWidthMinPixels: 3,
           getTileData: async ({ x, y, z }) => {
-            const mapSource = `https://api.mapbox.com/v4/lixun910.4j9fklls/${z}/${x}/${y}.vector.pbf?access_token=${MAPBOX_ACCESS_TOKEN}`;
+            const mapSource = `https://api.mapbox.com/v4/lixun910.7luxiq9n/${z}/${x}/${y}.vector.pbf?access_token=${MAPBOX_ACCESS_TOKEN}`;
             
             const response = await fetch(mapSource);
 
