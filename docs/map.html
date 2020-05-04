@@ -1,127 +1,150 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <title>COVID19 USA States</title>
+    <!-- google analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-72724100-4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
 
-    <link rel="stylesheet" href="index.css"></link>
-    <!-- minimum list of deps to make it fast -->
-    <script src="https://unpkg.com/deck.gl@^7.0.0/dist.min.js"></script>
-    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script type="text/javascript" src="./js/zip.js"></script>
-    <style type="text/css">
+      gtag('config', 'UA-72724100-4');
+    </script>
 
-    </style>
+    <meta charset="utf-8">
+    <title>COVID Atlas | Spatial@UChicago</title>
+
+    <link rel="stylesheet" href="index.css">
+
+    <script defer src="https://unpkg.com/deck.gl@^7.0.0/dist.min.js"></script>
+    <script defer src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"></script>
+    <script defer src="/js/zip.js"></script>
+    <script defer src="https://unpkg.com/pbf@3.2.0/dist/pbf.js"></script>
+    <script defer src="/js/GeodaProxy.js"></script>
+    <script defer src="/js/mapbox-vector-tile.js"></script>
+    <script defer src="index.js"></script>
+    <script defer src="./gen/jsgeoda.js"></script>
   </head>
 
-  <body>
-    <div class="logo"><a href="https://geodacenter.github.io">powered by GeoDa</a></div>
+  <body>   
     <div id="tooltip"></div>
-    <div class="time-panel bottom-left" >
+    
+    <div class="time-panel">
       <label class="unselectable" id="time-container">2020-03-23</label>
     </div>
-    <div class="options-panel top-right " tabindex="0">
-        <div style="float: right;"><img src="img/collapse.png" style="height: 24px; width: 24;" onclick="collapse(this)"></div>
-        <div id="toolbox">
-            <p>Select Data:</p>
-            <div class="layout">
-                <div class="dropdown">
-                  <button class="dropbtn" id="select-source">By County (UsaFacts.com)</button>
-                  <div class="dropdown-content">
-                    <a href="#" onclick="OnSourceClick(this)">By County (UsaFacts.com)</a>
-                    <a href="#" onclick="OnSourceClick(this)">By County (1Point3Acres.com)</a>
-                    <a href="#" onclick="OnSourceClick(this)">By State  (1Point3Acres.com)</a>
-                  </div>
+
+    <div class="data-panel" hidden>
+      <input id="geoid" hidden></input>
+      <div style="display: flex">
+        <div style="flex: 60%">
+          <h2 id="data-panel__header">Nocounty, Nostate</h2>
+        </div>
+        <div style="flex: 40%">
+          <select style="width:100%" id="data-panel__select" onchange="updateDataPanel(this)">
+            <option value="socioeconomic_indicators">Socioeconomic Indicators</option>
+            <option value="covid_forecasting">Covid-19 Forecasting</option>
+          </select>
+        </div>
+      </div><hr>
+      <div id="data-panel__body">
+      </div>
+    </div>
+
+    <div class="options-panel" tabindex="0">
+      <div><img src="img/collapse.png" style="height: 24px; width: 24;" onclick="collapse(this)"></div>
+      <div id="toolbox">
+          <p>Select Data:</p>
+          <div class="layout">
+              <div class="dropdown">
+                <button class="dropbtn" id="select-source">By County (UsaFacts.com)</button>
+                <div class="dropdown-content">
+                  <a href="#" onclick="OnSourceClick(this)">By County (UsaFacts.com)</a>
+                  <a href="#" onclick="OnSourceClick(this)">By County (1Point3Acres.com)</a>
+                  <a href="#" onclick="OnSourceClick(this)">By State  (1Point3Acres.com)</a>
                 </div>
-            </div>
-            <p>Select Variable:</p>
-            <div class="layout">
-                <div class="dropdown">
-                    <button class="dropbtn" id="select-data">Confirmed Count per 10K Population</button>
-                    <div class="dropdown-content">
-                      <a href="#" onclick="OnDataClick(this)" id="btn-conf-count">Confirmed Count</a>
-                      <a href="#" onclick="OnDataClick(this)">Confirmed Count per 10K Population</a>
-                      <a href="#" onclick="OnDataClick(this)">Confirmed Count per Licensed Bed</a>
-                      <a href="#" onclick="OnDataClick(this)">Death Count</a>
-                      <a href="#" onclick="OnDataClick(this)">Death Count per 10K Population</a>
-                      <a href="#" onclick="OnDataClick(this)">Death Count/Confirmed Count</a>
-                      <a href="#" onclick="OnDataClick(this)">Daily New Confirmed Count</a>
-                      <a href="#" onclick="OnDataClick(this)">Daily New Confirmed Count per 10K Pop</a>
-                      <a href="#" onclick="OnDataClick(this)">Daily New Death Count</a>
-                      <a href="#" onclick="OnDataClick(this)">Daily New Death Count per 10K Pop</a>
-                    </div>
-                  </div>
-            </div>
-            <p>
-              Select Map Type:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              <input type="checkbox" id="cartogram-ckb" onchange="OnCartogramClick(this)">Using Cartogram</p>
-            <div class="layout">
-                <button class="stat col-1-2 checked" id="btn-nb" onclick="OnChoroplethClick(this)">Choropleth</button>
-                <button class="stat col-1-2" id="btn-lisa" onclick="OnLISAClick(this)">Local Clustering</button>
-                
-            </div>
-            <p></p>
-            <div class="layout" id="legend">
-                <div class="legend" style="background: rgb(240, 240, 240); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(255, 237, 160); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(254, 217, 118); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(254, 178, 76); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(253, 141, 60); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(252, 78, 42); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(227, 26, 28); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(189, 0, 38); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(128, 0, 38); width: 7.69231%;"></div>
-            </div>
-            <div class="layout" id="legend-labels">
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-            </div>
-            <p>New cases:</p>
-            <div class="layout" id="linechart"></div>
-            <p>All cases:</p>
-            <div class="layout" id="slider-svg"></div>
-            <div class="layout" id="sliderdiv"><input id="slider" type="range" min="1" max="100" step="1" value="20"/></div>
-            <p><n><b>Data</b>:&nbsp;<a href="https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/">USAFacts</a> and <a href="https://covidvirus.1point3acres.com/">1point3acres</a>. In case of data discrepancy, local health departments are considered most accurate by CDC recommendations.</p>
-            <p>
-              <input type="checkbox" onchange="OnShowLabels(this)">Show Hotspot Label
-              <input type="checkbox" onchange="OnShowTime(this)">Show Time Label
-            </p>
-           <div class="source-link" align="center">
-              <a href="https://spatial.uchicago.edu" target="_new"><img align="center" src="img/logo_gray.png"  width=200px alt="Center for Spatial Data Science logo"/></a><br>
-            <button onclick="OnSave(this)" style="display:none">save</button>
+              </div>
           </div>
-    </div> 
+          <p>Select Variable:</p>
+          <div class="layout">
+            <div class="dropdown">
+              <button class="dropbtn" id="select-data">Confirmed Count per 10K Population</button>
+              <div class="dropdown-content">
+                <a href="#" onclick="OnDataClick(this)" id="btn-conf-count">Confirmed Count</a>
+                <a href="#" onclick="OnDataClick(this)">Confirmed Count per 10K Population</a>
+                <a href="#" onclick="OnDataClick(this)">Confirmed Count per Licensed Bed</a>
+                <a href="#" onclick="OnDataClick(this)">Death Count</a>
+                <a href="#" onclick="OnDataClick(this)">Death Count per 10K Population</a>
+                <a href="#" onclick="OnDataClick(this)">Death Count/Confirmed Count</a>
+                <a href="#" onclick="OnDataClick(this)">Daily New Confirmed Count</a>
+                <a href="#" onclick="OnDataClick(this)">Daily New Confirmed Count per 10K Pop</a>
+                <a href="#" onclick="OnDataClick(this)">Daily New Death Count</a>
+                <a href="#" onclick="OnDataClick(this)">Daily New Death Count per 10K Pop</a>
+              </div>
+            </div>
+          </div>
+          <p>
+            Select Map Type:
+            <input type="checkbox" id="cartogram-ckb" onchange="OnCartogramClick(this)">Using Cartogram</p>
+          <div class="layout">
+            <button class="stat col-1-2 checked" id="btn-nb" onclick="OnChoroplethClick(this)">Choropleth</button>
+            <button class="stat col-1-2" id="btn-lisa" onclick="OnLISAClick(this)">Local Clustering</button>
+          </div>
+          <p></p>
+          <div class="layout" id="legend">
+            <div class="legend" style="background: rgb(240, 240, 240); width: 7.69231%;"></div>
+            <div class="legend" style="background: rgb(255, 237, 160); width: 7.69231%;"></div>
+            <div class="legend" style="background: rgb(254, 217, 118); width: 7.69231%;"></div>
+            <div class="legend" style="background: rgb(254, 178, 76); width: 7.69231%;"></div>
+            <div class="legend" style="background: rgb(253, 141, 60); width: 7.69231%;"></div>
+            <div class="legend" style="background: rgb(252, 78, 42); width: 7.69231%;"></div>
+            <div class="legend" style="background: rgb(227, 26, 28); width: 7.69231%;"></div>
+            <div class="legend" style="background: rgb(189, 0, 38); width: 7.69231%;"></div>
+            <div class="legend" style="background: rgb(128, 0, 38); width: 7.69231%;"></div>
+          </div>
+          <div class="layout" id="legend-labels">
+              <div style="width: 7.69231%;"></div>
+              <div style="width: 7.69231%;"></div>
+              <div style="width: 7.69231%;"></div>
+              <div style="width: 7.69231%;"></div>
+              <div style="width: 7.69231%;"></div>
+              <div style="width: 7.69231%;"></div>
+              <div style="width: 7.69231%;"></div>
+              <div style="width: 7.69231%;"></div>
+              <div style="width: 7.69231%;"></div>
+          </div>
+          <p>New cases:</p>
+          <div class="layout" id="linechart"></div>
+          <p>All cases:</p>
+          <div class="layout" id="slider-svg"></div>
+          <div class="layout" id="sliderdiv"><input id="slider" type="range" min="1" max="100" step="1" value="20"/></div>
+          <p><b>Data:</b> <a href="https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/?utm_source=MailChimp&utm_campaign=census-covid2">USAFacts</a> and <a href="https://covidvirus.1point3acres.com/">1point3acres</a>. In case of data discrepancy, local health departments are considered most acccurate by CDC recommendations.</p>
+          <div class="map-overlay-toggles">
+            <!-- TODO using these unstyled divs is a bit of a kludge to get the
+            first two checkboxes to appear on the same line -->
+            <div>
+              <input id="hotspot-labels-toggle" type="checkbox" onchange="OnShowLabels(this)">
+              <label for="hotspot-labels-toggle">Show Hotspot Labels</label>
+
+              <input id="time-label-toggle" type="checkbox" onchange="OnShowTime(this)">
+              <label for="time-label-toggle">Show Time Label</label>
+            </div>
+            <div>
+              <input id="reservations-toggle" type="checkbox" onchange="OnShowReservations(this)">
+              <label for="reservations-toggle">Show Native American Reservations</label>
+            </div>
+          </div>
+
+          <div class="source-link" align="center">
+            <a href="https://spatial.uchicago.edu" target="_new"><img align="center" src="img/logo_gray.png"  width=200px alt="Center for Spatial Data Science logo"/></a><br>
+          <button onclick="OnSave(this)" style="display:none">save</button>
+
+          <div class="geoda-link">
+            <img src="/img/geoda-logo.png">
+            <a href="https://geodacenter.github.io">Powered by GeoDa</a>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
-  <!-- Main entry index.js, depends on jsgeoda WASM -->
-  <script>
-  function loadGeoDaWasm() {
-    var element=document.createElement('script');
-    if (navigator.userAgent.search("Chrome") >= 0) {
-      element.setAttribute('src', './gen/jsgeoda.js');
-    } else {
-      element.setAttribute('src', './gen/jsgeoda.js');
-    }
-    document.body.appendChild(element);
-  }
-  </script>
-  <script async type="text/javascript" src="./gen/jsgeoda.js"></script>
-  <script src="index.js"></script>
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-72724100-4"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'UA-72724100-4');
-  </script>
-
-  
 </html>
