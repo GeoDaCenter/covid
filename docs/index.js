@@ -705,14 +705,14 @@ function updateTooltip(e) {
   }
 
  
+    // get population
+  const population = populationData[selectedDataset][id];
+  const populationDataExists = (population && population > 0);
   // cases
   let cases = caseData[selectedDataset][selectedDate][id];
-  let casesPer10k = populationDataExists ? (cases / population * 10000) : 0;
   
   // deaths
   let deaths = deathsData[selectedDataset][selectedDate][id];
-  let deathsPer10k = populationDataExists ? (deaths / population * 10000) : 0;
-  let fatalityRate = fatalityData[selectedDataset][selectedDate][id];
   
   // new cases
   let newCases = 0;
@@ -723,7 +723,6 @@ function updateTooltip(e) {
     var pre_vals = caseData[selectedDataset][prev_date];
     newCases = cur_vals[id] - pre_vals[id];
   }
-  let newCasesPer10k = populationDataExists ? (newCases / population * 10000) : 0;
 
   // new deaths
   let newDeaths = 0;
