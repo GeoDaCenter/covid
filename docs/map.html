@@ -13,7 +13,7 @@
 
     <meta charset="utf-8">
     <title>COVID Atlas | Spatial@UChicago</title>
-
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="index.css">
 
     <script defer src="https://unpkg.com/deck.gl@^7.0.0/dist.min.js"></script>
@@ -37,10 +37,10 @@
       <h2 id="data-panel__header">Nocounty, Nostate</h2>
       <div id="data-panel__body">
       </div>
+      <div id="right-collapse" class="collapse-btn"><span class="fas fa-chevron-right"></span></div>
     </div>
 
     <div class="options-panel" tabindex="0">
-      <div><img src="img/collapse.png" style="height: 24px; width: 24;" onclick="collapse(this)"></div>
       <div id="toolbox">
           <p>Select Data:</p>
           <div class="layout">
@@ -121,6 +121,7 @@
           </div>
         </div>
       </div>
+      <div id="left-collapse" class="collapse-btn"><span class="fas fa-chevron-left"></span></div>
     </div>
   </body>
 </html>

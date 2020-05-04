@@ -268,3 +268,11 @@ data panel
   right: 0px;
   z-index: 1;
 }
+
+.fas {
+  font-family: 'FontAwesome' !important;
+}
+
+.collapse-btn {
+  display: none;
+}
