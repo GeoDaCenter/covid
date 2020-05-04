@@ -26,21 +26,15 @@
   </head>
 
   <body>   
-    <div id="tooltip"></div>
+    <div id="tooltip" class="center-shadow"></div>
     
     <div class="time-panel">
       <label class="unselectable" id="time-container">2020-03-23</label>
     </div>
 
-    <div class="data-panel" hidden>
-      <input id="geoid" hidden></input>
-      <h2 id="data-panel__header">Nocounty, Nostate</h2>
-      <div id="data-panel__body">
-      </div>
-      <div id="right-collapse" class="collapse-btn"><span class="fas fa-chevron-right"></span></div>
-    </div>
-
-    <div class="options-panel" tabindex="0">
+    <!-- options panel -->
+    <div class="options-panel left-shadow" tabindex="0">
+      <h1>COVID Atlas</h1>
       <div id="toolbox">
           <p>Select Data:</p>
           <div class="layout">
@@ -112,7 +106,9 @@
             <input type="checkbox" onchange="OnShowTime(this)">Show Time Label
           </p>
           <div class="source-link" align="center">
-            <a href="https://spatial.uchicago.edu" target="_new"><img align="center" src="img/logo_gray.png"  width=200px alt="Center for Spatial Data Science logo"/></a><br>
+            <a href="https://spatial.uchicago.edu" target="_new">
+              <img align="center" src="img/logo_gray.png"  width=200px alt="Center for Spatial Data Science logo"/>
+            </a>
           <button onclick="OnSave(this)" style="display:none">save</button>
 
           <div class="geoda-link">
@@ -121,7 +117,21 @@
           </div>
         </div>
       </div>
-      <div id="left-collapse" class="collapse-btn"><span class="fas fa-chevron-left"></span></div>
     </div>
+
+    <!-- options panel minimize button -->
+    <div id="left-collapse" class="collapse-btn left-shadow"><i class="fa fa-chevron-left"></i></div>
+    
+    <!-- data panel -->
+    <div class="data-panel right-shadow" hidden>
+      <input id="geoid" hidden></input>
+      <h2 id="data-panel__header">Nocounty, Nostate</h2>
+      <div id="data-panel__body">
+      </div>
+
+    </div>
+
+    <!-- data panel minimize button -->
+    <div id="right-collapse" class="collapse-btn right-shadow"><i class="fa fa-chevron-right"></i></div>
   </body>
 </html>

@@ -704,10 +704,6 @@ function updateTooltip(e) {
     entityName = jsondata[selectedDataset].features[id].properties.NAME;
   }
 
- 
-    // get population
-  const population = populationData[selectedDataset][id];
-  const populationDataExists = (population && population > 0);
   // cases
   let cases = caseData[selectedDataset][selectedDate][id];
   
@@ -742,7 +738,6 @@ function updateTooltip(e) {
     newDeaths,
   };
   const text = getTooltipHtml(id, values);
-
 
   // set html
   tooltip.innerHTML = text;
