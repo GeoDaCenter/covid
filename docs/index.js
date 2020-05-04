@@ -567,11 +567,12 @@ function OnSourceClick(evt) {
   source_btn.innerText = evt.innerText;
   if (evt.innerText.indexOf('UsaFacts') >= 0) {
     selectedDataset = 'county_usfacts.geojson';
-  } else if (evt.innerText.indexOf('County (1Point3Arces.com)') >= 0) {
+  } else if (evt.innerText.indexOf('County (1Point3Acres.com)') >= 0) {
     selectedDataset = 'counties_update.geojson';
   } else {
     selectedDataset = 'states_update.geojson';
   }
+
 
   if (isState()) {
     OnStateClick();
@@ -1581,7 +1582,7 @@ function addTrendLine(data, title) {
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .attr("transform", "translate(0," + margin.top + ")");
-
+    
   svg.append("g").attr("class", "y axis");
   svg.append("g").attr("class", "x axis");
 
@@ -1615,7 +1616,8 @@ function addTrendLine(data, title) {
   svg.append("path")
     .datum(tmpData)
     .attr("class", "line")
-    .attr("d", line);
+    .attr("d", line)
+    .attr("stroke", "red");
 
   svg.append("g")
     .attr("transform", "translate(0," + (height) + ")")
@@ -1654,6 +1656,7 @@ function addTrendLine(data, title) {
     .attr("class", "linetitle")
     .attr("x", (width + (margin.left + margin.right)) / 2)
     .attr("y", 0 + margin.top)
+    .attr("fill", "white")
     .attr("text-anchor", "middle")
     .style("font-size", "12px")
     .style("font-family", "sans-serif")
@@ -1683,7 +1686,7 @@ function updateTrendLine({
   } else {
     yValues = getConfirmedCountByDate(jsondata[json], false);
   }
-  title = object ? object.properties["NAME"] : "all";
+  title = object ? object.properties["NAME"] : "U.S.";
 
   // Get the data again
   var tmpData = [];
@@ -1745,7 +1748,7 @@ function createTimeSlider(geojson) {
     }
   }
 
-  var width = 320,
+  var width = 280,
     height = 180,
     padding = 28;
 

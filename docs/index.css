@@ -4,19 +4,20 @@ body {
   margin: 0;
   font-family: 'Helvetica Neue', Helvetica, sans-serif !important;
   font-size: 12px;
-  background-color: #000;
-}
+  background-color: #2C2C2B;
+} 
 
 #tooltip {
   position: absolute;
   padding: 4px;
   margin: 8px;
-  background: rgba(255, 255, 255, 0.9);
-  color: #666;
+  background-color: #2C2C2B;
+  color: #fff;
   max-width: 400px;
   font-size: 14px;
   z-index: 9;
   pointer-events: none;
+  box-shadow: 0 0 4px rgba(0, 0, 0, .15);
 }
 
 #tooltip:empty {
@@ -24,7 +25,7 @@ body {
 }
 
 #tooltip table {
-  color: #666;
+  color: #fff;
 }
 
 #tooltip table th {
@@ -83,15 +84,17 @@ a:visited {
   height: 1rem;
 }
 
+
 .options-panel {
   position: absolute;
   top: 24px;
-  left: 24px;
+  left: 0px;
   width: 344px;
-  background: #fff;
+  background: #222221;
+  color: #fff;
   box-shadow: 0 0 4px rgba(0, 0, 0, .15);
   padding: 12px 24px;
-  max-height: 96%;
+  max-height: 90%;
   overflow-x: hidden;
   overflow-y: auto;
   overflow-y: overlay;
@@ -213,7 +216,7 @@ a:visited {
 }
 
 #slider {
-  width: 294px;
+  width: 255px;
 }
 
 #sliderdiv {
@@ -255,8 +258,8 @@ data panel
 */
 
 .data-panel {
-  background: rgba(255, 255, 255, 0.9);
-  color: #666;
+  background-color: #2C2C2B;
+  color: #fff;
   padding: 1.2rem;
   width: 500px;
   position: absolute;
