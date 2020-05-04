@@ -1373,7 +1373,7 @@ function updateTooltip({x, y, object}) {
         text += '<tr><td><h5 style=display:inline>Daily New Confirmed Count:</h5></td><td><h5 style=display:inline>' + v7 + '</h5></td>';
         text += '<tr><td><h5 style=display:inline>Daily New Confirmed Count per 10K Pop:</h5></td><td><h5 style=display:inline>' + v8.toFixed(2) + '</h5></td>';
         text += '<tr><td><h5 style=display:inline>Daily New Death Count:</h5></td><td><h5 style=display:inline>' + v9 + '</h5></td>';
-        text += '<tr><td><h5 style=display:inline>Daily New Confirmed Count per 10K Pop:</h5></td><td><h5 style=display:inline>' + v10.toFixed(2) + '</h5></td>';
+        text += '<tr><td><h5 style=display:inline>Daily New Death Count per 10K Pop:</h5></td><td><h5 style=display:inline>' + v10.toFixed(2) + '</h5></td>';
         text += '</table>';
         text += '<hr>';
         text += '<table>'
