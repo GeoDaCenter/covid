@@ -86,7 +86,7 @@ var lisaData = {};
 // this is an object indexed by county fips.
 var chrData = {};
 // county-level death predictions from the berkeley yu group
-var predictionsData = {};
+var berkeleyCountyData = {};
 
 // ui elements
 var choropleth_btn = document.getElementById("btn-nb");
@@ -186,16 +186,22 @@ async function fetchChrData() {
   return rowsIndexed;
 }
 
-// fetch berkeley group predictions
-async function fetchPredictionsData() {
-  const rows = await d3.csv('berkeley_counties_forecast_demo.csv');
+// fetch berkeley group death predictions and 5-day county severity index
+async function fetchBerkeleyCountyData() {
+  const rows = await d3.csv('berkeley_county_severity_index.csv');
 
   // index by fips and put predictions in nested object
   const rowsIndexed = rows.reduce((acc, row) => {
-    const { fips, name, state_abbr, surge_index, ...predictedDeaths } = row;
+    const { 
+      countyFIPS: fips,
+      CountyName: name,
+      StateName: stateAbbr,
+      'Severity County 5-day': severityIndex,
+      ...predictedDeaths
+    } = row;
     const fipsInt = parseInt(fips);
     acc[fipsInt] = {
-      surge_index,
+      severityIndex,
       predictedDeaths,
     };
     return acc;
@@ -224,12 +230,12 @@ async function loadUsafactsData(url, callback) {
     usafactsCases,
     usafactsDeaths,
     chrData,
-    predictionsData,
+    berkeleyCountyData,
   ] = await Promise.all([
     d3.csv('covid_confirmed_usafacts.csv'),
     d3.csv('covid_deaths_usafacts.csv'),
     fetchChrData(),
-    fetchPredictionsData(),
+    fetchBerkeleyCountyData(),
   ]);
 
   // update state
@@ -826,16 +832,37 @@ function socioeconomicIndicatorsHtml(geoId) {
 
 // builds HTML for covid forecasting/predictions tab in data panel
 function covidForecastingHtml(geoId) {
-  let html = ''
-  const surgeIndex = predictionsData[geoId].surge_index;
-  const surgeIndexColor = () => (surgeIndex > 0) ? '#f08686' : '#a6c2f7';
-  const predictions = predictionsData[geoId].predictedDeaths;
-  html += `<div><h3>Forecasting</h3>`
-  html += `<div><b>Surge Index:</b> <span style="color:${surgeIndexColor()}">${surgeIndex}</span></div></div>`;
-  for (let date in predictions) {
-    html += `<div><b>${date}</b>: ${[predictions[date]]} predicted deaths</div>`;
-  }
+  const countySeverityIndex = berkeleyCountyData[geoId].severityIndex;
+  const countySeverityLevel = {
+    1: 'low',
+    2: 'medium',
+    3: 'high',
+  }[countySeverityIndex];
+  const { predictedDeaths } = berkeleyCountyData[geoId];
+  
+  // form predictions rows
+  const predictedDeathsDates = Object.keys(predictedDeaths);
+  const predictedDeathsHtml = predictedDeathsDates.map((date) => {
+    console.log(predictedDeaths[date]);
+    return `
+      <div>
+        <b>${date}</b>: ${predictedDeaths[date]}
+      </div>
+    `;
+  }).join('\n');
 
+  // form rest of html
+  const html = `
+    <div>
+      <h3>Forecasting</h3>
+        <b>5-Day Severity Index:</b>
+        ${predictedDeathsHtml}
+        <span class="county-severity-index--${countySeverityLevel}">
+          ${countySeverityIndex}
+        </span>
+      </div>
+    </div>
+  `;
 
   return html;
 }
@@ -922,7 +949,7 @@ function updateDataPanel(e) {
   `
 
   if (chrData[geoId]) html += socioeconomicIndicatorsHtml(geoId);
-  if (predictionsData[geoId]) html += covidForecastingHtml(geoId);
+  if (berkeleyCountyData[geoId]) html += covidForecastingHtml(geoId);
 
   geoIdElem.value = geoId; // store geoid in hidden input so we can load data on select change
   headerElem.innerHTML = `${chrData[geoId].County} County, ${stateAbbr}`;
