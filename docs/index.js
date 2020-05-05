@@ -849,7 +849,9 @@ function socioeconomicIndicatorsHtml(geoId) {
   }
 
   const ordered = ['PovChldPrc', 'IncRtio', 'MedianHouseholdIncome', 'Over65YearsPrc', 'UninPrc', 'PrmPhysRt', 'PrevHospRt', 'ResidentialsegregationBlack' ];
-  html += `<div><h3>Socioeconomic Indicators</h3>`
+  html += `<div>
+    <h3>Socioeconomic Indicators</h3>
+    <div style="font-size: 80%; position: relative; top: -10px"><b>Source:</b> <a href="https://www.countyhealthrankings.org/">County Health Rankings</a></div>`
   const rowHtml = (key) => `<div><b>${labels[key]}</b>: ${handle(chrData[geoId][key])}</div>`;
   ordered.forEach(key => html += rowHtml(key));
   html += `</div>`
@@ -884,6 +886,7 @@ function covidForecastingHtml(geoId) {
   const html = `
     <div>
       <h3>Forecasting</h3>
+        <div style="font-size: 80%; position: relative; top: -10px;"><b>Source:</b> <a href="https://github.com/Yu-Group/covid19-severity-prediction">Yu Group at Berkeley</a></div>
         <b>5-Day Severity Index:</b> <span class="county-severity-index--${countySeverityLevel}">
         ${countySeverityIndex}
       </span>
