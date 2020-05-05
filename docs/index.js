@@ -805,10 +805,6 @@ function updateTooltip(e) {
   tooltip.style.left = `${x}px`;
 }
 
-function pandemicDataHtml(values) {
-  console.log(values);
-}
-
 function handleMapHover(e) {
   updateTooltip(e);
 }
@@ -820,7 +816,6 @@ function handleMapClick(e) {
 
 // builds HTML for socioeconomic indicator tab in data panel
 function socioeconomicIndicatorsHtml(geoId) {
-  console.log(' hi', chrData[geoId]);
   let html = '';
   const labels = { // Help me with abbreviations, these were all guesses
     PovChldPrc: 'Child Poverty Rate',
@@ -844,7 +839,6 @@ function socioeconomicIndicatorsHtml(geoId) {
     let formatted = val;
     if (!val || val === '') return 'N/A';
     const parsed = parseFloat(val);
-    console.log(parsed);
     if (isNaN(parsed)) return 'N/A'
     if (parsed % 1 !== 0) {
       formatted = parsed.toFixed(2);
@@ -879,7 +873,6 @@ function covidForecastingHtml(geoId) {
   // form predictions rows
   const predictedDeathsDates = Object.keys(predictedDeaths);
   const predictedDeathsHtml = predictedDeathsDates.map((date) => {
-    console.log(predictedDeaths[date]);
     return `
       <div>
         <b>${date}</b>: ${predictedDeaths[date]}
@@ -1905,7 +1898,6 @@ function createTimeSlider(geojson) {
   d3.select("#slider").on("input", function() {
     var currentValue = parseInt(this.value);
     selectedDate = dates[selectedDataset][currentValue - 1];
-    console.log(selectedDate);
 
     document.getElementById('time-container').innerText = selectedDate;
     var xLabels = dates[selectedDataset];
