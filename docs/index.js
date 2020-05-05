@@ -977,8 +977,10 @@ function updateDataPanel(e) {
   <div><b>New Deaths per 10k Population</b> ${newDeathsPer10k}</div>
   <div><b>Licensed Hospital Beds:</b> ${beds}</div>
   <div><b>Cases per Bed</b> ${casesPerBed}</div>
-  <div><b>Fatality Rate:</b> ${fatalityRate}%</div>
   `
+
+  // removed fatality rate:  <div><b>Fatality Rate:</b> ${fatalityRate}%</div>
+
 
   if (chrData[geoId]) html += socioeconomicIndicatorsHtml(geoId);
   if (berkeleyCountyData[geoId]) html += covidForecastingHtml(geoId);
