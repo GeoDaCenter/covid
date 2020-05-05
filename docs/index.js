@@ -58,14 +58,6 @@ function getDatesFromGeojson(data) {
   return xLabels;
 }
 
-function saveText(text, filename) {
-  var a = document.createElement('a');
-  a.setAttribute("id", filename);
-  a.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-  a.setAttribute('download', filename);
-  a.click()
-}
-
 
 /*
  * GLOBALS
@@ -697,24 +689,39 @@ function OnShowTime(el) {
   document.getElementById('time-container').parentElement.style.display = disp;
 }
 
-function OnSave() {
-  d3.json("lisa_dates.json", function (ds) {
-    // only new lisa results will be saved
-    let save_dates = [];
-    let start_pos = dates[selectedDataset].indexOf(ds[ds.length - 1]) + 1;
-    for (let i = start_pos; i < dates[selectedDataset].length; ++i) {
-      let d = dates[selectedDataset][i];
-      if (d in lisaData[selectedDataset]) {
-        console.log('lisa' + d + '.json');
-        save_dates.push(d);
-        setTimeout(function () {
-          saveText(JSON.stringify(lisaData[selectedDataset][d]), "lisa" + d + ".json");
-        }, 100 * (i - ds.length));
-      }
+function saveText(text, filename) {
+  var a = document.createElement('a');
+  a.setAttribute("id", filename);
+  a.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  a.setAttribute('download', filename);
+  a.click()
+}
+
+async function OnSave() {
+  const dsRaw = await fetch('lisa_dates.json');
+  const ds = await dsRaw.json();
+
+  // only new lisa results will be saved
+  const save_dates = [];
+  const start_pos = dates[selectedDataset].indexOf(ds[ds.length - 1]) + 1;
+  
+  // loop over date snapshots for the selected dataset
+
+  for (let i = start_pos; i < dates[selectedDataset].length; ++i) {
+    const date = dates[selectedDataset][i];
+    const lisaForDataset = lisaData[selectedDataset];
+
+    // if the date is in the lisaData global
+    if (date in lisaForDataset) {
+      console.log('lisa' + date + '.json');
+      save_dates.push(date);
+      setTimeout(function () {
+        saveText(JSON.stringify(lisaData[selectedDataset][date]), "lisa" + date + ".json");
+      }, 100 * (i - ds.length));
     }
-    // update dates
-    saveText(JSON.stringify(save_dates), "lisa_dates.json");
-  });
+  }
+  // update dates
+  saveText(JSON.stringify(save_dates), "lisa_dates.json");
 }
 
 function getTooltipHtml(id, values) {
