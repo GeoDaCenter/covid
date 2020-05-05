@@ -820,6 +820,7 @@ function handleMapClick(e) {
 
 // builds HTML for socioeconomic indicator tab in data panel
 function socioeconomicIndicatorsHtml(geoId) {
+  console.log(' hi', chrData[geoId]);
   let html = '';
   const labels = { // Help me with abbreviations, these were all guesses
     PovChldPrc: 'Child Poverty Rate',
@@ -833,14 +834,36 @@ function socioeconomicIndicatorsHtml(geoId) {
     PrmPhysRt: 'Primary Care Rate',
     PrmPhysQ: 'Primary Care Quartile',
     PrevHospRt: 'Preventable Hospitalizations', 
-    PrevHospQ: 'Preventable Hospitalizations Quartile'
+    PrevHospQ: 'Preventable Hospitalizations Quartile',
+    ResidentialsegregationBlack: 'Black/White Residential Segregation',
+    MedianHouseholdIncome: 'Median Household Income',
+    Over65YearsPrc: 'Over 65 Years %'
+
   };
-  const ordered = ['PovChldPrc', 'PovChldQ', 'IncInq20', 'IncInq80', 'IncRtio', 'UninPrc', 'UninQ', 'PrmPhysCt', 'PrmPhysRt', 'PrmPhysQ', 'PrevHospRt', 'PrevHospQ'];
+  const handle = (val) => {
+    let formatted = val;
+    if (!val || val === '') return 'N/A';
+    const parsed = parseFloat(val);
+    console.log(parsed);
+    if (isNaN(parsed)) return 'N/A'
+    if (parsed % 1 !== 0) {
+      formatted = parsed.toFixed(2);
+    } else {
+      formatted = parseInt(parsed);
+    }
+    return numberWithCommas(formatted);
+  }
+
+  const ordered = ['PovChldPrc', 'IncRtio', 'MedianHouseholdIncome', 'Over65YearsPrc', 'UninPrc', 'PrmPhysRt', 'PrevHospRt', 'ResidentialsegregationBlack' ];
   html += `<div><h3>Socioeconomic Indicators</h3>`
-  const rowHtml = (key) => `<div><b>${labels[key]}</b>: ${chrData[geoId][key]}</div>`;
+  const rowHtml = (key) => `<div><b>${labels[key]}</b>: ${handle(chrData[geoId][key])}</div>`;
   ordered.forEach(key => html += rowHtml(key));
   html += `</div>`
   return html;
+}
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 // builds HTML for covid forecasting/predictions tab in data panel
