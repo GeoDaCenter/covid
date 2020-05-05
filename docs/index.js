@@ -816,8 +816,8 @@ function covidForecastingHtml(geoId) {
   const html = `
     <div>
       <h3>Forecasting</h3>
-        ${predictedDeathsHtml}
         <b>5-Day Severity Index:</b>
+        ${predictedDeathsHtml}
         <span class="county-severity-index--${countySeverityLevel}">
           ${countySeverityIndex}
         </span>
