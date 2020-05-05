@@ -68,12 +68,31 @@
           </div>
           <p>
             Select Map Type:
-            <input type="checkbox" id="cartogram-ckb" onchange="OnCartogramClick(this)">Using Cartogram</p>
+            <input type="checkbox" id="cartogram-ckb" onchange="OnCartogramClick(this)">Using Cartogram
+          </p>
           <div class="layout">
             <button class="stat col-1-2 checked" id="btn-nb" onclick="OnChoroplethClick(this)">Choropleth</button>
             <button class="stat col-1-2" id="btn-lisa" onclick="OnLISAClick(this)">Local Clustering</button>
           </div>
-          <p></p>
+          
+          <div class="options-panel-section">
+            Select Map Overlays:
+            <div class="map-overlay-toggles">
+              <div>
+                <input id="reservations-toggle" type="checkbox" onchange="OnShowReservations(this)">
+                <label for="reservations-toggle">Show Native American Reservations</label>
+              </div>
+
+              <div class="map-overlay-toggles--hidden">
+                <input id="hotspot-labels-toggle" type="checkbox" onchange="OnShowLabels(this)">
+                <label for="hotspot-labels-toggle">Show Hotspot Labels</label>
+            
+                <input id="time-label-toggle" type="checkbox" onchange="OnShowTime(this)">
+                <label for="time-label-toggle">Show Time Label</label>
+              </div>
+            </div>
+          </div>
+
           <div class="layout" id="legend">
             <div class="legend" style="background: rgb(240, 240, 240); width: 7.69231%;"></div>
             <div class="legend" style="background: rgb(255, 237, 160); width: 7.69231%;"></div>
@@ -102,21 +121,6 @@
           <div class="layout" id="slider-svg"></div>
           <div class="layout" id="sliderdiv"><input id="slider" type="range" min="1" max="100" step="1" value="20"/></div>
           <p><b>Data:</b> <a href="https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/?utm_source=MailChimp&utm_campaign=census-covid2">USAFacts</a> and <a href="https://covidvirus.1point3acres.com/">1point3acres</a>. In case of data discrepancy, local health departments are considered most acccurate by CDC recommendations.</p>
-          <div class="map-overlay-toggles">
-            <!-- TODO using these unstyled divs is a bit of a kludge to get the
-            first two checkboxes to appear on the same line -->
-            <div>
-              <input id="hotspot-labels-toggle" type="checkbox" onchange="OnShowLabels(this)">
-              <label for="hotspot-labels-toggle">Show Hotspot Labels</label>
-
-              <input id="time-label-toggle" type="checkbox" onchange="OnShowTime(this)">
-              <label for="time-label-toggle">Show Time Label</label>
-            </div>
-            <div>
-              <input id="reservations-toggle" type="checkbox" onchange="OnShowReservations(this)">
-              <label for="reservations-toggle">Show Native American Reservations</label>
-            </div>
-          </div>
 
           <div class="source-link" align="center">
             <a href="https://spatial.uchicago.edu" target="_new">

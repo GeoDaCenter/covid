@@ -101,6 +101,21 @@ a:visited {
   z-index: 9;
 }
 
+.options-panel-section {
+  padding-top: 1rem;
+}
+
+.map-overlay-toggles {
+  border-bottom: 1px solid #ddd;
+  padding-top: 0.5rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.map-overlay-toggles--hidden {
+  display: none;
+}
+
 .options-panel .legend {
   display: inline-block;
   width: 12px;
