@@ -87,7 +87,7 @@ a:visited {
   position: absolute;
   top: 24px;
   left: 0px;
-  bottom: 24px;
+  bottom: 35px;
   width: 344px;
   background: #444;
   color: #fff;
@@ -119,11 +119,11 @@ a:visited {
   display: flex;
   justify-content: center;
   align-items: center;
-
   background-color: #444;
   color: #fff;
   height: 40px;
   width: 30px;
+  cursor: pointer;
 }
 
 #left-collapse {
@@ -132,22 +132,43 @@ a:visited {
   border-bottom-right-radius: 10px;
 }
 
+.collapse-btn:hover {
+  background-color: #666;
+}
+
 #right-collapse {
   right: 288.4px;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
 }
 
+#left-collapse.left-panel--collapsed  {
+  left: 17px !important;
+
+}
+
+#right-collapse.right-panel--collapsed  {
+  right: 17px !important;
+}
+
+.options-panel.left-panel--collapsed {
+  left: -375px;
+}
+
+.data-panel.right-panel--collapsed {
+  right: -270px;
+}
+
 .left-shadow {
-  box-shadow: 5px 0px 20px -4px rgba(0,0,0,0.57);
+  box-shadow: 5px 0px 20px -4px rgba(0,0,0,0.3);
 }
 
 .right-shadow {
-  box-shadow: -5px 0px 20px -4px rgba(0,0,0,0.57);
+  box-shadow: -5px 0px 20px -4px rgba(0,0,0,0.3);
 }
 
 .center-shadow {
-  box-shadow: 0px 0px 20px -4px rgba(0,0,0,0.57);
+  box-shadow: 0px 0px 20px -4px rgba(0,0,0,0.3);
 }
 
 .data-panel h2, .tooltip {
@@ -180,6 +201,10 @@ a:visited {
 
 .stat .checked {
   background-color: aquamarine;
+}
+
+.hide {
+  display: none;
 }
 
 /* Style The Dropdown Button */
@@ -298,19 +323,19 @@ data panel
   color: #fff;
   padding: 1.2rem;
   width: 250px;
-  height: 90%;
   position: absolute;
   top: 25px;
+  bottom: 30px;
   right: 0px;
   z-index: 1;
 }
 
 /* move mapbox controls so they don't overlap panels */
 .mapboxgl-ctrl-bottom-right {
-  right: 300px !important;
+  /* right: 300px !important; */
 }
 .mapboxgl-ctrl-bottom-left {
-  left: 425px !important;
+  /* left: 425px !important; */
 }
 
 /* county severity index (berkeley) */

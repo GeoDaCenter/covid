@@ -653,6 +653,45 @@ function collapse(el) {
   }
 }
 
+function leftPanelCollapse() {
+  const icon = document.querySelector('#left-collapse i');
+  const button = document.getElementById('left-collapse');
+  const panel = document.querySelector('.options-panel');
+  const isCollapsed = document.querySelector('.left-panel--collapsed') ? true : false;
+    
+  if(isCollapsed) {
+    icon.classList.remove('fa-chevron-right');
+    icon.classList.add('fa-chevron-left');
+    panel.classList.remove('left-panel--collapsed');
+    button.classList.remove('left-panel--collapsed');
+  } else {
+    icon.classList.remove('fa-chevron-left');
+    icon.classList.add('fa-chevron-right');
+    panel.classList.add('left-panel--collapsed');
+    button.classList.add('left-panel--collapsed')
+  }
+
+}
+
+function rightPanelCollapse() {
+  const icon = document.querySelector('#right-collapse i');
+  const button = document.getElementById ('right-collapse');
+  const panel = document.querySelector('.data-panel');
+  const isCollapsed = document.querySelector('.right-panel--collapsed') ? true : false; 
+
+  if(isCollapsed) {
+    icon.classList.remove('fa-chevron-left');
+    icon.classList.add('fa-chevron-right');
+    panel.classList.remove('right-panel--collapsed');
+    button.classList.remove('right-panel--collapsed');
+  } else {
+    icon.classList.remove('fa-chevron-right');
+    icon.classList.add('fa-chevron-left');
+    panel.classList.add('right-panel--collapsed');
+    button.classList.add('right-panel--collapsed');
+  }
+}
+
 function OnShowTime(el) {
   let disp = el.checked ? 'block' : 'none';
   document.getElementById('time-container').parentElement.style.display = disp;
@@ -681,7 +720,7 @@ function OnSave() {
 function getTooltipHtml(id, values) {
   const handle = val => val >= 0 ? val : 'N/A'; // dont show negative values
   let text = 
-  ` <h3>${values.entityName}</h3>
+  ` <h3>${values.entityName}</h3><hr>
     <div>Cases: ${handle(values.cases)}</div>
     <div>Deaths: ${handle(values.deaths)}</div>
     <div>New Cases ${handle(values.newCases)}</div>
@@ -829,11 +868,11 @@ function covidForecastingHtml(geoId) {
   const html = `
     <div>
       <h3>Forecasting</h3>
-        <b>5-Day Severity Index:</b>
+        <b>5-Day Severity Index:</b> <span class="county-severity-index--${countySeverityLevel}">
+        ${countySeverityIndex}
+      </span>
         ${predictedDeathsHtml}
-        <span class="county-severity-index--${countySeverityLevel}">
-          ${countySeverityIndex}
-        </span>
+        
       </div>
     </div>
   `;
@@ -856,6 +895,7 @@ function updateDataPanel(e) {
   const panelElem = document.querySelector('.data-panel');
   const headerElem = document.querySelector('#data-panel__header')
   const bodyElem = document.querySelector('#data-panel__body');
+  const collapseBtnElem = document.querySelector('#right-collapse');
 
   // get population
   const population = populationData[selectedDataset][id];
@@ -927,6 +967,7 @@ function updateDataPanel(e) {
   geoIdElem.value = geoId; // store geoid in hidden input so we can load data on select change
   headerElem.innerHTML = `${chrData[geoId].County} County, ${stateAbbr}`;
   bodyElem.innerHTML = html;
+  collapseBtnElem.classList.remove('hide');
   panelElem.removeAttribute('hidden');
 }
 /*
