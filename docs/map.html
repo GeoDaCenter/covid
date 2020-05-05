@@ -33,8 +33,7 @@
     </div>
 
     <!-- options panel -->
-    <div class="options-panel left-shadow" tabindex="0">
-      <h1>COVID Atlas</h1>
+    <div class="options-panel left-shadow left-panel" tabindex="0">
       <div id="toolbox">
           <p>Select Data:</p>
           <div class="layout">
@@ -120,18 +119,18 @@
     </div>
 
     <!-- options panel minimize button -->
-    <div id="left-collapse" class="collapse-btn left-shadow"><i class="fa fa-chevron-left"></i></div>
+    <div id="left-collapse" class="collapse-btn left-shadow" onclick="leftPanelCollapse()"><i class="fa fa-chevron-left"></i></div>
     
     <!-- data panel -->
-    <div class="data-panel right-shadow" hidden>
+    <div class="data-panel right-shadow right-panel" hidden>
       <input id="geoid" hidden></input>
-      <h2 id="data-panel__header">Nocounty, Nostate</h2>
+      <h2 id="data-panel__header">Nocounty, Nostate</h2><hr>
       <div id="data-panel__body">
       </div>
 
     </div>
 
     <!-- data panel minimize button -->
-    <div id="right-collapse" class="collapse-btn right-shadow"><i class="fa fa-chevron-right"></i></div>
+    <div id="right-collapse" class="collapse-btn right-shadow hide" onclick="rightPanelCollapse()"><i class="fa fa-chevron-right"></i></div>
   </body>
 </html>
