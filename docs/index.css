@@ -312,3 +312,16 @@ data panel
 .mapboxgl-ctrl-bottom-left {
   left: 425px !important;
 }
+
+/* county severity index (berkeley) */
+.county-severity-index--low {
+  color: yellow;
+}
+
+.county-severity-index--medium {
+  color: orange;
+}
+
+.county-severity-index--high {
+  color: red;
+}
