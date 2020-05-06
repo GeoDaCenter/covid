@@ -75,7 +75,9 @@ var dates = {};
 var caseData = {};
 var deathsData = {};
 var fatalityData = {};
-var lisaData = {};
+var lisaData = {
+  'county_usfacts.geojson': {},
+};
 // socioeconomic indicators from the county health rankings group (aka chr).
 // this is an object indexed by county fips.
 var chrData = {};
@@ -689,12 +691,40 @@ function OnShowTime(el) {
   document.getElementById('time-container').parentElement.style.display = disp;
 }
 
+// fetch dates from lisa_dates.json and load into lisaData global
+async function fetchLisaData() {
+  const dsRaw = await fetch('lisa_dates.json');
+  const ds = await dsRaw.json();
+
+  // loop over lisa dates
+  for (let i = 0; i < ds.length; ++i) {
+    let d = ds[i];
+
+    // format the date
+    let d_fn = d.replace(/\//g, '_');
+
+    const dataRaw = await fetch('lisa/lisa' + d_fn + '.json');
+    const data = await dataRaw.json();
+
+    if (data) {
+      // and set in lisaData global
+      lisaData['county_usfacts.geojson'][d] = data;
+    }
+  }
+}
+
+// TODO move this to app init section
+// wait 5 seconds (for usafacts data to load) before fetching lisa data
+setTimeout(async () => {
+  await fetchLisaData();
+}, 5000);
+
 function saveText(text, filename) {
   var a = document.createElement('a');
-  a.setAttribute("id", filename);
+  a.setAttribute('id', filename);
   a.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
   a.setAttribute('download', filename);
-  a.click()
+  a.click();
 }
 
 async function OnSave() {
@@ -1514,26 +1544,25 @@ function OnLISAClick(evt) {
   var w = getCurrentWuuid();
   var data = GetDataValues();
   let field = data_btn.innerText;
-  let json = selectedDataset;
   var color_vec = lisa_colors;
   var labels = lisa_labels;
   var clusters;
   var sig;
 
-  if (!(json in lisaData)) lisaData[json] = {};
+  if (!(selectedDataset in lisaData)) lisaData[selectedDataset] = {};
 
-  if (selectedDate in lisaData[json] && field in lisaData[json][selectedDate]) {
-    clusters = lisaData[json][selectedDate][field].clusters;
-    sig = lisaData[json][selectedDate][field].sig;
+  if (selectedDate in lisaData[selectedDataset] && field in lisaData[selectedDataset][selectedDate]) {
+    clusters = lisaData[selectedDataset][selectedDate][field].clusters;
+    sig = lisaData[selectedDataset][selectedDate][field].sig;
 
   } else {
     var lisa = gda_proxy.local_moran1(w.map_uuid, w.w_uuid, data);
     clusters = gda_proxy.parseVecDouble(lisa.clusters());
     sig = gda_proxy.parseVecDouble(lisa.significances());
-    if (!(selectedDate in lisaData[json])) lisaData[json][selectedDate] = {}
-    if (!(field in lisaData[json][selectedDate])) lisaData[json][selectedDate][field] = {}
-    lisaData[json][selectedDate][field]['clusters'] = clusters;
-    lisaData[json][selectedDate][field]['pvalues'] = sig;
+    if (!(selectedDate in lisaData[selectedDataset])) lisaData[selectedDataset][selectedDate] = {}
+    if (!(field in lisaData[selectedDataset][selectedDate])) lisaData[selectedDataset][selectedDate][field] = {}
+    lisaData[selectedDataset][selectedDate][field]['clusters'] = clusters;
+    lisaData[selectedDataset][selectedDate][field]['pvalues'] = sig;
   }
 
   color_vec[0] = '#ffffff';
@@ -1937,24 +1966,6 @@ function createTimeSlider(geojson) {
     }
   })
 }
-
-d3.json("lisa_dates.json", function(ds) {
-  // load lisa from cache
-  if (!('county_usfacts.geojson' in lisaData))
-    lisaData['county_usfacts.geojson'] = {};
-
-  setTimeout(function() {
-    for (let i = 0; i < ds.length; ++i) {
-      let d = ds[i];
-      let d_fn = d.replace(/\//g, '_');
-      d3.json("lisa/lisa" + d_fn + '.json', function(data) {
-        if (data != null) {
-          lisaData['county_usfacts.geojson'][d] = data;
-        }
-      });
-    }
-  }, 5000); // download cached files after 5 seconds;
-})
 
 
 /*
