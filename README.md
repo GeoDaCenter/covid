@@ -17,11 +17,13 @@ Because there is no one single validated source for county-level COVID cases and
 We also include information from the following datasets: 
 + *American Community Survey*. We incorporate population data used to generate rates, and will add more information as needed in future iterations.
 + [*COVIDCareMap*](https://github.com/covidcaremap/covid19-healthsystemcapacity/tree/v0.2/data). Healthcare System Capacity includes Staffed beds, Staffed ICU beds, Licensed Beds by County. This data aggregates information about the healthcare system capacity with additions/edits allowed in real-time.. It sources data from the [Healthcare Cost Report Information System (HCRIS)](https://github.com/covidcaremap/covid19-healthsystemcapacity/tree/v0.2/data#healthcare-cost-report-information-system-hcris-data) and an open hospital facilities dataset by [Definitive Healthcare](https://github.com/covidcaremap/covid19-healthsystemcapacity/tree/v0.2/data#definitive-health-dh-data).
++ [County Health Rankings & Roadmaps](https://www.countyhealthrankings.org/explore-health-rankings/rankings-data-documentation): social, economic, and health indicators by County. 
++ [Bin Yu Group](https://github.com/Yu-Group/covid19-severity-prediction): Predicted death counts and Severity index by County
++ Native American Reservations
 
 ### Future Release
 We have multiple datasets planned for future inclusion in the atlas, including:
-+ [County Health Rankings & Roadmaps](https://www.countyhealthrankings.org/explore-health-rankings/rankings-data-documentation): social, economic, and health indicators by County. 
-+ [Bin Yu Group](https://github.com/Yu-Group/covid19-severity-prediction): Hospital Severity Index forecasting by hospital location, and County
++ [Bin Yu Group](https://github.com/Yu-Group/covid19-severity-prediction): Hospital Severity Index forecasting by hospital location
 + [Data.gov](http://data.gov): Indian Reservation Boundaries
 + [DesCartes Lab](https://github.com/descarteslabs/DL-COVID-19): Mobility index by County
 + [NYTimes](https://github.com/nytimes/covid-19-data): Confirmed Cases and Deaths by County & State
