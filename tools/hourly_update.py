@@ -344,7 +344,7 @@ def update_county_geojson(county_count, county_deathcount, date_county_count, da
                     else:
                         o.write(ct + '\n')
 
-#fetch_covid_data()
+fetch_covid_data()
 with open("cases.csv") as csvfile:
     cr = csv.reader(csvfile)
     read_covid_data(cr)
