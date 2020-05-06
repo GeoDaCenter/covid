@@ -703,11 +703,11 @@ async function OnSave() {
 
   // only new lisa results will be saved
   const save_dates = [];
-  const start_pos = dates[selectedDataset].indexOf(ds[ds.length - 1]) + 1;
+  const lastLisaDate = ds[ds.length - 1];
+  const startPosition = dates[selectedDataset].indexOf(lastLisaDate) + 1;
   
-  // loop over date snapshots for the selected dataset
-
-  for (let i = start_pos; i < dates[selectedDataset].length; ++i) {
+  // loop over date snapshots for the selected dataset starting at
+  for (let i = startPosition; i < dates[selectedDataset].length; ++i) {
     const date = dates[selectedDataset][i];
     const lisaForDataset = lisaData[selectedDataset];
 
