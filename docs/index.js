@@ -121,6 +121,7 @@ var selectedVariable = null;
 var selectedMethod = null;
 var shouldShowLabels = false;
 var shouldShowReservations = false;
+var shouldShowHypersegregatedCities = false;
 
 // these look like dataset file name constants, but they are actually default
 // values for state variables. for example, countyMap can change when switching
@@ -629,6 +630,16 @@ function OnShowLabels(el) {
 
 function OnShowReservations() {
   shouldShowReservations = !shouldShowReservations;
+
+  if (isState()) {
+    OnStateClick();
+  } else {
+    OnCountyClick();
+  }
+}
+
+function OnShowHypersegregatedCities() {
+  shouldShowHypersegregatedCities = !shouldShowHypersegregatedCities;
 
   if (isState()) {
     OnStateClick();
@@ -1255,6 +1266,7 @@ function createMap(data) {
           getFillColor: [100, 100, 100],
           opacity: 0.25,
           lineWidthMinPixels: 2.5,
+          // TODO make this a reusable handler for other map overlays
           getTileData: async ({ x, y, z }) => {
             const mapSource = `https://api.mapbox.com/v4/lixun910.7luxiq9n/${z}/${x}/${y}.vector.pbf?access_token=${MAPBOX_ACCESS_TOKEN}`;
             
@@ -1279,6 +1291,46 @@ function createMap(data) {
               }
             }
             
+            return features;
+          },
+        })
+      );
+    }
+
+    // add reservations if we should
+    if (shouldShowHypersegregatedCities) {
+      layers.push(
+        // adapted from https://tgorkin.github.io/docs/layers/tile-layer
+        new TileLayer({
+          stroked: true,
+          getLineColor: [0, 255, 255],
+          getFillColor: [100, 100, 100],
+          opacity: 0.25,
+          lineWidthMinPixels: 2.5,
+          getTileData: async ({ x, y, z }) => {
+            const mapSource = `https://api.mapbox.com/v4/lixun910.131k9vc1/${z}/${x}/${y}.vector.pbf?access_token=${MAPBOX_ACCESS_TOKEN}`;
+
+            const response = await fetch(mapSource);
+
+            if (response.status >= 400) {
+              return;
+            }
+
+            const buffer = await response.arrayBuffer();
+
+            const tile = new VectorTile(new Pbf(buffer));
+            const features = [];
+
+            for (const layerName in tile.layers) {
+              const vectorTileLayer = tile.layers[layerName];
+
+              for (let i = 0; i < vectorTileLayer.length; i++) {
+                const vectorTileFeature = vectorTileLayer.feature(i);
+                const feature = vectorTileFeature.toGeoJSON(x, y, z);
+                features.push(feature);
+              }
+            }
+
             return features;
           },
         })
