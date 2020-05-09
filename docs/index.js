@@ -127,6 +127,7 @@ var selectedVariable = null;
 var selectedMethod = null;
 var shouldShowLabels = false;
 var shouldShowReservations = false;
+var cartogramDeselected = false;
 
 // these look like dataset file name constants, but they are actually default
 // values for state variables. for example, countyMap can change when switching
@@ -611,7 +612,8 @@ function OnDataClick(evt) {
   }
 }
 
-function OnCartogramClick() {
+function OnCartogramClick(el) {
+  if (!el.checked) cartogramDeselected = true;
   selectedMethod = "choropleth";
   if (isState()) {
     OnStateClick();
@@ -1029,15 +1031,22 @@ mapbox.on('zoomend', () => {
 });
 
 function resetView(layers) {
-  deckgl.setProps({
-    layers: layers,
-    viewState: {
+  let viewState = {}
+
+  // HAX: recenter map if changing from cartogram to cloropleth
+  if (cartogramDeselected) {
+    viewState =  {
       zoom: 3.5,
       latitude: 35.850033,
       longitude: -105.6500523,
       transitionInterpolator: new LinearInterpolator(['bearing']),
       transitionDuration: 500
     }
+    cartogramDeselected = false;
+  }
+  deckgl.setProps({
+    layers: layers,
+    viewState
   });
 }
 
@@ -1054,6 +1063,7 @@ function setCartogramView(layers) {
       }
     });
   } else {
+    console.log('1060 zoom');
     deckgl.setProps({
       layers: layers,
       viewState: {
@@ -1140,8 +1150,8 @@ function createMap(data) {
       })
     );
     setCartogramView(layers);
-  // set up the regular map view
-  } else {
+  // set up the regular map view (cloropleth or hotspots)
+  } else { 
     mapbox.getCanvas().hidden = false;
 
     // TODO figure out what this adds and document
@@ -1171,8 +1181,7 @@ function createMap(data) {
     );
 
     // this seems to be a proxy for targeting when states are being shown
-    // TODO shouldn't we use isState() ?
-    if (!('name' in data)) {
+    if (isState()) {
       layers.push(
         new GeoJsonLayer({
           data: './states.geojson',
