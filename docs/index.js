@@ -1060,7 +1060,7 @@ const deckgl = new DeckGL({
 });
 
 const mapbox = deckgl.getMapboxMap();
-
+ 
 mapbox.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
 mapbox.on('zoomend', () => {
@@ -1261,6 +1261,7 @@ function createMap(data) {
       layers.push(
         // adapted from https://tgorkin.github.io/docs/layers/tile-layer
         new TileLayer({
+          id: 'reservations-layer',
           stroked: true,
           getLineColor: [0, 255, 255],
           getFillColor: [100, 100, 100],
@@ -1302,6 +1303,7 @@ function createMap(data) {
       layers.push(
         // adapted from https://tgorkin.github.io/docs/layers/tile-layer
         new TileLayer({
+          id: 'hypersegregated-layer',
           stroked: true,
           getLineColor: [0, 255, 255],
           getFillColor: [100, 100, 100],
