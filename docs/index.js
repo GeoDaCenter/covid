@@ -1018,15 +1018,15 @@ function updateDataPanel(e) {
 
   html += 
   `
-  <div><b>Population:</b> ${population}</div>
+  <div><b>Population:</b> ${numberWithCommas(population)}</div>
   <br>
-  <div><b>Total Cases:</b> ${cases}</div>
-  <div><b>Total Deaths:</b> ${deaths}</div>
+  <div><b>Total Cases:</b> ${numberWithCommas(cases)}</div>
+  <div><b>Total Deaths:</b> ${numberWithCommas(deaths)}</div>
   <div><b>Cases per 10k Population:</b> ${casesPer10k}</div>
   <div><b>Deaths per 10k Population:</b> ${deathsPer10k}</div>
   <div><b>New Cases per 10k Population:</b> ${newCasesPer10k}</div>
   <div><b>New Deaths per 10k Population</b> ${newDeathsPer10k}</div>
-  <div><b>Licensed Hospital Beds:</b> ${beds}</div>
+  <div><b>Licensed Hospital Beds:</b> ${numberWithCommas(beds)}</div>
   <div><b>Cases per Bed</b> ${casesPerBed}</div>
   `
 
