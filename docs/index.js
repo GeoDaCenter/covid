@@ -956,11 +956,21 @@ function updateDataPanel(e) {
   let html = '';
   const geoIdElem = document.querySelector('#geoid');
 
-  if (e.object) geoId = parseInt(e.object.properties.GEOID);
-  if (!geoId) geoId = geoIdElem.value;
-
   const id = e.object.properties.id;
-  const stateAbbr = e.object.properties.state_abbr;
+
+  if (e.object) geoId = parseInt(e.object.properties.GEOID);
+  if (!geoId) {
+    if (e.object) {
+      geoId = jsondata[selectedDataset].features[id].properties.GEOID;
+    } else {
+      geoId = geoIdElem.value;
+    }
+  }
+
+  let stateAbbr = e.object.properties.state_abbr;
+  if (!stateAbbr) {
+    stateAbbr = jsondata[selectedDataset].features[id].properties.state_abbr;
+  }
   
   const panelElem = document.querySelector('.data-panel');
   const headerElem = document.querySelector('#data-panel__header')
@@ -1031,7 +1041,6 @@ function updateDataPanel(e) {
   `
 
   // removed fatality rate:  <div><b>Fatality Rate:</b> ${fatalityRate}%</div>
-
 
   if (chrData[geoId]) html += socioeconomicIndicatorsHtml(geoId);
   if (berkeleyCountyData[geoId]) html += covidForecastingHtml(geoId);
@@ -1172,8 +1181,8 @@ function createMap(data) {
         getFillColor: getFillColor,
         getLineColor: getLineColor,
         getRadius: d => d.radius * 10,
-        onHover: updateTooltip,
-        onClick: updateTrendLine,
+        onHover: handleMapHover,
+        onClick: handleMapClick,
         pickable: true,
         updateTriggers: {
           getLineColor: [
