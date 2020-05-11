@@ -925,6 +925,7 @@ function covidForecastingHtml(geoId) {
   // form predictions rows
   const predictedDeathsDates = Object.keys(predictedDeaths);
   const predictedDeathsHtml = predictedDeathsDates.map((date) => {
+    if (!date) return;
     return `
       <div>
         <b>${date}</b>: ${predictedDeaths[date]}
@@ -955,11 +956,21 @@ function updateDataPanel(e) {
   let html = '';
   const geoIdElem = document.querySelector('#geoid');
 
-  if (e.object) geoId = parseInt(e.object.properties.GEOID);
-  if (!geoId) geoId = geoIdElem.value;
-
   const id = e.object.properties.id;
-  const stateAbbr = e.object.properties.state_abbr;
+
+  if (e.object) geoId = parseInt(e.object.properties.GEOID);
+  if (!geoId) {
+    if (e.object) {
+      geoId = jsondata[selectedDataset].features[id].properties.GEOID;
+    } else {
+      geoId = geoIdElem.value;
+    }
+  }
+
+  let stateAbbr = e.object.properties.state_abbr;
+  if (!stateAbbr) {
+    stateAbbr = jsondata[selectedDataset].features[id].properties.state_abbr;
+  }
   
   const panelElem = document.querySelector('.data-panel');
   const headerElem = document.querySelector('#data-panel__header')
@@ -1017,20 +1028,19 @@ function updateDataPanel(e) {
 
   html += 
   `
-  <div><b>Population:</b> ${population}</div>
+  <div><b>Population:</b> ${numberWithCommas(population)}</div>
   <br>
-  <div><b>Total Cases:</b> ${cases}</div>
-  <div><b>Total Deaths:</b> ${deaths}</div>
+  <div><b>Total Cases:</b> ${numberWithCommas(cases)}</div>
+  <div><b>Total Deaths:</b> ${numberWithCommas(deaths)}</div>
   <div><b>Cases per 10k Population:</b> ${casesPer10k}</div>
   <div><b>Deaths per 10k Population:</b> ${deathsPer10k}</div>
   <div><b>New Cases per 10k Population:</b> ${newCasesPer10k}</div>
   <div><b>New Deaths per 10k Population</b> ${newDeathsPer10k}</div>
-  <div><b>Licensed Hospital Beds:</b> ${beds}</div>
+  <div><b>Licensed Hospital Beds:</b> ${numberWithCommas(beds)}</div>
   <div><b>Cases per Bed</b> ${casesPerBed}</div>
   `
 
   // removed fatality rate:  <div><b>Fatality Rate:</b> ${fatalityRate}%</div>
-
 
   if (chrData[geoId]) html += socioeconomicIndicatorsHtml(geoId);
   if (berkeleyCountyData[geoId]) html += covidForecastingHtml(geoId);
@@ -1171,8 +1181,8 @@ function createMap(data) {
         getFillColor: getFillColor,
         getLineColor: getLineColor,
         getRadius: d => d.radius * 10,
-        onHover: updateTooltip,
-        onClick: updateTrendLine,
+        onHover: handleMapHover,
+        onClick: handleMapClick,
         pickable: true,
         updateTriggers: {
           getLineColor: [
