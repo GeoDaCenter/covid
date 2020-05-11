@@ -925,6 +925,7 @@ function covidForecastingHtml(geoId) {
   // form predictions rows
   const predictedDeathsDates = Object.keys(predictedDeaths);
   const predictedDeathsHtml = predictedDeathsDates.map((date) => {
+    if (!date) return;
     return `
       <div>
         <b>${date}</b>: ${predictedDeaths[date]}
