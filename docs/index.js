@@ -189,8 +189,21 @@ async function fetchChrData() {
 async function fetchBerkeleyCountyData() {
   const rows = await d3.csv('berkeley_county_severity_index.csv');
 
+  // filter out rows that don't have a fips (this is a proxy for excluding the 
+  // ~2k empty rows that appear to be an excel artifact)
+  const rowsFiltered = rows.filter(row => row.countyFIPS);
+
+  // we'll need to convert a few berkeley fips to "our" fips
+  const berkeleyFipsMap = {
+    // wade hampton, ak
+    2270: 2158,
+    // shannon, sd
+    46113: 46102,
+  };
+  const berkeleyFips = Object.keys(berkeleyFipsMap);
+
   // index by fips and put predictions in nested object
-  const rowsIndexed = rows.reduce((acc, row) => {
+  const rowsIndexed = rowsFiltered.reduce((acc, row) => {
     const { 
       countyFIPS: fips,
       CountyName: name,
@@ -198,8 +211,20 @@ async function fetchBerkeleyCountyData() {
       'Severity County 5-day': severityIndex,
       ...predictedDeaths
     } = row;
+
+    // convert fips to integer
     const fipsInt = parseInt(fips);
-    acc[fipsInt] = {
+    
+    // we need to map a few county fips
+    let fipsRemapped = fipsInt;
+
+    // the keys are being parsed as strings, so compare to the original fips,
+    // not the int
+    if (berkeleyFips.includes(fips)) {
+      fipsRemapped = berkeleyFipsMap[fipsInt];
+    }
+    
+    acc[fipsRemapped] = {
       severityIndex,
       predictedDeaths,
     };
