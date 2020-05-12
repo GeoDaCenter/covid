@@ -911,13 +911,23 @@ function covidForecastingHtml(geoId) {
   
   // form predictions rows
   const predictedDeathsDates = Object.keys(predictedDeaths);
-  const predictedDeathsHtml = predictedDeathsDates.map((date) => {
-    return `
+  const predictedDeathsHtml = predictedDeathsDates.reduce((acc, date) => {
+    // include only the severity index and predicted deaths
+    const shouldIncludeField = (
+      date === '5-Day Severity Index' ||
+      date.startsWith('Predicted Deaths by')
+    );
+
+    if (shouldIncludeField) {
+      acc += `
       <div>
         <b>${date}</b>: ${predictedDeaths[date]}
       </div>
     `;
-  }).join('\n');
+    }
+
+    return acc;
+  }, '');
 
   // form rest of html
   const html = `
