@@ -793,8 +793,8 @@ function updateTooltip(e) {
   const { x, y, object } = e;
   const tooltip = document.getElementById('tooltip');
 
-  // if they aren't hovered over an object, empty the tooltip (this effectively)
-  // hides it
+  // if they aren't hovered over an object, empty the tooltip (this effectively
+  // hides it)
   if (!object) {
     tooltip.innerHTML = '';
     return;
