@@ -667,7 +667,6 @@ function OnShowReservations() {
 
 function OnShowHypersegregatedCities() {
   shouldShowHypersegregatedCities = !shouldShowHypersegregatedCities;
-
   if (isState()) {
     OnStateClick();
   } else {
@@ -916,7 +915,7 @@ function socioeconomicIndicatorsHtml(geoId) {
     const parsed = parseFloat(val);
     if (isNaN(parsed)) return 'N/A'
     if (parsed % 1 !== 0) {
-      formatted = parsed.toFixed(2);
+      formatted = parsed.toFixed(1);
     } else {
       formatted = parseInt(parsed);
     }
@@ -1044,12 +1043,14 @@ function updateDataPanel(e) {
   let casesPerBed = bedsDataExists ? (cases / beds) : 0;
 
   // handle decimals
-  casesPer10k = parseFloat(casesPer10k).toFixed(2);
-  deathsPer10k = parseFloat(deathsPer10k).toFixed(2);
-  casesPerBed = parseFloat(casesPerBed).toFixed(2);
-  fatalityRate = parseFloat(fatalityRate).toFixed(2);
-  newCasesPer10k = parseFloat(newCasesPer10k).toFixed(2);
-  newDeathsPer10k = parseFloat(newDeathsPer10k).toFixed(2);
+  casesPer10k = casesPer10k === 0 ? 0 : parseFloat(casesPer10k).toFixed(1);
+  deathsPer10k = deathsPer10k === 0 ? 0 : parseFloat(deathsPer10k).toFixed(1);
+  casesPerBed = casesPerBed === 0 ? 0 : parseFloat(casesPerBed).toFixed(1);
+  fatalityRate = fatalityRate === 0 ? 0 : parseFloat(fatalityRate).toFixed(1);
+  newCasesPer10k = newCasesPer10k === 0 ? 0 : parseFloat(newCasesPer10k).toFixed(1);
+  newDeathsPer10k = newDeathsPer10k === 0 ? 0 : parseFloat(newDeathsPer10k).toFixed(1);
+
+  if (beds === 0) casesPerBed = 'N/A';
 
   html += 
   `
@@ -1062,7 +1063,7 @@ function updateDataPanel(e) {
   <div><b>New Cases per 10k Population:</b> ${newCasesPer10k}</div>
   <div><b>New Deaths per 10k Population</b> ${newDeathsPer10k}</div>
   <div><b>Licensed Hospital Beds:</b> ${numberWithCommas(beds)}</div>
-  <div><b>Cases per Bed</b> ${casesPerBed}</div>
+  <div><b>Cases per Bed:</b> ${casesPerBed}</div>
   `
 
   // removed fatality rate:  <div><b>Fatality Rate:</b> ${fatalityRate}%</div>
