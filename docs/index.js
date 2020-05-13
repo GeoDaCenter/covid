@@ -118,7 +118,7 @@ var selectedDataset = null;
 var selectedId = null;
 var selectedDate = null;
 var selectedVariable = null;
-var selectedMethod = null;
+var selectedMethod = 'cloropleth'; // set cloropleth as default mode
 var shouldShowLabels = false;
 var shouldShowReservations = false;
 var cartogramDeselected = false;
@@ -524,7 +524,7 @@ function OnCountyClick(target) {
 function initCounty() {
   var vals;
   var nb;
-  selectedMethod = "choropleth";
+  
   vals = GetDataValues();
   nb = gda_proxy.custom_breaks(countyMap, "natural_breaks", 8, null, vals);
   colorScale = function (x) {
@@ -560,7 +560,7 @@ function OnStateClick() {
 function init_state() {
   var vals;
   var nb;
-  selectedMethod = "choropleth";
+
   vals = GetDataValues();
   nb = gda_proxy.custom_breaks(stateMap, "natural_breaks", 8, null, vals);
   colorScale = function (x) {
@@ -634,7 +634,7 @@ function OnDataClick(evt) {
 
 function OnCartogramClick(el) {
   if (!el.checked) cartogramDeselected = true;
-  selectedMethod = "choropleth";
+
   if (isState()) {
     OnStateClick();
   } else {
