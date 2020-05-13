@@ -674,16 +674,6 @@ function OnShowHypersegregatedCities() {
   }
 }
 
-function collapse(el) {
-  if (document.getElementById("toolbox").classList.contains("collapse")) {
-    document.getElementById('toolbox').classList.remove("collapse");
-    el.src = "img/collapse.png";
-  } else {
-    document.getElementById('toolbox').classList.add("collapse");
-    el.src = "img/expand.png";
-  }
-}
-
 function leftPanelCollapse() {
   const icon = document.querySelector('#left-collapse i');
   const button = document.getElementById('left-collapse');
@@ -1147,7 +1137,6 @@ function setCartogramView(layers) {
       }
     });
   } else {
-    console.log('1060 zoom');
     deckgl.setProps({
       layers: layers,
       viewState: {
