@@ -1,8 +1,6 @@
 import csv
 from datetime import datetime
-import os
 import re
-import sys
 import requests
 
 # fetch predictions
