@@ -20,6 +20,7 @@ We also include information from the following datasets:
 + [County Health Rankings & Roadmaps](https://www.countyhealthrankings.org/explore-health-rankings/rankings-data-documentation): social, economic, and health indicators by County. 
 + [Bin Yu Group](https://github.com/Yu-Group/covid19-severity-prediction): Predicted death counts and Severity index by County
 + [Native American Reservations](https://hifld-geoplatform.opendata.arcgis.com/datasets/54cb67feef5746e8ac7c4ab467c8ae64): boundary for Native American Reservations.
++ [Hypersegregated Cities](https://www.princeton.edu/news/2015/05/18/hypersegregated-cities-face-tough-road-change): boundary for historical and current hypersegregated cities. 
 
 ### Future Release
 We have multiple datasets planned for future inclusion in the atlas, including:
