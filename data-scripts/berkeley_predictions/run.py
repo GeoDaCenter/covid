@@ -78,6 +78,7 @@ with open('./_working/predictions_raw.csv') as in_file, open('./_working/predict
       'severity_index': row['Severity County 5-day'],
     }
 
+    # add predictions
     for field_name, source_field_name in field_map.items():
       out_row[field_name] = row[source_field_name]
 
