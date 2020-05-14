@@ -9,7 +9,7 @@ To get started running the data scripts, follow these instructions to set up the
 ### macOS
 
 1. Install the [Homebrew](https://brew.sh/) package manager.
-2. Install [Pipenv](https://pipenv.pypa.io/en/latest/) for managing Python environments: `brew install pipenv`
+2. Install [Pipenv](https://pipenv.pypa.io/en/latest/) for managing Python dependencies: `brew install pipenv`
 3. Run `pipenv install` from this directory.
 
 ### Windows
