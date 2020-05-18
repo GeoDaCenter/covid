@@ -80,7 +80,9 @@ county_fix_code = {
     'de witttx':'dewitttx',
     'prince georgesmd':'prince george\'smd',
     'wayne--non detroitmi':'waynemi',
-    'bear riverut':'box elderut'
+    'bear riverut':'box elderut',
+    'henderonnc':'hendersonnc'
+
 }
 
 # la portein is a city in IN
