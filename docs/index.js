@@ -187,46 +187,67 @@ async function fetchChrData() {
 
 // fetch berkeley group death predictions and 5-day county severity index
 async function fetchBerkeleyCountyData() {
-  const rows = await d3.csv('berkeley_county_severity_index.csv');
+  const rows = await d3.csv('berkeley_predictions.csv');
+
+  // get dates too loop over for building `predictions` objects
+  // TODO this assumes at least one row
+  const fields = Object.keys(rows[0]);
+  const dates = fields
+    .map((field) => {
+      const dateMatch = field.match(/deaths_(\d{4}_\d{2}_\d{2})/);
+
+      if (!dateMatch || !dateMatch[1]) {
+        return;
+      }
+
+      return dateMatch[1];
+    })
+    .filter((field) => !!field);
 
   // filter out rows that don't have a fips (this is a proxy for excluding the 
   // ~2k empty rows that appear to be an excel artifact)
-  const rowsFiltered = rows.filter(row => row.countyFIPS);
-
-  // we'll need to convert a few berkeley fips to "our" fips
-  const berkeleyFipsMap = {
-    // wade hampton, ak
-    2270: 2158,
-    // shannon, sd
-    46113: 46102,
-  };
-  const berkeleyFips = Object.keys(berkeleyFipsMap);
+  // TODO should this go into the data script?
+  const rowsFiltered = rows.filter(row => row.fips);
 
   // index by fips and put predictions in nested object
   const rowsIndexed = rowsFiltered.reduce((acc, row) => {
     const { 
-      countyFIPS: fips,
-      CountyName: name,
-      StateName: stateAbbr,
-      'Severity County 5-day': severityIndex,
-      ...predictedDeaths
+      fips,
+      severity_index: severityIndex,
     } = row;
-
-    // convert fips to integer
     const fipsInt = parseInt(fips);
-    
-    // we need to map a few county fips
-    let fipsRemapped = fipsInt;
 
-    // the keys are being parsed as strings, so compare to the original fips,
-    // not the int
-    if (berkeleyFips.includes(fips)) {
-      fipsRemapped = berkeleyFipsMap[fipsInt];
-    }
-    
-    acc[fipsRemapped] = {
+    const predictions = dates.reduce((acc, date) => {
+      const deaths = parseFloat(row[`deaths_${date}`]);
+      const intervalsRaw = row[`deaths_intervals_${date}`];
+
+      // parse intervals
+      const intervals = intervalsRaw
+        .replace('(', '')
+        .replace(')', '')
+        .split(', ')
+        .reduce((acc, val, i) => {
+          const label = {
+            0: 'min',
+            1: 'max',
+          }[i];
+
+          acc[label] = parseFloat(val);
+
+          return acc;
+        }, {});
+
+      acc[date] = {
+        deaths,
+        intervals,
+      };
+
+      return acc;
+    }, {});
+
+    acc[fipsInt] = {
       severityIndex,
-      predictedDeaths,
+      predictions,
     };
     return acc;
   }, {});
