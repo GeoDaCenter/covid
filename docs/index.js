@@ -949,34 +949,26 @@ function numberWithCommas(x) {
 
 // builds HTML for covid forecasting/predictions tab in data panel
 function covidForecastingHtml(geoId) {
+  
   const countySeverityIndex = berkeleyCountyData[geoId].severityIndex;
   const countySeverityLevel = {
     1: 'low',
     2: 'medium',
     3: 'high',
   }[countySeverityIndex];
-  const { predictedDeaths } = berkeleyCountyData[geoId];
+  const { predictions } = berkeleyCountyData[geoId];
+
+  let parser = d3.timeParse("%Y_%m_%d");
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   
-  // form predictions rows
-  const predictedDeathsDates = Object.keys(predictedDeaths);
-  const predictedDeathsHtml = predictedDeathsDates.reduce((acc, date) => {
-    // include only the severity index and predicted deaths
-    const shouldIncludeField = (
-      date === '5-Day Severity Index' ||
-      date.startsWith('Predicted Deaths by')
-    );
-
-    if (shouldIncludeField) {
-      acc += `
-      <div>
-        <b>${date}</b>: ${predictedDeaths[date]}
-      </div>
-    `;
-    }
-
-    return acc;
-  }, '');
-
+  let predictionsHtml = '';
+  for (pd in predictions) {
+    const date = parser(pd);
+    const month = months[date.getMonth()];
+    const day = date.getDate();
+    const deaths = predictions[pd].deaths;
+    predictionsHtml += `<div><b>Predicted Deaths by ${month} ${day}</b>: ${deaths}</div>`
+  }
   // form rest of html
   const html = `
     <div>
@@ -985,8 +977,7 @@ function covidForecastingHtml(geoId) {
         <b>5-Day Severity Index:</b> <span style="text-transform: uppercase" class="county-severity-index--${countySeverityLevel}">
         ${countySeverityLevel}
       </span>
-        ${predictedDeathsHtml}
-        
+        ${predictionsHtml}
       </div>
     </div>
   `;
