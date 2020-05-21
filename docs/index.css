@@ -18,6 +18,7 @@ body {
   font-size: 14px;
   z-index: 9;
   pointer-events: none;
+  border-radius: 0px 10px 10px 10px;
 }
 
 #tooltip:empty {
@@ -99,6 +100,7 @@ a:visited {
   overflow-y: overlay;
   outline: none;
   z-index: 9;
+  border-radius: 0px 0px 10px 0px;
 }
 
 .options-panel-section {
@@ -292,13 +294,34 @@ a:visited {
   color: #fff;
 }
 
-#slider {
-  width: 255px;
+#sliderdiv {
+   width: 100%;
+  z-index: 10000;
+  position: absolute;
+  bottom: 20px;
+  left: 43%;
+  max-width: 300px;
 }
 
-#sliderdiv {
-  margin-top: -12px;
-  margin-left: 26px;
+#slider {
+  width: 100%;
+  display: block;
+  clear: both;
+}
+
+#bubble {
+  position: absolute;
+  top: -40px;
+  font-size: 20px;
+  padding: 5px 5px;
+  background-color: #444;
+  color: #fff;
+  z-index: 10000;
+  border-radius: 5px 5px 5px 0px;
+}
+
+.hidden {
+  display: none !important;
 }
 
 #slider-tooltip {
@@ -313,6 +336,129 @@ a:visited {
   pointer-events: none;
   color: white;
   opacity: 1;
+}
+
+
+
+input[type=range] {
+  -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+  width: 100%; /* Specific width is required for Firefox. */
+  background: transparent; /* Otherwise white in Chrome */
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+}
+
+input[type=range]:focus {
+  outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+}
+
+input[type=range]::-ms-track {
+  width: 100%;
+  cursor: pointer;
+
+  /* Hides the slider so custom styles can be added */
+  background: transparent; 
+  border-color: transparent;
+  color: transparent;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8.4px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  background: #aaa;
+  border-radius: 1.3px;
+  border: 0.2px solid #010101;
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #aaa;
+}
+
+input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 8.4px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  background: #aaa;
+  border-radius: 1.3px;
+  border: 0.2px solid #010101;
+}
+
+input[type=range]::-ms-track {
+  width: 100%;
+  height: 8.4px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  border-width: 16px 0;
+  color: transparent;
+}
+input[type=range]::-ms-fill-lower {
+  background: #aaa;
+  border: 0.2px solid #010101;
+  border-radius: 2.6px;
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+}
+input[type=range]:focus::-ms-fill-lower {
+  background: #aaa;
+}
+input[type=range]::-ms-fill-upper {
+  background: #aaa;
+  border: 0.2px solid #010101;
+  border-radius: 2.6px;
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+}
+input[type=range]:focus::-ms-fill-upper {
+  background: #367ebd;
+}
+
+/* Special styling for WebKit/Blink */
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: 1px solid #000000;
+  height: 26px;
+  width: 16px;
+  border-radius: 3px;
+  background: #ffffff;
+  cursor: pointer;
+  margin-top: -9px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; /* Add cool effects to your sliders! */
+}
+
+/* All the same stuff for Firefox */
+input[type=range]::-moz-range-thumb {
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  border: 1px solid #000000;
+  height: 26px;
+  width: 16px;
+  border-radius: 3px;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+/* All the same stuff for IE */
+input[type=range]::-ms-thumb {
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  border: 1px solid #000000;
+  height: 26px;
+  width: 16px;
+  border-radius: 3px;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+
+input[type=range],
+	::-moz-range-track,
+	 ::-ms-track {
+	 -webkit-appearance: none;
+	 background-color: 3f91e5;
+	 width: 250px;
+	 height:20px;
 }
 
 .axis--y path {
@@ -344,6 +490,7 @@ data panel
   bottom: 30px;
   right: 0px;
   z-index: 1;
+  border-radius: 0px 0px 0px 10px;
 }
 
 /* move mapbox controls so they don't overlap panels */

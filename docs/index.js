@@ -2053,6 +2053,18 @@ function createTimeSlider(geojson) {
     var xLabels = dates[selectedDataset];
     xScale.domain(xLabels);
 
+    const slider = document.getElementById('slider');
+    const sliderBubble = document.getElementById('bubble');
+
+    sliderBubble.innerText = selectedDate;
+    sliderBubble.classList.remove("hidden");
+
+    // reposition slider bubble
+    const shiftPct = Number(((slider.value - slider.min) * 100) / (slider.max - slider.min));
+
+    sliderBubble.style.left = `calc(${shiftPct}% + (${8 - shiftPct * 0.15}px))`;
+
+
     var yValues = getAccumConfirmedCountByDate(geojson, true);
     yScale.domain([0, Math.max.apply(null, yValues)]);
 
@@ -2075,6 +2087,7 @@ function createTimeSlider(geojson) {
     }
   })
 }
+
 
 
 /*
