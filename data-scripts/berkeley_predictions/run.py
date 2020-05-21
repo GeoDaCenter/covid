@@ -1,9 +1,18 @@
 import csv
 from datetime import datetime
 import json
+import os
 import re
 import requests
 from config import config
+
+'''
+SET UP
+'''
+
+# make _working dir if it doesn't exist. this is where working files and output
+# are stored.
+os.makedirs('./_working', exist_ok=True)
 
 '''
 EXTRACT
