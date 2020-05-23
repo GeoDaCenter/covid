@@ -81,8 +81,8 @@ county_fix_code = {
     'prince georgesmd':'prince george\'smd',
     'wayne--non detroitmi':'waynemi',
     'bear riverut':'box elderut',
-    'henderonnc':'hendersonnc'
-
+    'henderonnc':'hendersonnc',
+    'johnsonnc':'johnstonnc'
 }
 
 # la portein is a city in IN
