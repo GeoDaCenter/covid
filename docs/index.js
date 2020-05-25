@@ -915,10 +915,9 @@ function socioeconomicIndicatorsHtml(geoId) {
     PrmPhysQ: 'Primary Care Quartile',
     PrevHospRt: 'Preventable Hospitalizations', 
     PrevHospQ: 'Preventable Hospitalizations Quartile',
-    ResidentialsegregationBlack: 'Black/White Residential Segregation',
+    ResidentialsegregationBlack: 'Black Residential Segregation',
     MedianHouseholdIncome: 'Median Household Income',
     Over65YearsPrc: 'Over 65 Years %'
-
   };
   const handle = (val) => {
     let formatted = val;
