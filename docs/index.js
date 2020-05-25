@@ -114,7 +114,7 @@ var getLineColor = function() {
 */
 
 // the selected data source (e.g. county_usfacts.geojson)
-var selectedDataset = null;
+var selectedDataset = 'county_usfacts.geojson';
 var selectedId = null;
 var selectedDate = null;
 var selectedVariable = null;
