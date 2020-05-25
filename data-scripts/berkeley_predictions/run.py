@@ -125,7 +125,6 @@ with open('./_working/predictions_raw.csv') as in_file, open('./_working/predict
 
     out_rows.append(out_row)
 
-
   '''
   LOAD
   '''
