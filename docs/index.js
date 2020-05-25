@@ -539,8 +539,11 @@ function OnCountyClick(target) {
       countyMap = "counties_update.geojson";
     }
   }
+  updateTooltips();
   loadData(countyMap, initCounty);
 }
+
+
 
 function initCounty() {
   var vals;
@@ -802,6 +805,7 @@ async function OnSave() {
   saveText(JSON.stringify(save_dates), "lisa_dates.json");
 }
 
+
 function getTooltipHtml(id, values) {
   const handle = val => val >= 0 ? val : 'N/A'; // dont show negative values
   let text = 
@@ -936,7 +940,7 @@ function socioeconomicIndicatorsHtml(geoId) {
   html += `<div>
     <h3>Socioeconomic Indicators</h3>
     <div style="font-size: 80%; position: relative; top: -10px"><b>Source:</b> <a href="https://www.countyhealthrankings.org/">County Health Rankings</a></div>`
-  const rowHtml = (key) => `<div><b>${labels[key]}</b>: ${handle(chrData[geoId][key])}</div>`;
+  const rowHtml = (key) => `<div><b>${labels[key]}</b> <div class="info-tooltip" id="info-${key}"> <i class="fa fa-info-circle" aria-hidden="true"></i><span class="tooltip-text"></span></div>: ${handle(chrData[geoId][key])} </div>`;
   ordered.forEach(key => html += rowHtml(key));
   html += `</div>`
   return html;
@@ -966,15 +970,18 @@ function covidForecastingHtml(geoId) {
     const month = months[date.getMonth()];
     const day = date.getDate();
     const deaths = predictions[pd].deaths;
-    predictionsHtml += `<div><b>Predicted Deaths by ${month} ${day}</b>: ${deaths}</div>`
+    predictionsHtml += `<div><b>Predicted Deaths by ${month} ${day}</b>
+    <div class="info-tooltip" id="info-PredictedDeaths"><i class="fa fa-info-circle"></i><span class="tooltip-text"></span></div>
+    : ${deaths}</div>`
   }
   // form rest of html
   const html = `
     <div>
       <h3>Forecasting</h3>
         <div style="font-size: 80%; position: relative; top: -10px;"><b>Source:</b> <a href="https://github.com/Yu-Group/covid19-severity-prediction">Yu Group at Berkeley</a></div>
-        <b>5-Day Severity Index:</b> <span style="text-transform: uppercase" class="county-severity-index--${countySeverityLevel}">
-        ${countySeverityLevel}
+        <b>5-Day Severity Index</b> <div class="info-tooltip" id="info-SeverityIndex"><i class="fa fa-info-circle"></i>
+        <span class="tooltip-text"></span>
+        </div><span style="text-transform: uppercase" class="county-severity-index--${countySeverityLevel}">: ${countySeverityLevel}
       </span>
         ${predictionsHtml}
       </div>
@@ -1086,6 +1093,7 @@ function updateDataPanel(e) {
   bodyElem.innerHTML = html;
   collapseBtnElem.classList.remove('hide');
   panelElem.removeAttribute('hidden');
+  updateTooltips();
 }
 /*
  * APPLICATION
@@ -1602,7 +1610,7 @@ function UpdateLegendLabels(breaks) {
           val = parseInt(val);
           if (val > 10000) val = d3.format(".2s")(val);
         }
-        cont += '<div style="text-align:center">>' + val + '</div>';
+        cont += '<div style="text-align:center">' + val + '</div>';
       } else {
         if (val.indexOf('.') >= 0) {
           // format float number
@@ -1630,11 +1638,23 @@ function UpdateLisaLegend(colors) {
 
 function UpdateLisaLabels(labels) {
   const div = document.getElementById('legend-labels');
-  var cont = '<div style="width: 20%;text-align:center">Not Sig</div>';
+  var cont = `<div style="width: 20%;text-align:center">Not Sig <div class="top info-tooltip" id="info-NotSig" ><i class="fa fa-info-circle" aria-hidden="true"></i><span class="tooltip-text">${config.TOOLTIP['NotSig']}</span></div> </div>`;
   for (var i = 1; i < 5; ++i) {
-    cont += '<div style="width: 20%;text-align:center">' + labels[i] + '</div>';
+    const classLabel = labels[i].replace('-', '');
+    cont += `<div style="width: 20%;text-align:center"> ${labels[i]} <div class="top info-tooltip" id="info-${classLabel}"><i class="fa fa-info-circle" aria-hidden="true"></i><span class="tooltip-text">${config.TOOLTIP[classLabel]}</span></div></div>`;
   }
   div.innerHTML = cont;
+}
+
+// Updates info boxes/tooltips with help text
+function updateTooltips() {
+  const tooltips = document.querySelectorAll(".info-tooltip");
+  tooltips.forEach(t => {
+    const name = t.id.replace('info-', '');
+    const text = config.TOOLTIP[name];
+    const textElem = t.querySelector('.tooltip-text');
+    textElem.innerHTML = text;
+  });
 }
 
 function OnChoroplethClick(evt) {
@@ -2102,8 +2122,6 @@ function createTimeSlider(geojson) {
     }
   })
 }
-
-
 
 /*
  * ENTRY POINT

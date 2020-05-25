@@ -24,6 +24,7 @@
   <script defer src="https://unpkg.com/pbf@3.2.0/dist/pbf.js"></script>
   <script defer src="js/GeodaProxy.js"></script>
   <script defer src="js/mapbox-vector-tile.js"></script>
+  <script defer src="config.js"></script>
   <script defer src="index.js"></script>
   <script defer src="gen/jsgeoda.js"></script>
 </head>
@@ -45,7 +46,7 @@
   </div>
 
   <!-- options panel -->
-  <div class="options-panel left-shadow left-panel" tabindex="0">
+  <div class="options-panel left-panel" tabindex="0">
     <div id="toolbox">
       <p>Select Data:</p>
       <div class="layout">
@@ -81,8 +82,10 @@
         <input type="checkbox" id="cartogram-ckb" onchange="OnCartogramClick(this)">Using Cartogram
       </p>
       <div class="layout">
-        <button class="stat col-1-2 checked" id="btn-nb" onclick="OnChoroplethClick(this)">Choropleth</button>
-        <button class="stat col-1-2" id="btn-lisa" onclick="OnLISAClick(this)">Local Clustering</button>
+        <button class="stat col-1-2 checked" id="btn-nb" onclick="OnChoroplethClick(this)">Choropleth <div class="info-tooltip" id="info-Choropleth"><i class="fa fa-info-circle"  aria-hidden="true"></i><span class="right tooltip-text"></span></div>
+        </button>
+        <button class="stat col-1-2" id="btn-lisa" onclick="OnLISAClick(this)"> Local Clustering <div class="info-tooltip" id="info-LocalClustering"><i class="fa fa-info-circle"  aria-hidden="true"></i><span class="left tooltip-text"></span></div>
+        </button>
       </div>
 
       <div class="options-panel-section">
@@ -151,7 +154,7 @@
     </div>
   </div>
   <!-- options panel minimize button -->
-  <div id="left-collapse" class="collapse-btn left-shadow" onclick="leftPanelCollapse()"><i
+  <div id="left-collapse" class="collapse-btn" onclick="leftPanelCollapse()"><i
       class="fa fa-chevron-left"></i></div>
 
   <!-- data panel -->
