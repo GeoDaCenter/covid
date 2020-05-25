@@ -1,6 +1,6 @@
-# Berkeley Predictions
+# USAFacts COVID Data
 
-This scripts downloads the USAFacts county-level COVID data and processes it for use in the Atlas.
+This scripts downloads the [USAFacts](https://usafacts.org/data/) county-level COVID data and processes it for use in the Atlas.
 
 ## Usage
 
