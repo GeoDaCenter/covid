@@ -1571,26 +1571,26 @@ function GetDataValues() {
 
 function UpdateLegend() {
   const div = document.getElementById('legend');
-  div.innerHTML = `<div class="legend" style="background: rgb(240, 240, 240); width: 7.69231%;"></div>
-    <div class="legend" style="background: rgb(255, 237, 160); width: 7.69231%;"></div>
-    <div class="legend" style="background: rgb(254, 217, 118); width: 7.69231%;"></div>
-    <div class="legend" style="background: rgb(254, 178, 76); width: 7.69231%;"></div>
-    <div class="legend" style="background: rgb(253, 141, 60); width: 7.69231%;"></div>
-    <div class="legend" style="background: rgb(252, 78, 42); width: 7.69231%;"></div>
-    <div class="legend" style="background: rgb(227, 26, 28); width: 7.69231%;"></div>
-    <div class="legend" style="background: rgb(189, 0, 38); width: 7.69231%;"></div>
-    <div class="legend" style="background: rgb(128, 0, 38); width: 7.69231%;"></div>
+  div.innerHTML = `<div class="legend" style="background: rgb(240, 240, 240);"></div>
+    <div class="legend" style="background: rgb(255, 237, 160);"></div>
+    <div class="legend" style="background: rgb(254, 217, 118);"></div>
+    <div class="legend" style="background: rgb(254, 178, 76);"></div>
+    <div class="legend" style="background: rgb(253, 141, 60);"></div>
+    <div class="legend" style="background: rgb(252, 78, 42);"></div>
+    <div class="legend" style="background: rgb(227, 26, 28);"></div>
+    <div class="legend" style="background: rgb(189, 0, 38);"></div>
+    <div class="legend" style="background: rgb(128, 0, 38);"></div>
 `;
 }
 
 function UpdateLegendLabels(breaks) {
   let field = data_btn.innerText;
   const div = document.getElementById('legend-labels');
-  var cont = '<div style="width: 7.69231%;text-align:center">0</div>';
+  var cont = '<div style="text-align:center">0</div>';
   for (var i = 0; i < breaks.length; ++i) {
     let val = breaks[i];
     if (field == "Death Count/Confirmed Count") {
-      cont += '<div style="width: 7.69231%;text-align:center">' + val + '</div>';
+      cont += '<div style="text-align:center">' + val + '</div>';
     } else {
       if (val[0] == '>') {
         val = val.substring(1, val.length);
@@ -1602,7 +1602,7 @@ function UpdateLegendLabels(breaks) {
           val = parseInt(val);
           if (val > 10000) val = d3.format(".2s")(val);
         }
-        cont += '<div style="width: 7.69231%;text-align:center">>' + val + '</div>';
+        cont += '<div style="text-align:center">>' + val + '</div>';
       } else {
         if (val.indexOf('.') >= 0) {
           // format float number
@@ -1612,7 +1612,7 @@ function UpdateLegendLabels(breaks) {
           val = parseInt(val);
           if (val > 10000) val = d3.format(".2s")(val);
         }
-        cont += '<div style="width: 7.69231%;text-align:center">' + val + '</div>';
+        cont += '<div style="text-align:center">' + val + '</div>';
       }
     }
   }
@@ -2044,9 +2044,23 @@ function createTimeSlider(geojson) {
     .style("fill", "gray")
     .html(selectedDate);
 
+    const slider = document.getElementById('slider');
+    const sliderBubble = document.getElementById('bubble');
+    const sliderMin = document.getElementById('slider-min');
+    const sliderMax = document.getElementById('slider-max');
+    
+    sliderMin.innerHTML = dates[selectedDataset][0];
+    sliderMax.innerHTML = dates[selectedDataset][slider.max - 1];
+    const months =  ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const rawDate = new Date(selectedDate);
+    const printableDate = `${months[rawDate.getMonth()]} ${rawDate.getDate()}, ${rawDate.getFullYear()}`
+    sliderBubble.innerText = printableDate;
+    sliderBubble.classList.remove("hidden");
+
   d3.select("#slider").on("input", function() {
     var currentValue = parseInt(this.value);
     selectedDate = dates[selectedDataset][currentValue - 1];
+    
 
     document.getElementById('time-container').innerText = selectedDate;
     var xLabels = dates[selectedDataset];
@@ -2054,15 +2068,17 @@ function createTimeSlider(geojson) {
 
     const slider = document.getElementById('slider');
     const sliderBubble = document.getElementById('bubble');
+    const sliderMin = document.getElementById('slider-min');
+    const sliderMax = document.getElementById('slider-max');
+    const rawDate = new Date(selectedDate);
+    const printableDate = `${months[rawDate.getMonth()]} ${rawDate.getDate()}, ${rawDate.getFullYear()}`
+    sliderMin.innerHTML = dates[selectedDataset][0];
+    sliderMax.innerHTML = dates[selectedDataset][slider.max - 1];
 
-    sliderBubble.innerText = selectedDate;
+    sliderBubble.innerText = printableDate;
     sliderBubble.classList.remove("hidden");
 
     // reposition slider bubble
-    const shiftPct = Number(((slider.value - slider.min) * 100) / (slider.max - slider.min));
-
-    sliderBubble.style.left = `calc(${shiftPct}% + (${8 - shiftPct * 0.15}px))`;
-
 
     var yValues = getAccumConfirmedCountByDate(geojson, true);
     yScale.domain([0, Math.max.apply(null, yValues)]);
