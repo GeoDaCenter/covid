@@ -1610,7 +1610,7 @@ function UpdateLegendLabels(breaks) {
           val = parseInt(val);
           if (val > 10000) val = d3.format(".2s")(val);
         }
-        cont += '<div style="text-align:center">' + val + '</div>';
+        cont += `<div style="text-align:center">>${val}</div>`;
       } else {
         if (val.indexOf('.') >= 0) {
           // format float number
