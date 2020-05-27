@@ -137,7 +137,6 @@ a:visited {
   position: absolute;
   top: 50px;
   left: 0px;
-  bottom: 35px;
   width: 344px;
   background: #444;
   color: #fff;
@@ -415,7 +414,6 @@ data panel
   width: 250px;
   position: absolute;
   top: 50px;
-  bottom: 30px;
   right: 0px;
   z-index: 1;
   border-radius: 0px 0px 0px 10px;
