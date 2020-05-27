@@ -1,9 +1,18 @@
 import csv
 from datetime import datetime
 import json
+import os
 import re
 import requests
 from config import config
+
+'''
+SET UP
+'''
+
+# make _working dir if it doesn't exist. this is where working files and output
+# are stored.
+os.makedirs('./_working', exist_ok=True)
 
 '''
 EXTRACT
@@ -115,7 +124,6 @@ with open('./_working/predictions_raw.csv') as in_file, open('./_working/predict
       out_row[field_name] = row[source_field_name]
 
     out_rows.append(out_row)
-
 
   '''
   LOAD
