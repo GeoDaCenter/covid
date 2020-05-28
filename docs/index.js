@@ -1989,6 +1989,17 @@ function updateTrendLine({
     .text(title);
 }
 
+// HAX: For time slider to handle different date format with 1P3A datasets. 
+function hyphenToSlashDate(date) {
+  // Split yyyy-mm-dd at hyphen
+  const parts = date.split('-');
+  const month = parts[1];
+  const day = parts[2];
+  const year = parts[0];
+  // Return mm/dd/yyyy
+  return `${month}/${day}/${year}`;
+}
+
 function createTimeSlider(geojson) {
   if (document.getElementById("slider-svg").innerHTML.length > 0) {
     if (d3.select("#slider").node().max != dates[selectedDataset].length) {
@@ -2069,10 +2080,17 @@ function createTimeSlider(geojson) {
     const sliderMin = document.getElementById('slider-min');
     const sliderMax = document.getElementById('slider-max');
     
+    let sliderSelectedDate = selectedDate;
+
+    // HAX: convert 1p3a dates to same format as usafacts 
+    if (selectedDataset === 'counties_update.geojson' || selectedDataset === 'states_update.geojson') {
+      sliderSelectedDate = hyphenToSlashDate(sliderSelectedDate);
+    }
+
     sliderMin.innerHTML = dates[selectedDataset][0];
     sliderMax.innerHTML = dates[selectedDataset][slider.max - 1];
     const months =  ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    const rawDate = new Date(selectedDate);
+    const rawDate = new Date(sliderSelectedDate);
     const printableDate = `${months[rawDate.getMonth()]} ${rawDate.getDate()}, ${rawDate.getFullYear()}`
     sliderBubble.innerText = printableDate;
     sliderBubble.classList.remove("hidden");
@@ -2080,8 +2098,8 @@ function createTimeSlider(geojson) {
   d3.select("#slider").on("input", function() {
     var currentValue = parseInt(this.value);
     selectedDate = dates[selectedDataset][currentValue - 1];
+    sliderSelectedDate = selectedDate;
     
-
     document.getElementById('time-container').innerText = selectedDate;
     var xLabels = dates[selectedDataset];
     xScale.domain(xLabels);
@@ -2090,7 +2108,13 @@ function createTimeSlider(geojson) {
     const sliderBubble = document.getElementById('bubble');
     const sliderMin = document.getElementById('slider-min');
     const sliderMax = document.getElementById('slider-max');
-    const rawDate = new Date(selectedDate);
+
+    // HAX: convert 1p3a dates to same format as usafacts 
+    if (selectedDataset === 'counties_update.geojson' || selectedDataset === 'states_update.geojson') {
+      sliderSelectedDate = hyphenToSlashDate(selectedDate);
+    }
+
+    const rawDate = new Date(sliderSelectedDate);
     const printableDate = `${months[rawDate.getMonth()]} ${rawDate.getDate()}, ${rawDate.getFullYear()}`
     sliderMin.innerHTML = dates[selectedDataset][0];
     sliderMax.innerHTML = dates[selectedDataset][slider.max - 1];

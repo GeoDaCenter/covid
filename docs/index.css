@@ -363,11 +363,6 @@ a:visited {
   color: #ccc;
 }
 
-#slider-max {
-  position: relative;
-  top: 4px;
-}
-
 .hidden {
   display: none !important;
 }
