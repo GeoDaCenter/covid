@@ -2,11 +2,59 @@ body {
   width: 100vw;
   height: 100vh;
   margin: 0;
-  font-family: 'Helvetica Neue', Helvetica, sans-serif !important;
+  font-family: 'Helvetica', sans-serif !important;
   font-size: 12px;
-  background-color: #444;
+  background-color: #333;
   overflow: hidden;
 } 
+
+.tooltip-text {
+  position: absolute;
+  visibility: hidden;
+  background-color: #2F2F2F;
+  color: #fff;
+  padding: 10px;
+  text-align: left;
+  width: 100px;
+  z-index: 99999;
+top: 17px;
+left: -55px;
+border-radius: 5px;
+
+}
+
+.info-tooltip {
+  display: inline-block;
+  position: relative;
+}
+
+.top.info-tooltip .tooltip-text {
+  top: -100px;
+}
+
+.top.info-tooltip .tooltip-text:after {
+  top: 100% !important;
+  border-color:  #2f2f2f transparent transparent transparent;
+}
+
+button:focus {
+  outline: none !important;
+}
+
+.info-tooltip .tooltip-text:after {
+  content: " ";
+  position: absolute;
+  bottom: 100%;  /* At the top of the tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #2f2f2f transparent;
+}
+
+.info-tooltip:hover .tooltip-text {
+  visibility: visible;
+}
 
 #tooltip {
   position: absolute;
@@ -18,6 +66,7 @@ body {
   font-size: 14px;
   z-index: 9;
   pointer-events: none;
+  border-radius: 0px 10px 10px 10px;
 }
 
 #tooltip:empty {
@@ -88,17 +137,15 @@ a:visited {
   position: absolute;
   top: 50px;
   left: 0px;
-  bottom: 35px;
   width: 344px;
   background: #444;
   color: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, .5);
-  padding: 12px 24px;
-  overflow-x: hidden;
+  padding: 20px 24px 12px 24px;
   overflow-y: auto;
   overflow-y: overlay;
   outline: none;
   z-index: 9;
+  border-radius: 0px 0px 10px 0px;
 }
 
 .options-panel-section {
@@ -116,10 +163,11 @@ a:visited {
   display: none;
 }
 
-.options-panel .legend {
+.legend {
   display: inline-block;
   width: 12px;
   height: 12px;
+  z-index: 100000;  
 }
 
 .options-panel .source-link a {
@@ -144,7 +192,6 @@ a:visited {
 
 #left-collapse {
   left: 392px;
-  border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
 }
 
@@ -154,7 +201,6 @@ a:visited {
 
 #right-collapse {
   right: 288.4px;
-  border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
 }
 
@@ -175,17 +221,6 @@ a:visited {
   right: -270px;
 }
 
-.left-shadow {
-  box-shadow: 5px 0px 20px -4px rgba(0,0,0,0.3);
-}
-
-.right-shadow {
-  box-shadow: -5px 0px 20px -4px rgba(0,0,0,0.3);
-}
-
-.center-shadow {
-  box-shadow: 0px 0px 20px -4px rgba(0,0,0,0.3);
-}
 
 .data-panel h2, .tooltip {
   margin-block-start: 0 !important;
@@ -245,7 +280,6 @@ a:visited {
   background-color: #f9f9f9;
   min-width: 160px;
   width: 100%;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
 }
 
@@ -292,13 +326,50 @@ a:visited {
   color: #fff;
 }
 
-#slider {
-  width: 255px;
+#sliderdiv {
+   width: 100%;
+  z-index: 9090;
+  position: absolute;
+  top: 50px;
+  left: 40%;
+  max-width: 300px;
+  background-color:#272727;
+  padding: 20px 20px 10px 20px;
+  border-radius: 0px 0px 10px 10px;
+  color: #fff;
+
 }
 
-#sliderdiv {
-  margin-top: -12px;
-  margin-left: 26px;
+#slider {
+  width: 100%;
+  display: block;
+  clear: both;
+}
+
+#bubble {
+  position: absolute;
+  top: 15px;
+  font-size: 16px;
+  color: #fff;
+  z-index: 10000;
+  border-radius: 5px 5px 5px 0px;
+  left: 20%;
+  text-align: center;
+  width: 200px;
+}
+
+#slider-min, #slider-max {
+  font-size: 10px;
+  color: #ccc;
+}
+
+#slider-max {
+  position: relative;
+  top: 4px;
+}
+
+.hidden {
+  display: none !important;
 }
 
 #slider-tooltip {
@@ -314,6 +385,8 @@ a:visited {
   color: white;
   opacity: 1;
 }
+
+
 
 .axis--y path {
   display: none;
@@ -341,9 +414,9 @@ data panel
   width: 250px;
   position: absolute;
   top: 50px;
-  bottom: 30px;
   right: 0px;
   z-index: 1;
+  border-radius: 0px 0px 0px 10px;
 }
 
 /* move mapbox controls so they don't overlap panels */
@@ -359,6 +432,27 @@ data panel
   color: yellow;
 }
 
+.legend-wrap {
+  z-index: 10000;
+  position: absolute;
+  bottom: 0px;
+  margin-left: 38%;
+  width: 400px;
+  background-color:#272727;
+  padding: 10px;
+  border-radius: 10px 10px 0px 0px;
+  color: #fff;
+  font-size: 11px;
+}
+
+#legend-labels {
+  margin-top: 5px;
+}
+
+#legend-labels div {
+  width: 11%
+}
+
 .county-severity-index--medium {
   color: orange;
 }
@@ -372,7 +466,6 @@ data panel
   width: 100%; 
   height: 50px; 
   background-color: #2f2f2f; 
-  box-shadow: 0px 2px 4px 1px rgba(0, 0, 0, 0.4);
   position: absolute; 
   top: 0px; 
   left: 0px;
@@ -414,4 +507,10 @@ data panel
   padding-right: 20px;
 }
 
+.fa-info-circle {
+  color: #aaa;
+}
 
+.checked .fa-info-circle {
+  color: #fff;
+}

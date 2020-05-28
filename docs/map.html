@@ -13,7 +13,7 @@
   </script>
 
   <meta charset="utf-8">
-  <title>COVID Atlas | Spatial@UChicago</title>
+  <title>US Covid Atlas</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <link href="index.css" rel="stylesheet">
 
@@ -24,13 +24,14 @@
   <script defer src="https://unpkg.com/pbf@3.2.0/dist/pbf.js"></script>
   <script defer src="js/GeodaProxy.js"></script>
   <script defer src="js/mapbox-vector-tile.js"></script>
+  <script defer src="config.js"></script>
   <script defer src="index.js"></script>
   <script defer src="gen/jsgeoda.js"></script>
 </head>
 
 <body>
   <div class="navbar">
-    <div class="nav-logo">U.S. COVID-19 Atlas</div>
+    <div class="nav-logo">US Covid Atlas</div>
     <ul>
       <li><a href="index.html">Home</a></li>
       <li><a href="data.html">Data</a></li>
@@ -45,7 +46,7 @@
   </div>
 
   <!-- options panel -->
-  <div class="options-panel left-shadow left-panel" tabindex="0">
+  <div class="options-panel left-panel" tabindex="0">
     <div id="toolbox">
       <p>Select Data:</p>
       <div class="layout">
@@ -81,8 +82,10 @@
         <input type="checkbox" id="cartogram-ckb" onchange="OnCartogramClick(this)">Using Cartogram
       </p>
       <div class="layout">
-        <button class="stat col-1-2 checked" id="btn-nb" onclick="OnChoroplethClick(this)">Choropleth</button>
-        <button class="stat col-1-2" id="btn-lisa" onclick="OnLISAClick(this)">Local Clustering</button>
+        <button class="stat col-1-2 checked" id="btn-nb" onclick="OnChoroplethClick(this)">Choropleth <div class="info-tooltip" id="info-Choropleth"><i class="fa fa-info-circle"  aria-hidden="true"></i><span class="right tooltip-text"></span></div>
+        </button>
+        <button class="stat col-1-2" id="btn-lisa" onclick="OnLISAClick(this)"> Local Clustering <div class="info-tooltip" id="info-LocalClustering"><i class="fa fa-info-circle"  aria-hidden="true"></i><span class="left tooltip-text"></span></div>
+        </button>
       </div>
 
       <div class="options-panel-section">
@@ -107,37 +110,14 @@
         </div>
       </div>
 
-      <div class="layout" id="legend">
-        <div class="legend" style="background: rgb(240, 240, 240); width: 7.69231%;"></div>
-        <div class="legend" style="background: rgb(255, 237, 160); width: 7.69231%;"></div>
-        <div class="legend" style="background: rgb(254, 217, 118); width: 7.69231%;"></div>
-        <div class="legend" style="background: rgb(254, 178, 76); width: 7.69231%;"></div>
-        <div class="legend" style="background: rgb(253, 141, 60); width: 7.69231%;"></div>
-        <div class="legend" style="background: rgb(252, 78, 42); width: 7.69231%;"></div>
-        <div class="legend" style="background: rgb(227, 26, 28); width: 7.69231%;"></div>
-        <div class="legend" style="background: rgb(189, 0, 38); width: 7.69231%;"></div>
-        <div class="legend" style="background: rgb(128, 0, 38); width: 7.69231%;"></div>
-      </div>
-      <div class="layout" id="legend-labels">
-        <div style="width: 7.69231%;"></div>
-        <div style="width: 7.69231%;"></div>
-        <div style="width: 7.69231%;"></div>
-        <div style="width: 7.69231%;"></div>
-        <div style="width: 7.69231%;"></div>
-        <div style="width: 7.69231%;"></div>
-        <div style="width: 7.69231%;"></div>
-        <div style="width: 7.69231%;"></div>
-        <div style="width: 7.69231%;"></div>
-      </div>
+
       <p>New cases:</p>
       <div class="layout" id="linechart"></div>
-      <p>All cases:</p>
-      <div class="layout" id="slider-svg"></div>
-      <div class="layout" id="sliderdiv"><input id="slider" type="range" min="1" max="100" step="1" value="20" /></div>
+      <div class="hidden layout" id="slider-svg"></div>
       <p><b>Data:</b> <a
           href="https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/?utm_source=MailChimp&utm_campaign=census-covid2">USAFacts</a>
         and <a href="https://covidvirus.1point3acres.com/">1point3acres</a>. In case of data discrepancy, local health
-        departments are considered most acccurate by CDC recommendations.</p>
+        departments are considered most accurate by CDC recommendations.</p>
 
       <div class="source-link" align="center">
         <a href="https://spatial.uchicago.edu" target="_new">
@@ -152,13 +132,33 @@
       </div>
     </div>
   </div>
+  <div id="sliderdiv">
+    <span id="slider-min" class="float: left; "></span><span id="slider-max" style="float: right;"></span><br>
+    <input style="display: block" id="slider" type="range" min="1" max="100" step="1" value="100" />
+    <output for="slider" id="bubble"></output>
+  </div>
 
+  <div class="legend-wrap">
+    <div class="layout" id="legend">
+      <div class="legend" style="background: rgb(240, 240, 240); width: 7.69231%;"></div>
+      <div class="legend" style="background: rgb(255, 237, 160); width: 7.69231%;"></div>
+      <div class="legend" style="background: rgb(254, 217, 118); width: 7.69231%;"></div>
+      <div class="legend" style="background: rgb(254, 178, 76); width: 7.69231%;"></div>
+      <div class="legend" style="background: rgb(253, 141, 60); width: 7.69231%;"></div>
+      <div class="legend" style="background: rgb(252, 78, 42); width: 7.69231%;"></div>
+      <div class="legend" style="background: rgb(227, 26, 28); width: 7.69231%;"></div>
+      <div class="legend" style="background: rgb(189, 0, 38); width: 7.69231%;"></div>
+      <div class="legend" style="background: rgb(128, 0, 38); width: 7.69231%;"></div>
+    </div>
+    <div class="layout" id="legend-labels">
+    </div>
+  </div>
   <!-- options panel minimize button -->
-  <div id="left-collapse" class="collapse-btn left-shadow" onclick="leftPanelCollapse()"><i
+  <div id="left-collapse" class="collapse-btn" onclick="leftPanelCollapse()"><i
       class="fa fa-chevron-left"></i></div>
 
   <!-- data panel -->
-  <div class="data-panel right-shadow right-panel" hidden>
+  <div class="data-panel right-panel" hidden>
     <input id="geoid" hidden></input>
     <h2 id="data-panel__header">Nocounty, Nostate</h2>
     <hr>
@@ -168,7 +168,7 @@
   </div>
 
   <!-- data panel minimize button -->
-  <div id="right-collapse" class="collapse-btn right-shadow hide" onclick="rightPanelCollapse()"><i
+  <div id="right-collapse" class="collapse-btn hide" onclick="rightPanelCollapse()"><i
       class="fa fa-chevron-right"></i></div>
 </body>
 
