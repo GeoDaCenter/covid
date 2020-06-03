@@ -97,8 +97,15 @@ var gda_weights = {};
 var jsondata = {};
 var centroids = {};
 
+// this tracks the map viewport and is used for a hack so that deck doesn't 
+// always zoom to the initial lat/lng. set initial values here.
+var mapPosition = {
+  latitude: 35.850033,
+  longitude: -105.6500523,
+  zoom: 3.5,
+};
+
 // misc
-var current_view = null;
 var colorScale;
 
 var getFillColor = function() {
@@ -1103,14 +1110,19 @@ function updateDataPanel(e) {
 const deckgl = new DeckGL({
   mapboxApiAccessToken: MAPBOX_ACCESS_TOKEN,
   mapStyle: 'mapbox://styles/mapbox/dark-v9',
-  latitude: 35.850033,
-  longitude: -105.6500523,
-  zoom: 3.5,
+  latitude: mapPosition.latitude,
+  longitude: mapPosition.longitude,
+  zoom: mapPosition.zoom,
   maxZoom: 18,
   pitch: 0,
   controller: true,
-  onViewStateChange: (view) => {
-    current_view = view.viewState;
+  // see the event handler for map:zoomend below for why this is necessary
+  onViewStateChange: ({viewState}) => {
+    mapPosition = {
+      latitude: viewState.latitude,
+      longitude: viewState.longitude,
+      zoom: viewState.zoom,
+    };
   },
   layers: []
 });
@@ -1119,16 +1131,12 @@ const mapbox = deckgl.getMapboxMap();
  
 mapbox.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
+// without this, deck zooms to an unknown location (0, 0 maybe?) on window 
+// resize
+// TODO figure out why this is necessary
 mapbox.on('zoomend', () => {
-  const currentZoom = mapbox.getZoom();
-  let lat = current_view == null ? deckgl.viewState.latitude : current_view.latitude;
-  let lon = current_view == null ? deckgl.viewState.longitude : current_view.longitude;
   deckgl.setProps({
-    viewState: {
-      zoom: currentZoom,
-      latitude: lat,
-      longitude: lon
-    }
+    viewState: mapPosition,
   });
 });
 
