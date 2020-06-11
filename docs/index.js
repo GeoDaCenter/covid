@@ -101,8 +101,15 @@ var gda_weights = {};
 var jsondata = {};
 var centroids = {};
 
+// this tracks the map viewport and is used for a hack so that deck doesn't 
+// always zoom to the initial lat/lng. set initial values here.
+var mapPosition = {
+  latitude: 35.850033,
+  longitude: -105.6500523,
+  zoom: 3.5,
+};
+
 // misc
-var current_view = null;
 var colorScale;
 
 var getFillColor = function() {
@@ -1167,42 +1174,8 @@ const deckgl = new Deck({
   gl: mapbox.painter.context.gl,
   layers: []
 });
-
-/*
-const deckgl = new DeckGL({
-  mapboxApiAccessToken: MAPBOX_ACCESS_TOKEN,
-  mapStyle: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
-  latitude: 35.850033,
-  longitude: -105.6500523,
-  zoom: 3.5,
-  maxZoom: 18,
-  pitch: 0,
-  controller: true,
-  onViewStateChange: (view) => {
-    current_view = view.viewState;
-  },
-  layers: []
-});
-
-const mapbox = deckgl.getMapboxMap();
-*/
  
 mapbox.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
-
-mapbox.on('zoomend', () => {
-  /*
-  const currentZoom = mapbox.getZoom();
-  let lat = current_view == null ? deckgl.viewState.latitude : current_view.latitude;
-  let lon = current_view == null ? deckgl.viewState.longitude : current_view.longitude;
-  deckgl.setProps({
-    viewState: {
-      zoom: currentZoom,
-      latitude: lat,
-      longitude: lon
-    }
-  });
-  */
-});
 
 function resetView(layers) {
   let viewState = {}
