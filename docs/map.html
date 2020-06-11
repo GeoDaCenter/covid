@@ -16,9 +16,15 @@
   <title>US Covid Atlas</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <link href="index.css" rel="stylesheet">
+  <link href="https://api.mapbox.com/mapbox-gl-js/v1.10.1/mapbox-gl.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css" type="text/css"/>
 
-  <script defer src="https://unpkg.com/deck.gl@^7.0.0/dist.min.js"></script>
-  <script defer src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
+  <script defer src="https://unpkg.com/deck.gl@^8.0.0/dist.min.js"></script>
+  <script defer src="https://api.mapbox.com/mapbox-gl-js/v1.10.1/mapbox-gl.js"></script>
+  <script defer src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+  <!-- Promise polyfill script required to use Mapbox GL Geocoder in IE 11 -->
+  <script defer src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"></script>
   <script defer src="js/zip.js"></script>
   <script defer src="https://unpkg.com/pbf@3.2.0/dist/pbf.js"></script>

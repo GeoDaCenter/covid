@@ -4,12 +4,14 @@
 */
 
 const {
-  DeckGL,
+  Deck,
   GeoJsonLayer,
   TextLayer,
   ScatterplotLayer,
   TileLayer,
+  MapboxLayer,
 } = deck;
+
 
 /*
  * CONFIG
@@ -62,6 +64,8 @@ function getDatesFromGeojson(data) {
 /*
  * GLOBALS
 */
+// layers
+var layer_dict = {};
 
 // data
 var usafactsCases;
@@ -657,12 +661,31 @@ function OnDataClick(evt) {
 }
 
 function OnCartogramClick(el) {
-  if (!el.checked) cartogramDeselected = true;
+  cartogramDeselected = !el.checked;
 
   if (isState()) {
     OnStateClick();
   } else {
     OnCountyClick();
+  }
+
+  if (!el.checked) {
+    mapbox.jumpTo({
+      center: [-105.6500523, 35.850033],
+      zoom: [3.5]
+    });
+  } else {
+    if (isState()) {
+      mapbox.jumpTo({
+        center: [-8.854194, 3.726726],
+        zoom: [6.6]
+      });
+    } else {
+      mapbox.jumpTo({
+        center: [-30.190367, 10.510908],
+        zoom: [5.6]
+      });
+    }
   }
 }
 
@@ -1100,9 +1123,55 @@ function updateDataPanel(e) {
 */
 
 // set up deck/mapbox
+
+mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
+const mapbox = new mapboxgl.Map({
+  container: document.body,
+  style: {
+    'version': 8,
+    'sources': {
+      'carto-tiles': {
+        'type': 'raster',
+        'tiles': [
+          "https://a.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}@2x.png",
+          "https://b.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}@2x.png",
+          "https://c.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}@2x.png",
+          "https://d.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}@2x.png",
+        ],
+        'tileSize': 256,
+        'attribution': ''
+      }
+    },
+    'layers': [
+      {
+      'id': 'base-tiles',
+      'type': 'raster',
+      'source': 'carto-tiles',
+      'minzoom': 0,
+      'maxzoom': 22
+      }
+    ]
+  },
+  center: [ -105.6500523, 35.850033],
+  zoom: 3.5
+});
+
+mapbox.addControl(
+  new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    mapboxgl: mapboxgl
+  })
+);
+
+const deckgl = new Deck({
+  gl: mapbox.painter.context.gl,
+  layers: []
+});
+
+/*
 const deckgl = new DeckGL({
   mapboxApiAccessToken: MAPBOX_ACCESS_TOKEN,
-  mapStyle: 'mapbox://styles/mapbox/dark-v9',
+  mapStyle: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
   latitude: 35.850033,
   longitude: -105.6500523,
   zoom: 3.5,
@@ -1116,10 +1185,12 @@ const deckgl = new DeckGL({
 });
 
 const mapbox = deckgl.getMapboxMap();
+*/
  
 mapbox.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
 mapbox.on('zoomend', () => {
+  /*
   const currentZoom = mapbox.getZoom();
   let lat = current_view == null ? deckgl.viewState.latitude : current_view.latitude;
   let lon = current_view == null ? deckgl.viewState.longitude : current_view.longitude;
@@ -1130,6 +1201,7 @@ mapbox.on('zoomend', () => {
       longitude: lon
     }
   });
+  */
 });
 
 function resetView(layers) {
@@ -1150,6 +1222,8 @@ function resetView(layers) {
     layers: layers,
     viewState
   });
+
+  
 }
 
 function setCartogramView(layers) {
@@ -1178,36 +1252,39 @@ function setCartogramView(layers) {
   }
 }
 
-function createMap(data) {
-  // if no date has been selected, default to most recent
-  if (!selectedDate) {
-    selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
-  }
 
-  // this is where the deck layers are accumulated before adding to the canvas
-  var layers = [];
-  var labels = [];
+function getCartogramLayer(data)
+{
+  //if (!('cartogram_layer' in layer_dict)) {
+   layer_dict['cartogram_layer'] =
+    new MapboxLayer({
+      id: 'catogram_layer',
+      type: ScatterplotLayer,
+      data: cartogramData,
+      getPosition: d => d.position,
+      getFillColor: getFillColor,
+      getLineColor: getLineColor,
+      getRadius: d => d.radius * 10,
+      onHover: handleMapHover,
+      onClick: handleMapClick,
+      pickable: true,
+      updateTriggers: {
+        getLineColor: [
+          selectedId
+        ],
+        getFillColor: [
+          selectedDate, selectedVariable, selectedMethod
+        ]
+      },
+    });
+  //}
+  return layer_dict['cartogram_layer'];
+}
 
-  // if local clusters is selected, create labels
-  if (isLisa()) {
-    var datasetCentroids = centroids[selectedDataset];
-
-    for (let i = 0; i < data.features.length; ++i) {
-      let field = data_btn.innerText;
-      let c = lisaData[selectedDataset][selectedDate][field].clusters[i];
-      if (c == 1) {
-        labels.push({
-          id: i,
-          position: datasetCentroids[i],
-          text: data.features[i].properties.NAME
-        });
-      }
-    }
-  }
-
-  // if cartogram is selected
-  if (isCartogram()) {
-    mapbox.getCanvas().hidden = true;
+function getCartoLabelLayer(data)
+{
+  //if (!('cartogram_layer' in layer_dict)) {
+    var labels = [];
     if ('name' in data && data.name.startsWith("state")) {
       for (let i = 0; i < data.features.length; ++i) {
         labels.push({
@@ -1217,192 +1294,194 @@ function createMap(data) {
         });
       }
     }
-    layers.push(
-      new ScatterplotLayer({
-        data: cartogramData,
-        getPosition: d => d.position,
-        getFillColor: getFillColor,
-        getLineColor: getLineColor,
-        getRadius: d => d.radius * 10,
-        onHover: handleMapHover,
-        onClick: handleMapClick,
-        pickable: true,
-        updateTriggers: {
-          getLineColor: [
-            selectedId
-          ],
-          getFillColor: [
-            selectedDate, selectedVariable, selectedMethod
-          ]
-        },
-      })
-    );
-    layers.push(
-      new TextLayer({
-        data: labels,
-        pickable: true,
-        getPosition: d => d.position,
-        getText: d => d.text,
-        getSize: 12,
-        fontFamily: 'Gill Sans Extrabold, sans-serif',
-        getTextAnchor: 'middle',
-        getAlignmentBaseline: 'bottom',
-        getColor: [20, 20, 20]
-      })
-    );
-    setCartogramView(layers);
-  // set up the regular map view (cloropleth or hotspots)
-  } else { 
-    mapbox.getCanvas().hidden = false;
 
-    // TODO figure out what this adds and document
-    layers.push(
-      new GeoJsonLayer({
-        id: 'map-layer',
-        data: data,
-        opacity: 0.5,
-        stroked: true,
-        filled: true,
-        lineWidthScale: 1,
-        lineWidthMinPixels: 1,
-        getElevation: getElevation,
-        getFillColor: getFillColor,
-        getLineColor: getLineColor,
+    layer_dict['carto_label_layer'] = new MapboxLayer({
+      id: 'carto_label_layer',
+      type: TextLayer,
+      data: labels,
+      pickable: true,
+      getPosition: d => d.position,
+      getText: d => d.text,
+      getSize: 12,
+      fontFamily: 'Gill Sans Extrabold, sans-serif',
+      getTextAnchor: 'middle',
+      getAlignmentBaseline: 'bottom',
+      getColor: [20, 20, 20]
+    });
+  //}
+  return layer_dict['carto_label_layer'];
+}
 
-        updateTriggers: {
-          getLineColor: [],
-          getFillColor: [
-            selectedDate, selectedVariable, selectedMethod
-          ]
-        },
-        pickable: true,
-        onHover: handleMapHover,
-        onClick: handleMapClick
-      })
-    );
+function getStateLayer(data)
+{
+  //if (!('state_layer' in layer_dict)) {
+    layer_dict['state_layer'] = new MapboxLayer({
+      id: 'state_layer',
+      type: GeoJsonLayer,
+      data: './states.geojson',
+      opacity: 0.5,
+      stroked: true,
+      filled: false,
+      lineWidthScale: 1,
+      lineWidthMinPixels: 1.5,
+      getLineColor: [220, 220, 220],
+      pickable: false
+    })
+  //}
+  return layer_dict['state_layer'];
+}
 
-    // this seems to be a proxy for targeting when states are being shown
-    if (isState()) {
-      layers.push(
-        new GeoJsonLayer({
-          data: './states.geojson',
-          opacity: 0.5,
-          stroked: true,
-          filled: false,
-          lineWidthScale: 1,
-          lineWidthMinPixels: 1.5,
-          getLineColor: [220, 220, 220],
-          pickable: false
-        })
-      );
-    }
+function getCountyLayer(data)
+{
+  //if (!('county_layer' in layer_dict)) {
+    layer_dict['county_layer'] = new MapboxLayer({
+      id: 'county_layer',
+      type: GeoJsonLayer,
+      data: data,
+      opacity: 0.5,
+      stroked: true,
+      filled: true,
+      lineWidthScale: 1,
+      lineWidthMinPixels: 1,
+      getElevation: getElevation,
+      getFillColor: getFillColor,
+      getLineColor: getLineColor,
 
-    if (shouldShowLabels) {
-      layers.push(
-        new TextLayer({
-          data: labels,
-          pickable: true,
-          getPosition: d => d.position,
-          getText: d => d.text,
-          getSize: 18,
-          fontFamily: 'Gill Sans Extrabold, sans-serif',
-          getTextAnchor: 'middle',
-          getAlignmentBaseline: 'bottom',
-          getColor: [250, 250, 250],
-          fontSettings: {
-            buffer: 20,
-            sdf: true,
-            radius: 6
+      updateTriggers: {
+        getLineColor: [],
+        getFillColor: [
+          selectedDate, selectedVariable, selectedMethod
+        ]
+      },
+      pickable: true,
+      onHover: handleMapHover,
+      onClick: handleMapClick
+    });
+  //}
+  return layer_dict['county_layer'];
+}
+
+function getReservationLayer(data)
+{
+    layer_dict['reservation_layer'] = new MapboxLayer({
+      id: 'reservations-layer',
+      type: TileLayer,
+      stroked: true,
+      getLineColor: [0, 255, 255],
+      getFillColor: [100, 100, 100],
+      opacity: 0.25,
+      lineWidthMinPixels: 2.5,
+      // TODO make this a reusable handler for other map overlays
+      getTileData: async ({ x, y, z }) => {
+        const mapSource = `https://api.mapbox.com/v4/lixun910.7luxiq9n/${z}/${x}/${y}.vector.pbf?access_token=${MAPBOX_ACCESS_TOKEN}`;
+        
+        const response = await fetch(mapSource);
+
+        if (response.status >= 400) {
+          return;
+        }
+
+        const buffer = await response.arrayBuffer();
+
+        const tile = new VectorTile(new Pbf(buffer));
+        const features = [];
+
+        for (const layerName in tile.layers) {
+          const vectorTileLayer = tile.layers[layerName];
+
+          for (let i = 0; i < vectorTileLayer.length; i++) {
+            const vectorTileFeature = vectorTileLayer.feature(i);
+            const feature = vectorTileFeature.toGeoJSON(x, y, z);
+            features.push(feature);
           }
-        })
-      );
+        }
+        
+        return features;
+      },
+    });
+  return layer_dict['reservation_layer'] ;
+}
+
+function getSegragateLayer(data)
+{
+    layer_dict['segragatecity_layer'] = new MapboxLayer({
+      id: 'segragatecity_layer',
+      type: TileLayer,
+      stroked: true,
+      getLineColor: [0, 255, 255],
+      getFillColor: [100, 100, 100],
+      opacity: 0.25,
+      lineWidthMinPixels: 2.5,
+      getTileData: async ({ x, y, z }) => {
+        const mapSource = `https://api.mapbox.com/v4/lixun910.131k9vc1/${z}/${x}/${y}.vector.pbf?access_token=${MAPBOX_ACCESS_TOKEN}`;
+
+        const response = await fetch(mapSource);
+
+        if (response.status >= 400) {
+          return;
+        }
+
+        const buffer = await response.arrayBuffer();
+
+        const tile = new VectorTile(new Pbf(buffer));
+        const features = [];
+
+        for (const layerName in tile.layers) {
+          const vectorTileLayer = tile.layers[layerName];
+
+          for (let i = 0; i < vectorTileLayer.length; i++) {
+            const vectorTileFeature = vectorTileLayer.feature(i);
+            const feature = vectorTileFeature.toGeoJSON(x, y, z);
+            features.push(feature);
+          }
+        }
+
+        return features;
+      },
+    });
+  return layer_dict['segragatecity_layer'];
+}
+
+function createMap(data) {
+  // if no date has been selected, default to most recent
+  if (!selectedDate) {
+    selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
+  }
+
+  // this is where the deck layers are accumulated before adding to the canvas
+  var layers = [];
+
+  if (isCartogram()) {
+    //mapbox.getCanvas().hidden = true;
+    mapbox.setLayoutProperty("base-tiles", 'visibility', 'none');
+    if (mapbox.getLayer('simple-tiles')) {
+      mapbox.setLayoutProperty("simple-tiles", 'visibility', 'none');
+    }
+    layers.push(getCartogramLayer(data));
+    layers.push(getCartoLabelLayer(data));
+  } else { 
+    mapbox.setLayoutProperty("base-tiles", 'visibility', 'visible');
+    if (mapbox.getLayer('simple-tiles')) {
+      mapbox.setLayoutProperty("simple-tiles", 'visibility', 'visible');
+    }
+    layers.push(getCountyLayer(data));
+
+    if (!isState()) {
+      layers.push(getStateLayer(data));
     }
 
     // add reservations if we should
     if (shouldShowReservations) {
-      layers.push(
-        // adapted from https://tgorkin.github.io/docs/layers/tile-layer
-        new TileLayer({
-          id: 'reservations-layer',
-          stroked: true,
-          getLineColor: [0, 255, 255],
-          getFillColor: [100, 100, 100],
-          opacity: 0.25,
-          lineWidthMinPixels: 2.5,
-          // TODO make this a reusable handler for other map overlays
-          getTileData: async ({ x, y, z }) => {
-            const mapSource = `https://api.mapbox.com/v4/lixun910.7luxiq9n/${z}/${x}/${y}.vector.pbf?access_token=${MAPBOX_ACCESS_TOKEN}`;
-            
-            const response = await fetch(mapSource);
-
-            if (response.status >= 400) {
-              return;
-            }
-
-            const buffer = await response.arrayBuffer();
-
-            const tile = new VectorTile(new Pbf(buffer));
-            const features = [];
-
-            for (const layerName in tile.layers) {
-              const vectorTileLayer = tile.layers[layerName];
-
-              for (let i = 0; i < vectorTileLayer.length; i++) {
-                const vectorTileFeature = vectorTileLayer.feature(i);
-                const feature = vectorTileFeature.toGeoJSON(x, y, z);
-                features.push(feature);
-              }
-            }
-            
-            return features;
-          },
-        })
-      );
+      layers.push(getReservationLayer(data));
     }
 
     // add reservations if we should
     if (shouldShowHypersegregatedCities) {
-      layers.push(
-        // adapted from https://tgorkin.github.io/docs/layers/tile-layer
-        new TileLayer({
-          id: 'hypersegregated-layer',
-          stroked: true,
-          getLineColor: [0, 255, 255],
-          getFillColor: [100, 100, 100],
-          opacity: 0.25,
-          lineWidthMinPixels: 2.5,
-          getTileData: async ({ x, y, z }) => {
-            const mapSource = `https://api.mapbox.com/v4/lixun910.131k9vc1/${z}/${x}/${y}.vector.pbf?access_token=${MAPBOX_ACCESS_TOKEN}`;
-
-            const response = await fetch(mapSource);
-
-            if (response.status >= 400) {
-              return;
-            }
-
-            const buffer = await response.arrayBuffer();
-
-            const tile = new VectorTile(new Pbf(buffer));
-            const features = [];
-
-            for (const layerName in tile.layers) {
-              const vectorTileLayer = tile.layers[layerName];
-
-              for (let i = 0; i < vectorTileLayer.length; i++) {
-                const vectorTileFeature = vectorTileLayer.feature(i);
-                const feature = vectorTileFeature.toGeoJSON(x, y, z);
-                features.push(feature);
-              }
-            }
-
-            return features;
-          },
-        })
-      );
+      layers.push(getSegragateLayer(data));
     }
-
-    resetView(layers);
   }
+  
+  SetupLayers(layers);
 
   if (document.getElementById('linechart').innerHTML == "" ||
     d3.select("#slider").node().max != dates[selectedDataset].length) {
@@ -1417,6 +1496,53 @@ function createMap(data) {
 
   createTimeSlider(data);
 }
+
+function SetupLayers(layers) 
+{
+  console.log("setup layers");
+  for (lyrname in layer_dict) {
+    if (mapbox.getLayer(lyrname)) {
+      mapbox.setLayoutProperty(lyrname, 'visibility', 'none');
+    }
+  }
+  for (lyr of layers) {
+    if (mapbox.getLayer(lyr.id)) {
+      mapbox.removeLayer(lyr.id);
+    }
+    mapbox.addLayer(lyr);
+    mapbox.setLayoutProperty(lyr.id, 'visibility', 'visible');
+  }
+
+  /* 
+  // update the layer
+  deckgl.setProps({layers: layers});
+  */
+
+  if (!mapbox.getLayer('simple-tiles')) {
+    var cartoSource = {
+      type: 'raster',
+      tiles: [
+        "https://a.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}@2x.png",
+        "https://b.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}@2x.png",
+        "https://c.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}@2x.png",
+        "https://d.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}@2x.png",
+      ],
+      'tileSize': 256,
+    };
+    mapbox.addSource('cartoSource', cartoSource);
+    mapbox.addLayer({
+      'id' : 'simple-tiles',
+      'type': 'raster',
+      'source': 'cartoSource',
+      'minzoom': 0,
+      'maxzoom': 22
+    });
+  
+  }
+  mapbox.moveLayer("simple-tiles");
+
+}
+
 
 function loadMap() {
   createMap(jsondata[selectedDataset]);

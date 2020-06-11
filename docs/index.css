@@ -509,3 +509,7 @@ data panel
 .checked .fa-info-circle {
   color: #fff;
 }
+
+.mapboxgl-ctrl-top-right {
+  z-index: 1000 !important;
+}
