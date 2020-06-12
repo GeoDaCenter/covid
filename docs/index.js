@@ -1337,7 +1337,7 @@ function getReservationLayer(data)
 {
   return {
       id: 'reservations-layer',
-      //type: TileLayer,
+      type: TileLayer,
       stroked: true,
       getLineColor: [0, 255, 255],
       getFillColor: [100, 100, 100],
@@ -1377,7 +1377,7 @@ function getSegragateLayer(data)
 {
   return {
       id: 'segragatecity_layer',
-      //type: TileLayer,
+      type: TileLayer,
       stroked: true,
       getLineColor: [0, 255, 255],
       getFillColor: [100, 100, 100],
@@ -1461,23 +1461,13 @@ function createMap(data) {
 
 function SetupLayers(layers) 
 {
-  console.log("setup layers");
-  /*
-  //for (lyrname in layer_dict) {
-  //  if (mapbox.getLayer(lyrname)) {
-  //    //mapbox.setLayoutProperty(lyrname, 'visibility', 'none');
-  //  }
-  //}
-  for (lyr of layers) {
-    if (mapbox.getLayer(lyr.id)) {
-      //mapbox.removeLayer(lyr.id);
-    } else {
-      mapbox.addLayer(lyr);
+  // hide all avaiable layers, only 'layers' will be visible
+  for (lyrname in layer_dict) {
+    if (mapbox.getLayer(lyrname)) {
+      mapbox.setLayoutProperty(lyrname, 'visibility', 'none');
     }
-    //mapbox.setLayoutProperty(lyr.id, 'visibility', 'visible');
   }
-  */
- const firstLabelLayerId = mapbox.getStyle().layers.find(layer => layer.type === 'symbol').id;
+  const firstLabelLayerId = mapbox.getStyle().layers.find(layer => layer.type === 'symbol').id;
   // add to mapbox
   for (var lyr of layers) {
     if (!mapbox.getLayer(lyr.id)) {
@@ -1485,6 +1475,7 @@ function SetupLayers(layers)
       layer_dict[lyr.id] = mb_layer;
       mapbox.addLayer(mb_layer, firstLabelLayerId);
     }
+    mapbox.setLayoutProperty(lyr.id, 'visibility', 'visible');
   }
 
   // update the layer
