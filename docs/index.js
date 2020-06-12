@@ -772,70 +772,6 @@ function OnShowTime(el) {
   document.getElementById('time-container').parentElement.style.display = disp;
 }
 
-// fetch dates from lisa_dates.json and load into lisaData global
-async function fetchLisaData() {
-  const dsRaw = await fetch('lisa_dates.json');
-  const ds = await dsRaw.json();
-
-  // loop over lisa dates
-  for (let i = 0; i < ds.length; ++i) {
-    let d = ds[i];
-
-    // format the date
-    let d_fn = d.replace(/\//g, '_');
-
-    const dataRaw = await fetch('lisa/lisa' + d_fn + '.json');
-    const data = await dataRaw.json();
-
-    if (data) {
-      // and set in lisaData global
-      lisaData['county_usfacts.geojson'][d] = data;
-    }
-  }
-}
-
-// TODO move this to app init section
-// wait 5 seconds (for usafacts data to load) before fetching lisa data
-setTimeout(async () => {
-  await fetchLisaData();
-}, 5000);
-
-function saveText(text, filename) {
-  var a = document.createElement('a');
-  a.setAttribute('id', filename);
-  a.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-  a.setAttribute('download', filename);
-  a.click();
-}
-
-async function OnSave() {
-  const dsRaw = await fetch('lisa_dates.json');
-  const ds = await dsRaw.json();
-
-  // only new lisa results will be saved
-  const save_dates = [];
-  const lastLisaDate = ds[ds.length - 1];
-  const startPosition = dates[selectedDataset].indexOf(lastLisaDate) + 1;
-  
-  // loop over date snapshots for the selected dataset starting at
-  for (let i = startPosition; i < dates[selectedDataset].length; ++i) {
-    const date = dates[selectedDataset][i];
-    const lisaForDataset = lisaData[selectedDataset];
-
-    // if the date is in the lisaData global
-    if (date in lisaForDataset) {
-      console.log('lisa' + date + '.json');
-      save_dates.push(date);
-      setTimeout(function () {
-        saveText(JSON.stringify(lisaData[selectedDataset][date]), "lisa" + date + ".json");
-      }, 100 * (i - ds.length));
-    }
-  }
-  // update dates
-  saveText(JSON.stringify(save_dates), "lisa_dates.json");
-}
-
-
 function getTooltipHtml(id, values) {
   const handle = val => val >= 0 ? val : 'N/A'; // dont show negative values
   let text = 
@@ -1135,16 +1071,23 @@ mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 
 const mapbox = new mapboxgl.Map({
   container: document.body,
+  style: 'mapbox://styles/lixun910/ckbcmga2j0lbl1ipi4dhpimbt',
+  center: [ -105.6500523, 35.850033],
+  zoom: 3.5
+});
+/*
+const mapbox = new mapboxgl.Map({
+  container: document.body,
   style: {
     'version': 8,
     'sources': {
       'carto-tiles': {
         'type': 'raster',
         'tiles': [
-          "https://a.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}@2x.png",
-          "https://b.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}@2x.png",
-          "https://c.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}@2x.png",
-          "https://d.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}@2x.png",
+          "https://a.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}.png",
+          "https://b.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}.png",
+          "https://c.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}.png",
+          "https://d.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}.png",
         ],
         'tileSize': 256,
         'attribution': ''
@@ -1163,6 +1106,15 @@ const mapbox = new mapboxgl.Map({
   center: [ -105.6500523, 35.850033],
   zoom: 3.5
 });
+const deckgl = new Deck({
+  latitude: mapbox.getCenter().lat,
+  longitude: mapbox.getCenter().lng,
+  zoom: mapPosition.zoom,
+  gl: mapbox.painter.context.gl,
+  controller: true,
+  layers: []
+});
+*/
 
 function createGeocoderData() { 
   var result = {
@@ -1222,14 +1174,10 @@ mapbox.addControl(
     mapboxgl: mapboxgl
   })
 );
-
-const deckgl = new Deck({
-  gl: mapbox.painter.context.gl,
-  layers: []
-});
  
 mapbox.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
+/*
 function resetView(layers) {
   let viewState = {}
 
@@ -1277,13 +1225,11 @@ function setCartogramView(layers) {
     });
   }
 }
-
+*/
 
 function getCartogramLayer(data)
 {
-  //if (!('cartogram_layer' in layer_dict)) {
-   layer_dict['cartogram_layer'] =
-    new MapboxLayer({
+  return {
       id: 'catogram_layer',
       type: ScatterplotLayer,
       data: cartogramData,
@@ -1302,14 +1248,11 @@ function getCartogramLayer(data)
           selectedDate, selectedVariable, selectedMethod
         ]
       },
-    });
-  //}
-  return layer_dict['cartogram_layer'];
+  };
 }
 
 function getCartoLabelLayer(data)
 {
-  //if (!('cartogram_layer' in layer_dict)) {
     var labels = [];
     if ('name' in data && data.name.startsWith("state")) {
       for (let i = 0; i < data.features.length; ++i) {
@@ -1321,7 +1264,7 @@ function getCartoLabelLayer(data)
       }
     }
 
-    layer_dict['carto_label_layer'] = new MapboxLayer({
+    return {
       id: 'carto_label_layer',
       type: TextLayer,
       data: labels,
@@ -1333,15 +1276,12 @@ function getCartoLabelLayer(data)
       getTextAnchor: 'middle',
       getAlignmentBaseline: 'bottom',
       getColor: [20, 20, 20]
-    });
-  //}
-  return layer_dict['carto_label_layer'];
+    };
 }
 
 function getStateLayer(data)
 {
-  //if (!('state_layer' in layer_dict)) {
-    layer_dict['state_layer'] = new MapboxLayer({
+  return {
       id: 'state_layer',
       type: GeoJsonLayer,
       data: './states.geojson',
@@ -1352,19 +1292,16 @@ function getStateLayer(data)
       lineWidthMinPixels: 1.5,
       getLineColor: [220, 220, 220],
       pickable: false
-    })
-  //}
-  return layer_dict['state_layer'];
+  };
 }
 
 function getCountyLayer(data)
 {
-  //if (!('county_layer' in layer_dict)) {
-    layer_dict['county_layer'] = new MapboxLayer({
+    return {
       id: 'county_layer',
       type: GeoJsonLayer,
       data: data,
-      opacity: 0.5,
+      opacity: 0.6,
       stroked: true,
       filled: true,
       lineWidthScale: 1,
@@ -1380,16 +1317,14 @@ function getCountyLayer(data)
         ]
       },
       pickable: true,
-      onHover: handleMapHover,
+      onHover: info => handleMapHover(info),
       onClick: handleMapClick
-    });
-  //}
-  return layer_dict['county_layer'];
+    };
 }
 
 function getReservationLayer(data)
 {
-    layer_dict['reservation_layer'] = new MapboxLayer({
+  return {
       id: 'reservations-layer',
       type: TileLayer,
       stroked: true,
@@ -1424,13 +1359,12 @@ function getReservationLayer(data)
         
         return features;
       },
-    });
-  return layer_dict['reservation_layer'] ;
+    };
 }
 
 function getSegragateLayer(data)
 {
-    layer_dict['segragatecity_layer'] = new MapboxLayer({
+  return {
       id: 'segragatecity_layer',
       type: TileLayer,
       stroked: true,
@@ -1464,8 +1398,7 @@ function getSegragateLayer(data)
 
         return features;
       },
-    });
-  return layer_dict['segragatecity_layer'];
+    };
 }
 
 function createMap(data) {
@@ -1478,18 +1411,10 @@ function createMap(data) {
   var layers = [];
 
   if (isCartogram()) {
-    //mapbox.getCanvas().hidden = true;
-    mapbox.setLayoutProperty("base-tiles", 'visibility', 'none');
-    if (mapbox.getLayer('simple-tiles')) {
-      mapbox.setLayoutProperty("simple-tiles", 'visibility', 'none');
-    }
     layers.push(getCartogramLayer(data));
     layers.push(getCartoLabelLayer(data));
+
   } else { 
-    mapbox.setLayoutProperty("base-tiles", 'visibility', 'visible');
-    if (mapbox.getLayer('simple-tiles')) {
-      mapbox.setLayoutProperty("simple-tiles", 'visibility', 'visible');
-    }
     layers.push(getCountyLayer(data));
 
     if (!isState()) {
@@ -1506,7 +1431,7 @@ function createMap(data) {
       layers.push(getSegragateLayer(data));
     }
   }
-  
+ 
   SetupLayers(layers);
 
   if (document.getElementById('linechart').innerHTML == "" ||
@@ -1525,33 +1450,38 @@ function createMap(data) {
 
 function SetupLayers(layers) 
 {
-  console.log("setup layers");
+  // hide all avaiable layers, only 'layers' will be visible
   for (lyrname in layer_dict) {
     if (mapbox.getLayer(lyrname)) {
       mapbox.setLayoutProperty(lyrname, 'visibility', 'none');
     }
   }
-  for (lyr of layers) {
-    if (mapbox.getLayer(lyr.id)) {
-      mapbox.removeLayer(lyr.id);
+  const firstLabelLayerId = mapbox.getStyle().layers.find(layer => layer.type === 'symbol').id;
+  // add to mapbox
+  for (var lyr of layers) {
+    if (!mapbox.getLayer(lyr.id)) {
+      var mb_layer = new MapboxLayer(lyr);
+      layer_dict[lyr.id] = mb_layer;
+      mapbox.addLayer(mb_layer, firstLabelLayerId);
     }
-    mapbox.addLayer(lyr);
     mapbox.setLayoutProperty(lyr.id, 'visibility', 'visible');
   }
 
-  /* 
   // update the layer
-  deckgl.setProps({layers: layers});
-  */
+  for (var lyr of layers) {
+    layer_dict[lyr.id].setProps(lyr);
+  }
 
+  /*
   if (!mapbox.getLayer('simple-tiles')) {
+    // https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png
     var cartoSource = {
       type: 'raster',
       tiles: [
-        "https://a.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}@2x.png",
-        "https://b.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}@2x.png",
-        "https://c.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}@2x.png",
-        "https://d.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}@2x.png",
+        "https://a.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}.png",
+        "https://b.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}.png",
+        "https://c.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}.png",
+        "https://d.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}.png",
       ],
       'tileSize': 256,
     };
@@ -1566,7 +1496,7 @@ function SetupLayers(layers)
   
   }
   mapbox.moveLayer("simple-tiles");
-
+  */
 }
 
 
