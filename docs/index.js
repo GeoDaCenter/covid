@@ -1134,16 +1134,23 @@ function updateDataPanel(e) {
 mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 const mapbox = new mapboxgl.Map({
   container: document.body,
+  style: 'mapbox://styles/lixun910/ckbcmga2j0lbl1ipi4dhpimbt',
+  center: [ -105.6500523, 35.850033],
+  zoom: 3.5
+});
+/*
+const mapbox = new mapboxgl.Map({
+  container: document.body,
   style: {
     'version': 8,
     'sources': {
       'carto-tiles': {
         'type': 'raster',
         'tiles': [
-          "https://a.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}@2x.png",
-          "https://b.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}@2x.png",
-          "https://c.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}@2x.png",
-          "https://d.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}@2x.png",
+          "https://a.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}.png",
+          "https://b.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}.png",
+          "https://c.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}.png",
+          "https://d.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}.png",
         ],
         'tileSize': 256,
         'attribution': ''
@@ -1162,6 +1169,7 @@ const mapbox = new mapboxgl.Map({
   center: [ -105.6500523, 35.850033],
   zoom: 3.5
 });
+*/
 
 mapbox.addControl(
   new MapboxGeocoder({
@@ -1171,11 +1179,19 @@ mapbox.addControl(
 );
 
 const deckgl = new Deck({
+  latitude: mapbox.getCenter().lat,
+  longitude: mapbox.getCenter().lng,
+  zoom: mapPosition.zoom,
   gl: mapbox.painter.context.gl,
+  controller: true,
   layers: []
 });
  
 mapbox.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+
+mapbox.on('mousemove', function(e) {
+  console.log(e);
+});
 
 function resetView(layers) {
   let viewState = {}
@@ -1228,9 +1244,7 @@ function setCartogramView(layers) {
 
 function getCartogramLayer(data)
 {
-  //if (!('cartogram_layer' in layer_dict)) {
-   layer_dict['cartogram_layer'] =
-    new MapboxLayer({
+  return {
       id: 'catogram_layer',
       type: ScatterplotLayer,
       data: cartogramData,
@@ -1249,14 +1263,11 @@ function getCartogramLayer(data)
           selectedDate, selectedVariable, selectedMethod
         ]
       },
-    });
-  //}
-  return layer_dict['cartogram_layer'];
+  };
 }
 
 function getCartoLabelLayer(data)
 {
-  //if (!('cartogram_layer' in layer_dict)) {
     var labels = [];
     if ('name' in data && data.name.startsWith("state")) {
       for (let i = 0; i < data.features.length; ++i) {
@@ -1268,7 +1279,7 @@ function getCartoLabelLayer(data)
       }
     }
 
-    layer_dict['carto_label_layer'] = new MapboxLayer({
+    return {
       id: 'carto_label_layer',
       type: TextLayer,
       data: labels,
@@ -1280,15 +1291,12 @@ function getCartoLabelLayer(data)
       getTextAnchor: 'middle',
       getAlignmentBaseline: 'bottom',
       getColor: [20, 20, 20]
-    });
-  //}
-  return layer_dict['carto_label_layer'];
+    };
 }
 
 function getStateLayer(data)
 {
-  //if (!('state_layer' in layer_dict)) {
-    layer_dict['state_layer'] = new MapboxLayer({
+  return {
       id: 'state_layer',
       type: GeoJsonLayer,
       data: './states.geojson',
@@ -1299,19 +1307,16 @@ function getStateLayer(data)
       lineWidthMinPixels: 1.5,
       getLineColor: [220, 220, 220],
       pickable: false
-    })
-  //}
-  return layer_dict['state_layer'];
+  };
 }
 
 function getCountyLayer(data)
 {
-  //if (!('county_layer' in layer_dict)) {
-    layer_dict['county_layer'] = new MapboxLayer({
+    return {
       id: 'county_layer',
       type: GeoJsonLayer,
       data: data,
-      opacity: 0.5,
+      opacity: 0.6,
       stroked: true,
       filled: true,
       lineWidthScale: 1,
@@ -1327,18 +1332,16 @@ function getCountyLayer(data)
         ]
       },
       pickable: true,
-      onHover: handleMapHover,
+      onHover: info => handleMapHover(info),
       onClick: handleMapClick
-    });
-  //}
-  return layer_dict['county_layer'];
+    };
 }
 
 function getReservationLayer(data)
 {
-    layer_dict['reservation_layer'] = new MapboxLayer({
+  return {
       id: 'reservations-layer',
-      type: TileLayer,
+      //type: TileLayer,
       stroked: true,
       getLineColor: [0, 255, 255],
       getFillColor: [100, 100, 100],
@@ -1371,15 +1374,14 @@ function getReservationLayer(data)
         
         return features;
       },
-    });
-  return layer_dict['reservation_layer'] ;
+    };
 }
 
 function getSegragateLayer(data)
 {
-    layer_dict['segragatecity_layer'] = new MapboxLayer({
+  return {
       id: 'segragatecity_layer',
-      type: TileLayer,
+      //type: TileLayer,
       stroked: true,
       getLineColor: [0, 255, 255],
       getFillColor: [100, 100, 100],
@@ -1411,8 +1413,7 @@ function getSegragateLayer(data)
 
         return features;
       },
-    });
-  return layer_dict['segragatecity_layer'];
+    };
 }
 
 function createMap(data) {
@@ -1425,18 +1426,10 @@ function createMap(data) {
   var layers = [];
 
   if (isCartogram()) {
-    //mapbox.getCanvas().hidden = true;
-    mapbox.setLayoutProperty("base-tiles", 'visibility', 'none');
-    if (mapbox.getLayer('simple-tiles')) {
-      mapbox.setLayoutProperty("simple-tiles", 'visibility', 'none');
-    }
     layers.push(getCartogramLayer(data));
     layers.push(getCartoLabelLayer(data));
+
   } else { 
-    mapbox.setLayoutProperty("base-tiles", 'visibility', 'visible');
-    if (mapbox.getLayer('simple-tiles')) {
-      mapbox.setLayoutProperty("simple-tiles", 'visibility', 'visible');
-    }
     layers.push(getCountyLayer(data));
 
     if (!isState()) {
@@ -1453,7 +1446,8 @@ function createMap(data) {
       layers.push(getSegragateLayer(data));
     }
   }
-  
+ 
+  //deckgl.setProps({layers: layers});
   SetupLayers(layers);
 
   if (document.getElementById('linechart').innerHTML == "" ||
@@ -1473,32 +1467,47 @@ function createMap(data) {
 function SetupLayers(layers) 
 {
   console.log("setup layers");
-  for (lyrname in layer_dict) {
-    if (mapbox.getLayer(lyrname)) {
-      mapbox.setLayoutProperty(lyrname, 'visibility', 'none');
-    }
-  }
+  /*
+  //for (lyrname in layer_dict) {
+  //  if (mapbox.getLayer(lyrname)) {
+  //    //mapbox.setLayoutProperty(lyrname, 'visibility', 'none');
+  //  }
+  //}
   for (lyr of layers) {
     if (mapbox.getLayer(lyr.id)) {
-      mapbox.removeLayer(lyr.id);
+      //mapbox.removeLayer(lyr.id);
+    } else {
+      mapbox.addLayer(lyr);
     }
-    mapbox.addLayer(lyr);
-    mapbox.setLayoutProperty(lyr.id, 'visibility', 'visible');
+    //mapbox.setLayoutProperty(lyr.id, 'visibility', 'visible');
+  }
+  */
+ const firstLabelLayerId = mapbox.getStyle().layers.find(layer => layer.type === 'symbol').id;
+  // add to mapbox
+  for (var lyr of layers) {
+    if (!mapbox.getLayer(lyr.id)) {
+      var mb_layer = new MapboxLayer(lyr);
+      layer_dict[lyr.id] = mb_layer;
+      mapbox.addLayer(mb_layer, firstLabelLayerId);
+    }
   }
 
-  /* 
   // update the layer
-  deckgl.setProps({layers: layers});
-  */
+  //deckgl.setProps({layers: layers});
+  for (var lyr of layers) {
+    layer_dict[lyr.id].setProps(lyr);
+  }
 
+  /*
   if (!mapbox.getLayer('simple-tiles')) {
+    // https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png
     var cartoSource = {
       type: 'raster',
       tiles: [
-        "https://a.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}@2x.png",
-        "https://b.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}@2x.png",
-        "https://c.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}@2x.png",
-        "https://d.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}@2x.png",
+        "https://a.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}.png",
+        "https://b.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}.png",
+        "https://c.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}.png",
+        "https://d.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}.png",
       ],
       'tileSize': 256,
     };
@@ -1513,7 +1522,7 @@ function SetupLayers(layers)
   
   }
   mapbox.moveLayer("simple-tiles");
-
+  */
 }
 
 
