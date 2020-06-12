@@ -1169,15 +1169,6 @@ const mapbox = new mapboxgl.Map({
   center: [ -105.6500523, 35.850033],
   zoom: 3.5
 });
-*/
-
-mapbox.addControl(
-  new MapboxGeocoder({
-    accessToken: mapboxgl.accessToken,
-    mapboxgl: mapboxgl
-  })
-);
-
 const deckgl = new Deck({
   latitude: mapbox.getCenter().lat,
   longitude: mapbox.getCenter().lng,
@@ -1186,13 +1177,18 @@ const deckgl = new Deck({
   controller: true,
   layers: []
 });
+*/
+
+mapbox.addControl(
+  new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    mapboxgl: mapboxgl
+  })
+);
  
 mapbox.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
-mapbox.on('mousemove', function(e) {
-  console.log(e);
-});
-
+/*
 function resetView(layers) {
   let viewState = {}
 
@@ -1240,7 +1236,7 @@ function setCartogramView(layers) {
     });
   }
 }
-
+*/
 
 function getCartogramLayer(data)
 {
@@ -1447,7 +1443,6 @@ function createMap(data) {
     }
   }
  
-  //deckgl.setProps({layers: layers});
   SetupLayers(layers);
 
   if (document.getElementById('linechart').innerHTML == "" ||
@@ -1493,7 +1488,6 @@ function SetupLayers(layers)
   }
 
   // update the layer
-  //deckgl.setProps({layers: layers});
   for (var lyr of layers) {
     layer_dict[lyr.id].setProps(lyr);
   }
