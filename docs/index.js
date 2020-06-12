@@ -1126,14 +1126,14 @@ function createGeocoderData() { 
     var row_id = features[i].properties.id;
     var county_name = features[i].properties.NAME;
     var state_name =  features[i].properties.state_name;
-    //var state_abbr = 
+    var state_abbr = features[i].properties.state_abbr; 
     var coords = centroids['county_usfacts.geojson'][row_id];
 
     result.features.push({
       'type': 'Feature',
       'properties': {
-        'title': county_name,
-        'description': county_name,
+        'title': county_name + ' County, ' + state_name + ', ' + state_abbr,
+        'description': county_name + 'County, ' + state_name + ', ' + state_abbr,
       },
       'geometry': {
         'coordinates': coords,
@@ -1157,9 +1157,9 @@ function forwardGeocoder(query) {
   ) {
   // add a tree emoji as a prefix for custom data results
   // using carmen geojson format: https://github.com/mapbox/carmen/blob/master/carmen-geojson.md
-  feature['place_name'] = '🌲 ' + feature.properties.title;
+  feature['place_name'] = feature.properties.title;
   feature['center'] = feature.geometry.coordinates;
-  feature['place_type'] = ['park'];
+  //feature['place_type'] = ['park'];
   matchingFeatures.push(feature);
   }
   }
