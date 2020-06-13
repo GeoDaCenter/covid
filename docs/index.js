@@ -1130,7 +1130,7 @@ mapbox.addControl(
     accessToken: mapboxgl.accessToken,
     localGeocoder: forwardGeocoder,
     zoom: 9.0,
-    placeholder: 'Enter search e.g., Cook County, IL',
+    placeholder: 'Enter e.g., Cook County, IL',
     mapboxgl: mapboxgl
   })
 );
