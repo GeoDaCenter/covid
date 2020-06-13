@@ -1075,46 +1075,7 @@ const mapbox = new mapboxgl.Map({
   center: [ -105.6500523, 35.850033],
   zoom: 3.5
 });
-/*
-const mapbox = new mapboxgl.Map({
-  container: document.body,
-  style: {
-    'version': 8,
-    'sources': {
-      'carto-tiles': {
-        'type': 'raster',
-        'tiles': [
-          "https://a.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}.png",
-          "https://b.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}.png",
-          "https://c.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}.png",
-          "https://d.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}.png",
-        ],
-        'tileSize': 256,
-        'attribution': ''
-      }
-    },
-    'layers': [
-      {
-      'id': 'base-tiles',
-      'type': 'raster',
-      'source': 'carto-tiles',
-      'minzoom': 0,
-      'maxzoom': 22
-      }
-    ]
-  },
-  center: [ -105.6500523, 35.850033],
-  zoom: 3.5
-});
-const deckgl = new Deck({
-  latitude: mapbox.getCenter().lat,
-  longitude: mapbox.getCenter().lng,
-  zoom: mapPosition.zoom,
-  gl: mapbox.painter.context.gl,
-  controller: true,
-  layers: []
-});
-*/
+
 
 function createGeocoderData() { 
   var result = {
@@ -1155,11 +1116,9 @@ function forwardGeocoder(query) {
   .toLowerCase()
   .search(query.toLowerCase()) !== -1
   ) {
-  // add a tree emoji as a prefix for custom data results
   // using carmen geojson format: https://github.com/mapbox/carmen/blob/master/carmen-geojson.md
   feature['place_name'] = feature.properties.title;
   feature['center'] = feature.geometry.coordinates;
-  //feature['place_type'] = ['park'];
   matchingFeatures.push(feature);
   }
   }
@@ -1170,7 +1129,8 @@ mapbox.addControl(
   new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
     localGeocoder: forwardGeocoder,
-    placeholder: 'Enter search e.g., Cook, IL',
+    zoom: 9.0,
+    placeholder: 'Enter search e.g., Cook County, IL',
     mapboxgl: mapboxgl
   })
 );
