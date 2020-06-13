@@ -1618,7 +1618,9 @@ function GetDataValues() {
     var pre_vals = deathsData[json][prev_date];
     var rt_vals = [];
     for (let i in cur_vals) {
-      rt_vals.push(cur_vals[i] - pre_vals[i]);
+      let check_val = cur_vals[i] - pre_vals[i];
+      if (isNaN(check_val) || check_val == undefined) check_val = 0;
+      rt_vals.push(check_val);
     }
     return rt_vals;
 
@@ -1635,7 +1637,9 @@ function GetDataValues() {
     var pre_vals = deathsData[json][prev_date];
     var rt_vals = [];
     for (let i in cur_vals) {
-      rt_vals.push((cur_vals[i] - pre_vals[i]) / populationData[json][i] * 10000);
+      let check_val = (cur_vals[i] - pre_vals[i]) / populationData[json][i] * 10000;
+      if (isNaN(check_val) || check_val == undefined) check_val = 0;
+      rt_vals.push(check_val);
     }
     return rt_vals;
   }
