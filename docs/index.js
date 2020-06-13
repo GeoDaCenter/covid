@@ -2125,56 +2125,73 @@ function createTimeSlider(geojson) {
     sliderBubble.classList.remove("hidden");
 
   d3.select("#slider").on("input", function() {
-    var currentValue = parseInt(this.value);
-    selectedDate = dates[selectedDataset][currentValue - 1];
-    sliderSelectedDate = selectedDate;
-    
-    document.getElementById('time-container').innerText = selectedDate;
-    var xLabels = dates[selectedDataset];
-    xScale.domain(xLabels);
-
-    const slider = document.getElementById('slider');
-    const sliderBubble = document.getElementById('bubble');
-    const sliderMin = document.getElementById('slider-min');
-    const sliderMax = document.getElementById('slider-max');
-
-    // HAX: convert 1p3a dates to same format as usafacts 
-    if (selectedDataset === 'counties_update.geojson' || selectedDataset === 'states_update.geojson') {
-      sliderSelectedDate = hyphenToSlashDate(selectedDate);
-    }
-
-    const rawDate = new Date(sliderSelectedDate);
-    const printableDate = `${months[rawDate.getMonth()]} ${rawDate.getDate()}, ${rawDate.getFullYear()}`
-    sliderMin.innerHTML = dates[selectedDataset][0];
-    sliderMax.innerHTML = dates[selectedDataset][slider.max - 1];
-
-    sliderBubble.innerText = printableDate;
-    sliderBubble.classList.remove("hidden");
-
-    // reposition slider bubble
-
-    var yValues = getAccumConfirmedCountByDate(geojson, true);
-    yScale.domain([0, Math.max.apply(null, yValues)]);
-
-    bars.attr("y", d => yScale(d.confirmedcases))
-      .attr("height", d => height - padding - yScale(d.confirmedcases))
-      .attr("fill", (d => xLabels[currentValue - 1] == d.date ? "red" : "gray"));
-
-    d3.select(".slider_text")
-      .html(selectedDate);
-
-    //gY.call(yAxis);
-    if (isLisa()) {
-      OnLISAClick(document.getElementById('btn-lisa'));
-    } else {
-      if (isState()) {
-        OnStateClick();
-      } else {
-        OnCountyClick();
-      }
-    }
-  })
+    onSliderChange(this.value);
+  });
 }
+
+function onSliderChange(val) {
+  console.log(val);
+  var width = 280,
+    height = 180,
+    padding = 28;
+
+  const months =  ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+  var geojson = jsondata[selectedDataset];
+
+  var xScale = d3.scaleBand()
+    .range([padding, width], .1);
+  var yScale = d3.scaleLinear()
+    .range([height - padding, padding]);
+
+  var currentValue = parseInt(val);
+  selectedDate = dates[selectedDataset][currentValue - 1];
+  sliderSelectedDate = selectedDate;
+  
+  document.getElementById('time-container').innerText = selectedDate;
+  var xLabels = dates[selectedDataset];
+  xScale.domain(xLabels);
+
+  const slider = document.getElementById('slider');
+  const sliderBubble = document.getElementById('bubble');
+  const sliderMin = document.getElementById('slider-min');
+  const sliderMax = document.getElementById('slider-max');
+
+  // HAX: convert 1p3a dates to same format as usafacts 
+  if (selectedDataset === 'counties_update.geojson' || selectedDataset === 'states_update.geojson') {
+    sliderSelectedDate = hyphenToSlashDate(selectedDate);
+  }
+
+  const rawDate = new Date(sliderSelectedDate);
+  const printableDate = `${months[rawDate.getMonth()]} ${rawDate.getDate()}, ${rawDate.getFullYear()}`
+  sliderMin.innerHTML = dates[selectedDataset][0];
+  sliderMax.innerHTML = dates[selectedDataset][slider.max - 1];
+
+  sliderBubble.innerText = printableDate;
+  sliderBubble.classList.remove("hidden");
+
+  // reposition slider bubble
+
+  var yValues = getAccumConfirmedCountByDate(geojson, true);
+  yScale.domain([0, Math.max.apply(null, yValues)]);
+
+  d3.select(".slider_text")
+    .html(selectedDate);
+
+  //gY.call(yAxis);
+  if (isLisa()) {
+    OnLISAClick(document.getElementById('btn-lisa'));
+  } else {
+    if (isState()) {
+      OnStateClick();
+    } else {
+      OnCountyClick();
+    }
+  }
+}
+
+d3.select("#play-button").on("click", function(d,i){
+});
 
 /*
  * ENTRY POINT

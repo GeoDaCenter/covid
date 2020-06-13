@@ -128,9 +128,14 @@ a:visited {
   -ms-user-select: none;
   user-select: none;
 }
-
+.geoda-link {
+  padding-top: 20px;
+}
 .geoda-link img {
   height: 1rem;
+}
+.geoda-link a {
+  padding: 0px !important;
 }
 
 .options-panel {
