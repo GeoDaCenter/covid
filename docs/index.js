@@ -1070,7 +1070,7 @@ function updateDataPanel(e) {
 mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 
 const mapbox = new mapboxgl.Map({
-  container: document.body,
+  container: 'map',
   style: 'mapbox://styles/lixun910/ckbcmga2j0lbl1ipi4dhpimbt',
   center: [ -105.6500523, 35.850033],
   zoom: 3.5
@@ -2183,7 +2183,6 @@ function createTimeSlider(geojson) {
 }
 
 function onSliderChange(val) {
-  console.log(val);
   var width = 280,
     height = 180,
     padding = 28;
