@@ -198,8 +198,10 @@ class GeodaProxy {
     }
     id_array.push([]);
     let txt = breaks[breaks.length - 1];
-    txt = isInt(txt) ? txt : txt.toFixed(2);
-    bins.push(">" + txt);
+    if (txt != undefined) {
+      txt = isInt(txt) ? txt : txt.toFixed(2);
+      bins.push(">" + txt);
+    }
 
     breaks.unshift(Number.NEGATIVE_INFINITY);
     breaks.push(Number.POSITIVE_INFINITY);

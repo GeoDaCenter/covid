@@ -2186,7 +2186,6 @@ function createTimeSlider(geojson) {
 }
 
 function onSliderChange(val) {
-  console.log(val);
   var width = 280,
     height = 180,
     padding = 28;
