@@ -417,6 +417,7 @@ data panel
   right: 0px;
   z-index: 1;
   border-radius: 0px 0px 0px 10px;
+  overflow: scroll;
 }
 
 /* move mapbox controls so they don't overlap panels */
