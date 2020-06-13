@@ -1077,7 +1077,7 @@ const mapbox = new mapboxgl.Map({
 });
 
 
-function createGeocoderData() { 
+function createGeocoderData() {
   var result = {
     'features' : []
   };
