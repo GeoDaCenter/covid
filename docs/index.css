@@ -146,8 +146,9 @@ a:visited {
   background: #444;
   color: #fff;
   padding: 20px 24px 12px 24px;
+  height: 85%;
+  overflow-x: hidden;
   overflow-y: auto;
-  overflow-y: overlay;
   outline: none;
   z-index: 9;
   border-radius: 0px 0px 10px 0px;
@@ -417,7 +418,8 @@ data panel
   right: 0px;
   z-index: 1;
   border-radius: 0px 0px 0px 10px;
-  overflow: scroll;
+  overflow-y: auto;
+  height: 85%;
 }
 
 /* move mapbox controls so they don't overlap panels */
