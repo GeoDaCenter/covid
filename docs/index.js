@@ -1068,56 +1068,69 @@ function updateDataPanel(e) {
 // set up deck/mapbox
 
 mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
+
 const mapbox = new mapboxgl.Map({
   container: document.body,
   style: 'mapbox://styles/lixun910/ckbcmga2j0lbl1ipi4dhpimbt',
   center: [ -105.6500523, 35.850033],
   zoom: 3.5
 });
-/*
-const mapbox = new mapboxgl.Map({
-  container: document.body,
-  style: {
-    'version': 8,
-    'sources': {
-      'carto-tiles': {
-        'type': 'raster',
-        'tiles': [
-          "https://a.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}.png",
-          "https://b.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}.png",
-          "https://c.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}.png",
-          "https://d.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}.png",
-        ],
-        'tileSize': 256,
-        'attribution': ''
+
+
+function createGeocoderData() { 
+  var result = {
+    'features' : []
+  };
+
+  var features = jsondata['county_usfacts.geojson'].features;
+  for (var i=0; i < features.length; ++i) {
+    var row_id = features[i].properties.id;
+    var county_name = features[i].properties.NAME;
+    var state_name =  features[i].properties.state_name;
+    var state_abbr = features[i].properties.state_abbr; 
+    var coords = centroids['county_usfacts.geojson'][row_id];
+
+    result.features.push({
+      'type': 'Feature',
+      'properties': {
+        'title': county_name + ' County, ' + state_name + ', ' + state_abbr,
+        'description': county_name + 'County, ' + state_name + ', ' + state_abbr,
+      },
+      'geometry': {
+        'coordinates': coords,
+        'type': 'Point'
       }
-    },
-    'layers': [
-      {
-      'id': 'base-tiles',
-      'type': 'raster',
-      'source': 'carto-tiles',
-      'minzoom': 0,
-      'maxzoom': 22
-      }
-    ]
-  },
-  center: [ -105.6500523, 35.850033],
-  zoom: 3.5
-});
-const deckgl = new Deck({
-  latitude: mapbox.getCenter().lat,
-  longitude: mapbox.getCenter().lng,
-  zoom: mapPosition.zoom,
-  gl: mapbox.painter.context.gl,
-  controller: true,
-  layers: []
-});
-*/
+    });
+  }
+  return result;
+}
+
+function forwardGeocoder(query) {
+  var customData = createGeocoderData();
+  var matchingFeatures = [];
+  for (var i = 0; i < customData.features.length; i++) {
+  var feature = customData.features[i];
+  // handle queries with different capitalization than the source data by calling toLowerCase()
+  if (
+  feature.properties.title
+  .toLowerCase()
+  .search(query.toLowerCase()) !== -1
+  ) {
+  // using carmen geojson format: https://github.com/mapbox/carmen/blob/master/carmen-geojson.md
+  feature['place_name'] = feature.properties.title;
+  feature['center'] = feature.geometry.coordinates;
+  matchingFeatures.push(feature);
+  }
+  }
+  return matchingFeatures;
+  }
 
 mapbox.addControl(
   new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
+    localGeocoder: forwardGeocoder,
+    zoom: 9.0,
+    placeholder: 'Enter e.g., Cook County, IL',
     mapboxgl: mapboxgl
   })
 );
