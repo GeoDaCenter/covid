@@ -2203,8 +2203,27 @@ function onSliderChange(val) {
   }
 }
 
+var play_timer;
+
 d3.select("#play-button").on("click", function(d,i){
+  if (document.getElementById("play-button").src.endsWith("play-icon.png")){
+    document.getElementById("play-button").src = 'img/pause-icon.png';
+    play_timer = setTimeout(moveslider,500);
+  } else {
+    document.getElementById("play-button").src = 'img/play-icon.png';
+    clearTimeout(play_timer);
+  }  
 });
+
+function moveslider() {
+  var x = parseInt(document.getElementById("slider").value); 
+  if (x == parseInt(document.getElementById("slider").max)){
+    x = parseInt(document.getElementById("slider").min);
+  } 
+    document.getElementById("slider").value = x + 1;
+    onSliderChange(x+1);
+    play_timer=setTimeout(moveslider,500)
+};
 
 /*
  * ENTRY POINT
