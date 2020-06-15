@@ -16,9 +16,15 @@
   <title>US Covid Atlas</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <link href="index.css" rel="stylesheet">
+  <link href="https://api.mapbox.com/mapbox-gl-js/v1.10.1/mapbox-gl.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css" type="text/css"/>
 
-  <script defer src="https://unpkg.com/deck.gl@^7.0.0/dist.min.js"></script>
-  <script defer src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
+  <script defer src="https://unpkg.com/deck.gl@^8.0.0/dist.min.js"></script>
+  <script defer src="https://api.mapbox.com/mapbox-gl-js/v1.10.1/mapbox-gl.js"></script>
+  <script defer src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+  <!-- Promise polyfill script required to use Mapbox GL Geocoder in IE 11 -->
+  <script defer src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"></script>
   <script defer src="js/zip.js"></script>
   <script defer src="https://unpkg.com/pbf@3.2.0/dist/pbf.js"></script>
@@ -45,6 +51,8 @@
     <label class="unselectable" id="time-container">2020-03-23</label>
   </div>
 
+  <div id="map"></div>
+  
   <!-- options panel -->
   <div class="options-panel left-panel" tabindex="0">
     <div id="toolbox">
@@ -123,8 +131,6 @@
         <a href="https://spatial.uchicago.edu" target="_new">
           <img align="center" src="img/logo_gray.png" width=200px alt="Center for Spatial Data Science logo" />
         </a>
-        <button onclick="OnSave(this)" style="display:none">save</button>
-
         <div class="geoda-link">
           <img src="img/geoda-logo.png">
           <a href="https://geodacenter.github.io">Powered by GeoDa</a>
@@ -134,7 +140,10 @@
   </div>
   <div id="sliderdiv">
     <span id="slider-min" class="float: left; "></span><span id="slider-max" style="float: right;"></span><br>
-    <input style="display: block" id="slider" type="range" min="1" max="100" step="1" value="100" />
+    <div>
+    <img src="img/play-icon.png" id="play-button" style="display: inline-block;vertical-align: middle;width:40px">
+    <input style="display: inline-block;vertical-align: middle;width:250px" id="slider" type="range" min="1" max="100" step="1" value="100" />
+    </div>
     <output for="slider" id="bubble"></output>
   </div>
 
@@ -169,7 +178,8 @@
 
   <!-- data panel minimize button -->
   <div id="right-collapse" class="collapse-btn hide" onclick="rightPanelCollapse()"><i
-      class="fa fa-chevron-right"></i></div>
+      class="fa fa-chevron-right"></i>
+  </div>
 </body>
 
 </html>

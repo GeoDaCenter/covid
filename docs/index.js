@@ -4,12 +4,14 @@
 */
 
 const {
-  DeckGL,
+  Deck,
   GeoJsonLayer,
   TextLayer,
   ScatterplotLayer,
   TileLayer,
+  MapboxLayer,
 } = deck;
+
 
 /*
  * CONFIG
@@ -62,6 +64,8 @@ function getDatesFromGeojson(data) {
 /*
  * GLOBALS
 */
+// layers
+var layer_dict = {};
 
 // data
 var usafactsCases;
@@ -664,12 +668,31 @@ function OnDataClick(evt) {
 }
 
 function OnCartogramClick(el) {
-  if (!el.checked) cartogramDeselected = true;
+  cartogramDeselected = !el.checked;
 
   if (isState()) {
     OnStateClick();
   } else {
     OnCountyClick();
+  }
+
+  if (!el.checked) {
+    mapbox.jumpTo({
+      center: [-105.6500523, 35.850033],
+      zoom: [3.5]
+    });
+  } else {
+    if (isState()) {
+      mapbox.jumpTo({
+        center: [-8.854194, 3.726726],
+        zoom: [6.6]
+      });
+    } else {
+      mapbox.jumpTo({
+        center: [-30.190367, 10.510908],
+        zoom: [5.6]
+      });
+    }
   }
 }
 
@@ -748,70 +771,6 @@ function OnShowTime(el) {
   let disp = el.checked ? 'block' : 'none';
   document.getElementById('time-container').parentElement.style.display = disp;
 }
-
-// fetch dates from lisa_dates.json and load into lisaData global
-async function fetchLisaData() {
-  const dsRaw = await fetch('lisa_dates.json');
-  const ds = await dsRaw.json();
-
-  // loop over lisa dates
-  for (let i = 0; i < ds.length; ++i) {
-    let d = ds[i];
-
-    // format the date
-    let d_fn = d.replace(/\//g, '_');
-
-    const dataRaw = await fetch('lisa/lisa' + d_fn + '.json');
-    const data = await dataRaw.json();
-
-    if (data) {
-      // and set in lisaData global
-      lisaData['county_usfacts.geojson'][d] = data;
-    }
-  }
-}
-
-// TODO move this to app init section
-// wait 5 seconds (for usafacts data to load) before fetching lisa data
-setTimeout(async () => {
-  await fetchLisaData();
-}, 5000);
-
-function saveText(text, filename) {
-  var a = document.createElement('a');
-  a.setAttribute('id', filename);
-  a.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-  a.setAttribute('download', filename);
-  a.click();
-}
-
-async function OnSave() {
-  const dsRaw = await fetch('lisa_dates.json');
-  const ds = await dsRaw.json();
-
-  // only new lisa results will be saved
-  const save_dates = [];
-  const lastLisaDate = ds[ds.length - 1];
-  const startPosition = dates[selectedDataset].indexOf(lastLisaDate) + 1;
-  
-  // loop over date snapshots for the selected dataset starting at
-  for (let i = startPosition; i < dates[selectedDataset].length; ++i) {
-    const date = dates[selectedDataset][i];
-    const lisaForDataset = lisaData[selectedDataset];
-
-    // if the date is in the lisaData global
-    if (date in lisaForDataset) {
-      console.log('lisa' + date + '.json');
-      save_dates.push(date);
-      setTimeout(function () {
-        saveText(JSON.stringify(lisaData[selectedDataset][date]), "lisa" + date + ".json");
-      }, 100 * (i - ds.length));
-    }
-  }
-  // update dates
-  saveText(JSON.stringify(save_dates), "lisa_dates.json");
-}
-
 
 function getTooltipHtml(id, values) {
   const handle = val => val >= 0 ? val : 'N/A'; // dont show negative values
@@ -1107,39 +1066,78 @@ function updateDataPanel(e) {
 */
 
 // set up deck/mapbox
-const deckgl = new DeckGL({
-  mapboxApiAccessToken: MAPBOX_ACCESS_TOKEN,
-  mapStyle: 'mapbox://styles/mapbox/dark-v9',
-  latitude: mapPosition.latitude,
-  longitude: mapPosition.longitude,
-  zoom: mapPosition.zoom,
-  maxZoom: 18,
-  pitch: 0,
-  controller: true,
-  // see the event handler for map:zoomend below for why this is necessary
-  onViewStateChange: ({viewState}) => {
-    mapPosition = {
-      latitude: viewState.latitude,
-      longitude: viewState.longitude,
-      zoom: viewState.zoom,
-    };
-  },
-  layers: []
+
+mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
+
+const mapbox = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/lixun910/ckbcmga2j0lbl1ipi4dhpimbt',
+  center: [ -105.6500523, 35.850033],
+  zoom: 3.5
 });
 
-const mapbox = deckgl.getMapboxMap();
+
+function createGeocoderData() {
+  var result = {
+    'features' : []
+  };
+
+  var features = jsondata['county_usfacts.geojson'].features;
+  for (var i=0; i < features.length; ++i) {
+    var row_id = features[i].properties.id;
+    var county_name = features[i].properties.NAME;
+    var state_name =  features[i].properties.state_name;
+    var state_abbr = features[i].properties.state_abbr; 
+    var coords = centroids['county_usfacts.geojson'][row_id];
+
+    result.features.push({
+      'type': 'Feature',
+      'properties': {
+        'title': county_name + ' County, ' + state_name + ', ' + state_abbr,
+        'description': county_name + 'County, ' + state_name + ', ' + state_abbr,
+      },
+      'geometry': {
+        'coordinates': coords,
+        'type': 'Point'
+      }
+    });
+  }
+  return result;
+}
+
+function forwardGeocoder(query) {
+  var customData = createGeocoderData();
+  var matchingFeatures = [];
+  for (var i = 0; i < customData.features.length; i++) {
+  var feature = customData.features[i];
+  // handle queries with different capitalization than the source data by calling toLowerCase()
+  if (
+  feature.properties.title
+  .toLowerCase()
+  .search(query.toLowerCase()) !== -1
+  ) {
+  // using carmen geojson format: https://github.com/mapbox/carmen/blob/master/carmen-geojson.md
+  feature['place_name'] = feature.properties.title;
+  feature['center'] = feature.geometry.coordinates;
+  matchingFeatures.push(feature);
+  }
+  }
+  return matchingFeatures;
+  }
+
+mapbox.addControl(
+  new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    localGeocoder: forwardGeocoder,
+    zoom: 9.0,
+    placeholder: 'Enter e.g., Cook County, IL',
+    mapboxgl: mapboxgl
+  })
+);
  
 mapbox.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
-// without this, deck zooms to an unknown location (0, 0 maybe?) on window 
-// resize
-// TODO figure out why this is necessary
-mapbox.on('zoomend', () => {
-  deckgl.setProps({
-    viewState: mapPosition,
-  });
-});
-
+/*
 function resetView(layers) {
   let viewState = {}
 
@@ -1158,6 +1156,8 @@ function resetView(layers) {
     layers: layers,
     viewState
   });
+
+  
 }
 
 function setCartogramView(layers) {
@@ -1185,37 +1185,35 @@ function setCartogramView(layers) {
     });
   }
 }
+*/
 
-function createMap(data) {
-  // if no date has been selected, default to most recent
-  if (!selectedDate) {
-    selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
-  }
+function getCartogramLayer(data)
+{
+  return {
+      id: 'catogram_layer',
+      type: ScatterplotLayer,
+      data: cartogramData,
+      getPosition: d => d.position,
+      getFillColor: getFillColor,
+      getLineColor: getLineColor,
+      getRadius: d => d.radius * 10,
+      onHover: handleMapHover,
+      onClick: handleMapClick,
+      pickable: true,
+      updateTriggers: {
+        getLineColor: [
+          selectedId
+        ],
+        getFillColor: [
+          selectedDate, selectedVariable, selectedMethod
+        ]
+      },
+  };
+}
 
-  // this is where the deck layers are accumulated before adding to the canvas
-  var layers = [];
-  var labels = [];
-
-  // if local clusters is selected, create labels
-  if (isLisa()) {
-    var datasetCentroids = centroids[selectedDataset];
-
-    for (let i = 0; i < data.features.length; ++i) {
-      let field = data_btn.innerText;
-      let c = lisaData[selectedDataset][selectedDate][field].clusters[i];
-      if (c == 1) {
-        labels.push({
-          id: i,
-          position: datasetCentroids[i],
-          text: data.features[i].properties.NAME
-        });
-      }
-    }
-  }
-
-  // if cartogram is selected
-  if (isCartogram()) {
-    mapbox.getCanvas().hidden = true;
+function getCartoLabelLayer(data)
+{
+    var labels = [];
     if ('name' in data && data.name.startsWith("state")) {
       for (let i = 0; i < data.features.length; ++i) {
         labels.push({
@@ -1225,192 +1223,176 @@ function createMap(data) {
         });
       }
     }
-    layers.push(
-      new ScatterplotLayer({
-        data: cartogramData,
-        getPosition: d => d.position,
-        getFillColor: getFillColor,
-        getLineColor: getLineColor,
-        getRadius: d => d.radius * 10,
-        onHover: handleMapHover,
-        onClick: handleMapClick,
-        pickable: true,
-        updateTriggers: {
-          getLineColor: [
-            selectedId
-          ],
-          getFillColor: [
-            selectedDate, selectedVariable, selectedMethod
-          ]
-        },
-      })
-    );
-    layers.push(
-      new TextLayer({
-        data: labels,
-        pickable: true,
-        getPosition: d => d.position,
-        getText: d => d.text,
-        getSize: 12,
-        fontFamily: 'Gill Sans Extrabold, sans-serif',
-        getTextAnchor: 'middle',
-        getAlignmentBaseline: 'bottom',
-        getColor: [20, 20, 20]
-      })
-    );
-    setCartogramView(layers);
-  // set up the regular map view (cloropleth or hotspots)
-  } else { 
-    mapbox.getCanvas().hidden = false;
 
-    // TODO figure out what this adds and document
-    layers.push(
-      new GeoJsonLayer({
-        id: 'map-layer',
-        data: data,
-        opacity: 0.5,
-        stroked: true,
-        filled: true,
-        lineWidthScale: 1,
-        lineWidthMinPixels: 1,
-        getElevation: getElevation,
-        getFillColor: getFillColor,
-        getLineColor: getLineColor,
+    return {
+      id: 'carto_label_layer',
+      type: TextLayer,
+      data: labels,
+      pickable: true,
+      getPosition: d => d.position,
+      getText: d => d.text,
+      getSize: 12,
+      fontFamily: 'Gill Sans Extrabold, sans-serif',
+      getTextAnchor: 'middle',
+      getAlignmentBaseline: 'bottom',
+      getColor: [20, 20, 20]
+    };
+}
 
-        updateTriggers: {
-          getLineColor: [],
-          getFillColor: [
-            selectedDate, selectedVariable, selectedMethod
-          ]
-        },
-        pickable: true,
-        onHover: handleMapHover,
-        onClick: handleMapClick
-      })
-    );
+function getStateLayer(data)
+{
+  return {
+      id: 'state_layer',
+      type: GeoJsonLayer,
+      data: './states.geojson',
+      opacity: 0.5,
+      stroked: true,
+      filled: false,
+      lineWidthScale: 1,
+      lineWidthMinPixels: 1.5,
+      getLineColor: [220, 220, 220],
+      pickable: false
+  };
+}
 
-    // this seems to be a proxy for targeting when states are being shown
-    if (isState()) {
-      layers.push(
-        new GeoJsonLayer({
-          data: './states.geojson',
-          opacity: 0.5,
-          stroked: true,
-          filled: false,
-          lineWidthScale: 1,
-          lineWidthMinPixels: 1.5,
-          getLineColor: [220, 220, 220],
-          pickable: false
-        })
-      );
-    }
+function getCountyLayer(data)
+{
+    return {
+      id: 'county_layer',
+      type: GeoJsonLayer,
+      data: data,
+      opacity: 0.6,
+      stroked: true,
+      filled: true,
+      lineWidthScale: 1,
+      lineWidthMinPixels: 1,
+      getElevation: getElevation,
+      getFillColor: getFillColor,
+      getLineColor: getLineColor,
 
-    if (shouldShowLabels) {
-      layers.push(
-        new TextLayer({
-          data: labels,
-          pickable: true,
-          getPosition: d => d.position,
-          getText: d => d.text,
-          getSize: 18,
-          fontFamily: 'Gill Sans Extrabold, sans-serif',
-          getTextAnchor: 'middle',
-          getAlignmentBaseline: 'bottom',
-          getColor: [250, 250, 250],
-          fontSettings: {
-            buffer: 20,
-            sdf: true,
-            radius: 6
+      updateTriggers: {
+        getLineColor: [],
+        getFillColor: [
+          selectedDate, selectedVariable, selectedMethod
+        ]
+      },
+      pickable: true,
+      onHover: info => handleMapHover(info),
+      onClick: handleMapClick
+    };
+}
+
+function getReservationLayer(data)
+{
+  return {
+      id: 'reservations-layer',
+      type: TileLayer,
+      stroked: true,
+      getLineColor: [0, 255, 255],
+      getFillColor: [100, 100, 100],
+      opacity: 0.25,
+      lineWidthMinPixels: 2.5,
+      // TODO make this a reusable handler for other map overlays
+      getTileData: async ({ x, y, z }) => {
+        const mapSource = `https://api.mapbox.com/v4/lixun910.7luxiq9n/${z}/${x}/${y}.vector.pbf?access_token=${MAPBOX_ACCESS_TOKEN}`;
+        
+        const response = await fetch(mapSource);
+
+        if (response.status >= 400) {
+          return;
+        }
+
+        const buffer = await response.arrayBuffer();
+
+        const tile = new VectorTile(new Pbf(buffer));
+        const features = [];
+
+        for (const layerName in tile.layers) {
+          const vectorTileLayer = tile.layers[layerName];
+
+          for (let i = 0; i < vectorTileLayer.length; i++) {
+            const vectorTileFeature = vectorTileLayer.feature(i);
+            const feature = vectorTileFeature.toGeoJSON(x, y, z);
+            features.push(feature);
           }
-        })
-      );
+        }
+        
+        return features;
+      },
+    };
+}
+
+function getSegragateLayer(data)
+{
+  return {
+      id: 'segragatecity_layer',
+      type: TileLayer,
+      stroked: true,
+      getLineColor: [0, 255, 255],
+      getFillColor: [100, 100, 100],
+      opacity: 0.25,
+      lineWidthMinPixels: 2.5,
+      getTileData: async ({ x, y, z }) => {
+        const mapSource = `https://api.mapbox.com/v4/lixun910.131k9vc1/${z}/${x}/${y}.vector.pbf?access_token=${MAPBOX_ACCESS_TOKEN}`;
+
+        const response = await fetch(mapSource);
+
+        if (response.status >= 400) {
+          return;
+        }
+
+        const buffer = await response.arrayBuffer();
+
+        const tile = new VectorTile(new Pbf(buffer));
+        const features = [];
+
+        for (const layerName in tile.layers) {
+          const vectorTileLayer = tile.layers[layerName];
+
+          for (let i = 0; i < vectorTileLayer.length; i++) {
+            const vectorTileFeature = vectorTileLayer.feature(i);
+            const feature = vectorTileFeature.toGeoJSON(x, y, z);
+            features.push(feature);
+          }
+        }
+
+        return features;
+      },
+    };
+}
+
+function createMap(data) {
+  // if no date has been selected, default to most recent
+  if (!selectedDate) {
+    selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
+  }
+
+  // this is where the deck layers are accumulated before adding to the canvas
+  var layers = [];
+
+  if (isCartogram()) {
+    layers.push(getCartogramLayer(data));
+    layers.push(getCartoLabelLayer(data));
+
+  } else { 
+    layers.push(getCountyLayer(data));
+
+    if (!isState()) {
+      layers.push(getStateLayer(data));
     }
 
     // add reservations if we should
     if (shouldShowReservations) {
-      layers.push(
-        // adapted from https://tgorkin.github.io/docs/layers/tile-layer
-        new TileLayer({
-          id: 'reservations-layer',
-          stroked: true,
-          getLineColor: [0, 255, 255],
-          getFillColor: [100, 100, 100],
-          opacity: 0.25,
-          lineWidthMinPixels: 2.5,
-          // TODO make this a reusable handler for other map overlays
-          getTileData: async ({ x, y, z }) => {
-            const mapSource = `https://api.mapbox.com/v4/lixun910.7luxiq9n/${z}/${x}/${y}.vector.pbf?access_token=${MAPBOX_ACCESS_TOKEN}`;
-            
-            const response = await fetch(mapSource);
-
-            if (response.status >= 400) {
-              return;
-            }
-
-            const buffer = await response.arrayBuffer();
-
-            const tile = new VectorTile(new Pbf(buffer));
-            const features = [];
-
-            for (const layerName in tile.layers) {
-              const vectorTileLayer = tile.layers[layerName];
-
-              for (let i = 0; i < vectorTileLayer.length; i++) {
-                const vectorTileFeature = vectorTileLayer.feature(i);
-                const feature = vectorTileFeature.toGeoJSON(x, y, z);
-                features.push(feature);
-              }
-            }
-            
-            return features;
-          },
-        })
-      );
+      layers.push(getReservationLayer(data));
     }
 
     // add reservations if we should
     if (shouldShowHypersegregatedCities) {
-      layers.push(
-        // adapted from https://tgorkin.github.io/docs/layers/tile-layer
-        new TileLayer({
-          id: 'hypersegregated-layer',
-          stroked: true,
-          getLineColor: [0, 255, 255],
-          getFillColor: [100, 100, 100],
-          opacity: 0.25,
-          lineWidthMinPixels: 2.5,
-          getTileData: async ({ x, y, z }) => {
-            const mapSource = `https://api.mapbox.com/v4/lixun910.131k9vc1/${z}/${x}/${y}.vector.pbf?access_token=${MAPBOX_ACCESS_TOKEN}`;
-
-            const response = await fetch(mapSource);
-
-            if (response.status >= 400) {
-              return;
-            }
-
-            const buffer = await response.arrayBuffer();
-
-            const tile = new VectorTile(new Pbf(buffer));
-            const features = [];
-
-            for (const layerName in tile.layers) {
-              const vectorTileLayer = tile.layers[layerName];
-
-              for (let i = 0; i < vectorTileLayer.length; i++) {
-                const vectorTileFeature = vectorTileLayer.feature(i);
-                const feature = vectorTileFeature.toGeoJSON(x, y, z);
-                features.push(feature);
-              }
-            }
-
-            return features;
-          },
-        })
-      );
+      layers.push(getSegragateLayer(data));
     }
-
-    resetView(layers);
   }
+ 
+  SetupLayers(layers);
 
   if (document.getElementById('linechart').innerHTML == "" ||
     d3.select("#slider").node().max != dates[selectedDataset].length) {
@@ -1425,6 +1407,58 @@ function createMap(data) {
 
   createTimeSlider(data);
 }
+
+function SetupLayers(layers) 
+{
+  // hide all avaiable layers, only 'layers' will be visible
+  for (lyrname in layer_dict) {
+    if (mapbox.getLayer(lyrname)) {
+      mapbox.setLayoutProperty(lyrname, 'visibility', 'none');
+    }
+  }
+  const firstLabelLayerId = mapbox.getStyle().layers.find(layer => layer.type === 'symbol').id;
+  // add to mapbox
+  for (var lyr of layers) {
+    if (!mapbox.getLayer(lyr.id)) {
+      var mb_layer = new MapboxLayer(lyr);
+      layer_dict[lyr.id] = mb_layer;
+      mapbox.addLayer(mb_layer, firstLabelLayerId);
+    }
+    mapbox.setLayoutProperty(lyr.id, 'visibility', 'visible');
+  }
+
+  // update the layer
+  for (var lyr of layers) {
+    layer_dict[lyr.id].setProps(lyr);
+  }
+
+  /*
+  if (!mapbox.getLayer('simple-tiles')) {
+    // https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png
+    var cartoSource = {
+      type: 'raster',
+      tiles: [
+        "https://a.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}.png",
+        "https://b.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}.png",
+        "https://c.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}.png",
+        "https://d.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}.png",
+      ],
+      'tileSize': 256,
+    };
+    mapbox.addSource('cartoSource', cartoSource);
+    mapbox.addLayer({
+      'id' : 'simple-tiles',
+      'type': 'raster',
+      'source': 'cartoSource',
+      'minzoom': 0,
+      'maxzoom': 22
+    });
+  
+  }
+  mapbox.moveLayer("simple-tiles");
+  */
+}
+
 
 function loadMap() {
   createMap(jsondata[selectedDataset]);
@@ -1537,7 +1571,12 @@ function GetDataValues() {
     return Object.values(fatalityData[json][selectedDate]);
   } else if (txt == "Daily New Confirmed Count") {
     let dt_idx = dates[selectedDataset].indexOf(selectedDate);
-    if (dt_idx == 0) return;
+    if (dt_idx == 0) { 
+      let nn = caseData[json][selectedDate].length;
+      let rtn = []
+      for (let i =0; i < nn; ++i) rtn.push(0);
+      return rtn;
+    }
     let prev_date = dates[selectedDataset][dt_idx - 1];
     var cur_vals = caseData[json][selectedDate];
     var pre_vals = caseData[json][prev_date];
@@ -1549,37 +1588,58 @@ function GetDataValues() {
 
   } else if (txt == "Daily New Confirmed Count per 10K Pop") {
     let dt_idx = dates[selectedDataset].indexOf(selectedDate);
-    if (dt_idx == 0) return 0;
+    if (dt_idx == 0) { 
+      let nn = caseData[json][selectedDate].length;
+      let rtn = []
+      for (let i =0; i < nn; ++i) rtn.push(0);
+      return rtn;
+    }
     let prev_date = dates[selectedDataset][dt_idx - 1];
     var cur_vals = caseData[json][selectedDate];
     var pre_vals = caseData[json][prev_date];
     var rt_vals = [];
     for (let i in cur_vals) {
-      rt_vals.push((cur_vals[i] - pre_vals[i]) / populationData[json][i] * 10000);
+      let check_val = (cur_vals[i] - pre_vals[i]) / populationData[json][i] * 10000;
+      if (isNaN(check_val) || check_val == undefined) check_val = 0;
+      rt_vals.push(check_val);
     }
     return rt_vals;
 
   } else if (txt == "Daily New Death Count") {
     let dt_idx = dates[selectedDataset].indexOf(selectedDate);
-    if (dt_idx == 0) return 0;
+    if (dt_idx == 0) { 
+      let nn = caseData[json][selectedDate].length;
+      let rtn = []
+      for (let i =0; i < nn; ++i) rtn.push(0);
+      return rtn;
+    }
     let prev_date = dates[selectedDataset][dt_idx - 1];
     var cur_vals = deathsData[json][selectedDate];
     var pre_vals = deathsData[json][prev_date];
     var rt_vals = [];
     for (let i in cur_vals) {
-      rt_vals.push(cur_vals[i] - pre_vals[i]);
+      let check_val = cur_vals[i] - pre_vals[i];
+      if (isNaN(check_val) || check_val == undefined) check_val = 0;
+      rt_vals.push(check_val);
     }
     return rt_vals;
 
   } else if (txt == "Daily New Death Count per 10K Pop") {
     let dt_idx = dates[selectedDataset].indexOf(selectedDate);
-    if (dt_idx == 0) return 0;
+    if (dt_idx == 0) { 
+      let nn = caseData[json][selectedDate].length;
+      let rtn = []
+      for (let i =0; i < nn; ++i) rtn.push(0);
+      return rtn;
+    }
     let prev_date = dates[selectedDataset][dt_idx - 1];
     var cur_vals = deathsData[json][selectedDate];
     var pre_vals = deathsData[json][prev_date];
     var rt_vals = [];
     for (let i in cur_vals) {
-      rt_vals.push((cur_vals[i] - pre_vals[i]) / populationData[json][i] * 10000);
+      let check_val = (cur_vals[i] - pre_vals[i]) / populationData[json][i] * 10000;
+      if (isNaN(check_val) || check_val == undefined) check_val = 0;
+      rt_vals.push(check_val);
     }
     return rt_vals;
   }
@@ -1692,9 +1752,23 @@ function OnLISAClick(evt) {
     sig = lisaData[selectedDataset][selectedDate][field].sig;
 
   } else {
-    var lisa = gda_proxy.local_moran1(w.map_uuid, w.w_uuid, data);
-    clusters = gda_proxy.parseVecDouble(lisa.clusters());
-    sig = gda_proxy.parseVecDouble(lisa.significances());
+    let all_zeros = true;
+    for (let i=0; i<data.length; ++i) { 
+      if (data[i] != 0)
+        all_zeros = false;
+    }
+    if (all_zeros) {
+      clusters = [];
+      sig = [];
+      for (let i=0; i<data.length; ++i) { 
+        clusters.push(0);
+        sig.push(0);
+      }
+    } else {
+      var lisa = gda_proxy.local_moran1(w.map_uuid, w.w_uuid, data);
+      clusters = gda_proxy.parseVecDouble(lisa.clusters());
+      sig = gda_proxy.parseVecDouble(lisa.significances());
+    }
     if (!(selectedDate in lisaData[selectedDataset])) lisaData[selectedDataset][selectedDate] = {}
     if (!(field in lisaData[selectedDataset][selectedDate])) lisaData[selectedDataset][selectedDate][field] = {}
     lisaData[selectedDataset][selectedDate][field]['clusters'] = clusters;
@@ -1705,7 +1779,7 @@ function OnLISAClick(evt) {
 
   getFillColor = function(f) {
     var c = clusters[f.properties.id];
-    if (c == 0) return [255, 255, 255, 200];
+    if (c == 0 || c == undefined) return [255, 255, 255, 200];
     return hexToRgb(color_vec[c]);
   };
 
@@ -2104,56 +2178,91 @@ function createTimeSlider(geojson) {
     sliderBubble.classList.remove("hidden");
 
   d3.select("#slider").on("input", function() {
-    var currentValue = parseInt(this.value);
-    selectedDate = dates[selectedDataset][currentValue - 1];
-    sliderSelectedDate = selectedDate;
-    
-    document.getElementById('time-container').innerText = selectedDate;
-    var xLabels = dates[selectedDataset];
-    xScale.domain(xLabels);
-
-    const slider = document.getElementById('slider');
-    const sliderBubble = document.getElementById('bubble');
-    const sliderMin = document.getElementById('slider-min');
-    const sliderMax = document.getElementById('slider-max');
-
-    // HAX: convert 1p3a dates to same format as usafacts 
-    if (selectedDataset === 'counties_update.geojson' || selectedDataset === 'states_update.geojson') {
-      sliderSelectedDate = hyphenToSlashDate(selectedDate);
-    }
-
-    const rawDate = new Date(sliderSelectedDate);
-    const printableDate = `${months[rawDate.getMonth()]} ${rawDate.getDate()}, ${rawDate.getFullYear()}`
-    sliderMin.innerHTML = dates[selectedDataset][0];
-    sliderMax.innerHTML = dates[selectedDataset][slider.max - 1];
-
-    sliderBubble.innerText = printableDate;
-    sliderBubble.classList.remove("hidden");
-
-    // reposition slider bubble
-
-    var yValues = getAccumConfirmedCountByDate(geojson, true);
-    yScale.domain([0, Math.max.apply(null, yValues)]);
-
-    bars.attr("y", d => yScale(d.confirmedcases))
-      .attr("height", d => height - padding - yScale(d.confirmedcases))
-      .attr("fill", (d => xLabels[currentValue - 1] == d.date ? "red" : "gray"));
-
-    d3.select(".slider_text")
-      .html(selectedDate);
-
-    //gY.call(yAxis);
-    if (isLisa()) {
-      OnLISAClick(document.getElementById('btn-lisa'));
-    } else {
-      if (isState()) {
-        OnStateClick();
-      } else {
-        OnCountyClick();
-      }
-    }
-  })
+    onSliderChange(this.value);
+  });
 }
+
+function onSliderChange(val) {
+  var width = 280,
+    height = 180,
+    padding = 28;
+
+  const months =  ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+  var geojson = jsondata[selectedDataset];
+
+  var xScale = d3.scaleBand()
+    .range([padding, width], .1);
+  var yScale = d3.scaleLinear()
+    .range([height - padding, padding]);
+
+  var currentValue = parseInt(val);
+  selectedDate = dates[selectedDataset][currentValue - 1];
+  sliderSelectedDate = selectedDate;
+  
+  document.getElementById('time-container').innerText = selectedDate;
+  var xLabels = dates[selectedDataset];
+  xScale.domain(xLabels);
+
+  const slider = document.getElementById('slider');
+  const sliderBubble = document.getElementById('bubble');
+  const sliderMin = document.getElementById('slider-min');
+  const sliderMax = document.getElementById('slider-max');
+
+  // HAX: convert 1p3a dates to same format as usafacts 
+  if (selectedDataset === 'counties_update.geojson' || selectedDataset === 'states_update.geojson') {
+    sliderSelectedDate = hyphenToSlashDate(selectedDate);
+  }
+
+  const rawDate = new Date(sliderSelectedDate);
+  const printableDate = `${months[rawDate.getMonth()]} ${rawDate.getDate()}, ${rawDate.getFullYear()}`
+  sliderMin.innerHTML = dates[selectedDataset][0];
+  sliderMax.innerHTML = dates[selectedDataset][slider.max - 1];
+
+  sliderBubble.innerText = printableDate;
+  sliderBubble.classList.remove("hidden");
+
+  // reposition slider bubble
+
+  var yValues = getAccumConfirmedCountByDate(geojson, true);
+  yScale.domain([0, Math.max.apply(null, yValues)]);
+
+  d3.select(".slider_text")
+    .html(selectedDate);
+
+  //gY.call(yAxis);
+  if (isLisa()) {
+    OnLISAClick(document.getElementById('btn-lisa'));
+  } else {
+    if (isState()) {
+      OnStateClick();
+    } else {
+      OnCountyClick();
+    }
+  }
+}
+
+var play_timer;
+
+d3.select("#play-button").on("click", function(d,i){
+  if (document.getElementById("play-button").src.endsWith("play-icon.png")){
+    document.getElementById("play-button").src = 'img/pause-icon.png';
+    play_timer = setTimeout(moveslider,500);
+  } else {
+    document.getElementById("play-button").src = 'img/play-icon.png';
+    clearTimeout(play_timer);
+  }  
+});
+
+function moveslider() {
+  var x = parseInt(document.getElementById("slider").value); 
+  if (x == parseInt(document.getElementById("slider").max)){
+    x = parseInt(document.getElementById("slider").min);
+  } 
+    document.getElementById("slider").value = x + 1;
+    onSliderChange(x+1);
+    play_timer=setTimeout(moveslider,500)
+};
 
 /*
  * ENTRY POINT
