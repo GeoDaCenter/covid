@@ -1371,10 +1371,14 @@ function createMap(data) {
   var layers = [];
 
   if (isCartogram()) {
+    // hide mapbox
+    for (var lyr of mapbox.getStyle().layers) mapbox.setLayoutProperty (lyr.id, 'visibility','none');
     layers.push(getCartogramLayer(data));
     layers.push(getCartoLabelLayer(data));
 
-  } else { 
+  } else {
+    // show mapbox
+    for (var lyr of mapbox.getStyle().layers) mapbox.setLayoutProperty(lyr.id, 'visibility','visible'); 
     layers.push(getCountyLayer(data));
 
     if (!isState()) {
