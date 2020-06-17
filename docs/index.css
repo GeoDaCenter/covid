@@ -7,7 +7,7 @@ body {
   overflow: hidden;
 } 
 
-#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; height: 100%}
 
 .tooltip-text {
   position: absolute;
@@ -18,10 +18,9 @@ body {
   text-align: left;
   width: 100px;
   z-index: 99999;
-top: 17px;
-left: -55px;
-border-radius: 5px;
-
+  top: 17px;
+  left: -55px;
+  border-radius: 5px;
 }
 
 .info-tooltip {
@@ -143,7 +142,7 @@ a:visited {
   position: absolute;
   top: 50px;
   left: 0px;
-  width: 344px;
+  width: 300px;
   background: #444;
   color: #fff;
   padding: 20px 24px 12px 24px;
@@ -151,7 +150,7 @@ a:visited {
   overflow-x: hidden;
   overflow-y: auto;
   outline: none;
-  z-index: 9;
+  z-index: 9091;
   border-radius: 0px 0px 10px 0px;
 }
 
@@ -186,7 +185,7 @@ a:visited {
 .collapse-btn {
   position: absolute;
   top: 50px;
-  z-index: 100;
+  z-index: 9091;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -198,7 +197,7 @@ a:visited {
 }
 
 #left-collapse {
-  left: 392px;
+  left: 348px;
   border-bottom-right-radius: 10px;
 }
 
@@ -212,7 +211,7 @@ a:visited {
 }
 
 #left-collapse.left-panel--collapsed  {
-  left: 17px !important;
+  left: 0px !important;
 
 }
 
@@ -360,9 +359,8 @@ a:visited {
   color: #fff;
   z-index: 10000;
   border-radius: 5px 5px 5px 0px;
-  left: 20%;
   text-align: center;
-  width: 200px;
+  width: 100%;
 }
 
 #slider-min, #slider-max {
@@ -417,7 +415,7 @@ data panel
   position: absolute;
   top: 50px;
   right: 0px;
-  z-index: 1;
+  z-index: 9091;
   border-radius: 0px 0px 0px 10px;
   overflow-y: auto;
   height: 85%;
@@ -474,6 +472,32 @@ data panel
   top: 0px; 
   left: 0px;
   z-index:999;
+}
+
+@media only screen and (max-width: 600px) {
+  .navbar ul{
+    display: none !important;
+  }
+  .mapboxgl-ctrl-geocoder {
+    display: none;
+  }
+  .mapboxgl-ctrl-group {
+    display: none;
+  }
+  .legend-wrap {
+    margin-left: 0;
+    width: 95%;
+    border-radius: initial;
+  }
+  #sliderdiv {
+    left: 0;
+    top: initial;
+    max-width: initial;
+    border-radius: initial;
+    bottom:40px !important;
+    width: 95% !important;
+    padding: 10px;
+  }
 }
 
 .navbar ul {
