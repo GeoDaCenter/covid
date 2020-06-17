@@ -13,14 +13,16 @@
   </script>
 
   <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  
   <title>US Covid Atlas</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <link href="index.css" rel="stylesheet">
-  <link href="https://api.mapbox.com/mapbox-gl-js/v1.10.1/mapbox-gl.css" rel="stylesheet" />
+  <link href="https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css" type="text/css"/>
 
-  <script defer src="https://unpkg.com/deck.gl@^8.0.0/dist.min.js"></script>
-  <script defer src="https://api.mapbox.com/mapbox-gl-js/v1.10.1/mapbox-gl.js"></script>
+  <script defer src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
+  <script defer src="https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.js"></script>
   <script defer src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
   <!-- Promise polyfill script required to use Mapbox GL Geocoder in IE 11 -->
   <script defer src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
@@ -36,6 +38,7 @@
 </head>
 
 <body>
+  <div id="map"></div>
   <div class="navbar">
     <div class="nav-logo">US Covid Atlas</div>
     <ul>
@@ -50,10 +53,7 @@
   <div class="time-panel">
     <label class="unselectable" id="time-container">2020-03-23</label>
   </div>
-
-  <div id="map"></div>
   
-  <!-- options panel -->
   <div class="options-panel left-panel" tabindex="0">
     <div id="toolbox">
       <p>Select Data:</p>
@@ -140,7 +140,7 @@
   </div>
   <div id="sliderdiv">
     <span id="slider-min" class="float: left; "></span><span id="slider-max" style="float: right;"></span><br>
-    <div>
+    <div style="text-align: center;">
     <img src="img/play-icon.png" id="play-button" style="display: inline-block;vertical-align: middle;width:40px">
     <input style="display: inline-block;vertical-align: middle;width:250px" id="slider" type="range" min="1" max="100" step="1" value="100" />
     </div>
@@ -162,11 +162,9 @@
     <div class="layout" id="legend-labels">
     </div>
   </div>
-  <!-- options panel minimize button -->
   <div id="left-collapse" class="collapse-btn" onclick="leftPanelCollapse()"><i
       class="fa fa-chevron-left"></i></div>
 
-  <!-- data panel -->
   <div class="data-panel right-panel" hidden>
     <input id="geoid" hidden></input>
     <h2 id="data-panel__header">Nocounty, Nostate</h2>
@@ -176,7 +174,6 @@
 
   </div>
 
-  <!-- data panel minimize button -->
   <div id="right-collapse" class="collapse-btn hide" onclick="rightPanelCollapse()"><i
       class="fa fa-chevron-right"></i>
   </div>
