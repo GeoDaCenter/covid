@@ -1954,11 +1954,12 @@ function addTrendLine(data, title) {
     .attr("class", "line")
     .attr("d", line)
     .attr("stroke", "red");
-
+  
+  var xstride = Math.floor(xLabels.length/10)
   svg.append("g")
     .attr("transform", "translate(0," + (height) + ")")
     .call(xAxis.tickValues(xLabels.filter(function(d, i) {
-      if (i % 4 == 0)
+      if (i % xstride == 0)
         return d;
     })).tickFormat(function(e) {
       let d = new Date(e);
