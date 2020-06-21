@@ -1969,7 +1969,7 @@ function addTrendLine(data, title) {
       let da = new Intl.DateTimeFormat('en', {
         day: '2-digit'
       }).format(d)
-      return da + '-' + mo;
+      return mo + '-' + da;
     }))
     .selectAll("text")
     .style("text-anchor", "end")
