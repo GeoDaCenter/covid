@@ -129,6 +129,7 @@ var selectedDataset = 'county_usfacts.geojson';
 var selectedId = null;
 var selectedDate = null;
 var latestDate = null;
+var use_fixed_bins = true; 
 var selectedVariable = null;
 var selectedMethod = 'cloropleth'; // set cloropleth as default mode
 var shouldShowLabels = false;
@@ -564,12 +565,16 @@ function OnCountyClick(target) {
 }
 
 
-
 function initCounty() {
   var vals;
   var nb;
+
+  if (use_fixed_bins) {
+    vals = GetDataValues(latestDate);
+    } else {
+    vals = GetDataValues();
+    }
   
-  vals = GetDataValues(latestDate);
   nb = gda_proxy.custom_breaks(countyMap, "natural_breaks", 8, null, vals);
   colorScale = function (x) {
     if (x == 0) return COLOR_SCALE[0];
@@ -1741,7 +1746,9 @@ function updateTooltips() {
   });
 }
 
-function OnChoroplethClick(evt) {
+function OnChoroplethClick(fixed_bins) {
+  use_fixed_bins = fixed_bins;
+  
   selectedMethod = "choropleth";
   if (isState()) {
     OnStateClick();

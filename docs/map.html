@@ -90,10 +90,29 @@
         <input type="checkbox" id="cartogram-ckb" onchange="OnCartogramClick(this)">Using Cartogram
       </p>
       <div class="layout">
-        <button class="stat col-1-2 checked" id="btn-nb" onclick="OnChoroplethClick(this)">Choropleth <div class="info-tooltip" id="info-Choropleth"><i class="fa fa-info-circle"  aria-hidden="true"></i><span class="right tooltip-text"></span></div>
-        </button>
-        <button class="stat col-1-2" id="btn-lisa" onclick="OnLISAClick(this)"> Local Clustering <div class="info-tooltip" id="info-LocalClustering"><i class="fa fa-info-circle"  aria-hidden="true"></i><span class="left tooltip-text"></span></div>
-        </button>
+        <div class="dropdown">
+          <button class="dropbtn" id="select-map">Natural Breaks (fixed bins)</button>
+          <div class="dropdown-content">
+            <a href="#" id="btn-nb" onclick="OnChoroplethClick(true)">Natural Breaks (fixed bins)
+              <div class="info-tooltip" id="info-Choropleth">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="right tooltip-text"></span>
+              </div>
+            </a>
+            <a href="#" id="btn-nb" onclick="OnChoroplethClick(false)">Natural Breaks
+              <div class="info-tooltip" id="info-Choropleth">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="right tooltip-text"></span>
+              </div>
+            </a>
+            <a href="#" id="btn-lisa" onclick="OnLISAClick(this)">Local Clustering
+              <div class="info-tooltip" id="info-LocalClustering">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="left tooltip-text"></span>
+              </div>
+            </a>
+          </div>
+        </div>
       </div>
 
       <div class="options-panel-section">
