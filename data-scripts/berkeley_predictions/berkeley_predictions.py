@@ -4,6 +4,7 @@ import csv
 import json
 from datetime import datetime
 
+import pytz
 import requests
 import pandas as pd
 
@@ -54,7 +55,7 @@ def validate_and_process():
         source_date_field_prefix = 'Predicted Deaths by'
 
         if source_field_name.startswith(source_date_field_prefix):
-          source_date_today = datetime.now().strftime('%B %d')
+          source_date_today = datetime.now(pytz.timezone('US/Pacific')).strftime('%B %d')
           source_date_field_today = ' '.join([source_date_field_prefix, source_date_today])
 
           if source_field_name != source_date_field_today:
