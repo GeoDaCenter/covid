@@ -41,6 +41,12 @@
 	}
 
 
+	.usage1 {
+	  border-radius: 25px;
+	  background: whitesmoke;
+	  padding: 10px;
+	  width: 100px;
+	}
     .footer-dark {
       padding:50px 0;
       color:#f0f9ff;
