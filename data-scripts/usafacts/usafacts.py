@@ -118,6 +118,10 @@ def create_geojson_files(month_day):
         data  = pd.read_csv(os.path.join(repo_root, 'docs/covid_{}_usafacts.csv'.format(dataset)))
         data['countyFIPS']  = data.countyFIPS.apply(lambda x: str(x).zfill(5))
         data_geom = county_geom.merge(data, left_on='GEOID', right_on='countyFIPS', how='left')
+        data_geom = data_geom.fillna(0)
+        for column in data_geom.columns:
+            if '/' in column:
+                data_geom[column] = data_geom[column].astype(int)
         save_path = os.path.join(repo_root, 'download/usafacts_{}_{}.geojson'.format(dataset, month_day))
         data_geom.to_file(save_path, driver='GeoJSON')
 
