@@ -85,6 +85,7 @@ var lisaData = {
 // socioeconomic indicators from the county health rankings group (aka chr).
 // this is an object indexed by county fips.
 var chrData = {};
+var hlthData = {};
 // county-level death predictions from the berkeley yu group
 var berkeleyCountyData = {};
 
@@ -198,6 +199,18 @@ async function fetchChrData() {
   return rowsIndexed;
 }
 
+// fetch county health rankings health indicators (aka chr)
+async function fetchHlthData() {
+  const rows = await d3.csv('chr_health_indicators.csv');
+
+  // index rows by "fips" (unique id)
+  const rowsIndexed = rows.reduce((acc, row) => {
+    acc[parseInt(row.FIPS)] = row;
+    return acc;
+  }, {});
+  return rowsIndexed;
+}
+
 // fetch berkeley group death predictions and 5-day county severity index
 async function fetchBerkeleyCountyData() {
   const rows = await d3.csv('berkeley_predictions.csv');
@@ -288,11 +301,13 @@ async function loadUsafactsData(url, callback) {
     usafactsCases,
     usafactsDeaths,
     chrData,
+    hlthData,
     berkeleyCountyData,
   ] = await Promise.all([
     d3.csv('covid_confirmed_usafacts.csv'),
     d3.csv('covid_deaths_usafacts.csv'),
     fetchChrData(),
+    fetchHlthData(),
     fetchBerkeleyCountyData(),
   ]);
 
@@ -930,6 +945,48 @@ function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+// builds HTML for health indicator tab in data panel
+function healthIndicatorsHtml(geoId) {
+  let html = '';
+  const labels = { 
+    SmkPrc: 'Smokers %',
+    AdObPrc: 'Adults with Obesity %',
+    ExcDrkPrc: 'Excessive Drinking %',
+    DrDthAlcInv: 'Driving Deaths with Alcohol Involvement %',
+    ChlmRr: 'Chlamydia Rate',
+    AdDibPrc: 'Adults with Diabetes %',
+    HIVRt: 'HIV Prevalence Rate',
+    FdInsPrc: 'Food Insecure %',
+    DrOvrdDth: 'Drug Overdose Deaths',
+    DrOverdMrtRt: 'Drug Overdose Mortality Rate'
+  };
+  const handle = (val) => {
+    let formatted = val;
+    if (!val || val === '') return 'N/A';
+    const parsed = parseFloat(val);
+    if (isNaN(parsed)) return 'N/A'
+    if (parsed % 1 !== 0) {
+      formatted = parsed.toFixed(1);
+    } else {
+      formatted = parseInt(parsed);
+    }
+    return numberWithCommas(formatted);
+  }
+
+  const ordered = ['SmkPrc', 'AdObPrc', 'ExcDrkPrc', 'DrDthAlcInv', 'ChlmRr', 'AdDibPrc', 'HIVRt', 'FdInsPrc', 'DrOvrdDth', 'DrOverdMrtRt'];
+  html += `<div>
+    <h3>Health Indicators</h3>
+    <div style="font-size: 80%; position: relative; top: -10px"><b>Source:</b> <a href="https://www.countyhealthrankings.org/">County Health Rankings</a></div>`
+  const rowHtml = (key) => `<div><b>${labels[key]}</b> <div class="info-tooltip" id="info-${key}"> <i class="fa fa-info-circle" aria-hidden="true"></i><span class="tooltip-text"></span></div>: ${handle(hlthData[geoId][key])} </div>`;
+  ordered.forEach(key => html += rowHtml(key));
+  html += `</div>`
+  return html;
+}
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 // builds HTML for covid forecasting/predictions tab in data panel
 function covidForecastingHtml(geoId) {
   
@@ -1066,10 +1123,12 @@ function updateDataPanel(e) {
   // removed fatality rate:  <div><b>Fatality Rate:</b> ${fatalityRate}%</div>
 
   if (chrData[geoId]) html += socioeconomicIndicatorsHtml(geoId);
+  if (hlthData[geoId]) html += healthIndicatorsHtml(geoId);
   if (berkeleyCountyData[geoId]) html += covidForecastingHtml(geoId);
 
   geoIdElem.value = geoId; // store geoid in hidden input so we can load data on select change
   headerElem.innerHTML = `${chrData[geoId].County} County, ${stateAbbr}`;
+  headerElem.innerHTML = `${hlthData[geoId].County} County, ${stateAbbr}`;
   bodyElem.innerHTML = html;
   collapseBtnElem.classList.remove('hide');
   panelElem.removeAttribute('hidden');
