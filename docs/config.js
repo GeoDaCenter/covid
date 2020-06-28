@@ -18,5 +18,15 @@ config.TOOLTIP = {
   PrmPhysRt: 'Primary Care Physicians per 100,000 population',
   SeverityIndex: 'Indicates the severity of the local covid-19 outbreak, based on cumulative and predicted deaths',
   PredictedDeaths: 'Predicted number of deaths for a county',
-  PredictedDeathsInterval: 'Margin of error for predicted death counts for a county '
+  PredictedDeathsInterval: 'Margin of error for predicted death counts for a county ',
+  SmkPrc: 'Percentage of adults who are current smokers.',
+  AdObPrc: 'Percentage of the adult population (age 20 and older) that reports a body mass index (BMI) greater than or equal to 30 kg/m2.',
+  ExcDrkPrc: 'Percentage of adults reporting binge or heavy drinking.',
+  DrDthAlcInv: 'Percentage of driving deaths with alcohol involvement.',
+  ChlmRr: 'Chlamydia Rate',
+  AdDibPrc: 'Adults with Diabetes %',
+  HIVRt: 'HIV Prevalence Rate',
+  FdInsPrc: 'Percentage of population who lack adequate access to food.',
+  DrOvrdDth: 'Drug Overdose Deaths',
+  DrOverdMrtRt: 'Drug Overdose Mortality Rate'
 };
