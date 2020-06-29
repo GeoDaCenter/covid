@@ -112,7 +112,7 @@ def validate_and_process():
 
 
 def create_geojson_files(month_day):
-    county_geom = gpd.read_file(os.path.join(repo_root, 'data/county_usfacts.geojson'))
+    county_geom = gpd.read_file(os.path.join(repo_root, 'docs/county_usfacts.geojson'))
 
     for dataset in ['confirmed', 'deaths']:
         data  = pd.read_csv(os.path.join(repo_root, 'docs/covid_{}_usafacts.csv'.format(dataset)))
