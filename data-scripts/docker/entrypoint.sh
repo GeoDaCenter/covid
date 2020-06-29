@@ -12,6 +12,10 @@ case $DATA_SOURCE in
 		python data-scripts/berkeley_predictions/berkeley_predictions.py
 		;;
 
+	usafacts)
+		python data-scripts/usafacts/usafacts.py
+		;;
+
 esac
 
 git add . && git commit -m "Updated: `date +'%Y-%m-%d %H:%M:%S'`"
