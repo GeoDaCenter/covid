@@ -7,6 +7,9 @@ verify_ssl = true
 
 [packages]
 requests = "*"
+geopandas = "*"
+pandas = "*"
+pytz = "*"
 
 [requires]
 python_version = "3.8"
