@@ -4,154 +4,332 @@
   <title>The US Covid Atlas</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=1024">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+
+  <!-- CSS only -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+  <!-- JS, Popper.js, and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap" rel="stylesheet">
+    
+  <link href="//cdn-images.mailchimp.com/embedcode/slim-10_7.css" rel="stylesheet" type="text/css">
+
+  <link href="css/index.css" rel="stylesheet" type="text/css">
+
+  
+  <link href="//cdn-images.mailchimp.com/embedcode/slim-10_7.css" rel="stylesheet" type="text/css">
+  
+  <style type="text/css">
+  #mc_embed_signup
+  {background:#fff; 
+    clear:center;}
+
+  input {
+        display: inline-block;
+        min-height: 50px;
+        width: 100%;
+        padding: 6px;
+        border: 1px solid #4f4f4f;
+        border-radius: 0px;
+        box-shadow: rgba(10, 10, 10, .05) 0 1px 4px 0 inset;
+    }
+  #mc_embed_signup input.email,
+  #mc_embed_signup input.button {
+      display: inline-block;
+  }
+  </style>
 
 </head>
 
 
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar"></span>                        
-      </button>
-      <a class="navbar-brand" href="map.html">US Covid Atlas</a>
-    </div>
-    <div class="collapse navbar-collapse" id="myNavbar">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="index.html">Home</a></li>
-        <li><a href="data.html">Data</a></li>
-        <li><a href="methods.html">Methods</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="press.html">Contact</a></li>
-
-      </ul>
-    </div>
-  </div>
-</nav>
-
 <body>
 
 
-<div class="container"> 
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+  <div class="container">
+  <a class="navbar-brand" href="#">US Covid Atlas</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarText">
+    <ul class="navbar-nav ml-auto na">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Map
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Data</a>
+          <a class="dropdown-item" href="#">Methods</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Help</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="https://medium.com/covidatlas">Insights</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">About</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Contact</a>
+      </li>
+    </ul>
+  </div>
+</div>
+</nav>
 
+
+<section id="hero">
+  <div class="container">
     <div class="row">
-      <div style="background:transparent !important" class="jumbotron jumbotron-fluid col-lg-12">
-        <h1 class="display-3">The US Covid Atlas</h1>
+      <div class="col-lg-1"></div>
+      <div class="jumbotron vertical-center jumbotron jumbotron-fluid col-lg-10" style="background:transparent !important">
+        <h1 class="display-1">The US Covid Atlas</h1>
         
-        <p>The US COVID Atlas is a county-level visualization tool developed by a University of Chicago-led research coalition 
-        that enables interactive exploration of COVID case data and community indicators across the United States from 
-        multiple sources, from the beginning of the pandemic to today. In a quickly changing pandemic landscape, access 
-        to county-level data and regional insights is crucial to understanding needs and supporting planning efforts. </p><br>
-        <div>
-          <p class="lead"">
-            <a class="btn btn-success btn-lg" href="map.html" role="button">
+        <p class="lead">The US COVID Atlas is a county-level visualization tool developed by a University of Chicago-led research coalition that enables interactive exploration of COVID case data and community indicators across the United States from multiple sources, from the beginning of the pandemic to today. In a quickly changing pandemic landscape, access to county-level data and regional insights is crucial to understanding needs and supporting planning efforts to minimize the impacts of the COVID-19 Pandemic. </p><br>
+
+        <a class="btn btn-success btn-lg" href="map.html" role="button">
               Explore the Atlas
-            </a>
-            <a class="btn btn-primary btn-lg" href="data.html" role="button">
-              The Data
-            </a>
-            <a class="btn btn-primary btn-lg" href="about.html" role="button">
-              The Team
-            </a>
-          </p>
-
-        </div>
-
+        </a>
+      </div>
        </div>
-
     </div> 
+</section>
 
-
-
+<section id="gif">
+  <div class="container">
+    <br><br>
     <div class="row">
-
-      
-      <div class="col-lg-8">
-        <a href="map.html"><img class="rounded"  src="img/6.18_confirm_per10K_usafacts.gif" style="width:100%"></a>
+      <div class="col-lg-8" >
+        <a href="map.html"><img class="rounded" src="img/6.10_confirm_per10K_usafacts.gif" style="width:100%" ></a>
       </div>
+      <div class="col-lg-4"><br><br>
+      <h2 class = "display-5"> Near Real-Time Exploration of the Pandemic </h2>
+      <hr>
+      <p> Statistical hotspots of confirmed cases of COVID-19 per 10,000 persons, shown from March to yesterday with USAFacts data.<p>
+
+      <p> The Atlas is updated by 3pm each afternoon with the latest available data. We recommend a desktop or larger screen for optimal viewing.  <p>
+      </div>
+    </div> 
+    <br><br>
+  </div>
+</section>
+
+<section id="feature-overview">
+  <div class="container">
+    <br><br>
+    <div class= "mx-auto" style="width: 200px;">
       <br>
-      <div class="col-lg-4">
-      <h2> Near Real-Time Exploration <br> of the Pandemic </h2>
-      <p> Statistical hotspots of confirmed cases of COVID-19 per 10,000 persons at the county level, shown here from March to today using the USAFacts data selection.<p>
+       <h1 class="display-4"> Features </h1><br><br>
+     </div>
+    <div class="row">
+      <div class="col-md-3">
+        <div class="panel">
+          <div class="panel-heading" src="index.js">
+            <div style="text-align: center;">
+              <img src="icon.png"><br><br>
+            </div>
+              <h5 style= "text-align: center;">Regional Hotspots </h5><br>
+              <p style="text-align: center;"> Statistical clusters of both confirmed and daily new COVID cases & deaths, with and without population adjustment.</p>
+          </div>
+        </div>
+      </div>
 
-      <p> The Atlas is updated by 3pm each afternoon with the latest available data. 
-      We recommend a desktop or larger screen for optimal viewing. <p>
+      <div class="col-md-3">
+        <div class="panel">
+          <div class="panel-heading" src="index.js">
+            <div style="text-align: center;">
+              <img src="icon.png"><br><br>
+            </div>
+              <h5 style= "text-align: center;">Change Over Time</h5><br>
+              <p style="text-align: center;"> Watch the spread of accumulated or daily new COVID cases using a time slider and live time-animation. </p>
+            </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="panel">
+          <div class="panel-heading" src="index.js">
+            <div style="text-align: center;">
+              <img src="icon.png"><br><br>
+            </div>
+              <h5 style= "text-align: center;">Interactive Exploration</h5><br>
+              <p style="text-align: center;"> Uncover trends of the pandemic by comparing different data sources, variables, and spatial analytic insights.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="panel">
+          <div class="panel-heading" src="index.js">
+            <div style="text-align: center;">
+              <img src="icon.png"><br><br>
+            </div>
+              <h5 style= "text-align: center;">Linked Community Data</h5><br>
+              <p style="text-align: center;">Connect to relevant social, economic, and health indicators to provide meaningful community context. </p>
+
+            </div>
+        </div>
+      </div>
+    </div> <!-- close row --> 
+  </div>
+</section>
+
+
+<section id="feature-1">
+  <div class="container">
+  <br><hr>
+    <br><br>
+      <div class="row">
+      <br><br>
+      <div class="col-lg-6" >
+        <div style="text-align: center;">
+        <img src="feature.png"></div>
+      </div>
+      <div class="col-lg-6">
+      <div class="usage"><b>Usage #1</b></div><br>
+      <h5> Identify Regional Hotspots for Mitigation </h5>
+      <p> We show COVID-19 hot spots two ways: 1) using the total number of confirmed cases, and 2) adjusting for population. Because of the infectious nature of COVID, high numbers of cases anywhere will be of concern. At the same time, identifying areas that have a disporotionately high number of cases within the population is necessary to locate areas hit hardest by the pandemic. <p>
       </div>
     </div> 
+    <br><br>
+  </div>
+</section>
 
+<section id="gif">
+  <div class="container">
+    <br><br>
     <div class="row">
-      <br><br><br>
-    <h1 style="text-align: center;"> Atlas Features </h1>
-    </div>
+      <br><br>
+      <div class="col-lg-6">
+      <div class="usage"><b>Usage #2</b></div><br>
+      <h5> Identify Regional Hotspots for Mitigation </h5>
+      <p> We show COVID-19 hot spots two ways: 1) using the total number of confirmed cases, and 2) adjusting for population. Because of the infectious nature of COVID, high numbers of cases anywhere will be of concern. At the same time, identifying areas that have a disporotionately high number of cases within the population is necessary to locate areas hit hardest by the pandemic. <p>
+      </div>
+      <div class="col-lg-6" >
+        <div style="text-align: center;">
+        <img src="feature.png"></div>      </div>
+    </div> 
+    <br><br>
+  </div>
+</section>
 
+<section id="feature-3">
+  <div class="container">
+    <br><br>
     <div class="row">
-      <div class="col-md-6">
-        <div class="panel">
-          <div class="panel-heading" src="index.js">
-            <div style="text-align: center;">
-              <img src="icons/us.png" width="90" height="90">
-            </div>
-              <h3 style="text-align: center;">Regional Hotspots </h3><br>
-              <p class="lead" style="text-align: center;"> Statistical clusters of both confirmed and daily new COVID cases & deaths, with and without population adjustment.</p>
-          </div>
-        </div>
+      <br><br>
+      <div class="col-lg-6" >
+        <div style="text-align: center;">
+        <img src="feature.png"></div>
       </div>
-
-      <div class="col-md-6">
-        <div class="panel">
-          <div class="panel-heading" src="index.js">
-            <div style="text-align: center;">
-              <img src="icons/time.png" width="80" height="90">
-            </div>
-              <h3 style="text-align: center;">Change Over Time</h3><br>
-              <p class="lead" style="text-align: center;"> Watch the spread of accumulated or daily new COVID cases using a time slider and live time-animation. </p>
-            </div>
-        </div>
+      <div class="col-lg-6">
+      <div class="usage"><b>Usage #3</b></div><br>
+      <h5> Identify Regional Hotspots for Mitigation </h5>
+      <p> We show COVID-19 hot spots two ways: 1) using the total number of confirmed cases, and 2) adjusting for population. Because of the infectious nature of COVID, high numbers of cases anywhere will be of concern. At the same time, identifying areas that have a disporotionately high number of cases within the population is necessary to locate areas hit hardest by the pandemic. <p>
       </div>
-    </div> <!-- close row -->
+    </div> 
+    <br><br>
+  </div>
+</section>
 
+<section id="gif">
+  <div class="container">
+    <br><br>
     <div class="row">
-      <div class="col-md-6">
-        <div class="panel">
-          <div class="panel-heading" src="index.js">
-            <div style="text-align: center;">
-              <img src="icons/insights.png" width="90" height="90">
+      <br><br>
+      <div class="col-lg-6">
+      <div class="usage"><b>Usage #4</b></div><br>
+      <h5> Identify Regional Hotspots for Mitigation </h5>
+      <p> We show COVID-19 hot spots two ways: 1) using the total number of confirmed cases, and 2) adjusting for population. Because of the infectious nature of COVID, high numbers of cases anywhere will be of concern. At the same time, identifying areas that have a disporotionately high number of cases within the population is necessary to locate areas hit hardest by the pandemic. <p>
+      </div>
+      <div class="col-lg-6" >
+        <div style="text-align: center;">
+        <img src="feature.png"></div>      </div>
+    </div> 
+    <br><br>
+  </div>
+</section>
+
+<section id="subscribe">
+  <div class="container">
+    <br><br>
+    <div class="row">
+      <div class="col-lg-3">
+      </div>
+      <div class="col-lg-6">
+      <!-- Begin Mailchimp Signup Form -->
+        <div id="mc_embed_signup">
+        <form action="https://github.us10.list-manage.com/subscribe/post?u=5ed730d26727290870ec65153&amp;id=74f209d5ed" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+
+          <div id="mc_embed_signup_scroll">
+
+          <label for="mce-EMAIL"><h3>Newsletter Sign Up</h3></label>
+
+          <p> Sign up to receive monthly email updates on new features, improvements, and insights. </p>
+
+          <input type="email" value="" name="EMAIL" class="email" id="mce-EMAIL" placeholder="Enter email address" required>
+            <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+            <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_5ed730d26727290870ec65153_74f209d5ed" tabindex="-1" value=""></div><br><br>
+            <div><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="btn btn-secondary btn-md btn-block"></div>
             </div>
-              <h3 style="text-align: center;">Interactive Exploration</h3><br>
-              <p class="lead" style="text-align: center;"> Uncover trends of the pandemic by comparing different data sources, variables, and spatial analytic insights.</p>
-          </div>
+        </form>
         </div>
       </div>
-
-      <div class="col-md-6">
-        <div class="panel">
-          <div class="panel-heading" src="index.js">
-            <div style="text-align: center;">
-              <img src="icons/link.png" width="90" height="90">
-            </div>
-              <h3 style="text-align: center;">Linked Community Data</h3><br>
-              <p class="lead" style="text-align: center;">Connect to relevant social, economic, and health indicators to provide meaningful community context. </p>
-            </div>
-        </div>
+      <div class="col-lg-3">
       </div>
-    </div> <!-- close row -->
 
-<br>
+        <!--End mc_embed_signup-->
+  </div>
+</section>
 
+
+
+</section> 
+<br><br><br>
 </body>
 
-<footer class="container-fluid text-center">
-  <div style="text-align: center;">   
-    <img align="center" src="img/logo_gray.png" width=500px alt="Center for Spatial Data Science logo" />
-  <div style="text-align: center;">
+    <div class="footer-dark">
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3 item">
+                        <h3>Explore</h3>
+                        <ul>
+                            <li><a href="map.html">The Atlas</a></li>
+                            <li><a href="data.html">Data</a></li>
+                            <li><a href="methods.html">Methods</a></li>
+                            <li><a href="#">Help & FAQ</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4 item">
+                        <h3>About</h3>
+                        <ul>
+                            <li><a href="about.html">Our Team</a></li>
+                            <li><a href="about.html">Media Inquiry</a></li>
+                            <li><a href="contact.html">Contact Us</a></li>
+                            <li><a href="about.html">Learning Community</a></li>
 
-  <p>Brought to you by the <a>Center for Spatial Data Science <a href="https://spatial.uchicago.edu"> @UChicago</a>. Powered by <a href="https://geodacenter.github.io/">GeoDa</a>. <br>
-    Funded in part by the <a href="http://www.rwjf.org"> Robert Wood Johnson Foundation.</a></p>
-</footer>
+                        </ul>
+                    </div>
+                    <div class="col-md-5 item">
+                      <img style="text-align: right;" src="img/logo_gray.png" width = 100%; alt="Center for Spatial Data Science logo">
+                    </div>
+                    <p>
+                </div>
+<!--                 <div class="row">
 
-<a href="https://github.com/GeoDaCenter/covid" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#fff; color:#151513; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+                    <div class="col item social"> <br>
+                      <a href="#"><i class="icon ion-social-facebook"></i></a><a href="#"><i class="icon ion-social-twitter"></i></a><a href="#"><i class="icon ion-social-snapchat"></i></a><a href="#"><i class="icon ion-social-instagram"></i></a></div> 
+                </div>
+               <p class="copyright">Center for Spatial Data Science © 2020</p> </div> -->
+        </footer>
+    </div>
+
 </body>
 </html>

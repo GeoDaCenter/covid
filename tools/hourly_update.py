@@ -94,6 +94,7 @@ county_fix_code = {
 # benton and franklinwa includes more than one county
 # bristol bay plus lake peninsulaak includes more than one county
 # no idea what is out county in OH, 1 confirmed cases showed for 0530, ignore for now
+# yakutat plus hoonah-angoonak includes more than one county
 
 def fetch_covid_data():
     out = open('../docs/last_update.txt', 'w') 
