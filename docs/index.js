@@ -167,7 +167,7 @@ function isState() {
 }
 
 function isLisa() {
-  return document.getElementById("btn-lisa").classList.contains("checked");
+  return selectedMethod == "lisa";
 }
 
 function isCartogram() {
@@ -1854,7 +1854,7 @@ function updateTooltips() {
 function OnChoroplethClick(evt, map_type, fixed_bins) {
   use_fixed_bins = fixed_bins;
   // update legend title
-  document.getElementById('legend_title').innerText = evt.innerText;
+  document.getElementById('legend_title').innerText = evt.innerHTML.split('<')[0].trim();
 
   selectedMethod = map_type;
   if (isState()) {
@@ -1868,7 +1868,7 @@ function OnLISAClick(evt) {
   selectedMethod = "lisa";
 
   // update legend title
-  document.getElementById('legend_title').innerText = evt.innerText;
+  document.getElementById('legend_title').innerText = evt.innerHTML.split('<')[0].trim();
 
   var w = getCurrentWuuid();
   var data = GetDataValues();
@@ -2365,7 +2365,7 @@ function onSliderChange(val) {
     .html(selectedDate);
 
   //gY.call(yAxis);
-  if (isLisa()) {
+  if (selectedMethod == "lisa") {
     OnLISAClick(document.getElementById('btn-lisa'));
   } else {
     if (isState()) {
