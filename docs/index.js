@@ -33,7 +33,7 @@ const COLOR_SCALE = [
   [128, 0, 38]
 ];
 
-var lisa_labels = ["Not significant", "High-High", "Low-Low", "High-Low", "Low-High", "Undefined", "Isolated"];
+var lisa_labels = ["Not significant", "High-High", "Low-Low", "Low-High","High-Low", "Undefined", "Isolated"];
 var lisa_colors = ["#ffffff", "#FF0000", "#0000FF", "#a7adf9", "#f4ada8", "#464646", "#999999"];
 
 
