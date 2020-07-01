@@ -90,28 +90,45 @@
         <input type="checkbox" id="cartogram-ckb" onchange="OnCartogramClick(this)">Using Cartogram
       </p>
       <div class="layout">
-        <div class="control">
-          <input type="radio" id="btn-lisa" name='mapselect' onclick="OnLISAClick(this)">
-          <label>Local Clustering
-              <div class="info-tooltip" id="info-LocalClustering">
-                <i class="fa fa-info-circle"  aria-hidden="true"></i>
-                <span class="left tooltip-text"></span>
-              </div>
-          </label><br>
-          <input type="radio" id="btn-nb" name='mapselect' onclick="OnChoroplethClick(true)">
-          <label>Natural Breaks (fixed bins)
-            <div class="info-tooltip" id="info-Choropleth">
-              <i class="fa fa-info-circle"  aria-hidden="true"></i>
-              <span class="right tooltip-text"></span>
-            </div>
-          </label><br>
-          <input type="radio" id="btn-nb" name='mapselect' onclick="OnChoroplethClick(false)">
-          <label>Natural Breaks
+        <div class="dropdown"  style="width:50%">
+          <button class="dropbtn" id="select-map">Choropleth</button>
+          <div class="dropdown-content" style="width:200px;">
+            <a href="#" id="btn-nb" onclick="OnChoroplethClick(this, 'natural_breaks', true)">Natural Breaks (fixed bins)
               <div class="info-tooltip" id="info-Choropleth">
                 <i class="fa fa-info-circle"  aria-hidden="true"></i>
                 <span class="right tooltip-text"></span>
               </div>
-          </label>
+            </a>
+            <a href="#" id="btn-nb" onclick="OnChoroplethClick(this, 'natural_breaks', false)">Natural Breaks
+              <div class="info-tooltip" id="info-Choropleth">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="right tooltip-text"></span>
+              </div>
+            </a>
+            <a href="#" id="btn-nb" onclick="OnChoroplethClick(this, 'hinge30_breaks', false)">Box Map (Hinge=3.0)
+              <div class="info-tooltip" id="info-Choropleth">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="right tooltip-text"></span>
+              </div>
+            </a>
+            <a href="#" id="btn-nb" onclick="OnChoroplethClick(this, 'hinge15_breaks', false)">Box Map (Hinge=1.5)
+              <div class="info-tooltip" id="info-Choropleth">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="right tooltip-text"></span>
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <button class="dropbtn" id="select-map">Local Clustering</button>
+          <div class="dropdown-content">
+            <a href="#" id="btn-lisa" onclick="OnLISAClick(this)">Local Moran 
+              <div class="info-tooltip" id="info-LocalClustering">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="left tooltip-text"></span>
+              </div>
+            </a>
+          </div>
         </div>
       </div>
 
@@ -167,6 +184,7 @@
   </div>
 
   <div class="legend-wrap">
+    <div class="layout" id="legend_title" style="text-align: center;margin:5px;">Natural Breaks (fixed bins)</div>
     <div class="layout" id="legend">
       <div class="legend" style="background: rgb(240, 240, 240); width: 7.69231%;"></div>
       <div class="legend" style="background: rgb(255, 237, 160); width: 7.69231%;"></div>

@@ -19,19 +19,37 @@ const {
 
 const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg';
 
-const COLOR_SCALE = [
-  [240, 240, 240],
-  // positive
-  [255, 255, 204],
-  [255, 237, 160],
-  [254, 217, 118],
-  [254, 178, 76],
-  [253, 141, 60],
-  [252, 78, 42],
-  [227, 26, 28],
-  [189, 0, 38],
-  [128, 0, 38]
-];
+const COLOR_SCALE = {
+  'natural_breaks':[
+    [240, 240, 240],
+    // positive
+    [255, 255, 204],
+    [255, 237, 160],
+    [254, 217, 118],
+    [254, 178, 76],
+    [253, 141, 60],
+    [252, 78, 42],
+    [227, 26, 28],
+    [189, 0, 38],
+    [128, 0, 38]
+  ],
+  'hinge15_breaks' :  [
+    [69, 117, 180],
+    [145, 191, 219],
+    [220, 238, 243],
+    [250, 227, 212],
+    [233, 160, 124],
+    [215, 48, 39],
+  ],
+  'hinge30_breaks' :  [
+    [69, 117, 180],
+    [145, 191, 219],
+    [220, 238, 243],
+    [250, 227, 212],
+    [233, 160, 124],
+    [215, 48, 39],
+  ],
+};
 
 var lisa_labels = ["Not significant", "High-High", "Low-Low", "High-Low", "Low-High", "Undefined", "Isolated"];
 var lisa_colors = ["#ffffff", "#FF0000", "#0000FF", "#a7adf9", "#f4ada8", "#464646", "#999999"];
@@ -132,7 +150,7 @@ var selectedDate = null;
 var latestDate = null;
 var use_fixed_bins = true; 
 var selectedVariable = null;
-var selectedMethod = 'cloropleth'; // set cloropleth as default mode
+var selectedMethod = 'natural_breaks'; // set cloropleth as default mode
 var shouldShowLabels = false;
 var shouldShowReservations = false;
 var cartogramDeselected = false;
@@ -586,21 +604,33 @@ function initCounty() {
 
   if (use_fixed_bins) {
     vals = GetDataValues(latestDate);
-    } else {
+  } else {
     vals = GetDataValues();
-    }
+  }
   
-  nb = gda_proxy.custom_breaks(countyMap, "natural_breaks", 8, null, vals);
+  var num_cat = 6;
+  if (selectedMethod == "natural_breaks") num_cat = 8;
+  nb = gda_proxy.custom_breaks(countyMap, selectedMethod, num_cat, null, vals);
+
   colorScale = function (x) {
-    if (x == 0) return COLOR_SCALE[0];
-    for (var i = 1; i < nb.breaks.length; ++i) {
-      if (x < nb.breaks[i])
-        return COLOR_SCALE[i];
+    if (selectedMethod == "natural_breaks") {
+      if (x == 0) return COLOR_SCALE[selectedMethod][0];
+      for (var i = 1; i < nb.breaks.length; ++i) {
+        if (x < nb.breaks[i])
+          return COLOR_SCALE[selectedMethod][i];
+      }
+    } else {
+      for (var i = 1; i < nb.breaks.length; ++i) {
+        if (x < nb.breaks[i])
+          return COLOR_SCALE[selectedMethod][i-1];
+      }
     }
   };
   getFillColor = function (f) {
     let v = GetFeatureValue(f.properties.id);
-    if (v == 0) return [255, 255, 255, 200];
+    if (selectedMethod == "natural_breaks") {
+      if (v == 0) return [255, 255, 255, 200];
+    }
     return colorScale(v);
   };
   getLineColor = function (f) {
@@ -608,8 +638,6 @@ function initCounty() {
   };
   UpdateLegend();
   UpdateLegendLabels(nb.bins);
-  choropleth_btn.classList.add("checked");
-  lisa_btn.classList.remove("checked");
 
   if (isCartogram()) {
     cartogramData = gda_proxy.cartogram(countyMap, vals);
@@ -626,14 +654,26 @@ function init_state() {
   var nb;
 
   vals = GetDataValues(latestDate);
-  nb = gda_proxy.custom_breaks(stateMap, "natural_breaks", 8, null, vals);
+
+  var num_cat = 6;
+  if (selectedMethod == "natural_breaks") num_cat = 8;
+  nb = gda_proxy.custom_breaks(stateMap, "natural_breaks", num_cat, null, vals);
+
   colorScale = function (x) {
-    if (x == 0) return COLOR_SCALE[0];
-    for (var i = 1; i < nb.breaks.length; ++i) {
-      if (x < nb.breaks[i])
-        return COLOR_SCALE[i];
+    if (selectedMethod == "natural_breaks") {
+      if (x == 0) return COLOR_SCALE[selectedMethod][0];
+      for (var i = 1; i < nb.breaks.length; ++i) {
+        if (x < nb.breaks[i])
+          return COLOR_SCALE[selectedMethod][i];
+      }
+    } else {
+      for (var i = 1; i < nb.breaks.length; ++i) {
+        if (x < nb.breaks[i])
+          return COLOR_SCALE[selectedMethod][i-1];
+      }
     }
   };
+
   getFillColor = function (f) {
     let v = GetFeatureValue(f.properties.id);
     if (v == 0) return [255, 255, 255];
@@ -672,12 +712,7 @@ function OnSourceClick(evt) {
   }
 
   // force back to choropleth
-  selectedMethod = "choropleth";
-  //updateDates();
-  //if (isLisa()) {
-  //    OnLISAClick(document.getElementById('btn-lisa'));
-  //} else {
-  // }
+  selectedMethod = "natural_breaks";
 }
 
 function OnDataClick(evt) {
@@ -687,7 +722,7 @@ function OnDataClick(evt) {
   if (isLisa()) {
     OnLISAClick(document.getElementById('btn-lisa'));
   } else {
-    selectedMethod = "choropleth";
+    selectedMethod = "natural_breaks";
     if (isState()) {
       OnStateClick();
     } else {
@@ -1727,50 +1762,61 @@ function GetDataValues(inputDate) {
 
 function UpdateLegend() {
   const div = document.getElementById('legend');
-  div.innerHTML = `<div class="legend" style="background: rgb(240, 240, 240);"></div>
-    <div class="legend" style="background: rgb(255, 237, 160);"></div>
-    <div class="legend" style="background: rgb(254, 217, 118);"></div>
-    <div class="legend" style="background: rgb(254, 178, 76);"></div>
-    <div class="legend" style="background: rgb(253, 141, 60);"></div>
-    <div class="legend" style="background: rgb(252, 78, 42);"></div>
-    <div class="legend" style="background: rgb(227, 26, 28);"></div>
-    <div class="legend" style="background: rgb(189, 0, 38);"></div>
-    <div class="legend" style="background: rgb(128, 0, 38);"></div>
-`;
+
+  var content = "";
+  for (var i=0; i<COLOR_SCALE[selectedMethod].length; ++i) {
+    content += "<div class=\"legend\" style=\"background: rgb(";
+    content += COLOR_SCALE[selectedMethod][i][0] + ",";
+    content += COLOR_SCALE[selectedMethod][i][1] + ",";
+    content += COLOR_SCALE[selectedMethod][i][2];
+    content += ");\"></div>";
+  }
+  div.innerHTML = content;
 }
 
 function UpdateLegendLabels(breaks) {
   let field = data_btn.innerText;
   const div = document.getElementById('legend-labels');
-  var cont = '<div style="text-align:center">0</div>';
-  for (var i = 0; i < breaks.length; ++i) {
-    let val = breaks[i];
-    if (field == "Death Count/Confirmed Count") {
-      cont += '<div style="text-align:center">' + val + '</div>';
-    } else {
-      if (val[0] == '>') {
-        val = val.substring(1, val.length);
-        if (val.indexOf('.') >= 0) {
-          // format float number
-          val = parseFloat(val);
-          val = val.toFixed(2);
-        } else {
-          val = parseInt(val);
-          if (val > 10000) val = d3.format(".2s")(val);
-        }
-        cont += `<div style="text-align:center">>${val}</div>`;
-      } else {
-        if (val.indexOf('.') >= 0) {
-          // format float number
-          val = parseFloat(val);
-          val = val.toFixed(2);
-        } else {
-          val = parseInt(val);
-          if (val > 10000) val = d3.format(".2s")(val);
-        }
+  var cont = '';
+  if (selectedMethod == "natural_breaks") {
+    cont += '<div style="text-align:center">0</div>';
+    for (var i = 0; i < breaks.length; ++i) {
+      let val = breaks[i];
+      if (field == "Death Count/Confirmed Count") {
         cont += '<div style="text-align:center">' + val + '</div>';
+      } else {
+        if (val[0] == '>') {
+          val = val.substring(1, val.length);
+          if (val.indexOf('.') >= 0) {
+            // format float number
+            val = parseFloat(val);
+            val = val.toFixed(2);
+          } else {
+            val = parseInt(val);
+            if (val > 10000) val = d3.format(".2s")(val);
+          }
+          cont += `<div style="text-align:center">>${val}</div>`;
+        } else {
+          if (val.indexOf('.') >= 0) {
+            // format float number
+            val = parseFloat(val);
+            val = val.toFixed(2);
+          } else {
+            val = parseInt(val);
+            if (val > 10000) val = d3.format(".2s")(val);
+          }
+          cont += '<div style="text-align:center">' + val + '</div>';
+        }
       }
-    }
+    } 
+  } else {
+    // box plot
+    cont += '<div style="text-align:center">Lower Outlier</div>';
+    cont += '<div style="text-align:center">< 25%</div>';
+    cont += '<div style="text-align:center">25-50%</div>';
+    cont += '<div style="text-align:center">50-75%</div>';
+    cont += '<div style="text-align:center">>75%</div>';
+    cont += '<div style="text-align:center">Upper Outlier</div>';
   }
   div.innerHTML = cont;
 }
@@ -1805,10 +1851,12 @@ function updateTooltips() {
   });
 }
 
-function OnChoroplethClick(fixed_bins) {
+function OnChoroplethClick(evt, map_type, fixed_bins) {
   use_fixed_bins = fixed_bins;
-  
-  selectedMethod = "choropleth";
+  // update legend title
+  document.getElementById('legend_title').innerText = evt.innerText;
+
+  selectedMethod = map_type;
   if (isState()) {
     OnStateClick();
   } else {
@@ -1818,6 +1866,9 @@ function OnChoroplethClick(fixed_bins) {
 
 function OnLISAClick(evt) {
   selectedMethod = "lisa";
+
+  // update legend title
+  document.getElementById('legend_title').innerText = evt.innerText;
 
   var w = getCurrentWuuid();
   var data = GetDataValues();
