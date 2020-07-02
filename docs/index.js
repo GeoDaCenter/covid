@@ -51,7 +51,7 @@ const COLOR_SCALE = {
   ],
 };
 
-var lisa_labels = ["Not significant", "High-High", "Low-Low", "High-Low", "Low-High", "Undefined", "Isolated"];
+var lisa_labels = ["Not significant", "High-High", "Low-Low", "Low-High", "High-Low", "Undefined", "Isolated"];
 var lisa_colors = ["#ffffff", "#FF0000", "#0000FF", "#a7adf9", "#f4ada8", "#464646", "#999999"];
 
 
@@ -100,10 +100,11 @@ var fatalityData = {};
 var lisaData = {
   'county_usfacts.geojson': {},
 };
-// socioeconomic indicators from the county health rankings group (aka chr).
+
 // this is an object indexed by county fips.
-var chrData = {};
-var hlthData = {};
+var chrhlthcontextData = {};
+var chrhlthfactorData = {};
+var chrhlthlifeData = {};
 // county-level death predictions from the berkeley yu group
 var berkeleyCountyData = {};
 
@@ -205,9 +206,9 @@ function updateSelectedDataset(url, callback = () => {}) {
  * DATA LOADING
 */
 
-// fetch county health rankings social indicators (aka chr)
-async function fetchChrData() {
-  const rows = await d3.csv('chr_social_indicators.csv');
+// fetch county health rankings health factors
+async function fetchChrHlthFactorData() {
+  const rows = await d3.csv('chr_health_factors.csv');
 
   // index rows by "fips" (unique id)
   const rowsIndexed = rows.reduce((acc, row) => {
@@ -217,9 +218,21 @@ async function fetchChrData() {
   return rowsIndexed;
 }
 
-// fetch county health rankings health indicators (aka chr)
-async function fetchHlthData() {
-  const rows = await d3.csv('chr_health_indicators.csv');
+// fetch county health rankings health context indicators
+async function fetchChrHlthContextData() {
+  const rows = await d3.csv('chr_health_context.csv');
+
+  // index rows by "fips" (unique id)
+  const rowsIndexed = rows.reduce((acc, row) => {
+    acc[parseInt(row.FIPS)] = row;
+    return acc;
+  }, {});
+  return rowsIndexed;
+}
+
+// fetch county health rankings length and quality of life
+async function fetchChrHlthLifeData() {
+  const rows = await d3.csv('chr_life.csv');
 
   // index rows by "fips" (unique id)
   const rowsIndexed = rows.reduce((acc, row) => {
@@ -318,14 +331,16 @@ async function loadUsafactsData(url, callback) {
   [
     usafactsCases,
     usafactsDeaths,
-    chrData,
-    hlthData,
+    chrhlthfactorData,
+    chrhlthcontextData,
+    chrhlthlifeData,
     berkeleyCountyData,
   ] = await Promise.all([
     d3.csv('covid_confirmed_usafacts.csv'),
     d3.csv('covid_deaths_usafacts.csv'),
-    fetchChrData(),
-    fetchHlthData(),
+    fetchChrHlthFactorData(),
+    fetchChrHlthContextData(),
+    fetchChrHlthLifeData(),
     fetchBerkeleyCountyData(),
   ]);
 
@@ -933,67 +948,100 @@ function handleMapClick(e) {
   updateDataPanel(e);
 }
 
-// builds HTML for socioeconomic indicator tab in data panel
-function socioeconomicIndicatorsHtml(geoId) {
-  let html = '';
-  const labels = { // Help me with abbreviations, these were all guesses
-    PovChldPrc: 'Child Poverty Rate',
-    PovChldQ: 'Child Poverty Quartile',
-    IncInq20: 'Bottom 20% Income',
-    IncInq80: 'Top 20% Income',
-    IncRtio: 'Income Ratio',
-    UninPrc: 'Uninsured Percentage',
-    UninQ: 'Uninsured Quartile',
-    PrmPhysCt: 'Primary Care Count',
-    PrmPhysRt: 'Primary Care Rate',
-    PrmPhysQ: 'Primary Care Quartile',
-    PrevHospRt: 'Preventable Hospitalizations', 
-    PrevHospQ: 'Preventable Hospitalizations Quartile',
-    ResidentialsegregationBlack: 'Black Residential Segregation',
-    MedianHouseholdIncome: 'Median Household Income',
-    Over65YearsPrc: 'Over 65 Years %'
-  };
-  const handle = (val) => {
-    let formatted = val;
-    if (!val || val === '') return 'N/A';
-    const parsed = parseFloat(val);
-    if (isNaN(parsed)) return 'N/A'
-    if (parsed % 1 !== 0) {
-      formatted = parsed.toFixed(1);
-    } else {
-      formatted = parseInt(parsed);
-    }
-    return numberWithCommas(formatted);
-  }
-
-  const ordered = ['PovChldPrc', 'IncRtio', 'MedianHouseholdIncome', 'Over65YearsPrc', 'UninPrc', 'PrmPhysRt', 'PrevHospRt', 'ResidentialsegregationBlack' ];
-  html += `<div>
-    <h3>Socioeconomic Indicators</h3>
-    <div style="font-size: 80%; position: relative; top: -10px"><b>Source:</b> <a href="https://www.countyhealthrankings.org/">County Health Rankings</a></div>`
-  const rowHtml = (key) => `<div><b>${labels[key]}</b> <div class="info-tooltip" id="info-${key}"> <i class="fa fa-info-circle" aria-hidden="true"></i><span class="tooltip-text"></span></div>: ${handle(chrData[geoId][key])} </div>`;
-  ordered.forEach(key => html += rowHtml(key));
-  html += `</div>`
-  return html;
-}
-
-function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
-// builds HTML for health indicator tab in data panel
-function healthIndicatorsHtml(geoId) {
+// builds HTML for health factor in data panel
+function healthFactorHtml(geoId) {
   let html = '';
   const labels = { 
-    SmkPrc: 'Smokers %',
-    AdObPrc: 'Adults with Obesity %',
-    ExcDrkPrc: 'Excessive Drinking %',
-    DrDthAlcInv: 'Driving Deaths with Alcohol Involvement %',
-    ChlmRr: 'Chlamydia Rate',
-    AdDibPrc: 'Adults with Diabetes %',
-    HIVRt: 'HIV Prevalence Rate',
-    FdInsPrc: 'Food Insecure %',
-    DrOvrdDth: 'Drug Overdose Deaths',
-    DrOverdMrtRt: 'Drug Overdose Mortality Rate'
+    PovChldPrc: 'Children in poverty %',
+    IncRt: 'Income inequality',
+    MedianHouseholdIncome: 'Median household income',
+    FdInsPrc: 'Food insecurity %',
+    UnEmplyPrc: 'Unemployment %',
+    UnInPrc: 'Uninsured %',
+    PrmPhysRt: 'Primary care physicians',
+    PrevHospRt: 'Preventable hospital stays',
+    RsiSgrBlckRt: 'Residential segregation-black/white',
+    SvrHsngPrbRt: 'Severe housing problems %'
+  };
+
+  const handle = (val) => {
+    let formatted = val;
+    if (':' == val.substring(-3)) {
+      return numberWithCommas(parseInt(val.substring(0,val.length-2)));
+    };
+    if (!val || val === '') return 'N/A';
+    const parsed = parseFloat(val);
+    if (isNaN(parsed)) return 'N/A';
+    if (parsed % 1 !== 0) {
+      formatted = parsed.toFixed(1);
+    } else {
+      formatted = parseInt(parsed);
+    };
+    return numberWithCommas(formatted);
+  }
+
+  const ordered = ['PovChldPrc', 'IncRt', 'MedianHouseholdIncome', 'FdInsPrc', 'UnEmplyPrc', 'UnInPrc', 'PrmPhysRt', 'PrevHospRt', 'RsiSgrBlckRt', 'SvrHsngPrbRt'];
+  html += `<div>
+    <h3>Community Health Factors
+      <div class="info-tooltip" id="info-healthfactor">
+        <i class="fa fa-info-circle"  aria-hidden="true"></i>
+        <span class="right tooltip-text"></span>
+      </div>
+    </h3>
+    <div style="font-size: 80%; position: relative; top: -10px"><b>Source:</b> <a href="https://www.countyhealthrankings.org/">County Health Rankings</a></div>`
+  const rowHtml = (key) => `<div><b>${labels[key]}</b> <div class="info-tooltip" id="info-${key}"> <i class="fa fa-info-circle" aria-hidden="true"></i><span class="tooltip-text"></span></div>: ${handle(chrhlthfactorData[geoId][key])} </div>`;
+  ordered.forEach(key => html += rowHtml(key));
+  html += `</div>`
+  return html;
+}
+
+// builds HTML for health context tab in data panel
+function healthContextHtml(geoId) {
+  let html = '';
+  const labels = { 
+    Over65YearsPrc: '% 65 and older',
+    AdObPrc: 'Adult obesity %',
+    AdDibPrc: 'Diabetes prevalence %',
+    SmkPrc: 'Adult smoking %',
+    ExcDrkPrc: 'Excessive drinking %',
+    DrOverdMrtRt: 'Drug overdose deaths'
+  };
+
+  const handle = (val) => {
+    let formatted = val;
+    if (!val || val == '') return 'N/A';
+    const parsed = parseFloat(val);
+    if (isNaN(parsed)) return 'N/A';
+    formatted = parsed;
+    if (parsed % 1 !== 0) {
+    formatted = parsed.toFixed(1);
+    } else {
+    formatted = parseInt(parsed);
+    }
+    return numberWithCommas(formatted);
+  }
+
+  const ordered = ['Over65YearsPrc', 'AdObPrc', 'AdDibPrc', 'SmkPrc', 'ExcDrkPrc', 'DrOverdMrtRt'];
+  html += `<div>
+  <h3>Community Health Context 
+    <div class="info-tooltip" id="info-healthcontext">
+      <i class="fa fa-info-circle"  aria-hidden="true"></i>
+      <span class="right tooltip-text"></span>
+    </div>
+  </h3>
+    <div style="font-size: 80%; position: relative; top: -10px"><b>Source:</b> <a href="https://www.countyhealthrankings.org/">County Health Rankings</a></div>`
+  const rowHtml = (key) => `<div><b>${labels[key]}</b> <div class="info-tooltip" id="info-${key}"> <i class="fa fa-info-circle" aria-hidden="true"></i><span class="tooltip-text"></span></div>: ${handle(chrhlthcontextData[geoId][key])} </div>`;
+  ordered.forEach(key => html += rowHtml(key));
+  html += `</div>`
+  return html;
+}
+
+// builds HTML for health Life tab in data panel
+function healthLifeHtml(geoId) {
+  let html = '';
+  const labels = { 
+    LfExpRt: 'Life expectancy',
+    SlfHlthPrc: 'Self-rated health %'
   };
   const handle = (val) => {
     let formatted = val;
@@ -1008,19 +1056,26 @@ function healthIndicatorsHtml(geoId) {
     return numberWithCommas(formatted);
   }
 
-  const ordered = ['SmkPrc', 'AdObPrc', 'ExcDrkPrc', 'DrDthAlcInv', 'ChlmRr', 'AdDibPrc', 'HIVRt', 'FdInsPrc', 'DrOvrdDth', 'DrOverdMrtRt'];
+  const ordered = ['LfExpRt', 'SlfHlthPrc'];
   html += `<div>
-    <h3>Health Indicators</h3>
+  <h3>Length and Quality of Life
+    <div class="info-tooltip" id="info-healthlife">
+      <i class="fa fa-info-circle"  aria-hidden="true"></i>
+      <span class="right tooltip-text"></span>
+    </div>
+  </h3>
     <div style="font-size: 80%; position: relative; top: -10px"><b>Source:</b> <a href="https://www.countyhealthrankings.org/">County Health Rankings</a></div>`
-  const rowHtml = (key) => `<div><b>${labels[key]}</b> <div class="info-tooltip" id="info-${key}"> <i class="fa fa-info-circle" aria-hidden="true"></i><span class="tooltip-text"></span></div>: ${handle(hlthData[geoId][key])} </div>`;
+  const rowHtml = (key) => `<div><b>${labels[key]}</b> <div class="info-tooltip" id="info-${key}"> <i class="fa fa-info-circle" aria-hidden="true"></i><span class="tooltip-text"></span></div>: ${handle(chrhlthlifeData[geoId][key])} </div>`;
   ordered.forEach(key => html += rowHtml(key));
   html += `</div>`
   return html;
 }
 
+
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+
 
 // builds HTML for covid forecasting/predictions tab in data panel
 function covidForecastingHtml(geoId) {
@@ -1157,13 +1212,15 @@ function updateDataPanel(e) {
 
   // removed fatality rate:  <div><b>Fatality Rate:</b> ${fatalityRate}%</div>
 
-  if (chrData[geoId]) html += socioeconomicIndicatorsHtml(geoId);
-  if (hlthData[geoId]) html += healthIndicatorsHtml(geoId);
+  if (chrhlthfactorData[geoId]) html += healthFactorHtml(geoId);
+  if (chrhlthcontextData[geoId]) html += healthContextHtml(geoId);
+  if (chrhlthlifeData[geoId]) html += healthLifeHtml(geoId);
   if (berkeleyCountyData[geoId]) html += covidForecastingHtml(geoId);
 
   geoIdElem.value = geoId; // store geoid in hidden input so we can load data on select change
-  headerElem.innerHTML = `${chrData[geoId].County} County, ${stateAbbr}`;
-  headerElem.innerHTML = `${hlthData[geoId].County} County, ${stateAbbr}`;
+  headerElem.innerHTML = `${chrhlthcontextData[geoId].County} County, ${stateAbbr}`;
+  headerElem.innerHTML = `${chrhlthfactorData[geoId].County} County, ${stateAbbr}`;
+  headerElem.innerHTML = `${chrhlthlifeData[geoId].County} County, ${stateAbbr}`;
   bodyElem.innerHTML = html;
   collapseBtnElem.classList.remove('hide');
   panelElem.removeAttribute('hidden');
