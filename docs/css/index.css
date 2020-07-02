@@ -13,10 +13,102 @@
       
     }
 
-    .alt-h1 {
-    font-family: 'Open Sans', sans-serif;
+    .Near-Real-Time-Explo {
+      font-family: 'Playfair Display', serif;
+      font-size: 49px;
+      text-align: center;
+      font-style: italic;
+      color: #d8d8d8;
+      width: 940px;
+      height: 130px;
     }
 
+    .The-US-COVID-Atlas-i {
+      font-family: 'Lato', sans-serif;
+      font-size: 20px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.6;
+      letter-spacing: normal;
+      color: #ededed; 
+    }
+
+
+    .Button-Text {
+      width: 270px;
+      height: 48px;
+      font-family: Lato;
+      font-size: 16px;
+      font-weight: 900;
+      font-stretch: normal;
+      font-style: bold;
+      line-height: 1.5;
+      letter-spacing: 1.75px;
+      text-align: center;
+      color: #0d0d0d;
+    }
+
+
+    .From-January-22-202 {
+      width: 894px;
+      height: 52px;
+      font-family: Lato;
+      font-size: 16px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.63;
+      letter-spacing: normal;
+      color: #ededed;
+    }
+
+
+    .Atlas-Features {
+      width: 380px;
+      height: 46px;
+      font-family:'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: italic;
+      line-height: 1.5;
+      letter-spacing: normal;
+      text-align: center;
+      color: #a1e1e3;
+    }
+
+
+    .Track {
+    font-family: 'Playfair Display', serif;
+    font-size: 19px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #a1e1e3;
+  }
+
+
+    .Track-Text {
+    width: 220px;
+    height: 130px;
+    font-family: Lato;
+    font-size: 16px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.63;
+    letter-spacing: normal;
+    color: #ededed;
+  }
+
+  .regionalHotSpots {
+    width: 130px;
+    height: 91px;
+    object-fit: contain;
+  }
 
     .navbar-brand {
       padding: 0 15px;
@@ -39,6 +131,12 @@
     #feature {
       background-color: gainsboro;
     }
+
+
+    #BlueBanner {
+    height: 100px;
+    background-color: #c1ebeb;
+   }
 
 	.usage {
 	  border-radius: 25px;

@@ -14,8 +14,19 @@
 
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
+  <!-- Fonts -->
 
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300&family=Open+Sans&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+
+    
+  <!-- Icon Library -->
+
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
+   <!-- Mailchimp -->
+
+  <link href="//cdn-images.mailchimp.com/embedcode/slim-10_7.css" rel="stylesheet" type="text/css">
+
     
   <link href="//cdn-images.mailchimp.com/embedcode/slim-10_7.css" rel="stylesheet" type="text/css">
 
@@ -89,53 +100,63 @@
     <div class="row">
       <div class="col-lg-1"></div>
       <div class="jumbotron vertical-center jumbotron jumbotron-fluid col-lg-10" style="background:transparent !important">
-        <h1 class="display-1" style="color:#d8d8d8">The US Covid Atlas</h1>
         
-        <p class="lead" style="color:#d8d8d8">The US COVID Atlas is a county-level visualization tool developed by a University of Chicago-led research coalition that enables interactive exploration of COVID case data and community indicators across the United States from multiple sources, from the beginning of the pandemic to today. In a quickly changing pandemic landscape, access to county-level data and regional insights is crucial to understanding needs and supporting planning efforts to minimize the impacts of the COVID-19 Pandemic. </p><br>
+        <h1 class="Near-Real-Time-Explo">Near Real-Time Exploration of the <br>COVID-19 Pandemic</h1>
+        
+        <h2 class="The-US-COVID-Atlas-i">The US COVID Atlas is a visualization tool led by a University of Chicago research coalition. <br>In a quickly changing pandemic landscape, our tool connects COVID case data and community indicators across the United States from its beginning to today. The Atlas helps you access current, validated county-level data and spatial analysis to better understand the spread in communities and to bolster planning efforts.</p><br>
 
-        <a class="btn btn-success btn-lg" style="background-color: #f37e43; color: #0d0d0d" href="map.html" role="button">
-              EXPLORE THE ATLAS
+       <a class="btn btn-lg Button-Text" style="background-color: #f37e43; color: #0d0d0d" href="map.html" role="button">
+            EXPLORE THE ATLAS 
         </a>
       </div>
-       </div>
-    </div> 
+      <div class="col-lg-1"></div>
+    </div>
+  </div> 
 </section>
 
 <section id="gif">
   <div class="container">
-    <br><br>
-    <div class="row">
-      <div class="col-lg-8" >
-        <a href="map.html"><img class="rounded" src="img/6.10_confirm_per10K_usafacts.gif" style="width:100%" ></a>
-      </div>
-      <div class="col-lg-4"><br><br>
-      <h2 class = "display-5" style="color:#d8d8d8"> Near Real-Time Exploration of the Pandemic </h2>
-      <hr>
-      <p  style="color:#d8d8d8"> Statistical hotspots of confirmed cases of COVID-19 per 10,000 persons, shown from March to yesterday with USAFacts data.<p>
+    <div class="row justify-content-md-center">
+        <a href="map.html"><img src="img/6.10_confirm_per10K_usafacts.gif" style="width: 780px; height: 416px;" ></a>
+    </div>
+  </div>
+  <br>
+</section>
 
-      <p  style="color:#d8d8d8"> The Atlas is updated by 3pm each afternoon with the latest available data. We recommend a desktop or larger screen for optimal viewing.  <p>
-      </div>
-    </div> 
-    <br><br>
+<section id="gif">
+  <div class="container">
+   <div class="row justify-content-md-center"> 
+
+      <svg width="30px" height="30px" viewBox="0 0 16 16" class="bi bi-info-circle" fill="#f37e44" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+        <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"/>
+        <circle cx="8" cy="4.5" r="1"/>
+      </svg>
+ 
+     <h3 class="From-January-22-202">From January 22, 2020 to today: Statistical hotspots of confirmed cases of COVID-19 per 10,000 persons at the county level. The Atlas is updated by 3pm each afternoon with the latest available data.</h3>
+   </div>
+
   </div>
 </section>
 
+
 <section id="feature-overview">
-  <div class="container">
-    <br><br>
-    <div class= "mx-auto" style="width: 200px;">
+  <div class="container">>
+    <div class= "row justify-content-md-center">
       <br>
-       <h4 class="display-4" style="color:#c1ebea"> Product Features</h4><br><br>
+
+       <h4 class="Atlas-Features">Atlas Features</h4>
+       <br><br><br><br>
      </div>
     <div class="row">
       <div class="col-md-3">
         <div class="panel">
           <div class="panel-heading" src="index.js">
             <div style="text-align: center;">
-              <img src="icon.png"><br><br>
+              <img src="icons/regional-hot-spots.png" class="regionalHotSpots"><br><br>
             </div>
-              <h5 style= "text-align: center; color:#c1ebea">Regional Hotspots </h5><br>
-              <p style="text-align: center; color:#d8d8d8"> Statistical clusters of both confirmed and daily new COVID cases & deaths, with and without population adjustment.</p>
+              <h5 style= "text-align: center" class="Track">Track regional hotspots in real-time </h5>
+              <h4 style="text-align: center;" class="Track-Text"> Statistical clusters of both confirmed and daily new COVID cases & deaths, with and without population adjustment.</p>
           </div>
         </div>
       </div>
@@ -144,10 +165,10 @@
         <div class="panel">
           <div class="panel-heading" src="index.js">
             <div style="text-align: center;">
-              <img src="icon.png"><br><br>
+              <img src="icons/spread-over-time-2@2x.png" class="regionalHotSpots"><br><br>
             </div>
-              <h5 style= "text-align: center; color:#c1ebea">Change Over Time</h5><br>
-              <p style="text-align: center; color:#d8d8d8"> Watch the spread of accumulated or daily new COVID cases using a time slider and live time-animation. </p>
+              <h5 style= "text-align: center" class="Track">Watch COVID-19 spread across the country</h5>
+              <h4 style="text-align: center;" class="Track-Text"> Watch the spread of accumulated or daily new COVID cases using a time slider and live time-animation. </p>
             </div>
         </div>
       </div>
@@ -156,10 +177,10 @@
         <div class="panel">
           <div class="panel-heading" src="index.js">
             <div style="text-align: center;">
-              <img src="icon.png"><br><br>
+              <img src="icons/county-level-data@2x.png" class="regionalHotSpots"><br><br>
             </div>
-              <h5 style= "text-align: center; color:#c1ebea">Interactive Exploration</h5><br>
-              <p style="text-align: center; color:#d8d8d8"> Uncover trends of the pandemic by comparing different data sources, variables, and spatial analytic insights.</p>
+              <h5 style= "text-align: center" class="Track">Zoom in to focus down to the county level</h5>
+              <h4 style="text-align: center;" class="Track-Text"> Uncover trends of the pandemic by comparing different data sources, variables, and spatial analytic insights.</p>
           </div>
         </div>
       </div>
@@ -168,18 +189,22 @@
         <div class="panel">
           <div class="panel-heading" src="index.js">
             <div style="text-align: center;">
-              <img src="icon.png"><br><br>
+              <img src="icons/comm-health-context@2x.png" class="regionalHotSpots"><br><br>
             </div>
-              <h5 style= "text-align: center; color:#c1ebea">Linked Community Data</h5><br>
-              <p style="text-align: center; color:#d8d8d8">Connect to relevant social, economic, and health indicators to provide meaningful community context. </p>
-
+              <h5 style= "text-align: center" class="Track">Tap into community and health contexts</h5>
+              <h4 style="text-align: center;" class="Track-Text">Connect to relevant social, economic, and health indicators to provide meaningful community context. </p>
+      <br><br><br>
             </div>
         </div>
       </div>
+
     </div> <!-- close row --> 
   </div>
 </section>
 
+
+<section id="BlueBanner">
+</section>
 
 <section id="feature-1">
   <div class="container">
