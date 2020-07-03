@@ -1077,9 +1077,9 @@ function healthFactorHtml(geoId) {
 
   const handle = (val) => {
     let formatted = val;
-    if (':' == val.substring(-3)) {
-      return numberWithCommas(parseInt(val.substring(0,val.length-2)));
-    };
+    if (formatted.includes(':')){
+      return Math.round(formatted.substring(0,formatted.length-2)/10)*10 + ":1";
+    }
     if (!val || val === '') return 'N/A';
     const parsed = parseFloat(val);
     if (isNaN(parsed)) return 'N/A';
