@@ -136,6 +136,7 @@ a:visited {
 }
 .geoda-link a {
   padding: 0px !important;
+  color: #fff !important;
 }
 
 .options-panel {
@@ -150,7 +151,7 @@ a:visited {
   overflow-x: hidden;
   overflow-y: auto;
   outline: none;
-  z-index: 9091;
+  z-index: 9092;
   border-radius: 0px 0px 10px 0px;
 }
 
@@ -199,6 +200,7 @@ a:visited {
 #left-collapse {
   left: 348px;
   border-bottom-right-radius: 10px;
+  z-index: 9092 !important;
 }
 
 .collapse-btn:hover {

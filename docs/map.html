@@ -82,9 +82,14 @@
             <a href="#" onclick="OnDataClick(this)">Daily New Confirmed Count per 10K Pop</a>
             <a href="#" onclick="OnDataClick(this)">Daily New Death Count</a>
             <a href="#" onclick="OnDataClick(this)">Daily New Death Count per 10K Pop</a>
+            <a href="#" onclick="OnDataClick(this)">Forecasting (5-Day Severity Index)</a>
+            <a href="#" onclick="OnDataClick(this)">Smokers % (Health Indicators)</a>
+            <a href="#" onclick="OnDataClick(this)">Over 65 Years % (Socio Indicators)</a>
+            
           </div>
         </div>
       </div>
+
       <p>
         Select Map Type:
         <input type="checkbox" id="cartogram-ckb" onchange="OnCartogramClick(this)">Using Cartogram
@@ -134,6 +139,9 @@
 
       <div class="options-panel-section">
         Select Map Overlays:
+        <div style="float:right">
+          Dark mode: <i class="fa fa-toggle-on" aria-hidden="true" style="font-size: 20px; vertical-align:middle;" onclick="ToggleDarkMode(this)"></i>
+        </div>
         <div class="map-overlay-toggles">
           <div>
             <input id="reservations-toggle" type="checkbox" onchange="OnShowReservations(this)">
@@ -142,6 +150,10 @@
           <div>
             <input id="hypersegregated-cities-toggle" type="checkbox" onchange="OnShowHypersegregatedCities(this)">
             <label for="hypersegregated-cities-toggle">Show Hypersegregated Cities</label>
+          </div>
+          <div>
+            <input id="blackbelt-toggle" type="checkbox" onchange="OnShowBlackBelt(this)">
+            <label for="blackbelt-toggle">Show Black Belt Counties</label>
           </div>
       
           <div class="map-overlay-toggles--hidden">

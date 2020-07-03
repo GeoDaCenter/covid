@@ -49,6 +49,12 @@ const COLOR_SCALE = {
     [233, 160, 124],
     [215, 48, 39],
   ],
+  'forecasting' : [
+    [240, 240, 240],
+    [69, 117, 180],
+    [250, 227, 212],
+    [215, 48, 39],
+  ]
 };
 
 var lisa_labels = ["Not significant", "High-High", "Low-Low", "Low-High", "High-Low", "Undefined", "Isolated"];
@@ -156,6 +162,7 @@ var shouldShowLabels = false;
 var shouldShowReservations = false;
 var cartogramDeselected = false;
 var shouldShowHypersegregatedCities = false;
+var shouldShowBlackBelt = false;
 
 // these look like dataset file name constants, but they are actually default
 // values for state variables. for example, countyMap can change when switching
@@ -598,6 +605,25 @@ function updateDates() {
  * UI / EVENT HANDLERS
 */
 
+function ToggleDarkMode(evt)
+{
+  const isDark = document.querySelector('.fa-toggle-on') ? true : false;
+  if (isDark) {
+    evt.classList.remove("fa-toggle-on");
+    evt.classList.add("fa-toggle-off");
+    mapbox.setStyle('mapbox://styles/lixun910/ckc5dybfp07r41in3vr2ipdp4');
+  } else {
+    evt.classList.remove("fa-toggle-off");
+    evt.classList.add("fa-toggle-on");
+    mapbox.setStyle('mapbox://styles/lixun910/ckc41kxud09ab1hnxz9d5cnr9');
+  }
+  setTimeout(function() {
+    // create/re-create maps
+    const data = jsondata[selectedDataset];
+    createMap(data);
+  },500);
+}
+
 // this is the callback for when a county dataset is selected. it is also the
 // rendering function that gets called on load.
 function OnCountyClick(target) {
@@ -627,32 +653,63 @@ function initCounty() {
   if (selectedMethod == "natural_breaks") num_cat = 8;
   nb = gda_proxy.custom_breaks(countyMap, selectedMethod, num_cat, null, vals);
 
-  colorScale = function (x) {
-    if (selectedMethod == "natural_breaks") {
-      if (x == 0) return COLOR_SCALE[selectedMethod][0];
-      for (var i = 1; i < nb.breaks.length; ++i) {
-        if (x < nb.breaks[i])
-          return COLOR_SCALE[selectedMethod][i];
-      }
-    } else {
-      for (var i = 1; i < nb.breaks.length; ++i) {
-        if (x < nb.breaks[i])
-          return COLOR_SCALE[selectedMethod][i-1];
-      }
+  var legend_bins;
+
+  if (selectedMethod == "forecasting") {
+    // hard coded color scheme for forecasting
+    legend_bins = [0, 1, 2, 3];
+    // update legend title
+    document.getElementById('legend_title').innerText = "Severity Index";
+    colorScale = function (x) {
+      return COLOR_SCALE[selectedMethod][vals[x]]; 
+    };
+  } else {
+    // apply natural_breaks or box_plot
+    var num_cat = 6;
+    if (selectedMethod == "natural_breaks") { 
+      num_cat = 8; // hard coded to 8 categories
     }
-  };
+    nb = gda_proxy.custom_breaks(countyMap, selectedMethod, num_cat, null, vals);
+    legend_bins = nb.bins;
+
+    colorScale = function (v) {
+      const x = GetFeatureValue(v);
+      if (selectedMethod == "natural_breaks") {
+        if (x == 0) return COLOR_SCALE[selectedMethod][0];
+        for (var i = 1; i < nb.breaks.length; ++i) {
+          if (x < nb.breaks[i])
+            return COLOR_SCALE[selectedMethod][i];
+        }
+      } else {
+        let bin_check = 0;
+        for (var i = 1; i < nb.breaks.length-1; ++i) {
+          bin_check += nb.breaks[i];
+        }
+        if (bin_check == 0) { 
+          // special case when too many zeros
+          return  [200,200,200];
+        }
+        
+        for (var i = 1; i < nb.breaks.length; ++i) {
+          if (x <= nb.breaks[i])
+            return COLOR_SCALE[selectedMethod][i-1];
+        }
+      }
+    };
+  }
+
   getFillColor = function (f) {
-    let v = GetFeatureValue(f.properties.id);
-    if (selectedMethod == "natural_breaks") {
-      if (v == 0) return [255, 255, 255, 200];
-    }
-    return colorScale(v);
+    //if (v == 0) return [255, 255, 255, 200];
+    return colorScale(f.properties.id);
   };
   getLineColor = function (f) {
     return f.properties.id == selectedId ? [255, 0, 0] : [200, 200, 200];
   };
+  getLineWidth = function (f) {
+    return  f.properties.id == selectedId ? 100 : 1;
+  };
   UpdateLegend();
-  UpdateLegendLabels(nb.bins);
+  UpdateLegendLabels(legend_bins);
 
   if (isCartogram()) {
     cartogramData = gda_proxy.cartogram(countyMap, vals);
@@ -683,7 +740,7 @@ function init_state() {
       }
     } else {
       for (var i = 1; i < nb.breaks.length; ++i) {
-        if (x < nb.breaks[i])
+        if (x <= nb.breaks[i])
           return COLOR_SCALE[selectedMethod][i-1];
       }
     }
@@ -719,7 +776,6 @@ function OnSourceClick(evt) {
     selectedDataset = 'states_update.geojson';
   }
 
-
   if (isState()) {
     OnStateClick();
   } else {
@@ -731,19 +787,30 @@ function OnSourceClick(evt) {
 }
 
 function OnDataClick(evt) {
-  data_btn.innerText = evt.innerText;
+  data_btn.innerText = evt.innerText; // update the button label
   selectedVariable = evt.innerText;
 
-  if (isLisa()) {
-    OnLISAClick(document.getElementById('btn-lisa'));
-  } else {
+  // Set selectedMethod for "map type"
+  if (selectedVariable == "Forecasting (5-Day Severity Index)") {
+    // hard coded selectedMethod
+    selectedMethod = "forecasting";
+  } else if (selectedMethod == "forecasting") {
+    // reset to natural breaks if switching to other variable
     selectedMethod = "natural_breaks";
-    if (isState()) {
-      OnStateClick();
-    } else {
-      OnCountyClick();
-    }
   }
+
+  // hide time slider if needed
+  if (selectedVariable == "Forecasting (5-Day Severity Index)" ||
+      selectedVariable == "Smokers % (Health Indicators)" ||
+      selectedVariable == "Over 65 Years % (Socio Indicators)") {
+    // hide slider bar
+    document.getElementById("sliderdiv").style.display = 'none';
+  } else {
+    // reset to natural breaks if switching to other variable
+    document.getElementById("sliderdiv").style.display = 'block';
+  }
+
+  UpdateMap();
 }
 
 function OnCartogramClick(el) {
@@ -776,7 +843,28 @@ function OnCartogramClick(el) {
 }
 
 function OnShowLabels(el) {
+  // labels in cartogram
   shouldShowLabels = el.checked;
+  UpdateMap();
+}
+
+function OnShowReservations() {
+  shouldShowReservations = !shouldShowReservations;
+  UpdateMap();
+}
+
+function OnShowHypersegregatedCities() {
+  shouldShowHypersegregatedCities = !shouldShowHypersegregatedCities;
+  UpdateMap();
+}
+
+
+function OnShowBlackBelt() {
+  shouldShowBlackBelt = !shouldShowBlackBelt;
+  UpdateMap();
+}
+
+function UpdateMap() {
   if (isLisa()) {
     OnLISAClick(document.getElementById('btn-lisa'));
   } else {
@@ -785,25 +873,6 @@ function OnShowLabels(el) {
     } else {
       OnCountyClick();
     }
-  }
-}
-
-function OnShowReservations() {
-  shouldShowReservations = !shouldShowReservations;
-
-  if (isState()) {
-    OnStateClick();
-  } else {
-    OnCountyClick();
-  }
-}
-
-function OnShowHypersegregatedCities() {
-  shouldShowHypersegregatedCities = !shouldShowHypersegregatedCities;
-  if (isState()) {
-    OnStateClick();
-  } else {
-    OnCountyClick();
   }
 }
 
@@ -943,9 +1012,58 @@ function handleMapHover(e) {
   updateTooltip(e);
 }
 
+function highlightSelected(feat) {
+  if (feat) {
+    // highlight the selected polygon
+    let lyr = {
+      id: 'hllayer',
+      type: GeoJsonLayer,
+      data: {
+        'type': 'Feature',
+        'properties': {},
+        'geometry': {
+          'type': "Polygon",
+          'coordinates': feat.geometry.coordinates
+        }
+      },
+      getLineColor: [0, 0, 0],
+      getFillColor: [255, 0, 0],
+      lineWidthScale: 2,
+      lineWidthMinPixels: 2,
+      stroked: true,
+      filled: false
+    };
+    const firstLabelLayerId = mapbox.getStyle().layers.find(layer => layer.type === 'symbol').id;
+    if (!mapbox.getLayer("hllayer")) {
+      var hl_layer = new MapboxLayer(lyr);
+      layer_dict[lyr.id] = hl_layer;
+      mapbox.addLayer(hl_layer, firstLabelLayerId);
+    }
+    mapbox.setLayoutProperty(lyr.id, 'visibility', 'visible');
+    layer_dict[lyr.id].setProps(lyr);
+  }
+}
+
+window.addEventListener('storage', () => {
+  // When local storage changes, dump the list to
+  // the console.
+  const hl_id =  window.localStorage.getItem('HL_IDS');
+  if (isFinite(hl_id)) {
+    selectedId = hl_id;
+    const feat = jsondata[selectedDataset]["features"][hl_id];
+    highlightSelected(feat);
+  }
+});
+
 function handleMapClick(e) {
   updateTrendLine(e);
   updateDataPanel(e);
+  // update map to highlight any selected
+  if (e.object) {
+    highlightSelected(e.object); 
+    // sync between windows
+    window.localStorage.setItem("HL_IDS", JSON.stringify(e.object.properties.id));
+  }
 }
 
 // builds HTML for health factor in data panel
@@ -976,7 +1094,7 @@ function healthFactorHtml(geoId) {
       formatted = parsed.toFixed(1);
     } else {
       formatted = parseInt(parsed);
-    };
+    }
     return numberWithCommas(formatted);
   }
 
@@ -1125,6 +1243,7 @@ function updateDataPanel(e) {
   const geoIdElem = document.querySelector('#geoid');
 
   const id = e.object.properties.id;
+  selectedId = id;
 
   if (e.object) geoId = parseInt(e.object.properties.GEOID);
   if (!geoId) {
@@ -1236,7 +1355,7 @@ mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 
 const mapbox = new mapboxgl.Map({
   container: 'map',
-  style: 'mapbox://styles/lixun910/ckbcmga2j0lbl1ipi4dhpimbt',
+  style: 'mapbox://styles/lixun910/ckc41kxud09ab1hnxz9d5cnr9',
   center: [ -105.6500523, 35.850033],
   zoom: 3.5
 });
@@ -1274,21 +1393,21 @@ function forwardGeocoder(query) {
   var customData = createGeocoderData();
   var matchingFeatures = [];
   for (var i = 0; i < customData.features.length; i++) {
-  var feature = customData.features[i];
-  // handle queries with different capitalization than the source data by calling toLowerCase()
-  if (
-  feature.properties.title
-  .toLowerCase()
-  .search(query.toLowerCase()) !== -1
-  ) {
-  // using carmen geojson format: https://github.com/mapbox/carmen/blob/master/carmen-geojson.md
-  feature['place_name'] = feature.properties.title;
-  feature['center'] = feature.geometry.coordinates;
-  matchingFeatures.push(feature);
-  }
+    var feature = customData.features[i];
+    // handle queries with different capitalization than the source data by calling toLowerCase()
+    if (
+      feature.properties.title
+      .toLowerCase()
+      .search(query.toLowerCase()) !== -1
+    ) {
+      // using carmen geojson format: https://github.com/mapbox/carmen/blob/master/carmen-geojson.md
+      feature['place_name'] = feature.properties.title;
+      feature['center'] = feature.geometry.coordinates;
+      matchingFeatures.push(feature);
+    }
   }
   return matchingFeatures;
-  }
+}
 
 mapbox.addControl(
   new MapboxGeocoder({
@@ -1301,56 +1420,6 @@ mapbox.addControl(
 );
  
 mapbox.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
-
-/*
-function resetView(layers) {
-  let viewState = {}
-
-  // HAX: recenter map if changing from cartogram to cloropleth
-  if (cartogramDeselected) {
-    viewState =  {
-      zoom: 3.5,
-      latitude: 35.850033,
-      longitude: -105.6500523,
-      transitionInterpolator: new LinearInterpolator(['bearing']),
-      transitionDuration: 500
-    }
-    cartogramDeselected = false;
-  }
-  deckgl.setProps({
-    layers: layers,
-    viewState
-  });
-
-  
-}
-
-function setCartogramView(layers) {
-  if (isState()) {
-    deckgl.setProps({
-      layers: layers,
-      viewState: {
-        zoom: 6.6,
-        latitude: 3.726726,
-        longitude: -8.854194,
-        transitionInterpolator: new LinearInterpolator(['bearing']),
-        transitionDuration: 500
-      }
-    });
-  } else {
-    deckgl.setProps({
-      layers: layers,
-      viewState: {
-        zoom: 5.6,
-        latitude: 10.510908,
-        longitude: -30.190367,
-        transitionInterpolator: new LinearInterpolator(['bearing']),
-        transitionDuration: 500
-      }
-    });
-  }
-}
-*/
 
 function getCartogramLayer(data)
 {
@@ -1366,9 +1435,6 @@ function getCartogramLayer(data)
       onClick: handleMapClick,
       pickable: true,
       updateTriggers: {
-        getLineColor: [
-          selectedId
-        ],
         getFillColor: [
           selectedDate, selectedVariable, selectedMethod
         ]
@@ -1434,9 +1500,8 @@ function getCountyLayer(data)
       getElevation: getElevation,
       getFillColor: getFillColor,
       getLineColor: getLineColor,
-
+      getLineWidth: getLineWidth,
       updateTriggers: {
-        getLineColor: [],
         getFillColor: [
           selectedDate, selectedVariable, selectedMethod
         ]
@@ -1444,85 +1509,6 @@ function getCountyLayer(data)
       pickable: true,
       onHover: info => handleMapHover(info),
       onClick: handleMapClick
-    };
-}
-
-function getReservationLayer(data)
-{
-  return {
-      id: 'reservations-layer',
-      type: TileLayer,
-      stroked: true,
-      getLineColor: [0, 255, 255],
-      getFillColor: [100, 100, 100],
-      opacity: 0.25,
-      lineWidthMinPixels: 2.5,
-      // TODO make this a reusable handler for other map overlays
-      getTileData: async ({ x, y, z }) => {
-        const mapSource = `https://api.mapbox.com/v4/lixun910.7luxiq9n/${z}/${x}/${y}.vector.pbf?access_token=${MAPBOX_ACCESS_TOKEN}`;
-        
-        const response = await fetch(mapSource);
-
-        if (response.status >= 400) {
-          return;
-        }
-
-        const buffer = await response.arrayBuffer();
-
-        const tile = new VectorTile(new Pbf(buffer));
-        const features = [];
-
-        for (const layerName in tile.layers) {
-          const vectorTileLayer = tile.layers[layerName];
-
-          for (let i = 0; i < vectorTileLayer.length; i++) {
-            const vectorTileFeature = vectorTileLayer.feature(i);
-            const feature = vectorTileFeature.toGeoJSON(x, y, z);
-            features.push(feature);
-          }
-        }
-        
-        return features;
-      },
-    };
-}
-
-function getSegragateLayer(data)
-{
-  return {
-      id: 'segragatecity_layer',
-      type: TileLayer,
-      stroked: true,
-      getLineColor: [0, 255, 255],
-      getFillColor: [100, 100, 100],
-      opacity: 0.25,
-      lineWidthMinPixels: 2.5,
-      getTileData: async ({ x, y, z }) => {
-        const mapSource = `https://api.mapbox.com/v4/lixun910.131k9vc1/${z}/${x}/${y}.vector.pbf?access_token=${MAPBOX_ACCESS_TOKEN}`;
-
-        const response = await fetch(mapSource);
-
-        if (response.status >= 400) {
-          return;
-        }
-
-        const buffer = await response.arrayBuffer();
-
-        const tile = new VectorTile(new Pbf(buffer));
-        const features = [];
-
-        for (const layerName in tile.layers) {
-          const vectorTileLayer = tile.layers[layerName];
-
-          for (let i = 0; i < vectorTileLayer.length; i++) {
-            const vectorTileFeature = vectorTileLayer.feature(i);
-            const feature = vectorTileFeature.toGeoJSON(x, y, z);
-            features.push(feature);
-          }
-        }
-
-        return features;
-      },
     };
 }
 
@@ -1549,32 +1535,10 @@ function createMap(data) {
     if (!isState()) {
       layers.push(getStateLayer(data));
     }
-
-    // add reservations if we should
-    if (shouldShowReservations) {
-      layers.push(getReservationLayer(data));
-    }
-
-    // add reservations if we should
-    if (shouldShowHypersegregatedCities) {
-      layers.push(getSegragateLayer(data));
-    }
   }
  
   SetupLayers(layers);
-
-  if (document.getElementById('linechart').innerHTML == "" ||
-    d3.select("#slider").node().max != dates[selectedDataset].length) {
-    addTrendLine(data, "");
-  } else {
-    updateTrendLine({
-      x: 0,
-      y: 0,
-      object: null
-    });
-  }
-
-  createTimeSlider(data);
+  
 }
 
 function SetupLayers(layers) 
@@ -1585,6 +1549,27 @@ function SetupLayers(layers)
       mapbox.setLayoutProperty(lyrname, 'visibility', 'none');
     }
   }
+  // toggle native america layer
+  if (shouldShowReservations) {
+    mapbox.setLayoutProperty("nativeamericanreservations", 'visibility', 'visible');
+  } else {
+    mapbox.setLayoutProperty("nativeamericanreservations", 'visibility', 'none');
+  }
+
+  // toggle agg layer
+  if (shouldShowHypersegregatedCities) {
+    mapbox.setLayoutProperty("hypersegregated", 'visibility', 'visible');
+  } else {
+    mapbox.setLayoutProperty("hypersegregated", 'visibility', 'none');
+  }
+
+  // toggle blackbelt layer
+  if (shouldShowBlackBelt) {
+    mapbox.setLayoutProperty("blackbelt", 'visibility', 'visible');
+  } else {
+    mapbox.setLayoutProperty("blackbelt", 'visibility', 'none');
+  }
+
   const firstLabelLayerId = mapbox.getStyle().layers.find(layer => layer.type === 'symbol').id;
   // add to mapbox
   for (var lyr of layers) {
@@ -1600,37 +1585,26 @@ function SetupLayers(layers)
   for (var lyr of layers) {
     layer_dict[lyr.id].setProps(lyr);
   }
-
-  /*
-  if (!mapbox.getLayer('simple-tiles')) {
-    // https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png
-    var cartoSource = {
-      type: 'raster',
-      tiles: [
-        "https://a.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}.png",
-        "https://b.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}.png",
-        "https://c.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}.png",
-        "https://d.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}.png",
-      ],
-      'tileSize': 256,
-    };
-    mapbox.addSource('cartoSource', cartoSource);
-    mapbox.addLayer({
-      'id' : 'simple-tiles',
-      'type': 'raster',
-      'source': 'cartoSource',
-      'minzoom': 0,
-      'maxzoom': 22
-    });
-  
-  }
-  mapbox.moveLayer("simple-tiles");
-  */
 }
 
 
 function loadMap() {
-  createMap(jsondata[selectedDataset]);
+  const data = jsondata[selectedDataset];
+  // create/re-create mas
+  createMap(data);
+  // create/update line charts
+  if (document.getElementById('linechart').innerHTML == "" ||
+    d3.select("#slider").node().max != dates[selectedDataset].length) {
+    addTrendLine(data, "");
+  } else {
+    updateTrendLine({
+      x: 0,
+      y: 0,
+      object: null
+    });
+  }
+  // create/update time slider
+  createTimeSlider(data);
 }
 
 function getElevation(f) {
@@ -1696,6 +1670,24 @@ function GetFeatureValue(id) {
     var cur_vals = deathsData[json][selectedDate];
     var pre_vals = deathsData[json][prev_date];
     return ((cur_vals[id] - pre_vals[id]) / populationData[json][id] * 10000).toFixed(3);
+  } else if (txt == "Smokers % (Health Indicators)") {
+    let feat = jsondata[json]["features"][id];
+    let geoid = parseInt(feat.properties.GEOID);
+    let item = chrhlthcontextData[geoid];
+    if (item) {
+      if (isFinite(item["SmkPrc"])) {
+        return item["SmkPrc"];
+      }
+    }
+  } else if (txt == "Over 65 Years % (Socio Indicators)") {
+    let feat = jsondata[json]["features"][id];
+    let geoid = parseInt(feat.properties.GEOID);
+    let item = chrhlthcontextData[geoid];
+    if (item) {
+      if (isFinite(item["Over65YearsPrc"])) {
+        return item["Over65YearsPrc"];
+      }
+    }
   }
   return 0;
 }
@@ -1814,6 +1806,65 @@ function GetDataValues(inputDate) {
       rt_vals.push(check_val);
     }
     return rt_vals;
+  } else if (txt == "Forecasting (5-Day Severity Index)") {
+    // berkeleyCountyData
+    var rt_vals = [];
+    const feats = jsondata[json]["features"];
+    for (let i=0; i<feats.length; ++i) {
+      const geoid = parseInt(feats[i]["properties"].GEOID);
+      let check_val = berkeleyCountyData[geoid];
+      let no_value = true;
+      if (check_val != undefined) {
+        let v = check_val["severityIndex"];
+        if (v == "1" || v == "2" || v == "3") {
+          rt_vals.push(parseInt(v));
+          no_value = false;
+        } 
+      } 
+      if (no_value) {
+        rt_vals.push(0);
+      }
+    }
+    return rt_vals;
+  }  else if (txt == "Smokers % (Health Indicators)") {
+    // smokers % 
+    var rt_vals = [];
+    const feats = jsondata[json]["features"];
+    for (let i=0; i<feats.length; ++i) {
+      const geoid = parseInt(feats[i]["properties"].GEOID);
+      let check_val = chrhlthcontextData[geoid];
+      let no_value = true;
+      if (check_val != undefined) {
+        let v = parseFloat(check_val["SmkPrc"]);
+        if (isFinite(v)) {
+          rt_vals.push(v);
+          no_value = false;
+        } 
+      } 
+      if (no_value) {
+        rt_vals.push(0);
+      }
+    }
+    return rt_vals;
+  } else if (txt == "Over 65 Years % (Socio Indicators)") {
+    var rt_vals = [];
+    const feats = jsondata[json]["features"];
+    for (let i=0; i<feats.length; ++i) {
+      const geoid = parseInt(feats[i]["properties"].GEOID);
+      let check_val = chrhlthcontextData[geoid];
+      let no_value = true;
+      if (check_val != undefined) {
+        let v = parseFloat(check_val["Over65YearsPrc"]);
+        if (isFinite(v)) {
+          rt_vals.push(v);
+          no_value = false;
+        } 
+      } 
+      if (no_value) {
+        rt_vals.push(0);
+      }
+    }
+    return rt_vals;
   }
 }
 
@@ -1866,7 +1917,7 @@ function UpdateLegendLabels(breaks) {
         }
       }
     } 
-  } else {
+  } else if (selectedMethod.startsWith("hinge")) {
     // box plot
     cont += '<div style="text-align:center">Lower Outlier</div>';
     cont += '<div style="text-align:center">< 25%</div>';
@@ -1874,6 +1925,13 @@ function UpdateLegendLabels(breaks) {
     cont += '<div style="text-align:center">50-75%</div>';
     cont += '<div style="text-align:center">>75%</div>';
     cont += '<div style="text-align:center">Upper Outlier</div>';
+
+  } else if (selectedMethod == "forecasting") {
+    // forecasting 
+    cont += '<div style="text-align:center">N/A</div>';
+    cont += '<div style="text-align:center">Low</div>';
+    cont += '<div style="text-align:center">Medium</div>';
+    cont += '<div style="text-align:center">High</div>';
   }
   div.innerHTML = cont;
 }
@@ -2422,7 +2480,7 @@ function onSliderChange(val) {
     .html(selectedDate);
 
   //gY.call(yAxis);
-  if (selectedMethod == "lisa") {
+  if (isLisa()) {
     OnLISAClick(document.getElementById('btn-lisa'));
   } else {
     if (isState()) {
