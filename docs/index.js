@@ -793,9 +793,9 @@ function OnDataClick(evt) {
   }
 
   // hide time slider if needed
-  if (selectedVariable == "Forecasting (5-Day Severity Index)" ||
-      selectedVariable == "Smokers % (Health Indicators)" ||
-      selectedVariable == "Over 65 Years % (Socio Indicators)") {
+  if (selectedVariable == "Uninsured % (Community Health Factor)" ||
+      selectedVariable == "Over 65 Years % (Community Health Factor)" ||
+      selectedVariable == "Self-rated health % (Length and Quality of Life)") {
     // hide slider bar
     document.getElementById("sliderdiv").style.display = 'none';
   } else {
@@ -1663,7 +1663,7 @@ function GetFeatureValue(id) {
     var cur_vals = deathsData[json][selectedDate];
     var pre_vals = deathsData[json][prev_date];
     return ((cur_vals[id] - pre_vals[id]) / populationData[json][id] * 10000).toFixed(3);
-  } else if (txt == "Smokers % (Health Indicators)") {
+  /*} else if (txt == "Smokers % (Health Indicators)") {
     let feat = jsondata[json]["features"][id];
     let geoid = parseInt(feat.properties.GEOID);
     let item = chrhlthcontextData[geoid];
@@ -1671,8 +1671,17 @@ function GetFeatureValue(id) {
       if (isFinite(item["SmkPrc"])) {
         return item["SmkPrc"];
       }
+    }*/
+  } else if (txt == "Uninsured % (Community Health Factor)") {
+    let feat = jsondata[json]["features"][id];
+    let geoid = parseInt(feat.properties.GEOID);
+    let item = chrhlthfactorData[geoid];
+    if (item) {
+      if (isFinite(item["UnInPrc"])) {
+        return item["UnInPrc"];
+      }
     }
-  } else if (txt == "Over 65 Years % (Socio Indicators)") {
+  } else if (txt == "Over 65 Years % (Community Health Factor)") {
     let feat = jsondata[json]["features"][id];
     let geoid = parseInt(feat.properties.GEOID);
     let item = chrhlthcontextData[geoid];
@@ -1681,6 +1690,15 @@ function GetFeatureValue(id) {
         return item["Over65YearsPrc"];
       }
     }
+  } else if (txt == "Life expectancy (Length and Quality of Life)") {
+    let feat = jsondata[json]["features"][id];
+    let geoid = parseInt(feat.properties.GEOID);
+    let item = chrhlthlifeData[geoid];
+    if (item) {
+      if (isFinite(item["LfExpRt"])) {
+        return item["LfExpRt"];
+      }
+    }  
   }
   return 0;
 }
@@ -1799,7 +1817,7 @@ function GetDataValues(inputDate) {
       rt_vals.push(check_val);
     }
     return rt_vals;
-  } else if (txt == "Forecasting (5-Day Severity Index)") {
+  /*} } else if (txt == "Forecasting (5-Day Severity Index)") {
     // berkeleyCountyData
     var rt_vals = [];
     const feats = jsondata[json]["features"];
@@ -1819,7 +1837,7 @@ function GetDataValues(inputDate) {
       }
     }
     return rt_vals;
-  }  else if (txt == "Smokers % (Health Indicators)") {
+   else if (txt == "Smokers % (Health Indicators)") {
     // smokers % 
     var rt_vals = [];
     const feats = jsondata[json]["features"];
@@ -1838,8 +1856,27 @@ function GetDataValues(inputDate) {
         rt_vals.push(0);
       }
     }
+    return rt_vals;*/
+  } else if (txt == "Uninsured % (Community Health Factor)") {
+    var rt_vals = [];
+    const feats = jsondata[json]["features"];
+    for (let i=0; i<feats.length; ++i) {
+      const geoid = parseInt(feats[i]["properties"].GEOID);
+      let check_val = chrhlthfactorData[geoid];
+      let no_value = true;
+      if (check_val != undefined) {
+        let v = parseFloat(check_val["UnInPrc"]);
+        if (isFinite(v)) {
+          rt_vals.push(v);
+          no_value = false;
+        } 
+      } 
+      if (no_value) {
+        rt_vals.push(0);
+      }
+    }
     return rt_vals;
-  } else if (txt == "Over 65 Years % (Socio Indicators)") {
+  } else if (txt == "Over 65 Years % (Community Health Factor)") {
     var rt_vals = [];
     const feats = jsondata[json]["features"];
     for (let i=0; i<feats.length; ++i) {
@@ -1848,6 +1885,25 @@ function GetDataValues(inputDate) {
       let no_value = true;
       if (check_val != undefined) {
         let v = parseFloat(check_val["Over65YearsPrc"]);
+        if (isFinite(v)) {
+          rt_vals.push(v);
+          no_value = false;
+        } 
+      } 
+      if (no_value) {
+        rt_vals.push(0);
+      }
+    }
+    return rt_vals;
+  } else if (txt == "Life expectancy (Length and Quality of Life)") {
+    var rt_vals = [];
+    const feats = jsondata[json]["features"];
+    for (let i=0; i<feats.length; ++i) {
+      const geoid = parseInt(feats[i]["properties"].GEOID);
+      let check_val = chrhlthlifeData[geoid];
+      let no_value = true;
+      if (check_val != undefined) {
+        let v = parseFloat(check_val["LfExpRt"]);
         if (isFinite(v)) {
           rt_vals.push(v);
           no_value = false;
