@@ -823,7 +823,7 @@ function OnDataClick(evt) {
   if (selectedVariable == "Uninsured % (Community Health Factor)") {
     // hard coded selectedMethod
     selectedMethod = "natural_breaks_hlthfactor";
-  } else if (selectedVariable == "Over 65 Years % (Community Health Factor)" || selectedVariable == "Life expectancy (Length and Quality of Life)") {
+  } else if (selectedVariable == "Over 65 Years % (Community Health Context)" || selectedVariable == "Life expectancy (Length and Quality of Life)") {
     selectedMethod = "natural_breaks_hlthcontextlife";
   } else {
     selectedMethod = "natural_breaks";
@@ -832,7 +832,7 @@ function OnDataClick(evt) {
 
   // hide time slider if needed
   if (selectedVariable == "Uninsured % (Community Health Factor)" ||
-      selectedVariable == "Over 65 Years % (Community Health Factor)" ||
+      selectedVariable == "Over 65 Years % (Community Health Context)" ||
       selectedVariable == "Life expectancy (Length and Quality of Life)") {
     // hide slider bar
     document.getElementById("sliderdiv").style.display = 'none';
@@ -1719,7 +1719,7 @@ function GetFeatureValue(id) {
         return item["UnInPrc"];
       }
     }
-  } else if (txt == "Over 65 Years % (Community Health Factor)") {
+  } else if (txt == "Over 65 Years % (Community Health Context)") {
     let feat = jsondata[json]["features"][id];
     let geoid = parseInt(feat.properties.GEOID);
     let item = chrhlthcontextData[geoid];
@@ -1914,7 +1914,7 @@ function GetDataValues(inputDate) {
       }
     }
     return rt_vals;
-  } else if (txt == "Over 65 Years % (Community Health Factor)") {
+  } else if (txt == "Over 65 Years % (Community Health Context)") {
     var rt_vals = [];
     const feats = jsondata[json]["features"];
     for (let i=0; i<feats.length; ++i) {
@@ -2060,7 +2060,7 @@ function OnChoroplethClick(evt, map_type, fixed_bins) {
   if (selectedVariable == "Uninsured % (Community Health Factor)" && map_type == "natural_breaks") {
     // hard coded selectedMethod for health related variables
     selectedMethod = "natural_breaks_hlthfactor";
-  } else if ((selectedVariable == "Over 65 Years % (Community Health Factor)" || selectedVariable == "Life expectancy (Length and Quality of Life)") && map_type == "natural_breaks") {
+  } else if ((selectedVariable == "Over 65 Years % (Community Health Context)" || selectedVariable == "Life expectancy (Length and Quality of Life)") && map_type == "natural_breaks") {
     selectedMethod = "natural_breaks_hlthcontextlife";
   } else {
     selectedMethod = map_type;
