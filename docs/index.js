@@ -31,7 +31,31 @@ const COLOR_SCALE = {
     [252, 78, 42],
     [227, 26, 28],
     [189, 0, 38],
-    [128, 0, 38]
+    [128, 0, 38],
+  ],
+  'natural_breaks_hlthfactor':[
+    [240,240,240],
+    [247,252,253],
+    [224,236,244],
+    [191,211,230],
+    [158,188,218],
+    [140,150,198],
+    [140,107,177],
+    [136,65,157],
+    [129,15,124],
+    [77,0,75],
+  ],
+  'natural_breaks_hlthcontextlife':[
+    [240,240,240],
+    [247,252,240],
+    [224,243,219],
+    [204,235,197],
+    [168,221,181],
+    [123,204,196],
+    [78,179,211],
+    [43,140,190],
+    [8,104,172],
+    [8,64,129],
   ],
   'hinge15_breaks' :  [
     [1, 102, 94],
@@ -650,8 +674,8 @@ function initCounty() {
   }
   
   var num_cat = 6;
-  if (selectedMethod == "natural_breaks") num_cat = 8;
-  nb = gda_proxy.custom_breaks(countyMap, selectedMethod, num_cat, null, vals);
+  if (selectedMethod == "natural_breaks" || selectedMethod == "natural_breaks_hlthfactor" || selectedMethod == "natural_breaks_hlthcontextlife") num_cat = 8;
+  nb = gda_proxy.custom_breaks(countyMap, "natural_breaks", num_cat, null, vals);
 
   var legend_bins;
 
@@ -666,15 +690,19 @@ function initCounty() {
   } else {
     // apply natural_breaks or box_plot
     var num_cat = 6;
-    if (selectedMethod == "natural_breaks") { 
+    if (selectedMethod == "natural_breaks" || selectedMethod == "natural_breaks_hlthfactor" || selectedMethod == "natural_breaks_hlthcontextlife") { 
       num_cat = 8; // hard coded to 8 categories
     }
-    nb = gda_proxy.custom_breaks(countyMap, selectedMethod, num_cat, null, vals);
+    if (selectedMethod == "natural_breaks_hlthfactor" || selectedMethod == "natural_breaks_hlthcontextlife"){
+      nb = gda_proxy.custom_breaks(countyMap, "natural_breaks", num_cat, null, vals);
+    } else {
+      nb = gda_proxy.custom_breaks(countyMap, selectedMethod, num_cat, null, vals);
+    }
     legend_bins = nb.bins;
 
     colorScale = function (v) {
       const x = GetFeatureValue(v);
-      if (selectedMethod == "natural_breaks") {
+      if (selectedMethod == "natural_breaks" || selectedMethod == "natural_breaks_hlthfactor" || selectedMethod == "natural_breaks_hlthcontextlife") {
         if (x == 0) return COLOR_SCALE[selectedMethod][0];
         for (var i = 1; i < nb.breaks.length; ++i) {
           if (x < nb.breaks[i])
@@ -792,10 +820,20 @@ function OnDataClick(evt) {
     document.getElementById('legend_title').innerText = "Natural Breaks";
   }
 
+  if (selectedVariable == "Uninsured % (Community Health Factor)") {
+    // hard coded selectedMethod
+    selectedMethod = "natural_breaks_hlthfactor";
+  } else if (selectedVariable == "Over 65 Years % (Community Health Factor)" || selectedVariable == "Life expectancy (Length and Quality of Life)") {
+    selectedMethod = "natural_breaks_hlthcontextlife";
+  } else {
+    selectedMethod = "natural_breaks";
+  }
+
+
   // hide time slider if needed
   if (selectedVariable == "Uninsured % (Community Health Factor)" ||
       selectedVariable == "Over 65 Years % (Community Health Factor)" ||
-      selectedVariable == "Self-rated health % (Length and Quality of Life)") {
+      selectedVariable == "Life expectancy (Length and Quality of Life)") {
     // hide slider bar
     document.getElementById("sliderdiv").style.display = 'none';
   } else {
@@ -1935,7 +1973,7 @@ function UpdateLegendLabels(breaks) {
   let field = data_btn.innerText;
   const div = document.getElementById('legend-labels');
   var cont = '';
-  if (selectedMethod == "natural_breaks") {
+  if (selectedMethod == "natural_breaks" || selectedMethod == "natural_breaks_hlthfactor" || selectedMethod == "natural_breaks_hlthcontextlife") {
     cont += '<div style="text-align:center">0</div>';
     for (var i = 0; i < breaks.length; ++i) {
       let val = breaks[i];
@@ -2019,8 +2057,14 @@ function OnChoroplethClick(evt, map_type, fixed_bins) {
   use_fixed_bins = fixed_bins;
   // update legend title
   document.getElementById('legend_title').innerText = evt.innerHTML.split('<')[0].trim();
-
-  selectedMethod = map_type;
+  if (selectedVariable == "Uninsured % (Community Health Factor)" && map_type == "natural_breaks") {
+    // hard coded selectedMethod for health related variables
+    selectedMethod = "natural_breaks_hlthfactor";
+  } else if ((selectedVariable == "Over 65 Years % (Community Health Factor)" || selectedVariable == "Life expectancy (Length and Quality of Life)") && map_type == "natural_breaks") {
+    selectedMethod = "natural_breaks_hlthcontextlife";
+  } else {
+    selectedMethod = map_type;
+  }
   if (isState()) {
     OnStateClick();
   } else {
