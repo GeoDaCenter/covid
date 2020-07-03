@@ -775,15 +775,7 @@ function OnSourceClick(evt) {
   } else {
     selectedDataset = 'states_update.geojson';
   }
-
-  if (isState()) {
-    OnStateClick();
-  } else {
-    OnCountyClick(evt);
-  }
-
-  // force back to choropleth
-  selectedMethod = "natural_breaks";
+  UpdateMap();
 }
 
 function OnDataClick(evt) {
@@ -797,6 +789,7 @@ function OnDataClick(evt) {
   } else if (selectedMethod == "forecasting") {
     // reset to natural breaks if switching to other variable
     selectedMethod = "natural_breaks";
+    document.getElementById('legend_title').innerText = "Natural Breaks";
   }
 
   // hide time slider if needed
@@ -2108,6 +2101,9 @@ function getConfirmedCountByDateCounty(county_id, all) {
 
 function getConfirmedCountByDate(data, all) {
   let json = selectedDataset;
+  if (!(selectedDate in caseData[json])) {
+    selectedDate = dates[json][dates[json].length - 1];
+  }
   let n_count = Object.keys(caseData[json][selectedDate]).length;
   var counts = [];
   let d = dates[selectedDataset][0];
