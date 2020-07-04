@@ -312,7 +312,12 @@ a:visited {
 .line {
   stroke: red;
   fill: none;
-  stroke-width: 3;
+  stroke-width: 1;
+}
+
+.smoothline {
+  fill: none;
+  stroke-width: 1;
 }
 
 .axis path,

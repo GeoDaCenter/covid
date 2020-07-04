@@ -2407,15 +2407,15 @@ function addTrendLine(data, title) {
     .datum(tmpData)
     .attr("class", "line")
     .attr("d", line)
-    .attr("stroke", "steelblue")
-    .attr("stroke-width", 3.5);
+    .attr("stroke", "red")
+    .attr("stroke-width", 1);
 
   svg.append("path")
     .datum(tmpData)
-    .attr("class", "line")
+    .attr("class", "smoothline")
     .attr("d", smoothline)
     .attr("stroke", "steelblue")
-    .attr("stroke-width", 7);
+    .attr("stroke-width", 1);
   
   var xstride = Math.floor(xLabels.length/10)
   svg.append("g")
