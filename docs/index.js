@@ -2239,6 +2239,9 @@ function getSmoonthConfirmedCountByDateCounty(county_id, all) {
     sum = caseData[json][d][county_id];
   }
   counts.push(sum);
+  for (let i = 1; i < 7; ++i) {
+    counts.push(0);
+  }
   for (let i = 7; i < dates[selectedDataset].length; ++i) {
     let sum = 0;
     let d0 = dates[selectedDataset][i - 7];
@@ -2288,8 +2291,52 @@ function getConfirmedCountByDate(data, all) {
   return counts;
 }
 
+function getSmoothConfirmedCountByDate(data, all) {
+  let json = selectedDataset;
+  if (!(selectedDate in caseData[json])) {
+    selectedDate = dates[json][dates[json].length - 1];
+  }
+  let n_count = Object.keys(caseData[json][selectedDate]).length;
+  var counts = [];
+  let d = dates[selectedDataset][0];
+  // get total count for 1st day
+  let sum = 0;
+  let sel_dt = Date.parse(selectedDate);
+  for (let j = 0; j < n_count; ++j) {
+    if (all || Date.parse(d) <= sel_dt) {
+      sum = caseData[json][d][j];
+    }
+  }
+  counts.push(sum);
+  for (let i = 1; i < 7; ++i) {
+    counts.push(0);
+  }
+  for (let i = 7; i < dates[selectedDataset].length; ++i) {
+    let pre_sum = 0;
+    let cur_sum = 0;
+    let d0 = dates[selectedDataset][i - 7];
+    let d1 = dates[selectedDataset][i];
+    if (all || Date.parse(d1) <= sel_dt) {
+      for (let j = 0; j < n_count; ++j) {
+        pre_sum += caseData[json][d0][j];
+        cur_sum += caseData[json][d1][j];
+      }
+    }
+    counts.push(cur_sum - pre_sum < 0 ? 0 : (cur_sum - pre_sum)/7);
+  }
+  return counts;
+}
+
 function getAccumConfirmedCountByDate(data, all) {
   var counts = getConfirmedCountByDate(data, all);
+  for (var i = 1; i < counts.length; ++i) {
+    counts[i] = counts[i - 1] + counts[i];
+  }
+  return counts;
+}
+
+function getSmoothAccumConfirmedCountByDate(data, all) {
+  var counts = getSmoothConfirmedCountByDate(data, all);
   for (var i = 1; i < counts.length; ++i) {
     counts[i] = counts[i - 1] + counts[i];
   }
@@ -2330,11 +2377,14 @@ function addTrendLine(data, title) {
   var yValues = getConfirmedCountByDate(data, false);
   yScale.domain([0, Math.max.apply(null, yValues)]);
 
+  var smoothyValues = getSmoothConfirmedCountByDate(data, false);
+
   var tmpData = [];
   for (var i = 0; i < xLabels.length; ++i) {
     tmpData.push({
       "date": xLabels[i],
-      "confirmedcases": yValues[i]
+      "confirmedcases": yValues[i],
+      "smoothconfirmedcases": smoothyValues[i]
     });
   }
   var line = d3.line()
@@ -2344,12 +2394,28 @@ function addTrendLine(data, title) {
     .y(function(d) {
       return yScale(d['confirmedcases']);
     });
+    
+  var smoothline = d3.line()
+    .x(function(d) {
+      return xScale(d['date']);
+    })
+    .y(function(d) {
+      return yScale(d['smoothconfirmedcases']);
+    });
 
   svg.append("path")
     .datum(tmpData)
     .attr("class", "line")
     .attr("d", line)
-    .attr("stroke", "red");
+    .attr("stroke", "steelblue")
+    .attr("stroke-width", 3.5);
+
+  svg.append("path")
+    .datum(tmpData)
+    .attr("class", "line")
+    .attr("d", smoothline)
+    .attr("stroke", "steelblue")
+    .attr("stroke-width", 7);
   
   var xstride = Math.floor(xLabels.length/10)
   svg.append("g")
@@ -2410,14 +2476,16 @@ function updateTrendLine({
     bottom: 50,
     left: 50
   };
-  var xLabels, yValues, title;
+  var xLabels, yValues, smoothyValues, title;
   let json = selectedDataset;
 
   xLabels = dates[selectedDataset];
   if (object) {
     yValues = getConfirmedCountByDateCounty(object.properties.id, false);
+    smoothyValues = getSmoonthConfirmedCountByDateCounty(object.properties.id, false);
   } else {
     yValues = getConfirmedCountByDate(jsondata[json], false);
+    smoothyValues = getSmoothConfirmedCountByDate(jsondata[json], false);
   }
   title = object ? object.properties["NAME"] : "U.S.";
 
@@ -2426,7 +2494,8 @@ function updateTrendLine({
   for (var i = 0; i < xLabels.length; ++i) {
     tmpData.push({
       "date": xLabels[i],
-      "confirmedcases": yValues[i]
+      "confirmedcases": yValues[i],
+      "smoothconfirmedcases": smoothyValues[i]
     });
   }
 
@@ -2450,6 +2519,14 @@ function updateTrendLine({
     .y(function(d) {
       return yScale(d['confirmedcases']);
     });
+  
+  var smoothline = d3.line()
+    .x(function(d) {
+      return xScale(d['date']);
+    })
+    .y(function(d) {
+      return yScale(d['smoothconfirmedcases']);
+    });
 
   var xAxis = d3.axisBottom()
     .scale(xScale);
@@ -2461,10 +2538,13 @@ function updateTrendLine({
   svg.select(".line") // change the line
     .duration(750)
     .attr("d", line(tmpData));
+  svg.select(".smoothline") // change the line
+    .duration(750)
+    .attr("d", smoothline(tmpData));
   svg.select(".yaxis") // change the y axis
     .duration(750)
     .call(yAxis);
-  svg.select(".xaxis") // change the y axis
+  svg.select(".xaxis") // change the x axis
     .duration(750)
     .call(xAxis);
 
@@ -2516,11 +2596,14 @@ function createTimeSlider(geojson) {
   var yValues = getAccumConfirmedCountByDate(geojson, true);
   yScale.domain([0, Math.max.apply(null, yValues)]);
 
+  var smoothyValues = getSmoothAccumConfirmedCountByDate(geojson, true);
+
   var tmpData = [];
   for (var i = 0; i < xLabels.length; ++i) {
     tmpData.push({
       "date": xLabels[i],
-      "confirmedcases": yValues[i]
+      "confirmedcases": yValues[i],
+      "smoothconfirmedcases": smoothyValues[i]
     });
   }
 
@@ -2627,6 +2710,8 @@ function onSliderChange(val) {
 
   var yValues = getAccumConfirmedCountByDate(geojson, true);
   yScale.domain([0, Math.max.apply(null, yValues)]);
+  var smoothyValues = getSmoothAccumConfirmedCountByDate(geojson, true);
+
 
   d3.select(".slider_text")
     .html(selectedDate);
