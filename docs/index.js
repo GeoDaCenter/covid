@@ -1670,6 +1670,17 @@ function GetFeatureValue(id) {
     return (deathsData[json][selectedDate][id] / populationData[json][id] * 10000).toFixed(3);
   } else if (txt == "Death Count/Confirmed Count") {
     return fatalityData[json][selectedDate][id];
+  } else if (txt == "7-Day Average Daily New Confirmed Count per 10K Pop"){
+    //if (selectedDataset == 'county_usfacts.geojson') {
+    let dt_idx = dates[selectedDataset].indexOf(selectedDate);
+    if (dt_idx < 7) return 0;
+    let prev_date = dates[selectedDataset][dt_idx - 7];
+    var cur_vals = caseData[json][selectedDate];
+    var pre_vals = caseData[json][prev_date];
+    return ((cur_vals[id] - pre_vals[id])/7/ populationData[json][id] * 10000).toFixed(3);
+    //} else {
+    //  return 0;
+    //}
   } else if (txt == "Daily New Confirmed Count") {
     let dt_idx = dates[selectedDataset].indexOf(selectedDate);
     if (dt_idx == 0) return 0;
@@ -1677,7 +1688,6 @@ function GetFeatureValue(id) {
     var cur_vals = caseData[json][selectedDate];
     var pre_vals = caseData[json][prev_date];
     return cur_vals[id] - pre_vals[id];
-
   } else if (txt == "Daily New Confirmed Count per 10K Pop") {
     let dt_idx = dates[selectedDataset].indexOf(selectedDate);
     if (dt_idx == 0) return 0;
@@ -1693,7 +1703,6 @@ function GetFeatureValue(id) {
     var cur_vals = deathsData[json][selectedDate];
     var pre_vals = deathsData[json][prev_date];
     return cur_vals[id] - pre_vals[id];
-
   } else if (txt == "Daily New Death Count per 10K Pop") {
     let dt_idx = dates[selectedDataset].indexOf(selectedDate);
     if (dt_idx == 0) return 0;
@@ -1813,6 +1822,25 @@ function GetDataValues(inputDate) {
     var rt_vals = [];
     for (let i in cur_vals) {
       let check_val = (cur_vals[i] - pre_vals[i]) / populationData[json][i] * 10000;
+      if (isNaN(check_val) || check_val == undefined) check_val = 0;
+      rt_vals.push(check_val);
+    }
+    return rt_vals;
+  
+  } else if (txt == "7-Day Average Daily New Confirmed Count per 10K Pop") {
+    let dt_idx = dates[selectedDataset].indexOf(inputDate);
+    if (dt_idx < 7) { 
+      let nn = caseData[json][inputDate].length;
+      let rtn = []
+      for (let i =0; i < nn; ++i) rtn.push(0);
+      return rtn;
+    }
+    let prev_date = dates[selectedDataset][dt_idx - 7];
+    var cur_vals = caseData[json][inputDate];
+    var pre_vals = caseData[json][prev_date];
+    var rt_vals = [];
+    for (let i in cur_vals) {
+      let check_val = (cur_vals[i] - pre_vals[i]) / 7/populationData[json][i] * 10000;
       if (isNaN(check_val) || check_val == undefined) check_val = 0;
       rt_vals.push(check_val);
     }
@@ -2189,6 +2217,34 @@ function getConfirmedCountByDateCounty(county_id, all) {
     let d1 = dates[selectedDataset][i];
     if (all || Date.parse(d1) <= sel_dt) {
       sum = (caseData[json][d1][county_id] - caseData[json][d0][county_id]);
+    }
+    if (sum < 0) {
+      console.log("USAFacts data issue at ", jsondata[json].features[county_id].properties.NAME);
+      sum = 0;
+    }
+    counts.push(sum);
+  }
+  return counts;
+}
+
+function getSmoonthConfirmedCountByDateCounty(county_id, all) {
+  let json = selectedDataset;
+  let n_count = Object.keys(caseData[json][selectedDate]).length;
+  var counts = [];
+  let d = dates[selectedDataset][0];
+  let sum = 0;
+  let sel_dt = Date.parse(selectedDate);
+
+  if (all || Date.parse(d) <= sel_dt) {
+    sum = caseData[json][d][county_id];
+  }
+  counts.push(sum);
+  for (let i = 7; i < dates[selectedDataset].length; ++i) {
+    let sum = 0;
+    let d0 = dates[selectedDataset][i - 7];
+    let d1 = dates[selectedDataset][i];
+    if (all || Date.parse(d1) <= sel_dt) {
+      sum = (caseData[json][d1][county_id] - caseData[json][d0][county_id])/7;
     }
     if (sum < 0) {
       console.log("USAFacts data issue at ", jsondata[json].features[county_id].properties.NAME);
