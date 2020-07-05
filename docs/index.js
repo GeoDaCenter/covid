@@ -1681,6 +1681,17 @@ function GetFeatureValue(id) {
     //} else {
     //  return 0;
     //}
+  } else if (txt == "7-Day Average Daily New Confirmed Count"){
+    //if (selectedDataset == 'county_usfacts.geojson') {
+    let dt_idx = dates[selectedDataset].indexOf(selectedDate);
+    if (dt_idx < 7) return 0;
+    let prev_date = dates[selectedDataset][dt_idx - 7];
+    var cur_vals = caseData[json][selectedDate];
+    var pre_vals = caseData[json][prev_date];
+    return ((cur_vals[id] - pre_vals[id])/7).toFixed(3);
+    //} else {
+    //  return 0;
+    //}
   } else if (txt == "Daily New Confirmed Count") {
     let dt_idx = dates[selectedDataset].indexOf(selectedDate);
     if (dt_idx == 0) return 0;
@@ -1841,6 +1852,25 @@ function GetDataValues(inputDate) {
     var rt_vals = [];
     for (let i in cur_vals) {
       let check_val = (cur_vals[i] - pre_vals[i]) / 7/populationData[json][i] * 10000;
+      if (isNaN(check_val) || check_val == undefined) check_val = 0;
+      rt_vals.push(check_val);
+    }
+    return rt_vals;
+
+  } else if (txt == "7-Day Average Daily New Confirmed Count") {
+    let dt_idx = dates[selectedDataset].indexOf(inputDate);
+    if (dt_idx < 7) { 
+      let nn = caseData[json][inputDate].length;
+      let rtn = []
+      for (let i =0; i < nn; ++i) rtn.push(0);
+      return rtn;
+    }
+    let prev_date = dates[selectedDataset][dt_idx - 7];
+    var cur_vals = caseData[json][inputDate];
+    var pre_vals = caseData[json][prev_date];
+    var rt_vals = [];
+    for (let i in cur_vals) {
+      let check_val = (cur_vals[i] - pre_vals[i]) /7;
       if (isNaN(check_val) || check_val == undefined) check_val = 0;
       rt_vals.push(check_val);
     }
