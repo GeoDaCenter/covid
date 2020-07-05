@@ -804,12 +804,21 @@ function OnSourceClick(evt) {
     selectedDataset = 'states_update.geojson';
   }
   UpdateMap();
-  if (evt.innerText.indexOf('County (1Point3Acres.com)') >= 0) {
+  if (evt.innerText.indexOf('1Point3Acres.com') >= 0) {
     document.getElementById("btn-7day").style.display = "none";
     document.getElementById("btn-7day-per10K").style.display = "none";
   } else {
     document.getElementById("btn-7day").style.display = "block";
     document.getElementById("btn-7day-per10K").style.display = "block";
+  }
+  if (evt.innerText.indexOf('State') >= 0){
+    document.getElementById("btn-uninprc").style.display = "none";
+    document.getElementById("btn-over65yearsprc").style.display = "none";
+    document.getElementById("btn-lfexprt").style.display = "none";
+  } else {
+    document.getElementById("btn-uninprc").style.display = "block";
+    document.getElementById("btn-over65yearsprc").style.display = "block";
+    document.getElementById("btn-lfexprt").style.display = "block";  
   }
 }
 
