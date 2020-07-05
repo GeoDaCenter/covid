@@ -313,6 +313,11 @@ a:visited {
   stroke-width: 3;
 }
 
+.smoothline{
+  fill: none;
+  stroke-width: 2;
+}
+
 .axis path,
 .axis line {
   fill: none;
