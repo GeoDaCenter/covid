@@ -723,10 +723,11 @@ function initCounty() {
     return colorScale(f.properties.id);
   };
   getLineColor = function (f) {
-    return f.properties.id == selectedId ? [255, 0, 0] : [200, 200, 200];
+    //return f.properties.id == selectedId ? [255, 0, 0] : [200, 200, 200];
+    return  [200, 200, 200];
   };
   getLineWidth = function (f) {
-    return  f.properties.id == selectedId ? 100 : 1;
+    return  1;
   };
   UpdateLegend();
   UpdateLegendLabels(legend_bins);
@@ -772,7 +773,8 @@ function init_state() {
     return colorScale(v);
   };
   getLineColor = function (f) {
-    return f.properties.id == selectedId ? [255, 0, 0] : [255, 255, 255, 50];
+    //return f.properties.id == selectedId ? [255, 0, 0] : [255, 255, 255, 50];
+    return [255, 255, 255, 50];
   };
   UpdateLegend();
   UpdateLegendLabels(nb.bins);
@@ -819,22 +821,22 @@ function OnDataClick(evt) {
   selectedVariable = evt.innerText;
 
   // Set selectedMethod for "map type"
-  if (selectedVariable == "Forecasting (5-Day Severity Index)") {
+  if (selectedVariable == "Uninsured % (Community Health Factor)") {
+    // hard coded selectedMethod
+    selectedMethod = "natural_breaks_hlthfactor";
+  } else if (selectedVariable == "Over 65 Years % (Community Health Context)" || selectedVariable == "Life expectancy (Length and Quality of Life)") {
+    // hard coded selectedMethod
+    selectedMethod = "natural_breaks_hlthcontextlife";
+  } else if (selectedVariable == "Forecasting (5-Day Severity Index)") {
     // hard coded selectedMethod
     selectedMethod = "forecasting";
   } else if (selectedMethod == "forecasting") {
     // reset to natural breaks if switching to other variable
     selectedMethod = "natural_breaks";
     document.getElementById('legend_title').innerText = "Natural Breaks";
-  }
-
-  if (selectedVariable == "Uninsured % (Community Health Factor)") {
-    // hard coded selectedMethod
-    selectedMethod = "natural_breaks_hlthfactor";
-  } else if (selectedVariable == "Over 65 Years % (Community Health Context)" || selectedVariable == "Life expectancy (Length and Quality of Life)") {
-    selectedMethod = "natural_breaks_hlthcontextlife";
   } else {
     selectedMethod = "natural_breaks";
+    // others will keep using current selectedMethod
   }
 
 
@@ -905,7 +907,14 @@ function OnShowBlackBelt() {
 
 function UpdateMap() {
   if (isLisa()) {
-    OnLISAClick(document.getElementById('btn-lisa'));
+    if (!(selectedDataset in jsondata)) {
+      // data was not loaded yet, load the data first
+      selectedMethod = "natural_breaks";
+      if (isState()) OnStateClick();
+      else OnCountyClick();
+    } else {
+      OnLISAClick(document.getElementById('btn-lisa'));
+    }
   } else {
     if (isState()) {
       OnStateClick();
@@ -2191,7 +2200,8 @@ function OnLISAClick(evt) {
   };
 
   getLineColor = function(f) {
-    return f.properties.id == selectedId ? [255, 0, 0] : [255, 255, 255, 50];
+    //return f.properties.id == selectedId ? [255, 0, 0] : [255, 255, 255, 50];
+    return  [255, 255, 255, 50];
   };
 
   UpdateLisaLegend(color_vec);
