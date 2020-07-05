@@ -175,6 +175,9 @@ var getLineColor = function() {
 */
 
 // the selected data source (e.g. county_usfacts.geojson)
+// these look like dataset file name constants, but they are actually default
+// values for state variables. for example, selectedDataset can change when switching
+// between 1p3a counties and usafacts counties.
 var selectedDataset = 'county_usfacts.geojson';
 var selectedId = null;
 var selectedDate = null;
@@ -188,11 +191,7 @@ var cartogramDeselected = false;
 var shouldShowHypersegregatedCities = false;
 var shouldShowBlackBelt = false;
 
-// these look like dataset file name constants, but they are actually default
-// values for state variables. for example, countyMap can change when switching
-// between 1p3a counties and usafacts counties.
 var stateMap = 'states_update.geojson';
-var countyMap = 'county_usfacts.geojson';
 
 function isState() {
   return source_btn.innerText.indexOf('State') >= 0;
@@ -377,7 +376,7 @@ async function loadUsafactsData(url, callback) {
 
   // update state
   // TODO isn't there a function that does this?
-  updateSelectedDataset(countyMap);
+  updateSelectedDataset(selectedDataset);
 
   // merge usfacts csv data
   parseUsaFactsData(featuresWithIds, usafactsCases, usafactsDeaths);
@@ -651,15 +650,8 @@ function ToggleDarkMode(evt)
 // this is the callback for when a county dataset is selected. it is also the
 // rendering function that gets called on load.
 function OnCountyClick(target) {
-  if (target != undefined) {
-    if (target.innerText.indexOf('UsaFacts') >= 0) {
-      countyMap = "county_usfacts.geojson";
-    } else {
-      countyMap = "counties_update.geojson";
-    }
-  }
   updateTooltips();
-  loadData(countyMap, initCounty);
+  loadData(selectedDataset, initCounty);
 }
 
 
@@ -675,7 +667,7 @@ function initCounty() {
   
   var num_cat = 6;
   if (selectedMethod == "natural_breaks" || selectedMethod == "natural_breaks_hlthfactor" || selectedMethod == "natural_breaks_hlthcontextlife") num_cat = 8;
-  nb = gda_proxy.custom_breaks(countyMap, "natural_breaks", num_cat, null, vals);
+  nb = gda_proxy.custom_breaks(selectedDataset, "natural_breaks", num_cat, null, vals);
 
   var legend_bins;
 
@@ -694,9 +686,9 @@ function initCounty() {
       num_cat = 8; // hard coded to 8 categories
     }
     if (selectedMethod == "natural_breaks_hlthfactor" || selectedMethod == "natural_breaks_hlthcontextlife"){
-      nb = gda_proxy.custom_breaks(countyMap, "natural_breaks", num_cat, null, vals);
+      nb = gda_proxy.custom_breaks(selectedDataset, "natural_breaks", num_cat, null, vals);
     } else {
-      nb = gda_proxy.custom_breaks(countyMap, selectedMethod, num_cat, null, vals);
+      nb = gda_proxy.custom_breaks(selectedDataset, selectedMethod, num_cat, null, vals);
     }
     legend_bins = nb.bins;
 
@@ -740,9 +732,9 @@ function initCounty() {
   UpdateLegendLabels(legend_bins);
 
   if (isCartogram()) {
-    cartogramData = gda_proxy.cartogram(countyMap, vals);
+    cartogramData = gda_proxy.cartogram(selectedDataset, vals);
   }
-  loadMap(countyMap);
+  loadMap(selectedDataset);
 }
 
 function OnStateClick() {
@@ -2211,7 +2203,7 @@ function OnLISAClick(evt) {
   if (isState()) {
     loadMap(stateMap);
   } else {
-    loadMap(countyMap);
+    loadMap(selectedDataset);
   }
 }
 
