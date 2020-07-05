@@ -804,6 +804,13 @@ function OnSourceClick(evt) {
     selectedDataset = 'states_update.geojson';
   }
   UpdateMap();
+  if (evt.innerText.indexOf('County (1Point3Acres.com)') >= 0) {
+    document.getElementById("btn-7day").style.display = "none";
+    document.getElementById("btn-7day-per10K").style.display = "none";
+  } else {
+    document.getElementById("btn-7day").style.display = "block";
+    document.getElementById("btn-7day-per10K").style.display = "block";
+  }
 }
 
 function OnDataClick(evt) {
