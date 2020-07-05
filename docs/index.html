@@ -9,6 +9,8 @@
   <!-- CSS only -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
+  <link href="css/index.css" rel="stylesheet" type="text/css">
+
   <!-- JS, Popper.js, and jQuery -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 
@@ -16,7 +18,7 @@
 
   <!-- Fonts -->
 
-  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300&family=Open+Sans&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Montserrat:wght@400;600;800&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
 
     
   <!-- Icon Library -->
@@ -29,31 +31,9 @@
 
     
   <link href="//cdn-images.mailchimp.com/embedcode/slim-10_7.css" rel="stylesheet" type="text/css">
-
-  <link href="css/index.css" rel="stylesheet" type="text/css">
-
   
   <link href="//cdn-images.mailchimp.com/embedcode/slim-10_7.css" rel="stylesheet" type="text/css">
   
-  <style type="text/css">
-  #mc_embed_signup
-  {background:#18575c; 
-    clear:center;}
-
-  input {
-        display: inline-block;
-        min-height: 50px;
-        width: 100%;
-        padding: 6px;
-        border: 1px solid #4f4f4f;
-        border-radius: 0px;
-        box-shadow: rgba(10, 10, 10, .05) 0 1px 4px 0 inset;
-    }
-  #mc_embed_signup input.email,
-  #mc_embed_signup input.button {
-      display: inline-block;
-  }
-  </style>
 
 </head>
 
@@ -61,33 +41,32 @@
 <body>
 
 
-<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+<nav nav class="navbar navbar-expand-md" style="background-color: #c1ebeb; height: 93px;">
   <div class="container">
-  <a class="navbar-brand" href="#">US Covid Atlas</a>
+  <h1 class="Logo">US COVID ATLAS</h1>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarText">
     <ul class="navbar-nav ml-auto na">
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Map
+        <a class="Nav-Text nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          MAP
         </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="#">Data</a>
-          <a class="dropdown-item" href="#">Methods</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Help</a>
+        <div class="Nav-Text2 dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: #00575c;">
+          <a class="dropdown-item" href="#">DATA</a>
+          <a class="dropdown-item" href="#">METHODS</a>
+          <a class="dropdown-item" href="#">HELP/FAQ</a>
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="https://medium.com/covidatlas">Insights</a>
+        <a class="Nav-Text nav-link" href="https://medium.com/covidatlas">INSIGHTS</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">About</a>
+        <a class="Nav-Text nav-link" href="about.html">ABOUT</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Contact</a>
+        <a class="Nav-Text nav-link" href="#">CONTACT</a>
       </li>
     </ul>
   </div>
@@ -95,7 +74,7 @@
 </nav>
 
 
-<section id="hero">
+<section id="hero" style="background-color: #0d0d0d;">
   <div class="container">
     <div class="row">
       <div class="col-lg-1"></div>
@@ -108,42 +87,52 @@
        <a class="btn btn-lg Button-Text" style="background-color: #f37e43; color: #0d0d0d" href="map.html" role="button">
             EXPLORE THE ATLAS 
         </a>
+        <br><br>
       </div>
       <div class="col-lg-1"></div>
     </div>
   </div> 
 </section>
 
-<section id="gif">
+<section style="background-color: #0d0d0d;">
   <div class="container">
     <div class="row justify-content-md-center">
-        <a href="map.html"><img src="img/6.25_confirm_per10K_usafacts_chro.gif" style="width: 780px; height: 416px;" ></a>
+        <a href="map.html"><img src="img/6.10_confirm_per10K_usafacts.gif" style="width: 780px; height: 416px;" ></a>
     </div>
   </div>
   <br>
 </section>
 
-<section id="gif">
+<section id="gif" style="background-color: #0d0d0d;">
   <div class="container">
    <div class="row justify-content-md-center"> 
 
-      <svg width="30px" height="30px" viewBox="0 0 16 16" class="bi bi-info-circle" fill="#f37e44" xmlns="http://www.w3.org/2000/svg">
+      <svg width="30px" height="30px" viewBox="0 0 16 16" class="bi bi-info-circle" fill="#f37e44" xmlns="http://www.w3.org/2000/svg" style="padding-right: 10px">
         <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
         <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"/>
         <circle cx="8" cy="4.5" r="1"/>
       </svg>
  
-     <h3 class="From-January-22-202">From January 22, 2020 to today: Statistical hotspots of confirmed cases of COVID-19 per 10,000 persons at the county level. The Atlas is updated by 3pm each afternoon with the latest available data.</h3>
+     <h3 class="From-January-22-202">From January 22, 2020 to today: Statistical hotspots of confirmed cases of COVID-19 per 10,000 persons at the county level. The Atlas is updated by 3pm each afternoon with the latest available data.
+
+     </h3>
+
    </div>
+
 
   </div>
 </section>
 
 
-<section id="feature-overview">
+
+<section id="feature-overview" style="background-color: #0d0d0d;">
   <div class="container">>
+          <br><br>
+        <hr>
+          <br><br>
+
     <div class= "row justify-content-md-center">
-      <br>
+      <br><br>
 
        <h4 class="Atlas-Features">Atlas Features</h4>
        <br><br><br><br>
@@ -198,23 +187,29 @@
         </div>
       </div>
 
-    </div> <!-- close row --> 
+
+
+    </div> <br><br> <!-- close row --> 
   </div>
 </section>
 
 
-<section id="BlueBanner">
+<section id="BlueBanner"><br>
+    <div class="row justify-content-md-center">
+      <h1 class="How-can-the-Atlas-be">How can the Atlas better equip you to respond to the pandemic?</h1>
+    </div>
 </section>
+    <div class="Arrow"></div>
+
 
 <section id="feature-1">
   <div class="container">
-  <br><hr>
     <br><br>
       <div class="row">
       <br><br>
       <div class="col-lg-6" >
         <div style="text-align: center;">
-        <img src="icons/Regional Hotspots.png" width="550"></div>
+        <img src="feature.png"></div>
       </div>
       <div class="col-lg-6">
       <div class="usage" style="background-color: #face00;"><b>Usage #1</b></div><br>
@@ -255,7 +250,7 @@
       </div>
       <div class="col-lg-6">
       <div class="usage" style="background-color: #face00;"><b>Usage #3</b></div><br>
-      <h5> Identify Regional Hotspots for Mitigation </h5>
+      <h5> Interact and forecast viral spread at state and county levels </h5>
       <p> We show COVID-19 hot spots two ways: 1) using the total number of confirmed cases, and 2) adjusting for population. Because of the infectious nature of COVID, high numbers of cases anywhere will be of concern. At the same time, identifying areas that have a disporotionately high number of cases within the population is necessary to locate areas hit hardest by the pandemic. <p>
       </div>
     </div> 
@@ -270,7 +265,7 @@
       <br><br>
       <div class="col-lg-6">
       <div class="usage" style="background-color: #f37e43;"><b>Usage #4</b></div><br>
-      <h5> Identify Regional Hotspots for Mitigation </h5>
+      <h5> Make visible vulnerable communities </h5>
       <p> We show COVID-19 hot spots two ways: 1) using the total number of confirmed cases, and 2) adjusting for population. Because of the infectious nature of COVID, high numbers of cases anywhere will be of concern. At the same time, identifying areas that have a disporotionately high number of cases within the population is necessary to locate areas hit hardest by the pandemic. <p>
       </div>
       <div class="col-lg-6" >
@@ -281,42 +276,64 @@
   </div>
 </section>
 
-<section id="subscribe">
+<section id="feature-3">
   <div class="container">
     <br><br>
     <div class="row">
-      <div class="col-lg-3">
+      <br><br>
+      <div class="col-lg-6" >
+        <div style="text-align: center;">
+        <img src="feature.png"></div>
       </div>
       <div class="col-lg-6">
-      <!-- Begin Mailchimp Signup Form -->
-        <div id="mc_embed_signup">
-        <form action="https://github.us10.list-manage.com/subscribe/post?u=5ed730d26727290870ec65153&amp;id=74f209d5ed" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
-
-          <div id="mc_embed_signup_scroll">
-
-          <label for="mce-EMAIL"><h3>Sign Up for our Newsletter</h3></label>
-
-          <p> We'll keep you up to date with new updates, features and insights on the COVID-19 pandemic. Follow the US COVID Atlas team on Medium too. </p>
-
-          <input type="email" value="" name="EMAIL" class="email" id="mce-EMAIL" placeholder="Enter email address" required>
-            <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-            <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_5ed730d26727290870ec65153_74f209d5ed" tabindex="-1" value=""></div><br><br>
-            <div><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="btn btn-secondary btn-md btn-block"></div>
-            </div>
-        </form>
-        </div>
+      <div class="usage" style="background-color: #face00;"><b>Usage #5</b></div><br>
+      <h5> Identify emerging risk </h5>
+      <p> We show COVID-19 hot spots two ways: 1) using the total number of confirmed cases, and 2) adjusting for population. Because of the infectious nature of COVID, high numbers of cases anywhere will be of concern. At the same time, identifying areas that have a disporotionately high number of cases within the population is necessary to locate areas hit hardest by the pandemic. <p>
       </div>
-      <div class="col-lg-3">
-      </div>
-
-        <!--End mc_embed_signup-->
+    </div> 
+    <br><br>
   </div>
 </section>
 
 
+<section id="subscribe" style="background-color: #00575c;">
+      <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="jumbotron2 vertical-center jumbotron jumbotron-fluid col-lg-8" style="background:transparent !important">
+          
+          <h1 class="Sign-up-for-our-News">Sign up for the Newsletter</h1>
+          
+          <h2 class="Well-keep-you-up-to">
+           We'll keep you up to date with new updates, features, and insights on the COVID-19 <br>pandemic. Follow the US COVID Atlas team on Medium too.</h2>
 
-</section> 
-<br><br><br>
+           <br>
+
+          <form action="https://github.us10.list-manage.com/subscribe/post?u=5ed730d26727290870ec65153&amp;id=74f209d5ed" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+
+            <div id="mc_embed_signup_scroll">
+
+            <input type="email" value="" name="EMAIL" class="email" id="mce-EMAIL" placeholder="Enter email address" required>
+              <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+              <div style="position: absolute; left: -500px;" >
+
+                <input type="text" name="b_5ed730d26727290870ec65153_74f209d5ed" tabindex="-1" value="">
+              
+              </div>
+
+                        <br><br>
+
+              <div>
+                <input type="submit" value="SUBSCRIBE" name="subscribe" id="mc-embedded-subscribe" class="btn btn-lg Button-Text" style="background-color: #f37e43; color: #0d0d0d">
+              </div>
+            </div>
+          </form>
+          <br>
+          <hr>
+        </div>
+      </div>
+  </section>
+
+
 </body>
 
     <div class="footer-dark">

@@ -1,21 +1,55 @@
-    <style>
+    <style>   
 
-    #mc_embed_signup{background:#18575c; 
-      clear:left; 
-      font:14px Helvetica,Arial,sans-serif; 
+    #hero {
+      background-color: #0d0d0d;
     }
 
-    .vertical-center {
-      height: 100%;
-      width: 100%;
-
-      text-align: center;  /* align the inline(-block) elements horizontally */
-      
+    #gif {
+      background-color: #0d0d0d;
     }
+
+    #feature-overview {
+      background-color: #0d0d0d;
+    }
+
+    #feature {
+      background-color: gainsboro;
+    }
+
+    #BlueBanner {
+    height: 100px;
+    background-color: #c1ebeb;
+   }
+
+    .usage {
+      border-radius: 25px;
+      background: gainsboro;
+      padding: 10px;
+      width: 100px;
+    }
+
+    .usage1 {
+      border-radius: 25px;
+      background: whitesmoke;
+      padding: 10px;
+      width: 100px;
+    }
+
+     .jumbotron{
+     padding:100px 0 0px 0;
+     margin-bottom:10px;
+     }
+
+
+     .jumbotron2{
+     padding:50px 0 0px 0;
+     margin-bottom:10px;
+     }
 
     .Near-Real-Time-Explo {
       font-family: 'Playfair Display', serif;
       font-size: 49px;
+      font-weight: 300;
       text-align: center;
       font-style: italic;
       color: #d8d8d8;
@@ -26,7 +60,7 @@
     .The-US-COVID-Atlas-i {
       font-family: 'Lato', sans-serif;
       font-size: 20px;
-      font-weight: normal;
+      font-weight: 300;
       font-stretch: normal;
       font-style: normal;
       line-height: 1.6;
@@ -35,14 +69,49 @@
     }
 
 
+    hr { display: block; height: 1px;
+    border: 0; border-top: 1px solid #c1ebeb;
+    margin: 1em 0; padding: 0; }
+
+
+   .Logo {
+      font-family: 'Lato', sans-serif;
+      font-size: 28px;
+      font-weight: 500;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.6;
+      letter-spacing: 1.75px;
+      color: #0d0d0d; 
+    }
+
+    .Nav-Text {
+      font-family: Lato, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      letter-spacing: 1.75px;
+      font-weight: 700;
+      font-stretch: normal;
+      color: #0d0d0d;
+    }
+
+    .Nav-Text2 {
+      font-family: Lato, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      letter-spacing: 1.75px;
+      font-weight: 900;
+      font-stretch: normal;
+      color: #ffffff;
+    }
+
     .Button-Text {
       width: 270px;
       height: 48px;
-      font-family: Lato;
+      font-family: Lato, sans-serif;
       font-size: 16px;
-      font-weight: 900;
+      font-weight: 700;
       font-stretch: normal;
-      font-style: bold;
       line-height: 1.5;
       letter-spacing: 1.75px;
       text-align: center;
@@ -55,7 +124,7 @@
       height: 52px;
       font-family: Lato;
       font-size: 16px;
-      font-weight: normal;
+      font-weight: 300;
       font-stretch: normal;
       font-style: normal;
       line-height: 1.63;
@@ -96,7 +165,7 @@
     height: 130px;
     font-family: Lato;
     font-size: 16px;
-    font-weight: normal;
+    font-weight: 300;
     font-stretch: normal;
     font-style: normal;
     line-height: 1.63;
@@ -110,67 +179,116 @@
     object-fit: contain;
   }
 
-    .navbar-brand {
-      padding: 0 15px;
-      height: 60px;
-      line-height: 60px;
-    }
-
-    #hero {
-      background-color: #0d0d0d;
-    }
-
-    #gif {
-      background-color: #0d0d0d;
-    }
-
-    #feature-overview {
-      background-color: #0d0d0d;
-    }
-
-    #feature {
-      background-color: gainsboro;
-    }
 
 
-    #BlueBanner {
-    height: 100px;
+  .How-can-the-Atlas-be {
+    width: 1040px;
+    height: 48px;
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: italic;
+    line-height: 1.5;
+    letter-spacing: normal;
+    text-align: center;
+    color: #333333;
+  }
+
+  .Arrow {
+    width: 25px;
+    height: 25px;
+    transform: rotate(-45deg);
     background-color: #c1ebeb;
-   }
-
-	.usage {
-	  border-radius: 25px;
-	  background: gainsboro;
-	  padding: 10px;
-	  width: 100px;
-	}
+  }
 
 
-	.usage1 {
-	  border-radius: 25px;
-	  background: whitesmoke;
-	  padding: 10px;
-	  width: 100px;
-	}
+  .Sign-up-for-our-News {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: italic;
+    line-height: 1.5;
+    letter-spacing: normal;
+    text-align: center;
+    color: #ededed;
+  }
+
+  .Well-keep-you-up-to {
+    font-family: Lato;
+    font-size: 20px;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.6;
+    letter-spacing: normal;
+    text-align: center;
+    color: #ededed;
+  }
+
+
+  .EnterEmailBox {
+    width: 1440px;
+    height: 600px;
+    background-color: #00575c;
+  }
+
+  .SubmitEmailBox {
+    width: 160px;
+    height: 50px;
+    border-radius: 5px;
+    background-color: #f37e44;
+  }
+
+    #mc_embed_signup{
+      clear:left;  
+    }
+
+    .vertical-center {
+      height: 100%;
+      width: 100%;
+
+      text-align: center;  /* align the inline(-block) elements horizontally */
+      
+    }
+
+    #subscribe {
+      background-color:#00575c;
+    }
+
     .footer-dark {
       padding:50px 0;
-      color:#f0f9ff;
-      background-color:#282d32;
+      color:#00575c;
+      background-color:#00575c;
     }
 
     .footer-dark h3 {
       margin-top:0;
       margin-bottom:12px;
-      font-weight:bold;
       font-size:16px;
+      font-family: Montserrat, sans-serif;
+      font-weight: 600;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: normal;
+      letter-spacing: normal;
+      color: #ffffff;
     }
 
     .footer-dark ul {
       padding:0;
       list-style:none;
       line-height:1.6;
-      font-size:14px;
       margin-bottom:0;
+      font-family: Montserrat, sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.75;
+      letter-spacing: normal;
+      color: #ffffff;
     }
 
     .footer-dark ul a {
