@@ -21,6 +21,71 @@
     background-color: #c1ebeb;
    }
 
+
+   .covidatlas h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 49px;
+      font-weight: 300;
+      font-style: italic;
+      color: #0d0d0d;
+    }
+
+
+    .covidatlas h2 {
+      font-family: Lato, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      letter-spacing: 1.75px;
+      font-weight: 700;
+      font-stretch: normal;
+      color: #0d0d0d;
+    }
+
+    .covidatlas h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 300;
+      font-style: italic;
+      color: #0d0d0d;
+    }
+
+    .covidatlas p {
+      font-family: Lato;
+      font-size: 16px;
+      font-weight: 400;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.63;
+      letter-spacing: normal;
+      color: #0d0d0d;
+    }
+
+    .covidatlas li {
+      font-family: Lato;
+      font-size: 16px;
+      font-weight: 400;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.63;
+      letter-spacing: normal;
+      color: #0d0d0d;
+    }
+
+    .covidatlas ul a {
+      color:inherit;
+      text-decoration:none;
+      opacity:0.6;
+    }
+
+    .covidatlas ul a:hover {
+      opacity:0.8;
+    }
+
+
+
+
+
+
     .usage {
       border-radius: 25px;
       background: gainsboro;
