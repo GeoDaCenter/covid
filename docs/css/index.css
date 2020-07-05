@@ -69,6 +69,10 @@
     }
 
 
+    .hr2 { display: block; height: 1px;
+    border: 0; border-top: 1px solid #00575c;
+    margin: 1em 0; padding: 0; }
+
     hr { display: block; height: 1px;
     border: 0; border-top: 1px solid #c1ebeb;
     margin: 1em 0; padding: 0; }
@@ -229,9 +233,11 @@
 
 
   .EnterEmailBox {
-    width: 1440px;
-    height: 600px;
-    background-color: #00575c;
+    align-content: center;
+    width: 300px;
+    height: 50px;
+    border-radius: 5px;
+    background-color: #ffffff;
   }
 
   .SubmitEmailBox {
@@ -239,11 +245,16 @@
     height: 50px;
     border-radius: 5px;
     background-color: #f37e44;
+    font-family: Lato, sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      font-stretch: normal;
+      line-height: 1.5;
+      letter-spacing: 1.75px;
+      text-align: center;
+      color: #0d0d0d;
   }
-
-    #mc_embed_signup{
-      clear:left;  
-    }
+ 
 
     .vertical-center {
       height: 100%;
@@ -352,12 +363,22 @@
       opacity:0.9;
     }
 
-    .footer-dark .copyright {
-      text-align:center;
-      padding-top:24px;
+    .copyright {
       opacity:0.3;
       font-size:13px;
       margin-bottom:0;
+      font-family: Lato;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.71;
+      letter-spacing: normal;
+      color: #ffffff;
+    }
+
+    .copyright a {
+      font-weight: 600;
+      color: #ffffff;
     }
 
     </style>
