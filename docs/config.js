@@ -2,7 +2,11 @@ let config = {};
 
 config.TOOLTIP = {
   Choropleth: 'A thematic map used to represent data through various shading patterns on predetermined geographic areas (counties, state).', 
+  NaturalBreaksFixed: 'A nonlinear algorithm used to group observations such that the within-group homogeneity is maximized for the latest date, bins fixed over time',
+  NaturalBreaks: 'A nonlinear algorithm used to group observations such that the within-group homogeneity is maximized for every day, bins change over time',
+  BoxMap: 'Mapping counterpart of the idea behind a box plot',
   LocalClustering: 'A map showing statisically significant spatial cluster and outlier locations, color coded by type.',
+  LocalMoran: 'Local Moran used to identify local clusters and outliers',
   NotSig:	'Area was not statistically signficant as a spatial cluster core or outlier using given parameters.',
   HighHigh: 'Hot Spot Cluster: area with high values, neighbored by areas with high values',
   LowLow: 'Cold Spot Cluster: area with low values, neighbored by areas with low values',
@@ -32,4 +36,6 @@ config.TOOLTIP = {
   healthfactor:'Health factors represent those things we can modify to improve community conditions and the length and quality of life for residents',
   healthcontext: 'Community Health Context reflects the existing health behaviors and demographics of individuals in the community that are influenced by the opportunities to live long and well',
   healthlife:'Length and Quality of Life reflects the physical and mental well-being of residents within a community through measures representing how long and how well residents live',
+  Hypersegregated: 'American metropolitan areas where black residents experience hypersegregation, see ' + 'here'.link("https://www.princeton.edu/news/2015/05/18/hypersegregated-cities-face-tough-road-change"),
+  BlackBelt: 'Southern US counties that were at least 40% Black or African American in the 2000 Census, see ' + 'here'.link("https://en.wikipedia.org/wiki/Black_Belt_in_the_American_South"),
 };

@@ -104,16 +104,21 @@
       </p>
       <div class="layout">
         <div class="dropdown"  style="width:50%">
-          <button class="dropbtn" id="select-map">Choropleth</button>
+          <button class="dropbtn" id="select-map">Choropleth
+            <div class="info-tooltip" id="info-Choropleth">
+              <i class="fa fa-info-circle"  aria-hidden="true"></i>
+              <span class="right tooltip-text"></span>
+            </div>
+          </button>
           <div class="dropdown-content" style="width:200px;">
             <a href="#" id="btn-nb" onclick="OnChoroplethClick(this, 'natural_breaks', true)">Natural Breaks (fixed bins)
-              <div class="info-tooltip" id="info-Choropleth">
+              <div class="info-tooltip" id="info-NaturalBreaksFixed">
                 <i class="fa fa-info-circle"  aria-hidden="true"></i>
                 <span class="right tooltip-text"></span>
               </div>
             </a>
             <a href="#" id="btn-nb" onclick="OnChoroplethClick(this, 'natural_breaks', false)">Natural Breaks
-              <div class="info-tooltip" id="info-Choropleth">
+              <div class="info-tooltip" id="info-NaturalBreaks">
                 <i class="fa fa-info-circle"  aria-hidden="true"></i>
                 <span class="right tooltip-text"></span>
               </div>
@@ -125,7 +130,7 @@
               </div>
             </a>-->
             <a href="#" id="btn-nb" onclick="OnChoroplethClick(this, 'hinge15_breaks', false)">Box Map <!--(Hinge=1.5)-->
-              <div class="info-tooltip" id="info-Choropleth">
+              <div class="info-tooltip" id="info-BoxMap">
                 <i class="fa fa-info-circle"  aria-hidden="true"></i>
                 <span class="right tooltip-text"></span>
               </div>
@@ -133,10 +138,15 @@
           </div>
         </div>
         <div class="dropdown">
-          <button class="dropbtn" id="select-map">Hotspot</button>
+          <button class="dropbtn" id="select-map">Hotspot
+            <div class="info-tooltip" id="info-LocalClustering">
+              <i class="fa fa-info-circle"  aria-hidden="true"></i>
+              <span class="left tooltip-text"></span>
+            </div>
+          </button>
           <div class="dropdown-content">
             <a href="#" id="btn-lisa" onclick="OnLISAClick(this)">Local Moran 
-              <div class="info-tooltip" id="info-LocalClustering">
+              <div class="info-tooltip" id="info-LocalMoran">
                 <i class="fa fa-info-circle"  aria-hidden="true"></i>
                 <span class="left tooltip-text"></span>
               </div>
@@ -166,11 +176,21 @@
           </div>
           <div>
             <input id="hypersegregated-cities-toggle" type="checkbox" onchange="OnShowHypersegregatedCities(this)">
-            <label for="hypersegregated-cities-toggle">Show Hypersegregated Cities</label>
+            <label for="hypersegregated-cities-toggle">Show Hypersegregated Cities
+              <div class="info-tooltip" id="info-Hypersegregated">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="left tooltip-text"></span>
+              </div>
+            </label>
           </div>
           <div>
             <input id="blackbelt-toggle" type="checkbox" onchange="OnShowBlackBelt(this)">
-            <label for="blackbelt-toggle">Show Black Belt Counties</label>
+            <label for="blackbelt-toggle">Show Black Belt Counties
+              <div class="info-tooltip" id="info-BlackBelt">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="left tooltip-text"></span>
+              </div>
+            </label>
           </div>
       
           <div class="map-overlay-toggles--hidden">
