@@ -35,17 +35,23 @@
   <script defer src="config.js"></script>
   <script defer src="index.js"></script>
   <script defer src="gen/jsgeoda.js"></script>
+
+  <link href="css/index.css" rel="stylesheet" type="text/css">
+
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Montserrat:wght@400;600;800&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
 </head>
 
 <body>
   <div id="map"></div>
   <div class="navbar">
-    <div class="nav-logo">US Covid Atlas</div>
+    <div class="nav-logo"><a href="index.html">US COVID ATLAS</a></div>
     <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="data.html">Data</a></li>
-      <li><a href="methods.html">Methods</a></li>
-      <li><a href="about.html">About</a></li>
+      <li><a href="data.html">DATA</a></li>
+      <li><a href="methods.html">METHODS</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+      <li><a href="about.html">INSIGHTS</a></li>
+      <li><a href="about.html">ABOUT</a></li>
+      <li><a href="contact.html">CONTACT</a></li>
     </ul>
   </div>
   <div id="tooltip" class="center-shadow"></div>
@@ -95,7 +101,6 @@
 
       <p>
         Select Map Type:
-        <input type="checkbox" id="cartogram-ckb" onchange="OnCartogramClick(this)">Using Cartogram
       </p>
       <div class="layout">
         <div class="dropdown"  style="width:50%">
@@ -138,9 +143,18 @@
             </a>
           </div>
         </div>
+
+
       </div>
 
+      <p>
+        <input type="checkbox" id="cartogram-ckb" onchange="OnCartogramClick(this)">Using Cartogram
+      </p>
+
       <div class="options-panel-section">
+
+
+
         Select Map Overlays:
         <div style="float:right">
           <!--Dark mode:--> <i class="fa fa-toggle-on" aria-hidden="true" style="font-size: 20px; vertical-align:middle; display: none;" onclick="ToggleDarkMode(this)"></i>
@@ -173,21 +187,27 @@
       <p>New cases:</p>
       <div class="layout" id="linechart"></div>
       <div class="hidden layout" id="slider-svg"></div>
-      <p><b>Data:</b> <a
-          href="https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/?utm_source=MailChimp&utm_campaign=census-covid2">USAFacts</a>
-        and <a href="https://covidvirus.1point3acres.com/">1point3acres</a>. In case of data discrepancy, local health
-        departments are considered most accurate by CDC recommendations.</p>
+      <p><b>Note:</b> Data is updated with freshest available data at 3pm CST daily, at minimum. In case of data discrepancy, local health departments are considered most accurate as per CDC recommendations. More information on <a href="data.html">data</a>, <a href="methods.html">methods</a>, and <a href="methods.html">limitations</a> at our main site.</p>
+
 
       <div class="source-link" align="center">
-        <a href="https://spatial.uchicago.edu" target="_new">
-          <img align="center" src="img/logo_gray.png" width=200px alt="Center for Spatial Data Science logo" />
-        </a>
+      
+<!--         <a href="https://spatial.uchicago.edu" target="_new">
+          <img align="center" src="img/logo_gray.png" width=300px alt="Center for Spatial Data Science logo" />
+        </a>  -->
+
         <div class="geoda-link">
-          <img src="img/geoda-logo.png">
-          <a href="https://geodacenter.github.io">Powered by GeoDa</a>
-        </div>
+          <div class="poweredByGeoda">
+            <img src="img/geoda-logo.png">
+            <a href="https://geodacenter.github.io">POWERED BY GEODA</a>
+          </div>
+        </div> 
       </div>
+
+
     </div>
+
+
   </div>
   <div id="sliderdiv">
     <span id="slider-min" class="float: left; "></span><span id="slider-max" style="float: right;"></span><br>

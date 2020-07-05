@@ -1,13 +1,23 @@
 body {
   margin: 0; 
   padding: 0;
-  font-family: 'Helvetica', sans-serif !important;
+  font-family: Lato, sans-serif !important;
   font-size: 12px;
   background-color: #333;
   overflow: hidden;
 } 
 
 #map { position: absolute; top: 0; bottom: 0; width: 100%; height: 100%}
+
+
+    .poweredByGeoda {
+      font-family: Lato, sans-serif;
+      font-size: 10px;
+      line-height: 1.5;
+      font-weight: 700;
+      font-stretch: ultra-expanded;
+      color: #d8d8d8;
+    }
 
 .tooltip-text {
   position: absolute;
@@ -129,13 +139,13 @@ a:visited {
   user-select: none;
 }
 .geoda-link {
-  padding-top: 20px;
+  padding-top: 5px;
 }
 .geoda-link img {
-  height: 1rem;
+  height: 1.3rem;
 }
 .geoda-link a {
-  padding: 0px !important;
+  padding: 5px !important;
 }
 
 .options-panel {
@@ -177,9 +187,14 @@ a:visited {
 }
 
 .options-panel .source-link a {
-  font-weight: 700;
-  color: #5a666d;
-  font-size: 11px;
+  font-family: Lato, sans-serif;
+      font-size: 12px;
+      line-height: 1.5;
+      letter-spacing: 1.75px;
+      font-weight: 400;
+      font-stretch: normal;
+      color: #d8d8d8;
+      opacity: 0.8;
 }
 
 .collapse-btn {
@@ -271,6 +286,14 @@ a:visited {
   width: 100%;
   cursor: pointer;
   color: #fff;
+  font-family: Lato, sans-serif;
+      font-size: 12px;
+      line-height: 1.5;
+      letter-spacing: 1.75px;
+      font-weight: 600;
+      font-stretch: normal;
+      color: #d8d8d8;
+
 }
 
 /* The container <div> - needed to position the dropdown content */
@@ -477,6 +500,13 @@ data panel
   top: 0px; 
   left: 0px;
   z-index:999;
+  font-family: Lato, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      letter-spacing: 1.75px;
+      font-weight: 400;
+      font-stretch: normal;
+      color: #0d0d0d;
 }
 
 @media only screen and (max-width: 600px) {
@@ -539,6 +569,7 @@ data panel
   padding-left: 20px;
   padding-right: 20px;
 }
+
 
 .fa-info-circle {
   color: #aaa;
