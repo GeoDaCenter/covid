@@ -270,8 +270,8 @@
   }
 
   .Arrow {
-    width: 25px;
-    height: 25px;
+    width: 35px;
+    height: 35px;
     transform: rotate(-45deg);
     background-color: #c1ebeb;
   }
