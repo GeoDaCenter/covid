@@ -40,6 +40,7 @@
     background-color: #ededed;
   }
 
+
    .covidatlas h1 {
       font-family: 'Playfair Display', serif;
       font-size: 49px;
@@ -187,10 +188,22 @@
       font-size: 16px;
       line-height: 1.5;
       letter-spacing: 1.75px;
-      font-weight: 900;
       font-stretch: normal;
       color: #ffffff;
     }
+
+
+    .dropdown-item {
+      font-weight: 400;
+      color: #ffffff;
+    }
+
+
+    .dropdown-item:hover {
+      color: #ffce00;
+      text-decoration: none;
+      background-color: #00575c;
+  }
 
     .Button-Text {
       width: 270px;
