@@ -82,7 +82,9 @@ county_fix_code = {
     'wayne--non detroitmi':'waynemi',
     'bear riverut':'box elderut',
     'henderonnc':'hendersonnc',
-    'johnsonnc':'johnstonnc'
+    'johnsonnc':'johnstonnc',
+    'vanoh':'van wertoh'
+    
 }
 
 # la portein is a city in IN
