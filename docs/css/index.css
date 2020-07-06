@@ -21,6 +21,11 @@
     background-color: #c1ebeb;
    }
 
+  .US_Covid_Atlas_ClusterLogo {
+    width: 235px;
+    height: 50px;
+    object-fit: contain;
+  }
 
    .covidatlas h1 {
       font-family: 'Playfair Display', serif;
