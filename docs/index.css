@@ -10,15 +10,6 @@ body {
 #map { position: absolute; top: 0; bottom: 0; width: 100%; height: 100%}
 
 
-.poweredByGeoda {
-      font-family: Lato, sans-serif;
-      font-size: 10px;
-      line-height: 1.5;
-      font-weight: 700;
-      font-stretch: ultra-expanded;
-      color: #d8d8d8;
-  }
-
 .tooltip-text {
   position: absolute;
   visibility: hidden;
@@ -139,13 +130,25 @@ a:visited {
   user-select: none;
 }
 .geoda-link {
-  padding-top: 5px;
+  padding-top: 7px;
 }
+
 .geoda-link img {
-  height: 1.3rem;
+  height: 1.5rem;
 }
 .geoda-link a {
   padding: 5px !important;
+}
+
+.options-panel .source-link a {
+  font-family: Lato, sans-serif;
+      font-size: 12px;
+      line-height: 1.5;
+      letter-spacing: 2px;
+      font-weight: 400;
+      font-stretch: ultra-expanded;
+      color: #d8d8d8;
+      opacity: 0.8;
 }
 
 .options-panel {
@@ -186,16 +189,6 @@ a:visited {
   z-index: 100000;  
 }
 
-.options-panel .source-link a {
-  font-family: Lato, sans-serif;
-      font-size: 12px;
-      line-height: 1.5;
-      letter-spacing: 1.75px;
-      font-weight: 400;
-      font-stretch: normal;
-      color: #d8d8d8;
-      opacity: 0.8;
-}
 
 .collapse-btn {
   position: absolute;
