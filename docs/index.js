@@ -914,6 +914,13 @@ function OnShowBlackBelt() {
   UpdateMap();
 }
 
+function ClearOverlay() {
+  shouldShowBlackBelt = false;
+  shouldShowHypersegregatedCities = false;
+  shouldShowReservations = false;
+  UpdateMap();
+}
+
 function UpdateMap() {
   if (isLisa()) {
     if (!(selectedDataset in jsondata)) {
