@@ -193,6 +193,18 @@
               </div>
           </div>
       </div>
+      <div class="card">
+        <div class="card-header" id="headingFour">
+            <h2 class="mb-0">
+                <button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFour">Do you have a 7-day average?</button>
+            </h2>
+        </div>
+        <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#myAccordion">
+            <div class="card-body">
+                <p>Yes, we recently added 7-Day Average Daily Confirmed Count. We calculated this variable by taking the difference between the current day’s confirmed count and the confirmed count 7 days ago, and then dividing this difference by 7. For example, we took the difference between the confirmed count as of June 30th and that as of June 23rd, divided the difference by 7, then used this as an estimate for 7 Day Average Daily Confirmed Count for June 30th. Technically speaking, this measures the daily average growth for the week right before June 30th. Also note that this calculation is only available with USAFacts data because of data completeness (1P3A has several days’ data missing in January and February).</p>
+            </div>
+        </div>
+    </div>
     </div>
   </div>
 </div>
