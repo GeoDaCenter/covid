@@ -27,6 +27,19 @@
     object-fit: contain;
   }
 
+
+    .btn-fix {
+    padding: 0;
+    border: none;
+    white-space: normal;
+    color: black;
+    text-align: left;
+  }
+
+     .btn-fix:hover {
+    background-color: #ededed;
+  }
+
    .covidatlas h1 {
       font-family: 'Playfair Display', serif;
       font-size: 49px;
