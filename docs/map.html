@@ -171,11 +171,11 @@
         </div>
         <div class="map-overlay-toggles">
           <div>
-            <input id="reservations-toggle" type="checkbox" onchange="OnShowReservations(this)">
+            <input id="reservations-toggle" type="radio" name="overlay-select" onclick="OnShowReservations(this)">
             <label for="reservations-toggle">Show Native American Reservations</label>
           </div>
           <div>
-            <input id="hypersegregated-cities-toggle" type="checkbox" onchange="OnShowHypersegregatedCities(this)">
+            <input id="hypersegregated-cities-toggle" type="radio" name="overlay-select" onchange="OnShowHypersegregatedCities(this)">
             <label for="hypersegregated-cities-toggle">Show Hypersegregated Cities
               <div class="info-tooltip" id="info-Hypersegregated">
                 <i class="fa fa-info-circle"  aria-hidden="true"></i>
@@ -184,7 +184,7 @@
             </label>
           </div>
           <div>
-            <input id="blackbelt-toggle" type="checkbox" onchange="OnShowBlackBelt(this)">
+            <input id="blackbelt-toggle" type="radio" name="overlay-select" onclick="OnShowBlackBelt(this)">
             <label for="blackbelt-toggle">Show Black Belt Counties
               <div class="info-tooltip" id="info-BlackBelt">
                 <i class="fa fa-info-circle"  aria-hidden="true"></i>
@@ -194,7 +194,7 @@
           </div>
       
           <div class="map-overlay-toggles--hidden">
-            <input id="hotspot-labels-toggle" type="checkbox" onchange="OnShowLabels(this)">
+            <input id="hotspot-labels-toggle" type="checkbox" onclick="OnShowLabels(this)">
             <label for="hotspot-labels-toggle">Show Hotspot Labels</label>
       
             <input id="time-label-toggle" type="checkbox" onchange="OnShowTime(this)">

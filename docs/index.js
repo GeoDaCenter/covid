@@ -890,18 +890,27 @@ function OnShowLabels(el) {
 }
 
 function OnShowReservations() {
-  shouldShowReservations = !shouldShowReservations;
+  //shouldShowReservations = !shouldShowReservations;
+  shouldShowReservations = true;
+  shouldShowBlackBelt = false;
+  shouldShowHypersegregatedCities = false;
   UpdateMap();
 }
 
 function OnShowHypersegregatedCities() {
-  shouldShowHypersegregatedCities = !shouldShowHypersegregatedCities;
+  //shouldShowHypersegregatedCities = !shouldShowHypersegregatedCities;
+  shouldShowHypersegregatedCities = true;
+  shouldShowBlackBelt = false;
+  shouldShowReservations = false;
   UpdateMap();
 }
 
 
 function OnShowBlackBelt() {
-  shouldShowBlackBelt = !shouldShowBlackBelt;
+  //shouldShowBlackBelt = !shouldShowBlackBelt;
+  shouldShowBlackBelt = true;
+  shouldShowHypersegregatedCities = false;
+  shouldShowReservations = false;
   UpdateMap();
 }
 
