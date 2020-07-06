@@ -89,16 +89,14 @@
 
       
       <div class="col-lg-12">
-      <h1> Choropleth Maps 
+      <h1>Emerging Trends 
       </h1>
 
       <hr>
 
-      <p> Choropleth maps use color to show the count or percentage of a variable. </p>
+      <p> We can make educated guesses about the future spread of the pandemic by using data from the past and present. It is important to look at several variables together when looking for emerging virus trends. </p>
 
-      <p>The Atlas uses color to show the count and percentage of all coronavirus cases, daily new cases, deaths, and hospital beds. Use choropleth maps to see data about the virus on a particular day. </p>
-
-      <p>For more details on how the Atlas created the choropleth maps, please see the <a href="methods.html"> Methods page.</a></p>
+      <p>Use <a href="choropleth.html">Choropleth</a> maps, <a href="hotspot.html">Hotspots</a>, and the <a href="time.html">Time Animated Slider and Graph</a> to find areas that may soon be significantly affected by Covid-19.</p>
 
       </div>
 
@@ -112,28 +110,85 @@
       
       <div class="card">
       <div class="card-body">
-        <h2 class="card-title">FROM THE LEFT SIDEBAR</h5>
-        <p> 1.  The choropleth map is the default display for the atlas webpage. To return to the choropleth display, first select the data source and variable you would like to map.</p>
+        <h3 class="card-title">Choropleth: Map Today’s Data for Individual Counties </h3>
+        <br>
 
-        <p> 2.  Click on the Choropleth button.</p>
+          <ol>
 
-        <p> 3.  Use the color ramp at the bottom of the screen to interpret the count or percentage for each county or state.</p>
+          <li>Select <b>By County (USAFacts.com) </b>as the data source.</li><br>
 
-        <p> 4.  Brighter reds represent larger counts and percentages. Paler yellows represent smaller counts and percentages.</p>
+          <li>Select <b>Confirmed Count </b> as the variable.</li><br>
+
+          <li> Click on the <b>Choropleth</b> button. Bright red counties have a high number of Covid-19 cases.</li><br>
+
+          <li> Change the variable to <b>Confirmed Count per 10K Population</b>. Now bright red counties show populations with a high percentage of cases. The percentage is useful for looking at counties with small populations and the severity of the virus in a place.<br><br>
+
+          The count and the percentage of cases in a county are important for understanding the impact of the virus, but they only show one day of data. Next, use Local Clustering to map how cases compare across counties.</li>
+        </ol>
 
         <br>
-        <h2> FROM THE MAP<h2>
+        <h3> Hotspots: Map Today’s Data Across Counties</h3>
+        <br>
+          <ol>
 
-        <p> 5.  Click on a county or state in the map for a popup containing all data variables, socioeconomic indicators, and a disease forecast for that area.</p>
+            <li>Select <b> By County (USAFacts.com) </b>as the data source.</li><br>
 
-        <p> 6.  Move the time slider at the top of the map to see counts and percentages on different dates.</p>
+            <li>Select <b>Confirmed Count</b> as the variable.</li><br>
+
+            <li>Click on the <b> Hotspots </b> button. Bright red counties have high case counts and are surrounded by similar areas. These regions are currently significantly affected by Covid-19.</li><br>
+
+            <li>Find counties in pale blue. These are outlier counties: they have a low number of cases compared to the high number of cases in neighboring counties. This means that pale blue counties may soon be affected by Covid-19 through spread from nearby counties.</li><br>
+
+            <li>Find counties in pale red. These are also outlier counties, but they have a high case count compared to neighboring counties. Areas close to pale red counties may soon be affected by Covid-19 as the virus spreads.</li><br>
+
+            <li>Change the variable to Confirmed Count per 10K Population and explore clusters of high virus percentages and outliers. The percentage is useful for looking at counties with small populations and for comparing counties. <br><br>
+
+            <p>Explore the variables <b>Daily New Confirmed Count </b>and <b>Daily New Confirmed per 10K Pop</b>. Clusters of high counts and percentages of new cases may also mean that nearby areas will soon see an increase in virus spread.
+
+            <br> 
+
+            <p>Local clustering shows current groups of counties that are significantly affected and nearby places that may soon see an increase in virus spread. Next, use the <b>Time Graph</b> to see the history of the virus spread to learn about the trajectory of new cases. </p>
+          </p></li></ol>
+        <br>
+
+        <h3> Time Graph: See Trajectory of New Case Counts</h2>
+          <br>
+          <ol>
+
+            <li> Select <b>Confirmed Count</b> as the variable. </li><br>
+
+            <li>Click on the <b>Hotspot</b> button.<br><br>
+
+            The <b>Time Graph</b> at the bottom of the left panel shows the number of new cases each day. The default graph shows new cases in the United States.  </li><br>
+
+            <li>Click on a county in the map to see the number of new cases each day since March 2020.  </p>
+
+            <p> The red line rises when more cases exist than did the previous day. The red line falls when there are fewer new cases than the previous day. </p>
+
+            <p> This pattern of rising, falling, or staying flat is the trajectory of the virus. Use the trajectory to estimate how many new cases will be diagnosed in the following days. Next, bring together these lines of evidence to interpret emerging trends. </p></li>
 
       </div></div>
 
       <br>
 
 
-      <p> To explore emerging trends and patterns use the <a href="hotspot.html">Hotspot</a> display. To explore the history of the virus use the <a href="time.html">Animated Slider and Time Graph</a>.</p>
+      <h3> Interpreting Emerging Trends </h3>
+
+      <p> By looking at choropleth maps, local clustering, and the time graph we can predict which counties may soon see higher rates of new Covid-19 cases and how severe those increases may be. These steps can be repeated with the 1point3acres data and may result in different clusters because data sources are collected in different ways. Read the Data page for information about how the data sets are different. </p>
+
+      <p> Remember: <p>
+        <ul>
+
+          <li> <b>Choropleth Maps:</b> Shows data from one day for individual places. Looking at the percentage of confirmed and new cases is useful for small populations and knowing the     severity of the virus in a place. </li>
+
+          <li> <b> Hotspots:</b> Shows neighboring groups of counties that are significantly affected  by the virus and their neighbors. Pale blue outlier counties are at risk for new cases in the following weeks. Pale red outlier counties may be the source of new cases in surrounding counties. </li>
+
+          <li> <b> Time Graph:</b> Shows new case counts over time. The direction of the line shows the  trajectory of the disease.</li>
+
+        </ul>
+
+
+
 
       <a href="faq.html"> Back to Help Topics </a>
 
