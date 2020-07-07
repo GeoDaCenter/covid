@@ -1,5 +1,10 @@
     <style>   
 
+    html, body {
+      position:relative;
+      overflow-x:hidden;
+    } 
+
     #hero {
       background-color: #0d0d0d;
     }
