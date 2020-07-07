@@ -35,17 +35,23 @@
   <script defer src="config.js"></script>
   <script defer src="index.js"></script>
   <script defer src="gen/jsgeoda.js"></script>
+
+  <link href="css/index.css" rel="stylesheet" type="text/css">
+
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Montserrat:wght@400;600;800&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
 </head>
 
 <body>
   <div id="map"></div>
   <div class="navbar">
-    <div class="nav-logo">US Covid Atlas</div>
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="data.html">Data</a></li>
-      <li><a href="methods.html">Methods</a></li>
-      <li><a href="about.html">About</a></li>
+    <div class="nav-logo"><img src="img/logoshort.png" style="height: 30px; padding-right: 5px"><a href="index.html">US COVID ATLAS </a></div>
+    <ul> 
+      <li><a href="data.html">DATA</a></li>
+      <li><a href="methods.html">METHODS</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+      <li><a href="about.html">INSIGHTS</a></li>
+      <li><a href="about.html">ABOUT</a></li>
+      <li><a href="contact.html">CONTACT</a></li>
     </ul>
   </div>
   <div id="tooltip" class="center-shadow"></div>
@@ -80,36 +86,121 @@
             <a href="#" onclick="OnDataClick(this)">Death Count/Confirmed Count</a>
             <a href="#" onclick="OnDataClick(this)">Daily New Confirmed Count</a>
             <a href="#" onclick="OnDataClick(this)">Daily New Confirmed Count per 10K Pop</a>
+            <a href='#' onclick="OnDataClick(this)" id="btn-7day">7-Day Average Daily New Confirmed Count</a>
+            <a href="#" onclick="OnDataClick(this)" id="btn-7day-per10K">7-Day Average Daily New Confirmed Count per 10K Pop</a>
             <a href="#" onclick="OnDataClick(this)">Daily New Death Count</a>
             <a href="#" onclick="OnDataClick(this)">Daily New Death Count per 10K Pop</a>
+            <!--<a href="#" onclick="OnDataClick(this)">Forecasting (5-Day Severity Index)</a>-->
+            <a href="#" onclick="OnDataClick(this)" id="btn-uninprc">Uninsured % (Community Health Factor)</a>
+            <a href="#" onclick="OnDataClick(this)" id="btn-over65yearsprc">Over 65 Years % (Community Health Context)</a>
+            <a href="#" onclick="OnDataClick(this)" id="btn-lfexprt">Life expectancy (Length and Quality of Life)</a>
+            
           </div>
         </div>
       </div>
+
       <p>
         Select Map Type:
-        <input type="checkbox" id="cartogram-ckb" onchange="OnCartogramClick(this)">Using Cartogram
       </p>
       <div class="layout">
-        <button class="stat col-1-2 checked" id="btn-nb" onclick="OnChoroplethClick(this)">Choropleth <div class="info-tooltip" id="info-Choropleth"><i class="fa fa-info-circle"  aria-hidden="true"></i><span class="right tooltip-text"></span></div>
-        </button>
-        <button class="stat col-1-2" id="btn-lisa" onclick="OnLISAClick(this)"> Local Clustering <div class="info-tooltip" id="info-LocalClustering"><i class="fa fa-info-circle"  aria-hidden="true"></i><span class="left tooltip-text"></span></div>
-        </button>
+        <div class="dropdown"  style="width:50%">
+          <button class="dropbtn" id="select-map">Choropleth
+            <div class="info-tooltip" id="info-Choropleth">
+              <i class="fa fa-info-circle"  aria-hidden="true"></i>
+              <span class="right tooltip-text"></span>
+            </div>
+          </button>
+          <div class="dropdown-content" style="width:200px;">
+            <a href="#" id="btn-nb" onclick="OnChoroplethClick(this, 'natural_breaks', true)">Natural Breaks (fixed bins)
+              <div class="info-tooltip" id="info-NaturalBreaksFixed">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="right tooltip-text"></span>
+              </div>
+            </a>
+            <a href="#" id="btn-nb" onclick="OnChoroplethClick(this, 'natural_breaks', false)">Natural Breaks
+              <div class="info-tooltip" id="info-NaturalBreaks">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="right tooltip-text"></span>
+              </div>
+            </a>
+            <!--<a href="#" id="btn-nb" onclick="OnChoroplethClick(this, 'hinge30_breaks', false)">Box Map (Hinge=3.0)
+              <div class="info-tooltip" id="info-Choropleth">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="right tooltip-text"></span>
+              </div>
+            </a>-->
+            <a href="#" id="btn-nb" onclick="OnChoroplethClick(this, 'hinge15_breaks', false)">Box Map <!--(Hinge=1.5)-->
+              <div class="info-tooltip" id="info-BoxMap">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="right tooltip-text"></span>
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <button class="dropbtn" id="select-map">Hotspot
+            <div class="info-tooltip" id="info-LocalClustering">
+              <i class="fa fa-info-circle"  aria-hidden="true"></i>
+              <span class="left tooltip-text"></span>
+            </div>
+          </button>
+          <div class="dropdown-content">
+            <a href="#" id="btn-lisa" onclick="OnLISAClick(this)">Local Moran 
+              <div class="info-tooltip" id="info-LocalMoran">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="left tooltip-text"></span>
+              </div>
+            </a>
+          </div>
+        </div>
+
+
       </div>
 
+      <p>
+        <input type="checkbox" id="cartogram-ckb" onchange="OnCartogramClick(this)">Using Cartogram
+      </p>
+
       <div class="options-panel-section">
-        Select Map Overlays:
+
+
+
+        Select Map Overlay:
+        <div style="float:right">
+          <!--Dark mode:--> <i class="fa fa-toggle-on" aria-hidden="true" style="font-size: 20px; vertical-align:middle; display: none;" onclick="ToggleDarkMode(this)"></i>
+        </div>
         <div class="map-overlay-toggles">
           <div>
-            <input id="reservations-toggle" type="checkbox" onchange="OnShowReservations(this)">
+            <input id="clearoverlay-toggle" type="radio" name="overlay-select" onclick="ClearOverlay(this)" checked>
+            <label for="clearoverlay-toggle">None
+            </label>
+          </div>
+          <div>
+            <input id="reservations-toggle" type="radio" name="overlay-select" onclick="OnShowReservations(this)">
             <label for="reservations-toggle">Show Native American Reservations</label>
           </div>
           <div>
-            <input id="hypersegregated-cities-toggle" type="checkbox" onchange="OnShowHypersegregatedCities(this)">
-            <label for="hypersegregated-cities-toggle">Show Hypersegregated Cities</label>
+            <input id="hypersegregated-cities-toggle" type="radio" name="overlay-select" onchange="OnShowHypersegregatedCities(this)">
+            <label for="hypersegregated-cities-toggle">Show Hypersegregated Cities
+              <div class="info-tooltip" id="info-Hypersegregated">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="left tooltip-text"></span>
+              </div>
+            </label>
           </div>
+          <div>
+            <input id="blackbelt-toggle" type="radio" name="overlay-select" onclick="OnShowBlackBelt(this)">
+            <label for="blackbelt-toggle">Show Black Belt Counties
+              <div class="info-tooltip" id="info-BlackBelt">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="left tooltip-text"></span>
+              </div>
+            </label>
+          </div>
+          
       
           <div class="map-overlay-toggles--hidden">
-            <input id="hotspot-labels-toggle" type="checkbox" onchange="OnShowLabels(this)">
+            <input id="hotspot-labels-toggle" type="checkbox" onclick="OnShowLabels(this)">
             <label for="hotspot-labels-toggle">Show Hotspot Labels</label>
       
             <input id="time-label-toggle" type="checkbox" onchange="OnShowTime(this)">
@@ -122,21 +213,27 @@
       <p>New cases:</p>
       <div class="layout" id="linechart"></div>
       <div class="hidden layout" id="slider-svg"></div>
-      <p><b>Data:</b> <a
-          href="https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/?utm_source=MailChimp&utm_campaign=census-covid2">USAFacts</a>
-        and <a href="https://covidvirus.1point3acres.com/">1point3acres</a>. In case of data discrepancy, local health
-        departments are considered most accurate by CDC recommendations.</p>
+      <p><b>Note:</b> Data is updated with freshest available data at 3pm CST daily, at minimum. In case of data discrepancy, local health departments are considered most accurate as per CDC recommendations. More information on <a href="data.html">data</a>, <a href="methods.html">methods</a>, and <a href="FAQ.html">FAQ</a> at main site.</p>
+
 
       <div class="source-link" align="center">
-        <a href="https://spatial.uchicago.edu" target="_new">
-          <img align="center" src="img/logo_gray.png" width=200px alt="Center for Spatial Data Science logo" />
-        </a>
-        <div class="geoda-link">
-          <img src="img/geoda-logo.png">
-          <a href="https://geodacenter.github.io">Powered by GeoDa</a>
-        </div>
+      
+<!--         <a href="https://spatial.uchicago.edu" target="_new">
+          <img align="center" src="img/logo_gray.png" width=300px alt="Center for Spatial Data Science logo" />
+        </a>  -->
+        <br>
+        <div class="poweredByGeoda">
+          <div class="geoda-link">
+            <img src="img/geoda-logo.png">
+            <a href="https://geodacenter.github.io">POWERED BY GEODA</a>
+          </div>
+        </div> 
       </div>
+
+
     </div>
+
+
   </div>
   <div id="sliderdiv">
     <span id="slider-min" class="float: left; "></span><span id="slider-max" style="float: right;"></span><br>
@@ -148,6 +245,7 @@
   </div>
 
   <div class="legend-wrap">
+    <div class="layout" id="legend_title" style="text-align: center;margin:5px;">Natural Breaks (fixed bins)</div>
     <div class="layout" id="legend">
       <div class="legend" style="background: rgb(240, 240, 240); width: 7.69231%;"></div>
       <div class="legend" style="background: rgb(255, 237, 160); width: 7.69231%;"></div>

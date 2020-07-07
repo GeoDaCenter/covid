@@ -1,13 +1,14 @@
 body {
   margin: 0; 
   padding: 0;
-  font-family: 'Helvetica', sans-serif !important;
-  font-size: 12px;
+  font-family: Lato, sans-serif !important;
+  font-size: 13px;
   background-color: #333;
   overflow: hidden;
 } 
 
 #map { position: absolute; top: 0; bottom: 0; width: 100%; height: 100%}
+
 
 .tooltip-text {
   position: absolute;
@@ -129,13 +130,25 @@ a:visited {
   user-select: none;
 }
 .geoda-link {
-  padding-top: 20px;
+  padding-top: 7px;
 }
+
 .geoda-link img {
-  height: 1rem;
+  height: 1.5rem;
 }
 .geoda-link a {
-  padding: 0px !important;
+  padding: 5px !important;
+}
+
+.options-panel .source-link a {
+  font-family: Lato, sans-serif;
+      font-size: 12px;
+      line-height: 1.5;
+      letter-spacing: 2px;
+      font-weight: 400;
+      font-stretch: ultra-expanded;
+      color: #d8d8d8;
+      opacity: 0.8;
 }
 
 .options-panel {
@@ -150,7 +163,7 @@ a:visited {
   overflow-x: hidden;
   overflow-y: auto;
   outline: none;
-  z-index: 9091;
+  z-index: 9092;
   border-radius: 0px 0px 10px 0px;
 }
 
@@ -176,11 +189,6 @@ a:visited {
   z-index: 100000;  
 }
 
-.options-panel .source-link a {
-  font-weight: 700;
-  color: #5a666d;
-  font-size: 11px;
-}
 
 .collapse-btn {
   position: absolute;
@@ -199,6 +207,7 @@ a:visited {
 #left-collapse {
   left: 348px;
   border-bottom-right-radius: 10px;
+  z-index: 9092 !important;
 }
 
 .collapse-btn:hover {
@@ -216,7 +225,7 @@ a:visited {
 }
 
 #right-collapse.right-panel--collapsed  {
-  right: 17px !important;
+  right: 0px !important;
 }
 
 .options-panel.left-panel--collapsed {
@@ -224,7 +233,7 @@ a:visited {
 }
 
 .data-panel.right-panel--collapsed {
-  right: -270px;
+  right: -290px;
 }
 
 
@@ -271,6 +280,14 @@ a:visited {
   width: 100%;
   cursor: pointer;
   color: #fff;
+  font-family: Lato, sans-serif;
+      font-size: 12px;
+      line-height: 1.5;
+      letter-spacing: 1.75px;
+      font-weight: 600;
+      font-stretch: normal;
+      color: #d8d8d8;
+
 }
 
 /* The container <div> - needed to position the dropdown content */
@@ -311,6 +328,11 @@ a:visited {
   stroke: red;
   fill: none;
   stroke-width: 3;
+}
+
+.smoothline{
+  fill: none;
+  stroke-width: 2;
 }
 
 .axis path,
@@ -418,6 +440,7 @@ data panel
   z-index: 9091;
   border-radius: 0px 0px 0px 10px;
   overflow-y: auto;
+  overflow-x: hidden;
   height: 85%;
 }
 
@@ -472,7 +495,17 @@ data panel
   top: 0px; 
   left: 0px;
   z-index:999;
+  font-family: Lato, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      letter-spacing: 1.75px;
+      font-weight: 400;
+      font-stretch: normal;
+      color: #0d0d0d;
+     font-opacity: 30%;
 }
+
+
 
 @media only screen and (max-width: 600px) {
   .navbar ul{
@@ -494,7 +527,7 @@ data panel
     top: initial;
     max-width: initial;
     border-radius: initial;
-    bottom:40px !important;
+    bottom:70px !important;
     width: 95% !important;
     padding: 10px;
   }
@@ -534,6 +567,7 @@ data panel
   padding-left: 20px;
   padding-right: 20px;
 }
+
 
 .fa-info-circle {
   color: #aaa;
