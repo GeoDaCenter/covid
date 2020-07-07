@@ -163,7 +163,7 @@ a:visited {
   overflow-x: hidden;
   overflow-y: auto;
   outline: none;
-  z-index: 9091;
+  z-index: 9092;
   border-radius: 0px 0px 10px 0px;
 }
 
@@ -207,6 +207,7 @@ a:visited {
 #left-collapse {
   left: 348px;
   border-bottom-right-radius: 10px;
+  z-index: 9092 !important;
 }
 
 .collapse-btn:hover {
@@ -439,6 +440,7 @@ data panel
   z-index: 9091;
   border-radius: 0px 0px 0px 10px;
   overflow-y: auto;
+  overflow-x: hidden;
   height: 85%;
 }
 
@@ -525,7 +527,7 @@ data panel
     top: initial;
     max-width: initial;
     border-radius: initial;
-    bottom:60px !important;
+    bottom:70px !important;
     width: 95% !important;
     padding: 10px;
   }

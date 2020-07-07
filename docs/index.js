@@ -1595,10 +1595,6 @@ function createMap(data) {
     // show mapbox
     for (var lyr of mapbox.getStyle().layers) mapbox.setLayoutProperty(lyr.id, 'visibility','visible'); 
     layers.push(getCountyLayer(data));
-
-    if (!isState()) {
-      layers.push(getStateLayer(data));
-    }
   }
  
   SetupLayers(layers);
@@ -1649,6 +1645,9 @@ function SetupLayers(layers)
   for (var lyr of layers) {
     layer_dict[lyr.id].setProps(lyr);
   }
+
+  // move state boundary to top
+  mapbox.moveLayer("admin-1-boundary");
 }
 
 
