@@ -171,6 +171,11 @@
         </div>
         <div class="map-overlay-toggles">
           <div>
+            <input id="clearoverlay-toggle" type="radio" name="overlay-select" onclick="ClearOverlay(this)" checked>
+            <label for="clearoverlay-toggle">None
+            </label>
+          </div>
+          <div>
             <input id="reservations-toggle" type="radio" name="overlay-select" onclick="OnShowReservations(this)">
             <label for="reservations-toggle">Show Native American Reservations</label>
           </div>
@@ -192,11 +197,7 @@
               </div>
             </label>
           </div>
-          <div>
-            <input id="clearoverlay-toggle" type="radio" name="overlay-select" onclick="ClearOverlay(this)">
-            <label for="clearoverlay-toggle">None
-            </label>
-          </div>
+          
       
           <div class="map-overlay-toggles--hidden">
             <input id="hotspot-labels-toggle" type="checkbox" onclick="OnShowLabels(this)">
