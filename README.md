@@ -1,5 +1,7 @@
 # README
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/f97601fe-2d82-482a-befe-b58f1bd7aa90/deploy-status)](https://app.netlify.com/sites/hardcore-wozniak-6dbde2/deploys)
+
 The U.S. COVID-19 Atlas provides county-level visualizations and analytics to reveal a more detailed pandemic landscape with local hotspots of surging COVID cases that are missed by state-level data. 
 
 The current Atlas is available here: https://geodacenter.github.io/covid/. The Atlas is being updated everyday before 12pm, CT. We are working on releasing regular updates with more data, functions, and analysis.
