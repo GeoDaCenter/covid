@@ -359,6 +359,9 @@ with open("cases.csv") as csvfile:
     cr = csv.reader(csvfile)
     read_covid_data(cr)
 
+os.system('apt install zip')
+os.system('zip -r docs/counties_update.geojson.zip docs/counties_update.geojson')
+os.system('zip -r docs/states_update.geojson.zip docs/states_update.geojson')
 #scheduler = BlockingScheduler()
 #scheduler.add_job(fetch_covid_data, 'interval', hours=1)
 #scheduler.start()
