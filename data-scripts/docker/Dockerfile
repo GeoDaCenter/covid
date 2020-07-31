@@ -3,7 +3,7 @@ WORKDIR /tmp
 
 # Install the compilation tools
 RUN apt-get update -y && \
-  apt-get install build-essential ca-certificates git -y && \
+  apt-get install build-essential zip unzip ca-certificates git -y && \
   pip install --upgrade pip
 
 # Install libspatialindex
