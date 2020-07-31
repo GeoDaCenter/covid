@@ -360,6 +360,7 @@ with open("cases.csv") as csvfile:
     read_covid_data(cr)
 
 os.system('apt install zip')
+os.system('rm docs/counties_update.geojson.zip docs/states_update.geojson.zip')
 os.system('zip -r docs/counties_update.geojson.zip docs/counties_update.geojson')
 os.system('zip -r docs/states_update.geojson.zip docs/states_update.geojson')
 #scheduler = BlockingScheduler()
