@@ -98,6 +98,7 @@ county_fix_code = {
 # no idea what is out county in OH, 1 confirmed cases showed for 0530, ignore for now
 # yakutat plus hoonah-angoonak includes more than one county
 # douglasok seems to be in garfield county OK, crosschecked with USAFacts data and no difference, ignored for now.
+# internationalco new entry as of 0801, data will not be shown on the atlas
 
 def fetch_covid_data():
     out = open('../docs/last_update.txt', 'w') 
