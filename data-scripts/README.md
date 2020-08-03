@@ -12,11 +12,14 @@ To get started running the data scripts, follow these instructions to set up the
 2. Install [Pipenv](https://pipenv.pypa.io/en/latest/) for managing Python dependencies: `brew install pipenv`
 3. Run `pipenv install` from this directory.
 
-### Windows
-
-_TODO_
-
 ### Linux
+
+If on Debian (Buster+):
+
+1. Install [Pipenv](https://pipenv.pypa.io/en/latest/) for managing Python dependencies: `sudo apt install pipenv`
+3. Run `pipenv install` from this directory.
+
+### Windows
 
 _TODO_
 
