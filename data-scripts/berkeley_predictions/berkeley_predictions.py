@@ -16,7 +16,7 @@ OVERRIDES = {'county_fips_overrides': {# theirs => ours
             }
 
 URL = 'https://docs.google.com/spreadsheets/d/1ZSG7o4cV-G0Zg3wlgJpB2Zvg-vEN1i_76n2I-djL0Dk/export?format=csv&id=1ZSG7o4cV-G0Zg3wlgJpB2Zvg-vEN1i_76n2I-djL0Dk&gid=1341003284'
-print('hi'
+
 dir_path = os.path.dirname(os.path.realpath(__file__))
 repo_root = os.path.abspath(os.path.join(dir_path, '..', '..'))
 
