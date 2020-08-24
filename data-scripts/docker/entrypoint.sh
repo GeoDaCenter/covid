@@ -4,7 +4,6 @@ git config --global user.email "spatial@uchicago.edu"
 git config --global user.name "COVID Data Bot"
 
 git clone git@github.com:GeoDaCenter/covid.git && cd covid
-git checkout daily-update
 
 case $DATA_SOURCE in
 
@@ -23,4 +22,4 @@ case $DATA_SOURCE in
 esac
 
 git add . && git commit -m "Updated: `date +'%Y-%m-%d %H:%M:%S'`"
-git push
+git push origin master
