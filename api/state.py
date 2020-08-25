@@ -1,5 +1,9 @@
 import boto3
 import json
+from datetime import datetime, timedelta
+import re
+
+# confirmed to cases
 
 def lambda_handler(event, context):
     
@@ -9,10 +13,11 @@ def lambda_handler(event, context):
     # c = s.create_client('s3', config=Config(connect_timeout=5, read_timeout=60, retries={'max_attempts': 2}))
     
     # read in geojson file
-    s3 = boto3.client('s3',aws_access_key_id='AKIAYFJCPR6GV6STPVRC',
-                aws_secret_access_key='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')
+    s3 = boto3.client('s3',aws_access_key_id='AKIAYFJCPR6GXLACUXPC',
+                aws_secret_access_key='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')
                 
-    response = s3.get_object(Bucket='geoda-covid-atlas', Key='states_update.geojson')
+    file = "states_update.geojson"
+    response = s3.get_object(Bucket='geoda-covid-atlas', Key= file)
     text = response['Body'].read().decode()
     data = json.loads(text)
 
@@ -20,92 +25,87 @@ def lambda_handler(event, context):
     # read in parameter input
     state_input = event["queryStringParameters"]["state"].lower().replace(" ", "")
     _type = event["queryStringParameters"]["type"].lower().replace(" ", "")
-    start_date = "20200121"
-    end_date = "20200821"
+    
+    
+    if "start" in event["queryStringParameters"]:
+        start = event["queryStringParameters"]["start"]
+    else:
+        start = "20200121"
+        
+    if "end" in event["queryStringParameters"]:
+        end = event["queryStringParameters"]["end"]
+    else:
+        end = "20200820"
+
 
     # extract data from json file
-    output = search_info(state_input, _type, data, start_date, end_date)
+    output = search_info(state_input, _type, data, start, end)
 
     
     return {
-    	"statusCode" : 200,
-    	"body": json.dumps(output)
+        "statusCode" : 200,
+        "body": json.dumps(output)
     }
 
 
 
 
-def search_info(state_input, _type, data, start_date, end_date):
-	'''
-	Input:
-		state_input: user input state name or abbr
-		_type: "confirmed", "death", "both"
-		start_date: 8 digits string
-		end_date: 8 digits string
+def search_info(state_input, _type, data, start, end):
+    '''
+    Input:
+        state_input: user input state name or abbr
+        _type: "confirmed", "death", "both"
+        start: 8 digits string
+        end: 8 digits string
 
-		data: states_update.geojson
+        data: states_update.geojson
+    '''
 
-	'''
+    # set response object
+    response = {}
+    response["state"] = state_input.upper()
+    response["type"] = _type
+    response["source"] = "1P3A"
+    response["data"] = {}
 
-	# set response object
-	response = {}
-	response["state"] = state_input.upper()
-	response["type"] = _type
-	response["source"] = "1P3A"
-	response["data"] = {}
-
-	# check if input date is legal
-	start_date, end_date = check_valid_date(start_date, end_date)
-	if not start_date:
-		return "Invalid Date Input!"
+    # check if input date is legal
+    start, end = check_valid_date_json(start, end)
+    if not start:
+        return "Invalid Date Input!"
 
 
-	# extract data 
-	states =  data["features"]
-	for state in states:
-		state = state["properties"]
-		if state_input  == state["NAME"].lower().replace(" ", "") or \
-			state_input == state["STUSPS"].lower().replace(" ", ""):
-			if _type == "both":
-				confirmed = {}
-				death = {}
-				for k,v in state.items(): 
-					if start_date <= k  <= end_date:
-						confirmed.update({k:v})
-					if k.startswith("d2020"):
-						if start_date <= k[1:] <= end_date:
-							death.update({k[1:]:v})
-				response["data"].update({"confirmed":confirmed})
-				response["data"].update({"death":death})
-			elif _type == "confirmed":
-				confirmed = {}
-				for k,v in state.items(): 
-					if start_date <= k <= end_date: 
-						confirmed.update({k:v})
-				response["data"].update({"confirmed":confirmed})
-			elif _type == "death":
-				death = {}
-				for k,v in state.items(): 
-					if k.startswith("d2020"):
-						if start_date <= k[1:] <= end_date:
-							death.update({k[1:]:v})
-				response["data"].update({"death":death})
-			else:
-				return "Invalid Type Input!"
-			return response
-	return "Invalid State Input!"
+    # extract data 
+    states =  data["features"]
+    for state in states:
+        state = state["properties"]
+        if state_input  == state["NAME"].lower().replace(" ", "") or \
+            state_input == state["STUSPS"].lower().replace(" ", ""):
+            if _type == "confirmed":
+                confirmed = {}
+                for k,v in state.items(): 
+                    if start <= k <= end: 
+                        confirmed.update({k:v})
+                response["data"].update({"confirmed":confirmed})
+            elif _type == "death":
+                death = {}
+                for k,v in state.items(): 
+                    if k.startswith("d2020"):
+                        if start <= k[1:] <= end:
+                            death.update({k[1:]:v})
+                response["data"].update({"death":death})
+            else:
+                return "Invalid Type Input!"
+            return response
+    return "Invalid State Input!"
 
 
 
-def check_valid_date(start_date, end_date):
-	import re
-	if not re.match(r'2020[0-1][0-9][0-3][0-9]', start_date) or \
-		not re.match(r'2020[0-1][0-9][0-3][0-9]', end_date) or \
-		end_date < start_date:
-		return "", ""
-	else:
-		start_date = start_date[:4]+"-"+start_date[4:6]+"-"+start_date[6:]
-		end_date = end_date[:4]+"-"+end_date[4:6]+"-"+end_date[6:]
-		return (start_date, end_date)
-
-
+def check_valid_date_json(start, end):
+    if not re.match(r'2020[0-1][0-9][0-3][0-9]', start) or \
+        not re.match(r'2020[0-1][0-9][0-3][0-9]', end) or \
+        end < start:
+        return "", ""
+    else:
+        start = datetime.strptime(start, '%Y%m%d').strftime('%Y-%m-%d') 
+        end = datetime.strptime(end, '%Y%m%d').strftime('%Y-%m-%d') 
+        return (start, end)
