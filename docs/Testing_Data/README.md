@@ -1,4 +1,4 @@
-docs/Tesing_Data
+docs/tesing_data
 ====================
 
 County and state level time-series testing data. These files are output of the python scripts in the data-scripts/Testing_Data folder.

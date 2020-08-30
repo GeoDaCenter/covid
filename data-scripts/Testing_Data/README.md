@@ -1,4 +1,4 @@
-data-scripts/Tesing_Data
+data-scripts/tesing_data
 ====================
 
 This folder contains files about discovery, ideas and instructions for incorporating state and county level testing data.
