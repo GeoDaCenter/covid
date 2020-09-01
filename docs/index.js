@@ -634,11 +634,11 @@ function ToggleDarkMode(evt)
   if (isDark) {
     evt.classList.remove("fa-toggle-on");
     evt.classList.add("fa-toggle-off");
-    mapbox.setStyle('mapbox://styles/lixun910/ckc5dybfp07r41in3vr2ipdp4');
+    mapbox.setStyle('mapbox://styles/lixun910/ckek432lw0mmp19nz3kpg2ufw');
   } else {
     evt.classList.remove("fa-toggle-off");
     evt.classList.add("fa-toggle-on");
-    mapbox.setStyle('mapbox://styles/lixun910/ckc41kxud09ab1hnxz9d5cnr9');
+    mapbox.setStyle('mapbox://styles/lixun910/ckek432lw0mmp19nz3kpg2ufw');
   }
   setTimeout(function() {
     // create/re-create maps
