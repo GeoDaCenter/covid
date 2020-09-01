@@ -127,6 +127,8 @@ var dates = {};
 var caseData = {};
 var deathsData = {};
 var fatalityData = {};
+var testingData = {};
+var testingCriteriaData = {};
 var lisaData = {
   'county_usfacts.geojson': {},
 };
@@ -178,7 +180,7 @@ var getLineColor = function() {
 // these look like dataset file name constants, but they are actually default
 // values for state variables. for example, selectedDataset can change when switching
 // between 1p3a counties and usafacts counties.
-var selectedDataset = 'county_usfacts.geojson';
+var selectedDataset = 'states_update.geojson';
 var selectedId = null;
 var selectedDate = null;
 var latestDate = null;
@@ -550,6 +552,9 @@ function parse1P3AData(data) {
   if (!(json in fatalityData)) fatalityData[json] = {};
   if (!(json in populationData)) populationData[json] = {};
   if (!(json in bedsData)) bedsData[json] = {};
+  if (!(json in testingData)) testingData[json] = {};
+  if (!(json in testingCriteriaData)) testingCriteriaData[json] = {};
+
 
   dates[selectedDataset] = getDatesFromGeojson(data);
   if (selectedDate == null || selectedDate.indexOf('/')) {
@@ -563,9 +568,11 @@ function parse1P3AData(data) {
     let pop = data.features[i].properties.population;
     let id = data.features[i].properties.id;
     let beds = data.features[i].properties.beds;
+    let criteria = data.features[i].properties.criteria;
 
     populationData[json][id] = pop;
     bedsData[json][id] = beds;
+    testingCriteriaData[json][id] = criteria;
 
     // confirmed count
     for (var j = 0; j < dates[selectedDataset].length; ++j) {
@@ -600,6 +607,14 @@ function parse1P3AData(data) {
       if (caseData[json][d][id] > 0) {
         fatalityData[json][d][id] = deathsData[json][d][id] / caseData[json][d][id];
       }
+    }
+    // testing
+    for (var j = 0; j < dates[selectedDataset].length; ++j) {
+      var d = dates[selectedDataset][j];
+      if (!(d in testingData[json])) {
+        testingData[json][d] = {};
+      }
+      testingData[json][d][id] = data.features[i]["properties"]['t' + d];
     }
   }
 }
@@ -992,6 +1007,8 @@ function getTooltipHtml(id, values) {
     <div>Deaths: ${handle(values.deaths)}</div>
     <div>New Cases ${handle(values.newCases)}</div>
     <div>New Deaths: ${handle(values.newDeaths)}</div>
+    <div>Testing: ${handle(values.testing)}</div>
+    <div>Testing Criterion: ${handle(values.criteria)}</div>
   `
 
   // if (isLisa()) {
@@ -1053,6 +1070,10 @@ function updateTooltip(e) {
     var pre_vals = deathsData[selectedDataset][prev_date];
     newDeaths = cur_vals[id] - pre_vals[id];
   }
+  
+  // testing
+  let testing = testingData[selectedDataset][selectedDate][id];
+  let criteria = testingCriteriaData[selectedDataset][id];
 
   // render html
   const values = {
@@ -1061,6 +1082,8 @@ function updateTooltip(e) {
     deaths,
     newCases,
     newDeaths,
+    testing,
+    criteria,
   };
   const text = getTooltipHtml(id, values);
 
