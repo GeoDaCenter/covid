@@ -1419,7 +1419,7 @@ mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 
 const mapbox = new mapboxgl.Map({
   container: 'map',
-  style: 'mapbox://styles/lixun910/ckc41kxud09ab1hnxz9d5cnr9',
+  style: 'mapbox://styles/lixun910/ckek432lw0mmp19nz3kpg2ufw',
   center: [ -105.6500523, 35.850033],
   zoom: 3.5
 });
