@@ -129,6 +129,7 @@ var deathsData = {};
 var fatalityData = {};
 var testingData = {};
 var testingCriteriaData = {};
+var testingPosData = {};
 var lisaData = {
   'county_usfacts.geojson': {},
 };
@@ -554,6 +555,8 @@ function parse1P3AData(data) {
   if (!(json in bedsData)) bedsData[json] = {};
   if (!(json in testingData)) testingData[json] = {};
   if (!(json in testingCriteriaData)) testingCriteriaData[json] = {};
+  if (!(json in testingPosData)) testingPosData[json] = {};
+
 
 
   dates[selectedDataset] = getDatesFromGeojson(data);
@@ -616,6 +619,15 @@ function parse1P3AData(data) {
       }
       testingData[json][d][id] = data.features[i]["properties"]['t' + d];
     }
+
+    // testing positivity rate 
+      for (var j = 0; j < dates[selectedDataset].length; ++j) {
+        var d = dates[selectedDataset][j];
+        if (!(d in testingPosData[json])) {
+          testingPosData[json][d] = {};
+        }
+        testingPosData[json][d][id] = data.features[i]["properties"]['tpos' + d];
+      }
   }
 }
 
@@ -1008,6 +1020,7 @@ function getTooltipHtml(id, values) {
     <div>New Cases ${handle(values.newCases)}</div>
     <div>New Deaths: ${handle(values.newDeaths)}</div>
     <div>Testing: ${handle(values.testing)}</div>
+    <div>Positivity Rate: ${handle(values.testingPos)}</div>
     <div>Testing Criterion: ${values.criteria}</div>
   `
 
@@ -1073,6 +1086,7 @@ function updateTooltip(e) {
   
   // testing
   let testing = testingData[selectedDataset][selectedDate][id];
+  let testingPos = testingPosData[selectedDataset][selectedDate][id];
   let criteria = testingCriteriaData[selectedDataset][id];
 
   // render html
@@ -1083,6 +1097,7 @@ function updateTooltip(e) {
     newCases,
     newDeaths,
     testing,
+    testingPos,
     criteria,
   };
   const text = getTooltipHtml(id, values);
