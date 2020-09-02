@@ -1008,7 +1008,7 @@ function getTooltipHtml(id, values) {
     <div>New Cases ${handle(values.newCases)}</div>
     <div>New Deaths: ${handle(values.newDeaths)}</div>
     <div>Testing: ${handle(values.testing)}</div>
-    <div>Testing Criterion: ${handle(values.criteria)}</div>
+    <div>Testing Criterion: ${values.criteria}</div>
   `
 
   // if (isLisa()) {
