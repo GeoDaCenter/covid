@@ -1798,15 +1798,9 @@ function GetFeatureValue(id) {
     var cur_vals = deathsData[json][selectedDate];
     var pre_vals = deathsData[json][prev_date];
     return ((cur_vals[id] - pre_vals[id]) / populationData[json][id] * 10000).toFixed(3);
-  /*} else if (txt == "Smokers % (Health Indicators)") {
-    let feat = jsondata[json]["features"][id];
-    let geoid = parseInt(feat.properties.GEOID);
-    let item = chrhlthcontextData[geoid];
-    if (item) {
-      if (isFinite(item["SmkPrc"])) {
-        return item["SmkPrc"];
-      }
-    }*/
+  } else if (txt == "Testing Positivity Rate %") {
+    if (testingPosData[json][selectedDate][id] == '' || testingPosData[json][selectedDate][id] == 0) return 0;
+    return Math.round(testingPosData[json][selectedDate][id]*1000)/10;
   } else if (txt == "Uninsured % (Community Health Factor)") {
     let feat = jsondata[json]["features"][id];
     let geoid = parseInt(feat.properties.GEOID);
@@ -2009,27 +2003,16 @@ function GetDataValues(inputDate) {
         rt_vals.push(0);
       }
     }
-    return rt_vals;
-   else if (txt == "Smokers % (Health Indicators)") {
-    // smokers % 
-    var rt_vals = [];
-    const feats = jsondata[json]["features"];
-    for (let i=0; i<feats.length; ++i) {
-      const geoid = parseInt(feats[i]["properties"].GEOID);
-      let check_val = chrhlthcontextData[geoid];
-      let no_value = true;
-      if (check_val != undefined) {
-        let v = parseFloat(check_val["SmkPrc"]);
-        if (isFinite(v)) {
-          rt_vals.push(v);
-          no_value = false;
-        } 
-      } 
-      if (no_value) {
-        rt_vals.push(0);
-      }
-    }
     return rt_vals;*/
+  } else if (txt == "Testing Positivity Rate %") {
+    var vals = [];
+    for (var id in caseData[json][inputDate]) {
+      if (testingPosData[json][inputDate][id] == '' || testingPosData[json][inputDate][id] == 0)
+        vals.push(0);
+      else
+        vals.push(Math.round(testingPosData[json][inputDate][id]*1000)/10);
+    }
+    return vals;
   } else if (txt == "Uninsured % (Community Health Factor)") {
     var rt_vals = [];
     const feats = jsondata[json]["features"];
