@@ -1013,6 +1013,13 @@ function OnShowTime(el) {
 
 function getTooltipHtml(id, values) {
   const handle = val => val >= 0 ? val : 'N/A'; // dont show negative values
+  const handlePos = (val) => {
+    let formatted = val;
+    if (val >= 0) {
+      return Math.round(val*1000)/10 + "%";
+    }
+    if (!val || val === '' || val < 0) return 'N/A';
+  }
   let text = 
   ` <h3>${values.entityName}</h3><hr>
     <div>Cases: ${handle(values.cases)}</div>
@@ -1020,7 +1027,7 @@ function getTooltipHtml(id, values) {
     <div>New Cases ${handle(values.newCases)}</div>
     <div>New Deaths: ${handle(values.newDeaths)}</div>
     <div>Testing: ${handle(values.testing)}</div>
-    <div>Positivity Rate: ${handle(values.testingPos)}</div>
+    <div>Positivity Rate: ${handlePos(values.testingPos)}</div>
     <div>Testing Criterion: ${values.criteria}</div>
   `
 
