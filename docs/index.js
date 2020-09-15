@@ -181,7 +181,7 @@ var getLineColor = function() {
 // these look like dataset file name constants, but they are actually default
 // values for state variables. for example, selectedDataset can change when switching
 // between 1p3a counties and usafacts counties.
-var selectedDataset = 'states_update.geojson';
+var selectedDataset = 'county_usfacts.geojson';
 var selectedId = null;
 var selectedDate = null;
 var latestDate = null;
@@ -1691,8 +1691,10 @@ function SetupLayers(layers)
   // toggle uscongress layer
   if (shouldShowUSCongress) {
     mapbox.setLayoutProperty("uscongress", 'visibility', 'visible');
+    mapbox.setLayoutProperty("uscongress-label", 'visibility', 'visible');
   } else {
     mapbox.setLayoutProperty("uscongress", 'visibility', 'none');
+    mapbox.setLayoutProperty("uscongress-label", 'visibility', 'none');
   }
 
   const firstLabelLayerId = mapbox.getStyle().layers.find(layer => layer.type === 'symbol').id;
