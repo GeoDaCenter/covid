@@ -193,6 +193,7 @@ var shouldShowReservations = false;
 var cartogramDeselected = false;
 var shouldShowHypersegregatedCities = false;
 var shouldShowBlackBelt = false;
+var shouldShowUSCongress = false; 
 
 var stateMap = 'states_update.geojson';
 
@@ -921,6 +922,7 @@ function OnShowReservations() {
   shouldShowReservations = true;
   shouldShowBlackBelt = false;
   shouldShowHypersegregatedCities = false;
+  shouldShowUSCongress = false;
   UpdateMap();
 }
 
@@ -929,6 +931,7 @@ function OnShowHypersegregatedCities() {
   shouldShowHypersegregatedCities = true;
   shouldShowBlackBelt = false;
   shouldShowReservations = false;
+  shouldShowUSCongress = false;
   UpdateMap();
 }
 
@@ -938,6 +941,15 @@ function OnShowBlackBelt() {
   shouldShowBlackBelt = true;
   shouldShowHypersegregatedCities = false;
   shouldShowReservations = false;
+  shouldShowUSCongress = false;
+  UpdateMap();
+}
+
+function OnShowUSCongress() {
+  shouldShowUSCongress = true;
+  shouldShowBlackBelt = false;
+  shouldShowHypersegregatedCities = false;
+  shouldShowReservations = false;
   UpdateMap();
 }
 
@@ -945,6 +957,7 @@ function ClearOverlay() {
   shouldShowBlackBelt = false;
   shouldShowHypersegregatedCities = false;
   shouldShowReservations = false;
+  shouldShowUSCongress = false;
   UpdateMap();
 }
 
@@ -1673,6 +1686,13 @@ function SetupLayers(layers)
     mapbox.setLayoutProperty("blackbelt", 'visibility', 'visible');
   } else {
     mapbox.setLayoutProperty("blackbelt", 'visibility', 'none');
+  }
+
+  // toggle uscongress layer
+  if (shouldShowUSCongress) {
+    mapbox.setLayoutProperty("uscongress", 'visibility', 'visible');
+  } else {
+    mapbox.setLayoutProperty("uscongress", 'visibility', 'none');
   }
 
   const firstLabelLayerId = mapbox.getStyle().layers.find(layer => layer.type === 'symbol').id;
