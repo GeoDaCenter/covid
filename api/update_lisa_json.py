@@ -59,6 +59,7 @@ def county_update_lisa_1P3A():
 		geoid = county["GEOID"]
 		county.update(death[death["GEOID"] == geoid].to_dict(orient="records")[0])
 		features.append(county)
+	features = [{k.replace("d", ""):v for k,v in d.items()} for d in features]
 	death = {"type": "death", "source": "1P3A", "features": features}
 	with open('lisa/lisa_county_confirmed_1P3A.json', 'w') as fp:
 		json.dump(death, fp)
@@ -117,6 +118,7 @@ def state_update_lisa_1P3A():
 		geoid = county["GEOID"]
 		county.update(death[death["GEOID"] == geoid].to_dict(orient="records")[0])
 		features.append(county)
+	features = [{k.replace("d", ""):v for k,v in d.items()} for d in features]
 	death = {"type": "death", "source": "1P3A", "features": features}
 	with open('lisa/lisa_state_death_1P3A.json', 'w') as fp:
 		json.dump(death, fp)

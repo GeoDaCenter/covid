@@ -40,9 +40,12 @@ def write_new_json_county():
 
 	death = cluster[list(cluster.iloc[:,0:13]) + list(cluster.loc[:,"d2020-01-21":])].iloc[:,:-3]
 	death = death.to_dict(orient="records")
+	death = [{k.replace("d", ""):v for k,v in d.items()} for d in death]
 	death = {"type": "death", "source": "1P3A", "features": death}
 	with open('lisa/lisa_county_death_1P3A.json', 'w') as fp:
 		json.dump(death, fp)
+
+	print("Successfully wrote 1P3A county lisa")
 
 	pass
 
@@ -73,9 +76,12 @@ def write_new_json_state():
 
 	death = cluster[list(cluster.iloc[:,0:16]) + list(cluster.loc[:,"d2020-01-21":])].iloc[:,:-3]
 	death = death.to_dict(orient="records")
+	death = [{k.replace("d", ""):v for k,v in d.items()} for d in death]
 	death = {"type": "death", "source": "1P3A", "features": death}
 	with open('lisa/lisa_state_death_1P3A.json', 'w') as fp:
 		json.dump(death, fp)
+
+	print("Successfully wrote 1P3A state lisa")
 
 	pass
 
@@ -110,6 +116,8 @@ def write_confirmed_lisa_usafacts():
 	with open('lisa/lisa_county_confirmed_usafacts.json', 'w') as fp:
 		json.dump(confirmed, fp)
 
+	print("Successfully wrote USAFacts confirmed lisa")
+
 	pass
 
 
@@ -135,6 +143,8 @@ def write_death_lisa_usafacts():
 	death = {"type": "death", "source": "USAFacts", "features": death}
 	with open('lisa/lisa_county_death_usafacts.json', 'w') as fp:
 		json.dump(death, fp)
+
+	print("Successfully wrote USAFacts death lisa")
 
 	pass
 
