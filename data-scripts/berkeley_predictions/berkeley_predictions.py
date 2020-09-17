@@ -135,10 +135,12 @@ def validate_and_process():
       csv_writer.writerows(out_rows)
 
       try:
+          print('Writing to S3...')
           s3 = boto3.resource('s3')
           s3.Object('geoda-covid-atlas', 'berkeley_predictions.csv').put(Body=open(os.path.join(repo_root, 'docs/berkeley_predictions.csv'), 'rb'))
+          print('Write to S3 complete.')
       except Exception as e:
-          print(e.message)
+          print(e)
 
     print('Finished.')
 

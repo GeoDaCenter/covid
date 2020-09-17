@@ -4,6 +4,7 @@ import pytz
 import json
 from datetime import datetime, timedelta
 
+import boto3
 import requests
 import pandas as pd
 import geopandas as gpd
@@ -107,6 +108,15 @@ def validate_and_process():
       deaths_csv_writer = csv.DictWriter(deaths_out_file, fieldnames=out_field_names)
       deaths_csv_writer.writeheader()
       deaths_csv_writer.writerows(deaths_out_rows)
+
+    try:
+        print('Writing to S3...')
+        s3 = boto3.resource('s3')
+        s3.Object('geoda-covid-atlas', 'covid_confirmed_usafacts.csv').put(Body=open(os.path.join(repo_root, 'docs/covid_confirmed_usafacts.csv'), 'rb'))
+        s3.Object('geoda-covid-atlas', 'covid_deaths_usafacts.csv').put(Body=open(os.path.join(repo_root, 'docs/covid_deaths_usafacts.csv'), 'rb'))
+        print('Write to S3 complete.')
+    except Exception as e:
+        print(e)
 
     print('Finished.')
 

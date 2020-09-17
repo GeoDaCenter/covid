@@ -9,6 +9,7 @@ import csv
 import os
 import io
 import json
+import boto3
 from datetime import datetime
 
 county_fix_code = {
@@ -358,6 +359,15 @@ fetch_covid_data()
 with open("cases.csv") as csvfile:
     cr = csv.reader(csvfile)
     read_covid_data(cr)
+
+try:
+    print('Writing to S3...')
+    s3 = boto3.resource('s3')
+    s3.Object('geoda-covid-atlas', 'counties_update.geojson').put(Body=open(os.path.join(repo_root, 'docs/counties_update.geojson'), 'rb'))
+    s3.Object('geoda-covid-atlas', 'states_update.geojson').put(Body=open(os.path.join(repo_root, 'docs/states_update.geojson'), 'rb'))
+    print('Write to S3 complete.')
+except Exception as e:
+    print(e)
 
 os.system('apt install zip')
 os.system('rm docs/counties_update.geojson.zip docs/states_update.geojson.zip')
