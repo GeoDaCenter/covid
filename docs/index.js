@@ -1144,16 +1144,17 @@ function highlightSelected(feat) {
         'type': 'Feature',
         'properties': {},
         'geometry': {
-          'type': "Polygon",
-          'coordinates': feat.geometry.coordinates
+          'type': "LineString",
+          'coordinates': feat.geometry.coordinates[0][0]
         }
       },
       getLineColor: [0, 0, 0],
-      getFillColor: [255, 0, 0],
-      lineWidthScale: 2,
-      lineWidthMinPixels: 2,
-      stroked: true,
-      filled: false
+      lineWidthScale: 20,
+      lineWidthMinPixels: 4,
+      getLineWidth: 10,
+      stroked: false,
+      filled: true,
+      extruded: true,
     };
     const firstLabelLayerId = mapbox.getStyle().layers.find(layer => layer.type === 'symbol').id;
     if (!mapbox.getLayer("hllayer")) {
