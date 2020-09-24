@@ -1715,8 +1715,8 @@ function SetupLayers(layers)
     layer_dict[lyr.id].setProps(lyr);
   }
 
-  // move state boundary to top
-  mapbox.moveLayer("admin-1-boundary");
+  // move state boundary to top base layers, below overlay
+  mapbox.moveLayer("admin-1-boundary", "state-label");
 }
 
 
