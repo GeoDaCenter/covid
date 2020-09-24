@@ -1616,7 +1616,8 @@ function getCountyLayer(data)
       type: GeoJsonLayer,
       data: data,
       opacity: 0.6,
-      stroked: true,
+      // stroked counties if no overlay is active
+      stroked: !( shouldShowReservations || shouldShowBlackBelt || shouldShowHypersegregatedCities || shouldShowUSCongress ),
       filled: true,
       lineWidthScale: 1,
       lineWidthMinPixels: 1,
