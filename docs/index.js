@@ -662,11 +662,11 @@ function ToggleDarkMode(evt)
   if (isDark) {
     evt.classList.remove("fa-toggle-on");
     evt.classList.add("fa-toggle-off");
-    mapbox.setStyle('mapbox://styles/lixun910/ckek432lw0mmp19nz3kpg2ufw');
+    mapbox.setStyle('mapbox://styles/lixun910/ckek432lw0mmp19nz3kpg2ufw?fresh=true');
   } else {
     evt.classList.remove("fa-toggle-off");
     evt.classList.add("fa-toggle-on");
-    mapbox.setStyle('mapbox://styles/lixun910/ckek432lw0mmp19nz3kpg2ufw');
+    mapbox.setStyle('mapbox://styles/lixun910/ckek432lw0mmp19nz3kpg2ufw?fresh=true');
   }
   setTimeout(function() {
     // create/re-create maps
@@ -1617,7 +1617,7 @@ function getCountyLayer(data)
       data: data,
       opacity: 0.6,
       // stroked counties if no overlay is active
-      stroked: !( shouldShowReservations || shouldShowBlackBelt || shouldShowHypersegregatedCities || shouldShowUSCongress ),
+      stroked: false,
       filled: true,
       lineWidthScale: 1,
       lineWidthMinPixels: 1,
@@ -1653,7 +1653,12 @@ function createMap(data) {
 
   } else {
     // show mapbox
-    for (var lyr of mapbox.getStyle().layers) mapbox.setLayoutProperty(lyr.id, 'visibility','visible'); 
+    for (var lyr of mapbox.getStyle().layers) {
+      mapbox.setLayoutProperty(lyr.id, 'visibility','visible'); 
+      if (lyr.id.includes("label")&&!lyr.id.includes("road")){
+        mapbox.moveLayer(lyr.id)
+      }
+    }
     layers.push(getCountyLayer(data));
   }
  
@@ -1678,16 +1683,16 @@ function SetupLayers(layers)
 
   // toggle agg layer
   if (shouldShowHypersegregatedCities) {
-    mapbox.setLayoutProperty("hypersegregated", 'visibility', 'visible');
+    mapbox.setLayoutProperty("hypersegregated-highlight", 'visibility', 'visible');
   } else {
-    mapbox.setLayoutProperty("hypersegregated", 'visibility', 'none');
+    mapbox.setLayoutProperty("hypersegregated-highlight", 'visibility', 'none');
   }
 
   // toggle blackbelt layer
   if (shouldShowBlackBelt) {
-    mapbox.setLayoutProperty("blackbelt", 'visibility', 'visible');
+    mapbox.setLayoutProperty("blackbelt-highlight", 'visibility', 'visible');
   } else {
-    mapbox.setLayoutProperty("blackbelt", 'visibility', 'none');
+    mapbox.setLayoutProperty("blackbelt-highlight", 'visibility', 'none');
   }
 
   // toggle uscongress layer
