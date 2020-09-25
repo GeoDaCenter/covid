@@ -1676,9 +1676,9 @@ function SetupLayers(layers)
   }
   // toggle native america layer
   if (shouldShowReservations) {
-    mapbox.setLayoutProperty("nativeamericanreservations", 'visibility', 'visible');
+    mapbox.setLayoutProperty("nativeamericanreservations-highlight", 'visibility', 'visible');
   } else {
-    mapbox.setLayoutProperty("nativeamericanreservations", 'visibility', 'none');
+    mapbox.setLayoutProperty("nativeamericanreservations-highlight", 'visibility', 'none');
   }
 
   // toggle agg layer
