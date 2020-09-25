@@ -1721,7 +1721,7 @@ function SetupLayers(layers)
   }
 
   // move state boundary to top base layers, below overlay
-  mapbox.moveLayer("admin-1-boundary", "state-label");
+  mapbox.moveLayer("admin-1-boundary", "road-label-simple");
 }
 
 
