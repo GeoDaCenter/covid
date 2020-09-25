@@ -2814,7 +2814,7 @@ function onSliderChange(val) {
   const sliderMax = document.getElementById('slider-max');
 
   // HAX: convert 1p3a dates to same format as usafacts 
-  if (selectedDataset === 'counties_update.geojson' || selectedDataset === 'states_update.geojson') {
+  if (selectedDataset === 'counties_update.geojson' || selectedDataset === 'states_0924.geojson') {
     sliderSelectedDate = hyphenToSlashDate(selectedDate);
   }
 
