@@ -195,7 +195,7 @@ var shouldShowHypersegregatedCities = false;
 var shouldShowBlackBelt = false;
 var shouldShowUSCongress = false; 
 
-var stateMap = 'states_update.geojson';
+var stateMap = 'states_0924.geojson';
 
 function isState() {
   return source_btn.innerText.indexOf('State') >= 0;
@@ -228,7 +228,7 @@ function updateSelectedDataset(url, callback = () => {}) {
     if (url.endsWith('counties_update.geojson')) {
       selectedDataset = 'counties_update.geojson';
     } else {
-      selectedDataset = 'states_update.geojson';
+      selectedDataset = 'states_0924.geojson';
     }
   }
   updateDates();
@@ -426,7 +426,7 @@ function load1p3aData(url, callback) {
                 });
 
                 let sel_map = url.startsWith('state') ? 'state' : 'county';
-                selectedDataset = sel_map == 'state' ? 'states_update.geojson' : 'counties_update.geojson';
+                selectedDataset = sel_map == 'state' ? 'states_0924.geojson' : 'counties_update.geojson';
                 // read as json
                 var jsonReader = new FileReader();
                 jsonReader.onload = function (event) {
@@ -823,7 +823,7 @@ function OnSourceClick(evt) {
   } else if (evt.innerText.indexOf('County (1Point3Acres.com)') >= 0) {
     selectedDataset = 'counties_update.geojson';
   } else {
-    selectedDataset = 'states_update.geojson';
+    selectedDataset = 'states_0924.geojson';
   }
   UpdateMap();
   if (evt.innerText.indexOf('1Point3Acres.com') >= 0) {
@@ -1598,7 +1598,7 @@ function getStateLayer(data)
   return {
       id: 'state_layer',
       type: GeoJsonLayer,
-      data: './states.geojson',
+      data: './states_0924.geojson',
       opacity: 0.5,
       stroked: true,
       filled: false,
@@ -2769,7 +2769,7 @@ function createTimeSlider(geojson) {
     let sliderSelectedDate = selectedDate;
 
     // HAX: convert 1p3a dates to same format as usafacts 
-    if (selectedDataset === 'counties_update.geojson' || selectedDataset === 'states_update.geojson') {
+    if (selectedDataset === 'counties_update.geojson' || selectedDataset === 'states_0924.geojson') {
       sliderSelectedDate = hyphenToSlashDate(sliderSelectedDate);
     }
 
