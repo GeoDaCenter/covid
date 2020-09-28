@@ -119,6 +119,8 @@ var layer_dict = {};
 var usafactsCases;
 var usafactsDeaths;
 var usafactsData;
+var usafactsTesting; 
+var usafactsTestingPos;
 var onep3aData;
 var populationData = {};
 var bedsData = {};
@@ -206,7 +208,8 @@ function isLisa() {
 }
 
 function isCartogram() {
-  return document.getElementById('cartogram-ckb').checked;
+  return false;
+//  return document.getElementById('cartogram-ckb').checked;
 }
 
 function getCurrentWuuid() {
@@ -365,6 +368,8 @@ async function loadUsafactsData(url, callback) {
   [
     usafactsCases,
     usafactsDeaths,
+    usafactsTesting,
+    usafactsTestingPos,
     chrhlthfactorData,
     chrhlthcontextData,
     chrhlthlifeData,
@@ -372,6 +377,8 @@ async function loadUsafactsData(url, callback) {
   ] = await Promise.all([
     d3.csv('covid_confirmed_usafacts.csv'),
     d3.csv('covid_deaths_usafacts.csv'),
+    d3.csv('testing_usafacts.csv'),
+    d3.csv('testingpos_usafacts.csv'),
     fetchChrHlthFactorData(),
     fetchChrHlthContextData(),
     fetchChrHlthLifeData(),
@@ -383,7 +390,7 @@ async function loadUsafactsData(url, callback) {
   updateSelectedDataset(selectedDataset);
 
   // merge usfacts csv data
-  parseUsaFactsData(featuresWithIds, usafactsCases, usafactsDeaths);
+  parseUsaFactsData(featuresWithIds, usafactsCases, usafactsDeaths, usafactsTesting, usafactsTestingPos);
   jsondata[selectedDataset] = featuresWithIds;
 
   // read as bytearray for GeoDaWASM
@@ -480,13 +487,16 @@ function getDatesFromUsafacts(cases) {
   return xLabels;
 }
 
-function parseUsaFactsData(data, confirm_data, death_data) {
+function parseUsaFactsData(data, confirm_data, death_data, testing, testingpos) {
   let json = selectedDataset;
   if (!(json in caseData)) caseData[json] = {};
   if (!(json in deathsData)) deathsData[json] = {};
   if (!(json in fatalityData)) fatalityData[json] = {};
   if (!(json in populationData)) populationData[json] = {};
   if (!(json in bedsData)) bedsData[json] = {};
+  if (!(json in testingData)) testingData[json] = {};
+  if (!(json in testingCriteriaData)) testingCriteriaData[json] = {};
+  if (!(json in testingPosData)) testingPosData[json] = {};
 
   dates[selectedDataset] = getDatesFromUsafacts(confirm_data);
   if (selectedDate == null || selectedDate.indexOf('-') >= 0) {
@@ -496,14 +506,20 @@ function parseUsaFactsData(data, confirm_data, death_data) {
 
   let conf_dict = {};
   let death_dict = {};
+  let testing_dict = {};
+  let testingpos_dict = {};
+
   for (let i = 0; i < confirm_data.length; ++i) {
     conf_dict[confirm_data[i].countyFIPS] = confirm_data[i];
     death_dict[death_data[i].countyFIPS] = death_data[i];
+    testing_dict[testing[i].countyFIPS] = testing[i];
+    testingpos_dict[testingpos[i].countyFIPS] = testingpos[i];
   }
   for (let i = 0; i < data.features.length; i++) {
     let pop = data.features[i].properties.population;
     let geoid = parseInt(data.features[i].properties.GEOID);
     let beds = data.features[i].properties.beds;
+    let criteria = data.features[i].properties.criteria;
     if (!(geoid in conf_dict)) {
       console.log("UsaFacts does not have:", data.features[i].properties);
       for (let j = 0; j < dates[selectedDataset].length; ++j) {
@@ -511,11 +527,14 @@ function parseUsaFactsData(data, confirm_data, death_data) {
         caseData[json][d][i] = 0;
         deathsData[json][d][i] = 0;
         fatalityData[json][d][i] = 0;
+        testingData[json][d][i] = 0;
+        testingPosData[json][d][i] = 0;
       }
       continue;
     }
     populationData[json][i] = pop;
     bedsData[json][i] = beds;
+    testingCriteriaData[json][i] = criteria;
 
     // confirmed count
     for (let j = 0; j < dates[selectedDataset].length; ++j) {
@@ -543,6 +562,22 @@ function parseUsaFactsData(data, confirm_data, death_data) {
       if (caseData[json][d][i] > 0) {
         fatalityData[json][d][i] = deathsData[json][d][i] / caseData[json][d][i];
       }
+    }
+    // testing number
+    for (var j = 0; j < dates[selectedDataset].length; ++j) {
+      var d = dates[selectedDataset][j];
+      if (!(d in testingData[json])) {
+        testingData[json][d] = {};
+      }
+      testingData[json][d][i] = testing_dict[geoid][d] == '' ? 0 : parseInt(testing_dict[geoid][d]);
+    }
+    // testing positivity
+    for (var j = 0; j < dates[selectedDataset].length; ++j) {
+      var d = dates[selectedDataset][j];
+      if (!(d in testingPosData[json])) {
+        testingPosData[json][d] = {};
+      }
+      testingPosData[json][d][i] = testingpos_dict[geoid][d] == '' ? 0 : testingpos_dict[geoid][d];
     }
   }
 }

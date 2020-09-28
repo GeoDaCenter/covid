@@ -5,6 +5,7 @@ import json
 from datetime import datetime
 
 import pytz
+import boto3
 import requests
 import pandas as pd
 
@@ -133,6 +134,14 @@ def validate_and_process():
       csv_writer.writeheader()
       csv_writer.writerows(out_rows)
 
+      try:
+          print('Writing to S3...')
+          s3 = boto3.resource('s3')
+          s3.Object('geoda-covid-atlas', 'berkeley_predictions.csv').put(Body=open(os.path.join(repo_root, 'docs/berkeley_predictions.csv'), 'rb'))
+          print('Write to S3 complete.')
+      except Exception as e:
+          print(e)
+
     print('Finished.')
 
 
@@ -141,6 +150,8 @@ def download_data(url, target_dir, filename):
 
     with open(os.path.join(target_dir, filename), 'wb+') as out_file:
       out_file.write(request.content)
+
+
 
 
 if __name__ == '__main__':
