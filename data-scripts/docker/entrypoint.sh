@@ -20,6 +20,10 @@ case $DATA_SOURCE in
 		export COMMAND="python data-scripts/_1p3a/_1p3a.py"
 		;;
 
+	lisa)
+		export COMMAND="python data-scripts/lisa/update_lisa_json.py"
+		;;
+
 esac
 
 if $COMMAND;
