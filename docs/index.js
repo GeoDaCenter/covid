@@ -1475,8 +1475,8 @@ function updateDataPanel(e) {
   fatalityRate = fatalityRate === 0 ? 0 : parseFloat(fatalityRate).toFixed(1);
   newCasesPer10k = newCasesPer10k === 0 ? 0 : parseFloat(newCasesPer10k).toFixed(1);
   newDeathsPer10k = newDeathsPer10k === 0 ? 0 : parseFloat(newDeathsPer10k).toFixed(1);
-  if (testingPos > 0) {
-    testingPos = round((testingPos)*1000)/10;
+  if (testingPos >= 0) {
+    testingPos = Math.round((testingPos)*1000)/10;
   }
   if (!testingPos || testingPos === '' || testingPos < 0) {
     testingPos = 'N/A';
