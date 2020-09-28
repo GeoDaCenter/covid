@@ -1074,8 +1074,8 @@ function getTooltipHtml(id, values) {
     <div>Deaths: ${handle(values.deaths)}</div>
     <div>New Cases ${handle(values.newCases)}</div>
     <div>New Deaths: ${handle(values.newDeaths)}</div>
-    <div>Testing: ${handle(values.testing)}</div>
-    <div>Positivity Rate: ${handlePos(values.testingPos)}</div>
+    <div>Total Testing: ${handle(values.testing)}</div>
+    <div>Daily Positivity Rate: ${handlePos(values.testingPos)}</div>
     <div>Testing Criterion: ${values.criteria}</div>
   `
 
