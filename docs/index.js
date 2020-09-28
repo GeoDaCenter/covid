@@ -512,8 +512,8 @@ function parseUsaFactsData(data, confirm_data, death_data, testing, testingpos) 
   for (let i = 0; i < confirm_data.length; ++i) {
     conf_dict[confirm_data[i].countyFIPS] = confirm_data[i];
     death_dict[death_data[i].countyFIPS] = death_data[i];
-    testing_dict[testing_dict[i].countyFIPS] = testing[i];
-    testingpos_dict[testingpos_dict[i].countyFIPS] = testingpos[i];
+    testing_dict[testing[i].countyFIPS] = testing[i];
+    testingpos_dict[testingpos[i].countyFIPS] = testingpos[i];
   }
   for (let i = 0; i < data.features.length; i++) {
     let pop = data.features[i].properties.population;
