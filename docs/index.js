@@ -129,6 +129,9 @@ var dates = {};
 var caseData = {};
 var deathsData = {};
 var fatalityData = {};
+var testingData = {};
+var testingCriteriaData = {};
+var testingPosData = {};
 var lisaData = {
   'county_usfacts.geojson': {},
 };
@@ -192,8 +195,9 @@ var shouldShowReservations = false;
 var cartogramDeselected = false;
 var shouldShowHypersegregatedCities = false;
 var shouldShowBlackBelt = false;
+var shouldShowUSCongress = false; 
 
-var stateMap = 'states_update.geojson';
+var stateMap = 'states_0924.geojson';
 
 function isState() {
   return source_btn.innerText.indexOf('State') >= 0;
@@ -227,7 +231,7 @@ function updateSelectedDataset(url, callback = () => {}) {
     if (url.endsWith('counties_update.geojson')) {
       selectedDataset = 'counties_update.geojson';
     } else {
-      selectedDataset = 'states_update.geojson';
+      selectedDataset = 'states_0924.geojson';
     }
   }
   updateDates();
@@ -429,7 +433,7 @@ function load1p3aData(url, callback) {
                 });
 
                 let sel_map = url.startsWith('state') ? 'state' : 'county';
-                selectedDataset = sel_map == 'state' ? 'states_update.geojson' : 'counties_update.geojson';
+                selectedDataset = sel_map == 'state' ? 'states_0924.geojson' : 'counties_update.geojson';
                 // read as json
                 var jsonReader = new FileReader();
                 jsonReader.onload = function (event) {
@@ -585,6 +589,11 @@ function parse1P3AData(data) {
   if (!(json in fatalityData)) fatalityData[json] = {};
   if (!(json in populationData)) populationData[json] = {};
   if (!(json in bedsData)) bedsData[json] = {};
+  if (!(json in testingData)) testingData[json] = {};
+  if (!(json in testingCriteriaData)) testingCriteriaData[json] = {};
+  if (!(json in testingPosData)) testingPosData[json] = {};
+
+
 
   dates[selectedDataset] = getDatesFromGeojson(data);
   if (selectedDate == null || selectedDate.indexOf('/')) {
@@ -598,9 +607,11 @@ function parse1P3AData(data) {
     let pop = data.features[i].properties.population;
     let id = data.features[i].properties.id;
     let beds = data.features[i].properties.beds;
+    let criteria = data.features[i].properties.criteria;
 
     populationData[json][id] = pop;
     bedsData[json][id] = beds;
+    testingCriteriaData[json][id] = criteria;
 
     // confirmed count
     for (var j = 0; j < dates[selectedDataset].length; ++j) {
@@ -636,6 +647,23 @@ function parse1P3AData(data) {
         fatalityData[json][d][id] = deathsData[json][d][id] / caseData[json][d][id];
       }
     }
+    // testing
+    for (var j = 0; j < dates[selectedDataset].length; ++j) {
+      var d = dates[selectedDataset][j];
+      if (!(d in testingData[json])) {
+        testingData[json][d] = {};
+      }
+      testingData[json][d][id] = data.features[i]["properties"]['t' + d];
+    }
+
+    // testing positivity rate 
+      for (var j = 0; j < dates[selectedDataset].length; ++j) {
+        var d = dates[selectedDataset][j];
+        if (!(d in testingPosData[json])) {
+          testingPosData[json][d] = {};
+        }
+        testingPosData[json][d][id] = data.features[i]["properties"]['tpos' + d];
+      }
   }
 }
 
@@ -669,11 +697,11 @@ function ToggleDarkMode(evt)
   if (isDark) {
     evt.classList.remove("fa-toggle-on");
     evt.classList.add("fa-toggle-off");
-    mapbox.setStyle('mapbox://styles/lixun910/ckc5dybfp07r41in3vr2ipdp4');
+    mapbox.setStyle('mapbox://styles/lixun910/ckek432lw0mmp19nz3kpg2ufw?fresh=true');
   } else {
     evt.classList.remove("fa-toggle-off");
     evt.classList.add("fa-toggle-on");
-    mapbox.setStyle('mapbox://styles/lixun910/ckc41kxud09ab1hnxz9d5cnr9');
+    mapbox.setStyle('mapbox://styles/lixun910/ckek432lw0mmp19nz3kpg2ufw?fresh=true');
   }
   setTimeout(function() {
     // create/re-create maps
@@ -830,7 +858,7 @@ function OnSourceClick(evt) {
   } else if (evt.innerText.indexOf('County (1Point3Acres.com)') >= 0) {
     selectedDataset = 'counties_update.geojson';
   } else {
-    selectedDataset = 'states_update.geojson';
+    selectedDataset = 'states_0924.geojson';
   }
   UpdateMap();
   if (evt.innerText.indexOf('1Point3Acres.com') >= 0) {
@@ -929,6 +957,7 @@ function OnShowReservations() {
   shouldShowReservations = true;
   shouldShowBlackBelt = false;
   shouldShowHypersegregatedCities = false;
+  shouldShowUSCongress = false;
   UpdateMap();
 }
 
@@ -937,6 +966,7 @@ function OnShowHypersegregatedCities() {
   shouldShowHypersegregatedCities = true;
   shouldShowBlackBelt = false;
   shouldShowReservations = false;
+  shouldShowUSCongress = false;
   UpdateMap();
 }
 
@@ -946,6 +976,15 @@ function OnShowBlackBelt() {
   shouldShowBlackBelt = true;
   shouldShowHypersegregatedCities = false;
   shouldShowReservations = false;
+  shouldShowUSCongress = false;
+  UpdateMap();
+}
+
+function OnShowUSCongress() {
+  shouldShowUSCongress = true;
+  shouldShowBlackBelt = false;
+  shouldShowHypersegregatedCities = false;
+  shouldShowReservations = false;
   UpdateMap();
 }
 
@@ -953,6 +992,7 @@ function ClearOverlay() {
   shouldShowBlackBelt = false;
   shouldShowHypersegregatedCities = false;
   shouldShowReservations = false;
+  shouldShowUSCongress = false;
   UpdateMap();
 }
 
@@ -1021,12 +1061,22 @@ function OnShowTime(el) {
 
 function getTooltipHtml(id, values) {
   const handle = val => val >= 0 ? val : 'N/A'; // dont show negative values
+  const handlePos = (val) => {
+    let formatted = val;
+    if (val >= 0) {
+      return Math.round(val*1000)/10 + "%";
+    }
+    if (!val || val === '' || val < 0) return 'N/A';
+  }
   let text = 
   ` <h3>${values.entityName}</h3><hr>
     <div>Cases: ${handle(values.cases)}</div>
     <div>Deaths: ${handle(values.deaths)}</div>
     <div>New Cases ${handle(values.newCases)}</div>
     <div>New Deaths: ${handle(values.newDeaths)}</div>
+    <div>Testing: ${handle(values.testing)}</div>
+    <div>Positivity Rate: ${handlePos(values.testingPos)}</div>
+    <div>Testing Criterion: ${values.criteria}</div>
   `
 
   // if (isLisa()) {
@@ -1088,6 +1138,11 @@ function updateTooltip(e) {
     var pre_vals = deathsData[selectedDataset][prev_date];
     newDeaths = cur_vals[id] - pre_vals[id];
   }
+  
+  // testing
+  let testing = testingData[selectedDataset][selectedDate][id];
+  let testingPos = testingPosData[selectedDataset][selectedDate][id];
+  let criteria = testingCriteriaData[selectedDataset][id];
 
   // render html
   const values = {
@@ -1096,6 +1151,9 @@ function updateTooltip(e) {
     deaths,
     newCases,
     newDeaths,
+    testing,
+    testingPos,
+    criteria,
   };
   const text = getTooltipHtml(id, values);
 
@@ -1121,16 +1179,17 @@ function highlightSelected(feat) {
         'type': 'Feature',
         'properties': {},
         'geometry': {
-          'type': "Polygon",
-          'coordinates': feat.geometry.coordinates
+          'type': "LineString",
+          'coordinates': feat.geometry.coordinates[0][0]
         }
       },
       getLineColor: [0, 0, 0],
-      getFillColor: [255, 0, 0],
-      lineWidthScale: 2,
-      lineWidthMinPixels: 2,
-      stroked: true,
-      filled: false
+      lineWidthScale: 20,
+      lineWidthMinPixels: 4,
+      getLineWidth: 10,
+      stroked: false,
+      filled: true,
+      extruded: true,
     };
     const firstLabelLayerId = mapbox.getStyle().layers.find(layer => layer.type === 'symbol').id;
     if (!mapbox.getLayer("hllayer")) {
@@ -1454,7 +1513,7 @@ mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 
 const mapbox = new mapboxgl.Map({
   container: 'map',
-  style: 'mapbox://styles/lixun910/ckc41kxud09ab1hnxz9d5cnr9',
+  style: 'mapbox://styles/lixun910/ckek432lw0mmp19nz3kpg2ufw',
   center: [ -105.6500523, 35.850033],
   zoom: 3.5
 });
@@ -1574,7 +1633,7 @@ function getStateLayer(data)
   return {
       id: 'state_layer',
       type: GeoJsonLayer,
-      data: './states.geojson',
+      data: './states_0924.geojson',
       opacity: 0.5,
       stroked: true,
       filled: false,
@@ -1592,7 +1651,8 @@ function getCountyLayer(data)
       type: GeoJsonLayer,
       data: data,
       opacity: 0.6,
-      stroked: true,
+      // stroked counties if no overlay is active
+      stroked: false,
       filled: true,
       lineWidthScale: 1,
       lineWidthMinPixels: 1,
@@ -1628,7 +1688,12 @@ function createMap(data) {
 
   } else {
     // show mapbox
-    for (var lyr of mapbox.getStyle().layers) mapbox.setLayoutProperty(lyr.id, 'visibility','visible'); 
+    for (var lyr of mapbox.getStyle().layers) {
+      mapbox.setLayoutProperty(lyr.id, 'visibility','visible'); 
+      if (lyr.id.includes("label")&&!lyr.id.includes("road")){
+        mapbox.moveLayer(lyr.id)
+      }
+    }
     layers.push(getCountyLayer(data));
   }
  
@@ -1646,23 +1711,32 @@ function SetupLayers(layers)
   }
   // toggle native america layer
   if (shouldShowReservations) {
-    mapbox.setLayoutProperty("nativeamericanreservations", 'visibility', 'visible');
+    mapbox.setLayoutProperty("nativeamericanreservations-highlight", 'visibility', 'visible');
   } else {
-    mapbox.setLayoutProperty("nativeamericanreservations", 'visibility', 'none');
+    mapbox.setLayoutProperty("nativeamericanreservations-highlight", 'visibility', 'none');
   }
 
   // toggle agg layer
   if (shouldShowHypersegregatedCities) {
-    mapbox.setLayoutProperty("hypersegregated", 'visibility', 'visible');
+    mapbox.setLayoutProperty("hypersegregated-highlight", 'visibility', 'visible');
   } else {
-    mapbox.setLayoutProperty("hypersegregated", 'visibility', 'none');
+    mapbox.setLayoutProperty("hypersegregated-highlight", 'visibility', 'none');
   }
 
   // toggle blackbelt layer
   if (shouldShowBlackBelt) {
-    mapbox.setLayoutProperty("blackbelt", 'visibility', 'visible');
+    mapbox.setLayoutProperty("blackbelt-highlight", 'visibility', 'visible');
   } else {
-    mapbox.setLayoutProperty("blackbelt", 'visibility', 'none');
+    mapbox.setLayoutProperty("blackbelt-highlight", 'visibility', 'none');
+  }
+
+  // toggle uscongress layer
+  if (shouldShowUSCongress) {
+    mapbox.setLayoutProperty("uscongress", 'visibility', 'visible');
+    mapbox.setLayoutProperty("uscongress-label", 'visibility', 'visible');
+  } else {
+    mapbox.setLayoutProperty("uscongress", 'visibility', 'none');
+    mapbox.setLayoutProperty("uscongress-label", 'visibility', 'none');
   }
 
   const firstLabelLayerId = mapbox.getStyle().layers.find(layer => layer.type === 'symbol').id;
@@ -1681,8 +1755,8 @@ function SetupLayers(layers)
     layer_dict[lyr.id].setProps(lyr);
   }
 
-  // move state boundary to top
-  mapbox.moveLayer("admin-1-boundary");
+  // move state boundary to top base layers, below overlay
+  mapbox.moveLayer("admin-1-boundary", "road-label-simple");
 }
 
 
@@ -1788,15 +1862,9 @@ function GetFeatureValue(id) {
     var cur_vals = deathsData[json][selectedDate];
     var pre_vals = deathsData[json][prev_date];
     return ((cur_vals[id] - pre_vals[id]) / populationData[json][id] * 10000).toFixed(3);
-  /*} else if (txt == "Smokers % (Health Indicators)") {
-    let feat = jsondata[json]["features"][id];
-    let geoid = parseInt(feat.properties.GEOID);
-    let item = chrhlthcontextData[geoid];
-    if (item) {
-      if (isFinite(item["SmkPrc"])) {
-        return item["SmkPrc"];
-      }
-    }*/
+  } else if (txt == "Testing Positivity Rate %") {
+    if (testingPosData[json][selectedDate][id] == '' || testingPosData[json][selectedDate][id] == 0) return 0;
+    return Math.round(testingPosData[json][selectedDate][id]*1000)/10;
   } else if (txt == "Uninsured % (Community Health Factor)") {
     let feat = jsondata[json]["features"][id];
     let geoid = parseInt(feat.properties.GEOID);
@@ -1999,27 +2067,16 @@ function GetDataValues(inputDate) {
         rt_vals.push(0);
       }
     }
-    return rt_vals;
-   else if (txt == "Smokers % (Health Indicators)") {
-    // smokers % 
-    var rt_vals = [];
-    const feats = jsondata[json]["features"];
-    for (let i=0; i<feats.length; ++i) {
-      const geoid = parseInt(feats[i]["properties"].GEOID);
-      let check_val = chrhlthcontextData[geoid];
-      let no_value = true;
-      if (check_val != undefined) {
-        let v = parseFloat(check_val["SmkPrc"]);
-        if (isFinite(v)) {
-          rt_vals.push(v);
-          no_value = false;
-        } 
-      } 
-      if (no_value) {
-        rt_vals.push(0);
-      }
-    }
     return rt_vals;*/
+  } else if (txt == "Testing Positivity Rate %") {
+    var vals = [];
+    for (var id in caseData[json][inputDate]) {
+      if (testingPosData[json][inputDate][id] == '' || testingPosData[json][inputDate][id] == 0)
+        vals.push(0);
+      else
+        vals.push(Math.round(testingPosData[json][inputDate][id]*1000)/10);
+    }
+    return vals;
   } else if (txt == "Uninsured % (Community Health Factor)") {
     var rt_vals = [];
     const feats = jsondata[json]["features"];
@@ -2747,7 +2804,7 @@ function createTimeSlider(geojson) {
     let sliderSelectedDate = selectedDate;
 
     // HAX: convert 1p3a dates to same format as usafacts 
-    if (selectedDataset === 'counties_update.geojson' || selectedDataset === 'states_update.geojson') {
+    if (selectedDataset === 'counties_update.geojson' || selectedDataset === 'states_0924.geojson') {
       sliderSelectedDate = hyphenToSlashDate(sliderSelectedDate);
     }
 
@@ -2792,7 +2849,7 @@ function onSliderChange(val) {
   const sliderMax = document.getElementById('slider-max');
 
   // HAX: convert 1p3a dates to same format as usafacts 
-  if (selectedDataset === 'counties_update.geojson' || selectedDataset === 'states_update.geojson') {
+  if (selectedDataset === 'counties_update.geojson' || selectedDataset === 'states_0924.geojson') {
     sliderSelectedDate = hyphenToSlashDate(selectedDate);
   }
 

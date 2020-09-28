@@ -1,0 +1,27 @@
+
+#######################
+#                     #
+# !! Don't run unless #
+# want to erase all   #
+# data !!             #
+#                     #
+#   python util.py    #
+#                     #
+#######################
+
+
+
+####### Run below #####
+
+python update_date.py
+python coronadatascraper.py
+python IN.py
+python NM.py
+python WA.py
+python NY.py
+python TX.py
+python NJ.py
+python PA.py
+python states_testing.py
+
+python clean.py
