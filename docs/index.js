@@ -1463,6 +1463,11 @@ function updateDataPanel(e) {
   // cases per bed
   let casesPerBed = bedsDataExists ? (cases / beds) : 0;
 
+  // testing
+  let testing = testingData[selectedDataset][selectedDate][id];
+  let testingPos = testingPosData[selectedDataset][selectedDate][id];
+  let criteria = testingCriteriaData[selectedDataset][id];
+
   // handle decimals
   casesPer10k = casesPer10k === 0 ? 0 : parseFloat(casesPer10k).toFixed(1);
   deathsPer10k = deathsPer10k === 0 ? 0 : parseFloat(deathsPer10k).toFixed(1);
@@ -1470,8 +1475,16 @@ function updateDataPanel(e) {
   fatalityRate = fatalityRate === 0 ? 0 : parseFloat(fatalityRate).toFixed(1);
   newCasesPer10k = newCasesPer10k === 0 ? 0 : parseFloat(newCasesPer10k).toFixed(1);
   newDeathsPer10k = newDeathsPer10k === 0 ? 0 : parseFloat(newDeathsPer10k).toFixed(1);
+  if (testingPos > 0) {
+    testingPos = round((testingPos)*1000)/10;
+  }
+  if (!testingPos || testingPos === '' || testingPos < 0) {
+    testingPos = 'N/A';
+  }
+  if (!testing || testing === '' || testing < 0) {
+    testing = 'N/A';
+  }
 
-  if (beds === 0) casesPerBed = 'N/A';
 
   html += 
   `
@@ -1485,6 +1498,9 @@ function updateDataPanel(e) {
   <div><b>New Deaths per 10k Population</b> ${newDeathsPer10k}</div>
   <div><b>Licensed Hospital Beds:</b> ${numberWithCommas(beds)}</div>
   <div><b>Cases per Bed:</b> ${casesPerBed}</div>
+  <div><b>Total Testing:</b> ${numberWithCommas(testing)}</div>
+  <div><b>Daily Positivity Rate %:</b> ${testingPos}</div>
+  <div><b>Testing Criteria:</b> ${criteria}</div>
   `
 
   // removed fatality rate:  <div><b>Fatality Rate:</b> ${fatalityRate}%</div>
