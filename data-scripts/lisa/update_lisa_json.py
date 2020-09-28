@@ -80,7 +80,7 @@ def county_update_lisa_1P3A():
 		json.dump(death, fp)
 
 	write_to_s3('lisa_county_confirmed_1P3A.json')
-	write_to_s3('lisa_county_confirmed_1P3A.json')
+	write_to_s3('lisa_county_death_1P3A.json')
 
 	pass
 
