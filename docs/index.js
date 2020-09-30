@@ -93,7 +93,7 @@ const COLOR_SCALE = {
 
 const testing_breaks = {
   bins: ['No Data','3%','5%','10%','15%','20%','>25%'],
-  breaks:[-1,0,3,5,10,15,20,25, Infinity]
+  breaks:[-1,-0.1,3,5,10,15,20,25, Infinity]
 }
 
 var lisa_labels = ["Not significant", "High-High", "Low-Low", "Low-High", "High-Low", "Undefined", "Isolated"];
