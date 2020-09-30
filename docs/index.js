@@ -830,7 +830,8 @@ function init_state() {
   var num_cat = 6;
   if (selectedMethod == "natural_breaks") num_cat = 8;
   nb = gda_proxy.custom_breaks(stateMap, "natural_breaks", num_cat, null, vals);
-
+  if (selectedMethod == "testing_fixed_bins") nb = testing_breaks;
+  
   colorScale = function (x) {
     if (selectedMethod == "natural_breaks") {
       if (x == 0) return COLOR_SCALE[selectedMethod][0];
@@ -2186,6 +2187,8 @@ function UpdateLegend() {
 }
 
 function UpdateLegendLabels(breaks) {
+  console.log(breaks)
+  console.log(selectedMethod)
   let field = data_btn.innerText;
   const div = document.getElementById('legend-labels');
   var cont = '';
