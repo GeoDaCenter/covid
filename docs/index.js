@@ -78,8 +78,23 @@ const COLOR_SCALE = {
     [69, 117, 180],
     [250, 227, 212],
     [215, 48, 39],
+  ],
+  'testing_fixed_bins' : [
+    [240,240,240],
+    [13,8,135],
+    [92,1,166],
+    [156,23,158],
+    [203,70,121],
+    [237,121,83],
+    [253,180,47],
+    [240,249,33],
   ]
 };
+
+const testing_breaks = {
+  bins: ['No Data','3%','5%','10%','15%','20%','>25%'],
+  breaks:[-1,0,3,5,10,15,20,25, Infinity]
+}
 
 var lisa_labels = ["Not significant", "High-High", "Low-Low", "Low-High", "High-Low", "Undefined", "Isolated"];
 var lisa_colors = ["#ffffff", "#FF0000", "#0000FF", "#a7adf9", "#f4ada8", "#464646", "#999999"];
@@ -731,7 +746,6 @@ function initCounty() {
   var num_cat = 6;
   if (selectedMethod == "natural_breaks" || selectedMethod == "natural_breaks_hlthfactor" || selectedMethod == "natural_breaks_hlthcontextlife") num_cat = 8;
   nb = gda_proxy.custom_breaks(selectedDataset, "natural_breaks", num_cat, null, vals);
-
   var legend_bins;
 
   if (selectedMethod == "forecasting") {
@@ -750,6 +764,8 @@ function initCounty() {
     }
     if (selectedMethod == "natural_breaks_hlthfactor" || selectedMethod == "natural_breaks_hlthcontextlife"){
       nb = gda_proxy.custom_breaks(selectedDataset, "natural_breaks", num_cat, null, vals);
+    } else if (selectedMethod == "testing_fixed_bins") {
+      nb = testing_breaks;
     } else {
       nb = gda_proxy.custom_breaks(selectedDataset, selectedMethod, num_cat, null, vals);
     }
@@ -897,6 +913,8 @@ function OnDataClick(evt) {
     // reset to natural breaks if switching to other variable
     selectedMethod = "natural_breaks";
     document.getElementById('legend_title').innerText = "Natural Breaks";
+  } else if (selectedVariable == "Testing Positivity Rate %") {
+    selectedMethod = "testing_fixed_bins"
   } else {
     selectedMethod = "natural_breaks";
     // others will keep using current selectedMethod
@@ -2217,7 +2235,11 @@ function UpdateLegendLabels(breaks) {
     cont += '<div style="text-align:center">Low</div>';
     cont += '<div style="text-align:center">Medium</div>';
     cont += '<div style="text-align:center">High</div>';
-  } // todo testing fixed interval bins
+  } else if (selectedMethod == "testing_fixed_bins") {
+    for (var i = 0; i < breaks.length; ++i) {
+      cont += '<div style="text-align:center">' + breaks[i] + '</div>'
+    }
+  }
   div.innerHTML = cont;
 }
 
