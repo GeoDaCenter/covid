@@ -2187,8 +2187,6 @@ function UpdateLegend() {
 }
 
 function UpdateLegendLabels(breaks) {
-  console.log(breaks)
-  console.log(selectedMethod)
   let field = data_btn.innerText;
   const div = document.getElementById('legend-labels');
   var cont = '';
