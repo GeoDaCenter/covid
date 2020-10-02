@@ -142,10 +142,10 @@ def state_update_lisa_1P3A():
 	death = {"type": "death", "source": "1P3A", "features": features}
 	with open(os.path.join(dir_path, '_working/lisa_state_death_1P3A.json'), 'w') as fp:
 		json.dump(death, fp)
-	pass
 
 	write_to_s3('lisa_state_confirmed_1P3A.json')
 	write_to_s3('lisa_state_death_1P3A.json')
+	pass
 
 
 ##### USAFacts #####
@@ -195,7 +195,7 @@ def update_lisa_usafacts(type_):
 		features.append(county)
 
 	data = {"type": type_, "source": "USAFacts", "features": features}
-	filename = 'lisa_county_{}_usafacts.json'.format(_type)
+	filename = 'lisa_county_{}_usafacts.json'.format(type_)
 	with open(os.path.join(dir_path, '_working/{}'.format(filename)), 'w') as fp:
 		json.dump(data, fp)
 
