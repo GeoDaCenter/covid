@@ -202,8 +202,8 @@ function isLisa() {
 }
 
 function isCartogram() {
-  return false;
-//  return document.getElementById('cartogram-ckb').checked;
+//  return false;
+  return document.getElementById('cartogram-ckb').checked;
 }
 
 function getCurrentWuuid() {
@@ -747,7 +747,11 @@ function init_state() {
   var vals;
   var nb;
 
-  vals = GetDataValues(latestDate);
+  if (use_fixed_bins) {
+    vals = GetDataValues(latestDate);
+  } else {
+    vals = GetDataValues();
+  }
 
   var num_cat = 6;
   if (selectedMethod == "natural_breaks") num_cat = 8;
