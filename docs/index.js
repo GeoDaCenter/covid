@@ -1514,7 +1514,7 @@ function getCartogramLayer(data)
 function getCartoLabelLayer(data)
 {
     var labels = [];
-    if ('name' in data && data.name.startsWith("state")) {
+    if (selectedDataset.startsWith("state")) {
       for (let i = 0; i < data.features.length; ++i) {
         labels.push({
           id: i,
