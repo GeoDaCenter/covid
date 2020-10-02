@@ -223,8 +223,8 @@ function isLisa() {
 }
 
 function isCartogram() {
-  return false;
-//  return document.getElementById('cartogram-ckb').checked;
+//  return false;
+return document.getElementById('cartogram-ckb').checked;
 }
 
 function getCurrentWuuid() {
