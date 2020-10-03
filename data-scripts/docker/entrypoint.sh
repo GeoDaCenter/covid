@@ -9,25 +9,27 @@ git checkout master
 case $DATA_SOURCE in
 
 	berkeley_predictions)
-		export COMMAND="python data-scripts/berkeley_predictions/berkeley_predictions.py"
+		export COMMAND_DATA="python data-scripts/berkeley_predictions/berkeley_predictions.py"
 		;;
 
 	usafacts)
-	  export COMMAND="python data-scripts/usafacts/usafacts.py"
+	  export COMMAND_DATA="python data-scripts/usafacts/usafacts.py"
 		;;
 
 	1p3a)
-		export COMMAND="python data-scripts/_1p3a/_1p3a.py"
+		export COMMAND_DATA="python data-scripts/_1p3a/_1p3a.py"
 		;;
 
 	lisa)
-		export COMMAND="python data-scripts/lisa/update_lisa_json.py"
+		export COMMAND_CALC="python data-scripts/lisa/update_lisa_json.py"
 		;;
 
 esac
 
-if $COMMAND;
+if $COMMAND_DATA;
 		then git add . && git commit -m "Updated: `date +'%Y-%m-%d %H:%M:%S'`"&& git push;
+elif $COMMAND_CALC;
+		then exit 0;
 else
 	echo "$DATA_SOURCE script failed."
 	exit 1;
