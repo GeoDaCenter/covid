@@ -82,8 +82,6 @@ def county_update_lisa_1P3A():
 	write_to_s3('lisa_county_confirmed_1P3A.json')
 	write_to_s3('lisa_county_death_1P3A.json')
 
-	pass
-
 
 
 
@@ -145,7 +143,7 @@ def state_update_lisa_1P3A():
 
 	write_to_s3('lisa_state_confirmed_1P3A.json')
 	write_to_s3('lisa_state_death_1P3A.json')
-	pass
+
 
 
 ##### USAFacts #####
@@ -203,8 +201,6 @@ def update_lisa_usafacts(type_):
 
 	print("Update for {} completed!".format(datetime.today().strftime("%-m.%-d")))
 
-
-	pass
 
 def get_month_day():
     month = str(datetime.now(pytz.timezone('US/Central')).month)

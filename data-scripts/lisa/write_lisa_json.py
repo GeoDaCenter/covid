@@ -172,8 +172,6 @@ def write_death_lisa_usafacts():
 
 	write_to_s3('lisa_county_death_usafacts.json')
 
-	pass
-
 
 def get_month_day():
     month = str(datetime.now(pytz.timezone('US/Central')).month)
