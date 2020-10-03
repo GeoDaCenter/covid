@@ -62,8 +62,6 @@ def write_new_json_county():
 	write_to_s3('lisa_county_confirmed_1P3A.json')
 	write_to_s3('lisa_county_death_1P3A.json')
 
-	pass
-
 
 def write_new_json_state():
 
@@ -101,8 +99,6 @@ def write_new_json_state():
 	write_to_s3('lisa_state_confirmed_1P3A.json')
 	write_to_s3('lisa_state_death_1P3A.json')
 
-	pass
-
 
 ##### USAFacts #####
 
@@ -139,8 +135,6 @@ def write_confirmed_lisa_usafacts():
 	print("Successfully wrote USAFacts confirmed lisa")
 
 	write_to_s3('lisa_county_confirmed_usafacts.json')
-
-	pass
 
 
 def write_death_lisa_usafacts():
