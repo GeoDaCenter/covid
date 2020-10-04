@@ -11,6 +11,8 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 repo_root = os.path.abspath(os.path.join(dir_path, '..', '..'))
 
 def fetch_testing_data_state():
+    working_dir = os.path.join(dir_path, '_working')
+    os.makedirs(working_dir, exist_ok=True)
     testing_url = "https://raw.githubusercontent.com/GeoDaCenter/covid-atlas-research/master/Testing_Data/python/state_testing.csv?token=AL7MVTCZMWHNIY5TVWYNGWK7QCJU4"
     download_data(testing_url, working_dir, 'testing_state_raw.csv')
 
@@ -101,7 +103,7 @@ def update_state_geojson(state_test, state_positivity, date_state_test, date_sta
             col_name = "tpos" + dat
             feat["properties"][col_name] = cnt
                 
-    with open('states_update.geojson'), 'w') as outfile:
+    with open(os.path.join(repo_root, 'docs/states_update.geojson'), 'w') as outfile:
     json.dump(geojson, outfile)
 
     
