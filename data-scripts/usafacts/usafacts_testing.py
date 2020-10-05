@@ -8,7 +8,6 @@ import boto3
 import requests
 import pandas as pd
 import geopandas as gpd
-import calc_posrate_usafacts
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 repo_root = os.path.abspath(os.path.join(dir_path, '..', '..'))
@@ -22,7 +21,14 @@ def usafacts_testing():
     
     testing_url = "https://raw.githubusercontent.com/GeoDaCenter/covid-atlas-research/master/Testing_Data/python/county_hist.csv?token=AL7MVTCZMWHNIY5TVWYNGWK7QCJU4"
     download_data(testing_url, working_dir, 'testing_raw.csv')
-    download_data(calc_posrate_usafacts.calc_positivity(), working_dir, 'positivity_raw.csv')
+    positivity_url = "https://raw.githubusercontent.com/linqinyu/covid/master/docs/testingpos_usafacts.csv"
+    download_data(positivity_url, working_dir, 'positivity_raw.csv')
+
+    #dateparse = lambda dates: [pd.datetime.strptime(d, '%m/%d/%Y') for d in dates
+    df = pd.read_csv("_working/positivity_raw.csv")
+    df["countyFIPS"] = df.countyFIPS.astype(str).str.zfill(5)
+    df = df.drop(['stateFIPS'], axis=1)
+    df.to_csv("_working/positivity_raw.csv", index = False)
     
     validate_and_process()
 
@@ -52,7 +58,7 @@ def validate_and_process():
     # note: we need to open the files with encoding `utf-8-sig` to correctly parse
     # the byte-order mark (bom) of the sources files
     # https://stackoverflow.com/a/49150749
-    with open(os.path.join(dir_path, '_working/testing_raw.csv'), encoding='utf-8-sig') as testing_in_file, open(os.path.join(dir_path, '_working/positivity_raw.csv'), encoding='utf-8-sig') as positivity_in_file, open(os.path.join(repo_root, 'docs/testing_usafacts.csv'), 'w+') as testing_out_file, open(os.path.join(repo_root, 'docs/testingpos_usafacts.csv'), 'w+') as positivity_out_file:
+    with open(os.path.join(dir_path, '_working/testing_usafacts.csv'), encoding='utf-8-sig') as testing_in_file, open(os.path.join(dir_path, '_working/positivity_raw.csv'), encoding='utf-8-sig') as positivity_in_file, open(os.path.join(repo_root, 'docs/testing_usafacts.csv'), 'w+') as testing_out_file, open(os.path.join(repo_root, 'docs/testingpos_usafacts.csv'), 'w+') as positivity_out_file:
       testing_csv_reader =  csv.DictReader(testing_in_file)
       testing_source_field_names = testing_csv_reader.fieldnames
       
@@ -61,31 +67,31 @@ def validate_and_process():
 
 ###!Not sure about the following error handling. The code worked without it.
       # VALIDATE: make sure testing contain yesterday's data
-      yesterday = datetime.now(pytz.timezone('US/Central')) - timedelta(days=1)
-      yesterday_source_field = yesterday.strftime('%-m/%-d/%y')
-      print(yesterday)
-      print(yesterday_source_field)
-      testing_last_date = testing_source_field_names[-1]
-      print(testing_last_date)
-      if testing_last_date != yesterday_source_field:
-        raise ValueError("Testing do not contain yesterday's data; last date {}".format(testing_last_date))
-        pass
+      #yesterday = datetime.now(pytz.timezone('US/Central')) - timedelta(days=1)
+      #yesterday_source_field = yesterday.strftime('%-m/%-d/%y')
+      #print(yesterday)
+      #print(yesterday_source_field)
+      #testing_last_date = testing_source_field_names[-1]
+      #print(testing_last_date)
+      #if testing_last_date != yesterday_source_field:
+      #  raise ValueError("Testing do not contain yesterday's data; last date {}".format(testing_last_date))
+      #  pass
   
       # VALIDATE: make sure positivity contain yesterday's data
-      positivity_last_date = positivity_source_field_names[-1]
-      print(positivity_last_date)
-      if positivity_last_date != yesterday_source_field:
-        raise ValueError("Positivity do not contain yesterday's data; last date {}".format(positivity_last_date))
-        pass
+      #positivity_last_date = positivity_source_field_names[-1]
+      #print(positivity_last_date)
+      #if positivity_last_date != yesterday_source_field:
+      #  raise ValueError("Positivity do not contain yesterday's data; last date {}".format(positivity_last_date))
+      #  pass
         
       testing_out_rows = []
       positivity_out_rows = []
       
       # VALIDATE: make sure all testing rows belong to a known county
       for testing_row in testing_csv_reader:
-        fips = testing_row['geoid']
-        county_name = testing_row['name']
-        state_abbr = testing_row['st_abbr']
+        fips = testing_row['countyFIPS']
+        county_name = testing_row['County Name']
+        state_abbr = testing_row['State']
 
         if fips not in fips_set:
           print('WARNING: Testing - Skipping unknown county based on FIPS ({}): {} County, {}'.format(fips, county_name, state_abbr))
@@ -95,9 +101,9 @@ def validate_and_process():
         
       # VALIDATE: make sure all positivity rows belong to a known county
       for positivity_row in positivity_csv_reader:
-        fips = positivity_row['geoid']
-        county_name = positivity_row['name']
-        state_abbr = positivity_row['st_abbr']
+        fips = positivity_row['countyFIPS']
+        county_name = positivity_row['County Name']
+        state_abbr = positivity_row['State']
 
         if fips not in fips_set:
           print('WARNING: Positivity - Skipping unknown county based on FIPS ({}): {} County, {}'.format(fips, county_name, state_abbr))
@@ -131,7 +137,7 @@ def create_geojson_files(month_day):
         data['countyFIPS']  = data.countyFIPS.apply(lambda x: str(x).zfill(5))
         data['countyFIPS'] = data['countyFIPS'].astype(str)
         data_geom = county_geom.merge(data, left_on='GEOID', right_on='countyFIPS', how='left')
-        data_geom = data_geom.fillna(0)
+        data_geom = data_geom.fillna(-1)
         for column in data_geom.columns:
             if '/' in column:
                 data_geom[column] = data_geom[column].astype(int)
