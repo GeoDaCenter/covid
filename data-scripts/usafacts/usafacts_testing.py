@@ -8,7 +8,7 @@ import boto3
 import requests
 import pandas as pd
 import geopandas as gpd
-from github import Github
+import calc_posrate_usafacts
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 repo_root = os.path.abspath(os.path.join(dir_path, '..', '..'))
@@ -22,9 +22,7 @@ def usafacts_testing():
     
     testing_url = "https://raw.githubusercontent.com/GeoDaCenter/covid-atlas-research/master/Testing_Data/python/county_hist.csv?token=AL7MVTCZMWHNIY5TVWYNGWK7QCJU4"
     download_data(testing_url, working_dir, 'testing_raw.csv')
-
-    positivity_url = "https://raw.githubusercontent.com/GeoDaCenter/covid-atlas-research/master/Testing_Data/python/county_positivity.csv?token=AL7MVTCZMWHNIY5TVWYNGWK7QCJU4"
-    download_data(positivity_url, working_dir, 'positivity_raw.csv')
+    download_data(calc_posrate_usafacts.calc_positivity(), working_dir, 'positivity_raw.csv')
     
     validate_and_process()
 
@@ -107,8 +105,6 @@ def validate_and_process():
 
         positivity_out_rows.append(positivity_row)
 
-
-
       '''
       LOAD
       '''
@@ -147,7 +143,7 @@ def download_data(url, target_dir, filename):
     request = requests.get(url)
 
     with open(os.path.join(target_dir, filename), 'wb+') as out_file:
-      out_file.write(request.content)
+        out_file.write(request.content)
 
 
 def get_month_day():
