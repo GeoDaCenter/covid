@@ -15,7 +15,9 @@ RUN wget http://download.osgeo.org/libspatialindex/spatialindex-src-1.8.5.tar.gz
   make install && \
   cd - && \
   rm -rf spatialindex-src-1.8.5* && \
-  ldconfig
+  ldconfig && \
+  pip install git+https://gitee.com/lixun910/pygeoda
+
 
 # Install geopandas
 RUN pip install rtree geopandas pandas boto3 requests pytz
