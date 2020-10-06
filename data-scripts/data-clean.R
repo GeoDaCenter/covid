@@ -6,7 +6,7 @@ library(tidyverse)
 library(dplyr)
 
 #1p3aState
-state_testing_count <- read.csv("/Users/ryan/Documents/GitHub/covid-atlas-research/Testing_Data/python/state_testing.csv")
+state_testing_count <- read.csv("~/Documents/covid-atlas-research/Testing_Data/python/state_testing.csv")
 for (i in 3:259) {#update this number every day
    names(state_testing_count)[i] <- 
       paste("t", substr(names(state_testing_count)[i], 2, 5), "-",
@@ -17,7 +17,7 @@ for (i in 3:259) {#update this number every day
 state_testing_count[,3:259][is.na(state_testing_count[,3:259])] <- -1  #update this number every day
 
 # Read in states_update_processing.geojson
-states_update <- as.data.frame(st_read("/Users/ryan/Documents/GitHub/lqycovid/docs/states_update_processing.geojson"))
+states_update <- as.data.frame(st_read("~/Documents/qlcovid/docs/states_update_processing.geojson"))
 for (i in 17:254) {#update this number every day
    names(states_update)[i] <- 
       paste(substr(names(states_update)[i], 2, 5), "-",
@@ -38,30 +38,32 @@ state_testing_count$"t2020-01-26" <- -1
 state_testing_count$"t2020-01-30" <- -1
 state_testing_count$"t2020-01-31" <- -1
 
+states_update <- left_join(states_update, state_testing_count, by = c("STUSPS"="state"))
+
 for (i in 1:233){ #+1 everyday
-   den <- names(states_update)[22 + i-1]
+   den <- names(states_update)[21 + i]
    for (j in 1:56){
-      if (is.na(state_testing_count[j,paste("t",den, sep = "")])) {
-         state_testing_count[j,paste("t",den, sep = "")]==-1
-         states_update[j,495+i] <- -1 #+3 everyday
+      if (is.na(states_update[j,paste("t",den, sep = "")])) {
+         states_update[j,paste("t",den, sep = "")]==-1
+         states_update[j,754+i] <- -1 #+3 everyday
       } else {
          yesterday_den <- as.Date(den)-1
-         if (is.na(state_testing_count[j,paste("t",den, sep = "")])) {
-            state_testing_count[j,paste("t",den, sep = "")] <- -1
-            states_update[j,495+i] <- -1
-         } else if (state_testing_count[j,paste("t",den, sep = "")]-state_testing_count[j,paste("t",yesterday_den, sep = "")] <= 0){
-            states_update[j,495+i] <- -1
+         if (is.na(states_update[j,paste("t",den, sep = "")])) {
+            states_update[j,paste("t",den, sep = "")] <- -1
+            states_update[j,754+i] <- -1
+         } else if (states_update[j,paste("t",den, sep = "")]-states_update[j,paste("t",yesterday_den, sep = "")] <= 0){
+            states_update[j,754+i] <- -1
          } else {
-            states_update[j,495+i] <- states_update[j,den]/
-               (state_testing_count[j,paste("t",den, sep = "")]-state_testing_count[j,paste("t",yesterday_den, sep = "")])
+            states_update[j,754+i] <- states_update[j,den]/
+               (states_update[j,paste("t",den, sep = "")]-states_update[j,paste("t",yesterday_den, sep = "")])
          }
       }
-      if (states_update[j,495+i]>1) {
-         states_update[j,495+i] <- -1
+      if (states_update[j,754+i]>1) {
+         states_update[j,754+i] <- -1
       }  
    }
    print(i)
-   names(states_update)[495+i] <- paste("tpos",den, sep = "")
+   names(states_update)[754+i] <- paste("tpos",den, sep = "")
 }
 
 states_update$"tpos2020-01-21" <- -1
@@ -70,9 +72,7 @@ states_update$"tpos2020-01-26" <- -1
 states_update$"tpos2020-01-30" <- -1
 states_update$"tpos2020-01-31" <- -1
 
-#states_update_geometry <- states_update %>% select(STUSPS, geometry)
-states_update <- left_join(states_update, state_testing_count, by = c("STUSPS" = "state")) %>% st_as_sf() %>% st_set_crs(4326)
-st_write(states_update, "~/Documents/GitHub/lqycovid/docs/states_update.geojson")
+st_write(states_update, "~/Documents/qlcovid/docs/states_update.geojson")
 
 #1p3aCounty
 
