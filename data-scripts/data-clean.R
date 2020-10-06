@@ -164,6 +164,7 @@ write.csv(county_1p3a, "testing_1p3a.csv")
 county_1p3a$GEOID <- as.numeric(county_1p3a$GEOID)
 merge_geometry <- st_read("~/Documents/qlcovid/docs/counties_update_processing.geojson") %>% 
    select(GEOID, geometry)
+# to add -  merge in the criteria column in the data file - county_criteria_1p3a.csv in the research repo
 merge <- left_join(merge_geometry, county_1p3a, by = "GEOID") %>% 
    st_as_sf %>% 
    st_set_crs(4326)
@@ -260,5 +261,6 @@ for (i in 5:ncol(testingpos_usafacts)){
                                           as.character(as.numeric(substr(names(testingpos_usafacts)[i],13,14))), "/", "20", sep = "")
 }
 testingpos_usafacts$"1/22/20" <- -1
+# check whether need to add 1/22 - 1/31 every day 
 
 write.csv(testingpos_usafacts,'testingpos_usafacts.csv')
