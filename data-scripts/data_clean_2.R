@@ -1,9 +1,5 @@
 setwd("~/Documents/GitHub/lqycovid/data-scripts/_usafacts/_working")
 
-
-
-#Change Field Names, Change
-
 county_hist <- read.csv("~/Documents/GitHub/covid-atlas-research/Testing_Data/python/county_hist.csv")
 
 testing_usafacts <- county_hist %>% 
@@ -70,7 +66,7 @@ for (i in 1:233){ #+1 everyday
   for (j in 1:56){
     if (is.na(state_testing_count[j,paste("t",den, sep = "")])) {
       state_testing_count[j,paste("t",den, sep = "")]==-1
-      states_update[j,495+i] <- -1
+      states_update[j,495+i] <- -1 #+3 everyday
     } else {
       yesterday_den <- as.Date(den)-1
       if (is.na(state_testing_count[j,paste("t",den, sep = "")])) {

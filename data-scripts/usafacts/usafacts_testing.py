@@ -19,15 +19,15 @@ def usafacts_testing():
     working_dir = os.path.join(dir_path, '_working')
     os.makedirs(working_dir, exist_ok=True)
     
-    testing_url = "https://raw.githubusercontent.com/GeoDaCenter/covid-atlas-research/master/Testing_Data/python/county_hist.csv?token=AL7MVTCZMWHNIY5TVWYNGWK7QCJU4"
-    download_data(testing_url, working_dir, 'testing_raw.csv')
-    positivity_url = "https://raw.githubusercontent.com/linqinyu/covid/master/docs/testingpos_usafacts.csv"
-    download_data(positivity_url, working_dir, 'positivity_raw.csv')
+    #testing_url = "https://raw.githubusercontent.com/GeoDaCenter/covid-atlas-research/master/Testing_Data/python/county_hist.csv?token=AL7MVTCZMWHNIY5TVWYNGWK7QCJU4"
+    #download_data(testing_url, working_dir, 'testing_raw.csv')
+    #positivity_url = "https://raw.githubusercontent.com/linqinyu/covid/master/docs/testingpos_usafacts.csv"
+    #download_data(positivity_url, working_dir, 'positivity_raw.csv')
 
     #dateparse = lambda dates: [pd.datetime.strptime(d, '%m/%d/%Y') for d in dates
     df = pd.read_csv("_working/positivity_raw.csv")
-    df["countyFIPS"] = df.countyFIPS.astype(str).str.zfill(5)
-    df = df.drop(['stateFIPS'], axis=1)
+    df["countyFIPS"] = df.countyFIPS.astype(str)
+    #df = df.drop(['stateFIPS'], axis=1)
     df.to_csv("_working/positivity_raw.csv", index = False)
     
     validate_and_process()
