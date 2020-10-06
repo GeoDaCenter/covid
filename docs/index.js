@@ -835,7 +835,7 @@ function init_state() {
   if (selectedMethod == "natural_breaks") num_cat = 8;
   nb = gda_proxy.custom_breaks(stateMap, "natural_breaks", num_cat, null, vals);
   if (selectedMethod == "testing_fixed_bins") nb = testing_breaks;
-  
+  console.log(selectedMethod)
   colorScale = function (x) {
     if (selectedMethod == "natural_breaks") {
       if (x == 0) return COLOR_SCALE[selectedMethod][0];
@@ -853,8 +853,11 @@ function init_state() {
 
   getFillColor = function (f) {
     let v = GetFeatureValue(f.properties.id);
-    if (v == 0) return [255, 255, 255];
-    return colorScale(v);
+    if (v == 0 && selectedMethod != "testing_fixed_bins") {
+      return [255, 255, 255];
+    } else {
+      return colorScale(v);
+    }
   };
   getLineColor = function (f) {
     //return f.properties.id == selectedId ? [255, 0, 0] : [255, 255, 255, 50];
