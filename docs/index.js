@@ -1223,7 +1223,7 @@ function highlightSelected(feat) {
     mapbox.setLayoutProperty(lyr.id, 'visibility', 'visible');
     layer_dict[lyr.id].setProps(lyr);
   }  
-  mapbox.moveLayer("hllayer", "waterway-label");  
+  mapbox.moveLayer("hllayer", "uscongress");  
 }
 
 window.addEventListener('storage', () => {
@@ -1798,7 +1798,7 @@ function SetupLayers(layers)
   // move state boundary to top base layers, below overlay
   mapbox.moveLayer("admin-1-boundary", "road-label-simple");
   
-  mapbox.getLayer('county_layer') == undefined ? mapbox.moveLayer("state_layer", "waterway-label") : mapbox.moveLayer("county_layer", "waterway-label");
+  mapbox.getLayer('county_layer') == undefined ? mapbox.moveLayer("state_layer", "uscongress") : mapbox.moveLayer("county_layer", "uscongress");
 
 }
 
