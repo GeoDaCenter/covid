@@ -143,30 +143,31 @@ county_1p3a$"tpos2020-01-31" <- -1
 
 write.csv(county_1p3a, "testing_1p3a.csv")
 
-
-merge <- read.csv("testing_1p3a.csv")
-for (i in 1:ncol(merge)) {#update this number every day
-   if (grepl("d2020", names(merge)[i]) == T) {
-      names(merge)[i] <-
-         paste("d", substr(names(merge)[i], 2, 5), "-",
-               substr(names(merge)[i], 7, 8), "-",
-               substr(names(merge)[i], 10, 11), sep = "")}
-   if (grepl("t2020", names(merge)[i]) == T) {
-      names(merge)[i] <-
-         paste("t", substr(names(merge)[i], 2, 5), "-",
-               substr(names(merge)[i], 7, 8), "-",
-               substr(names(merge)[i], 10, 11), sep = "")}
-   if (grepl("tpos2020", names(merge)[i]) == T) {
-      names(merge)[i] <-
-         paste("tpos", substr(names(merge)[i], 5, 8), "-",
-               substr(names(merge)[i], 10, 11), "-",
-               substr(names(merge)[i], 13, 14), sep = "")}
-}
-
-merge_geometry <- st_read("/Users/ryan/Documents/GitHub/lqycovid/docs/counties_update_processing.geojson") %>% 
+# merge <- read.csv("testing_1p3a.csv")
+# for (i in 1:ncol(merge)) {#update this number every day
+#   if (grepl("d2020", names(merge)[i]) == T) {
+#      names(merge)[i] <-
+#         paste("d", substr(names(merge)[i], 2, 5), "-",
+#               substr(names(merge)[i], 7, 8), "-",
+#               substr(names(merge)[i], 10, 11), sep = "")}
+#   if (grepl("t2020", names(merge)[i]) == T) {
+#      names(merge)[i] <-
+#         paste("t", substr(names(merge)[i], 2, 5), "-",
+#               substr(names(merge)[i], 7, 8), "-",
+#               substr(names(merge)[i], 10, 11), sep = "")}
+#   if (grepl("tpos2020", names(merge)[i]) == T) {
+#      names(merge)[i] <-
+#         paste("tpos", substr(names(merge)[i], 5, 8), "-",
+#               substr(names(merge)[i], 10, 11), "-",
+#               substr(names(merge)[i], 13, 14), sep = "")}
+#}
+county_1p3a$GEOID <- as.numeric(county_1p3a$GEOID)
+merge_geometry <- st_read("~/Documents/qlcovid/docs/counties_update_processing.geojson") %>% 
    select(GEOID, geometry)
-merge <- left_join(merge_geometry, merge, by = "GEOID")
-st_write(merge, "~/Documents/GitHub/lqycovid/docs/counties_update.geojson")
+merge <- left_join(merge_geometry, county_1p3a, by = "GEOID") %>% 
+   st_as_sf %>% 
+   st_set_crs(4326)
+st_write(merge, "~/Documents/qlcovid/docs/counties_update.geojson")
 
 
 ## usafacts
