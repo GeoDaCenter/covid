@@ -35,7 +35,7 @@ def fetch_testing_data_state():
 #    return cr
 #cr = get_csv_reader()
 
-
+# pandas workaround
 
 def wide_to_long_state():
     df = pd.read_csv("~/Documents/GitHub/lqycovid/data-scripts/_1p3a/_working/testing_state_raw.csv")
@@ -256,7 +256,8 @@ def update_county_geojson(county_test, county_positivity, date_county_test, date
                 cnt = -1 if county_id not in date_county_positivity[dat] else date_county_positivity[dat][county_id]
                 col_name = "tpos" + dat
                 feat["properties"][col_name] = cnt
-                
+    # read in both datasets and merge   
+    # gpd.merge(data_set_1, data_set_2, left, right, left_index, right_index)      
     with open(os.path.join(repo_root, 'docs/counties_update.geojson'), 'w') as outfile:
         json.dump(geojson, outfile)    
 
