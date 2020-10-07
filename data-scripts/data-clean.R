@@ -1,31 +1,31 @@
 #run 1p3a.py, save county geojson as csv file in /docs
-
-setwd("~/Documents/GitHub/lqycovid/docs")
+#getwd()
+setwd("C:/Users/Shadow/Documents/GitHub/covid/docs")
 library(sf)
 library(tidyverse)
 library(dplyr)
 
 #1p3aState
-state_testing_count <- read.csv("~/Documents/covid-atlas-research/Testing_Data/python/state_testing.csv")
-for (i in 3:259) {#update this number every day
+state_testing_count <- read.csv("C:/Users/Shadow/Documents/GitHub/covid-atlas-research/Testing_Data/python/state_testing.csv")
+for (i in 3:260) {#update this number every day
    names(state_testing_count)[i] <- 
       paste("t", substr(names(state_testing_count)[i], 2, 5), "-",
             substr(names(state_testing_count)[i], 6, 7), "-",
             substr(names(state_testing_count)[i], 8, 9), sep = "")
 }
 
-state_testing_count[,3:259][is.na(state_testing_count[,3:259])] <- -1  #update this number every day
+state_testing_count[,3:260][is.na(state_testing_count[,3:260])] <- -1  #update this number every day
 
 # Read in states_update_processing.geojson
-states_update <- as.data.frame(st_read("~/Documents/qlcovid/docs/states_update_processing.geojson"))
-for (i in 17:254) {#update this number every day
-   names(states_update)[i] <- 
+states_update <- as.data.frame(st_read("C:/Users/Shadow/Documents/GitHub/covid/docs/states_update_processing.geojson"))
+for (i in 17:255) {#update this number every day
+   names(states_update)[i] <-
       paste(substr(names(states_update)[i], 2, 5), "-",
             substr(names(states_update)[i], 7, 8), "-",
             substr(names(states_update)[i], 10, 11), sep = "")
 }
 
-for (i in 255:492) {#update this number every day 254-17+255
+for (i in 256:493) {#update this number every day 254-17+255
    names(states_update)[i] <- 
       paste("d", substr(names(states_update)[i], 2, 5), "-",
             substr(names(states_update)[i], 7, 8), "-",
@@ -40,7 +40,7 @@ state_testing_count$"t2020-01-31" <- -1
 
 states_update <- left_join(states_update, state_testing_count, by = c("STUSPS"="state"))
 
-for (i in 1:233){ #+1 everyday
+for (i in 1:234){ #+1 everyday
    den <- names(states_update)[21 + i]
    for (j in 1:56){
       if (is.na(states_update[j,paste("t",den, sep = "")])) {
@@ -72,16 +72,16 @@ states_update$"tpos2020-01-26" <- -1
 states_update$"tpos2020-01-30" <- -1
 states_update$"tpos2020-01-31" <- -1
 
-st_write(states_update, "~/Documents/qlcovid/docs/states_update.geojson")
+st_write(states_update, "GitHub/covid/docs/states_update.geojson")
 
 #1p3aCounty
 
 testing <- NULL
-county_hist <- read.csv("~/Documents/GitHub/covid-atlas-research/Testing_Data/python/county_hist.csv")
+county_hist <- read.csv("GitHub/covid-atlas-research/Testing_Data/python/county_hist.csv")
 county_hist$geoid <- as.numeric(county_hist$geoid)
 county_hist <- county_hist[-c(201:212)] #update this number every day
 
-for (i in 9:255) {#update this number every day
+for (i in 9:256) {#update this number every day
    names(county_hist)[i] <- 
       paste("t", substr(names(county_hist)[i], 2, 5), "-",
             substr(names(county_hist)[i], 7, 8), "-",
@@ -109,7 +109,7 @@ county_1p3a$"t2020-01-31" <- -1
 names(county_1p3a)[14]
 names(county_1p3a)[258]
 
-for (i in 1:233){ # increase +1 everyday
+for (i in 1:234){ # increase +1 everyday
    den <- names(county_1p3a)[20+i-1]
    for (j in 1:3216){
       if (is.na(county_1p3a[j,paste("t",den, sep = "")])) {
@@ -162,13 +162,15 @@ write.csv(county_1p3a, "testing_1p3a.csv")
 #               substr(names(merge)[i], 13, 14), sep = "")}
 #}
 county_1p3a$GEOID <- as.numeric(county_1p3a$GEOID)
-merge_geometry <- st_read("~/Documents/qlcovid/docs/counties_update_processing.geojson") %>% 
+merge_geometry <- st_read("GitHub/covid/docs/counties_update_processing.geojson") %>% 
    select(GEOID, geometry)
 # to add -  merge in the criteria column in the data file - county_criteria_1p3a.csv in the research repo
+criteria = read.csv("GitHub/covid-atlas-research/Testing_Data/python/county_criteria_1p3a.csv")
+county_1p3a <- left_join(county_1p3a, criteria, by = "GEOID")
 merge <- left_join(merge_geometry, county_1p3a, by = "GEOID") %>% 
    st_as_sf %>% 
    st_set_crs(4326)
-st_write(merge, "~/Documents/qlcovid/docs/counties_update.geojson")
+st_write(merge, "GitHub/covid/docs/counties_update.geojson")
 
 
 ## usafacts
@@ -177,7 +179,7 @@ st_write(merge, "~/Documents/qlcovid/docs/counties_update.geojson")
 #write.csv(county_usafacts, "county_usafacts.csv")
 
 # read in usafacts case data
-covid_confirmed_usafacts <- read_csv("~/Documents/GitHub/lqycovid/docs/covid_confirmed_usafacts.csv")
+covid_confirmed_usafacts <- read_csv("GitHub/covid/docs/covid_confirmed_usafacts.csv")
 
 # merge testing data into usafacts data - see if missing rows/counties
 covid_usafacts <- left_join(covid_confirmed_usafacts, county_hist, by = c("countyFIPS"="geoid"))
@@ -199,7 +201,7 @@ names(covid_usafacts)[5]
 names(covid_usafacts)[261]
 
 
-for (i in 1:247){ #Update Daily
+for (i in 1:248){ #Update Daily
    den <- names(covid_usafacts)[15+i-1]
    new_case <- covid_usafacts[,15+i-1]-covid_usafacts[,15+i-2]
    if (nchar(den) == 7) {
