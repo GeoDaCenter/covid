@@ -355,8 +355,8 @@ for (i in 1:249){ #Update Daily
 # seven day/weekly testing positivity 
 colstart <- ncol(covid_usafacts)
 for (i in 1:249){ #+1 everyday
-   den <- names(covid_usafacts)[11+i]
-   cases <- covid_usafacts[,11+i]-covid_usafacts[,4+i]
+   den <- names(covid_usafacts)[14+i]
+   cases <- covid_usafacts[,14+i]-covid_usafacts[,7+i]
    # caution - relies on the order of column!!!
    den <- change_date(den)
    svn_den <- as.character(as.Date(den)-7)
