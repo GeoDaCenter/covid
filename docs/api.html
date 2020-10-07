@@ -145,12 +145,17 @@
       <li> <b> type </b> (optional): 
       <code>str </code>  “confirmed”, “death”,  default as “death”</li> 
 
+      <li> <b> source </b> (optional): 
+      <code>str </code>  “usafacts” or “1p3a” case insensitive, default as “usafacts”</li> 
+
+      <li> <b> level </b> (optional): 
+      <code>str </code>  “state” or “county”, default as “county”</li>
+
       <li> <b> start </b> (optional): 
-      <code>8-digit integer </code>  “20201005”, default as 7 days prior to today. Range from 20200122 to today</li> 
+      <code>8-digit integer </code>  start date in format as “20201005”, default as 7 days prior to today. Range from 20200122 to today</li> 
 
       <li> <b> end </b> (optional): 
-      <code>8-digit integer </code>  “20201005”, default as today
-      Range from 20200122 to today</li> </p>
+      <code>8-digit integer </code>  end date in format as “20201005”, default as today. Range from 20200122 to today</li> </p>
 
 
       <br>
@@ -196,18 +201,17 @@
       <li> <b> type </b> (optional): 
       <code>str </code>  “confirmed”, “death”,  default as “death”</li> 
 
-      <li> <b> start </b> (optional): 
-      <code>8-digit integer </code>  “20201005”, default as 7 days prior to today. Range from 20200122 to today</li> 
-
-      <li> <b> end </b> (optional): 
-      <code>8-digit integer </code>  “20201005”, default as today
-      Range from 20200122 to today</li> 
-
       <li> <b> source </b> (optional): 
       <code>str </code>  “usafacts” or “1p3a” case insensitive, default as “usafacts”</li> 
 
       <li> <b> level </b> (optional): 
-      <code>str </code>  “state” or “county”, default as “state”</li> </p>
+      <code>str </code>  “state” or “county”, default as “county”</li> 
+
+      <li> <b> start </b> (optional): 
+      <code>8-digit integer </code>  start date in format as “20201005”, default as 7 days prior to today. Range from 20200122 to today</li> 
+
+      <li> <b> end </b> (optional): 
+      <code>8-digit integer </code>  end date in format as “20201005”, default as today. Range from 20200122 to today</li> </p>
 
       <br>
       <h2>API QUERY EXAMPLE</h2>
