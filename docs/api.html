@@ -97,7 +97,7 @@
 
         <li> All dates and times are in US central time (CDT). Data are updated on a daily basis every afternoon.</li>
 
-        <li> Users should first register for <a href="#"> API access</a>. A confirmed email will be sent once we verified your information. </li>
+        <li> Users should first register for <a href="https://docs.google.com/forms/d/e/1FAIpQLSc4OBaQjEiwFGXxZfQJ3vaanCO5qWzQ2XQ8fxIdhl4l3xY-9w/viewform"> API access</a>. A confirmed email will be sent once we verified your information. </li>
 
 <!--         <li>  Maximum pull requests allowed per month is set as XX.
         </li> -->
@@ -235,8 +235,8 @@
 
       <div style="background-color: #f1f1f1">
         <p style="text-indent: 2em;"><code style="color: black">  import requests</code> <br></p>
-        <p style="text-indent: 2em;"><code style="color: black">  url = 'https://api.theuscovidatlas.org/v1/lisa/?state=AZ'</code> <br></p>
-        <p style="text-indent: 2em;"><code style="color: black">  header = {'api-key': 'your-api-secret-key'}</code> <br></p>
+        <p style="text-indent: 2em;"><code style="color: black">  url = 'https://api.theuscovidatlas.org/v1/lisa/?state=AZ&category=lisa'</code> <br></p>
+        <p style="text-indent: 2em;"><code style="color: black">  header = {'your-api-key': 'your-api-secret-key'}</code> <br></p>
         <p style="text-indent: 2em;"><code style="color: black">  req = requests.get(url, headers=header</code> <br></p>
         <p style="text-indent: 2em;"><code style="color: black">  req.text</code> <br></p>
         
