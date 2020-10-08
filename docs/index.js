@@ -2052,7 +2052,7 @@ function GetFeatureValue(id) {
   //} else if (txt == "7 Day Testing Positivity Rate %") {
   //  if (testingWkPosData[json][selectedDate][id] == '' || testingWkPosData[json][selectedDate][id] == 0) return 0;
   //  return Math.round(testingWkPosData[json][selectedDate][id]*1000)/10;
-  //} else if (txt == "Uninsured % (Community Health Factor)") {
+  } else if (txt == "Uninsured % (Community Health Factor)") {
     let feat = jsondata[json]["features"][id];
     let geoid = parseInt(feat.properties.GEOID);
     let item = chrhlthfactorData[geoid];
