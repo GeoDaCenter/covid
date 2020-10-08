@@ -22,11 +22,15 @@
   </script>
 
   <meta charset="utf-8">
-  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-  
   <title>US Covid Atlas</title>
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-  <link href="index.css" rel="stylesheet">
+  <link href="index.css?v=9_28" rel="stylesheet">
   <link href="https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css" type="text/css"/>
 
@@ -37,15 +41,15 @@
   <script defer src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"></script>
-  <script defer src="js/zip.js"></script>
+  <script defer src="js/zip.js?v=9_28"></script>
   <script defer src="https://unpkg.com/pbf@3.2.0/dist/pbf.js"></script>
-  <script defer src="js/GeodaProxy.js"></script>
-  <script defer src="js/mapbox-vector-tile.js"></script>
-  <script defer src="config.js"></script>
-  <script defer src="index.js"></script>
-  <script defer src="gen/jsgeoda.js"></script>
+  <script defer src="js/GeodaProxy.js?v=9_28"></script>
+  <script defer src="js/mapbox-vector-tile.js?v=9_28"></script>
+  <script defer src="config.js?v=9_28"></script>
+  <script defer src="index.js?v=9_28"></script>
+  <script defer src="gen/jsgeoda.js?v=9_28"></script>
 
-  <link href="css/index.css" rel="stylesheet" type="text/css">
+  <link href="css/index.css?v=9_28" rel="stylesheet" type="text/css">
 
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Montserrat:wght@400;600;800&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
 </head>
@@ -85,21 +89,23 @@
       <p>Select Variable:</p>
       <div class="layout">
         <div class="dropdown">
-          <button class="dropbtn" id="select-data">Confirmed Count per 10K Population</button>
+          <button class="dropbtn" id="select-data">7-Day Average Daily New Confirmed Count per 100K Pop</button>
           <div class="dropdown-content">
             <a href="#" onclick="OnDataClick(this)" id="btn-conf-count">Confirmed Count</a>
-            <a href="#" onclick="OnDataClick(this)">Confirmed Count per 10K Population</a>
+            <a href="#" onclick="OnDataClick(this)">Confirmed Count per 100K Population</a>
             <a href="#" onclick="OnDataClick(this)">Confirmed Count per Licensed Bed</a>
             <a href="#" onclick="OnDataClick(this)">Death Count</a>
-            <a href="#" onclick="OnDataClick(this)">Death Count per 10K Population</a>
+            <a href="#" onclick="OnDataClick(this)">Death Count per 100K Population</a>
             <a href="#" onclick="OnDataClick(this)">Death Count/Confirmed Count</a>
             <a href="#" onclick="OnDataClick(this)">Daily New Confirmed Count</a>
-            <a href="#" onclick="OnDataClick(this)">Daily New Confirmed Count per 10K Pop</a>
+            <a href="#" onclick="OnDataClick(this)">Daily New Confirmed Count per 100K Pop</a>
             <a href='#' onclick="OnDataClick(this)" id="btn-7day">7-Day Average Daily New Confirmed Count</a>
-            <a href="#" onclick="OnDataClick(this)" id="btn-7day-per10K">7-Day Average Daily New Confirmed Count per 10K Pop</a>
+            <a href="#" onclick="OnDataClick(this)" id="btn-7day-per100K">7-Day Average Daily New Confirmed Count per 100K Pop</a>
             <a href="#" onclick="OnDataClick(this)">Daily New Death Count</a>
-            <a href="#" onclick="OnDataClick(this)">Daily New Death Count per 10K Pop</a>
+            <a href="#" onclick="OnDataClick(this)">Daily New Death Count per 100K Pop</a>
             <!--<a href="#" onclick="OnDataClick(this)">Forecasting (5-Day Severity Index)</a>-->
+            <!--<a href="#" onclick="OnDataClick(this)">Daily Testing Positivity Rate %</a>
+            <a href="#" onclick="OnDataClick(this)">7 Day Testing Positivity Rate %</a>-->
             <a href="#" onclick="OnDataClick(this)" id="btn-uninprc">Uninsured % (Community Health Factor)</a>
             <a href="#" onclick="OnDataClick(this)" id="btn-over65yearsprc">Over 65 Years % (Community Health Context)</a>
             <a href="#" onclick="OnDataClick(this)" id="btn-lfexprt">Life expectancy (Length and Quality of Life)</a>
@@ -206,7 +212,20 @@
               </div>
             </label>
           </div>
-          
+          <div>
+            <input id="uscongress-toggle" type="radio" name="overlay-select" onclick="OnShowUSCongress(this)">
+            <label for="uscongress-toggle">Show US Congressional Districts
+              <div class="info-tooltip" id="info-USCongress">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="left tooltip-text"></span>
+              </div>
+            </label>
+          </div>
+          <!--<div>
+            <input id="clinics-toggle" type="radio" name="overlay-select" onclick="OnShowClinics(this)">
+            <label for="clinics-toggle">Show Community Health Clinics
+            </label>
+          </div>-->
       
           <div class="map-overlay-toggles--hidden">
             <input id="hotspot-labels-toggle" type="checkbox" onclick="OnShowLabels(this)">
