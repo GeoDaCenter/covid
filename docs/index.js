@@ -213,6 +213,7 @@ var cartogramDeselected = false;
 var shouldShowHypersegregatedCities = false;
 var shouldShowBlackBelt = false;
 var shouldShowUSCongress = false; 
+var shouldShowClinics = false; 
 
 var stateMap = 'states_update.geojson';
 
@@ -1012,6 +1013,7 @@ function OnShowReservations() {
   shouldShowBlackBelt = false;
   shouldShowHypersegregatedCities = false;
   shouldShowUSCongress = false;
+  shouldShowClinics = false; 
   UpdateMap();
 }
 
@@ -1021,6 +1023,7 @@ function OnShowHypersegregatedCities() {
   shouldShowBlackBelt = false;
   shouldShowReservations = false;
   shouldShowUSCongress = false;
+  shouldShowClinics = false; 
   UpdateMap();
 }
 
@@ -1031,6 +1034,7 @@ function OnShowBlackBelt() {
   shouldShowHypersegregatedCities = false;
   shouldShowReservations = false;
   shouldShowUSCongress = false;
+  shouldShowClinics = false; 
   UpdateMap();
 }
 
@@ -1039,6 +1043,16 @@ function OnShowUSCongress() {
   shouldShowBlackBelt = false;
   shouldShowHypersegregatedCities = false;
   shouldShowReservations = false;
+  shouldShowClinics = false; 
+  UpdateMap();
+}
+
+function OnShowClinics() {
+  shouldShowUSCongress = false;
+  shouldShowBlackBelt = false;
+  shouldShowHypersegregatedCities = false;
+  shouldShowReservations = false;
+  shouldShowClinics = true;
   UpdateMap();
 }
 
@@ -1047,6 +1061,7 @@ function ClearOverlay() {
   shouldShowHypersegregatedCities = false;
   shouldShowReservations = false;
   shouldShowUSCongress = false;
+  shouldShowClinics = false; 
   UpdateMap();
 }
 
@@ -1145,10 +1160,30 @@ function getTooltipHtml(id, values) {
   return text;
 }
 
+function getClinicHtml(info){
+  let text = 
+  ` <h3>${info.Name}</h3>
+    <div><i>${info['Hospital Type']}</i>
+    <div>Address: ${info.Address}</div>
+    ${info.Address_2 ? '<div>'+info.Address_2+'</div>' : ''}
+    <div>${info.City}, ${info.State}</div>
+    <div>${info.Zipcode}</div> 
+  `
+  return text
+}
+
 // this is the callback for when you hover over a feature on the map
 function updateTooltip(e) {
-  const { x, y, object } = e;
+  var { x, y, object, layer } = e;
+  if (x == undefined) {
+    x = e.point.x
+    y = e.point.y
+    object = e.features[0].properties
+    layer = e.features[0].layer.id
+  }
+
   const tooltip = document.getElementById('tooltip');
+  var text;
 
   // if they aren't hovered over an object, empty the tooltip (this effectively
   // hides it)
@@ -1157,69 +1192,83 @@ function updateTooltip(e) {
     return;
   }
 
-  // get the entity id
-  // TODO rename this to entityId to be consistent with entityName
-  const id = object.properties.id;
+  if (layer == "clinics" && shouldShowClinics) {
+    text = getClinicHtml(object)
+    
+    // set html
+    tooltip.innerHTML = text;
 
-  // get the state/county name
-  let entityName = '';
-  if ('NAME' in object.properties) {
-    entityName = object.properties.NAME;
-  } else {
-    entityName = jsondata[selectedDataset].features[id].properties.NAME;
+    // position tooltip over mouse location
+    tooltip.style.top = `${y}px`;
+    tooltip.style.left = `${x}px`;
+
+  } else if (!shouldShowClinics){
+    // get the entity id
+    // TODO rename this to entityId to be consistent with entityName
+    const id = object.properties.id;
+    
+    // get the state/county name
+    let entityName = '';
+    if ('NAME' in object.properties) {
+      entityName = object.properties.NAME;
+    } else {
+      entityName = jsondata[selectedDataset].features[id].properties.NAME;
+    }
+
+    // cases
+    let cases = caseData[selectedDataset][selectedDate][id];
+    
+    // deaths
+    let deaths = deathsData[selectedDataset][selectedDate][id];
+    
+    // new cases
+    let newCases = 0;
+    let dt_idx = dates[selectedDataset].indexOf(selectedDate);
+    if (dt_idx > 0) {
+      let prev_date = dates[selectedDataset][dt_idx - 1];
+      var cur_vals = caseData[selectedDataset][selectedDate];
+      var pre_vals = caseData[selectedDataset][prev_date];
+      newCases = cur_vals[id] - pre_vals[id];
+    }
+
+    // new deaths
+    let newDeaths = 0;
+    if (dt_idx > 0) {
+      let prev_date = dates[selectedDataset][dt_idx - 1];
+      var cur_vals = deathsData[selectedDataset][selectedDate];
+      var pre_vals = deathsData[selectedDataset][prev_date];
+      newDeaths = cur_vals[id] - pre_vals[id];
+    }
+    
+    // testing
+    let testing = testingData[selectedDataset][selectedDate][id];
+    let testingPos = testingPosData[selectedDataset][selectedDate][id];
+    let testingWkPos = testingWkPosData[selectedDataset][selectedDate][id];
+    let criteria = testingCriteriaData[selectedDataset][id];
+
+    // render html
+    const values = {
+      entityName,
+      cases,
+      deaths,
+      newCases,
+      newDeaths,
+      testing,
+      testingPos,
+      testingWkPos,
+      criteria,
+    };
+    text = getTooltipHtml(id, values);
+    
+    // set html
+    tooltip.innerHTML = text;
+
+    // position tooltip over mouse location
+    tooltip.style.top = `${y}px`;
+    tooltip.style.left = `${x}px`;
   }
-
-  // cases
-  let cases = caseData[selectedDataset][selectedDate][id];
   
-  // deaths
-  let deaths = deathsData[selectedDataset][selectedDate][id];
-  
-  // new cases
-  let newCases = 0;
-  let dt_idx = dates[selectedDataset].indexOf(selectedDate);
-  if (dt_idx > 0) {
-    let prev_date = dates[selectedDataset][dt_idx - 1];
-    var cur_vals = caseData[selectedDataset][selectedDate];
-    var pre_vals = caseData[selectedDataset][prev_date];
-    newCases = cur_vals[id] - pre_vals[id];
-  }
 
-  // new deaths
-  let newDeaths = 0;
-  if (dt_idx > 0) {
-    let prev_date = dates[selectedDataset][dt_idx - 1];
-    var cur_vals = deathsData[selectedDataset][selectedDate];
-    var pre_vals = deathsData[selectedDataset][prev_date];
-    newDeaths = cur_vals[id] - pre_vals[id];
-  }
-  
-  // testing
-  let testing = testingData[selectedDataset][selectedDate][id];
-  let testingPos = testingPosData[selectedDataset][selectedDate][id];
-  let testingWkPos = testingWkPosData[selectedDataset][selectedDate][id];
-  let criteria = testingCriteriaData[selectedDataset][id];
-
-  // render html
-  const values = {
-    entityName,
-    cases,
-    deaths,
-    newCases,
-    newDeaths,
-    testing,
-    testingPos,
-    testingWkPos,
-    criteria,
-  };
-  const text = getTooltipHtml(id, values);
-
-  // set html
-  tooltip.innerHTML = text;
-
-  // position tooltip over mouse location
-  tooltip.style.top = `${y}px`;
-  tooltip.style.left = `${x}px`;
 }
 
 function handleMapHover(e) {
@@ -1661,6 +1710,10 @@ mapbox.addControl(
  
 mapbox.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
+mapbox.on("mousemove", "clinics", function(e) {
+  handleMapHover(e)
+})
+
 function getCartogramLayer(data)
 {
   return {
@@ -1819,6 +1872,13 @@ function SetupLayers(layers)
   } else {
     mapbox.setLayoutProperty("uscongress", 'visibility', 'none');
     mapbox.setLayoutProperty("uscongress-label", 'visibility', 'none');
+  }
+
+  // toggle clinics layer
+  if (shouldShowClinics) {
+    mapbox.setLayoutProperty("clinics", 'visibility', 'visible');
+  } else {
+    mapbox.setLayoutProperty("clinics", 'visibility', 'none');
   }
 
   const firstLabelLayerId = mapbox.getStyle().layers.find(layer => layer.type === 'symbol').id;
@@ -2281,7 +2341,7 @@ function UpdateLegendLabels(breaks) {
             val = val.toFixed(2);
           } else {
             val = parseInt(val);
-          }
+          } 
           if (val > 1000 && val < 10000) {
             val = d3.format(".0f")(val)
           } else if (val > 10000) {
