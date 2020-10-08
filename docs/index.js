@@ -1280,6 +1280,14 @@ function updateTooltip(e) {
 
 }
 
+function clearTooltip() {
+  if (shouldShowClinics) {
+    const tooltip = document.getElementById('tooltip');
+    tooltip.innerHTML = '';
+    return;
+  }
+}
+
 function handleMapHover(e) {
   updateTooltip(e);
 }
@@ -1732,9 +1740,18 @@ mapbox.addControl(
  
 mapbox.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
-mapbox.on("mousemove", "clinics", function(e) {
+mapbox.on("mouseenter", "clinics", function(e) {
   handleMapHover(e)
 })
+
+mapbox.on('mouseleave', 'clinics', function () {
+  clearTooltip()
+});
+
+mapbox.on('click wheel', function () {
+  clearTooltip()
+});
+
 
 function getCartogramLayer(data)
 {
