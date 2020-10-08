@@ -306,7 +306,7 @@ def update_state_geojson(state_count, state_deathcount, date_state_count, date_s
         update_state_population(geojson)
         update_state_beds(geojson)
 
-        with open(os.path.join(repo_root, 'docs/states_update_processing.geojson'), 'w') as outfile:
+        with open(os.path.join(repo_root, 'docs/states_update.geojson'), 'w') as outfile:
             json.dump(geojson, outfile)
 
 def update_county_geojson(county_count, county_deathcount, date_county_count, date_county_deathcount):
@@ -343,7 +343,7 @@ def update_county_geojson(county_count, county_deathcount, date_county_count, da
         update_county_population(geojson)
         update_county_beds(geojson)
 
-        with open(os.path.join(repo_root, 'docs/counties_update_processing.geojson'), 'w') as outfile:
+        with open(os.path.join(repo_root, 'docs/counties_update.geojson'), 'w') as outfile:
             json.dump(geojson, outfile)
 
         # check input county
@@ -363,16 +363,16 @@ with open("cases.csv") as csvfile:
 try:
     print('Writing to S3...')
     s3 = boto3.resource('s3')
-    s3.Object('geoda-covid-atlas', 'counties_update_processing.geojson').put(Body=open(os.path.join(repo_root, 'docs/counties_update.geojson'), 'rb'))
-    s3.Object('geoda-covid-atlas', 'states_update_processing.geojson').put(Body=open(os.path.join(repo_root, 'docs/states_update.geojson'), 'rb'))
+    s3.Object('geoda-covid-atlas', 'counties_update.geojson').put(Body=open(os.path.join(repo_root, 'docs/counties_update.geojson'), 'rb'))
+    s3.Object('geoda-covid-atlas', 'states_update.geojson').put(Body=open(os.path.join(repo_root, 'docs/states_update.geojson'), 'rb'))
     print('Write to S3 complete.')
 except Exception as e:
     print(e)
 
 os.system('apt install zip')
-os.system('rm {}/docs/counties_update_processing.geojson.zip docs/states_update_processing.geojson.zip'.format(repo_root))
-os.system('zip -r {}/docs/counties_update_processing.geojson.zip docs/counties_update_processing.geojson'.format(repo_root))
-os.system('zip -r {}/docs/states_update_processing.geojson.zip docs/states_update_processing.geojson'.format(repo_root))
+os.system('rm {}/docs/counties_update.geojson.zip {}/docs/states_update.geojson.zip'.format(repo_root, repo_root))
+os.system('zip -r {}/docs/counties_update.geojson.zip {}/docs/counties_update.geojson'.format(repo_root, repo_root))
+os.system('zip -r {}/docs/states_update.geojson.zip {}/docs/states_update.geojson'.format(repo_root, repo_root))
 #scheduler = BlockingScheduler()
 #scheduler.add_job(fetch_covid_data, 'interval', hours=1)
 #scheduler.start()
