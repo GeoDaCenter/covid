@@ -6,7 +6,7 @@ git config --global user.name "theuscovidatlas"
 
 case $REPO in
 	covid)
-		git clone git@github.com:GeoDaCenter/covid.git && cd covid
+		git clone git@github.com:linqinyu/covid.git && cd covid
 	;;
 
 	testing)
