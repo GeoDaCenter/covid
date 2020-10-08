@@ -79,7 +79,7 @@ const COLOR_SCALE = {
     [250, 227, 212],
     [215, 48, 39],
   ],
-  'testing_fixed_bins' : [
+  /*'testing_fixed_bins' : [
     [240,240,240],
     [13,8,135],
     [92,1,166],
@@ -88,13 +88,13 @@ const COLOR_SCALE = {
     [237,121,83],
     [253,180,47],
     [240,249,33],
-  ]
+  ]*/
 };
 
-const testing_breaks = {
+/*const testing_breaks = {
   bins: ['No Data','3%','5%','10%','15%','20%','>25%'],
   breaks:[-1,-0.1,3,5,10,15,20,25, Infinity]
-}
+}*/
 
 var lisa_labels = ["Not significant", "High-High", "Low-Low", "Low-High", "High-Low", "Undefined", "Isolated"];
 var lisa_colors = ["#ffffff", "#FF0000", "#0000FF", "#a7adf9", "#f4ada8", "#464646", "#999999"];
@@ -134,9 +134,9 @@ var layer_dict = {};
 var usafactsCases;
 var usafactsDeaths;
 var usafactsData;
-var usafactsTesting; 
+/*var usafactsTesting; 
 var usafactsTestingPos;
-var usafactsWkTestingPos;
+var usafactsWkTestingPos;*/
 var onep3aData;
 var populationData = {};
 var bedsData = {};
@@ -145,10 +145,10 @@ var dates = {};
 var caseData = {};
 var deathsData = {};
 var fatalityData = {};
-var testingData = {};
+/*var testingData = {};
 var testingCriteriaData = {};
 var testingPosData = {};
-var testingWkPosData = {};
+var testingWkPosData = {};*/
 var lisaData = {
   'county_usfacts.geojson': {},
 };
@@ -386,9 +386,9 @@ async function loadUsafactsData(url, callback) {
   [
     usafactsCases,
     usafactsDeaths,
-    usafactsTesting,
+    /*usafactsTesting,
     usafactsTestingPos,
-    usafactsWkTestingPos,
+    usafactsWkTestingPos,*/
     chrhlthfactorData,
     chrhlthcontextData,
     chrhlthlifeData,
@@ -396,9 +396,9 @@ async function loadUsafactsData(url, callback) {
   ] = await Promise.all([
     d3.csv('covid_confirmed_usafacts.csv'),
     d3.csv('covid_deaths_usafacts.csv'),
-    d3.csv('testing_usafacts.csv'),
+    /*d3.csv('testing_usafacts.csv'),
     d3.csv('testingpos_usafacts.csv'),
-    d3.csv('testingwkpos_usafacts.csv'),
+    d3.csv('testingwkpos_usafacts.csv'),*/
     fetchChrHlthFactorData(),
     fetchChrHlthContextData(),
     fetchChrHlthLifeData(),
@@ -410,7 +410,8 @@ async function loadUsafactsData(url, callback) {
   updateSelectedDataset(selectedDataset);
 
   // merge usfacts csv data
-  parseUsaFactsData(featuresWithIds, usafactsCases, usafactsDeaths, usafactsTesting, usafactsTestingPos, usafactsWkTestingPos);
+  parseUsaFactsData(featuresWithIds, usafactsCases, usafactsDeaths
+    /*, usafactsTesting, usafactsTestingPos, usafactsWkTestingPos*/);
   jsondata[selectedDataset] = featuresWithIds;
 
   // read as bytearray for GeoDaWASM
@@ -507,17 +508,17 @@ function getDatesFromUsafacts(cases) {
   return xLabels;
 }
 
-function parseUsaFactsData(data, confirm_data, death_data, testing, testingpos, testingwkpos) {
+function parseUsaFactsData(data, confirm_data, death_data, /*testing, testingpos, testingwkpos*/) {
   let json = selectedDataset;
   if (!(json in caseData)) caseData[json] = {};
   if (!(json in deathsData)) deathsData[json] = {};
   if (!(json in fatalityData)) fatalityData[json] = {};
   if (!(json in populationData)) populationData[json] = {};
   if (!(json in bedsData)) bedsData[json] = {};
-  if (!(json in testingData)) testingData[json] = {};
+  /*if (!(json in testingData)) testingData[json] = {};
   if (!(json in testingCriteriaData)) testingCriteriaData[json] = {};
   if (!(json in testingPosData)) testingPosData[json] = {};
-  if (!(json in testingWkPosData)) testingWkPosData[json] = {};
+  if (!(json in testingWkPosData)) testingWkPosData[json] = {};*/
 
   dates[selectedDataset] = getDatesFromUsafacts(confirm_data);
   if (selectedDate == null || selectedDate.indexOf('-') >= 0) {
@@ -527,16 +528,16 @@ function parseUsaFactsData(data, confirm_data, death_data, testing, testingpos, 
 
   let conf_dict = {};
   let death_dict = {};
-  let testing_dict = {};
+  /*let testing_dict = {};
   let testingpos_dict = {};
-  let testingwkpos_dict = {};
+  let testingwkpos_dict = {};*/
 
   for (let i = 0; i < confirm_data.length; ++i) {
     conf_dict[confirm_data[i].countyFIPS] = confirm_data[i];
     death_dict[death_data[i].countyFIPS] = death_data[i];
-    testing_dict[testing[i].countyFIPS] = testing[i];
+    /*testing_dict[testing[i].countyFIPS] = testing[i];
     testingpos_dict[testingpos[i].countyFIPS] = testingpos[i];
-    testingwkpos_dict[testingwkpos[i].countyFIPS] = testingwkpos[i];
+    testingwkpos_dict[testingwkpos[i].countyFIPS] = testingwkpos[i];*/
   }
   for (let i = 0; i < data.features.length; i++) {
     let pop = data.features[i].properties.population;
@@ -550,15 +551,15 @@ function parseUsaFactsData(data, confirm_data, death_data, testing, testingpos, 
         caseData[json][d][i] = 0;
         deathsData[json][d][i] = 0;
         fatalityData[json][d][i] = 0;
-        testingData[json][d][i] = 0;
+        /*testingData[json][d][i] = 0;
         testingPosData[json][d][i] = 0;
-        testingWkPosData[json][d][i] = 0;
+        testingWkPosData[json][d][i] = 0;*/
       }
       continue;
     }
     populationData[json][i] = pop;
     bedsData[json][i] = beds;
-    testingCriteriaData[json][i] = criteria;
+    /*testingCriteriaData[json][i] = criteria;*/
 
     // confirmed count
     for (let j = 0; j < dates[selectedDataset].length; ++j) {
@@ -587,7 +588,7 @@ function parseUsaFactsData(data, confirm_data, death_data, testing, testingpos, 
         fatalityData[json][d][i] = deathsData[json][d][i] / caseData[json][d][i];
       }
     }
-    // testing number
+    /*// testing number
     for (var j = 0; j < dates[selectedDataset].length; ++j) {
       var d = dates[selectedDataset][j];
       if (!(d in testingData[json])) {
@@ -610,7 +611,7 @@ function parseUsaFactsData(data, confirm_data, death_data, testing, testingpos, 
         testingWkPosData[json][d] = {};
       }
       testingWkPosData[json][d][i] = testingwkpos_dict[geoid][d] == '' ? 0 : testingwkpos_dict[geoid][d];
-    }
+    }*/
   }
 }
 
@@ -621,10 +622,10 @@ function parse1P3AData(data) {
   if (!(json in fatalityData)) fatalityData[json] = {};
   if (!(json in populationData)) populationData[json] = {};
   if (!(json in bedsData)) bedsData[json] = {};
-  if (!(json in testingData)) testingData[json] = {};
+  /*if (!(json in testingData)) testingData[json] = {};
   if (!(json in testingCriteriaData)) testingCriteriaData[json] = {};
   if (!(json in testingPosData)) testingPosData[json] = {};
-  if (!(json in testingWkPosData)) testingWkPosData[json] = {};
+  if (!(json in testingWkPosData)) testingWkPosData[json] = {};*/
 
 
 
@@ -644,7 +645,7 @@ function parse1P3AData(data) {
 
     populationData[json][id] = pop;
     bedsData[json][id] = beds;
-    testingCriteriaData[json][id] = criteria;
+    /*testingCriteriaData[json][id] = criteria;*/
 
     // confirmed count
     for (var j = 0; j < dates[selectedDataset].length; ++j) {
@@ -680,7 +681,7 @@ function parse1P3AData(data) {
         fatalityData[json][d][id] = deathsData[json][d][id] / caseData[json][d][id];
       }
     }
-    // testing
+    /*// testing
     for (var j = 0; j < dates[selectedDataset].length; ++j) {
       var d = dates[selectedDataset][j];
       if (!(d in testingData[json])) {
@@ -705,7 +706,7 @@ function parse1P3AData(data) {
           testingWkPosData[json][d] = {};
         }
         testingWkPosData[json][d][id] = data.features[i]["properties"]['wtpos' + d];
-      }
+      }*/
   }
 }
 
@@ -791,8 +792,8 @@ function initCounty() {
     }
     if (selectedMethod == "natural_breaks_hlthfactor" || selectedMethod == "natural_breaks_hlthcontextlife"){
       nb = gda_proxy.custom_breaks(selectedDataset, "natural_breaks", num_cat, null, vals);
-    } else if (selectedMethod == "testing_fixed_bins") {
-      nb = testing_breaks;
+    /*} else if (selectedMethod == "testing_fixed_bins") {
+      nb = testing_breaks;*/
     } else {
       nb = gda_proxy.custom_breaks(selectedDataset, selectedMethod, num_cat, null, vals);
     }
@@ -861,7 +862,7 @@ function init_state() {
   var num_cat = 6;
   if (selectedMethod == "natural_breaks") num_cat = 8;
   nb = gda_proxy.custom_breaks(stateMap, "natural_breaks", num_cat, null, vals);
-  if (selectedMethod == "testing_fixed_bins") nb = testing_breaks;
+  /*if (selectedMethod == "testing_fixed_bins") nb = testing_breaks;*/
   console.log(selectedMethod)
   colorScale = function (x) {
     if (selectedMethod == "natural_breaks") {
@@ -948,10 +949,10 @@ function OnDataClick(evt) {
     // reset to natural breaks if switching to other variable
     selectedMethod = "natural_breaks";
     document.getElementById('legend_title').innerText = "Natural Breaks";
-  } else if (selectedVariable == "Daily Testing Positivity Rate %") {
-    selectedMethod = "testing_fixed_bins";
-  } else if (selectedVariable == "7 Day Testing Positivity Rate %") {
-    selectedMethod = "testing_fixed_bins";
+  //} else if (selectedVariable == "Daily Testing Positivity Rate %") {
+  //  selectedMethod = "testing_fixed_bins";
+  //} else if (selectedVariable == "7 Day Testing Positivity Rate %") {
+  //  selectedMethod = "testing_fixed_bins";
   } else {
     selectedMethod = "natural_breaks";
     // others will keep using current selectedMethod
@@ -1137,7 +1138,7 @@ function getTooltipHtml(id, values) {
     }
     if (!val || val === '' || val < 0) return 'N/A';
   }
-  let text = 
+  /*let text = 
   ` <h3>${values.entityName}</h3><hr>
     <div>Cases: ${handle(values.cases)}</div>
     <div>Deaths: ${handle(values.deaths)}</div>
@@ -1147,6 +1148,13 @@ function getTooltipHtml(id, values) {
     <div>Daily Positivity Rate: ${handlePos(values.testingPos)}</div>
     <div>7 Day Positivity Rate: ${handlePos(values.testingWkPos)}</div>
     <div>Testing Criterion: ${values.criteria}</div>
+  `*/
+  let text = 
+  ` <h3>${values.entityName}</h3><hr>
+    <div>Cases: ${handle(values.cases)}</div>
+    <div>Deaths: ${handle(values.deaths)}</div>
+    <div>New Cases ${handle(values.newCases)}</div>
+    <div>New Deaths: ${handle(values.newDeaths)}</div>
   `
 
   // if (isLisa()) {
@@ -1240,11 +1248,12 @@ function updateTooltip(e) {
       newDeaths = cur_vals[id] - pre_vals[id];
     }
     
-    // testing
+    /*// testing
     let testing = testingData[selectedDataset][selectedDate][id];
     let testingPos = testingPosData[selectedDataset][selectedDate][id];
     let testingWkPos = testingWkPosData[selectedDataset][selectedDate][id];
     let criteria = testingCriteriaData[selectedDataset][id];
+    */
 
     // render html
     const values = {
@@ -1253,10 +1262,10 @@ function updateTooltip(e) {
       deaths,
       newCases,
       newDeaths,
-      testing,
-      testingPos,
-      testingWkPos,
-      criteria,
+      //testing,
+      //testingPos,
+      //testingWkPos,
+      //criteria,
     };
     text = getTooltipHtml(id, values);
     
@@ -1570,11 +1579,11 @@ function updateDataPanel(e) {
   // cases per bed
   let casesPerBed = bedsDataExists ? (cases / beds) : 0;
 
-  // testing
+/*  // testing
   let testing = testingData[selectedDataset][selectedDate][id];
   let testingPos = testingPosData[selectedDataset][selectedDate][id];
   let testingWkPos = testingWkPosData[selectedDataset][selectedDate][id];
-  let criteria = testingCriteriaData[selectedDataset][id];
+  let criteria = testingCriteriaData[selectedDataset][id];*/
 
   // handle decimals
   casesPer100k = casesPer100k === 0 ? 0 : parseFloat(casesPer100k).toFixed(1);
@@ -1583,7 +1592,7 @@ function updateDataPanel(e) {
   fatalityRate = fatalityRate === 0 ? 0 : parseFloat(fatalityRate).toFixed(1);
   newCasesPer100k = newCasesPer100k === 0 ? 0 : parseFloat(newCasesPer100k).toFixed(1);
   newDeathsPer100k = newDeathsPer100k === 0 ? 0 : parseFloat(newDeathsPer100k).toFixed(1);
-  if (testingPos >= 0) {
+  /*if (testingPos >= 0) {
     testingPos = Math.round((testingPos)*1000)/10;
   }
   if (!testingPos || testingPos === '' || testingPos < 0) {
@@ -1597,10 +1606,9 @@ function updateDataPanel(e) {
   }
   if (!testingWkPos || testingWkPos === '' || testingWkPos < 0) {
     testingWkPos = 'N/A';
-  }
+  }*/
 
-
-  html += 
+  /*html += 
   `
   <div><b>Population:</b> ${numberWithCommas(population)}</div>
   <br>
@@ -1616,6 +1624,20 @@ function updateDataPanel(e) {
   <div><b>Daily Positivity Rate %:</b> ${testingPos}</div>
   <div><b>7 Day Positivity Rate %:</b> ${testingWkPos}</div>
   <div><b>Testing Criteria:</b> ${criteria}</div>
+  `*/
+
+  html += 
+  `
+  <div><b>Population:</b> ${numberWithCommas(population)}</div>
+  <br>
+  <div><b>Total Cases:</b> ${numberWithCommas(cases)}</div>
+  <div><b>Total Deaths:</b> ${numberWithCommas(deaths)}</div>
+  <div><b>Cases per 100k Population:</b> ${casesPer100k}</div>
+  <div><b>Deaths per 100k Population:</b> ${deathsPer100k}</div>
+  <div><b>New Cases per 100k Population:</b> ${newCasesPer100k}</div>
+  <div><b>New Deaths per 100k Population</b> ${newDeathsPer100k}</div>
+  <div><b>Licensed Hospital Beds:</b> ${numberWithCommas(beds)}</div>
+  <div><b>Cases per Bed:</b> ${casesPerBed}</div>
   `
 
   // removed fatality rate:  <div><b>Fatality Rate:</b> ${fatalityRate}%</div>
@@ -2007,13 +2029,13 @@ function GetFeatureValue(id) {
     var cur_vals = deathsData[json][selectedDate];
     var pre_vals = deathsData[json][prev_date];
     return ((cur_vals[id] - pre_vals[id]) / populationData[json][id] * 100000).toFixed(3);
-  } else if (txt == "Daily Testing Positivity Rate %") {
-    if (testingPosData[json][selectedDate][id] == '' || testingPosData[json][selectedDate][id] == 0) return 0;
-    return Math.round(testingPosData[json][selectedDate][id]*1000)/10;
-  } else if (txt == "7 Day Testing Positivity Rate %") {
-    if (testingWkPosData[json][selectedDate][id] == '' || testingWkPosData[json][selectedDate][id] == 0) return 0;
-    return Math.round(testingWkPosData[json][selectedDate][id]*1000)/10;
-  } else if (txt == "Uninsured % (Community Health Factor)") {
+  //} else if (txt == "Daily Testing Positivity Rate %") {
+  //  if (testingPosData[json][selectedDate][id] == '' || testingPosData[json][selectedDate][id] == 0) return 0;
+  //  return Math.round(testingPosData[json][selectedDate][id]*1000)/10;
+  //} else if (txt == "7 Day Testing Positivity Rate %") {
+  //  if (testingWkPosData[json][selectedDate][id] == '' || testingWkPosData[json][selectedDate][id] == 0) return 0;
+  //  return Math.round(testingWkPosData[json][selectedDate][id]*1000)/10;
+  //} else if (txt == "Uninsured % (Community Health Factor)") {
     let feat = jsondata[json]["features"][id];
     let geoid = parseInt(feat.properties.GEOID);
     let item = chrhlthfactorData[geoid];
@@ -2216,7 +2238,7 @@ function GetDataValues(inputDate) {
       }
     }
     return rt_vals;*/
-  } else if (txt == "Daily Testing Positivity Rate %") {
+  /*} else if (txt == "Daily Testing Positivity Rate %") {
     var vals = [];
     for (var id in caseData[json][inputDate]) {
       if (testingPosData[json][inputDate][id] == '' || testingPosData[json][inputDate][id] == 0)
@@ -2233,7 +2255,7 @@ function GetDataValues(inputDate) {
       else
         vals.push(Math.round(testingWkPosData[json][inputDate][id]*1000)/10);
     }
-    return vals;
+    return vals;*/
   } else if (txt == "Uninsured % (Community Health Factor)") {
     var rt_vals = [];
     const feats = jsondata[json]["features"];
@@ -2366,11 +2388,12 @@ function UpdateLegendLabels(breaks) {
     cont += '<div style="text-align:center">Low</div>';
     cont += '<div style="text-align:center">Medium</div>';
     cont += '<div style="text-align:center">High</div>';
-  } else if (selectedMethod == "testing_fixed_bins") {
+  } 
+  /*else if (selectedMethod == "testing_fixed_bins") {
     for (var i = 0; i < breaks.length; ++i) {
       cont += '<div style="text-align:center">' + breaks[i] + '</div>'
     }
-  }
+  }*/
   div.innerHTML = cont;
 }
 
