@@ -227,11 +227,7 @@ function isLisa() {
 
 function isCartogram() {
 //  return false;
-<<<<<<< HEAD
-  return document.getElementById('cartogram-ckb').checked;
-=======
 return document.getElementById('cartogram-ckb').checked;
->>>>>>> a302bbe7398ed86bd6cc99af0a41d7b012de6465
 }
 
 function getCurrentWuuid() {
@@ -862,11 +858,7 @@ function init_state() {
   } else {
     vals = GetDataValues();
   }
-<<<<<<< HEAD
-
-=======
   
->>>>>>> a302bbe7398ed86bd6cc99af0a41d7b012de6465
   var num_cat = 6;
   if (selectedMethod == "natural_breaks") num_cat = 8;
   nb = gda_proxy.custom_breaks(stateMap, "natural_breaks", num_cat, null, vals);
