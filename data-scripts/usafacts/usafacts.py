@@ -28,6 +28,19 @@ def usafacts():
 
     create_geojson_files(month_day)
 
+    try:
+        print('Writing to S3...')
+        s3 = boto3.resource('s3')
+        s3.Object('geoda-covid-atlas', 'covid_confirmed_usafacts.csv').put(Body=open(os.path.join(repo_root, 'docs/covid_confirmed_usafacts.csv'), 'rb'))
+        s3.Object('geoda-covid-atlas', 'covid_deaths_usafacts.csv').put(Body=open(os.path.join(repo_root, 'docs/covid_deaths_usafacts.csv'), 'rb'))
+
+        s3.Object('geoda-covid-atlas', 'covid_confirmed_usafacts.geojson').put(Body=open(os.path.join(repo_root, 'download/usafacts_confirmed_{}.geojson'.format(month_day)), 'rb'))
+        s3.Object('geoda-covid-atlas', 'covid_deaths_usafacts.geojson').put(Body=open(os.path.join(repo_root, 'download/usafacts_deaths_{}.geojson'.format(month_day)), 'rb'))
+        print('Write to S3 complete.')
+
+    except Exception as e:
+        print(e)
+
 
 def validate_and_process():
     fips_set = None
@@ -108,15 +121,6 @@ def validate_and_process():
       deaths_csv_writer = csv.DictWriter(deaths_out_file, fieldnames=out_field_names)
       deaths_csv_writer.writeheader()
       deaths_csv_writer.writerows(deaths_out_rows)
-
-    try:
-        print('Writing to S3...')
-        s3 = boto3.resource('s3')
-        s3.Object('geoda-covid-atlas', 'covid_confirmed_usafacts.csv').put(Body=open(os.path.join(repo_root, 'docs/covid_confirmed_usafacts.csv'), 'rb'))
-        s3.Object('geoda-covid-atlas', 'covid_deaths_usafacts.csv').put(Body=open(os.path.join(repo_root, 'docs/covid_deaths_usafacts.csv'), 'rb'))
-        print('Write to S3 complete.')
-    except Exception as e:
-        print(e)
 
     print('Finished.')
 
