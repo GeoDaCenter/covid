@@ -34,17 +34,17 @@ case $DATA_SOURCE in
 		;;
 
 	testing)
-		export COMMAND='bash scrape.py'
+		export COMMAND='bash scrape.sh'
 
 esac
 
 
 if $COMMAND;
  		then
-		elif [ "$DATA_SOURCE" = "lisa" ];
+		if [ "$DATA_SOURCE" = "lisa" ];
 	  	then exit 0;
 		else
-			then git add . && git commit -m "Updated: `date +'%Y-%m-%d %H:%M:%S'`"&& git push;
+			git add . && git commit -m "Updated: `date +'%Y-%m-%d %H:%M:%S'`"&& git push;
 		fi
 else
 	echo "$DATA_SOURCE script failed.";
