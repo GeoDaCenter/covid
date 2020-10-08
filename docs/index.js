@@ -2267,7 +2267,11 @@ function UpdateLegendLabels(breaks) {
             val = val.toFixed(2);
           } else {
             val = parseInt(val);
-            if (val > 10000) val = d3.format(".2s")(val);
+          }
+          if (val > 1000 && val < 10000) {
+            val = d3.format(".0f")(val)
+          } else if (val > 10000) {
+            val = d3.format(".2s")(val)
           }
           cont += `<div style="text-align:center">>${val}</div>`;
         } else {
@@ -2277,7 +2281,11 @@ function UpdateLegendLabels(breaks) {
             val = val.toFixed(2);
           } else {
             val = parseInt(val);
-            if (val > 10000) val = d3.format(".2s")(val);
+          }
+          if (val > 1000 && val < 10000) {
+            val = d3.format(".0f")(val)
+          } else if (val > 10000) {
+            val = d3.format(".2s")(val)
           }
           cont += '<div style="text-align:center">' + val + '</div>';
         }
