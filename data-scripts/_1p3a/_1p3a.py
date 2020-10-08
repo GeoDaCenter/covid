@@ -363,8 +363,8 @@ with open("cases.csv") as csvfile:
 try:
     print('Writing to S3...')
     s3 = boto3.resource('s3')
-    s3.Object('geoda-covid-atlas', 'counties_update_processing.geojson').put(Body=open(os.path.join(repo_root, 'docs/counties_update_processing.geojson'), 'rb'))
-    s3.Object('geoda-covid-atlas', 'states_update_processing.geojson').put(Body=open(os.path.join(repo_root, 'docs/states_update_processing.geojson'), 'rb'))
+    s3.Object('geoda-covid-atlas', 'counties_update_processing.geojson').put(Body=open(os.path.join(repo_root, 'docs/counties_update.geojson'), 'rb'))
+    s3.Object('geoda-covid-atlas', 'states_update_processing.geojson').put(Body=open(os.path.join(repo_root, 'docs/states_update.geojson'), 'rb'))
     print('Write to S3 complete.')
 except Exception as e:
     print(e)
