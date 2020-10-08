@@ -370,9 +370,9 @@ except Exception as e:
     print(e)
 
 os.system('apt install zip')
-os.system('rm docs/counties_update_processing.geojson.zip docs/states_update_processing.geojson.zip')
-os.system('zip -r docs/counties_update_processing.geojson.zip docs/counties_update_processing.geojson')
-os.system('zip -r docs/states_update_processing.geojson.zip docs/states_update_processing.geojson')
+os.system('rm {}/docs/counties_update_processing.geojson.zip docs/states_update_processing.geojson.zip'.format(repo_root))
+os.system('zip -r {}/docs/counties_update_processing.geojson.zip docs/counties_update_processing.geojson'.format(repo_root))
+os.system('zip -r {}/docs/states_update_processing.geojson.zip docs/states_update_processing.geojson'.format(repo_root))
 #scheduler = BlockingScheduler()
 #scheduler.add_job(fetch_covid_data, 'interval', hours=1)
 #scheduler.start()
