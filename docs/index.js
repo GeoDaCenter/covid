@@ -740,11 +740,11 @@ function ToggleDarkMode(evt)
   if (isDark) {
     evt.classList.remove("fa-toggle-on");
     evt.classList.add("fa-toggle-off");
-    mapbox.setStyle('mapbox://styles/lixun910/ckek432lw0mmp19nz3kpg2ufw?fresh=true');
+    mapbox.setStyle('mapbox://styles/lixun910/ckg589w0m0tik19r2lr3h8hg8?fresh=true');
   } else {
     evt.classList.remove("fa-toggle-off");
     evt.classList.add("fa-toggle-on");
-    mapbox.setStyle('mapbox://styles/lixun910/ckek432lw0mmp19nz3kpg2ufw?fresh=true');
+    mapbox.setStyle('mapbox://styles/lixun910/ckg589w0m0tik19r2lr3h8hg8?fresh=true');
   }
   setTimeout(function() {
     // create/re-create maps
@@ -1674,7 +1674,7 @@ mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 
 const mapbox = new mapboxgl.Map({
   container: 'map',
-  style: 'mapbox://styles/lixun910/ckek432lw0mmp19nz3kpg2ufw',
+  style: 'mapbox://styles/lixun910/ckg589w0m0tik19r2lr3h8hg8?fresh=true',
   center: [ -105.6500523, 35.850033],
   zoom: 3.5
 });
