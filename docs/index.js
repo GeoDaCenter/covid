@@ -1156,6 +1156,7 @@ function OnShowTime(el) {
 
 function getTooltipHtml(id, values) {
   const handle = val => val >= 0 ? val : 'N/A'; // dont show negative values
+  
   const handlePos = (val) => {
     let formatted = val;
     if (val >= 0) {
@@ -1163,6 +1164,15 @@ function getTooltipHtml(id, values) {
     }
     if (!val || val === '' || val < 0) return 'N/A';
   }
+
+  const handleTcap = (val) => {
+    let formatted = val;
+    if (val >= 0) {
+      return Math.round(val*100)/100;
+    }
+    if (!val || val === '' || val < 0) return 'N/A';
+  }
+
   let text = 
   ` <h3>${values.entityName}</h3><hr>
     <div>Cases: ${handle(values.cases)}</div>
@@ -1171,7 +1181,7 @@ function getTooltipHtml(id, values) {
     <div>New Deaths: ${handle(values.newDeaths)}</div>
     <div>Total Testing: ${handle(values.testing)}</div>
     <div>7 Day Positivity Rate: ${handlePos(values.testingPos)}</div>
-    <div>7 Day Testing Capacity: ${handle(values.testingTcap)}</div>
+    <div>7 Day Testing Capacity: ${handleTcap(values.testingTcap)}</div>
     <div>7 Day Confirmed Cases per Testing %: ${handlePos(values.testingCcpt)}</div>
     <div>Testing Criterion: ${values.criteria}</div>
   `
