@@ -974,9 +974,9 @@ function OnDataClick(evt) {
     document.getElementById('legend_title').innerText = "Natural Breaks";
   } else if (selectedVariable == "7 Day Testing Positivity Rate %") {
     selectedMethod = "testing_fixed_bins";
-  } else if (selectedVariable == "7 Day Testing Capacity") {
-    selectedMethod = "testing_fixed_bins";
-  } else if (selectedVariable == "7 Day Confirmed Cases per Testing") {
+  //} else if (selectedVariable == "7 Day Testing Capacity") {
+  //  selectedMethod = "testing_fixed_bins";
+  } else if (selectedVariable == "7 Day Confirmed Cases per Testing %") {
     selectedMethod = "testing_fixed_bins";
   } else {
     selectedMethod = "natural_breaks";
@@ -1172,7 +1172,7 @@ function getTooltipHtml(id, values) {
     <div>Total Testing: ${handle(values.testing)}</div>
     <div>7 Day Positivity Rate: ${handlePos(values.testingPos)}</div>
     <div>7 Day Testing Capacity: ${handle(values.testingTcap)}</div>
-    <div>7 Day Confirmed Cases per Testing: ${handle(values.testingCcpt)}</div>
+    <div>7 Day Confirmed Cases per Testing %: ${handlePos(values.testingCcpt)}</div>
     <div>Testing Criterion: ${values.criteria}</div>
   `
 
@@ -1611,7 +1611,7 @@ function updateDataPanel(e) {
   let testing = testingData[selectedDataset][selectedDate][id];
   let testingPos = testingPosData[selectedDataset][selectedDate][id];
   let testingTcap = testingTcapData[selectedDataset][selectedDate][id];
-  let testingCcpt = testingCcptData[selectedDateset][selectedDate][id];
+  let testingCcpt = testingCcptData[selectedDataset][selectedDate][id];
   let criteria = testingCriteriaData[selectedDataset][id];
 
   // handle decimals
@@ -1637,7 +1637,7 @@ function updateDataPanel(e) {
     testingTcap = 'N/A';
   }
   if (testingCcpt >= 0) {
-    testingCcpt = Math.round((testingCcpt)*100)/100;
+    testingCcpt = Math.round((testingCcpt)*1000)/10;
   }
   if (!testingCcpt || testingCcpt === '' || testingCcpt < 0) {
     testingCcpt = 'N/A';
@@ -1657,7 +1657,7 @@ function updateDataPanel(e) {
   <div><b>Cases per Bed:</b> ${casesPerBed}</div>
   <div><b>Total Testing:</b> ${numberWithCommas(testing)}</div>
   <div><b>7 Day Testing Capacity:</b> ${testingTcap}</div>
-  <div><b>7 Day Confirmed Case per Testing:</b> ${testingCcpt}</div>
+  <div><b>7 Day Confirmed Case per Testing %:</b> ${testingCcpt}</div>
   <div><b>Testing Criteria:</b> ${criteria}</div>
   `
 
@@ -2065,9 +2065,9 @@ function GetFeatureValue(id) {
   } else if (txt == "7 Day Testing Capacity") {
     if (testingTcapData[json][selectedDate][id] == '' || testingTcapData[json][selectedDate][id] == 0) return 0;
     return Math.round(testingTcapData[json][selectedDate][id]*100)/100;
-  } else if (txt == "7 Day Confirmed Cases per Testing") {
+  } else if (txt == "7 Day Confirmed Cases per Testing %") {
     if (testingCcptData[json][selectedDate][id] == '' || testingCcptData[json][selectedDate][id] == 0) return 0;
-    return Math.round(testingCcptData[json][selectedDate][id]*100)/100;
+    return Math.round(testingCcptData[json][selectedDate][id]*1000)/10;
   } else if (txt == "Uninsured % (Community Health Factor)") {
     let feat = jsondata[json]["features"][id];
     let geoid = parseInt(feat.properties.GEOID);
@@ -2289,13 +2289,13 @@ function GetDataValues(inputDate) {
         vals.push(Math.round(testingTcapData[json][inputDate][id]*100)/100);
     }
     return vals;
-  } else if (txt == "7 Day Confirmed Cases per Testing") {
+  } else if (txt == "7 Day Confirmed Cases per Testing %") {
     var vals = [];
     for (var id in caseData[json][inputDate]) {
       if (testingCcptData[json][inputDate][id] == '' || testingCcptData[json][inputDate][id] == 0)
         vals.push(0);
       else
-        vals.push(Math.round(testingCcptData[json][inputDate][id]*100)/100);
+        vals.push(Math.round(testingCcptData[json][inputDate][id]*1000)/10);
     }
     return vals;
   } else if (txt == "Uninsured % (Community Health Factor)") {
