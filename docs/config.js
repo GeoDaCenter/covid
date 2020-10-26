@@ -38,4 +38,5 @@ config.TOOLTIP = {
   healthlife:'Length and Quality of Life reflects the physical and mental well-being of residents within a community through measures representing how long and how well residents live',
   Hypersegregated: 'American metropolitan areas where black residents experience hypersegregation, see ' + 'here'.link("https://www.princeton.edu/news/2015/05/18/hypersegregated-cities-face-tough-road-change"),
   BlackBelt: 'Southern US counties that were at least 40% Black or African American in the 2000 Census, see ' + 'here'.link("https://en.wikipedia.org/wiki/Black_Belt_in_the_American_South"),
+  USCongress: 'Find your representative ' + 'here'.link("https://www.govtrack.us/"),
 };

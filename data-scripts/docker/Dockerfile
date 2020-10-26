@@ -20,7 +20,7 @@ RUN wget http://download.osgeo.org/libspatialindex/spatialindex-src-1.8.5.tar.gz
 
 
 # Install geopandas
-RUN pip install rtree geopandas pandas boto3 requests pytz
+RUN pip install rtree geopandas pandas boto3 requests pytz us lxml
 
 # Move entrypoint script to container and deploy key to ssh folder
 COPY entrypoint.sh .

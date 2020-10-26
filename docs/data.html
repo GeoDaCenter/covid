@@ -4,7 +4,9 @@
   <title>The US Covid Atlas</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=1024">
-
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
 
   <!-- CSS only -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
@@ -55,6 +57,7 @@
         <div class="Nav-Text2 dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: #00575c;">
           <a class="dropdown-item" href="map.html">EXPLORE</a>
           <a class="dropdown-item" href="data.html">DATA</a>
+          <a class="dropdown-item" href="api.html">API</a>
           <a class="dropdown-item" href="methods.html">METHODS</a>
           <a class="dropdown-item" href="faq.html">HELP + FAQ</a>
         </div>
@@ -125,7 +128,7 @@
 
       <li>usafacts_confirmed_<i>date</i>.geojson: the county level data (confirmed cases) using <a href="https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/?utm_source=MailChimp&utm_campaign=census-covid2">USAFacts</a>, together with population and number of hospital beds.</li>
       <li>usafacts_deaths_<i>date</i>.geojson: the county level data (death counts) using <a href="https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/?utm_source=MailChimp&utm_campaign=census-covid2">USAFacts</a>, together with population and number of hospital beds.</li>
-      <li>Landingpage_main_<i>date</i>_.gif: the animation (.gif) showing how the pandemic has been changing over time (using confirmed cases per 10K population), which is also displayed in the Atlas.</li></p>
+      <li>Landingpage_main_<i>date</i>_.gif: the animation (.gif) showing how the pandemic has been changing over time (using confirmed cases per 100K population), which is also displayed in the Atlas.</li></p>
 
       <h3>1P3A</h3>
       <p>To access raw 1P3A data, you must contact the 1P3A for a token directly. Not all cases from 1P3A data can be assigned to a particular county, see following. The list is being updated as new data comes in everyday.</i></p>
@@ -174,7 +177,7 @@
                       <img style="text-align: right; opacity: 0.7; padding-bottom: 10px" src="img/csds-university-wordmark-white.png" width = 100%; alt="Center for Spatial Data Science logo">
 
                     <p class="copyright">
-                      Brought to you by the Center for Spatial Data Science <a href="#">@UChicago</a>. Powered by <a href="#">GeoDa</a>. Funded in part by the <a href="#">Robert Wood Johnson Foundation</a>.
+                      Brought to you by the Center for Spatial Data Science <a href="https://spatial.uchicago.edu/" target="_blank" rel="noopener noreferrer">@UChicago</a>. Powered by <a href="https://geodacenter.github.io/" target="_blank" rel="noopener noreferrer">GeoDa</a>. Funded in part by the <a href="https://www.rwjf.org/" target="_blank" rel="noopener noreferrer">Robert Wood Johnson Foundation</a>.
                     </p>
                     
                 </div>
