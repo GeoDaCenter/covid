@@ -1760,8 +1760,17 @@ mapbox.addControl(
     mapboxgl: mapboxgl
   })
 );
- 
+
 mapbox.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+
+mapbox.addControl(
+  new mapboxgl.GeolocateControl({
+    positionOptions: {
+      enableHighAccuracy: true
+    },
+      trackUserLocation: false
+  }), 'bottom-right'
+);
 
 mapbox.on("mouseenter", "clinics", function(e) {
   handleMapHover(e)
