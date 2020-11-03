@@ -222,11 +222,21 @@
               </div>
             </label>
           </div>
-          <!--<div>
+          <div>
+            <input id="clinics-hospitals-toggle" type="radio" name="overlay-select" onclick="OnShowClinicsHospitals(this)">
+            <label for="clinics-hospitals-toggle">Show Community Health Clinics and Hospitals
+            </label>
+          </div>
+          <div>
             <input id="clinics-toggle" type="radio" name="overlay-select" onclick="OnShowClinics(this)">
             <label for="clinics-toggle">Show Community Health Clinics
             </label>
-          </div>-->
+          </div>
+          <div>
+            <input id="hospital-toggle" type="radio" name="overlay-select" onclick="OnShowHospitals(this)">
+            <label for="hospital-toggle">Show Hospitals
+            </label>
+          </div>
       
           <div class="map-overlay-toggles--hidden">
             <input id="hotspot-labels-toggle" type="checkbox" onclick="OnShowLabels(this)">

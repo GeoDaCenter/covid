@@ -216,6 +216,8 @@ var shouldShowHypersegregatedCities = false;
 var shouldShowBlackBelt = false;
 var shouldShowUSCongress = false; 
 var shouldShowClinics = false; 
+var shouldShowHospitals = false; 
+var shouldShowClinicsHospitals = false; 
 
 var stateMap = 'states_update.geojson';
 
@@ -1040,6 +1042,9 @@ function OnShowReservations() {
   shouldShowHypersegregatedCities = false;
   shouldShowUSCongress = false;
   shouldShowClinics = false; 
+  shouldShowHospitals = false; 
+  shouldShowClinicsHospitals = false; 
+  shouldShowHospitals = false; 
   UpdateMap();
 }
 
@@ -1050,6 +1055,9 @@ function OnShowHypersegregatedCities() {
   shouldShowReservations = false;
   shouldShowUSCongress = false;
   shouldShowClinics = false; 
+  shouldShowHospitals = false; 
+  shouldShowClinicsHospitals = false; 
+  shouldShowHospitals = false; 
   UpdateMap();
 }
 
@@ -1061,6 +1069,9 @@ function OnShowBlackBelt() {
   shouldShowReservations = false;
   shouldShowUSCongress = false;
   shouldShowClinics = false; 
+  shouldShowHospitals = false; 
+  shouldShowClinicsHospitals = false; 
+  shouldShowHospitals = false; 
   UpdateMap();
 }
 
@@ -1070,6 +1081,9 @@ function OnShowUSCongress() {
   shouldShowHypersegregatedCities = false;
   shouldShowReservations = false;
   shouldShowClinics = false; 
+  shouldShowHospitals = false; 
+  shouldShowClinicsHospitals = false; 
+  shouldShowHospitals = false; 
   UpdateMap();
 }
 
@@ -1078,7 +1092,29 @@ function OnShowClinics() {
   shouldShowBlackBelt = false;
   shouldShowHypersegregatedCities = false;
   shouldShowReservations = false;
-  shouldShowClinics = true;
+  shouldShowClinics = true; 
+  shouldShowClinicsHospitals = false; 
+  shouldShowHospitals = false; 
+  UpdateMap();
+}
+function OnShowClinicsHospitals() {
+  shouldShowUSCongress = false;
+  shouldShowBlackBelt = false;
+  shouldShowHypersegregatedCities = false;
+  shouldShowReservations = false;
+  shouldShowClinics = false; 
+  shouldShowClinicsHospitals = true; 
+  shouldShowHospitals = false; 
+  UpdateMap();
+}
+function OnShowHospitals() {
+  shouldShowUSCongress = false;
+  shouldShowBlackBelt = false;
+  shouldShowHypersegregatedCities = false;
+  shouldShowReservations = false;
+  shouldShowClinics = false; 
+  shouldShowClinicsHospitals = false; 
+  shouldShowHospitals = true; 
   UpdateMap();
 }
 
@@ -1088,6 +1124,8 @@ function ClearOverlay() {
   shouldShowReservations = false;
   shouldShowUSCongress = false;
   shouldShowClinics = false; 
+  shouldShowClinicsHospitals = false; 
+  shouldShowHospitals = false; 
   UpdateMap();
 }
 
@@ -1197,16 +1235,26 @@ function getTooltipHtml(id, values) {
   return text;
 }
 
-function getClinicHtml(info){
-  let text = 
-  ` <h3>${info.Name}</h3>
+function getHospitalHtml(info){
+  return ` 
+    <h3>${info.Name}</h3>
     <div><i>${info['Hospital Type']}</i>
     <div>Address: ${info.Address}</div>
     ${info.Address_2 ? '<div>'+info.Address_2+'</div>' : ''}
     <div>${info.City}, ${info.State}</div>
     <div>${info.Zipcode}</div> 
   `
-  return text
+}
+function getClinicHtml(info){
+  return `
+    <h3>${info.name}</h3>
+    <div>${info.address}</div>
+    <div>${info.city}, ${info.county}</div>
+    <div>${info.st_abbr}</div> 
+    <div>${info.phone}</div>
+    <br/>
+    <div><b>${info.testing_status ? 'This location offers COVID-19 testing.' : 'This location does not offer COVID-19 testing.'}</b></div>
+  `
 }
 
 // this is the callback for when you hover over a feature on the map
@@ -1229,9 +1277,8 @@ function updateTooltip(e) {
     return;
   }
 
-  if (layer == "clinics" && shouldShowClinics) {
-    text = getClinicHtml(object)
-    
+  if ((layer == "hospitals" || layer == "clinics_live") && (shouldShowClinics||shouldShowHospitals||shouldShowClinicsHospitals)) {
+    text = layer == "hospitals" ? getHospitalHtml(object) : getClinicHtml(object)
     // set html
     tooltip.innerHTML = text;
 
@@ -1239,7 +1286,7 @@ function updateTooltip(e) {
     tooltip.style.top = `${y}px`;
     tooltip.style.left = `${x}px`;
 
-  } else if (!shouldShowClinics){
+  } else if (!(shouldShowClinics||shouldShowHospitals||shouldShowClinicsHospitals)) {
     // get the entity id
     // TODO rename this to entityId to be consistent with entityName
     const id = object.properties.id;
@@ -1311,11 +1358,11 @@ function updateTooltip(e) {
 }
 
 function clearTooltip() {
-  if (shouldShowClinics) {
+  if (shouldShowClinics||shouldShowHospitals||shouldShowClinicsHospitals) {
     const tooltip = document.getElementById('tooltip');
     tooltip.innerHTML = '';
-    return;
   }
+  return;
 }
 
 function handleMapHover(e) {
@@ -1763,24 +1810,45 @@ mapbox.addControl(
 
 mapbox.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
-mapbox.addControl(
-  new mapboxgl.GeolocateControl({
-    positionOptions: {
-      enableHighAccuracy: true
-    },
-      trackUserLocation: false
-  }), 'bottom-right'
-);
+const geoLocate = new mapboxgl.GeolocateControl({
+  positionOptions: {
+    enableHighAccuracy: true,
+  },
+  trackUserLocation: false
+  });
 
-mapbox.on("mouseenter", "clinics", function(e) {
+mapbox.addControl(geoLocate, 'bottom-right');
+
+geoLocate.on('geolocate', function(e) {
+  mapbox.flyTo({
+   center:[e.coords.longitude, e.coords.latitude], 
+   zoom:10 //set zoom 
+ });
+});
+
+mapbox.on('mouseenter', 'hospitals', function(e) {
+  handleMapHover(e)
+})
+mapbox.on('mousemove', 'hospitals', function(e) {
   handleMapHover(e)
 })
 
-mapbox.on('mouseleave', 'clinics', function () {
+mapbox.on('mouseleave', 'hospitals', function () {
   clearTooltip()
 });
 
-mapbox.on('click wheel', function () {
+mapbox.on('mouseenter', 'clinics_live', function(e) {
+  handleMapHover(e)
+})
+mapbox.on('mousemove', 'clinics_live', function(e) {
+  handleMapHover(e)
+})
+
+mapbox.on('mouseleave', 'clinics_live', function () {
+  clearTooltip()
+});
+
+mapbox.on('move', function () {
   clearTooltip()
 });
 
@@ -1849,6 +1917,25 @@ function getStateLayer(data)
       pickable: false
   };
 }
+function getClinicLayer()
+{
+  return {
+      id: 'clinic_layer',
+      type: ScatterplotLayer,
+      data: './health_center_clean.json',
+      opacity: 1,
+      stroked: false,
+      filled: true,
+      getPosition: d => d.coords,
+      getRadius:20,
+      radiusScale: 10,
+      radiusMinPixels: 2,
+      radiusMaxPixels: 20,
+      getFillColor: [255, 20, 20],
+      pickable: false
+  };
+}
+
 
 function getCountyLayer(data)
 {
@@ -1883,6 +1970,48 @@ function createMap(data) {
     selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
   }
 
+  if (mapbox.getSource("clinic_data") == undefined) {
+    mapbox.addSource('clinic_data', {
+      type: 'geojson',
+      data: './health_centers_clean.geojson'
+    });
+
+    mapbox.addLayer(
+      {
+        'id': 'clinics_live',
+        'source': 'clinic_data',
+        'type': 'symbol',
+        "layout": {
+            "text-field": "•",
+            "text-padding": 0,
+            "text-allow-overlap": true,
+            "text-ignore-placement": true,
+            "text-font": [
+                "Open Sans ExtraBold",
+                "Arial Unicode MS Regular"
+            ],
+            "text-size": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                4,
+                12,
+                22,
+                48
+            ],
+            "visibility": "none"
+        },
+        "paint": {
+            "text-color": "hsl(92, 70%, 35%)",
+            "text-halo-color": "hsla(0, 0%, 100%, 0.72)",
+            "text-halo-width": 1,
+            "text-halo-blur": 1
+        }
+      },
+    "hospitals"
+    );
+  }
+
   // this is where the deck layers are accumulated before adding to the canvas
   var layers = [];
 
@@ -1902,7 +2031,7 @@ function createMap(data) {
     }
     layers.push(getCountyLayer(data));
   }
- 
+
   SetupLayers(layers);
   
 }
@@ -1946,10 +2075,18 @@ function SetupLayers(layers)
   }
 
   // toggle clinics layer
-  if (shouldShowClinics) {
-    mapbox.setLayoutProperty("clinics", 'visibility', 'visible');
+  if (shouldShowClinicsHospitals) {
+    mapbox.setLayoutProperty("hospitals", 'visibility', 'visible');
+    mapbox.setLayoutProperty("clinics_live", 'visibility', 'visible');
+  } else if (shouldShowHospitals) {
+    mapbox.setLayoutProperty("hospitals", 'visibility', 'visible');
+    mapbox.setLayoutProperty("clinics_live", 'visibility', 'none');
+  } else if (shouldShowClinics) {
+    mapbox.setLayoutProperty("hospitals", 'visibility', 'none');
+    mapbox.setLayoutProperty("clinics_live", 'visibility', 'visible');
   } else {
-    mapbox.setLayoutProperty("clinics", 'visibility', 'none');
+    mapbox.setLayoutProperty("hospitals", 'visibility', 'none');
+    mapbox.setLayoutProperty("clinics_live", 'visibility', 'none');
   }
 
   const firstLabelLayerId = mapbox.getStyle().layers.find(layer => layer.type === 'symbol').id;
@@ -1972,7 +2109,6 @@ function SetupLayers(layers)
   mapbox.moveLayer("admin-1-boundary", "road-label-simple");
   
   mapbox.getLayer('county_layer') == undefined ? mapbox.moveLayer("state_layer", "uscongress") : mapbox.moveLayer("county_layer", "uscongress");
-
 }
 
 
