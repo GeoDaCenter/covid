@@ -12,6 +12,14 @@ const {
   MapboxLayer,
 } = deck;
 
+/* 
+ * URL PARAMS
+*/ 
+
+var params_dict = {}; 
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+for (const [key, value] of urlParams ) { params_dict[key] = value; }
 
 /*
  * CONFIG
@@ -99,7 +107,6 @@ const testing_breaks = {
 var lisa_labels = ["Not significant", "High-High", "Low-Low", "Low-High", "High-Low", "Undefined", "Isolated"];
 var lisa_colors = ["#ffffff", "#FF0000", "#0000FF", "#a7adf9", "#f4ada8", "#464646", "#999999"];
 
-
 /*
  * UTILITIES
 */
@@ -178,9 +185,9 @@ var centroids = {};
 // this tracks the map viewport and is used for a hack so that deck doesn't 
 // always zoom to the initial lat/lng. set initial values here.
 var mapPosition = {
-  latitude: 35.850033,
-  longitude: -105.6500523,
-  zoom: 3.5,
+  latitude: params_dict.lat ? params_dict.lat : -105.6500523,
+  longitude: params_dict.lon ? params_dict.lon : 35.850033,
+  zoom: params_dict.zoom ? params_dict.zoom : 3.5,
 };
 
 // misc
@@ -399,6 +406,42 @@ async function loadUsafactsData(url, callback) {
     chrhlthlifeData,
     berkeleyCountyData,
   ] = await Promise.all([
+    // Papa.parse('covid_confirmed_usafacts.csv', {
+    //   download:true,
+    //   complete: function(results) {
+    //     return results.data;
+    //   }
+    // }),
+    // Papa.parse('covid_deaths_usafacts.csv', {
+    //   download:true,
+    //   complete: function(results) {
+    //     return results.data;
+    //   }
+    // }),
+    // Papa.parse('testing_usafacts.csv', {
+    //   download:true,
+    //   complete: function(results) {
+    //     return results.data;
+    //   }
+    // }),
+    // Papa.parse('testingpos_usafacts.csv', {
+    //   download:true,
+    //   complete: function(results) {
+    //     return results.data;
+    //   }
+    // }),
+    // Papa.parse('testingtcap_usafacts.csv', {
+    //   download:true,
+    //   complete: function(results) {
+    //     return results.data;
+    //   }
+    // }),
+    // Papa.parse('testingccpt_usafacts.csv', {
+    //   download:true,
+    //   complete: function(results) {
+    //     return results.data;
+    //   }
+    // }),
     d3.csv('covid_confirmed_usafacts.csv'),
     d3.csv('covid_deaths_usafacts.csv'),
     d3.csv('testing_usafacts.csv'),
@@ -1745,8 +1788,8 @@ mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN;
 const mapbox = new mapboxgl.Map({
   container: 'map',
   style: 'mapbox://styles/lixun910/ckg8gz59r5kz119pe0yfx0lwb?fresh=true',
-  center: [ -105.6500523, 35.850033],
-  zoom: 3.5
+  center: params_dict.lon ? [params_dict.lon, params_dict.lat] : [ -105.6500523, 35.850033],
+  zoom: params_dict.zoom ? params_dict.zoom : 3.5
 });
 
 
@@ -1849,6 +1892,8 @@ mapbox.on('mouseleave', 'clinics_live', function () {
 });
 
 mapbox.on('move', function () {
+  let coords = mapbox.getCenter()
+  window.history.pushState("object or string", "Page Title", `./map.html?lat=${Math.round(coords.lat*1000000)/1000000}&lon=${Math.round(coords.lng*1000000)/1000000}&zoom=${Math.round(mapbox.getZoom()*100)/100}`);
   clearTooltip()
 });
 
