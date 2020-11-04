@@ -568,25 +568,6 @@ data panel
   padding-right: 20px;
 }
 
-/* map share buttons */
-#share-container {
-  margin-left: auto;
-  margin-right: 260px;
-}
-
-div.map-share, div.map-bookmark {
-  float:right;
-  padding:0;
-  margin:0;
-}
-div.map-share a, div.map-bookmark a {
-  padding:5px 0;
-  margin:0;
-}
-
-div.map-share a img, div.map-bookmark a img {
-  height:40px;
-}
 
 .fa-info-circle {
   color: #aaa;
