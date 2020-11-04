@@ -141,10 +141,10 @@ var layer_dict = {};
 var usafactsCases;
 var usafactsDeaths;
 var usafactsData;
-var usafactsTesting; 
-var usafactsTestingPos;
-var usafactsTestingTcap;
-var usafactsTestingCcpt;
+// var usafactsTesting; 
+// var usafactsTestingPos;
+// var usafactsTestingTcap;
+// var usafactsTestingCcpt;
 var onep3aData;
 var populationData = {};
 var bedsData = {};
@@ -397,57 +397,21 @@ async function loadUsafactsData(url, callback) {
   [
     usafactsCases,
     usafactsDeaths,
-    usafactsTesting,
-    usafactsTestingPos,
-    usafactsTestingTcap,
-    usafactsTestingCcpt,
+    // usafactsTesting,
+    // usafactsTestingPos,
+    // usafactsTestingTcap,
+    // usafactsTestingCcpt,
     chrhlthfactorData,
     chrhlthcontextData,
     chrhlthlifeData,
     berkeleyCountyData,
   ] = await Promise.all([
-    // Papa.parse('covid_confirmed_usafacts.csv', {
-    //   download:true,
-    //   complete: function(results) {
-    //     return results.data;
-    //   }
-    // }),
-    // Papa.parse('covid_deaths_usafacts.csv', {
-    //   download:true,
-    //   complete: function(results) {
-    //     return results.data;
-    //   }
-    // }),
-    // Papa.parse('testing_usafacts.csv', {
-    //   download:true,
-    //   complete: function(results) {
-    //     return results.data;
-    //   }
-    // }),
-    // Papa.parse('testingpos_usafacts.csv', {
-    //   download:true,
-    //   complete: function(results) {
-    //     return results.data;
-    //   }
-    // }),
-    // Papa.parse('testingtcap_usafacts.csv', {
-    //   download:true,
-    //   complete: function(results) {
-    //     return results.data;
-    //   }
-    // }),
-    // Papa.parse('testingccpt_usafacts.csv', {
-    //   download:true,
-    //   complete: function(results) {
-    //     return results.data;
-    //   }
-    // }),
     d3.csv('covid_confirmed_usafacts.csv'),
     d3.csv('covid_deaths_usafacts.csv'),
-    d3.csv('testing_usafacts.csv'),
-    d3.csv('testingpos_usafacts.csv'),
-    d3.csv('testingtcap_usafacts.csv'),
-    d3.csv('testingccpt_usafacts.csv'),
+    // d3.csv('testing_usafacts.csv'),
+    // d3.csv('testingpos_usafacts.csv'),
+    // d3.csv('testingtcap_usafacts.csv'),
+    // d3.csv('testingccpt_usafacts.csv'),
     fetchChrHlthFactorData(),
     fetchChrHlthContextData(),
     fetchChrHlthLifeData(),
@@ -459,7 +423,7 @@ async function loadUsafactsData(url, callback) {
   updateSelectedDataset(selectedDataset);
 
   // merge usfacts csv data
-  parseUsaFactsData(featuresWithIds, usafactsCases, usafactsDeaths, usafactsTesting, usafactsTestingPos, usafactsTestingTcap, usafactsTestingCcpt);
+  parseUsaFactsData(featuresWithIds, usafactsCases, usafactsDeaths); //usafactsTesting, usafactsTestingPos, usafactsTestingTcap, usafactsTestingCcpt
   jsondata[selectedDataset] = featuresWithIds;
 
   // read as bytearray for GeoDaWASM
@@ -540,7 +504,12 @@ function loadData(url, callback) {
   // otherwise, we need to fetch the data  
   } else if (url.endsWith('county_usfacts.geojson')) {
     loadUsafactsData(url, callback);
-  } else {
+  // } else if (url.endsWith('counies_update.geojson')) {
+  //   load1p3aCountyData(url, callback);
+  // } else {
+  //   load1p3aStateData(url,callback);
+  // }
+  } else { // else if (url.endsWith('counies_update.geojson'))
     load1p3aData(url, callback);
   }
 }
@@ -556,18 +525,18 @@ function getDatesFromUsafacts(cases) {
   return xLabels;
 }
 
-function parseUsaFactsData(data, confirm_data, death_data, testing, testingpos, testingtcap, testingccpt) {
+function parseUsaFactsData(data, confirm_data, death_data) { // testing, testingpos, testingtcap, testingccpt
   let json = selectedDataset;
   if (!(json in caseData)) caseData[json] = {};
   if (!(json in deathsData)) deathsData[json] = {};
   if (!(json in fatalityData)) fatalityData[json] = {};
   if (!(json in populationData)) populationData[json] = {};
   if (!(json in bedsData)) bedsData[json] = {};
-  if (!(json in testingData)) testingData[json] = {};
-  if (!(json in testingCriteriaData)) testingCriteriaData[json] = {};
-  if (!(json in testingTcapData)) testingTcapData[json] = {};
-  if (!(json in testingCcptData)) testingCcptData[json] = {};
-  if (!(json in testingPosData)) testingPosData[json] = {};
+  // if (!(json in testingData)) testingData[json] = {};
+  // if (!(json in testingCriteriaData)) testingCriteriaData[json] = {};
+  // if (!(json in testingTcapData)) testingTcapData[json] = {};
+  // if (!(json in testingCcptData)) testingCcptData[json] = {};
+  // if (!(json in testingPosData)) testingPosData[json] = {};
 
   dates[selectedDataset] = getDatesFromUsafacts(confirm_data);
   if (selectedDate == null || selectedDate.indexOf('-') >= 0) {
@@ -585,10 +554,10 @@ function parseUsaFactsData(data, confirm_data, death_data, testing, testingpos, 
   for (let i = 0; i < confirm_data.length; ++i) {
     conf_dict[confirm_data[i].countyFIPS] = confirm_data[i];
     death_dict[death_data[i].countyFIPS] = death_data[i];
-    testing_dict[testing[i].countyFIPS] = testing[i];
-    testingtcap_dict[testingtcap[i].countyFIPS] = testingtcap[i];
-    testingccpt_dict[testingccpt[i].countyFIPS] = testingccpt[i];
-    testingpos_dict[testingpos[i].countyFIPS] = testingpos[i];
+    // testing_dict[testing[i].countyFIPS] = testing[i];
+    // testingtcap_dict[testingtcap[i].countyFIPS] = testingtcap[i];
+    // testingccpt_dict[testingccpt[i].countyFIPS] = testingccpt[i];
+    // testingpos_dict[testingpos[i].countyFIPS] = testingpos[i];
   }
   for (let i = 0; i < data.features.length; i++) {
     let pop = data.features[i].properties.population;
@@ -602,16 +571,16 @@ function parseUsaFactsData(data, confirm_data, death_data, testing, testingpos, 
         caseData[json][d][i] = 0;
         deathsData[json][d][i] = 0;
         fatalityData[json][d][i] = 0;
-        testingData[json][d][i] = 0;
-        testingTcapData[json][d][i] = 0;
-        testingCcptData[json][d][i] = 0;
-        testingPosData[json][d][i] = 0;
+        // testingData[json][d][i] = 0;
+        // testingTcapData[json][d][i] = 0;
+        // testingCcptData[json][d][i] = 0;
+        // testingPosData[json][d][i] = 0;
       }
       continue;
     }
     populationData[json][i] = pop;
     bedsData[json][i] = beds;
-    testingCriteriaData[json][i] = criteria;
+    // testingCriteriaData[json][i] = criteria;
 
     // confirmed count
     for (let j = 0; j < dates[selectedDataset].length; ++j) {
@@ -640,38 +609,38 @@ function parseUsaFactsData(data, confirm_data, death_data, testing, testingpos, 
         fatalityData[json][d][i] = deathsData[json][d][i] / caseData[json][d][i];
       }
     }
-    // testing number
-    for (var j = 0; j < dates[selectedDataset].length; ++j) {
-      var d = dates[selectedDataset][j];
-      if (!(d in testingData[json])) {
-        testingData[json][d] = {};
-      }
-      testingData[json][d][i] = testing_dict[geoid][d] == '' ? 0 : parseInt(testing_dict[geoid][d]);
-    }
-    // testing capacity
-    for (var j = 0; j < dates[selectedDataset].length; ++j) {
-      var d = dates[selectedDataset][j];
-      if (!(d in testingTcapData[json])) {
-        testingTcapData[json][d] = {};
-      }
-      testingTcapData[json][d][i] = testingtcap_dict[geoid][d] == '' ? 0 : testingtcap_dict[geoid][d];
-    }
-    //  confirmed cases per testing 
-    for (var j = 0; j < dates[selectedDataset].length; ++j) {
-      var d = dates[selectedDataset][j];
-      if (!(d in testingCcptData[json])) {
-        testingCcptData[json][d] = {};
-      }
-      testingCcptData[json][d][i] = testingccpt_dict[geoid][d] == '' ? 0 : testingccpt_dict[geoid][d];
-    }
-    //  testing positivity
-    for (var j = 0; j < dates[selectedDataset].length; ++j) {
-      var d = dates[selectedDataset][j];
-      if (!(d in testingPosData[json])) {
-        testingPosData[json][d] = {};
-      }
-      testingPosData[json][d][i] = testingpos_dict[geoid][d] == '' ? 0 : testingpos_dict[geoid][d];
-    }
+    // // testing number
+    // for (var j = 0; j < dates[selectedDataset].length; ++j) {
+    //   var d = dates[selectedDataset][j];
+    //   if (!(d in testingData[json])) {
+    //     testingData[json][d] = {};
+    //   }
+    //   testingData[json][d][i] = testing_dict[geoid][d] == '' ? 0 : parseInt(testing_dict[geoid][d]);
+    // }
+    // // testing capacity
+    // for (var j = 0; j < dates[selectedDataset].length; ++j) {
+    //   var d = dates[selectedDataset][j];
+    //   if (!(d in testingTcapData[json])) {
+    //     testingTcapData[json][d] = {};
+    //   }
+    //   testingTcapData[json][d][i] = testingtcap_dict[geoid][d] == '' ? 0 : testingtcap_dict[geoid][d];
+    // }
+    // //  confirmed cases per testing 
+    // for (var j = 0; j < dates[selectedDataset].length; ++j) {
+    //   var d = dates[selectedDataset][j];
+    //   if (!(d in testingCcptData[json])) {
+    //     testingCcptData[json][d] = {};
+    //   }
+    //   testingCcptData[json][d][i] = testingccpt_dict[geoid][d] == '' ? 0 : testingccpt_dict[geoid][d];
+    // }
+    // //  testing positivity
+    // for (var j = 0; j < dates[selectedDataset].length; ++j) {
+    //   var d = dates[selectedDataset][j];
+    //   if (!(d in testingPosData[json])) {
+    //     testingPosData[json][d] = {};
+    //   }
+    //   testingPosData[json][d][i] = testingpos_dict[geoid][d] == '' ? 0 : testingpos_dict[geoid][d];
+    // }
   }
 }
 
@@ -992,10 +961,16 @@ function OnSourceClick(evt) {
     document.getElementById("btn-uninprc").style.display = "none";
     document.getElementById("btn-over65yearsprc").style.display = "none";
     document.getElementById("btn-lfexprt").style.display = "none";
+    document.getElementById("btn-7day-pos").style.display = "block";
+    document.getElementById("btn-7day-cap").style.display = "block";
+    document.getElementById("btn-7day-conf").style.display = "block";  
   } else {
     document.getElementById("btn-uninprc").style.display = "block";
     document.getElementById("btn-over65yearsprc").style.display = "block";
-    document.getElementById("btn-lfexprt").style.display = "block";  
+    document.getElementById("btn-lfexprt").style.display = "block";
+    document.getElementById("btn-7day-pos").style.display = "none";
+    document.getElementById("btn-7day-cap").style.display = "none";
+    document.getElementById("btn-7day-conf").style.display = "none"; 
   }
 }
 
@@ -1893,7 +1868,7 @@ mapbox.on('mouseleave', 'clinics_live', function () {
 
 mapbox.on('move', function () {
   let coords = mapbox.getCenter()
-  window.history.pushState("object or string", "Page Title", `./map.html?lat=${Math.round(coords.lat*1000000)/1000000}&lon=${Math.round(coords.lng*1000000)/1000000}&zoom=${Math.round(mapbox.getZoom()*100)/100}`);
+  window.history.pushState("object or string", "Page Title", `./map.html?lat=${Math.round(coords.lat*1000)/1000}&lon=${Math.round(coords.lng*1000)/1000}&zoom=${Math.round(mapbox.getZoom()*10)/10}`);
   clearTooltip()
 });
 
@@ -3339,6 +3314,22 @@ function moveslider() {
     play_timer=setTimeout(moveslider,500)
 };
 
+function ShareMap() {
+    /* Copy the text inside the text field */
+    document.execCommand("copy");
+}
+
+function BookmarkMap() {
+  let coords = mapbox.getCenter()
+  window.history.pushState("object or string", "Page Title", `./map.html?lat=${Math.round(coords.lat*10000)/10000}&lon=${Math.round(coords.lng*10000)/10000}&zoom=${Math.round(mapbox.getZoom()*10)/10}`);
+  
+  var createBookmark = browser.bookmarks.create({
+    title: `US Covid Atlas | Specific Area`,
+    url: `${window.location.href}?lat=${Math.round(coords.lat*10000)/10000}&lon=${Math.round(coords.lng*10000)/10000}&zoom=${Math.round(mapbox.getZoom()*10)/10}`
+  });
+  
+  createBookmark.then(onCreated);
+}
 /*
  * ENTRY POINT
 */
