@@ -141,11 +141,22 @@ var layer_dict = {};
 var usafactsCases;
 var usafactsDeaths;
 var usafactsData;
-var usafactsTesting; 
-var usafactsTestingPos;
-var usafactsTestingTcap;
-var usafactsTestingCcpt;
+// var usafactsTesting; 
+// var usafactsTestingPos;
+// var usafactsTestingTcap;
+// var usafactsTestingCcpt;
+
+var onep3aCases;
+var onep3aDeaths;
 var onep3aData;
+var onep3aStateCases;
+var onep3aStateDeaths;
+var onep3aStateData;
+var onep3aStateTesting;
+var onep3aStateTestingPos;
+var onep3aStateTestingTcap;
+var onep3aStateTestingCcpt;
+
 var populationData = {};
 var bedsData = {};
 var cartogramData;
@@ -226,7 +237,7 @@ var shouldShowClinics = false;
 var shouldShowHospitals = false; 
 var shouldShowClinicsHospitals = false; 
 
-var stateMap = 'states_update.geojson';
+var stateMap = 'state_1p3a.geojson';
 
 function isState() {
   return source_btn.innerText.indexOf('State') >= 0;
@@ -257,10 +268,10 @@ function updateSelectedDataset(url, callback = () => {}) {
   if (url.endsWith('county_usfacts.geojson')) {
     selectedDataset = 'county_usfacts.geojson';
   } else {
-    if (url.endsWith('counties_update.geojson')) {
-      selectedDataset = 'counties_update.geojson';
+    if (url.endsWith('county_1p3a.geojson')) {
+      selectedDataset = 'county_1p3a.geojson';
     } else {
-      selectedDataset = 'states_update.geojson';
+      selectedDataset = 'state_1p3a.geojson';
     }
   }
   updateDates();
@@ -274,7 +285,7 @@ function updateSelectedDataset(url, callback = () => {}) {
 
 // fetch county health rankings health factors
 async function fetchChrHlthFactorData() {
-  const rows = await d3.csv('chr_health_factors.csv');
+  const rows = await d3.csv('./csv/chr_health_factors.csv');
 
   // index rows by "fips" (unique id)
   const rowsIndexed = rows.reduce((acc, row) => {
@@ -286,7 +297,7 @@ async function fetchChrHlthFactorData() {
 
 // fetch county health rankings health context indicators
 async function fetchChrHlthContextData() {
-  const rows = await d3.csv('chr_health_context.csv');
+  const rows = await d3.csv('./csv/chr_health_context.csv');
 
   // index rows by "fips" (unique id)
   const rowsIndexed = rows.reduce((acc, row) => {
@@ -298,7 +309,7 @@ async function fetchChrHlthContextData() {
 
 // fetch county health rankings length and quality of life
 async function fetchChrHlthLifeData() {
-  const rows = await d3.csv('chr_life.csv');
+  const rows = await d3.csv('./csv/chr_life.csv');
 
   // index rows by "fips" (unique id)
   const rowsIndexed = rows.reduce((acc, row) => {
@@ -310,7 +321,7 @@ async function fetchChrHlthLifeData() {
 
 // fetch berkeley group death predictions and 5-day county severity index
 async function fetchBerkeleyCountyData() {
-  const rows = await d3.csv('berkeley_predictions.csv');
+  const rows = await d3.csv('./csv/berkeley_predictions.csv');
 
   // get dates too loop over for building `predictions` objects
   // TODO this assumes at least one row
@@ -389,65 +400,21 @@ async function loadUsafactsData(url, callback) {
   // read as geojson for map
   const json = await responseForJson.json();
   const featuresWithIds = assignIdsToFeatures(json);
-  usafactsData = featuresWithIds;
 
+  usafactsData = featuresWithIds;
   // load cases and deaths in parallel. also load "supplemental" data (e.g. chr)
   // note that because these are being destructured to pre-defined globals,
   // this has the side effect of loading data into state.
   [
     usafactsCases,
     usafactsDeaths,
-    usafactsTesting,
-    usafactsTestingPos,
-    usafactsTestingTcap,
-    usafactsTestingCcpt,
     chrhlthfactorData,
     chrhlthcontextData,
     chrhlthlifeData,
     berkeleyCountyData,
   ] = await Promise.all([
-    // Papa.parse('covid_confirmed_usafacts.csv', {
-    //   download:true,
-    //   complete: function(results) {
-    //     return results.data;
-    //   }
-    // }),
-    // Papa.parse('covid_deaths_usafacts.csv', {
-    //   download:true,
-    //   complete: function(results) {
-    //     return results.data;
-    //   }
-    // }),
-    // Papa.parse('testing_usafacts.csv', {
-    //   download:true,
-    //   complete: function(results) {
-    //     return results.data;
-    //   }
-    // }),
-    // Papa.parse('testingpos_usafacts.csv', {
-    //   download:true,
-    //   complete: function(results) {
-    //     return results.data;
-    //   }
-    // }),
-    // Papa.parse('testingtcap_usafacts.csv', {
-    //   download:true,
-    //   complete: function(results) {
-    //     return results.data;
-    //   }
-    // }),
-    // Papa.parse('testingccpt_usafacts.csv', {
-    //   download:true,
-    //   complete: function(results) {
-    //     return results.data;
-    //   }
-    // }),
-    d3.csv('covid_confirmed_usafacts.csv'),
-    d3.csv('covid_deaths_usafacts.csv'),
-    d3.csv('testing_usafacts.csv'),
-    d3.csv('testingpos_usafacts.csv'),
-    d3.csv('testingtcap_usafacts.csv'),
-    d3.csv('testingccpt_usafacts.csv'),
+    d3.csv('./csv/covid_confirmed_usafacts.csv'),
+    d3.csv('./csv/covid_deaths_usafacts.csv'),
     fetchChrHlthFactorData(),
     fetchChrHlthContextData(),
     fetchChrHlthLifeData(),
@@ -459,7 +426,7 @@ async function loadUsafactsData(url, callback) {
   updateSelectedDataset(selectedDataset);
 
   // merge usfacts csv data
-  parseUsaFactsData(featuresWithIds, usafactsCases, usafactsDeaths, usafactsTesting, usafactsTestingPos, usafactsTestingTcap, usafactsTestingCcpt);
+  parseUsaFactsData(featuresWithIds, usafactsCases, usafactsDeaths); //usafactsTesting, usafactsTestingPos, usafactsTestingTcap, usafactsTestingCcpt
   jsondata[selectedDataset] = featuresWithIds;
 
   // read as bytearray for GeoDaWASM
@@ -474,6 +441,158 @@ async function loadUsafactsData(url, callback) {
 
   callback();
 }
+async function load1p3aCountyData(url, callback) {
+  // load 1p3a geojson data
+  const responseForJson = await fetch(url);
+  const responseForArrayBuffer = responseForJson.clone();
+  
+  // read as geojson for map
+  const json = await responseForJson.json();
+  const featuresWithIds = assignIdsToFeatures(json);
+  onep3aData = featuresWithIds;
+
+  // load cases and deaths in parallel. also load "supplemental" data (e.g. chr)
+  // note that because these are being destructured to pre-defined globals,
+  // this has the side effect of loading data into state.
+  if (chrhlthfactorData.length > 0) {
+    [
+      onep3aCases,
+      onep3aDeaths,
+      chrhlthfactorData,
+      chrhlthcontextData,
+      chrhlthlifeData,
+      berkeleyCountyData,
+    ] = await Promise.all([
+      d3.csv('./csv/covid_confirmed_1p3a.csv'),
+      d3.csv('./csv/covid_deaths_1p3a.csv'),
+      chrhlthfactorData,
+      chrhlthcontextData,
+      chrhlthlifeData,
+      berkeleyCountyData,
+    ]);
+  } else {
+    [
+      onep3aCases,
+      onep3aDeaths,
+      chrhlthfactorData,
+      chrhlthcontextData,
+      chrhlthlifeData,
+      berkeleyCountyData,
+    ] = await Promise.all([
+      d3.csv('./csv/covid_confirmed_1p3a.csv'),
+      d3.csv('./csv/covid_deaths_1p3a.csv'),
+      fetchChrHlthFactorData(),
+      fetchChrHlthContextData(),
+      fetchChrHlthLifeData(),
+      fetchBerkeleyCountyData(),
+    ]);
+  }
+
+  // update state
+  // TODO isn't there a function that does this?
+  updateSelectedDataset(selectedDataset);
+
+  // merge usfacts csv data
+  parse1P3ACountyData(featuresWithIds, onep3aCases, onep3aDeaths); //usafactsTesting, usafactsTestingPos, usafactsTestingTcap, usafactsTestingCcpt
+  jsondata[selectedDataset] = featuresWithIds;
+
+  // read as bytearray for GeoDaWASM
+  const arrayBuffer = await responseForArrayBuffer.arrayBuffer();
+
+  gda_proxy.ReadGeojsonMap(url, {
+    result: arrayBuffer,
+  });
+
+  // get centroids for cartogram
+  centroids[selectedDataset] = gda_proxy.GetCentroids(url);
+
+  callback();
+}
+
+async function load1p3aStateData(url, callback) {
+  // load 1p3a geojson data
+  const responseForJson = await fetch(url);
+  const responseForArrayBuffer = responseForJson.clone();
+  
+  // read as geojson for map
+  const json = await responseForJson.json();
+  const featuresWithIds = assignIdsToFeatures(json);
+  onep3aStateData = featuresWithIds;
+
+  // load cases and deaths in parallel. also load "supplemental" data (e.g. chr)
+  // note that because these are being destructured to pre-defined globals,
+  // this has the side effect of loading data into state.
+  if (chrhlthfactorData.length > 0) {
+    [
+      onep3aStateCases,
+      onep3aStateDeaths,
+      onep3aStateTesting,
+      onep3aStateTestingPos,
+      onep3aStateTestingTcap,
+      onep3aStateTestingCcpt,
+      chrhlthfactorData,
+      chrhlthcontextData,
+      chrhlthlifeData,
+      berkeleyCountyData,
+    ] = await Promise.all([
+      d3.csv('./csv/covid_confirmed_1p3a_state.csv'),
+      d3.csv('./csv/covid_deaths_1p3a_state.csv'),
+      d3.csv('./csv/covid_wk_pos_1p3a_state.csv'),
+      d3.csv('./csv/covid_confirmed_1p3a.csv'),
+      d3.csv('./csv/covid_tcap_1p3a_state.csv'),
+      d3.csv('./csv/covid_ccpt_1p3a_state.csv'),
+      chrhlthfactorData,
+      chrhlthcontextData,
+      chrhlthlifeData,
+      berkeleyCountyData,
+    ]);
+  } else {
+    [
+      onep3aStateCases,
+      onep3aStateDeaths,
+      onep3aStateTesting,
+      onep3aStateTestingPos,
+      onep3aStateTestingTcap,
+      onep3aStateTestingCcpt,
+      chrhlthfactorData,
+      chrhlthcontextData,
+      chrhlthlifeData,
+      berkeleyCountyData,
+    ] = await Promise.all([
+      d3.csv('./csv/covid_confirmed_1p3a_state.csv'),
+      d3.csv('./csv/covid_deaths_1p3a_state.csv'),
+      d3.csv('./csv/covid_testing_1p3a_state.csv'),
+      d3.csv('./csv/covid_wk_pos_1p3a_state.csv'),
+      d3.csv('./csv/covid_tcap_1p3a_state.csv'),
+      d3.csv('./csv/covid_ccpt_1p3a_state.csv'),
+      fetchChrHlthFactorData(),
+      fetchChrHlthContextData(),
+      fetchChrHlthLifeData(),
+      fetchBerkeleyCountyData(),
+    ]);
+  }
+
+  // update state
+  // TODO isn't there a function that does this?
+  updateSelectedDataset(selectedDataset);
+
+  // merge usfacts csv data
+  parse1P3AStateData(featuresWithIds, onep3aStateCases, onep3aStateDeaths, onep3aStateTesting, onep3aStateTestingPos, onep3aStateTestingTcap, onep3aStateTestingCcpt); //usafactsTesting, usafactsTestingPos, usafactsTestingTcap, usafactsTestingCcpt
+  jsondata[selectedDataset] = featuresWithIds;
+
+  // read as bytearray for GeoDaWASM
+  const arrayBuffer = await responseForArrayBuffer.arrayBuffer();
+
+  gda_proxy.ReadGeojsonMap(url, {
+    result: arrayBuffer,
+  });
+
+  // get centroids for cartogram
+  centroids[selectedDataset] = gda_proxy.GetCentroids(url);
+
+  callback();
+}
+
 
 function load1p3aData(url, callback) {
   // load 1P3A data 
@@ -502,7 +621,7 @@ function load1p3aData(url, callback) {
                 });
 
                 let sel_map = url.startsWith('state') ? 'state' : 'county';
-                selectedDataset = sel_map == 'state' ? 'states_update.geojson' : 'counties_update.geojson';
+                selectedDataset = sel_map == 'state' ? 'state_1p3a.geojson' : 'counties_update.geojson';
                 // read as json
                 var jsonReader = new FileReader();
                 jsonReader.onload = function (event) {
@@ -540,9 +659,14 @@ function loadData(url, callback) {
   // otherwise, we need to fetch the data  
   } else if (url.endsWith('county_usfacts.geojson')) {
     loadUsafactsData(url, callback);
+  } else if (url.endsWith('county_1p3a.geojson')) {
+    load1p3aCountyData(url, callback);
   } else {
-    load1p3aData(url, callback);
+    load1p3aStateData(url,callback);
   }
+  // } else { // else if (url.endsWith('counies_update.geojson'))
+  //   load1p3aData(url, callback);
+  // }
 }
 
 function getDatesFromUsafacts(cases) {
@@ -556,18 +680,30 @@ function getDatesFromUsafacts(cases) {
   return xLabels;
 }
 
-function parseUsaFactsData(data, confirm_data, death_data, testing, testingpos, testingtcap, testingccpt) {
+function getDatesFrom1p3a(cases) {
+  var xLabels = [];
+  let n = cases.length;
+  for (let col in cases[0]) {
+    if (col.startsWith('20')) {
+      xLabels.push(col);
+    }
+  }
+  return xLabels;
+}
+
+function parseUsaFactsData(data, confirm_data, death_data) { // testing, testingpos, testingtcap, testingccpt
   let json = selectedDataset;
+  
   if (!(json in caseData)) caseData[json] = {};
   if (!(json in deathsData)) deathsData[json] = {};
   if (!(json in fatalityData)) fatalityData[json] = {};
   if (!(json in populationData)) populationData[json] = {};
   if (!(json in bedsData)) bedsData[json] = {};
-  if (!(json in testingData)) testingData[json] = {};
-  if (!(json in testingCriteriaData)) testingCriteriaData[json] = {};
-  if (!(json in testingTcapData)) testingTcapData[json] = {};
-  if (!(json in testingCcptData)) testingCcptData[json] = {};
-  if (!(json in testingPosData)) testingPosData[json] = {};
+  // if (!(json in testingData)) testingData[json] = {};
+  // if (!(json in testingCriteriaData)) testingCriteriaData[json] = {};
+  // if (!(json in testingTcapData)) testingTcapData[json] = {};
+  // if (!(json in testingCcptData)) testingCcptData[json] = {};
+  // if (!(json in testingPosData)) testingPosData[json] = {};
 
   dates[selectedDataset] = getDatesFromUsafacts(confirm_data);
   if (selectedDate == null || selectedDate.indexOf('-') >= 0) {
@@ -585,11 +721,212 @@ function parseUsaFactsData(data, confirm_data, death_data, testing, testingpos, 
   for (let i = 0; i < confirm_data.length; ++i) {
     conf_dict[confirm_data[i].countyFIPS] = confirm_data[i];
     death_dict[death_data[i].countyFIPS] = death_data[i];
-    testing_dict[testing[i].countyFIPS] = testing[i];
-    testingtcap_dict[testingtcap[i].countyFIPS] = testingtcap[i];
-    testingccpt_dict[testingccpt[i].countyFIPS] = testingccpt[i];
-    testingpos_dict[testingpos[i].countyFIPS] = testingpos[i];
+    // testing_dict[testing[i].countyFIPS] = testing[i];
+    // testingtcap_dict[testingtcap[i].countyFIPS] = testingtcap[i];
+    // testingccpt_dict[testingccpt[i].countyFIPS] = testingccpt[i];
+    // testingpos_dict[testingpos[i].countyFIPS] = testingpos[i];
   }
+  for (let i = 0; i < data.features.length; i++) {
+    let pop = data.features[i].properties.population;
+    let geoid = parseInt(data.features[i].properties.GEOID);
+    let beds = data.features[i].properties.beds;
+    let criteria = data.features[i].properties.criteria;
+    if (!(geoid in conf_dict)) {
+      console.log("UsaFacts does not have:", data.features[i].properties);
+      for (let j = 0; j < dates[selectedDataset].length; ++j) {
+        let d = dates[selectedDataset][j];
+        caseData[json][d][i] = 0;
+        deathsData[json][d][i] = 0;
+        fatalityData[json][d][i] = 0;
+        // testingData[json][d][i] = 0;
+        // testingTcapData[json][d][i] = 0;
+        // testingCcptData[json][d][i] = 0;
+        // testingPosData[json][d][i] = 0;
+      }
+      continue;
+    }
+    populationData[json][i] = pop;
+    bedsData[json][i] = beds;
+    // testingCriteriaData[json][i] = criteria;
+
+    // confirmed count
+    for (let j = 0; j < dates[selectedDataset].length; ++j) {
+      let d = dates[selectedDataset][j];
+      if (!(d in caseData[json])) {
+        caseData[json][d] = {};
+      }
+      caseData[json][d][i] = conf_dict[geoid][d] == '' ? 0 : parseInt(conf_dict[geoid][d]);
+    }
+    // death count
+    for (var j = 0; j < dates[selectedDataset].length; ++j) {
+      var d = dates[selectedDataset][j];
+      if (!(d in deathsData[json])) {
+        deathsData[json][d] = {};
+      }
+      deathsData[json][d][i] = death_dict[geoid][d] == '' ? 0 : parseInt(death_dict[geoid][d]);
+    }
+    // fatality
+    for (var j = 0; j < dates[selectedDataset].length; ++j) {
+      var d = dates[selectedDataset][j];
+      if (!(d in fatalityData[json])) {
+        fatalityData[json][d] = {};
+      }
+      fatalityData[json][d][i] = 0;
+      if (caseData[json][d][i] > 0) {
+        fatalityData[json][d][i] = deathsData[json][d][i] / caseData[json][d][i];
+      }
+    }
+    // // testing number
+    // for (var j = 0; j < dates[selectedDataset].length; ++j) {
+    //   var d = dates[selectedDataset][j];
+    //   if (!(d in testingData[json])) {
+    //     testingData[json][d] = {};
+    //   }
+    //   testingData[json][d][i] = testing_dict[geoid][d] == '' ? 0 : parseInt(testing_dict[geoid][d]);
+    // }
+    // // testing capacity
+    // for (var j = 0; j < dates[selectedDataset].length; ++j) {
+    //   var d = dates[selectedDataset][j];
+    //   if (!(d in testingTcapData[json])) {
+    //     testingTcapData[json][d] = {};
+    //   }
+    //   testingTcapData[json][d][i] = testingtcap_dict[geoid][d] == '' ? 0 : testingtcap_dict[geoid][d];
+    // }
+    // //  confirmed cases per testing 
+    // for (var j = 0; j < dates[selectedDataset].length; ++j) {
+    //   var d = dates[selectedDataset][j];
+    //   if (!(d in testingCcptData[json])) {
+    //     testingCcptData[json][d] = {};
+    //   }
+    //   testingCcptData[json][d][i] = testingccpt_dict[geoid][d] == '' ? 0 : testingccpt_dict[geoid][d];
+    // }
+    // //  testing positivity
+    // for (var j = 0; j < dates[selectedDataset].length; ++j) {
+    //   var d = dates[selectedDataset][j];
+    //   if (!(d in testingPosData[json])) {
+    //     testingPosData[json][d] = {};
+    //   }
+    //   testingPosData[json][d][i] = testingpos_dict[geoid][d] == '' ? 0 : testingpos_dict[geoid][d];
+    // }
+  }
+}
+
+function parse1P3ACountyData(data, confirm_data, death_data) { // testing, testingpos, testingtcap, testingccpt
+  let json = selectedDataset;
+  
+  if (!(json in caseData)) caseData[json] = {};
+  if (!(json in deathsData)) deathsData[json] = {};
+  if (!(json in fatalityData)) fatalityData[json] = {};
+  if (!(json in populationData)) populationData[json] = {};
+  if (!(json in bedsData)) bedsData[json] = {};
+
+  dates[selectedDataset] = getDatesFrom1p3a(confirm_data);
+  if (selectedDate == null || selectedDate.indexOf('-') >= 0) {
+    selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
+    latestDate = selectedDate;
+  }
+
+  let conf_dict = {};
+  let death_dict = {};
+
+  for (let i = 0; i < confirm_data.length; ++i) {
+    conf_dict[confirm_data[i].GEOID] = confirm_data[i];
+    death_dict[death_data[i].GEOID] = death_data[i];
+  }
+
+  for (let i = 0; i < data.features.length; i++) {
+    let pop = data.features[i].properties.population;
+    let geoid = parseInt(data.features[i].properties.GEOID);
+    let beds = data.features[i].properties.beds;
+    let criteria = data.features[i].properties.criteria;
+    if (!(geoid in conf_dict)) {
+      console.log("1P3A Counties does not have:", data.features[i].properties);
+      for (let j = 0; j < dates[selectedDataset].length; ++j) {
+        let d = dates[selectedDataset][j];
+        caseData[json][d][i] = 0;
+        deathsData[json][d][i] = 0;
+        fatalityData[json][d][i] = 0;
+      }
+      continue;
+    }
+    populationData[json][i] = pop;
+    bedsData[json][i] = beds;
+
+    // confirmed count
+    for (let j = 0; j < dates[selectedDataset].length; ++j) {
+      let d = dates[selectedDataset][j];
+      if (!(d in caseData[json])) {
+        caseData[json][d] = {};
+      }
+      caseData[json][d][i] = conf_dict[geoid][d] == '' ? 0 : parseInt(conf_dict[geoid][d]);
+    }
+    // death count
+    for (var j = 0; j < dates[selectedDataset].length; ++j) {
+      var d = dates[selectedDataset][j];
+      if (!(d in deathsData[json])) {
+        deathsData[json][d] = {};
+      }
+      deathsData[json][d][i] = death_dict[geoid][d] == '' ? 0 : parseInt(death_dict[geoid][d]);
+    }
+
+    // accum
+    for (var j = 1; j < dates[selectedDataset].length; ++j) {
+      var d1 = dates[selectedDataset][j - 1];
+      var d2 = dates[selectedDataset][j];
+      caseData[json][d2][i] += caseData[json][d1][i];
+      deathsData[json][d2][i] += deathsData[json][d1][i];
+    }
+
+    // fatality
+    for (var j = 0; j < dates[selectedDataset].length; ++j) {
+      var d = dates[selectedDataset][j];
+      if (!(d in fatalityData[json])) {
+        fatalityData[json][d] = {};
+      }
+      fatalityData[json][d][i] = 0;
+      if (caseData[json][d][i] > 0) {
+        fatalityData[json][d][i] = deathsData[json][d][i] / caseData[json][d][i];
+      }
+    }
+  }
+}
+
+function parse1P3AStateData(data, confirm_data, death_data, testing, testingpos, testingtcap, testingccpt) {
+  let json = selectedDataset;
+  
+  if (!(json in caseData)) caseData[json] = {};
+  if (!(json in deathsData)) deathsData[json] = {};
+  if (!(json in fatalityData)) fatalityData[json] = {};
+  if (!(json in populationData)) populationData[json] = {};
+  if (!(json in bedsData)) bedsData[json] = {};
+  if (!(json in testingData)) testingData[json] = {};
+  if (!(json in testingCriteriaData)) testingCriteriaData[json] = {};
+  if (!(json in testingTcapData)) testingTcapData[json] = {};
+  if (!(json in testingCcptData)) testingCcptData[json] = {};
+  if (!(json in testingPosData)) testingPosData[json] = {};
+
+  dates[selectedDataset] = getDatesFrom1p3a(confirm_data);
+  if (selectedDate == null || selectedDate.indexOf('-') >= 0) {
+    selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
+    latestDate = selectedDate;
+  }
+
+  let conf_dict = {};
+  let death_dict = {};
+  let testing_dict = {};
+  let testingtcap_dict = {};
+  let testingccpt_dict = {};
+  let testingpos_dict = {};
+
+  for (let i = 0; i < confirm_data.length; ++i) {
+    conf_dict[confirm_data[i].GEOID] = confirm_data[i];
+    death_dict[death_data[i].GEOID] = death_data[i];
+    testing_dict[testing[i].GEOID] = testing[i];
+    testingtcap_dict[testingtcap[i].GEOID] = testingtcap[i];
+    testingccpt_dict[testingccpt[i].GEOID] = testingccpt[i];
+    testingpos_dict[testingpos[i].GEOID] = testingpos[i];
+  }
+  
   for (let i = 0; i < data.features.length; i++) {
     let pop = data.features[i].properties.population;
     let geoid = parseInt(data.features[i].properties.GEOID);
@@ -629,6 +966,15 @@ function parseUsaFactsData(data, confirm_data, death_data, testing, testingpos, 
       }
       deathsData[json][d][i] = death_dict[geoid][d] == '' ? 0 : parseInt(death_dict[geoid][d]);
     }
+
+    // accum
+    for (var j = 1; j < dates[selectedDataset].length; ++j) {
+      var d1 = dates[selectedDataset][j - 1];
+      var d2 = dates[selectedDataset][j];
+      caseData[json][d2][i] += caseData[json][d1][i];
+      deathsData[json][d2][i] += deathsData[json][d1][i];
+    }
+
     // fatality
     for (var j = 0; j < dates[selectedDataset].length; ++j) {
       var d = dates[selectedDataset][j];
@@ -787,9 +1133,16 @@ function updateDates() {
       selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
       latestDate = selectedDate;
     }
-  } else {
-    dates[selectedDataset] = getDatesFromGeojson(onep3aData);
+  } else if (selectedDataset == 'county_1p3a.geojson') {
     // todo: the following line should be updated to current date
+    dates[selectedDataset] = getDatesFrom1p3a(onep3aCases);
+    if (selectedDate == null || selectedDate.indexOf('/') >= 0) {
+      selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
+      latestDate = selectedDate;
+    }
+  } else {
+    // todo: the following line should be updated to current date
+    dates[selectedDataset] = getDatesFrom1p3a(onep3aStateCases);
     if (selectedDate == null || selectedDate.indexOf('/') >= 0) {
       selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
       latestDate = selectedDate;
@@ -931,7 +1284,7 @@ function init_state() {
   if (selectedMethod == "natural_breaks") num_cat = 8;
   nb = gda_proxy.custom_breaks(stateMap, "natural_breaks", num_cat, null, vals);
   if (selectedMethod == "testing_fixed_bins") nb = testing_breaks;
-  console.log(selectedMethod)
+
   colorScale = function (x) {
     if (selectedMethod == "natural_breaks") {
       if (x == 0) return COLOR_SCALE[selectedMethod][0];
@@ -976,9 +1329,9 @@ function OnSourceClick(evt) {
   if (evt.innerText.indexOf('UsaFacts') >= 0) {
     selectedDataset = 'county_usfacts.geojson';
   } else if (evt.innerText.indexOf('County (1Point3Acres.com)') >= 0) {
-    selectedDataset = 'counties_update.geojson';
+    selectedDataset = 'county_1p3a.geojson';
   } else {
-    selectedDataset = 'states_update.geojson';
+    selectedDataset = 'state_1p3a.geojson';
   }
   UpdateMap();
   if (evt.innerText.indexOf('1Point3Acres.com') >= 0) {
@@ -992,10 +1345,16 @@ function OnSourceClick(evt) {
     document.getElementById("btn-uninprc").style.display = "none";
     document.getElementById("btn-over65yearsprc").style.display = "none";
     document.getElementById("btn-lfexprt").style.display = "none";
+    document.getElementById("btn-7day-pos").style.display = "block";
+    document.getElementById("btn-7day-cap").style.display = "block";
+    document.getElementById("btn-7day-conf").style.display = "block";  
   } else {
     document.getElementById("btn-uninprc").style.display = "block";
     document.getElementById("btn-over65yearsprc").style.display = "block";
-    document.getElementById("btn-lfexprt").style.display = "block";  
+    document.getElementById("btn-lfexprt").style.display = "block";
+    document.getElementById("btn-7day-pos").style.display = "none";
+    document.getElementById("btn-7day-cap").style.display = "none";
+    document.getElementById("btn-7day-conf").style.display = "none"; 
   }
 }
 
@@ -1235,7 +1594,7 @@ function OnShowTime(el) {
   document.getElementById('time-container').parentElement.style.display = disp;
 }
 
-function getTooltipHtml(id, values) {
+function getTooltipHtml(id, values, state_map) {
   const handle = val => val >= 0 ? val : 'N/A'; // dont show negative values
   
   const handlePos = (val) => {
@@ -1254,17 +1613,23 @@ function getTooltipHtml(id, values) {
     if (!val || val === '' || val < 0) return 'N/A';
   }
 
-  let text = 
-  ` <h3>${values.entityName}</h3><hr>
+  let text = state_map ? `
+    <h3>${values.entityName}</h3><hr>
     <div>Cases: ${handle(values.cases)}</div>
     <div>Deaths: ${handle(values.deaths)}</div>
     <div>New Cases ${handle(values.newCases)}</div>
-    <div>New Deaths: ${handle(values.newDeaths)}</div>
+    <div>New Deaths: ${handle(values.newDeaths)}</div>  
     <div>Total Testing: ${handle(values.testing)}</div>
     <div>7 Day Positivity Rate: ${handlePos(values.testingPos)}</div>
     <div>7 Day Testing Capacity: ${handleTcap(values.testingTcap)}</div>
     <div>7 Day Confirmed Cases per Testing %: ${handlePos(values.testingCcpt)}</div>
     <div>Testing Criterion: ${values.criteria}</div>
+  ` : ` 
+    <h3>${values.entityName}</h3><hr>
+    <div>Cases: ${handle(values.cases)}</div>
+    <div>Deaths: ${handle(values.deaths)}</div>
+    <div>New Cases ${handle(values.newCases)}</div>
+    <div>New Deaths: ${handle(values.newDeaths)}</div>
   `
 
   // if (isLisa()) {
@@ -1367,12 +1732,14 @@ function updateTooltip(e) {
       newDeaths = cur_vals[id] - pre_vals[id];
     }
     
-    // testing
-    let testing = testingData[selectedDataset][selectedDate][id];
-    let testingPos = testingPosData[selectedDataset][selectedDate][id];
-    let testingTcap = testingTcapData[selectedDataset][selectedDate][id];
-    let testingCcpt = testingCcptData[selectedDataset][selectedDate][id];
-    let criteria = testingCriteriaData[selectedDataset][id];
+    // // testing
+    let state_map = selectedDataset.includes("state");
+
+    let testing = state_map ? testingData[selectedDataset][selectedDate][id] : null;
+    let testingPos = state_map ? testingPosData[selectedDataset][selectedDate][id] : null;
+    let testingTcap = state_map ? testingTcapData[selectedDataset][selectedDate][id] : null;
+    let testingCcpt = state_map ? testingCcptData[selectedDataset][selectedDate][id] : null;
+    let criteria = state_map ? testingCriteriaData[selectedDataset][id] : null;
 
     // render html
     const values = {
@@ -1387,7 +1754,7 @@ function updateTooltip(e) {
       testingCcpt,
       criteria,
     };
-    text = getTooltipHtml(id, values);
+    text = getTooltipHtml(id, values, state_map);
     
     // set html
     tooltip.innerHTML = text;
@@ -1708,11 +2075,13 @@ function updateDataPanel(e) {
   let casesPerBed = bedsDataExists ? (cases / beds) : 0;
 
   // testing
-  let testing = testingData[selectedDataset][selectedDate][id];
-  let testingPos = testingPosData[selectedDataset][selectedDate][id];
-  let testingTcap = testingTcapData[selectedDataset][selectedDate][id];
-  let testingCcpt = testingCcptData[selectedDataset][selectedDate][id];
-  let criteria = testingCriteriaData[selectedDataset][id];
+  let state_map = selectedDataset.includes("state");
+
+  let testing = state_map ? testingData[selectedDataset][selectedDate][id] : null;
+  let testingPos = state_map ? testingPosData[selectedDataset][selectedDate][id] : null;
+  let testingTcap = state_map ? testingTcapData[selectedDataset][selectedDate][id] : null;
+  let testingCcpt = state_map ? testingCcptData[selectedDataset][selectedDate][id] : null;
+  let criteria = state_map ? testingCriteriaData[selectedDataset][id] : null;
 
   // handle decimals
   casesPer100k = casesPer100k === 0 ? 0 : parseFloat(casesPer100k).toFixed(1);
@@ -1721,45 +2090,61 @@ function updateDataPanel(e) {
   fatalityRate = fatalityRate === 0 ? 0 : parseFloat(fatalityRate).toFixed(1);
   newCasesPer100k = newCasesPer100k === 0 ? 0 : parseFloat(newCasesPer100k).toFixed(1);
   newDeathsPer100k = newDeathsPer100k === 0 ? 0 : parseFloat(newDeathsPer100k).toFixed(1);
-  if (testingPos >= 0) {
-    testingPos = Math.round((testingPos)*1000)/10;
-  }
-  if (!testingPos || testingPos === '' || testingPos < 0) {
-    testingPos = 'N/A';
-  }
-  if (!testing || testing === '' || testing < 0) {
-    testing = 'N/A';
-  }
-  if (testingTcap >= 0) {
-    testingTcap = Math.round((testingTcap)*100)/100;
-  }
-  if (!testingTcap || testingTcap === '' || testingTcap < 0) {
-    testingTcap = 'N/A';
-  }
-  if (testingCcpt >= 0) {
-    testingCcpt = Math.round((testingCcpt)*1000)/10;
-  }
-  if (!testingCcpt || testingCcpt === '' || testingCcpt < 0) {
-    testingCcpt = 'N/A';
-  }
 
-  html += 
-  `
-  <div><b>Population:</b> ${numberWithCommas(population)}</div>
-  <br>
-  <div><b>Total Cases:</b> ${numberWithCommas(cases)}</div>
-  <div><b>Total Deaths:</b> ${numberWithCommas(deaths)}</div>
-  <div><b>Cases per 100k Population:</b> ${casesPer100k}</div>
-  <div><b>Deaths per 100k Population:</b> ${deathsPer100k}</div>
-  <div><b>New Cases per 100k Population:</b> ${newCasesPer100k}</div>
-  <div><b>New Deaths per 100k Population</b> ${newDeathsPer100k}</div>
-  <div><b>Licensed Hospital Beds:</b> ${numberWithCommas(beds)}</div>
-  <div><b>Cases per Bed:</b> ${casesPerBed}</div>
-  <div><b>Total Testing:</b> ${numberWithCommas(testing)}</div>
-  <div><b>7 Day Testing Capacity:</b> ${testingTcap}</div>
-  <div><b>7 Day Confirmed Case per Testing %:</b> ${testingCcpt}</div>
-  <div><b>Testing Criteria:</b> ${criteria}</div>
-  `
+  // if (testingPos >= 0) {
+  //   testingPos = Math.round((testingPos)*1000)/10;
+  // }
+  // if (!testingPos || testingPos === '' || testingPos < 0) {
+  //   testingPos = 'N/A';
+  // }
+  // if (!testing || testing === '' || testing < 0) {
+  //   testing = 'N/A';
+  // }
+  // if (testingTcap >= 0) {
+  //   testingTcap = Math.round((testingTcap)*100)/100;
+  // }
+  // if (!testingTcap || testingTcap === '' || testingTcap < 0) {
+  //   testingTcap = 'N/A';
+  // }
+  // if (testingCcpt >= 0) {
+  //   testingCcpt = Math.round((testingCcpt)*1000)/10;
+  // }
+  // if (!testingCcpt || testingCcpt === '' || testingCcpt < 0) {
+  //   testingCcpt = 'N/A';
+  // }
+  if (state_map) {
+    html += 
+    `
+    <div><b>Population:</b> ${numberWithCommas(population)}</div>
+    <br>
+    <div><b>Total Cases:</b> ${numberWithCommas(cases)}</div>
+    <div><b>Total Deaths:</b> ${numberWithCommas(deaths)}</div>
+    <div><b>Cases per 100k Population:</b> ${casesPer100k}</div>
+    <div><b>Deaths per 100k Population:</b> ${deathsPer100k}</div>
+    <div><b>New Cases per 100k Population:</b> ${newCasesPer100k}</div>
+    <div><b>New Deaths per 100k Population</b> ${newDeathsPer100k}</div>
+    <div><b>Licensed Hospital Beds:</b> ${numberWithCommas(beds)}</div>
+    <div><b>Cases per Bed:</b> ${casesPerBed}</div>
+    <div><b>Total Testing:</b> ${numberWithCommas(testing)}</div>
+    <div><b>7 Day Testing Capacity:</b> ${testingTcap}</div>
+    <div><b>7 Day Confirmed Case per Testing %:</b> ${testingCcpt}</div>
+    <div><b>Testing Criteria:</b> ${criteria}</div>
+    `
+  } else {
+    html += 
+    `
+    <div><b>Population:</b> ${numberWithCommas(population)}</div>
+    <br>
+    <div><b>Total Cases:</b> ${numberWithCommas(cases)}</div>
+    <div><b>Total Deaths:</b> ${numberWithCommas(deaths)}</div>
+    <div><b>Cases per 100k Population:</b> ${casesPer100k}</div>
+    <div><b>Deaths per 100k Population:</b> ${deathsPer100k}</div>
+    <div><b>New Cases per 100k Population:</b> ${newCasesPer100k}</div>
+    <div><b>New Deaths per 100k Population</b> ${newDeathsPer100k}</div>
+    <div><b>Licensed Hospital Beds:</b> ${numberWithCommas(beds)}</div>
+    <div><b>Cases per Bed:</b> ${casesPerBed}</div>
+    `
+  }
 
   // removed fatality rate:  <div><b>Fatality Rate:</b> ${fatalityRate}%</div>
 
@@ -1893,7 +2278,7 @@ mapbox.on('mouseleave', 'clinics_live', function () {
 
 mapbox.on('move', function () {
   let coords = mapbox.getCenter()
-  window.history.pushState("object or string", "Page Title", `./map.html?lat=${Math.round(coords.lat*1000000)/1000000}&lon=${Math.round(coords.lng*1000000)/1000000}&zoom=${Math.round(mapbox.getZoom()*100)/100}`);
+  window.history.pushState("object or string", "Page Title", `./map.html?lat=${Math.round(coords.lat*1000)/1000}&lon=${Math.round(coords.lng*1000)/1000}&zoom=${Math.round(mapbox.getZoom()*10)/10}`);
   clearTooltip()
 });
 
@@ -3201,7 +3586,7 @@ function createTimeSlider(geojson) {
     .enter()
     .append("rect")
     .attr("x", d => xScale(d.date))
-    .attr("width", xScale.bandwidth() - 1)
+    .attr("width", xScale.bandwidth() > 1 ? xScale.bandwidth() - 1 : xScale.bandwidth()) // xScale.bandwidth() -1
     .attr("y", d => yScale(d.confirmedcases))
     .attr("height", d => height - padding - yScale(d.confirmedcases))
     .text("1")
@@ -3238,7 +3623,7 @@ function createTimeSlider(geojson) {
     let sliderSelectedDate = selectedDate;
 
     // HAX: convert 1p3a dates to same format as usafacts 
-    if (selectedDataset === 'counties_update.geojson' || selectedDataset === 'states_update.geojson') {
+    if (selectedDataset === 'county_1p3a.geojson' || selectedDataset === 'state_1p3a.geojson') {
       sliderSelectedDate = hyphenToSlashDate(sliderSelectedDate);
     }
 
@@ -3283,7 +3668,7 @@ function onSliderChange(val) {
   const sliderMax = document.getElementById('slider-max');
 
   // HAX: convert 1p3a dates to same format as usafacts 
-  if (selectedDataset === 'counties_update.geojson' || selectedDataset === 'states_update.geojson') {
+  if (selectedDataset === 'county_1p3a.geojson' || selectedDataset === 'state_1p3a.geojson') {
     sliderSelectedDate = hyphenToSlashDate(selectedDate);
   }
 
@@ -3339,6 +3724,22 @@ function moveslider() {
     play_timer=setTimeout(moveslider,500)
 };
 
+function ShareMap() {
+    /* Copy the text inside the text field */
+    document.execCommand("copy");
+}
+
+function BookmarkMap() {
+  let coords = mapbox.getCenter()
+  window.history.pushState("object or string", "Page Title", `./map.html?lat=${Math.round(coords.lat*10000)/10000}&lon=${Math.round(coords.lng*10000)/10000}&zoom=${Math.round(mapbox.getZoom()*10)/10}`);
+  
+  var createBookmark = browser.bookmarks.create({
+    title: `US Covid Atlas | Specific Area`,
+    url: `${window.location.href}?lat=${Math.round(coords.lat*10000)/10000}&lon=${Math.round(coords.lng*10000)/10000}&zoom=${Math.round(mapbox.getZoom()*10)/10}`
+  });
+  
+  createBookmark.then(onCreated);
+}
 /*
  * ENTRY POINT
 */
