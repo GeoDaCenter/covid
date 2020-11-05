@@ -21,6 +21,48 @@ const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 for (const [key, value] of urlParams ) { params_dict[key] = value; }
 
+function handleOverlayParam(param) {
+  let selected_radio = document.getElementById(`${param}-toggle`)
+  selected_radio.checked = true;
+  
+  if (param == "reservations") {
+    OnShowReservations();
+  } else if (param == "hypersegregated-cities") {
+    OnShowHypersegregatedCities()
+  } else if (param == "blackbelt") {
+    OnShowBlackBelt()
+  } else if (param == "uscongress") {
+    OnShowUSCongress()
+  } else if (param == "hospital") {
+    OnShowHospitals()
+  } else if (param == "clinics") {
+    OnShowClinics()
+  } else if (param == "clinics-hospitals") {
+    OnShowClinicsHospitals()
+  } else {
+    return;
+  }
+  return;
+}
+
+function getURLParams(){
+  let overlay_index = [shouldShowReservations,shouldShowHypersegregatedCities,shouldShowBlackBelt,shouldShowUSCongress,shouldShowClinics,shouldShowHospitals,shouldShowClinicsHospitals].indexOf(true);
+  let overlay = ( overlay_index == -1) ? '' : `&overlay=${["reservation","hypersegregated-cities","blackbelt","uscongress","clinics","hospital","clinics-hospitals"][overlay_index]}`;
+  let variable = (selectedVariable == "7-Day Average Daily New Confirmed Count"||selectedVariable==null) ? '' : `&variable=${selectedVariable}`;
+  let method = (selectedMethod == "natural_breaks") ? '' : `&method=${selectedMethod}`;
+  let source = (selectedDataset == "county_usfacts.geojson") ? '' : `&source=${selectedDataset}`;
+  let date =  `&date=${selectedDate}`;
+  let center = mapbox.getCenter();
+  let coords = `?lat=${Math.round(center.lat*1000)/1000}&lon=${Math.round(center.lng*1000)/1000}&zoom=${Math.round(mapbox.getZoom()*10)/10}`;
+
+  return `${coords}${overlay}${variable}${method}${source}${date}`
+}
+
+const datasource_names = {
+  'county_1p3a.geojson':'By County (1Point3Acres.com)',
+  'state_1p3a.geojson':'By State (1Point3Acres.com)',
+}
+
 /*
  * CONFIG
 */
@@ -186,6 +228,9 @@ var lisa_btn = document.getElementById("btn-lisa");
 var data_btn = document.getElementById("select-data");
 var source_btn = document.getElementById("select-source");
 
+if (params_dict['variable']) data_btn.innerText = decodeURI(params_dict['variable'])
+if (params_dict['source']) source_btn.innerText = datasource_names[decodeURI(params_dict['source'])]
+
 // geoda
 var gda_proxy;
 var gda_weights = {};
@@ -220,13 +265,13 @@ var getLineColor = function() {
 // these look like dataset file name constants, but they are actually default
 // values for state variables. for example, selectedDataset can change when switching
 // between 1p3a counties and usafacts counties.
-var selectedDataset = 'county_usfacts.geojson';
+var selectedDataset = params_dict['source'] !== undefined ? decodeURI(params_dict['source']) : 'county_usfacts.geojson';
 var selectedId = null;
 var selectedDate = null;
 var latestDate = null;
 var use_fixed_bins = true; 
-var selectedVariable = null;
-var selectedMethod = 'natural_breaks'; // set cloropleth as default mode
+var selectedVariable = params_dict['variable'] !== undefined ? decodeURI(params_dict['variable']) : null;
+var selectedMethod = params_dict['method'] !== undefined ? decodeURI(params_dict['method']) : 'natural_breaks'; // set cloropleth as default mode
 var shouldShowLabels = false;
 var shouldShowReservations = false;
 var cartogramDeselected = false;
@@ -594,60 +639,60 @@ async function load1p3aStateData(url, callback) {
 }
 
 
-function load1p3aData(url, callback) {
-  // load 1P3A data 
-  zip.workerScripts = {
-    deflater: ['./js/z-worker.js', './js/pako/pako_deflate.min.js', './js/pako/codecs.js'],
-    inflater: ['./js/z-worker.js', './js/pako/pako_inflate.min.js', './js/pako/codecs.js']
-  };
-  fetch(url + ".zip")
-    .then((response) => {
-      return response.blob();
-    })
-    .then((blob) => {
-      // use a BlobReader to read the zip from a Blob object
-      zip.createReader(new zip.BlobReader(blob), function (reader) {
-        // get all entries from the zip
-        reader.getEntries(function (entries) {
-          if (entries.length) {
-            // uncompress first entry content as blob
-            entries[0].getData(new zip.BlobWriter(), function (bb) {
-              // read as bytearray for GeoDaWASM
-              var fileReader = new FileReader();
-              fileReader.onload = function (event) {
-                var ab = event.target.result;
-                gda_proxy.ReadGeojsonMap(url, {
-                  result: ab
-                });
+// function load1p3aData(url, callback) {
+//   // load 1P3A data 
+//   zip.workerScripts = {
+//     deflater: ['./js/z-worker.js', './js/pako/pako_deflate.min.js', './js/pako/codecs.js'],
+//     inflater: ['./js/z-worker.js', './js/pako/pako_inflate.min.js', './js/pako/codecs.js']
+//   };
+//   fetch(url + ".zip")
+//     .then((response) => {
+//       return response.blob();
+//     })
+//     .then((blob) => {
+//       // use a BlobReader to read the zip from a Blob object
+//       zip.createReader(new zip.BlobReader(blob), function (reader) {
+//         // get all entries from the zip
+//         reader.getEntries(function (entries) {
+//           if (entries.length) {
+//             // uncompress first entry content as blob
+//             entries[0].getData(new zip.BlobWriter(), function (bb) {
+//               // read as bytearray for GeoDaWASM
+//               var fileReader = new FileReader();
+//               fileReader.onload = function (event) {
+//                 var ab = event.target.result;
+//                 gda_proxy.ReadGeojsonMap(url, {
+//                   result: ab
+//                 });
 
-                let sel_map = url.startsWith('state') ? 'state' : 'county';
-                selectedDataset = sel_map == 'state' ? 'state_1p3a.geojson' : 'counties_update.geojson';
-                // read as json
-                var jsonReader = new FileReader();
-                jsonReader.onload = function (event) {
-                  let data = JSON.parse(event.target.result);
-                  data = assignIdsToFeatures(data);
-                  onep3aData = data;
-                  parse1P3AData(data);
-                  jsondata[selectedDataset] = data;
-                  callback();
-                };
-                jsonReader.readAsText(bb);
-                centroids[selectedDataset] = gda_proxy.GetCentroids(url);
-              };
-              fileReader.readAsArrayBuffer(bb);
-              // close the zip reader
-              reader.close(function () { // onclose callback
-              });
-            }, function (current, total) { // onprogress callback
-            });
-          }
-        });
-      }, function (error) { // onerror callback
-        console.log("zip wrong");
-      });
-    });
-}
+//                 let sel_map = url.startsWith('state') ? 'state' : 'county';
+//                 selectedDataset = sel_map == 'state' ? 'state_1p3a.geojson' : 'counties_update.geojson';
+//                 // read as json
+//                 var jsonReader = new FileReader();
+//                 jsonReader.onload = function (event) {
+//                   let data = JSON.parse(event.target.result);
+//                   data = assignIdsToFeatures(data);
+//                   onep3aData = data;
+//                   parse1P3AData(data);
+//                   jsondata[selectedDataset] = data;
+//                   callback();
+//                 };
+//                 jsonReader.readAsText(bb);
+//                 centroids[selectedDataset] = gda_proxy.GetCentroids(url);
+//               };
+//               fileReader.readAsArrayBuffer(bb);
+//               // close the zip reader
+//               reader.close(function () { // onclose callback
+//               });
+//             }, function (current, total) { // onprogress callback
+//             });
+//           }
+//         });
+//       }, function (error) { // onerror callback
+//         console.log("zip wrong");
+//       });
+//     });
+// }
 
 // this takes a url and loads the data source (if it hasn't been already)
 // note: the url is generally just the file name, since these are local to the
@@ -664,9 +709,6 @@ function loadData(url, callback) {
   } else {
     load1p3aStateData(url,callback);
   }
-  // } else { // else if (url.endsWith('counies_update.geojson'))
-  //   load1p3aData(url, callback);
-  // }
 }
 
 function getDatesFromUsafacts(cases) {
@@ -706,7 +748,10 @@ function parseUsaFactsData(data, confirm_data, death_data) { // testing, testing
   // if (!(json in testingPosData)) testingPosData[json] = {};
 
   dates[selectedDataset] = getDatesFromUsafacts(confirm_data);
-  if (selectedDate == null || selectedDate.indexOf('-') >= 0) {
+  if (params_dict['date'] !== undefined) {
+    selectedDate == decodeURI(params_dict['date']);
+    latestDate = selectedDate;
+  } else if (selectedDate == null || selectedDate.indexOf('-') >= 0) {
     selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
     latestDate = selectedDate;
   }
@@ -821,7 +866,10 @@ function parse1P3ACountyData(data, confirm_data, death_data) { // testing, testi
   if (!(json in bedsData)) bedsData[json] = {};
 
   dates[selectedDataset] = getDatesFrom1p3a(confirm_data);
-  if (selectedDate == null || selectedDate.indexOf('-') >= 0) {
+  if (params_dict['date'] !== undefined) {
+    selectedDate == decodeURI(params_dict['date']);
+    latestDate = selectedDate;
+  } else if (selectedDate == null || selectedDate.indexOf('-') >= 0) {
     selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
     latestDate = selectedDate;
   }
@@ -906,7 +954,10 @@ function parse1P3AStateData(data, confirm_data, death_data, testing, testingpos,
   if (!(json in testingPosData)) testingPosData[json] = {};
 
   dates[selectedDataset] = getDatesFrom1p3a(confirm_data);
-  if (selectedDate == null || selectedDate.indexOf('-') >= 0) {
+  if (params_dict['date'] !== undefined) {
+    selectedDate == decodeURI(params_dict['date']);
+    latestDate = selectedDate;
+  } else if (selectedDate == null || selectedDate.indexOf('-') >= 0) {
     selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
     latestDate = selectedDate;
   }
@@ -2005,7 +2056,7 @@ function covidForecastingHtml(geoId) {
   return html;
 }
 
-function updateDataPanel(e) {
+function updateDataPanel(e) { // TODO: state data panel
 
   let geoId; 
   let html = '';
@@ -2226,62 +2277,111 @@ function forwardGeocoder(query) {
   return matchingFeatures;
 }
 
-mapbox.addControl(
-  new MapboxGeocoder({
-    accessToken: mapboxgl.accessToken,
-    localGeocoder: forwardGeocoder,
-    zoom: 9.0,
-    placeholder: 'Enter e.g., Cook County, IL',
-    mapboxgl: mapboxgl
-  })
-);
 
-mapbox.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+mapbox.on("load", function(){
 
-const geoLocate = new mapboxgl.GeolocateControl({
-  positionOptions: {
-    enableHighAccuracy: true,
-  },
-  trackUserLocation: false
+  mapbox.addSource('clinic_data', {
+    type: 'geojson',
+    data: './health_centers_clean.geojson'
   });
 
-mapbox.addControl(geoLocate, 'bottom-right');
+  mapbox.addLayer(
+    {
+      'id': 'clinics_live',
+      'source': 'clinic_data',
+      'type': 'symbol',
+      "layout": {
+          "text-field": "•",
+          "text-padding": 0,
+          "text-allow-overlap": true,
+          "text-ignore-placement": true,
+          "text-font": [
+              "Open Sans ExtraBold",
+              "Arial Unicode MS Regular"
+          ],
+          "text-size": [
+              "interpolate",
+              ["linear"],
+              ["zoom"],
+              4,
+              12,
+              22,
+              48
+          ],
+          "visibility": "none"
+      },
+      "paint": {
+          "text-color": "hsl(92, 70%, 35%)",
+          "text-halo-color": "hsla(0, 0%, 100%, 0.72)",
+          "text-halo-width": 1,
+          "text-halo-blur": 1
+      }
+    },
+  "hospitals"
+  );
 
-geoLocate.on('geolocate', function(e) {
-  mapbox.flyTo({
-   center:[e.coords.longitude, e.coords.latitude], 
-   zoom:10 //set zoom 
- });
-});
+  mapbox.setLayoutProperty("hospitals", 'visibility', 'none');
+  mapbox.setLayoutProperty("clinics_live", 'visibility', 'none');
 
-mapbox.on('mouseenter', 'hospitals', function(e) {
-  handleMapHover(e)
+  mapbox.addControl(
+    new MapboxGeocoder({
+      accessToken: mapboxgl.accessToken,
+      localGeocoder: forwardGeocoder,
+      zoom: 9.0,
+      placeholder: 'Enter e.g., Cook County, IL',
+      mapboxgl: mapboxgl
+    })
+  );
+  
+  mapbox.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+  
+  const geoLocate = new mapboxgl.GeolocateControl({
+    positionOptions: {
+      enableHighAccuracy: true,
+    },
+    trackUserLocation: false
+    });
+  
+  mapbox.addControl(geoLocate, 'bottom-right');
+  
+  geoLocate.on('geolocate', function(e) {
+    mapbox.flyTo({
+     center:[e.coords.longitude, e.coords.latitude], 
+     zoom:10 //set zoom 
+   });
+  });
+  
+  mapbox.on('mouseenter', 'hospitals', function(e) {
+    handleMapHover(e)
+  })
+  mapbox.on('mousemove', 'hospitals', function(e) {
+    handleMapHover(e)
+  })
+  
+  mapbox.on('mouseleave', 'hospitals', function () {
+    clearTooltip()
+  });
+  
+  mapbox.on('mouseenter', 'clinics_live', function(e) {
+    handleMapHover(e)
+  })
+  mapbox.on('mousemove', 'clinics_live', function(e) {
+    handleMapHover(e)
+  })
+  
+  mapbox.on('mouseleave', 'clinics_live', function () {
+    clearTooltip()
+  });
+  
+  mapbox.on('move', function () {
+    clearTooltip()
+  });
+  
+if (params_dict['overlay'] !== undefined) handleOverlayParam(params_dict['overlay']);
+// if (params_dict['variable'] !== undefined) handleVariableParam(params_dict['variable']);
+
+
 })
-mapbox.on('mousemove', 'hospitals', function(e) {
-  handleMapHover(e)
-})
-
-mapbox.on('mouseleave', 'hospitals', function () {
-  clearTooltip()
-});
-
-mapbox.on('mouseenter', 'clinics_live', function(e) {
-  handleMapHover(e)
-})
-mapbox.on('mousemove', 'clinics_live', function(e) {
-  handleMapHover(e)
-})
-
-mapbox.on('mouseleave', 'clinics_live', function () {
-  clearTooltip()
-});
-
-mapbox.on('move', function () {
-  let coords = mapbox.getCenter()
-  window.history.pushState("object or string", "Page Title", `./map.html?lat=${Math.round(coords.lat*1000)/1000}&lon=${Math.round(coords.lng*1000)/1000}&zoom=${Math.round(mapbox.getZoom()*10)/10}`);
-  clearTooltip()
-});
-
 
 function getCartogramLayer(data)
 {
@@ -2400,48 +2500,6 @@ function createMap(data) {
     selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
   }
 
-  if (mapbox.getSource("clinic_data") == undefined) {
-    mapbox.addSource('clinic_data', {
-      type: 'geojson',
-      data: './health_centers_clean.geojson'
-    });
-
-    mapbox.addLayer(
-      {
-        'id': 'clinics_live',
-        'source': 'clinic_data',
-        'type': 'symbol',
-        "layout": {
-            "text-field": "•",
-            "text-padding": 0,
-            "text-allow-overlap": true,
-            "text-ignore-placement": true,
-            "text-font": [
-                "Open Sans ExtraBold",
-                "Arial Unicode MS Regular"
-            ],
-            "text-size": [
-                "interpolate",
-                ["linear"],
-                ["zoom"],
-                4,
-                12,
-                22,
-                48
-            ],
-            "visibility": "none"
-        },
-        "paint": {
-            "text-color": "hsl(92, 70%, 35%)",
-            "text-halo-color": "hsla(0, 0%, 100%, 0.72)",
-            "text-halo-width": 1,
-            "text-halo-blur": 1
-        }
-      },
-    "hospitals"
-    );
-  }
-
   // this is where the deck layers are accumulated before adding to the canvas
   var layers = [];
 
@@ -2454,7 +2512,7 @@ function createMap(data) {
   } else {
     // show mapbox
     for (var lyr of mapbox.getStyle().layers) {
-      mapbox.setLayoutProperty(lyr.id, 'visibility','visible'); 
+      mapbox.setLayoutProperty(lyr.id, 'visibility','visible');
       if (lyr.id.includes("label")&&!lyr.id.includes("road")){
         mapbox.moveLayer(lyr.id)
       }
@@ -2504,19 +2562,31 @@ function SetupLayers(layers)
     mapbox.setLayoutProperty("uscongress-label", 'visibility', 'none');
   }
 
-  // toggle clinics layer
-  if (shouldShowClinicsHospitals) {
-    mapbox.setLayoutProperty("hospitals", 'visibility', 'visible');
-    mapbox.setLayoutProperty("clinics_live", 'visibility', 'visible');
-  } else if (shouldShowHospitals) {
-    mapbox.setLayoutProperty("hospitals", 'visibility', 'visible');
-    mapbox.setLayoutProperty("clinics_live", 'visibility', 'none');
-  } else if (shouldShowClinics) {
-    mapbox.setLayoutProperty("hospitals", 'visibility', 'none');
-    mapbox.setLayoutProperty("clinics_live", 'visibility', 'visible');
+  if (mapbox.getLayer("clinics_live") != undefined) {
+    // toggle clinics layer
+    if (shouldShowClinicsHospitals) {
+      mapbox.setLayoutProperty("hospitals", 'visibility', 'visible');
+      mapbox.setLayoutProperty("clinics_live", 'visibility', 'visible');
+    } else if (shouldShowHospitals) {
+      mapbox.setLayoutProperty("hospitals", 'visibility', 'visible');
+      mapbox.setLayoutProperty("clinics_live", 'visibility', 'none');
+    } else if (shouldShowClinics) {
+      mapbox.setLayoutProperty("hospitals", 'visibility', 'none');
+      mapbox.setLayoutProperty("clinics_live", 'visibility', 'visible');
+    } else {
+      mapbox.setLayoutProperty("hospitals", 'visibility', 'none');
+      mapbox.setLayoutProperty("clinics_live", 'visibility', 'none');
+    }
   } else {
-    mapbox.setLayoutProperty("hospitals", 'visibility', 'none');
-    mapbox.setLayoutProperty("clinics_live", 'visibility', 'none');
+    if (shouldShowClinicsHospitals) {
+      mapbox.setLayoutProperty("hospitals", 'visibility', 'visible');
+    } else if (shouldShowHospitals) {
+      mapbox.setLayoutProperty("hospitals", 'visibility', 'visible');
+    } else if (shouldShowClinics) {
+      mapbox.setLayoutProperty("hospitals", 'visibility', 'none');
+    } else {
+      mapbox.setLayoutProperty("hospitals", 'visibility', 'none');
+    }
   }
 
   const firstLabelLayerId = mapbox.getStyle().layers.find(layer => layer.type === 'symbol').id;
@@ -3725,21 +3795,20 @@ function moveslider() {
 };
 
 function ShareMap() {
-    /* Copy the text inside the text field */
-    document.execCommand("copy");
+  var copyText = document.getElementById("share-url");
+  copyText.value = `${window.location.href}${getURLParams()}`;
+  copyText.style.display = 'block'
+  copyText.select();
+  copyText.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  copyText.style.display = 'none';
+
+  let share_container = document.getElementById("share-container");
+  share_container.className = 'active';
+
+  setTimeout(function(){ share_container.className = ''; }, 5000);
 }
 
-function BookmarkMap() {
-  let coords = mapbox.getCenter()
-  window.history.pushState("object or string", "Page Title", `./map.html?lat=${Math.round(coords.lat*10000)/10000}&lon=${Math.round(coords.lng*10000)/10000}&zoom=${Math.round(mapbox.getZoom()*10)/10}`);
-  
-  var createBookmark = browser.bookmarks.create({
-    title: `US Covid Atlas | Specific Area`,
-    url: `${window.location.href}?lat=${Math.round(coords.lat*10000)/10000}&lon=${Math.round(coords.lng*10000)/10000}&zoom=${Math.round(mapbox.getZoom()*10)/10}`
-  });
-  
-  createBookmark.then(onCreated);
-}
 /*
  * ENTRY POINT
 */
