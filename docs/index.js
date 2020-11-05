@@ -3796,7 +3796,7 @@ function moveslider() {
 
 function ShareMap() {
   var copyText = document.getElementById("share-url");
-  copyText.value = `${window.location.href}${getURLParams()}`;
+  copyText.value = `${window.location.href.split('map.html')[0]}map.html${getURLParams()}`;
   copyText.style.display = 'block'
   copyText.select();
   copyText.setSelectionRange(0, 99999);
