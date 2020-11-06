@@ -221,3 +221,5 @@ const testing_cap_breaks = {
 
 var lisa_labels = ["Not significant", "High-High", "Low-Low", "Low-High", "High-Low", "Undefined", "Isolated"];
 var lisa_colors = ["#ffffff", "#FF0000", "#0000FF", "#a7adf9", "#f4ada8", "#464646", "#999999"];
+
+const dataset_index = ['county_usfacts.geojson', 'county_1p3a.geojson', 'state_1p3a.geojson']

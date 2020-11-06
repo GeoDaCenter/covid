@@ -23,17 +23,17 @@ for (const [key, value] of urlParams ) { params_dict[key] = value; }
 
 function getURLParams(){
   let current_overlay = Object.keys(shouldShowOverlays).filter(t => shouldShowOverlays[t]);
-  let overlay = current_overlay.length > 0 ? `&overlay=${current_overlay[0]}` : '';
+  let overlay = current_overlay.length > 0 ? `&ovr=${current_overlay[0]}` : '';
   let current_resource = Object.keys(shouldShowResources).filter(t => shouldShowResources[t]);
-  let resource = current_resource.length > 0 ? `&resource=${current_resource[0]}` : '';
-  let variable = (selectedVariable == "7-Day Average Daily New Confirmed Count"||selectedVariable==null) ? '' : `&variable=${config.VALID[selectedDataset].indexOf(selectedVariable)}`;
-  let method = (selectedMethod == "natural_breaks") ? '' : `&method=${selectedMethod}`;
-  let source = (selectedDataset == "county_usfacts.geojson") ? '' : `&source=${selectedDataset}`;
-  let date =  `&date=${selectedDate}`;
+  let resource = current_resource.length > 0 ? `&res=${current_resource[0]}` : '';
+  let variable = (selectedVariable == "7-Day Average Daily New Confirmed Count"||selectedVariable==null) ? '' : `&var=${config.VALID[selectedDataset].indexOf(selectedVariable)}`;
+  let method = (selectedMethod == "natural_breaks") ? '' : `&mthd=${selectedMethod}`;
+  let source = (selectedDataset == "county_usfacts.geojson") ? '' : `&src=${dataset_index.indexOf(selectedDataset)}`;
+  let date =  `&dt=${selectedDate}`;
   let center = mapbox.getCenter();
-  let coords = `?lat=${Math.round(center.lat*1000)/1000}&lon=${Math.round(center.lng*1000)/1000}&zoom=${Math.round(mapbox.getZoom()*10)/10}`;
+  let coords = `?lat=${Math.round(center.lat*1000)/1000}&lon=${Math.round(center.lng*1000)/1000}&z=${Math.round(mapbox.getZoom()*10)/10}`;
 
-  return `${coords}${overlay}${resource}${variable}${method}${source}${date}`
+  return `${coords}${overlay}${resource}${variable}${method}${source}${date}&v=1`
 }
 
 const datasource_names = {
@@ -128,7 +128,7 @@ var centroids = {};
 var mapPosition = {
   latitude: params_dict.lat ? params_dict.lat : -105.6500523,
   longitude: params_dict.lon ? params_dict.lon : 35.850033,
-  zoom: params_dict.zoom ? params_dict.zoom : 3.5,
+  zoom: params_dict.z ? params_dict.z : 3.5,
 };
 
 // misc
@@ -150,13 +150,13 @@ var getLineColor = function() {
 // these look like dataset file name constants, but they are actually default
 // values for state variables. for example, selectedDataset can change when switching
 // between 1p3a counties and usafacts counties.
-var selectedDataset = params_dict['source'] !== undefined ? decodeURI(params_dict['source']) : 'county_usfacts.geojson';
+var selectedDataset = params_dict['src'] !== undefined ? dataset_index[decodeURI(params_dict['src'])] : 'county_usfacts.geojson';
 var selectedId = null;
 var selectedDate = null;
 var latestDate = null;
 var use_fixed_bins = true; 
-var selectedVariable = params_dict['variable'] !== undefined ? config.VALID[selectedDataset][params_dict['variable']] : null;
-var selectedMethod = params_dict['method'] !== undefined ? decodeURI(params_dict['method']) : 'natural_breaks'; // set cloropleth as default mode
+var selectedVariable = params_dict['var'] !== undefined ? config.VALID[selectedDataset][params_dict['var']] : null;
+var selectedMethod = params_dict['mthd'] !== undefined ? decodeURI(params_dict['mthd']) : 'natural_breaks'; // set cloropleth as default mode
 var shouldShowLabels = false;
 var cartogramDeselected = false;
 var shouldShowOverlays = {
@@ -171,10 +171,10 @@ var shouldShowResources = {
   'Hospitals': false,
   'ClinicsHospitals': false
 }
-if (params_dict['resource'] !== undefined) shouldShowResources[params_dict['resource']] = true;
-if (params_dict['overlay'] !== undefined) shouldShowOverlays[params_dict['overlay']] = true;
-if (params_dict['variable'] != undefined) data_btn.innerText = config.VALID[selectedDataset][params_dict['variable']]
-if (params_dict['source']) source_btn.innerText = datasource_names[decodeURI(params_dict['source'])]
+if (params_dict['res'] !== undefined) shouldShowResources[params_dict['res']] = true;
+if (params_dict['ovr'] !== undefined) shouldShowOverlays[params_dict['ovr']] = true;
+if (params_dict['var'] != undefined) data_btn.innerText = config.VALID[selectedDataset][params_dict['var']]
+if (params_dict['src']) source_btn.innerText = datasource_names[decodeURI(params_dict['src'])[decodeURI(params_dict['src'])]]
 
 var stateMap = 'state_1p3a.geojson';
 
@@ -582,8 +582,8 @@ function parseUsaFactsData(data, confirm_data, death_data) { // testing, testing
   if (!(json in bedsData)) bedsData[json] = {};
 
   dates[selectedDataset] = getDatesFromUsafacts(confirm_data);
-  if (params_dict['date'] !== undefined && initial_load) {
-    selectedDate == decodeURI(params_dict['date']);
+  if (params_dict['dt'] !== undefined && initial_load) {
+    selectedDate == decodeURI(params_dict['dt']);
     latestDate = dates[selectedDataset][dates[selectedDataset].length - 1];
   } else if (selectedDate == null || selectedDate.indexOf('-') >= 0) {
     selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
@@ -659,8 +659,8 @@ function parse1P3ACountyData(data, confirm_data, death_data) { // testing, testi
   if (!(json in bedsData)) bedsData[json] = {};
 
   dates[selectedDataset] = getDatesFrom1p3a(confirm_data);
-  if (params_dict['date'] !== undefined && initial_load) {
-    selectedDate == decodeURI(params_dict['date']);
+  if (params_dict['dt'] !== undefined && initial_load) {
+    selectedDate == decodeURI(params_dict['dt']);
     latestDate = dates[selectedDataset][dates[selectedDataset].length - 1];
   } else if (selectedDate == null || selectedDate.indexOf('-') >= 0) {
     selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
@@ -747,8 +747,8 @@ function parse1P3AStateData(data, confirm_data, death_data, testing, testingpos,
   if (!(json in testingPosData)) testingPosData[json] = {};
 
   dates[selectedDataset] = getDatesFrom1p3a(confirm_data);
-  if (params_dict['date'] !== undefined && initial_load) {
-    selectedDate == decodeURI(params_dict['date']);
+  if (params_dict['dt'] !== undefined && initial_load) {
+    selectedDate == decodeURI(params_dict['dt']);
     latestDate = dates[selectedDataset][dates[selectedDataset].length - 1];
   } else if (selectedDate == null || selectedDate.indexOf('-') >= 0) {
     selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
@@ -890,8 +890,8 @@ function updateDates() {
     }
   }
 
-  if (params_dict['date'] != undefined && initial_load) {
-    selectedDate = decodeURI(params_dict['date'])
+  if (params_dict['dt'] != undefined && initial_load) {
+    selectedDate = decodeURI(params_dict['dt'])
   }
 
 }
@@ -1841,7 +1841,7 @@ const mapbox = new mapboxgl.Map({
   container: 'map',
   style: 'mapbox://styles/lixun910/ckg8gz59r5kz119pe0yfx0lwb?fresh=true',
   center: params_dict.lon ? [params_dict.lon, params_dict.lat] : [ -105.6500523, 35.850033],
-  zoom: params_dict.zoom ? params_dict.zoom : 3.5
+  zoom: params_dict.z ? params_dict.z : 3.5
 });
 
 
@@ -2348,7 +2348,7 @@ function GetFeatureValue(id) {
 }
 
 function GetDataValues(inputDate) {
-  if (params_dict['date'] != undefined && initial_load) {
+  if (params_dict['dt'] != undefined && initial_load) {
     inputDate = latestDate
   } else if (inputDate == undefined || inputDate == null) {
     inputDate = selectedDate;
@@ -2920,8 +2920,8 @@ function getSmoonthConfirmedCountByDateCounty(county_id, all) {
 
 function getConfirmedCountByDate(data, all) {
   let json = selectedDataset;
-  if (params_dict['date'] != undefined && initial_load) {
-    selectedDate = params_dict['date'];
+  if (params_dict['dt'] != undefined && initial_load) {
+    selectedDate = params_dict['dt'];
   } else if (!(selectedDate in caseData[json])) {
     selectedDate = dates[json][dates[json].length - 1];
   }
@@ -3317,7 +3317,7 @@ function createTimeSlider(geojson) {
 
     sliderMin.innerHTML = dates[selectedDataset][0];
     sliderMax.innerHTML = dates[selectedDataset][slider.max - 1];
-    if (params_dict['date'] != undefined && initial_load) slider.value = parseInt(slider.max) - Math.round((new Date(latestDate) - new Date(selectedDate))/86400000)
+    if (params_dict['dt'] != undefined && initial_load) slider.value = parseInt(slider.max) - Math.round((new Date(latestDate) - new Date(selectedDate))/86400000)
     const months =  ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const rawDate = new Date(sliderSelectedDate);
     const printableDate = `${months[rawDate.getMonth()]} ${rawDate.getDate()}, ${rawDate.getFullYear()}`
