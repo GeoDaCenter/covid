@@ -21,133 +21,25 @@ const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 for (const [key, value] of urlParams ) { params_dict[key] = value; }
 
-function handleOverlayParam(param) {
-  let selected_radio = document.getElementById(`${param}-toggle`)
-  selected_radio.checked = true;
-  
-  if (param == "reservations") {
-    OnShowReservations();
-  } else if (param == "hypersegregated-cities") {
-    OnShowHypersegregatedCities()
-  } else if (param == "blackbelt") {
-    OnShowBlackBelt()
-  } else if (param == "uscongress") {
-    OnShowUSCongress()
-  } else if (param == "hospital") {
-    OnShowHospitals()
-  } else if (param == "clinics") {
-    OnShowClinics()
-  } else if (param == "clinics-hospitals") {
-    OnShowClinicsHospitals()
-  } else {
-    return;
-  }
-  return;
-}
-
 function getURLParams(){
-  let overlay_index = [shouldShowReservations,shouldShowHypersegregatedCities,shouldShowBlackBelt,shouldShowUSCongress,shouldShowClinics,shouldShowHospitals,shouldShowClinicsHospitals].indexOf(true);
-  let overlay = ( overlay_index == -1) ? '' : `&overlay=${["reservation","hypersegregated-cities","blackbelt","uscongress","clinics","hospital","clinics-hospitals"][overlay_index]}`;
-  let variable = (selectedVariable == "7-Day Average Daily New Confirmed Count"||selectedVariable==null) ? '' : `&variable=${selectedVariable}`;
+  let current_overlay = Object.keys(shouldShowOverlays).filter(t => shouldShowOverlays[t]);
+  let overlay = current_overlay.length > 0 ? `&overlay=${current_overlay[0]}` : '';
+  let current_resource = Object.keys(shouldShowResources).filter(t => shouldShowResources[t]);
+  let resource = current_resource.length > 0 ? `&resource=${current_resource[0]}` : '';
+  let variable = (selectedVariable == "7-Day Average Daily New Confirmed Count"||selectedVariable==null) ? '' : `&variable=${config.VALID[selectedDataset].indexOf(selectedVariable)}`;
   let method = (selectedMethod == "natural_breaks") ? '' : `&method=${selectedMethod}`;
   let source = (selectedDataset == "county_usfacts.geojson") ? '' : `&source=${selectedDataset}`;
   let date =  `&date=${selectedDate}`;
   let center = mapbox.getCenter();
   let coords = `?lat=${Math.round(center.lat*1000)/1000}&lon=${Math.round(center.lng*1000)/1000}&zoom=${Math.round(mapbox.getZoom()*10)/10}`;
 
-  return `${coords}${overlay}${variable}${method}${source}${date}`
+  return `${coords}${overlay}${resource}${variable}${method}${source}${date}`
 }
 
 const datasource_names = {
   'county_1p3a.geojson':'By County (1Point3Acres.com)',
   'state_1p3a.geojson':'By State (1Point3Acres.com)',
 }
-
-/*
- * CONFIG
-*/
-
-const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg';
-
-const COLOR_SCALE = {
-  'natural_breaks':[
-    [240, 240, 240],
-    // positive
-    [255, 255, 204],
-    [255, 237, 160],
-    [254, 217, 118],
-    [254, 178, 76],
-    [253, 141, 60],
-    [252, 78, 42],
-    [227, 26, 28],
-    [189, 0, 38],
-    [128, 0, 38],
-  ],
-  'natural_breaks_hlthfactor':[
-    [240,240,240],
-    [247,252,253],
-    [224,236,244],
-    [191,211,230],
-    [158,188,218],
-    [140,150,198],
-    [140,107,177],
-    [136,65,157],
-    [129,15,124],
-    [77,0,75],
-  ],
-  'natural_breaks_hlthcontextlife':[
-    [240,240,240],
-    [247,252,240],
-    [224,243,219],
-    [204,235,197],
-    [168,221,181],
-    [123,204,196],
-    [78,179,211],
-    [43,140,190],
-    [8,104,172],
-    [8,64,129],
-  ],
-  'hinge15_breaks' :  [
-    [1, 102, 94],
-    [90, 180, 172],
-    [199, 234, 229],
-    [246, 232, 195],
-    [216, 179, 101],
-    [140, 81, 10],
-  ],
-  'hinge30_breaks' :  [
-    [69, 117, 180],
-    [145, 191, 219],
-    [220, 238, 243],
-    [250, 227, 212],
-    [233, 160, 124],
-    [215, 48, 39],
-  ],
-  'forecasting' : [
-    [240, 240, 240],
-    [69, 117, 180],
-    [250, 227, 212],
-    [215, 48, 39],
-  ],
-  'testing_fixed_bins' : [
-    [240,240,240],
-    [13,8,135],
-    [92,1,166],
-    [156,23,158],
-    [203,70,121],
-    [237,121,83],
-    [253,180,47],
-    [240,249,33],
-  ]
-};
-
-const testing_breaks = {
-  bins: ['No Data','3%','5%','10%','15%','20%','>25%'],
-  breaks:[-1,-0.1,3,5,10,15,20,25, Infinity]
-}
-
-var lisa_labels = ["Not significant", "High-High", "Low-Low", "Low-High", "High-Low", "Undefined", "Isolated"];
-var lisa_colors = ["#ffffff", "#FF0000", "#0000FF", "#a7adf9", "#f4ada8", "#464646", "#999999"];
 
 /*
  * UTILITIES
@@ -183,11 +75,6 @@ var layer_dict = {};
 var usafactsCases;
 var usafactsDeaths;
 var usafactsData;
-// var usafactsTesting; 
-// var usafactsTestingPos;
-// var usafactsTestingTcap;
-// var usafactsTestingCcpt;
-
 var onep3aCases;
 var onep3aDeaths;
 var onep3aData;
@@ -227,9 +114,7 @@ var choropleth_btn = document.getElementById("btn-nb");
 var lisa_btn = document.getElementById("btn-lisa");
 var data_btn = document.getElementById("select-data");
 var source_btn = document.getElementById("select-source");
-
-if (params_dict['variable']) data_btn.innerText = decodeURI(params_dict['variable'])
-if (params_dict['source']) source_btn.innerText = datasource_names[decodeURI(params_dict['source'])]
+var initial_load = true;
 
 // geoda
 var gda_proxy;
@@ -270,17 +155,26 @@ var selectedId = null;
 var selectedDate = null;
 var latestDate = null;
 var use_fixed_bins = true; 
-var selectedVariable = params_dict['variable'] !== undefined ? decodeURI(params_dict['variable']) : null;
+var selectedVariable = params_dict['variable'] !== undefined ? config.VALID[selectedDataset][params_dict['variable']] : null;
 var selectedMethod = params_dict['method'] !== undefined ? decodeURI(params_dict['method']) : 'natural_breaks'; // set cloropleth as default mode
 var shouldShowLabels = false;
-var shouldShowReservations = false;
 var cartogramDeselected = false;
-var shouldShowHypersegregatedCities = false;
-var shouldShowBlackBelt = false;
-var shouldShowUSCongress = false; 
-var shouldShowClinics = false; 
-var shouldShowHospitals = false; 
-var shouldShowClinicsHospitals = false; 
+var shouldShowOverlays = {
+  'Reservations': false,
+  'HypersegregatedCities': false,
+  'BlackBelt': false,
+}
+
+var shouldShowResources = {
+  'USCongress': false,
+  'Clinics': false,
+  'Hospitals': false,
+  'ClinicsHospitals': false
+}
+if (params_dict['resource'] !== undefined) shouldShowResources[params_dict['resource']] = true;
+if (params_dict['overlay'] !== undefined) shouldShowOverlays[params_dict['overlay']] = true;
+if (params_dict['variable'] != undefined) data_btn.innerText = config.VALID[selectedDataset][params_dict['variable']]
+if (params_dict['source']) source_btn.innerText = datasource_names[decodeURI(params_dict['source'])]
 
 var stateMap = 'state_1p3a.geojson';
 
@@ -639,61 +533,6 @@ async function load1p3aStateData(url, callback) {
 }
 
 
-// function load1p3aData(url, callback) {
-//   // load 1P3A data 
-//   zip.workerScripts = {
-//     deflater: ['./js/z-worker.js', './js/pako/pako_deflate.min.js', './js/pako/codecs.js'],
-//     inflater: ['./js/z-worker.js', './js/pako/pako_inflate.min.js', './js/pako/codecs.js']
-//   };
-//   fetch(url + ".zip")
-//     .then((response) => {
-//       return response.blob();
-//     })
-//     .then((blob) => {
-//       // use a BlobReader to read the zip from a Blob object
-//       zip.createReader(new zip.BlobReader(blob), function (reader) {
-//         // get all entries from the zip
-//         reader.getEntries(function (entries) {
-//           if (entries.length) {
-//             // uncompress first entry content as blob
-//             entries[0].getData(new zip.BlobWriter(), function (bb) {
-//               // read as bytearray for GeoDaWASM
-//               var fileReader = new FileReader();
-//               fileReader.onload = function (event) {
-//                 var ab = event.target.result;
-//                 gda_proxy.ReadGeojsonMap(url, {
-//                   result: ab
-//                 });
-
-//                 let sel_map = url.startsWith('state') ? 'state' : 'county';
-//                 selectedDataset = sel_map == 'state' ? 'state_1p3a.geojson' : 'counties_update.geojson';
-//                 // read as json
-//                 var jsonReader = new FileReader();
-//                 jsonReader.onload = function (event) {
-//                   let data = JSON.parse(event.target.result);
-//                   data = assignIdsToFeatures(data);
-//                   onep3aData = data;
-//                   parse1P3AData(data);
-//                   jsondata[selectedDataset] = data;
-//                   callback();
-//                 };
-//                 jsonReader.readAsText(bb);
-//                 centroids[selectedDataset] = gda_proxy.GetCentroids(url);
-//               };
-//               fileReader.readAsArrayBuffer(bb);
-//               // close the zip reader
-//               reader.close(function () { // onclose callback
-//               });
-//             }, function (current, total) { // onprogress callback
-//             });
-//           }
-//         });
-//       }, function (error) { // onerror callback
-//         console.log("zip wrong");
-//       });
-//     });
-// }
-
 // this takes a url and loads the data source (if it hasn't been already)
 // note: the url is generally just the file name, since these are local to the
 // project
@@ -743,9 +582,9 @@ function parseUsaFactsData(data, confirm_data, death_data) { // testing, testing
   if (!(json in bedsData)) bedsData[json] = {};
 
   dates[selectedDataset] = getDatesFromUsafacts(confirm_data);
-  if (params_dict['date'] !== undefined) {
+  if (params_dict['date'] !== undefined && initial_load) {
     selectedDate == decodeURI(params_dict['date']);
-    latestDate = selectedDate;
+    latestDate = dates[selectedDataset][dates[selectedDataset].length - 1];
   } else if (selectedDate == null || selectedDate.indexOf('-') >= 0) {
     selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
     latestDate = selectedDate;
@@ -820,9 +659,9 @@ function parse1P3ACountyData(data, confirm_data, death_data) { // testing, testi
   if (!(json in bedsData)) bedsData[json] = {};
 
   dates[selectedDataset] = getDatesFrom1p3a(confirm_data);
-  if (params_dict['date'] !== undefined) {
+  if (params_dict['date'] !== undefined && initial_load) {
     selectedDate == decodeURI(params_dict['date']);
-    latestDate = selectedDate;
+    latestDate = dates[selectedDataset][dates[selectedDataset].length - 1];
   } else if (selectedDate == null || selectedDate.indexOf('-') >= 0) {
     selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
     latestDate = selectedDate;
@@ -908,9 +747,9 @@ function parse1P3AStateData(data, confirm_data, death_data, testing, testingpos,
   if (!(json in testingPosData)) testingPosData[json] = {};
 
   dates[selectedDataset] = getDatesFrom1p3a(confirm_data);
-  if (params_dict['date'] !== undefined) {
+  if (params_dict['date'] !== undefined && initial_load) {
     selectedDate == decodeURI(params_dict['date']);
-    latestDate = selectedDate;
+    latestDate = dates[selectedDataset][dates[selectedDataset].length - 1];
   } else if (selectedDate == null || selectedDate.indexOf('-') >= 0) {
     selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
     latestDate = selectedDate;
@@ -1026,109 +865,6 @@ function parse1P3AStateData(data, confirm_data, death_data, testing, testingpos,
   }
 }
 
-function parse1P3AData(data) {
-  let json = selectedDataset;
-  if (!(json in caseData)) caseData[json] = {};
-  if (!(json in deathsData)) deathsData[json] = {};
-  if (!(json in fatalityData)) fatalityData[json] = {};
-  if (!(json in populationData)) populationData[json] = {};
-  if (!(json in bedsData)) bedsData[json] = {};
-  if (!(json in testingData)) testingData[json] = {};
-  if (!(json in testingCriteriaData)) testingCriteriaData[json] = {};
-  if (!(json in testingPosData)) testingPosData[json] = {};
-  if (!(json in testingTcapData)) testingTcapData[json] = {};
-  if (!(json in testingCcptData)) testingCcptData[json] = {};
-
-  dates[selectedDataset] = getDatesFromGeojson(data);
-  if (selectedDate == null || selectedDate.indexOf('/')) {
-    selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
-    latestDate = selectedDate;
-  }  
-
-  for (let i = 0; i < data.features.length; i++) {
-    let conf = data.features[i].properties.confirmed_count;
-    let death = data.features[i].properties.death_count;
-    let pop = data.features[i].properties.population;
-    let id = data.features[i].properties.id;
-    let beds = data.features[i].properties.beds;
-    let criteria = data.features[i].properties.criteria;
-
-    populationData[json][id] = pop;
-    bedsData[json][id] = beds;
-    testingCriteriaData[json][id] = criteria;
-
-    // confirmed count
-    for (var j = 0; j < dates[selectedDataset].length; ++j) {
-      var d = dates[selectedDataset][j];
-      if (!(d in caseData[json])) {
-        caseData[json][d] = {};
-      }
-      caseData[json][d][id] = data.features[i]["properties"][d];
-    }
-    // death count
-    for (var j = 0; j < dates[selectedDataset].length; ++j) {
-      var d = dates[selectedDataset][j];
-      if (!(d in deathsData[json])) {
-        deathsData[json][d] = {};
-      }
-      deathsData[json][d][id] = data.features[i]["properties"]['d' + d];
-    }
-    // accum
-    for (var j = 1; j < dates[selectedDataset].length; ++j) {
-      var d1 = dates[selectedDataset][j - 1];
-      var d2 = dates[selectedDataset][j];
-      caseData[json][d2][id] += caseData[json][d1][id];
-      deathsData[json][d2][id] += deathsData[json][d1][id];
-    }
-    // fatality
-    for (var j = 0; j < dates[selectedDataset].length; ++j) {
-      var d = dates[selectedDataset][j];
-      if (!(d in fatalityData[json])) {
-        fatalityData[json][d] = {};
-      }
-      fatalityData[json][d][id] = 0;
-      if (caseData[json][d][id] > 0) {
-        fatalityData[json][d][id] = deathsData[json][d][id] / caseData[json][d][id];
-      }
-    }
-    // testing
-    for (var j = 0; j < dates[selectedDataset].length; ++j) {
-      var d = dates[selectedDataset][j];
-      if (!(d in testingData[json])) {
-        testingData[json][d] = {};
-      }
-      testingData[json][d][id] = data.features[i]["properties"]['t' + d];
-    }
-
-    // testing positivity rate 
-      for (var j = 0; j < dates[selectedDataset].length; ++j) {
-        var d = dates[selectedDataset][j];
-        if (!(d in testingPosData[json])) {
-          testingPosData[json][d] = {};
-        }
-        testingPosData[json][d][id] = data.features[i]["properties"]['wktpos' + d];
-      }
-
-    // testing capacity
-       for (var j = 0; j < dates[selectedDataset].length; ++j) {
-        var d = dates[selectedDataset][j];
-        if (!(d in testingTcapData[json])) {
-          testingTcapData[json][d] = {};
-        }
-        testingTcapData[json][d][id] = data.features[i]["properties"]['tcap' + d];
-      }
-    
-    // confirmed case per testing
-    for (var j = 0; j < dates[selectedDataset].length; ++j) {
-      var d = dates[selectedDataset][j];
-      if (!(d in testingCcptData[json])) {
-        testingCcptData[json][d] = {};
-      }
-      testingCcptData[json][d][id] = data.features[i]["properties"]['ccpt' + d];
-    } 
-  }
-}
-
 function updateDates() {
   // since 1P3A has different date format than usafacts
   if (selectedDataset == 'county_usfacts.geojson') {
@@ -1153,6 +889,11 @@ function updateDates() {
       latestDate = selectedDate;
     }
   }
+
+  if (params_dict['date'] != undefined && initial_load) {
+    selectedDate = decodeURI(params_dict['date'])
+  }
+
 }
 
 
@@ -1220,13 +961,15 @@ function initCounty() {
       nb = gda_proxy.custom_breaks(selectedDataset, "natural_breaks", num_cat, null, vals);
     } else if (selectedMethod == "testing_fixed_bins") {
       nb = testing_breaks;
+    } else if (selectedMethod == "testing_cap_fixed_bins") {
+      nb = testing_cap_breaks;
     } else {
       nb = gda_proxy.custom_breaks(selectedDataset, selectedMethod, num_cat, null, vals);
     }
     legend_bins = nb.bins;
 
     colorScale = function (v) {
-      const x = GetFeatureValue(v);
+      const x = GetFeatureValue(v)
       if (selectedMethod == "natural_breaks" || selectedMethod == "natural_breaks_hlthfactor" || selectedMethod == "natural_breaks_hlthcontextlife") {
         if (x == 0) return COLOR_SCALE[selectedMethod][0];
         for (var i = 1; i < nb.breaks.length; ++i) {
@@ -1288,8 +1031,11 @@ function init_state() {
   var num_cat = 6;
   if (selectedMethod == "natural_breaks") num_cat = 8;
   nb = gda_proxy.custom_breaks(stateMap, "natural_breaks", num_cat, null, vals);
-  if (selectedMethod == "testing_fixed_bins") nb = testing_breaks;
-
+  if (selectedMethod == "testing_fixed_bins") {
+    nb = testing_breaks 
+  } else if (selectedMethod == "testing_cap_fixed_bins") {
+    nb = testing_cap_breaks 
+  }
   colorScale = function (x) {
     if (selectedMethod == "natural_breaks") {
       if (x == 0) return COLOR_SCALE[selectedMethod][0];
@@ -1307,7 +1053,7 @@ function init_state() {
 
   getFillColor = function (f) {
     let v = GetFeatureValue(f.properties.id);
-    if (v == 0 && selectedMethod != "testing_fixed_bins") {
+    if (v == 0 && (selectedMethod != "testing_fixed_bins" || selectedMethod != "testing_cap_fixed_bins")) {
       return [255, 255, 255];
     } else {
       return colorScale(v);
@@ -1338,6 +1084,15 @@ function OnSourceClick(evt) {
   } else {
     selectedDataset = 'state_1p3a.geojson';
   }
+  
+  // check if current variable is unavailable in new data set
+  if (!config.VALID[selectedDataset].includes(selectedVariable)) {
+    selectedVariable = 'Daily New Confirmed Count per 100K Pop';
+    data_btn.innerText = 'Daily New Confirmed Count per 100K Pop';
+    UpdateMethod();
+    UpdateSlider();
+  }
+
   UpdateMap();
   if (evt.innerText.indexOf('1Point3Acres.com') >= 0) {
     document.getElementById("btn-7day").style.display = "none";
@@ -1367,43 +1122,8 @@ function OnDataClick(evt) {
   data_btn.innerText = evt.innerText; // update the button label
   selectedVariable = evt.innerText;
 
-  // Set selectedMethod for "map type"
-  if (selectedVariable == "Uninsured % (Community Health Factor)") {
-    // hard coded selectedMethod
-    selectedMethod = "natural_breaks_hlthfactor";
-  } else if (selectedVariable == "Over 65 Years % (Community Health Context)" || selectedVariable == "Life expectancy (Length and Quality of Life)") {
-    // hard coded selectedMethod
-    selectedMethod = "natural_breaks_hlthcontextlife";
-  } else if (selectedVariable == "Forecasting (5-Day Severity Index)") {
-    // hard coded selectedMethod
-    selectedMethod = "forecasting";
-  } else if (selectedMethod == "forecasting") {
-    // reset to natural breaks if switching to other variable
-    selectedMethod = "natural_breaks";
-    document.getElementById('legend_title').innerText = "Natural Breaks";
-  } else if (selectedVariable == "7 Day Testing Positivity Rate %") {
-    selectedMethod = "testing_fixed_bins";
-  //} else if (selectedVariable == "7 Day Testing Capacity") {
-  //  selectedMethod = "testing_fixed_bins";
-  } else if (selectedVariable == "7 Day Confirmed Cases per Testing %") {
-    selectedMethod = "testing_fixed_bins";
-  } else {
-    selectedMethod = "natural_breaks";
-    // others will keep using current selectedMethod
-  }
-
-
-  // hide time slider if needed
-  if (selectedVariable == "Uninsured % (Community Health Factor)" ||
-      selectedVariable == "Over 65 Years % (Community Health Context)" ||
-      selectedVariable == "Life expectancy (Length and Quality of Life)") {
-    // hide slider bar
-    document.getElementById("sliderdiv").style.display = 'none';
-  } else {
-    // reset to natural breaks if switching to other variable
-    document.getElementById("sliderdiv").style.display = 'block';
-  }
-
+  UpdateMethod();
+  UpdateSlider();
   UpdateMap();
 }
 
@@ -1442,100 +1162,6 @@ function OnShowLabels(el) {
   UpdateMap();
 }
 
-function OnShowReservations() {
-  //shouldShowReservations = !shouldShowReservations;
-  shouldShowReservations = true;
-  shouldShowBlackBelt = false;
-  shouldShowHypersegregatedCities = false;
-  shouldShowUSCongress = false;
-  shouldShowClinics = false; 
-  shouldShowHospitals = false; 
-  shouldShowClinicsHospitals = false; 
-  shouldShowHospitals = false; 
-  UpdateMap();
-}
-
-function OnShowHypersegregatedCities() {
-  //shouldShowHypersegregatedCities = !shouldShowHypersegregatedCities;
-  shouldShowHypersegregatedCities = true;
-  shouldShowBlackBelt = false;
-  shouldShowReservations = false;
-  shouldShowUSCongress = false;
-  shouldShowClinics = false; 
-  shouldShowHospitals = false; 
-  shouldShowClinicsHospitals = false; 
-  shouldShowHospitals = false; 
-  UpdateMap();
-}
-
-
-function OnShowBlackBelt() {
-  //shouldShowBlackBelt = !shouldShowBlackBelt;
-  shouldShowBlackBelt = true;
-  shouldShowHypersegregatedCities = false;
-  shouldShowReservations = false;
-  shouldShowUSCongress = false;
-  shouldShowClinics = false; 
-  shouldShowHospitals = false; 
-  shouldShowClinicsHospitals = false; 
-  shouldShowHospitals = false; 
-  UpdateMap();
-}
-
-function OnShowUSCongress() {
-  shouldShowUSCongress = true;
-  shouldShowBlackBelt = false;
-  shouldShowHypersegregatedCities = false;
-  shouldShowReservations = false;
-  shouldShowClinics = false; 
-  shouldShowHospitals = false; 
-  shouldShowClinicsHospitals = false; 
-  shouldShowHospitals = false; 
-  UpdateMap();
-}
-
-function OnShowClinics() {
-  shouldShowUSCongress = false;
-  shouldShowBlackBelt = false;
-  shouldShowHypersegregatedCities = false;
-  shouldShowReservations = false;
-  shouldShowClinics = true; 
-  shouldShowClinicsHospitals = false; 
-  shouldShowHospitals = false; 
-  UpdateMap();
-}
-function OnShowClinicsHospitals() {
-  shouldShowUSCongress = false;
-  shouldShowBlackBelt = false;
-  shouldShowHypersegregatedCities = false;
-  shouldShowReservations = false;
-  shouldShowClinics = false; 
-  shouldShowClinicsHospitals = true; 
-  shouldShowHospitals = false; 
-  UpdateMap();
-}
-function OnShowHospitals() {
-  shouldShowUSCongress = false;
-  shouldShowBlackBelt = false;
-  shouldShowHypersegregatedCities = false;
-  shouldShowReservations = false;
-  shouldShowClinics = false; 
-  shouldShowClinicsHospitals = false; 
-  shouldShowHospitals = true; 
-  UpdateMap();
-}
-
-function ClearOverlay() {
-  shouldShowBlackBelt = false;
-  shouldShowHypersegregatedCities = false;
-  shouldShowReservations = false;
-  shouldShowUSCongress = false;
-  shouldShowClinics = false; 
-  shouldShowClinicsHospitals = false; 
-  shouldShowHospitals = false; 
-  UpdateMap();
-}
-
 function UpdateMap() {
   if (isLisa()) {
     if (!(selectedDataset in jsondata)) {
@@ -1552,6 +1178,54 @@ function UpdateMap() {
     } else {
       OnCountyClick();
     }
+  }
+}
+
+function UpdateMethod(){
+    // Set selectedMethod for "map type"
+    if (selectedVariable == "Uninsured % (Community Health Factor)") {
+      // hard coded selectedMethod
+      selectedMethod = "natural_breaks_hlthfactor";
+    } else if (selectedVariable == "Over 65 Years % (Community Health Context)" || selectedVariable == "Life expectancy (Length and Quality of Life)") {
+      // hard coded selectedMethod
+      selectedMethod = "natural_breaks_hlthcontextlife";
+    } else if (selectedVariable == "Forecasting (5-Day Severity Index)") {
+      // hard coded selectedMethod
+      selectedMethod = "forecasting";
+    } else if (selectedMethod == "forecasting") {
+      // reset to natural breaks if switching to other variable
+      selectedMethod = "natural_breaks";
+      document.getElementById('legend_title').innerText = "Natural Breaks";
+    } else if (selectedVariable == "7 Day Testing Positivity Rate %") {
+      selectedMethod = "testing_fixed_bins";
+      document.getElementById("legend_title").innerHTML = "Testing % Positive (Fixed Bins)"
+    } else if (selectedVariable == "7 Day Testing Capacity") {
+     selectedMethod = "testing_cap_fixed_bins";
+     document.getElementById("legend_title").innerHTML = `
+      Testing Capacity per 100k Population (Fixed Bins)             
+        <div class="top info-tooltip" id="info-TestingCapacity">
+          <i class="fa fa-info-circle"  aria-hidden="true"></i>
+            <span class="tooltip-text">${config.TOOLTIP.TestingCapacity}</span>
+        </div>`
+    } else if (selectedVariable == "7 Day Confirmed Cases per Testing %") {
+      selectedMethod = "testing_fixed_bins";
+      document.getElementById("legend_title").innerHTML = "Testing % Positive (Fixed Bins)"
+    } else {
+      selectedMethod = "natural_breaks";
+      // others will keep using current selectedMethod
+    }
+}
+
+function UpdateSlider(){
+  // hide time slider if needed
+  if (selectedVariable == "Uninsured % (Community Health Factor)" ||
+      selectedVariable == "Over 65 Years % (Community Health Context)" ||
+      selectedVariable == "Life expectancy (Length and Quality of Life)") {
+    // hide slider bar
+    document.getElementById("sliderdiv").style.display = 'none';
+  } else {
+    // reset to natural breaks if switching to other variable
+    document.getElementById("sliderdiv").style.display = 'block';
   }
 }
 
@@ -1690,7 +1364,7 @@ function updateTooltip(e) {
     return;
   }
 
-  if ((layer == "hospitals" || layer == "clinics_live") && (shouldShowClinics||shouldShowHospitals||shouldShowClinicsHospitals)) {
+  if ((layer == "hospitals" || layer == "clinics_live") && (shouldShowResources.Clinics||shouldShowResources.Hospitals||shouldShowResources.ClinicsHospitals)) {
     text = layer == "hospitals" ? getHospitalHtml(object) : getClinicHtml(object)
     // set html
     tooltip.innerHTML = text;
@@ -1699,7 +1373,7 @@ function updateTooltip(e) {
     tooltip.style.top = `${y}px`;
     tooltip.style.left = `${x}px`;
 
-  } else if (!(shouldShowClinics||shouldShowHospitals||shouldShowClinicsHospitals)) {
+  } else if (!(shouldShowResources.Clinics||shouldShowResources.Hospitals||shouldShowResources.ClinicsHospitals)) {
     // get the entity id
     // TODO rename this to entityId to be consistent with entityName
     const id = object.properties.id;
@@ -1773,7 +1447,7 @@ function updateTooltip(e) {
 }
 
 function clearTooltip() {
-  if (shouldShowClinics||shouldShowHospitals||shouldShowClinicsHospitals) {
+  if (shouldShowResources.Clinics||shouldShowResources.Hospitals||shouldShowResources.ClinicsHospitals) {
     const tooltip = document.getElementById('tooltip');
     tooltip.innerHTML = '';
   }
@@ -2010,9 +1684,10 @@ function covidForecastingHtml(geoId) {
   return html;
 }
 
-function updateDataPanel(e) { // TODO: state data panel
+function updateDataPanel(e) {
 
-  let geoId; 
+  let geoId;
+
   let html = '';
   const geoIdElem = document.querySelector('#geoid');
 
@@ -2081,6 +1756,8 @@ function updateDataPanel(e) { // TODO: state data panel
 
   // testing
   let state_map = selectedDataset.includes("state");
+  
+  let temp_geoId = (state_map) ? geoId * 1000 : geoId;
 
   let testing = state_map ? testingData[selectedDataset][selectedDate][id] : null;
   let testingPos = state_map ? testingPosData[selectedDataset][selectedDate][id] : null;
@@ -2096,27 +1773,6 @@ function updateDataPanel(e) { // TODO: state data panel
   newCasesPer100k = newCasesPer100k === 0 ? 0 : parseFloat(newCasesPer100k).toFixed(1);
   newDeathsPer100k = newDeathsPer100k === 0 ? 0 : parseFloat(newDeathsPer100k).toFixed(1);
 
-  // if (testingPos >= 0) {
-  //   testingPos = Math.round((testingPos)*1000)/10;
-  // }
-  // if (!testingPos || testingPos === '' || testingPos < 0) {
-  //   testingPos = 'N/A';
-  // }
-  // if (!testing || testing === '' || testing < 0) {
-  //   testing = 'N/A';
-  // }
-  // if (testingTcap >= 0) {
-  //   testingTcap = Math.round((testingTcap)*100)/100;
-  // }
-  // if (!testingTcap || testingTcap === '' || testingTcap < 0) {
-  //   testingTcap = 'N/A';
-  // }
-  // if (testingCcpt >= 0) {
-  //   testingCcpt = Math.round((testingCcpt)*1000)/10;
-  // }
-  // if (!testingCcpt || testingCcpt === '' || testingCcpt < 0) {
-  //   testingCcpt = 'N/A';
-  // }
   if (state_map) {
     html += 
     `
@@ -2132,9 +1788,14 @@ function updateDataPanel(e) { // TODO: state data panel
     <div><b>Cases per Bed:</b> ${casesPerBed}</div>
     <div><b>Total Testing:</b> ${numberWithCommas(testing)}</div>
     <div><b>7 Day Testing Capacity:</b> ${testingTcap}</div>
-    <div><b>7 Day Confirmed Case per Testing %:</b> ${testingCcpt}</div>
+    <div><b>7 Day Confirmed Case per Testing %:</b> ${Math.round(testingCcpt*10000)/100}%</div>
     <div><b>Testing Criteria:</b> ${criteria}</div>
     `
+    
+    headerElem.innerHTML = `${chrhlthcontextData[temp_geoId].State}`;
+    headerElem.innerHTML = `${chrhlthfactorData[temp_geoId].State}`;
+    headerElem.innerHTML = `${chrhlthlifeData[temp_geoId].State}`;
+    
   } else {
     html += 
     `
@@ -2149,19 +1810,20 @@ function updateDataPanel(e) { // TODO: state data panel
     <div><b>Licensed Hospital Beds:</b> ${numberWithCommas(beds)}</div>
     <div><b>Cases per Bed:</b> ${casesPerBed}</div>
     `
+      
+    headerElem.innerHTML = `${chrhlthcontextData[temp_geoId].County} County, ${stateAbbr}`;
+    headerElem.innerHTML = `${chrhlthfactorData[temp_geoId].County} County, ${stateAbbr}`;
+    headerElem.innerHTML = `${chrhlthlifeData[temp_geoId].County} County, ${stateAbbr}`;
   }
 
   // removed fatality rate:  <div><b>Fatality Rate:</b> ${fatalityRate}%</div>
 
-  if (chrhlthfactorData[geoId]) html += healthFactorHtml(geoId);
-  if (chrhlthcontextData[geoId]) html += healthContextHtml(geoId);
-  if (chrhlthlifeData[geoId]) html += healthLifeHtml(geoId);
-  if (berkeleyCountyData[geoId]) html += covidForecastingHtml(geoId);
+  if (chrhlthfactorData[temp_geoId]) html += healthFactorHtml(temp_geoId);
+  if (chrhlthcontextData[temp_geoId]) html += healthContextHtml(temp_geoId);
+  if (chrhlthlifeData[temp_geoId]) html += healthLifeHtml(temp_geoId);
+  if (berkeleyCountyData[temp_geoId]) html += covidForecastingHtml(temp_geoId);
 
   geoIdElem.value = geoId; // store geoid in hidden input so we can load data on select change
-  headerElem.innerHTML = `${chrhlthcontextData[geoId].County} County, ${stateAbbr}`;
-  headerElem.innerHTML = `${chrhlthfactorData[geoId].County} County, ${stateAbbr}`;
-  headerElem.innerHTML = `${chrhlthlifeData[geoId].County} County, ${stateAbbr}`;
   bodyElem.innerHTML = html;
   collapseBtnElem.classList.remove('hide');
   panelElem.removeAttribute('hidden');
@@ -2232,8 +1894,8 @@ function forwardGeocoder(query) {
 }
 
 
-mapbox.on("load", function(){
-
+mapbox.on('load', function(){
+  initial_load = false;
   mapbox.addSource('clinic_data', {
     type: 'geojson',
     data: './health_centers_clean.geojson'
@@ -2260,9 +1922,9 @@ mapbox.on("load", function(){
               4,
               12,
               22,
-              48
+              96
           ],
-          "visibility": "none"
+          "visibility": `${shouldShowResources.ClinicsHospitals || shouldShowResources.Clinics ? 'visible' : 'none'}`
       },
       "paint": {
           "text-color": "hsl(92, 70%, 35%)",
@@ -2273,9 +1935,6 @@ mapbox.on("load", function(){
     },
   "hospitals"
   );
-
-  mapbox.setLayoutProperty("hospitals", 'visibility', 'none');
-  mapbox.setLayoutProperty("clinics_live", 'visibility', 'none');
 
   mapbox.addControl(
     new MapboxGeocoder({
@@ -2330,10 +1989,6 @@ mapbox.on("load", function(){
   mapbox.on('move', function () {
     clearTooltip()
   });
-  
-if (params_dict['overlay'] !== undefined) handleOverlayParam(params_dict['overlay']);
-// if (params_dict['variable'] !== undefined) handleVariableParam(params_dict['variable']);
-
 
 })
 
@@ -2401,25 +2056,6 @@ function getStateLayer(data)
       pickable: false
   };
 }
-function getClinicLayer()
-{
-  return {
-      id: 'clinic_layer',
-      type: ScatterplotLayer,
-      data: './health_center_clean.json',
-      opacity: 1,
-      stroked: false,
-      filled: true,
-      getPosition: d => d.coords,
-      getRadius:20,
-      radiusScale: 10,
-      radiusMinPixels: 2,
-      radiusMaxPixels: 20,
-      getFillColor: [255, 20, 20],
-      pickable: false
-  };
-}
-
 
 function getCountyLayer(data)
 {
@@ -2487,28 +2123,28 @@ function SetupLayers(layers)
     }
   }
   // toggle native america layer
-  if (shouldShowReservations) {
+  if (shouldShowOverlays.Reservations) {
     mapbox.setLayoutProperty("nativeamericanreservations-highlight", 'visibility', 'visible');
   } else {
     mapbox.setLayoutProperty("nativeamericanreservations-highlight", 'visibility', 'none');
   }
 
   // toggle agg layer
-  if (shouldShowHypersegregatedCities) {
+  if (shouldShowOverlays.HypersegregatedCities) {
     mapbox.setLayoutProperty("hypersegregated-highlight", 'visibility', 'visible');
   } else {
     mapbox.setLayoutProperty("hypersegregated-highlight", 'visibility', 'none');
   }
 
   // toggle blackbelt layer
-  if (shouldShowBlackBelt) {
+  if (shouldShowOverlays.BlackBelt) {
     mapbox.setLayoutProperty("blackbelt-highlight", 'visibility', 'visible');
   } else {
     mapbox.setLayoutProperty("blackbelt-highlight", 'visibility', 'none');
   }
 
   // toggle uscongress layer
-  if (shouldShowUSCongress) {
+  if (shouldShowResources.USCongress) {
     mapbox.setLayoutProperty("uscongress", 'visibility', 'visible');
     mapbox.setLayoutProperty("uscongress-label", 'visibility', 'visible');
   } else {
@@ -2518,13 +2154,13 @@ function SetupLayers(layers)
 
   if (mapbox.getLayer("clinics_live") != undefined) {
     // toggle clinics layer
-    if (shouldShowClinicsHospitals) {
+    if (shouldShowResources.ClinicsHospitals) {
       mapbox.setLayoutProperty("hospitals", 'visibility', 'visible');
       mapbox.setLayoutProperty("clinics_live", 'visibility', 'visible');
-    } else if (shouldShowHospitals) {
+    } else if (shouldShowResources.Hospitals) {
       mapbox.setLayoutProperty("hospitals", 'visibility', 'visible');
       mapbox.setLayoutProperty("clinics_live", 'visibility', 'none');
-    } else if (shouldShowClinics) {
+    } else if (shouldShowResources.Clinics) {
       mapbox.setLayoutProperty("hospitals", 'visibility', 'none');
       mapbox.setLayoutProperty("clinics_live", 'visibility', 'visible');
     } else {
@@ -2532,12 +2168,8 @@ function SetupLayers(layers)
       mapbox.setLayoutProperty("clinics_live", 'visibility', 'none');
     }
   } else {
-    if (shouldShowClinicsHospitals) {
+    if (shouldShowResources.ClinicsHospitals||shouldShowResources.Hospitals) {
       mapbox.setLayoutProperty("hospitals", 'visibility', 'visible');
-    } else if (shouldShowHospitals) {
-      mapbox.setLayoutProperty("hospitals", 'visibility', 'visible');
-    } else if (shouldShowClinics) {
-      mapbox.setLayoutProperty("hospitals", 'visibility', 'none');
     } else {
       mapbox.setLayoutProperty("hospitals", 'visibility', 'none');
     }
@@ -2602,6 +2234,7 @@ function assignIdsToFeatures(features) {
 function GetFeatureValue(id) {
   let json = selectedDataset;
   let txt = data_btn.innerText;
+
   if (txt == "Confirmed Count") {
     return caseData[json][selectedDate][id];
   } else if (txt == "Confirmed Count per 100K Population") {
@@ -2709,9 +2342,12 @@ function GetFeatureValue(id) {
 }
 
 function GetDataValues(inputDate) {
-  if (inputDate == undefined || inputDate == null) {
+  if (params_dict['date'] != undefined && initial_load) {
+    inputDate = latestDate
+  } else if (inputDate == undefined || inputDate == null) {
     inputDate = selectedDate;
   }
+
   let json = selectedDataset;
   let txt = data_btn.innerText;
   if (txt == "Confirmed Count") {
@@ -3040,7 +2676,7 @@ function UpdateLegendLabels(breaks) {
     cont += '<div style="text-align:center">Medium</div>';
     cont += '<div style="text-align:center">High</div>';
   } 
-  else if (selectedMethod == "testing_fixed_bins") {
+  else if (selectedMethod == "testing_fixed_bins" || selectedMethod == "testing_cap_fixed_bins") {
     for (var i = 0; i < breaks.length; ++i) {
       cont += '<div style="text-align:center">' + breaks[i] + '</div>'
     }
@@ -3095,6 +2731,26 @@ function OnChoroplethClick(evt, map_type, fixed_bins) {
   } else {
     OnCountyClick();
   }
+}
+
+function UpdateOverlays(evt) {
+  shouldShowOverlays = {
+    'Reservations': false,
+    'HypersegregatedCities': false,
+    'BlackBelt': false
+  }
+  if (evt != null) shouldShowOverlays[`${(evt.id).split('-')[1]}`] = true;
+  UpdateMap();
+}
+function UpdateResources(evt) {
+  shouldShowResources = {
+    'USCongress': false,
+    'Clinics': false,
+    'Hospitals': false,
+    'ClinicsHospitals': false
+  }
+  if (evt != null) shouldShowResources[`${(evt.id).split('-')[1]}`] = true;
+  UpdateMap();
 }
 
 function OnLISAClick(evt) {
@@ -3258,7 +2914,9 @@ function getSmoonthConfirmedCountByDateCounty(county_id, all) {
 
 function getConfirmedCountByDate(data, all) {
   let json = selectedDataset;
-  if (!(selectedDate in caseData[json])) {
+  if (params_dict['date'] != undefined && initial_load) {
+    selectedDate = params_dict['date'];
+  } else if (!(selectedDate in caseData[json])) {
     selectedDate = dates[json][dates[json].length - 1];
   }
   let n_count = Object.keys(caseData[json][selectedDate]).length;
@@ -3653,6 +3311,7 @@ function createTimeSlider(geojson) {
 
     sliderMin.innerHTML = dates[selectedDataset][0];
     sliderMax.innerHTML = dates[selectedDataset][slider.max - 1];
+    if (params_dict['date'] != undefined && initial_load) slider.value = parseInt(slider.max) - Math.round((new Date(latestDate) - new Date(selectedDate))/86400000)
     const months =  ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const rawDate = new Date(sliderSelectedDate);
     const printableDate = `${months[rawDate.getMonth()]} ${rawDate.getDate()}, ${rawDate.getFullYear()}`

@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css" type="text/css"/>
 
   <script defer src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
-  <script defer src="https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.js"></script>
-  <script defer src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.js"></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
   <!-- Promise polyfill script required to use Mapbox GL Geocoder in IE 11 -->
   <script defer src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
@@ -45,11 +45,11 @@
   <!-- <script defer src="https://unpkg.com/pbf@3.2.0/dist/pbf.js"></script> -->
   <script defer src="js/GeodaProxy.js"></script>
   <!-- <script defer src="js/mapbox-vector-tile.js"></script> -->
-  <script defer src="config.js"></script>
+  <script src="config.js"></script>
   <script defer src="index.js"></script>
   <script defer src="gen/jsgeoda.js"></script>
 
-  <link href="css/index.css?v=9_28" rel="stylesheet" type="text/css">
+  <link href="css/index.css" rel="stylesheet" type="text/css">
 
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Montserrat:wght@400;600;800&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
 </head>
@@ -73,14 +73,16 @@
   </div>
   <div id="share-container">
       <a href="#" onclick="ShareMap()">
-        <img src="./icons/share.png" alt="Share this map." />
+        <svg x="0px" y="0px" viewBox="0 0 100 100"><path d="M22.5,65c4.043,0,7.706-1.607,10.403-4.208l29.722,14.861C62.551,76.259,62.5,76.873,62.5,77.5c0,8.284,6.716,15,15,15   s15-6.716,15-15c0-8.284-6.716-15-15-15c-4.043,0-7.706,1.608-10.403,4.209L37.375,51.847C37.449,51.241,37.5,50.627,37.5,50   c0-0.627-0.051-1.241-0.125-1.847l29.722-14.861c2.698,2.601,6.36,4.209,10.403,4.209c8.284,0,15-6.716,15-15   c0-8.284-6.716-15-15-15s-15,6.716-15,15c0,0.627,0.051,1.241,0.125,1.848L32.903,39.208C30.206,36.607,26.543,35,22.5,35   c-8.284,0-15,6.716-15,15C7.5,58.284,14.216,65,22.5,65z"></path></svg>
       </a>  
       <input type="text" value="" id="share-url">
   </div>
   
   <div class="options-panel left-panel" tabindex="0">
     <div id="toolbox">
-      <p>Select Data:</p>
+      <p>
+        Data Source:
+      </p>
       <div class="layout">
         <div class="dropdown">
           <button class="dropbtn" id="select-source">By County (UsaFacts.com)</button>
@@ -91,7 +93,9 @@
           </div>
         </div>
       </div>
-      <p>Select Variable:</p>
+      <p>
+        Map Variable:
+      </p>
       <div class="layout">
         <div class="dropdown">
           <button class="dropbtn" id="select-data">7-Day Average Daily New Confirmed Count per 100K Pop</button>
@@ -121,7 +125,7 @@
       </div>
 
       <p>
-        Select Map Type:
+        Map Type:
       </p>
       <div class="layout">
         <div class="dropdown"  style="width:50%">
@@ -174,85 +178,57 @@
             </a>
           </div>
         </div>
-
-
       </div>
 
-      <p>
+      <p class="btn-cartogram">
         <input type="checkbox" id="cartogram-ckb" onchange="OnCartogramClick(this)">Using Cartogram
       </p>
 
-      <div class="options-panel-section">
-
-
-
-        Select Map Overlay:
-        <div style="float:right">
-          <!--Dark mode:--> <i class="fa fa-toggle-on" aria-hidden="true" style="font-size: 20px; vertical-align:middle; display: none;" onclick="ToggleDarkMode(this)"></i>
-        </div>
-        <div class="map-overlay-toggles">
-          <div>
-            <input id="clearoverlay-toggle" type="radio" name="overlay-select" onclick="ClearOverlay(this)" checked>
-            <label for="clearoverlay-toggle">None
-            </label>
-          </div>
-          <div>
-            <input id="reservations-toggle" type="radio" name="overlay-select" onclick="OnShowReservations(this)">
-            <label for="reservations-toggle">Show Native American Reservations</label>
-          </div>
-          <div>
-            <input id="hypersegregated-cities-toggle" type="radio" name="overlay-select" onchange="OnShowHypersegregatedCities(this)">
-            <label for="hypersegregated-cities-toggle">Show Hypersegregated Cities
+      <p>
+        Map Overlay:
+      </p>
+      <div class="layout">
+        <div class="dropdown"  style="width:50%">
+          <button class="dropbtn" id="select-map">Area Highlight
+          </button>
+          <div class="dropdown-content" style="width:200px;">
+            <a href="#" id="btn-clear-overlays" onclick="UpdateOverlays(null)">None</a>
+            <a href="#" id="btn-Reservations" onclick="UpdateOverlays(this)">Native American Reservations</a>
+            <a href="#" id="btn-HypersegregatedCities" onclick="UpdateOverlays(this)">Hypersegregated Cities
               <div class="info-tooltip" id="info-Hypersegregated">
                 <i class="fa fa-info-circle"  aria-hidden="true"></i>
                 <span class="left tooltip-text"></span>
               </div>
-            </label>
+            </a>
+            <a href="#" id="btn-BlackBelt" onclick="UpdateOverlays(this)">Black Belt Counties</a>
           </div>
-          <div>
-            <input id="blackbelt-toggle" type="radio" name="overlay-select" onclick="OnShowBlackBelt(this)">
-            <label for="blackbelt-toggle">Show Black Belt Counties
-              <div class="info-tooltip" id="info-BlackBelt">
-                <i class="fa fa-info-circle"  aria-hidden="true"></i>
-                <span class="left tooltip-text"></span>
-              </div>
-            </label>
-          </div>
-          <div>
-            <input id="uscongress-toggle" type="radio" name="overlay-select" onclick="OnShowUSCongress(this)">
-            <label for="uscongress-toggle">Show US Congressional Districts
+        </div>
+        <div class="dropdown">
+          <button class="dropbtn" id="select-map">Resources
+          </button>
+          <div class="dropdown-content">
+            <a href="#" id="btn-clear-resources" onclick="UpdateResources(null)">None</a>
+            <a href="#" id="btn-USCongress" onclick="UpdateResources(this)">US Congressional Districts
               <div class="info-tooltip" id="info-USCongress">
                 <i class="fa fa-info-circle"  aria-hidden="true"></i>
                 <span class="left tooltip-text"></span>
               </div>
-            </label>
-          </div>
-          <div>
-            <input id="clinics-hospitals-toggle" type="radio" name="overlay-select" onclick="OnShowClinicsHospitals(this)">
-            <label for="clinics-hospitals-toggle">Show Community Health Clinics and Hospitals
-            </label>
-          </div>
-          <div>
-            <input id="clinics-toggle" type="radio" name="overlay-select" onclick="OnShowClinics(this)">
-            <label for="clinics-toggle">Show Community Health Clinics
-            </label>
-          </div>
-          <div>
-            <input id="hospital-toggle" type="radio" name="overlay-select" onclick="OnShowHospitals(this)">
-            <label for="hospital-toggle">Show Hospitals
-            </label>
-          </div>
-      
-          <div class="map-overlay-toggles--hidden">
-            <input id="hotspot-labels-toggle" type="checkbox" onclick="OnShowLabels(this)">
-            <label for="hotspot-labels-toggle">Show Hotspot Labels</label>
-      
-            <input id="time-label-toggle" type="checkbox" onchange="OnShowTime(this)">
-            <label for="time-label-toggle">Show Time Label</label>
+            </a>
+            <a href="#" id="btn-ClinicsHospitals" onclick="UpdateResources(this)">Health Clinics and Hospitals</a>
+            <a href="#" id="btn-Clinics" onclick="UpdateResources(this)">Health Clinics</a>
+            <a href="#" id="btn-Hospitals" onclick="UpdateResources(this)">Hospitals</a>
           </div>
         </div>
       </div>
 
+      <!--Dark mode:--> <i class="fa fa-toggle-on" aria-hidden="true" style="font-size: 20px; vertical-align:middle; display: none;" onclick="ToggleDarkMode(this)"></i>
+      <!-- <div class="map-overlay-toggles--hidden">
+        <input id="hotspot-labels-toggle" type="checkbox" onclick="OnShowLabels(this)">
+        <label for="hotspot-labels-toggle">Show Hotspot Labels</label>
+  
+        <input id="time-label-toggle" type="checkbox" onchange="OnShowTime(this)">
+        <label for="time-label-toggle">Show Time Label</label>
+      </div> -->
 
       <p>New cases:</p>
       <div class="layout" id="linechart"></div>
