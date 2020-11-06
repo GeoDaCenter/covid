@@ -20,6 +20,7 @@ var params_dict = {};
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 for (const [key, value] of urlParams ) { params_dict[key] = value; }
+if (params_dict['cartogram']) document.getElementById('cartogram-ckb').checked = true;
 
 function getURLParams(){
   let current_overlay = Object.keys(shouldShowOverlays).filter(t => shouldShowOverlays[t]);
@@ -32,8 +33,9 @@ function getURLParams(){
   let date =  `&dt=${selectedDate}`;
   let center = mapbox.getCenter();
   let coords = `?lat=${Math.round(center.lat*1000)/1000}&lon=${Math.round(center.lng*1000)/1000}&z=${Math.round(mapbox.getZoom()*10)/10}`;
+  let cartogram = isCartogram() ? `&cartogram=true` : '';
 
-  return `${coords}${overlay}${resource}${variable}${method}${source}${date}&v=1`
+  return `${coords}${overlay}${resource}${variable}${method}${source}${date}${cartogram}&v=1`
 }
 
 const datasource_names = {
@@ -1296,7 +1298,7 @@ function getTooltipHtml(id, values, state_map) {
     <h3>${values.entityName}</h3><hr>
     <div>Cases: ${handle(values.cases).toLocaleString()}</div>
     <div>Deaths: ${handle(values.deaths).toLocaleString()}</div>
-    <div>New Cases ${handle(values.newCases).toLocaleString()}</div>
+    <div>New Cases: ${handle(values.newCases).toLocaleString()}</div>
     <div>New Deaths: ${handle(values.newDeaths).toLocaleString()}</div>  
     <div>Total Testing: ${handle(values.testing).toLocaleString()}</div>
     <div>7 Day Positivity Rate: ${handlePos(values.testingPos).toLocaleString()}</div>
