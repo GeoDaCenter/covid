@@ -1989,7 +1989,6 @@ mapbox.on('load', function(){
   mapbox.on('move', function () {
     clearTooltip()
   });
-
 })
 
 function getCartogramLayer(data)
@@ -2085,32 +2084,39 @@ function getCountyLayer(data)
 }
 
 function createMap(data) {
-  // if no date has been selected, default to most recent
-  if (!selectedDate) {
-    selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
-  }
-
-  // this is where the deck layers are accumulated before adding to the canvas
-  var layers = [];
-
-  if (isCartogram()) {
-    // hide mapbox
-    for (var lyr of mapbox.getStyle().layers) mapbox.setLayoutProperty (lyr.id, 'visibility','none');
-    layers.push(getCartogramLayer(data));
-    layers.push(getCartoLabelLayer(data));
-
-  } else {
-    // show mapbox
-    for (var lyr of mapbox.getStyle().layers) {
-      mapbox.setLayoutProperty(lyr.id, 'visibility','visible');
-      if (lyr.id.includes("label")&&!lyr.id.includes("road")){
-        mapbox.moveLayer(lyr.id)
-      }
+  try {
+    // if no date has been selected, default to most recent
+    if (!selectedDate) {
+      selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
     }
-    layers.push(getCountyLayer(data));
-  }
 
-  SetupLayers(layers);
+    // this is where the deck layers are accumulated before adding to the canvas
+    var layers = [];
+
+    if (isCartogram()) {
+      // hide mapbox
+      for (var lyr of mapbox.getStyle().layers) mapbox.setLayoutProperty (lyr.id, 'visibility','none');
+      layers.push(getCartogramLayer(data));
+      layers.push(getCartoLabelLayer(data));
+
+    } else {
+      // show mapbox
+      for (var lyr of mapbox.getStyle().layers) {
+        mapbox.setLayoutProperty(lyr.id, 'visibility','visible');
+        if (lyr.id.includes("label")&&!lyr.id.includes("road")){
+          mapbox.moveLayer(lyr.id)
+        }
+      }
+      layers.push(getCountyLayer(data));
+    }
+
+    SetupLayers(layers);
+  } catch {
+    console.log('Mapbox did not load in time.')
+    setTimeout(function(){
+      createMap(data)
+    }, 100)
+  }
   
 }
 
