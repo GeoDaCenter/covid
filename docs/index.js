@@ -741,11 +741,6 @@ function parseUsaFactsData(data, confirm_data, death_data) { // testing, testing
   if (!(json in fatalityData)) fatalityData[json] = {};
   if (!(json in populationData)) populationData[json] = {};
   if (!(json in bedsData)) bedsData[json] = {};
-  // if (!(json in testingData)) testingData[json] = {};
-  // if (!(json in testingCriteriaData)) testingCriteriaData[json] = {};
-  // if (!(json in testingTcapData)) testingTcapData[json] = {};
-  // if (!(json in testingCcptData)) testingCcptData[json] = {};
-  // if (!(json in testingPosData)) testingPosData[json] = {};
 
   dates[selectedDataset] = getDatesFromUsafacts(confirm_data);
   if (params_dict['date'] !== undefined) {
@@ -766,10 +761,6 @@ function parseUsaFactsData(data, confirm_data, death_data) { // testing, testing
   for (let i = 0; i < confirm_data.length; ++i) {
     conf_dict[confirm_data[i].countyFIPS] = confirm_data[i];
     death_dict[death_data[i].countyFIPS] = death_data[i];
-    // testing_dict[testing[i].countyFIPS] = testing[i];
-    // testingtcap_dict[testingtcap[i].countyFIPS] = testingtcap[i];
-    // testingccpt_dict[testingccpt[i].countyFIPS] = testingccpt[i];
-    // testingpos_dict[testingpos[i].countyFIPS] = testingpos[i];
   }
   for (let i = 0; i < data.features.length; i++) {
     let pop = data.features[i].properties.population;
@@ -783,16 +774,11 @@ function parseUsaFactsData(data, confirm_data, death_data) { // testing, testing
         caseData[json][d][i] = 0;
         deathsData[json][d][i] = 0;
         fatalityData[json][d][i] = 0;
-        // testingData[json][d][i] = 0;
-        // testingTcapData[json][d][i] = 0;
-        // testingCcptData[json][d][i] = 0;
-        // testingPosData[json][d][i] = 0;
       }
       continue;
     }
     populationData[json][i] = pop;
     bedsData[json][i] = beds;
-    // testingCriteriaData[json][i] = criteria;
 
     // confirmed count
     for (let j = 0; j < dates[selectedDataset].length; ++j) {
@@ -821,38 +807,6 @@ function parseUsaFactsData(data, confirm_data, death_data) { // testing, testing
         fatalityData[json][d][i] = deathsData[json][d][i] / caseData[json][d][i];
       }
     }
-    // // testing number
-    // for (var j = 0; j < dates[selectedDataset].length; ++j) {
-    //   var d = dates[selectedDataset][j];
-    //   if (!(d in testingData[json])) {
-    //     testingData[json][d] = {};
-    //   }
-    //   testingData[json][d][i] = testing_dict[geoid][d] == '' ? 0 : parseInt(testing_dict[geoid][d]);
-    // }
-    // // testing capacity
-    // for (var j = 0; j < dates[selectedDataset].length; ++j) {
-    //   var d = dates[selectedDataset][j];
-    //   if (!(d in testingTcapData[json])) {
-    //     testingTcapData[json][d] = {};
-    //   }
-    //   testingTcapData[json][d][i] = testingtcap_dict[geoid][d] == '' ? 0 : testingtcap_dict[geoid][d];
-    // }
-    // //  confirmed cases per testing 
-    // for (var j = 0; j < dates[selectedDataset].length; ++j) {
-    //   var d = dates[selectedDataset][j];
-    //   if (!(d in testingCcptData[json])) {
-    //     testingCcptData[json][d] = {};
-    //   }
-    //   testingCcptData[json][d][i] = testingccpt_dict[geoid][d] == '' ? 0 : testingccpt_dict[geoid][d];
-    // }
-    // //  testing positivity
-    // for (var j = 0; j < dates[selectedDataset].length; ++j) {
-    //   var d = dates[selectedDataset][j];
-    //   if (!(d in testingPosData[json])) {
-    //     testingPosData[json][d] = {};
-    //   }
-    //   testingPosData[json][d][i] = testingpos_dict[geoid][d] == '' ? 0 : testingpos_dict[geoid][d];
-    // }
   }
 }
 
@@ -886,7 +840,7 @@ function parse1P3ACountyData(data, confirm_data, death_data) { // testing, testi
     let pop = data.features[i].properties.population;
     let geoid = parseInt(data.features[i].properties.GEOID);
     let beds = data.features[i].properties.beds;
-    let criteria = data.features[i].properties.criteria;
+    
     if (!(geoid in conf_dict)) {
       console.log("1P3A Counties does not have:", data.features[i].properties);
       for (let j = 0; j < dates[selectedDataset].length; ++j) {
@@ -1666,21 +1620,21 @@ function getTooltipHtml(id, values, state_map) {
 
   let text = state_map ? `
     <h3>${values.entityName}</h3><hr>
-    <div>Cases: ${handle(values.cases)}</div>
-    <div>Deaths: ${handle(values.deaths)}</div>
-    <div>New Cases ${handle(values.newCases)}</div>
-    <div>New Deaths: ${handle(values.newDeaths)}</div>  
-    <div>Total Testing: ${handle(values.testing)}</div>
-    <div>7 Day Positivity Rate: ${handlePos(values.testingPos)}</div>
+    <div>Cases: ${handle(values.cases).toLocaleString()}</div>
+    <div>Deaths: ${handle(values.deaths).toLocaleString()}</div>
+    <div>New Cases ${handle(values.newCases).toLocaleString()}</div>
+    <div>New Deaths: ${handle(values.newDeaths).toLocaleString()}</div>  
+    <div>Total Testing: ${handle(values.testing).toLocaleString()}</div>
+    <div>7 Day Positivity Rate: ${handlePos(values.testingPos).toLocaleString()}</div>
     <div>7 Day Testing Capacity: ${handleTcap(values.testingTcap)}</div>
     <div>7 Day Confirmed Cases per Testing %: ${handlePos(values.testingCcpt)}</div>
     <div>Testing Criterion: ${values.criteria}</div>
   ` : ` 
     <h3>${values.entityName}</h3><hr>
-    <div>Cases: ${handle(values.cases)}</div>
-    <div>Deaths: ${handle(values.deaths)}</div>
-    <div>New Cases ${handle(values.newCases)}</div>
-    <div>New Deaths: ${handle(values.newDeaths)}</div>
+    <div>Cases: ${handle(values.cases).toLocaleString()}</div>
+    <div>Deaths: ${handle(values.deaths).toLocaleString()}</div>
+    <div>New Cases ${handle(values.newCases).toLocaleString()}</div>
+    <div>New Deaths: ${handle(values.newDeaths).toLocaleString()}</div>
   `
 
   // if (isLisa()) {
