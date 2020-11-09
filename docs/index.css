@@ -165,6 +165,9 @@ a:visited {
   outline: none;
   z-index: 9092;
   border-radius: 0px 0px 10px 0px;
+  -moz-box-shadow: 0 0 2px rgba(0,0,0,.1);
+  -webkit-box-shadow: 0 0 2px rgba(0,0,0,.1);
+  box-shadow: 0 0 0 2px rgba(0,0,0,.1);
 }
 
 .options-panel-section {
@@ -347,7 +350,7 @@ a:visited {
 }
 
 .dropdown-content a span.tooltip-text a:hover {
-  background-color:none;
+  background-color:initial;
 }
 
 /* Show the dropdown menu on hover */
@@ -473,6 +476,9 @@ data panel
   overflow-y: auto;
   overflow-x: hidden;
   height: 85%;
+  -moz-box-shadow: 0 0 2px rgba(0,0,0,.1);
+  -webkit-box-shadow: 0 0 2px rgba(0,0,0,.1);
+  box-shadow: 0 0 0 2px rgba(0,0,0,.1);
 }
 
 /* move mapbox controls so they don't overlap panels */

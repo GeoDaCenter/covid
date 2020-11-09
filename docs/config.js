@@ -36,9 +36,10 @@ config.TOOLTIP = {
   healthfactor:'Health factors represent those things we can modify to improve community conditions and the length and quality of life for residents',
   healthcontext: 'Community Health Context reflects the existing health behaviors and demographics of individuals in the community that are influenced by the opportunities to live long and well',
   healthlife:'Length and Quality of Life reflects the physical and mental well-being of residents within a community through measures representing how long and how well residents live',
-  Hypersegregated: 'American metropolitan areas where black residents experience hypersegregation, see ' + 'here'.link("https://www.princeton.edu/news/2015/05/18/hypersegregated-cities-face-tough-road-change"),
-  BlackBelt: 'Southern US counties that were at least 40% Black or African American in the 2000 Census, see ' + 'here'.link("https://en.wikipedia.org/wiki/Black_Belt_in_the_American_South"),
-  TestingCapacity: 'New screening (e.g., antigen) and diagnostic (e.g., PCR) testing per capita rates by date. The suggested threshold is >150 daily tests per 100k people.'
+  Hypersegregated: 'American metropolitan areas where black residents experience hypersegregation, see <a href="https://www.princeton.edu/news/2015/05/18/hypersegregated-cities-face-tough-road-change" target="_blank" rel="noopener noreferrer">here</a>',
+  BlackBelt: 'Southern US counties that were at least 40% Black or African American in the 2000 Census, see <a href="https://en.wikipedia.org/wiki/Black_Belt_in_the_American_South" target="_blank" rel="noopener noreferrer">here</a>',
+  TestingCapacity: 'New screening (e.g., antigen) and diagnostic (e.g., PCR) testing per capita rates by date. The suggested threshold is >150 daily tests per 100k people.',
+  USCongress: 'Find your representative <a href="https://www.govtrack.us/" target="_blank" rel="noopener noreferrer">here</a>',
 };
 
 config.VARIABLES = [
