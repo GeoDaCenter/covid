@@ -40,8 +40,8 @@
   <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css" type="text/css"/>
 
   <script defer src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
-  <script src="https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.js"></script>
-  <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+  <script defer src="https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.js"></script>
+  <script defer src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
   <!-- Promise polyfill script required to use Mapbox GL Geocoder in IE 11 -->
   <script defer src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
@@ -168,7 +168,7 @@
           </div>
         </div>
         <div class="dropdown">
-          <button class="dropbtn" id="select-map">Hotspot
+          <button class="dropbtn" id="select-hotspot">Hotspot
             <div class="info-tooltip" id="info-LocalClustering">
               <i class="fa fa-info-circle"  aria-hidden="true"></i>
               <span class="left tooltip-text"></span>
@@ -194,7 +194,7 @@
       </p>
       <div class="layout">
         <div class="dropdown"  style="width:50%">
-          <button class="dropbtn" id="select-map">Area Highlight
+          <button class="dropbtn" id="select-highlight">Area Highlight
           </button>
           <div class="dropdown-content" style="width:200px;">
             <a href="#" id="btn-clear-overlays" onclick="UpdateOverlays(null)">None</a>
@@ -205,11 +205,16 @@
                 <span class="left tooltip-text"></span>
               </div>
             </a>
-            <a href="#" id="btn-BlackBelt" onclick="UpdateOverlays(this)">Black Belt Counties</a>
+            <a href="#" id="btn-BlackBelt" onclick="UpdateOverlays(this)">Black Belt Counties
+              <div class="info-tooltip" id="info-BlackBelt">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="left tooltip-text"></span>
+              </div>
+            </a>
           </div>
         </div>
         <div class="dropdown">
-          <button class="dropbtn" id="select-map">Resources
+          <button class="dropbtn" id="select-resource">Resources
           </button>
           <div class="dropdown-content">
             <a href="#" id="btn-clear-resources" onclick="UpdateResources(null)">None</a>
@@ -299,6 +304,69 @@
 
   <div id="right-collapse" class="collapse-btn hide" onclick="rightPanelCollapse()"><i
       class="fa fa-chevron-right"></i>
+  </div>
+  <div id="tutorial">
+    <div id="panel-container" style="left:0%">
+      <div class="panel" id="panel-1">
+        <h3>Welcome to the US Covid Atlas</h3>
+        <p class="subtitle">November Release Notes</p>
+        <p>This release of the US Covid Atlas includes new tools 
+          to explore and understand the COVID-19 pandemic's
+          spread in the United States.<br><br>
+          
+          If you are returning to this site, please try clearing your
+          page cache with a hard refresh (control + shift + R or
+          command + shift + R) to avoid any display issues.
+        </p>
+      </div>
+      <div class="panel" id="panel-2">
+        <h3>New Features</h3>
+        <p class="subtitle">November Release Notes</p>
+        <p>
+         The November release includes state level testing data, new resource layers for hospitals and clinics, map sharing capabilities, and improved data loading times.<br><br>
+          Testing data is available under the State 1Point3Acres data source with variables for testing positivity, capacity, and confirmed cases. Using the share button on the right, you can share a link to the map you are viewing. Using the re-designed map overlays, you can overlay a collection of map resources and regional highlights.
+        </p>
+
+      </div>
+      <div class="panel" id="panel-3">
+        <h3>Getting Started</h3>
+        <p class="subtitle">November Release Notes</p>
+        <p>
+          To get started, try the following:
+          <ul>
+            <li>Click the play button in the <a href="#" onclick="highlightElement('sliderdiv', 'id')">timeline</a> on the top of the page to see how the pandemic has unfolded</li>
+            <li>Explore <a href="#" onclick="highlightElement('select-source', 'id')">state level data</a> on testing positivity rates and capacities</li>
+            <li>Use the <a href="#" onclick="highlightElement('mapboxgl-ctrl-geolocate', 'class')">geolocation</a> function and <a href="#" onclick="highlightElement('select-resource', 'id')">Health Clinics layers</a> to find COVID-19 testing near you</li>
+            <li><a href="#" onclick="highlightElement('share-container', 'id')">Share your map</a> on Social Media, or with a colleague or community member</li>
+          </ul>
+        </p>
+
+      </div>
+      <div class="panel" id="panel-4">
+        <h3>Found a bug or have a suggestion?</h3>
+        <p class="subtitle">November Release Notes</p>
+        <p>
+          The US Covid Atlas team is always working to improve
+          the platform and its ability to generate insights.<br><br>
+          
+          Please contact the team at <a href="mailto:contact@theuscovidatlas.org">contact@theuscovidatlas.org</a>
+          or reach out on social media below.
+          <div class="social-container">
+            <a href="https://twitter.com/covid_atlas" target="_blank" rel="noopener noreferrer">
+              <img src="./icons/twitter-icon.png" alt="Twitter Icon">
+            </a>
+            <a href="https://github.com/GeoDaCenter/covid"  target="_blank" rel="noopener noreferrer">
+              <img src="./icons/github-icon.png" alt="Twitter Icon">
+            </a>
+          </div>
+        </p>
+
+      </div>
+    </div>
+    <svg viewBox="0 0 100 100" id="left-arrow"><g transform="translate(0,-952.36218)"><path d="m 71.20311,1002.3622 -2.84375,-3.28121 -31.99997,-37 -7.5625,6.5624 29.15622,33.71881 -29.15622,33.7188 7.5625,6.5624 31.99997,-37 2.84375,-3.2812 z"></path></g></svg>
+    <svg viewBox="0 0 100 100" id="right-arrow"><g transform="translate(0,-952.36218)"><path d="m 71.20311,1002.3622 -2.84375,-3.28121 -31.99997,-37 -7.5625,6.5624 29.15622,33.71881 -29.15622,33.7188 7.5625,6.5624 31.99997,-37 2.84375,-3.2812 z"></path></g></svg>
+    <div id="close-tutorial">×</div>    
+    <div id="dots-container"></div>
   </div>
 </body>
 

@@ -66,6 +66,75 @@ function getDatesFromGeojson(data) {
   return xLabels;
 }
 
+/* 
+ * TUTORIAL SETUP AND LISTENERS
+*/
+function setupTutorial(){
+  let tutorialDiv = document.getElementById("panel-container")
+  tutorialDiv.style.width = `${tutorialDiv.children.length*100}%` 
+
+  let dotsContainer = document.getElementById("dots-container")
+  let html = ''
+  for (let i = 0; i < tutorialDiv.children.length; i++) {
+    if (i == 0) {
+      html += `<div class="dot-container active" id="dot-${i}" onclick="tutorialScroll(${i})"><svg viewBox="0 0 100 100" class="dot"><circle cx="50" cy="50" r="40" /></svg></div>`
+    } else {
+      html += `<div class="dot-container" id="dot-${i}" onclick="tutorialScroll(${i})"><svg viewBox="0 0 100 100" class="dot"><circle cx="50" cy="50" r="40" /></svg></div>`
+    }
+    
+  }
+  dotsContainer.innerHTML = html;
+
+  document.getElementById("left-arrow").addEventListener("click", () => tutorialScroll('left'));
+  document.getElementById("right-arrow").addEventListener("click", () => tutorialScroll('right'));
+  document.getElementById("close-tutorial").addEventListener("click", () => document.getElementById("tutorial").style.display = "none");
+}
+
+function tutorialScroll(val){
+  let tutorialDiv = document.getElementById("panel-container")
+  let currPosition = parseInt(tutorialDiv.style.left.slice(0,-1))
+
+  let dots = document.getElementsByClassName("dot-container")
+  for (let i=0; i<dots.length; i++){
+    dots[i].className = "dot-container"
+  }
+  if (typeof(val) == "number") {
+    tutorialDiv.style.left = `-${val*100}%`;
+    dots[val].className = "dot-container active";
+  } else if (val == 'left') {
+    let leftVal = (currPosition + 100) > 0 ? (tutorialDiv.children.length-1)*-100 : (currPosition + 100);
+    tutorialDiv.style.left = `${leftVal}%`
+    dots[leftVal/-100].className = "dot-container active";
+  } else {
+    let leftVal = (currPosition - 100) < (tutorialDiv.children.length-1)*-100 ? 0 : (currPosition - 100);
+    tutorialDiv.style.left = `${leftVal}%`
+    dots[leftVal/-100].className = "dot-container active";
+  }
+}
+
+function highlightElement(element, divType) {
+  if (divType == "id") {
+    let elem = document.getElementById(element);
+    let currClass = `${elem.className}`
+
+    elem.className = `${currClass} tutorial-highlight`
+
+    setTimeout(function() {
+      elem.className = currClass;
+    },2000);
+  } else {
+    let elem = document.getElementsByClassName(element)[0];
+    let currClass = `${elem.className}`
+
+    elem.className = `${currClass} tutorial-highlight`
+
+    let clearClass = setTimeout(function() {
+      elem.className = currClass;
+    },2000);
+
+  }
+}
+setupTutorial()
 
 /*
  * GLOBALS

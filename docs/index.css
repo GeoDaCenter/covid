@@ -338,6 +338,18 @@ a:visited {
   background-color: rgb(146, 146, 146)
 }
 
+/* links within tooltips */
+.dropdown-content a span.tooltip-text a {
+  color:#00ade6;
+  padding:0;
+  display: inline;
+  font-weight: bold;
+}
+
+.dropdown-content a span.tooltip-text a:hover {
+  background-color:none;
+}
+
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {
   display: block;
@@ -530,6 +542,7 @@ div#share-container {
   height:29px;
   right:10px;
   bottom:168px;
+  z-index:6;
   background-color:#f5f5f5;
   -moz-box-shadow: 0 0 2px rgba(0,0,0,.1);
   -webkit-box-shadow: 0 0 2px rgba(0,0,0,.1);
@@ -640,4 +653,128 @@ div#share-container.active:before {
 
 .mapboxgl-ctrl-top-right {
   z-index: 1000 !important;
+}
+
+/* tutorial styling */
+#tutorial {
+  position: fixed;
+  right: 50px;
+  bottom: 30px;
+  z-index: 5;
+  width: 300px;
+  height: 300px;
+  max-width:90vw;
+  background: #444;
+  color:#fff;
+  padding:0;
+  overflow: hidden;
+  border-radius: 4px;
+  -moz-box-shadow: 0 0 2px rgba(0,0,0,.1);
+  -webkit-box-shadow: 0 0 2px rgba(0,0,0,.1);
+  box-shadow: 0 0 0 2px rgba(0,0,0,.1);
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+}
+
+#tutorial h3, #tutorial p.subtitle {
+  padding:0;
+  margin:0;
+}
+#tutorial ul {
+  margin: 0;
+  padding-inline-start: 20px;
+}
+
+#tutorial #panel-container {
+  height:100%;
+  position: absolute;
+  top:0;
+  left:0%;
+  display: flex;
+  -ms-flex: 1; /* IE 10 */
+  transition:250ms all;
+}
+#tutorial .panel {
+  width:100%;
+  height:100%;
+  padding:20px;
+  box-sizing: border-box;
+}
+
+#tutorial .panel .buttons svg {
+  width:20px;
+  height:20px;
+  fill:#000000;
+}
+
+#tutorial svg {
+  width:10px;
+  height:10px;
+  padding:5px;
+  fill:#fff;
+  display: inline;
+  transition:250ms all;
+  cursor: pointer;
+}
+
+#tutorial #right-arrow, #tutorial #left-arrow {
+  position: absolute;
+  right:0;
+  bottom:0;
+  width:20px;
+  height:20px;
+}
+#tutorial #left-arrow {
+  left:0;
+  transform:rotate(180deg);
+}
+
+#tutorial #dots-container {
+  position: absolute;
+  bottom:0;
+  left:0;
+  display: flex;
+  justify-content: space-around;
+  width:calc(100% - 60px);
+  height:25px;
+  margin-left:30px;
+  padding:0 20px;
+  box-sizing: border-box;
+}
+
+#tutorial .dot-container.active .dot {
+  transform:scale(1.5);
+}
+
+#tutorial #close-tutorial {
+  position: absolute;
+  top:12px;
+  right:10px;
+  font-size:200%;
+  cursor: pointer;
+}
+
+#tutorial a {
+  transition:250ms all;
+}
+
+#tutorial div.social-container a img {
+  width:25px;
+  height:25px;
+  padding-right:10px;
+  opacity:0.7;
+}
+
+#tutorial div.social-container a:hover img {
+  opacity:1;
+}
+
+/* TUTORIAL HIGHLIGHT */
+
+.tutorial-highlight {
+  box-shadow: 0px 0px 5px 3px #fff !important;
 }
