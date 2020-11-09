@@ -204,11 +204,16 @@ a:visited {
   display: none;
 }
 
+#legend {
+  display: flex;
+  justify-content: stretch;
+}
+
 .legend {
-  display: inline-block;
   width: 12px;
   height: 12px;
   z-index: 100000;  
+  flex:1;
 }
 
 
@@ -509,10 +514,13 @@ data panel
 
 #legend-labels {
   margin-top: 5px;
+  display: flex;
+  justify-content: space-evenly;
+  box-sizing: border-box;
 }
 
 #legend-labels div {
-  width: 11%
+  flex:1;
 }
 
 .county-severity-index--medium {
@@ -533,19 +541,19 @@ data panel
   left: 0px;
   z-index:999;
   font-family: Lato, sans-serif;
-      font-size: 14px;
-      line-height: 1.5;
-      letter-spacing: 1.75px;
-      font-weight: 400;
-      font-stretch: normal;
-      color: #0d0d0d;
-     font-opacity: 30%;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 1.75px;
+  font-weight: 400;
+  font-stretch: normal;
+  color: #0d0d0d;
+  font-opacity: 30%;
 }
 
-div#share-container {
+#additional-buttons {
   position:fixed;
   width:29px;
-  height:29px;
+  height:58px;
   right:10px;
   bottom:168px;
   z-index:6;
@@ -555,19 +563,25 @@ div#share-container {
   box-shadow: 0 0 0 2px rgba(0,0,0,.1);
   border-radius: 4px;
 }
-div#share-container svg {
+
+#additional-buttons div {
+  width:100%;
+  height:29px;
+}
+#additional-buttons svg {
   width:100%;
   height:100%; 
   fill:#303030;
   padding: 4px;
   box-sizing: border-box;
 }
+
 input#share-url {
   display:none;
   opacity:0;
 }
 
-div#share-container.active:before {
+#share-container.active:before {
   content:'Map Link Copied to Clipboard!';
   background:#f5f5f5;
   -moz-box-shadow: 0 0 2px rgba(0,0,0,.1);
@@ -772,6 +786,7 @@ div#share-container.active:before {
   width:25px;
   height:25px;
   padding-right:10px;
+  transition:250ms all;
   opacity:0.7;
 }
 

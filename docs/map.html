@@ -57,6 +57,25 @@
   <link href="css/index.css" rel="stylesheet" type="text/css">
 
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Montserrat:wght@400;600;800&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+  
+  <!-- Favicon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="./favicon/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="./favicon/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="./favicon/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="./favicon/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="./favicon/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="./favicon/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="./favicon/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="./favicon/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192"  href="./favicon/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="./favicon/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
+  <link rel="manifest" href="./favicon/manifest.json">
+  <meta name="msapplication-TileColor" content="#ec1e24">
+  <meta name="msapplication-TileImage" content="./favicon/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ec1e24">
 </head>
 
 <body>
@@ -76,11 +95,18 @@
   <div class="time-panel">
     <label class="unselectable" id="time-container">2020-03-23</label>
   </div>
-  <div id="share-container">
+  <div id="additional-buttons">
+    <div id="reset-tutorial">
+      <a herf="#">
+        <svg viewBox="0 0 100 100" x="0px" y="0px"><g><path d="M 62.0763 27.4552 C 64.0258 25.642 65 23.4406 65 20.8589 C 65 18.2815 64.0258 16.0809 62.0763 14.2511 C 60.1273 12.4207 57.7859 11.5 55.0413 11.5 C 52.3076 11.5 49.9438 12.4207 47.9833 14.2511 C 46.0343 16.0809 45.0487 18.2815 45.0487 20.8589 C 45.0487 23.4406 46.0343 25.642 47.9833 27.4552 C 49.9438 29.2682 52.3076 30.178 55.0413 30.178 C 57.7859 30.178 60.1273 29.2682 62.0763 27.4552 ZM 57.5841 88.0802 C 61.1017 86.4348 62.9616 83.3419 61.1353 81.9274 C 60.0823 81.1132 58.7041 82.4604 57.6963 82.4604 C 55.5343 82.4604 54.0103 82.1065 53.1367 81.3939 C 52.2518 80.6754 51.8261 79.3446 51.8261 77.3796 C 51.8261 76.5942 51.9493 75.4433 52.2182 73.9213 C 52.487 72.395 52.8007 71.0302 53.1367 69.8404 L 57.3153 55.0418 C 57.7073 53.683 57.9988 52.1893 58.1554 50.5672 C 58.301 48.9276 58.3798 47.7935 58.3798 47.1533 C 58.3798 44.0378 57.2817 41.5004 55.0971 39.5465 C 52.9237 37.5991 49.8094 36.6159 45.7765 36.6159 C 43.5361 36.6159 41.1501 36.9472 38.652 37.8117 C 33.7564 39.5293 34.8432 43.7968 35.9296 43.7968 C 38.1364 43.7968 39.6152 44.1722 40.3995 44.9193 C 41.1837 45.6604 41.5868 46.9796 41.5868 48.8828 C 41.5868 49.9269 41.4413 51.1007 41.1947 52.3689 C 40.9369 53.6381 40.635 54.9909 40.2541 56.4111 L 36.053 71.2659 C 35.6947 72.8267 35.4253 74.2246 35.2463 75.4648 C 35.0784 76.7058 35 77.9187 35 79.1091 C 35 82.1578 36.12 84.6722 38.3716 86.6596 C 40.6238 88.6528 44.0854 90.5 48.1405 90.5 C 50.7731 90.5 54.537 89.518 57.5841 88.0802 Z"></path></g></svg>
+      </a>
+    </div>
+    <div id="share-container">
       <a href="#" onclick="ShareMap()">
         <svg x="0px" y="0px" viewBox="0 0 100 100"><path d="M22.5,65c4.043,0,7.706-1.607,10.403-4.208l29.722,14.861C62.551,76.259,62.5,76.873,62.5,77.5c0,8.284,6.716,15,15,15   s15-6.716,15-15c0-8.284-6.716-15-15-15c-4.043,0-7.706,1.608-10.403,4.209L37.375,51.847C37.449,51.241,37.5,50.627,37.5,50   c0-0.627-0.051-1.241-0.125-1.847l29.722-14.861c2.698,2.601,6.36,4.209,10.403,4.209c8.284,0,15-6.716,15-15   c0-8.284-6.716-15-15-15s-15,6.716-15,15c0,0.627,0.051,1.241,0.125,1.848L32.903,39.208C30.206,36.607,26.543,35,22.5,35   c-8.284,0-15,6.716-15,15C7.5,58.284,14.216,65,22.5,65z"></path></svg>
       </a>  
       <input type="text" value="" id="share-url">
+    </div>
   </div>
   
   <div class="options-panel left-panel" tabindex="0">
@@ -276,18 +302,18 @@
 
   <div class="legend-wrap">
     <div class="layout" id="legend_title" style="text-align: center;margin:5px;">Natural Breaks (fixed bins)</div>
-    <div class="layout" id="legend">
-      <div class="legend" style="background: rgb(240, 240, 240); width: 7.69231%;"></div>
-      <div class="legend" style="background: rgb(255, 237, 160); width: 7.69231%;"></div>
-      <div class="legend" style="background: rgb(254, 217, 118); width: 7.69231%;"></div>
-      <div class="legend" style="background: rgb(254, 178, 76); width: 7.69231%;"></div>
-      <div class="legend" style="background: rgb(253, 141, 60); width: 7.69231%;"></div>
-      <div class="legend" style="background: rgb(252, 78, 42); width: 7.69231%;"></div>
-      <div class="legend" style="background: rgb(227, 26, 28); width: 7.69231%;"></div>
-      <div class="legend" style="background: rgb(189, 0, 38); width: 7.69231%;"></div>
-      <div class="legend" style="background: rgb(128, 0, 38); width: 7.69231%;"></div>
+    <div id="legend">
+      <div class="legend" style="background: rgb(240, 240, 240);"></div>
+      <div class="legend" style="background: rgb(255, 237, 160);"></div>
+      <div class="legend" style="background: rgb(254, 217, 118);"></div>
+      <div class="legend" style="background: rgb(254, 178, 76);"></div>
+      <div class="legend" style="background: rgb(253, 141, 60);"></div>
+      <div class="legend" style="background: rgb(252, 78, 42);"></div>
+      <div class="legend" style="background: rgb(227, 26, 28);"></div>
+      <div class="legend" style="background: rgb(189, 0, 38);"></div>
+      <div class="legend" style="background: rgb(128, 0, 38);"></div>
     </div>
-    <div class="layout" id="legend-labels">
+    <div id="legend-labels">
     </div>
   </div>
   <div id="left-collapse" class="collapse-btn" onclick="leftPanelCollapse()"><i
@@ -324,7 +350,7 @@
         <p class="subtitle">November Release Notes</p>
         <p>
           The November release includes state level testing data, new resource layers for hospitals and clinics, map sharing capabilities, and improved data loading times.<br><br>
-          State level testing data has a variables for testing positivity, capacity, and confirmed cases. Using the share button on the right, you can share a link to the map you are viewing. Using the re-designed map overlays, you can overlay a collection of map resources and regional highlights.
+          State level testing data has a variables for testing positivity, capacity, and confirmed cases. With the new map share button on the right, you can share a link to the map you are viewing. Using the re-designed map overlays, you can overlay a collection of map resources and regional highlights.
         </p>
 
       </div>

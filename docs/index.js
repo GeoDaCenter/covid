@@ -88,6 +88,7 @@ function setupTutorial(){
   document.getElementById("left-arrow").addEventListener("click", () => tutorialScroll('left'));
   document.getElementById("right-arrow").addEventListener("click", () => tutorialScroll('right'));
   document.getElementById("close-tutorial").addEventListener("click", () => document.getElementById("tutorial").style.display = "none");
+  document.getElementById("reset-tutorial").addEventListener("click", () => document.getElementById("tutorial").style.display = "initial");
 }
 
 function tutorialScroll(val){
@@ -1019,6 +1020,7 @@ function initCounty() {
     legend_bins = [0, 1, 2, 3];
     // update legend title
     document.getElementById('legend_title').innerText = "Severity Index";
+
     colorScale = function (x) {
       return COLOR_SCALE[selectedMethod][vals[x]]; 
     };
@@ -1530,6 +1532,7 @@ function handleMapHover(e) {
 }
 
 function highlightSelected(feat) {
+  console.log(feat)
   if (feat) {
     // highlight the selected polygon
     let lyr = {
@@ -1539,17 +1542,18 @@ function highlightSelected(feat) {
         'type': 'Feature',
         'properties': {},
         'geometry': {
-          'type': "LineString",
-          'coordinates': feat.geometry.coordinates[0][0]
+          'type': "MultiPolygon",
+          'coordinates': feat.geometry.coordinates
         }
       },
       getLineColor: [0, 0, 0],
       lineWidthScale: 20,
       lineWidthMinPixels: 4,
       getLineWidth: 10,
-      stroked: false,
-      filled: true,
-      extruded: true,
+      stroked: true,
+      filled: false,
+      extruded: false,
+      pickable:false,
     };
     const firstLabelLayerId = mapbox.getStyle().layers.find(layer => layer.type === 'symbol').id;
     if (!mapbox.getLayer("hllayer")) {
@@ -2419,6 +2423,7 @@ function GetFeatureValue(id) {
 }
 
 function GetDataValues(inputDate) {
+  // check for URL parameters date
   if (params_dict['dt'] != undefined && initial_load) {
     inputDate = latestDate
   } else if (inputDate == undefined || inputDate == null) {
@@ -2736,7 +2741,9 @@ function UpdateLegendLabels(breaks) {
           cont += '<div style="text-align:center">' + val + '</div>';
         }
       }
-    } 
+    }
+    
+    div.style.padding = `0 5%`
   } else if (selectedMethod.startsWith("hinge")) {
     // box plot
     cont += '<div style="text-align:center">Lower Outlier</div>';
@@ -2745,20 +2752,27 @@ function UpdateLegendLabels(breaks) {
     cont += '<div style="text-align:center">50-75%</div>';
     cont += '<div style="text-align:center">>75%</div>';
     cont += '<div style="text-align:center">Upper Outlier</div>';
-
+    div.style.padding = `0`;
   } else if (selectedMethod == "forecasting") {
     // forecasting 
     cont += '<div style="text-align:center">N/A</div>';
     cont += '<div style="text-align:center">Low</div>';
     cont += '<div style="text-align:center">Medium</div>';
     cont += '<div style="text-align:center">High</div>';
+    div.style.padding = `0`;
   } 
   else if (selectedMethod == "testing_fixed_bins" || selectedMethod == "testing_cap_fixed_bins") {
     for (var i = 0; i < breaks.length; ++i) {
-      cont += '<div style="text-align:center">' + breaks[i] + '</div>'
+      if (i == 0) {
+        cont += '<div style="text-align:center; transform: translateX(-45%);">' + breaks[i] + '</div>'
+      } else {
+        cont += '<div style="text-align:center;">' + breaks[i] + '</div>'
+      }
     }
+    div.style.padding = `0 5%`
   }
   div.innerHTML = cont;
+
 }
 
 function UpdateLisaLegend(colors) {
