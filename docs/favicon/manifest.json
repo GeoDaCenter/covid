@@ -1,5 +1,10 @@
 {
- "name": "App",
+ "name": "US COVID Atlas",
+ "short_name": "US COVID Atlas",
+ "start_url": ".",
+ "display": "standalone",
+ "background_color": "#ec1e24",
+ "description": "Near Real-Time Exploration of the COVID-19 Pandemic.",
  "icons": [
   {
    "src": "\/android-icon-36x36.png",
