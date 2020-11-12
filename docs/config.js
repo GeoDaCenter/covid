@@ -128,17 +128,25 @@ const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0
 
 const COLOR_SCALE = {
   'natural_breaks':[
-    [240, 240, 240],
+    [240,240,240],
     // positive
-    [255, 255, 204],
-    [255, 237, 160],
-    [254, 217, 118],
-    [254, 178, 76],
-    [253, 141, 60],
-    [252, 78, 42],
-    [227, 26, 28],
-    [189, 0, 38],
-    [128, 0, 38],
+    [255,255,204],
+    [255,237,160],
+    [254,217,118],
+    [254,178,76],
+    [253,141,60],
+    [252,78,42],
+    [227,26,28],
+    [177,0,38],
+    // [255, 255, 204],
+    // [255, 237, 160],
+    // [254, 217, 118],
+    // [254, 178, 76],
+    // [253, 141, 60],
+    // [252, 78, 42],
+    // [227, 26, 28],
+    // [189, 0, 38],
+    // [128, 0, 38],
   ],
   'natural_breaks_hlthfactor':[
     [240,240,240],
@@ -150,7 +158,7 @@ const COLOR_SCALE = {
     [140,107,177],
     [136,65,157],
     [129,15,124],
-    [77,0,75],
+    // [77,0,75],
   ],
   'natural_breaks_hlthcontextlife':[
     [240,240,240],
@@ -162,7 +170,7 @@ const COLOR_SCALE = {
     [78,179,211],
     [43,140,190],
     [8,104,172],
-    [8,64,129],
+    // [8,64,129],
   ],
   'hinge15_breaks' :  [
     [1, 102, 94],
@@ -224,3 +232,29 @@ var lisa_labels = ["Not significant", "High-High", "Low-Low", "Low-High", "High-
 var lisa_colors = ["#ffffff", "#FF0000", "#0000FF", "#a7adf9", "#f4ada8", "#464646", "#999999"];
 
 const dataset_index = ['county_usfacts.geojson', 'county_1p3a.geojson', 'state_1p3a.geojson']
+
+config.LEGEND_TEXT = {
+  'Confirmed Count':'Confirmed Count',
+  'Confirmed Count per 100K Population':'Confirmed Count per 100K Population',
+  'Confirmed Count per Licensed Bed':'Confirmed Count per Licensed Bed',
+  'Death Count':'Death Count',
+  'Death Count per 100K Population':'Death Count per 100K Population',
+  'Death Count/Confirmed Count':'Death Count/Confirmed Count',
+  'Daily New Confirmed Count':'Daily New Confirmed Count',
+  'Daily New Confirmed Count per 100K Pop':'Daily New Confirmed Count per 100K Pop',
+  '7-Day Average Daily New Confirmed Count':'7-Day Average Daily New Confirmed Count',
+  '7-Day Average Daily New Confirmed Count per 100K Pop':'7-Day Average Daily New Confirmed Count per 100K Pop',
+  'Daily New Death Count':'Daily New Death Count',
+  'Daily New Death Count per 100K Pop':'Daily New Death Count per 100K Pop',
+  'Forecasting (5-Day Severity Index)':'Forecasting (5-Day Severity Index)',
+  '7 Day Testing Positivity Rate %':'7 Day Testing Positivity Rate %',
+  '7 Day Testing Capacity':`7 Day Testing Capacity Per 100k Population
+    <div class="top info-tooltip" id="info-TestingCapacity">
+      <i class="fa fa-info-circle" aria-hidden="true"></i>
+        <span class="tooltip-text">New screening (e.g., antigen) and diagnostic (e.g., PCR) testing per capita rates by date. The suggested threshold is &gt;150 daily tests per 100k people.</span>
+    </div>`,
+  '7 Day Confirmed Cases per Testing %':'7 Day Confirmed Cases per Testing %',
+  'Uninsured % (Community Health Factor)':'Uninsured % (Community Health Factor)',
+  'Over 65 Years % (Community Health Context)':'Over 65 Years % (Community Health Context)',
+  'Life expectancy (Length and Quality of Life)':'Life expectancy (Length and Quality of Life)'
+}

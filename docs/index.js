@@ -10,6 +10,7 @@ const {
   ScatterplotLayer,
   TileLayer,
   MapboxLayer,
+  //FillStyleExtension
 } = deck;
 
 /* 
@@ -87,8 +88,8 @@ function setupTutorial(){
 
   document.getElementById("left-arrow").addEventListener("click", () => tutorialScroll('left'));
   document.getElementById("right-arrow").addEventListener("click", () => tutorialScroll('right'));
-  document.getElementById("close-tutorial").addEventListener("click", () => document.getElementById("tutorial").style.display = "none");
-  document.getElementById("reset-tutorial").addEventListener("click", () => document.getElementById("tutorial").style.display = "initial");
+  document.getElementById("close-tutorial").addEventListener("click", () => showTutorial(false));
+  document.getElementById("reset-tutorial").addEventListener("click", () => showTutorial(true));
 }
 
 function tutorialScroll(val){
@@ -135,6 +136,11 @@ function highlightElement(element, divType) {
 
   }
 }
+
+function showTutorial(show){
+  document.getElementById('tutorial').style.display = show ? 'initial' : 'none'
+}
+
 setupTutorial()
 
 /*
@@ -1019,7 +1025,7 @@ function initCounty() {
     // hard coded color scheme for forecasting
     legend_bins = [0, 1, 2, 3];
     // update legend title
-    document.getElementById('legend_title').innerText = "Severity Index";
+    // document.getElementById('legend_title').innerText = "Severity Index";
 
     colorScale = function (x) {
       return COLOR_SCALE[selectedMethod][vals[x]]; 
@@ -1043,6 +1049,7 @@ function initCounty() {
 
     colorScale = function (v) {
       const x = GetFeatureValue(v)
+
       if (selectedMethod == "natural_breaks" || selectedMethod == "natural_breaks_hlthfactor" || selectedMethod == "natural_breaks_hlthcontextlife") {
         if (x == 0) return COLOR_SCALE[selectedMethod][0];
         for (var i = 1; i < nb.breaks.length; ++i) {
@@ -1080,6 +1087,7 @@ function initCounty() {
   };
   UpdateLegend();
   UpdateLegendLabels(legend_bins);
+  UpdateLegendTitle();
 
   if (isCartogram()) {
     cartogramData = gda_proxy.cartogram(selectedDataset, vals);
@@ -1114,7 +1122,7 @@ function init_state() {
       if (x == 0) return COLOR_SCALE[selectedMethod][0];
       for (var i = 1; i < nb.breaks.length; ++i) {
         if (x < nb.breaks[i])
-          return COLOR_SCALE[selectedMethod][i];
+          return COLOR_SCALE[selectedMethod][i-1];
       }
     } else {
       for (var i = 1; i < nb.breaks.length; ++i) {
@@ -1127,7 +1135,7 @@ function init_state() {
   getFillColor = function (f) {
     let v = GetFeatureValue(f.properties.id);
     if (v == 0 && (selectedMethod != "testing_fixed_bins" || selectedMethod != "testing_cap_fixed_bins")) {
-      return [255, 255, 255];
+      return [240, 240, 240];
     } else {
       return colorScale(v);
     }
@@ -1138,6 +1146,8 @@ function init_state() {
   };
   UpdateLegend();
   UpdateLegendLabels(nb.bins);
+  UpdateLegendTitle();
+
   choropleth_btn.classList.add("checked");
   lisa_btn.classList.remove("checked");
 
@@ -1268,21 +1278,21 @@ function UpdateMethod(){
     } else if (selectedMethod == "forecasting") {
       // reset to natural breaks if switching to other variable
       selectedMethod = "natural_breaks";
-      document.getElementById('legend_title').innerText = "Natural Breaks";
+      // document.getElementById('legend_title').innerText = "Natural Breaks";
     } else if (selectedVariable == "7 Day Testing Positivity Rate %") {
       selectedMethod = "testing_fixed_bins";
-      document.getElementById("legend_title").innerHTML = "Testing % Positive (Fixed Bins)"
+      // document.getElementById("legend_title").innerHTML = "Testing % Positive (Fixed Bins)"
     } else if (selectedVariable == "7 Day Testing Capacity") {
      selectedMethod = "testing_cap_fixed_bins";
-     document.getElementById("legend_title").innerHTML = `
-      Testing Capacity per 100k Population (Fixed Bins)             
-        <div class="top info-tooltip" id="info-TestingCapacity">
-          <i class="fa fa-info-circle"  aria-hidden="true"></i>
-            <span class="tooltip-text">${config.TOOLTIP.TestingCapacity}</span>
-        </div>`
+    //  document.getElementById("legend_title").innerHTML = `
+    //   Testing Capacity per 100k Population (Fixed Bins)             
+    //     <div class="top info-tooltip" id="info-TestingCapacity">
+    //       <i class="fa fa-info-circle"  aria-hidden="true"></i>
+    //         <span class="tooltip-text">${config.TOOLTIP.TestingCapacity}</span>
+    //     </div>`
     } else if (selectedVariable == "7 Day Confirmed Cases per Testing %") {
       selectedMethod = "testing_fixed_bins";
-      document.getElementById("legend_title").innerHTML = "Testing % Positive (Fixed Bins)"
+      // document.getElementById("legend_title").innerHTML = "Testing % Positive (Fixed Bins)"
     } else {
       selectedMethod = "natural_breaks";
       // others will keep using current selectedMethod
@@ -1760,7 +1770,8 @@ function covidForecastingHtml(geoId) {
 }
 
 function updateDataPanel(e) {
-
+  showTutorial(false);
+  
   let geoId;
 
   let html = '';
@@ -2143,10 +2154,10 @@ function getCountyLayer(data)
       filled: true,
       lineWidthScale: 1,
       lineWidthMinPixels: 1,
-      getElevation: getElevation,
+      // getElevation: getElevation,
       getFillColor: getFillColor,
-      getLineColor: getLineColor,
-      getLineWidth: getLineWidth,
+      // getLineColor: getLineColor,
+      // getLineWidth: getLineWidth,
       updateTriggers: {
         getFillColor: [
           selectedDate, selectedVariable, selectedMethod
@@ -2154,7 +2165,14 @@ function getCountyLayer(data)
       },
       pickable: true,
       onHover: info => handleMapHover(info),
-      onClick: handleMapClick
+      onClick: handleMapClick,
+
+      // getFillPattern: f => GetFeatureValue(f.properties.id) == 0 ? 'lines' : null,
+      // fillPatternAtlas: './spriteSheet.png',
+      // fillPatternMapping: './spriteInfo.json',
+      // getFillPatternScale: 500,
+      // getFillPatternOffset: [0, 0],
+      // extensions: [new FillStyleExtension({pattern: true})]
     };
 }
 
@@ -2688,6 +2706,14 @@ function GetDataValues(inputDate) {
 function UpdateLegend() {
   const div = document.getElementById('legend');
 
+  if (selectedMethod == "natural_breaks") {
+    div.className = "ZeroFirstBin"
+  } else if (selectedMethod == "natural_breaks_hlthfactor" || selectedMethod == "natural_breaks_hlthcontextlife") {
+    div.className = "HideFirstBin"
+  } else {
+    div.className = ''
+  }
+
   var content = "";
   for (var i=0; i<COLOR_SCALE[selectedMethod].length; ++i) {
     content += "<div class=\"legend\" style=\"background: rgb(";
@@ -2697,18 +2723,24 @@ function UpdateLegend() {
     content += ");\"></div>";
   }
   div.innerHTML = content;
+
 }
 
 function UpdateLegendLabels(breaks) {
   let field = data_btn.innerText;
   const div = document.getElementById('legend-labels');
   var cont = '';
+
+  if (`>${breaks.slice(-2,)[0]}` == breaks.slice(-2,)[1]) {
+    breaks = breaks.slice(0,-1)
+  }
+  
   if (selectedMethod == "natural_breaks" || selectedMethod == "natural_breaks_hlthfactor" || selectedMethod == "natural_breaks_hlthcontextlife") {
-    cont += '<div style="text-align:center">0</div>';
+    if (selectedMethod == "natural_breaks") cont += '<div style="text-align:left">0</div>';
     for (var i = 0; i < breaks.length; ++i) {
       let val = breaks[i];
       if (field == "Death Count/Confirmed Count") {
-        cont += '<div style="text-align:center">' + val + '</div>';
+        cont += `<div style="text-align:center"> ${i==0?'<':i==breaks.length-1?'>':''}${val} </div>`;
       } else {
         if (val[0] == '>') {
           val = val.substring(1, val.length);
@@ -2724,7 +2756,7 @@ function UpdateLegendLabels(breaks) {
           } else if (val > 10000) {
             val = d3.format(".2s")(val)
           }
-          cont += `<div style="text-align:center">>${val}</div>`;
+          cont += `<div style="text-align:center"> ${i==0?'<':i==breaks.length-1?'>':''}${val} </div>`;
         } else {
           if (val.indexOf('.') >= 0) {
             // format float number
@@ -2738,7 +2770,7 @@ function UpdateLegendLabels(breaks) {
           } else if (val > 10000) {
             val = d3.format(".2s")(val)
           }
-          cont += '<div style="text-align:center">' + val + '</div>';
+          cont += `<div style="text-align:center"> ${i==0?'<':i==breaks.length-1?'>':''}${val} </div>`;
         }
       }
     }
@@ -2775,17 +2807,38 @@ function UpdateLegendLabels(breaks) {
 
 }
 
+function UpdateLegendTitle(){
+  let div = document.getElementById('legend_title');
+  let bins;
+
+  if (selectedMethod.includes("natural_breaks")) {
+    bins = '(Natural Breaks)'
+  } else if (selectedMethod.includes("fixed")) {
+    bins = '(Fixed Bins)'
+  } else if (selectedMethod == "lisa") {
+    bins = '(Local Moran)'
+  } else if (selectedMethod == "forecasting") {
+    bins = ''
+  } else if (selectedMethod.includes("hinge")) {
+    bins = '(Box Map)'
+  }
+
+  div.innerText = `${selectedVariable == null ? '7-Day Average Daily New Confirmed Count per 100k Pop' : config.LEGEND_TEXT[selectedVariable]} ${bins}` 
+}
+
 function UpdateLisaLegend(colors) {
   const div = document.getElementById('legend');
-  var cont = '<div class="legend" style="background: #eee; width: 20%;"></div>';
-  for (var i = 1; i < colors.length; ++i) {
-    cont += '<div class="legend" style="background: ' + colors[i] + '; width: 20%;"></div>';
+  div.className = ''
+  var cont = '<div class="legend" style="background: #eee;"></div>';
+  for (var i = 1; i < colors.length - 2; ++i) {
+    cont += '<div class="legend" style="background: ' + colors[i] + ';"></div>';
   }
   div.innerHTML = cont;
 }
 
 function UpdateLisaLabels(labels) {
   const div = document.getElementById('legend-labels');
+  div.style.padding = `0`;
   var cont = `<div style="width: 20%;text-align:center">Not Sig <div class="top info-tooltip" id="info-NotSig" ><i class="fa fa-info-circle" aria-hidden="true"></i><span class="tooltip-text">${config.TOOLTIP['NotSig']}</span></div> </div>`;
   for (var i = 1; i < 5; ++i) {
     const classLabel = labels[i].replace('-', '');
@@ -2808,7 +2861,7 @@ function updateTooltips() {
 function OnChoroplethClick(evt, map_type, fixed_bins) {
   use_fixed_bins = fixed_bins;
   // update legend title
-  document.getElementById('legend_title').innerText = evt.innerHTML.split('<')[0].trim();
+  // document.getElementById('legend_title').innerText = evt.innerHTML.split('<')[0].trim();
   if (selectedVariable == "Uninsured % (Community Health Factor)" && map_type == "natural_breaks") {
     // hard coded selectedMethod for health related variables
     selectedMethod = "natural_breaks_hlthfactor";
@@ -2848,7 +2901,7 @@ function OnLISAClick(evt) {
   selectedMethod = "lisa";
 
   // update legend title
-  document.getElementById('legend_title').innerText = evt.innerHTML.split('<')[0].trim();
+  // document.getElementById('legend_title').innerText = evt.innerHTML.split('<')[0].trim();
 
   var w = getCurrentWuuid();
   var data = GetDataValues();
@@ -2903,6 +2956,7 @@ function OnLISAClick(evt) {
 
   UpdateLisaLegend(color_vec);
   UpdateLisaLabels(labels);
+  UpdateLegendTitle();
 
   evt.classList.add("checked");
   document.getElementById("btn-nb").classList.remove("checked");

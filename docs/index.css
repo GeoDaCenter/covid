@@ -185,7 +185,8 @@ a:visited {
   padding-top:20px;
 }
 
-#toolbox p.btn-cartogram {
+#toolbox p.btn-cartogram,
+#toolbox p.note {
   padding-top:0;
   font-variant: initial;
   text-transform: initial;
@@ -214,6 +215,14 @@ a:visited {
   height: 12px;
   z-index: 100000;  
   flex:1;
+}
+
+#legend.ZeroFirstBin .legend:nth-of-type(1) {
+  transform:scaleX(0.35);
+}
+
+#legend.HideFirstBin .legend:nth-of-type(1) {
+  display:none;
 }
 
 
