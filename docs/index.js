@@ -90,6 +90,7 @@ function setupTutorial(){
   document.getElementById("right-arrow").addEventListener("click", () => tutorialScroll('right'));
   document.getElementById("close-tutorial").addEventListener("click", () => showTutorial(false));
   document.getElementById("reset-tutorial").addEventListener("click", () => showTutorial(true));
+  document.getElementById("close-notification").addEventListener("click", () => showNotification(false));
 }
 
 function tutorialScroll(val){
@@ -139,6 +140,15 @@ function highlightElement(element, divType) {
 
 function showTutorial(show){
   document.getElementById('tutorial').style.display = show ? 'initial' : 'none'
+}
+
+function showNotification(show){
+  document.getElementById('alert-container').style.display = show ? 'initial' : 'none'
+}
+
+function GeolocateAndCloseNotification(){
+  document.querySelector('.mapboxgl-ctrl-geolocate').click();
+  showNotification(false)
 }
 
 setupTutorial()
@@ -193,6 +203,7 @@ var lisa_btn = document.getElementById("btn-lisa");
 var data_btn = document.getElementById("select-data");
 var source_btn = document.getElementById("select-source");
 var initial_load = true;
+var hasPromptedZoom = false;
 
 // geoda
 var gda_proxy;
@@ -233,7 +244,7 @@ var selectedId = null;
 var selectedDate = null;
 var latestDate = null;
 var use_fixed_bins = true; 
-var selectedVariable = params_dict['var'] !== undefined ? config.VALID[selectedDataset][params_dict['var']] : null;
+var selectedVariable = params_dict['var'] !== undefined ? config.VALID[selectedDataset][params_dict['var']] : '7-Day Average Daily New Confirmed Count per 100K Pop';
 var selectedMethod = params_dict['mthd'] !== undefined ? decodeURI(params_dict['mthd']) : 'natural_breaks'; // set cloropleth as default mode
 var shouldShowLabels = false;
 var cartogramDeselected = false;
@@ -241,10 +252,10 @@ var shouldShowOverlays = {
   'Reservations': false,
   'HypersegregatedCities': false,
   'BlackBelt': false,
+  'USCongress': false,
 }
 
 var shouldShowResources = {
-  'USCongress': false,
   'Clinics': false,
   'Hospitals': false,
   'ClinicsHospitals': false
@@ -1158,6 +1169,30 @@ function init_state() {
   loadMap(stateMap);
 }
 
+function AlertUser(error){
+  let datasets = {
+    'county_usfacts.geojson': 'USA Facts County Level Data',
+    'county_1p3a.geojson': '1Point3Acres County Level Data',
+    'state_1p3a.geojson': '1Point3Acres State Level Data'
+  }
+
+  
+  let alert_msg = document.getElementById("alert-msg")
+  document.getElementById("alert-container").style.display = "block"
+
+  if (error == "BadCombo") {
+    alert_msg.innerHTML = `${datasets[selectedDataset]} do not have ${selectedVariable}.<br/><br/>The Atlas will revert to its default variable.`
+  } else if (error == "TooFar") {
+    alert_msg.innerHTML = `Zoom in to find hospitals and health clinics nearby. <br><br>Click <a href="#" onClick="GeolocateAndCloseNotification()">here</a> to find your location.`
+    
+  }
+  
+  setTimeout(function(){
+    document.getElementById("alert-container").style.display = "none"
+  },10000)
+
+}
+
 function OnSourceClick(evt) {
   source_btn.innerText = evt.innerText;
   if (evt.innerText.indexOf('UsaFacts') >= 0) {
@@ -1170,6 +1205,7 @@ function OnSourceClick(evt) {
   
   // check if current variable is unavailable in new data set
   if (!config.VALID[selectedDataset].includes(selectedVariable)) {
+    AlertUser("BadCombo");
     selectedVariable = 'Daily New Confirmed Count per 100K Pop';
     data_btn.innerText = 'Daily New Confirmed Count per 100K Pop';
     UpdateMethod();
@@ -2243,7 +2279,7 @@ function SetupLayers(layers)
   }
 
   // toggle uscongress layer
-  if (shouldShowResources.USCongress) {
+  if (shouldShowOverlays.USCongress) {
     mapbox.setLayoutProperty("uscongress", 'visibility', 'visible');
     mapbox.setLayoutProperty("uscongress-label", 'visibility', 'visible');
   } else {
@@ -2823,7 +2859,7 @@ function UpdateLegendTitle(){
     bins = '(Box Map)'
   }
 
-  div.innerText = `${selectedVariable == null ? '7-Day Average Daily New Confirmed Count per 100k Pop' : config.LEGEND_TEXT[selectedVariable]} ${bins}` 
+  div.innerHTML = `${selectedVariable == null ? '7-Day Average Daily New Confirmed Count per 100k Pop' : config.LEGEND_TEXT[selectedVariable]} ${bins}` 
 }
 
 function UpdateLisaLegend(colors) {
@@ -2881,19 +2917,34 @@ function UpdateOverlays(evt) {
   shouldShowOverlays = {
     'Reservations': false,
     'HypersegregatedCities': false,
-    'BlackBelt': false
+    'BlackBelt': false,
+    'USCongress': false,
   }
-  if (evt != null) shouldShowOverlays[`${(evt.id).split('-')[1]}`] = true;
+
   UpdateMap();
+  if (evt != null) {
+    shouldShowOverlays[`${(evt.id).split('-')[1]}`] = true;
+    UpdateMap();
+  } 
 }
+
 function UpdateResources(evt) {
   shouldShowResources = {
-    'USCongress': false,
     'Clinics': false,
     'Hospitals': false,
     'ClinicsHospitals': false
   }
-  if (evt != null) shouldShowResources[`${(evt.id).split('-')[1]}`] = true;
+
+  if (evt != null) {
+    let resource = (evt.id).split('-')[1];
+    shouldShowResources[resource] = true;
+
+    if ((resource == 'Clinics' || resource == 'Hospitals' || resource == 'ClinicsHospitals') && (!hasPromptedZoom) && (mapbox.getZoom() < 7)){
+      AlertUser("TooFar");
+      hasPromptedZoom = true;
+    }
+  } 
+  
   UpdateMap();
 }
 
@@ -3576,36 +3627,3 @@ var Module = {
     OnCountyClick();
   }
 };
-
-/* 
- * PWA Setup
-*/
-
-let deferredPrompt;
-const addBtn = document.querySelector('.add-button');
-addBtn.style.display = 'none';
-
-window.addEventListener('beforeinstallprompt', (e) => {
-  // Prevent Chrome 67 and earlier from automatically showing the prompt
-  e.preventDefault();
-  // Stash the event so it can be triggered later.
-  deferredPrompt = e;
-  // Update UI to notify the user they can add to home screen
-  addBtn.style.display = 'block';
-
-  addBtn.addEventListener('click', (e) => {
-    // hide our user interface that shows our A2HS button
-    addBtn.style.display = 'none';
-    // Show the prompt
-    deferredPrompt.prompt();
-    // Wait for the user to respond to the prompt
-    deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === 'accepted') {
-          console.log('User accepted the A2HS prompt');
-        } else {
-          console.log('User dismissed the A2HS prompt');
-        }
-        deferredPrompt = null;
-      });
-  });
-});

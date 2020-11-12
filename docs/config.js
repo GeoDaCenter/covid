@@ -94,8 +94,6 @@ config.VALID['county_1p3a.geojson'] = [
   'Death Count/Confirmed Count',
   'Daily New Confirmed Count',
   'Daily New Confirmed Count per 100K Pop',
-  '7-Day Average Daily New Confirmed Count',
-  '7-Day Average Daily New Confirmed Count per 100K Pop',
   'Daily New Death Count',
   'Daily New Death Count per 100K Pop',
   'Forecasting (5-Day Severity Index)',

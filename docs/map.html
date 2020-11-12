@@ -89,7 +89,6 @@
       <li><a href="about.html">INSIGHTS</a></li>
       <li><a href="about.html">ABOUT</a></li>
       <li><a href="contact.html">CONTACT</a></li>
-      <li><button class="add-button">Add to home screen</button></li>
     </ul>
   </div>
   <div id="tooltip" class="center-shadow"></div>
@@ -238,6 +237,12 @@
                 <span class="left tooltip-text"></span>
               </div>
             </a>
+            <a href="#" id="btn-USCongress" onclick="UpdateOverlays(this)">US Congressional Districts
+              <div class="info-tooltip" id="info-USCongress">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="left tooltip-text"></span>
+              </div>
+            </a>
           </div>
         </div>
         <div class="dropdown">
@@ -245,12 +250,6 @@
           </button>
           <div class="dropdown-content">
             <a href="#" id="btn-clear-resources" onclick="UpdateResources(null)">None</a>
-            <a href="#" id="btn-USCongress" onclick="UpdateResources(this)">US Congressional Districts
-              <div class="info-tooltip" id="info-USCongress">
-                <i class="fa fa-info-circle"  aria-hidden="true"></i>
-                <span class="left tooltip-text"></span>
-              </div>
-            </a>
             <a href="#" id="btn-ClinicsHospitals" onclick="UpdateResources(this)">Health Clinics and Hospitals</a>
             <a href="#" id="btn-Clinics" onclick="UpdateResources(this)">Health Clinics</a>
             <a href="#" id="btn-Hospitals" onclick="UpdateResources(this)">Hospitals</a>
@@ -394,6 +393,11 @@
     <svg viewBox="0 0 100 100" id="right-arrow"><g transform="translate(0,-952.36218)"><path d="m 71.20311,1002.3622 -2.84375,-3.28121 -31.99997,-37 -7.5625,6.5624 29.15622,33.71881 -29.15622,33.7188 7.5625,6.5624 31.99997,-37 2.84375,-3.2812 z"></path></g></svg>
     <div id="close-tutorial">×</div>    
     <div id="dots-container"></div>
+  </div>
+  <div id="alert-container">
+    <h3>Notification:</h3>
+    <p id="alert-msg"></p>
+    <div id="close-notification">×</div>   
   </div>
 </body>
 
