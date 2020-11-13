@@ -313,7 +313,7 @@ function updateSelectedDataset(url, callback = () => {}) {
 
 // fetch county health rankings health factors
 async function fetchChrHlthFactorData() {
-  const rows = await d3.csv('./csv/chr_health_factors.csv');
+  const rows = await GetParseCSV('./csv/chr_health_factors.csv');
 
   // index rows by "fips" (unique id)
   const rowsIndexed = rows.reduce((acc, row) => {
@@ -325,7 +325,7 @@ async function fetchChrHlthFactorData() {
 
 // fetch county health rankings health context indicators
 async function fetchChrHlthContextData() {
-  const rows = await d3.csv('./csv/chr_health_context.csv');
+  const rows = await GetParseCSV('./csv/chr_health_context.csv');
 
   // index rows by "fips" (unique id)
   const rowsIndexed = rows.reduce((acc, row) => {
@@ -337,7 +337,7 @@ async function fetchChrHlthContextData() {
 
 // fetch county health rankings length and quality of life
 async function fetchChrHlthLifeData() {
-  const rows = await d3.csv('./csv/chr_life.csv');
+  const rows = await GetParseCSV('./csv/chr_life.csv');
 
   // index rows by "fips" (unique id)
   const rowsIndexed = rows.reduce((acc, row) => {
@@ -349,7 +349,7 @@ async function fetchChrHlthLifeData() {
 
 // fetch berkeley group death predictions and 5-day county severity index
 async function fetchBerkeleyCountyData() {
-  const rows = await d3.csv('./csv/berkeley_predictions.csv');
+  const rows = await GetParseCSV('./csv/berkeley_predictions.csv');
 
   // get dates too loop over for building `predictions` objects
   // TODO this assumes at least one row
@@ -417,6 +417,15 @@ async function fetchBerkeleyCountyData() {
   return rowsIndexed;
 }
 
+async function GetParseCSV(url){
+  const tempData = await fetch(url).then(function(response) {
+    return response.ok ? response.text() : Promise.reject(response.status);
+    }).then(function(text) {
+      return d3.csvParse(text, d3.autoType);
+  });
+  return tempData;
+}
+
 // this is effectively the entry point for data loading, since usafacts is the
 // dataset selected by default. note that it has side effects unrelated to data
 // fetching, namely updating selectedDataset.
@@ -441,8 +450,8 @@ async function loadUsafactsData(url, callback) {
     chrhlthlifeData,
     berkeleyCountyData,
   ] = await Promise.all([
-    d3.csv('./csv/covid_confirmed_usafacts.csv'),
-    d3.csv('./csv/covid_deaths_usafacts.csv'),
+    GetParseCSV('./csv/covid_confirmed_usafacts.csv'),
+    GetParseCSV('./csv/covid_deaths_usafacts.csv'),
     fetchChrHlthFactorData(),
     fetchChrHlthContextData(),
     fetchChrHlthLifeData(),
@@ -491,8 +500,8 @@ async function load1p3aCountyData(url, callback) {
       chrhlthlifeData,
       berkeleyCountyData,
     ] = await Promise.all([
-      d3.csv('./csv/covid_confirmed_1p3a.csv'),
-      d3.csv('./csv/covid_deaths_1p3a.csv'),
+      GetParseCSV('./csv/covid_confirmed_1p3a.csv'),
+      GetParseCSV('./csv/covid_deaths_1p3a.csv'),
       chrhlthfactorData,
       chrhlthcontextData,
       chrhlthlifeData,
@@ -507,8 +516,8 @@ async function load1p3aCountyData(url, callback) {
       chrhlthlifeData,
       berkeleyCountyData,
     ] = await Promise.all([
-      d3.csv('./csv/covid_confirmed_1p3a.csv'),
-      d3.csv('./csv/covid_deaths_1p3a.csv'),
+      GetParseCSV('./csv/covid_confirmed_1p3a.csv'),
+      GetParseCSV('./csv/covid_deaths_1p3a.csv'),
       fetchChrHlthFactorData(),
       fetchChrHlthContextData(),
       fetchChrHlthLifeData(),
@@ -563,12 +572,12 @@ async function load1p3aStateData(url, callback) {
       chrhlthlifeData,
       berkeleyCountyData,
     ] = await Promise.all([
-      d3.csv('./csv/covid_confirmed_1p3a_state.csv'),
-      d3.csv('./csv/covid_deaths_1p3a_state.csv'),
-      d3.csv('./csv/covid_wk_pos_1p3a_state.csv'),
-      d3.csv('./csv/covid_confirmed_1p3a.csv'),
-      d3.csv('./csv/covid_tcap_1p3a_state.csv'),
-      d3.csv('./csv/covid_ccpt_1p3a_state.csv'),
+      GetParseCSV('./csv/covid_confirmed_1p3a_state.csv'),
+      GetParseCSV('./csv/covid_deaths_1p3a_state.csv'),
+      GetParseCSV('./csv/covid_wk_pos_1p3a_state.csv'),
+      GetParseCSV('./csv/covid_confirmed_1p3a.csv'),
+      GetParseCSV('./csv/covid_tcap_1p3a_state.csv'),
+      GetParseCSV('./csv/covid_ccpt_1p3a_state.csv'),
       chrhlthfactorData,
       chrhlthcontextData,
       chrhlthlifeData,
@@ -587,12 +596,12 @@ async function load1p3aStateData(url, callback) {
       chrhlthlifeData,
       berkeleyCountyData,
     ] = await Promise.all([
-      d3.csv('./csv/covid_confirmed_1p3a_state.csv'),
-      d3.csv('./csv/covid_deaths_1p3a_state.csv'),
-      d3.csv('./csv/covid_testing_1p3a_state.csv'),
-      d3.csv('./csv/covid_wk_pos_1p3a_state.csv'),
-      d3.csv('./csv/covid_tcap_1p3a_state.csv'),
-      d3.csv('./csv/covid_ccpt_1p3a_state.csv'),
+      GetParseCSV('./csv/covid_confirmed_1p3a_state.csv'),
+      GetParseCSV('./csv/covid_deaths_1p3a_state.csv'),
+      GetParseCSV('./csv/covid_testing_1p3a_state.csv'),
+      GetParseCSV('./csv/covid_wk_pos_1p3a_state.csv'),
+      GetParseCSV('./csv/covid_tcap_1p3a_state.csv'),
+      GetParseCSV('./csv/covid_ccpt_1p3a_state.csv'),
       fetchChrHlthFactorData(),
       fetchChrHlthContextData(),
       fetchChrHlthLifeData(),
