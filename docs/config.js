@@ -75,6 +75,8 @@ config.VALID['state_1p3a.geojson'] = [
   'Death Count/Confirmed Count',
   'Daily New Confirmed Count',
   'Daily New Confirmed Count per 100K Pop',
+  '7-Day Average Daily New Confirmed Count',
+  '7-Day Average Daily New Confirmed Count per 100K Pop',
   'Daily New Death Count',
   'Daily New Death Count per 100K Pop',
   'Forecasting (5-Day Severity Index)',
@@ -92,6 +94,8 @@ config.VALID['county_1p3a.geojson'] = [
   'Death Count/Confirmed Count',
   'Daily New Confirmed Count',
   'Daily New Confirmed Count per 100K Pop',
+  '7-Day Average Daily New Confirmed Count',
+  '7-Day Average Daily New Confirmed Count per 100K Pop',
   'Daily New Death Count',
   'Daily New Death Count per 100K Pop',
   'Forecasting (5-Day Severity Index)',
@@ -121,8 +125,8 @@ config.VALID['county_usfacts.geojson'] = [
 
 config.DEFAULT = {}
 
-config.DEFAULT['state_1p3a.geojson'] = 'Daily New Confirmed Count per 100K Pop';
-config.DEFAULT['county_1p3a.geojson'] = 'Daily New Confirmed Count per 100K Pop';
+config.DEFAULT['state_1p3a.geojson'] = '7-Day Average Daily New Confirmed Count per 100K Pop';
+config.DEFAULT['county_1p3a.geojson'] = '7-Day Average Daily New Confirmed Count per 100K Pop';
 config.DEFAULT['county_usfacts.geojson'] = '7-Day Average Daily New Confirmed Count per 100K Pop';
 
 const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg';
@@ -221,12 +225,12 @@ const COLOR_SCALE = {
 
 const testing_breaks = {
   bins: ['No Data','<3%','5%','10%','15%','20%','>25%'],
-  breaks:[-1,-0.1,3,5,10,15,20,25, Infinity]
+  breaks:[0,3,5,10,15,20,25,Infinity]
 }
 
 const testing_cap_breaks = {
   bins: ['No Data','<50','100','150','200','250','300','350','>400'],
-  breaks:[-1,-0.1,50,100,150,200,250,300,350,400,Infinity]
+  breaks:[0,50,100,150,200,250,300,350,400,Infinity]
 }
 
 var lisa_labels = ["Not significant", "High-High", "Low-Low", "Low-High", "High-Low", "Undefined", "Isolated"];

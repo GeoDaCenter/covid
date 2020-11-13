@@ -770,54 +770,49 @@ function parse1P3ACountyData(data, confirm_data, death_data) { // testing, testi
     let pop = data.features[i].properties.population;
     let geoid = parseInt(data.features[i].properties.GEOID);
     let beds = data.features[i].properties.beds;
-    
+
+    populationData[json][i] = pop;
+    bedsData[json][i] = beds;
+
+    let j = 0;
     if (!(geoid in conf_dict)) {
       console.log("1P3A Counties does not have:", data.features[i].properties);
-      for (let j = 0; j < dates[selectedDataset].length; ++j) {
+      while (j < dates[selectedDataset].length) {
         let d = dates[selectedDataset][j];
         caseData[json][d][i] = 0;
         deathsData[json][d][i] = 0;
         fatalityData[json][d][i] = 0;
+        j++;
       }
       continue;
-    }
-    populationData[json][i] = pop;
-    bedsData[json][i] = beds;
-
-    // confirmed count
-    for (let j = 0; j < dates[selectedDataset].length; ++j) {
-      let d = dates[selectedDataset][j];
-      if (!(d in caseData[json])) {
-        caseData[json][d] = {};
-      }
-      caseData[json][d][i] = conf_dict[geoid][d] == '' ? 0 : parseInt(conf_dict[geoid][d]);
-    }
-    // death count
-    for (var j = 0; j < dates[selectedDataset].length; ++j) {
-      var d = dates[selectedDataset][j];
-      if (!(d in deathsData[json])) {
-        deathsData[json][d] = {};
-      }
-      deathsData[json][d][i] = death_dict[geoid][d] == '' ? 0 : parseInt(death_dict[geoid][d]);
-    }
-
-    // accum
-    for (var j = 1; j < dates[selectedDataset].length; ++j) {
-      var d1 = dates[selectedDataset][j - 1];
-      var d2 = dates[selectedDataset][j];
-      caseData[json][d2][i] += caseData[json][d1][i];
-      deathsData[json][d2][i] += deathsData[json][d1][i];
-    }
-
-    // fatality
-    for (var j = 0; j < dates[selectedDataset].length; ++j) {
-      var d = dates[selectedDataset][j];
-      if (!(d in fatalityData[json])) {
-        fatalityData[json][d] = {};
-      }
-      fatalityData[json][d][i] = 0;
-      if (caseData[json][d][i] > 0) {
-        fatalityData[json][d][i] = deathsData[json][d][i] / caseData[json][d][i];
+    } else {
+      while (j < dates[selectedDataset].length) {
+        let d = dates[selectedDataset][j];
+        if (!(d in caseData[json])) {
+          caseData[json][d] = {};
+          deathsData[json][d] = {};
+          fatalityData[json][d] = {};
+        }
+        // after the first iteration
+        if (j > 0) {
+          // get last date by index
+          var d1 = dates[selectedDataset][j - 1];
+          // case data with accumulation
+          caseData[json][d][i] = caseData[json][d1][i] + (conf_dict[geoid][d] == '' ? 0 : conf_dict[geoid][d]);
+          // death data with accumulation
+          deathsData[json][d][i] = deathsData[json][d1][i] + (conf_dict[geoid][d] == '' ? 0 : conf_dict[geoid][d]);
+          // fatality data
+          fatalityData[json][d][i] = 0;
+        } else {
+          // first date case data
+          caseData[json][d][i] = conf_dict[geoid][d] == '' ? 0 : conf_dict[geoid][d];
+          // first date death data
+          deathsData[json][d][i] = death_dict[geoid][d] == '' ? 0 : death_dict[geoid][d];
+          fatalityData[json][d][i] = 0;
+        }
+        // if non-zero fatality, calculate fatality
+        if (caseData[json][d][i] > 0) fatalityData[json][d][i] = deathsData[json][d][i] / caseData[json][d][i];
+        j++;
       }
     }
   }
@@ -867,9 +862,15 @@ function parse1P3AStateData(data, confirm_data, death_data, testing, testingpos,
     let geoid = parseInt(data.features[i].properties.GEOID);
     let beds = data.features[i].properties.beds;
     let criteria = data.features[i].properties.criteria;
+    
+    populationData[json][i] = pop;
+    bedsData[json][i] = beds;
+    testingCriteriaData[json][i] = criteria;
+
+    let j = 0;
     if (!(geoid in conf_dict)) {
-      console.log("UsaFacts does not have:", data.features[i].properties);
-      for (let j = 0; j < dates[selectedDataset].length; ++j) {
+      console.log("1P3A Counties does not have:", data.features[i].properties);
+      while (j < dates[selectedDataset].length) {
         let d = dates[selectedDataset][j];
         caseData[json][d][i] = 0;
         deathsData[json][d][i] = 0;
@@ -878,80 +879,47 @@ function parse1P3AStateData(data, confirm_data, death_data, testing, testingpos,
         testingTcapData[json][d][i] = 0;
         testingCcptData[json][d][i] = 0;
         testingPosData[json][d][i] = 0;
+        j++;
       }
       continue;
-    }
-    populationData[json][i] = pop;
-    bedsData[json][i] = beds;
-    testingCriteriaData[json][i] = criteria;
-
-    // confirmed count
-    for (let j = 0; j < dates[selectedDataset].length; ++j) {
-      let d = dates[selectedDataset][j];
-      if (!(d in caseData[json])) {
-        caseData[json][d] = {};
+    } else {
+      while (j < dates[selectedDataset].length) {
+        let d = dates[selectedDataset][j];
+        if (!(d in caseData[json])) {
+          caseData[json][d] = {};
+          deathsData[json][d] = {};
+          fatalityData[json][d] = {};
+          testingData[json][d] = {};
+          testingTcapData[json][d] = {};
+          testingCcptData[json][d] = {};
+          testingPosData[json][d] = {};
+        }
+        // after the first iteration
+        if (j > 0) {
+          // get last date by index
+          var d1 = dates[selectedDataset][j - 1];
+          // case data with accumulation
+          caseData[json][d][i] = caseData[json][d1][i] + (conf_dict[geoid][d] == '' ? 0 : conf_dict[geoid][d]);
+          // death data with accumulation
+          deathsData[json][d][i] = deathsData[json][d1][i] + (conf_dict[geoid][d] == '' ? 0 : conf_dict[geoid][d]);
+          // fatality data
+          fatalityData[json][d][i] = 0;
+        } else {
+          // first date case data
+          caseData[json][d][i] = conf_dict[geoid][d] == '' ? 0 : conf_dict[geoid][d];
+          // first date death data
+          deathsData[json][d][i] = death_dict[geoid][d] == '' ? 0 : death_dict[geoid][d];
+          fatalityData[json][d][i] = 0;
+        }
+        // if non-zero fatality, calculate fatality
+        if (caseData[json][d][i] > 0) fatalityData[json][d][i] = deathsData[json][d][i] / caseData[json][d][i];
+        // testing data
+        testingData[json][d][i] = testing_dict[geoid][d] == '' ? -1 : testing_dict[geoid][d];
+        testingTcapData[json][d][i] = testingtcap_dict[geoid][d] == '' ? -1 : testingtcap_dict[geoid][d];
+        testingCcptData[json][d][i] = testingccpt_dict[geoid][d] == '' ? -1 : testingccpt_dict[geoid][d];
+        testingPosData[json][d][i] = testingpos_dict[geoid][d] == '' ? -1 : testingpos_dict[geoid][d];
+        j++;
       }
-      caseData[json][d][i] = conf_dict[geoid][d] == '' ? 0 : parseInt(conf_dict[geoid][d]);
-    }
-    // death count
-    for (var j = 0; j < dates[selectedDataset].length; ++j) {
-      var d = dates[selectedDataset][j];
-      if (!(d in deathsData[json])) {
-        deathsData[json][d] = {};
-      }
-      deathsData[json][d][i] = death_dict[geoid][d] == '' ? 0 : parseInt(death_dict[geoid][d]);
-    }
-
-    // accum
-    for (var j = 1; j < dates[selectedDataset].length; ++j) {
-      var d1 = dates[selectedDataset][j - 1];
-      var d2 = dates[selectedDataset][j];
-      caseData[json][d2][i] += caseData[json][d1][i];
-      deathsData[json][d2][i] += deathsData[json][d1][i];
-    }
-
-    // fatality
-    for (var j = 0; j < dates[selectedDataset].length; ++j) {
-      var d = dates[selectedDataset][j];
-      if (!(d in fatalityData[json])) {
-        fatalityData[json][d] = {};
-      }
-      fatalityData[json][d][i] = 0;
-      if (caseData[json][d][i] > 0) {
-        fatalityData[json][d][i] = deathsData[json][d][i] / caseData[json][d][i];
-      }
-    }
-    // testing number
-    for (var j = 0; j < dates[selectedDataset].length; ++j) {
-      var d = dates[selectedDataset][j];
-      if (!(d in testingData[json])) {
-        testingData[json][d] = {};
-      }
-      testingData[json][d][i] = testing_dict[geoid][d] == '' ? 0 : parseInt(testing_dict[geoid][d]);
-    }
-    // testing capacity
-    for (var j = 0; j < dates[selectedDataset].length; ++j) {
-      var d = dates[selectedDataset][j];
-      if (!(d in testingTcapData[json])) {
-        testingTcapData[json][d] = {};
-      }
-      testingTcapData[json][d][i] = testingtcap_dict[geoid][d] == '' ? 0 : testingtcap_dict[geoid][d];
-    }
-    //  confirmed cases per testing 
-    for (var j = 0; j < dates[selectedDataset].length; ++j) {
-      var d = dates[selectedDataset][j];
-      if (!(d in testingCcptData[json])) {
-        testingCcptData[json][d] = {};
-      }
-      testingCcptData[json][d][i] = testingccpt_dict[geoid][d] == '' ? 0 : testingccpt_dict[geoid][d];
-    }
-    //  testing positivity
-    for (var j = 0; j < dates[selectedDataset].length; ++j) {
-      var d = dates[selectedDataset][j];
-      if (!(d in testingPosData[json])) {
-        testingPosData[json][d] = {};
-      }
-      testingPosData[json][d][i] = testingpos_dict[geoid][d] == '' ? 0 : testingpos_dict[geoid][d];
     }
   }
 }
@@ -1200,6 +1168,12 @@ function init_state() {
         if (x < nb.breaks[i])
           return COLOR_SCALE[selectedMethod][i];
       }
+    } else if (selectedMethod.includes("testing")){
+      if (x == -1) return COLOR_SCALE[selectedMethod][0];
+      for (var i = 1; i < nb.breaks.length; ++i) {
+        if (x <= nb.breaks[i])
+          return COLOR_SCALE[selectedMethod][i];
+      }
     } else {
       for (var i = 1; i < nb.breaks.length; ++i) {
         if (x <= nb.breaks[i])
@@ -1278,13 +1252,13 @@ function OnSourceClick(evt) {
   }
 
   UpdateMap();
-  if (evt.innerText.indexOf('1Point3Acres.com') >= 0) {
-    document.getElementById("btn-7day").style.display = "none";
-    document.getElementById("btn-7day-per100K").style.display = "none";
-  } else {
-    document.getElementById("btn-7day").style.display = "block";
-    document.getElementById("btn-7day-per100K").style.display = "block";
-  }
+  // if (evt.innerText.indexOf('1Point3Acres.com') >= 0) {
+  //   document.getElementById("btn-7day").style.display = "none";
+  //   document.getElementById("btn-7day-per100K").style.display = "none";
+  // } else {
+  //   document.getElementById("btn-7day").style.display = "block";
+  //   document.getElementById("btn-7day-per100K").style.display = "block";
+  // }
   if (evt.innerText.indexOf('State') >= 0){
     document.getElementById("btn-uninprc").style.display = "none";
     document.getElementById("btn-over65yearsprc").style.display = "none";
