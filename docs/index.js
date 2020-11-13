@@ -47,7 +47,6 @@ const datasource_names = {
 /*
  * UTILITIES
 */
-
 function isInt(n) {
   return Number(n) === n && n % 1 === 0;
 }
@@ -671,6 +670,7 @@ function getDatesFrom1p3a(cases) {
 }
 
 function parseUsaFactsData(data, confirm_data, death_data) { // testing, testingpos, testingtcap, testingccpt
+  
   let json = selectedDataset;
   
   if (!(json in caseData)) caseData[json] = {};
@@ -690,10 +690,6 @@ function parseUsaFactsData(data, confirm_data, death_data) { // testing, testing
 
   let conf_dict = {};
   let death_dict = {};
-  let testing_dict = {};
-  let testingtcap_dict = {};
-  let testingccpt_dict = {};
-  let testingpos_dict = {};
 
   for (let i = 0; i < confirm_data.length; ++i) {
     conf_dict[confirm_data[i].countyFIPS] = confirm_data[i];
@@ -704,47 +700,83 @@ function parseUsaFactsData(data, confirm_data, death_data) { // testing, testing
     let geoid = parseInt(data.features[i].properties.GEOID);
     let beds = data.features[i].properties.beds;
     let criteria = data.features[i].properties.criteria;
+    
+    populationData[json][i] = pop;
+    bedsData[json][i] = beds;
+    // confirmed count
+    let j =  dates[selectedDataset].length
     if (!(geoid in conf_dict)) {
-      console.log("UsaFacts does not have:", data.features[i].properties);
-      for (let j = 0; j < dates[selectedDataset].length; ++j) {
-        let d = dates[selectedDataset][j];
+      // console.log("UsaFacts does not have:", data.features[i].properties);
+      while (j>0) {
+        let d = dates[selectedDataset][j-1];
         caseData[json][d][i] = 0;
         deathsData[json][d][i] = 0;
         fatalityData[json][d][i] = 0;
+        j--;
       }
       continue;
-    }
-    populationData[json][i] = pop;
-    bedsData[json][i] = beds;
+    } else {
+      while (j>0) {
+        let d = dates[selectedDataset][j-1];
+        if (!(d in caseData[json])) {
+          caseData[json][d] = {};
+          deathsData[json][d] = {};
+          fatalityData[json][d] = {};
+        }
 
-    // confirmed count
-    for (let j = 0; j < dates[selectedDataset].length; ++j) {
-      let d = dates[selectedDataset][j];
-      if (!(d in caseData[json])) {
-        caseData[json][d] = {};
-      }
-      caseData[json][d][i] = conf_dict[geoid][d] == '' ? 0 : parseInt(conf_dict[geoid][d]);
-    }
-    // death count
-    for (var j = 0; j < dates[selectedDataset].length; ++j) {
-      var d = dates[selectedDataset][j];
-      if (!(d in deathsData[json])) {
-        deathsData[json][d] = {};
-      }
-      deathsData[json][d][i] = death_dict[geoid][d] == '' ? 0 : parseInt(death_dict[geoid][d]);
-    }
-    // fatality
-    for (var j = 0; j < dates[selectedDataset].length; ++j) {
-      var d = dates[selectedDataset][j];
-      if (!(d in fatalityData[json])) {
-        fatalityData[json][d] = {};
-      }
-      fatalityData[json][d][i] = 0;
-      if (caseData[json][d][i] > 0) {
-        fatalityData[json][d][i] = deathsData[json][d][i] / caseData[json][d][i];
+        caseData[json][d][i] = conf_dict[geoid][d] == '' ? 0 : conf_dict[geoid][d];
+        deathsData[json][d][i] = death_dict[geoid][d] == '' ? 0 : death_dict[geoid][d];
+        fatalityData[json][d][i] = 0;
+
+        if (caseData[json][d][i] > 0) fatalityData[json][d][i] = deathsData[json][d][i] / caseData[json][d][i];
+
+        j--;
       }
     }
   }
+}
+
+function mergeData(featureCollection, featureCollectionJoinCol, joinData, joinDataNames, joinDataCol) { // testing, testingpos, testingtcap, testingccpt
+    // declare parent dictionaries
+  let features = {}
+  let dataDicts = {}
+  
+  // declare and prep feature collection object
+  let i = featureCollection.features.length;
+  let colNumCheck = parseInt(featureCollection.features[0].properties[featureCollectionJoinCol])
+  if (Number.isInteger(colNumCheck)) {
+    while (i>0) {
+      features[parseInt(featureCollection.features[i-1].properties[featureCollectionJoinCol])] = featureCollection.features[i-1]
+      i--;
+    }
+  } else {
+    while (i>0) {
+      features[featureCollection.features[i-1].properties[featureCollectionJoinCol]] = featureCollection.features[i-1]
+      i--;
+    }
+  }
+
+  // declare data objects
+  for (let n=0; n < joinDataNames.length; n++) {
+    dataDicts[`${joinDataNames[n]}`] = {}
+  }
+  
+  // loop through data and add to dictionaries
+  i = joinData[0].length;
+  while (i>0) {
+    for (let n=0; n<joinData.length; n++) {
+      dataDicts[joinDataNames[n]][joinData[n][i-1][joinDataCol]] = {[`${joinDataNames[n]}`]: joinData[n][i-1]}
+    }
+    i--;
+  }
+
+  // use lodash to merge data
+  let merged = _.merge(features, dataDicts[joinDataNames[0]])
+  for (let n=1; n < joinDataNames.length; n++){
+    merged = _.merge(merged, dataDicts[joinDataNames[n]])
+  }
+  
+  return merged;
 }
 
 function parse1P3ACountyData(data, confirm_data, death_data) { // testing, testingpos, testingtcap, testingccpt
@@ -1662,7 +1694,7 @@ function healthFactorHtml(geoId) {
 
   const handle = (val) => {
     let formatted = val;
-    if (formatted.includes(':')){
+    if (`${formatted}`.includes(':')){
       return Math.round(formatted.substring(0,formatted.length-2)/10)*10 + ":1";
     }
     if (!val || val === '') return 'N/A';
