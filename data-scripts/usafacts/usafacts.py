@@ -54,7 +54,7 @@ def validate_and_process():
     # note: we need to open the files with encoding `utf-8-sig` to correctly parse
     # the byte-order mark (bom) of the sources files
     # https://stackoverflow.com/a/49150749
-    with open(os.path.join(dir_path, '_working/cases_raw.csv'), encoding='utf-8-sig') as cases_in_file, open(os.path.join(dir_path, '_working/deaths_raw.csv'), encoding='utf-8-sig') as deaths_in_file, open(os.path.join(repo_root, 'docs/covid_confirmed_usafacts.csv'), 'w+') as cases_out_file, open(os.path.join(repo_root, 'docs/covid_deaths_usafacts.csv'), 'w+') as deaths_out_file:
+    with open(os.path.join(dir_path, '_working/cases_raw.csv'), encoding='utf-8-sig') as cases_in_file, open(os.path.join(dir_path, '_working/deaths_raw.csv'), encoding='utf-8-sig') as deaths_in_file, open(os.path.join(repo_root, 'docs/csv/covid_confirmed_usafacts.csv'), 'w+') as cases_out_file, open(os.path.join(repo_root, 'docs/csv/covid_deaths_usafacts.csv'), 'w+') as deaths_out_file:
       cases_csv_reader =  csv.DictReader(cases_in_file)
       cases_source_field_names = cases_csv_reader.fieldnames
 
@@ -125,7 +125,7 @@ def validate_and_process():
     print('Finished.')
 
 
-def create_geojson_files(month_day):
+def create_geojson_files(month_day): #could probably deprecate this
     county_geom = gpd.read_file(os.path.join(repo_root, 'docs/county_usfacts.geojson'))
 
     for dataset in ['confirmed', 'deaths']:

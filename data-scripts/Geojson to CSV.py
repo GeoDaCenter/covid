@@ -3,25 +3,23 @@
 
 # In[1]:
 
-
+import os
 import geopandas as gpd
 import pandas as pd
 import datetime
+os.chdir("/Users/ryan/Documents/GitHub/lqycovid/docs")
 
 
 # In[ ]:
 
 
-counties = gpd.read_file("./counties_update.geojson/counties_update.geojson")
-usfacts = gpd.read_file('./county_usfacts.geojson')
-states = gpd.read_file("./states_update.geojson/states_update.geojson")
+counties = gpd.read_file("./counties_update_processing.geojson")
+states = gpd.read_file("./states_update.geojson")
 
 
 # # Counties
 
 # In[7]:
-
-
 caseCols = ["STATEFP","COUNTYFP","COUNTYNS","AFFGEOID","GEOID","NAME","LSAD"]
 for col in counties.columns:
     if col[0] == '2':
@@ -33,7 +31,7 @@ for col in counties.columns:
 
 cases = counties[caseCols]
 cases['GEOID'] = cases['GEOID'].astype(int)
-cases.sort_values("GEOID").to_csv("./covid_confirmed_1p3a.csv", index=False)
+cases.sort_values("GEOID").to_csv("./csv/covid_confirmed_1p3a.csv", index=False)
 
 
 # In[9]:
@@ -50,45 +48,8 @@ for col in counties.columns:
 
 deaths = counties[deathCols]
 deaths['GEOID'] = deaths['GEOID'].astype(int)
-deaths.sort_values("GEOID").to_csv("./covid_deaths_1p3a.csv", index=False)
+deaths.sort_values("GEOID").to_csv("./csv/covid_deaths_1p3a.csv", index=False)
 
-
-# # JSON Dump
-
-# In[ ]:
-
-
-usfacts
-
-
-# In[35]:
-
-
-dump = []
-
-for i in range(0, len(usfacts)):
-    dump.append({
-        'STATEFP':int(usfacts.iloc[i].STATEFP),
-        'COUNTYFP':int(usfacts.iloc[i].COUNTYFP),
-        'GEOID':int(usfacts.iloc[i].GEOID),
-        'NAME':usfacts.iloc[i].NAME,
-        'state_name':usfacts.iloc[i].state_name,
-        'state_abbr':usfacts.iloc[i].state_abbr,
-        'population':int(usfacts.iloc[i].population),
-        'beds':int(usfacts.iloc[i].beds),
-        'criteria':usfacts.iloc[i].criteria,
-        'geom': [list(x.coords) for x in usfacts.iloc[i].geometry.boundary]
-        
-    })
-
-
-# In[38]:
-
-
-import json 
-
-with open(f'./county_usfacts.json', 'w') as fp:
-    json.dump(dump, fp)
 
 
 # # States
@@ -102,7 +63,7 @@ for col in states.columns:
         caseColsState.append(col)
 cases = states[caseColsState]
 cases['GEOID'] = cases['GEOID'].astype(int)
-cases.sort_values("GEOID").to_csv("./covid_confirmed_1p3a_state.csv", index=False)
+cases.sort_values("GEOID").to_csv("./csv/covid_confirmed_1p3a_state.csv", index=False)
 
 
 # In[105]:
@@ -117,7 +78,7 @@ for col in states.columns:
 deaths = states[deathColsState]
 deaths['GEOID'] = deaths['GEOID'].astype(int)
 deaths.columns = newColNames
-deaths.sort_values("GEOID").to_csv("./covid_deaths_1p3a_state.csv", index=False)
+deaths.sort_values("GEOID").to_csv("./csv/covid_deaths_1p3a_state.csv", index=False)
 
 
 # In[106]:
@@ -132,7 +93,7 @@ for col in states.columns:
 testing = states[testingColsState]
 testing['GEOID'] = testing['GEOID'].astype(int)
 testing.columns = newColNames
-testing.sort_values("GEOID").to_csv("./covid_testing_1p3a_state.csv", index=False)
+testing.sort_values("GEOID").to_csv("./csv/covid_testing_1p3a_state.csv", index=False)
 
 
 # In[107]:
@@ -147,7 +108,7 @@ for col in states.columns:
 testing = states[confirmedTestingColsState]
 testing['GEOID'] = testing['GEOID'].astype(int)
 testing.columns = newColNames
-testing.sort_values("GEOID").to_csv("./covid_ccpt_1p3a_state.csv", index=False)
+testing.sort_values("GEOID").to_csv("./csv/covid_ccpt_1p3a_state.csv", index=False)
 
 
 # In[108]:
@@ -162,7 +123,7 @@ for col in states.columns:
 testing = states[testingCapColsState]
 testing['GEOID'] = testing['GEOID'].astype(int)
 testing.columns = newColNames
-testing.sort_values("GEOID").to_csv("./covid_tcap_1p3a_state.csv", index=False)
+testing.sort_values("GEOID").to_csv("./csv/covid_tcap_1p3a_state.csv", index=False)
 
 
 # In[109]:
@@ -177,7 +138,7 @@ for col in states.columns:
 testing = states[testingPosWkColsState]
 testing['GEOID'] = testing['GEOID'].astype(int)
 testing.columns = newColNames
-testing.sort_values("GEOID").to_csv("./covid_wk_pos_1p3a_state.csv", index=False)
+testing.sort_values("GEOID").to_csv("./csv/covid_wk_pos_1p3a_state.csv", index=False)
 
 
 # In[ ]:
