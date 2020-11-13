@@ -75,8 +75,6 @@ config.VALID['state_1p3a.geojson'] = [
   'Death Count/Confirmed Count',
   'Daily New Confirmed Count',
   'Daily New Confirmed Count per 100K Pop',
-  '7-Day Average Daily New Confirmed Count',
-  '7-Day Average Daily New Confirmed Count per 100K Pop',
   'Daily New Death Count',
   'Daily New Death Count per 100K Pop',
   'Forecasting (5-Day Severity Index)',
@@ -121,6 +119,11 @@ config.VALID['county_usfacts.geojson'] = [
   'Life expectancy (Length and Quality of Life)'
 ];
 
+config.DEFAULT = {}
+
+config.DEFAULT['state_1p3a.geojson'] = 'Daily New Confirmed Count per 100K Pop';
+config.DEFAULT['county_1p3a.geojson'] = 'Daily New Confirmed Count per 100K Pop';
+config.DEFAULT['county_usfacts.geojson'] = '7-Day Average Daily New Confirmed Count per 100K Pop';
 
 const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg';
 

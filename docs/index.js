@@ -238,12 +238,12 @@ var getLineColor = function() {
 // these look like dataset file name constants, but they are actually default
 // values for state variables. for example, selectedDataset can change when switching
 // between 1p3a counties and usafacts counties.
-var selectedDataset = params_dict['src'] !== undefined ? dataset_index[decodeURI(params_dict['src'])] : 'county_usfacts.geojson';
+var selectedDataset = params_dict['src'] !== undefined ? dataset_index[parseInt(params_dict['src'])] : 'county_usfacts.geojson';
 var selectedId = null;
 var selectedDate = null;
 var latestDate = null;
 var use_fixed_bins = true; 
-var selectedVariable = params_dict['var'] !== undefined ? config.VALID[selectedDataset][params_dict['var']] : '7-Day Average Daily New Confirmed Count per 100K Pop';
+var selectedVariable = params_dict['var'] !== undefined ? config.VALID[selectedDataset][params_dict['var']] : config.DEFAULT[selectedDataset];
 var selectedMethod = params_dict['mthd'] !== undefined ? decodeURI(params_dict['mthd']) : 'natural_breaks'; // set cloropleth as default mode
 var shouldShowLabels = false;
 var cartogramDeselected = false;
@@ -261,8 +261,12 @@ var shouldShowResources = {
 }
 if (params_dict['res'] !== undefined) shouldShowResources[params_dict['res']] = true;
 if (params_dict['ovr'] !== undefined) shouldShowOverlays[params_dict['ovr']] = true;
-if (params_dict['var'] != undefined) data_btn.innerText = config.VALID[selectedDataset][params_dict['var']]
-if (params_dict['src']) source_btn.innerText = datasource_names[decodeURI(params_dict['src'])[decodeURI(params_dict['src'])]]
+if (params_dict['var'] != undefined) {
+  data_btn.innerText = config.VALID[selectedDataset][params_dict['var']]
+} else {
+  data_btn.innerText = config.DEFAULT[selectedDataset]
+}
+if (params_dict['src']) source_btn.innerText = datasource_names[dataset_index[parseInt(params_dict['src'])]]
 
 var stateMap = 'state_1p3a.geojson';
 
@@ -706,18 +710,19 @@ function parseUsaFactsData(data, confirm_data, death_data) { // testing, testing
     // confirmed count
     let j =  dates[selectedDataset].length
     if (!(geoid in conf_dict)) {
-      // console.log("UsaFacts does not have:", data.features[i].properties);
+      console.log("UsaFacts does not have:", data.features[i].properties);
       while (j>0) {
-        let d = dates[selectedDataset][j-1];
+        j--;
+        let d = dates[selectedDataset][j];
         caseData[json][d][i] = 0;
         deathsData[json][d][i] = 0;
         fatalityData[json][d][i] = 0;
-        j--;
       }
       continue;
     } else {
       while (j>0) {
-        let d = dates[selectedDataset][j-1];
+        j--;
+        let d = dates[selectedDataset][j];
         if (!(d in caseData[json])) {
           caseData[json][d] = {};
           deathsData[json][d] = {};
@@ -730,53 +735,9 @@ function parseUsaFactsData(data, confirm_data, death_data) { // testing, testing
 
         if (caseData[json][d][i] > 0) fatalityData[json][d][i] = deathsData[json][d][i] / caseData[json][d][i];
 
-        j--;
       }
     }
   }
-}
-
-function mergeData(featureCollection, featureCollectionJoinCol, joinData, joinDataNames, joinDataCol) { // testing, testingpos, testingtcap, testingccpt
-    // declare parent dictionaries
-  let features = {}
-  let dataDicts = {}
-  
-  // declare and prep feature collection object
-  let i = featureCollection.features.length;
-  let colNumCheck = parseInt(featureCollection.features[0].properties[featureCollectionJoinCol])
-  if (Number.isInteger(colNumCheck)) {
-    while (i>0) {
-      features[parseInt(featureCollection.features[i-1].properties[featureCollectionJoinCol])] = featureCollection.features[i-1]
-      i--;
-    }
-  } else {
-    while (i>0) {
-      features[featureCollection.features[i-1].properties[featureCollectionJoinCol]] = featureCollection.features[i-1]
-      i--;
-    }
-  }
-
-  // declare data objects
-  for (let n=0; n < joinDataNames.length; n++) {
-    dataDicts[`${joinDataNames[n]}`] = {}
-  }
-  
-  // loop through data and add to dictionaries
-  i = joinData[0].length;
-  while (i>0) {
-    for (let n=0; n<joinData.length; n++) {
-      dataDicts[joinDataNames[n]][joinData[n][i-1][joinDataCol]] = {[`${joinDataNames[n]}`]: joinData[n][i-1]}
-    }
-    i--;
-  }
-
-  // use lodash to merge data
-  let merged = _.merge(features, dataDicts[joinDataNames[0]])
-  for (let n=1; n < joinDataNames.length; n++){
-    merged = _.merge(merged, dataDicts[joinDataNames[n]])
-  }
-  
-  return merged;
 }
 
 function parse1P3ACountyData(data, confirm_data, death_data) { // testing, testingpos, testingtcap, testingccpt
@@ -1026,7 +987,69 @@ function updateDates() {
 
 }
 
+/*
+ * NEW DATA PARSERS
+*/
 
+function mergeData(featureCollection, featureCollectionJoinCol, joinData, joinDataNames, joinDataCol) { // testing, testingpos, testingtcap, testingccpt
+  // declare parent dictionaries
+  let features = {}
+  let dataDicts = {}
+
+  // declare and prep feature collection object
+  let i = featureCollection.features.length;
+  let colNumCheck = parseInt(featureCollection.features[0].properties[featureCollectionJoinCol])
+  if (Number.isInteger(colNumCheck)) {
+    while (i>0) {
+      i--;
+      features[parseInt(featureCollection.features[i].properties[featureCollectionJoinCol])] = featureCollection.features[i];
+    }
+  } else {
+    while (i>0) {
+      i--;
+      features[featureCollection.features[i].properties[featureCollectionJoinCol]] = featureCollection.features[i];
+    }
+  }
+
+  // declare data objects
+  for (let n=0; n < joinDataNames.length; n++) {
+    dataDicts[`${joinDataNames[n]}`] = {}
+  }
+
+  // loop through data and add to dictionaries
+  i = joinData[0].length;
+  while (i>0) {
+    i--;
+    for (let n=0; n<joinData.length; n++) {
+      dataDicts[joinDataNames[n]][joinData[n][i][joinDataCol]] = {[`${joinDataNames[n]}`]: joinData[n][i]}
+    }
+  }
+
+  // use lodash to merge data
+  let merged = _.merge(features, dataDicts[joinDataNames[0]])
+  for (let n=1; n < joinDataNames.length; n++){
+    merged = _.merge(merged, dataDicts[joinDataNames[n]])
+  }
+
+  return merged;
+}
+
+function GetDailyData(data, dataset, date) {
+   
+  let tempKeys = Object.keys(data);
+  let i = tempKeys.length;
+  let tempArr = [];
+  
+  while (i--){
+    try {
+      tempArr.unshift(data[tempKeys[i]][dataset][date])  
+    } catch {
+      //
+    }
+  }
+
+  return tempArr
+}
 /*
  * UI / EVENT HANDLERS
 */
@@ -1125,7 +1148,7 @@ function initCounty() {
       }
     };
   }
-
+  
   getFillColor = function (f) {
     //if (v == 0) return [255, 255, 255, 200];
     return colorScale(f.properties.id);
@@ -1169,17 +1192,18 @@ function init_state() {
   } else if (selectedMethod == "testing_cap_fixed_bins") {
     nb = testing_cap_breaks 
   }
+  
   colorScale = function (x) {
     if (selectedMethod == "natural_breaks") {
       if (x == 0) return COLOR_SCALE[selectedMethod][0];
       for (var i = 1; i < nb.breaks.length; ++i) {
         if (x < nb.breaks[i])
-          return COLOR_SCALE[selectedMethod][i-1];
+          return COLOR_SCALE[selectedMethod][i];
       }
     } else {
       for (var i = 1; i < nb.breaks.length; ++i) {
         if (x <= nb.breaks[i])
-          return COLOR_SCALE[selectedMethod][i-1];
+          return COLOR_SCALE[selectedMethod][i];
       }
     }
   };
@@ -1247,8 +1271,8 @@ function OnSourceClick(evt) {
   // check if current variable is unavailable in new data set
   if (!config.VALID[selectedDataset].includes(selectedVariable)) {
     AlertUser("BadCombo");
-    selectedVariable = 'Daily New Confirmed Count per 100K Pop';
-    data_btn.innerText = 'Daily New Confirmed Count per 100K Pop';
+    selectedVariable = config.DEFAULT[selectedDataset];
+    data_btn.innerText = config.DEFAULT[selectedDataset];
     UpdateMethod();
     UpdateSlider();
   }
@@ -1619,7 +1643,6 @@ function handleMapHover(e) {
 }
 
 function highlightSelected(feat) {
-  console.log(feat)
   if (feat) {
     // highlight the selected polygon
     let lyr = {
@@ -2900,7 +2923,7 @@ function UpdateLegendTitle(){
     bins = '(Box Map)'
   }
 
-  div.innerHTML = `${selectedVariable == null ? '7-Day Average Daily New Confirmed Count per 100k Pop' : config.LEGEND_TEXT[selectedVariable]} ${bins}` 
+  div.innerHTML = `${selectedVariable == null ? config.LEGEND_TEXT[config.DEFAULT[selectedDataset]] : config.LEGEND_TEXT[selectedVariable]} ${bins}` 
 }
 
 function UpdateLisaLegend(colors) {
