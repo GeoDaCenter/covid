@@ -38,15 +38,17 @@ cases.sort_values("GEOID").to_csv("./csv/covid_confirmed_1p3a.csv", index=False)
 
 
 deathCols = ["STATEFP","COUNTYFP","COUNTYNS","AFFGEOID","GEOID","NAME","LSAD"]
+newColNames = ["STATEFP","COUNTYFP","COUNTYNS","AFFGEOID","GEOID","NAME","LSAD"]
 for col in counties.columns:
-    if col[0] == 'd':
+    if col[0] == 'd2':
         deathCols.append(col)
+        newColNames.append(col[1:])
 
 
 # In[10]:
 
 
-deaths = counties[deathCols]
+deaths = counties[newColNames]
 deaths['GEOID'] = deaths['GEOID'].astype(int)
 deaths.sort_values("GEOID").to_csv("./csv/covid_deaths_1p3a.csv", index=False)
 
