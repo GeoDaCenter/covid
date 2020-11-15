@@ -31,8 +31,8 @@ def usafacts():
     try:
         print('Writing to S3...')
         s3 = boto3.resource('s3')
-        s3.Object('geoda-covid-atlas', 'covid_confirmed_usafacts.csv').put(Body=open(os.path.join(repo_root, 'docs/covid_confirmed_usafacts.csv'), 'rb'))
-        s3.Object('geoda-covid-atlas', 'covid_deaths_usafacts.csv').put(Body=open(os.path.join(repo_root, 'docs/covid_deaths_usafacts.csv'), 'rb'))
+        s3.Object('geoda-covid-atlas', 'covid_confirmed_usafacts.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_confirmed_usafacts.csv'), 'rb'))
+        s3.Object('geoda-covid-atlas', 'covid_deaths_usafacts.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_deaths_usafacts.csv'), 'rb'))
 
         s3.Object('geoda-covid-atlas', 'covid_confirmed_usafacts.geojson').put(Body=open(os.path.join(repo_root, 'download/usafacts_confirmed_{}.geojson'.format(month_day)), 'rb'))
         s3.Object('geoda-covid-atlas', 'covid_deaths_usafacts.geojson').put(Body=open(os.path.join(repo_root, 'download/usafacts_deaths_{}.geojson'.format(month_day)), 'rb'))
@@ -129,7 +129,7 @@ def create_geojson_files(month_day): #could probably deprecate this
     county_geom = gpd.read_file(os.path.join(repo_root, 'docs/county_usfacts.geojson'))
 
     for dataset in ['confirmed', 'deaths']:
-        data  = pd.read_csv(os.path.join(repo_root, 'docs/covid_{}_usafacts.csv'.format(dataset)))
+        data  = pd.read_csv(os.path.join(repo_root, 'docs/csv/covid_{}_usafacts.csv'.format(dataset)))
         county_geom['GEOID']  = county_geom['GEOID'].apply(lambda x: str(x).zfill(5))
         county_geom['GEOID'] = county_geom['GEOID'].astype(str)
         data['countyFIPS']  = data.countyFIPS.apply(lambda x: str(x).zfill(5))
