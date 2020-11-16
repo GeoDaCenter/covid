@@ -3,28 +3,25 @@ import json
 from datetime import datetime,timedelta
 import pandas as pd
 import numpy as np
-
+import re
+import pytz
 from jinja2 import Environment, FileSystemLoader
 
 
-def generate_tables():
+##### Generate HTML #####
 
-	dataset = ['lisa_county_confirmed_1P3A.json',
-				'lisa_county_death_usafacts.json',
-				'lisa_state_death_1P3A.json',
-				'lisa_county_death_1P3A.json',
-				'lisa_county_confirmed_usafacts.json',
-				'lisa_state_confirmed_1P3A.json']
+
+def generate_tables(output):
 
 
 	date_list = get_date()
-	output = get_lisa_data(dataset)
 
 	html_var = {}
 
-	for i, d in enumerate(dataset):
+	i = 0
+	for k, v in output.items():
 
-		df = pd.DataFrame(output[d])
+		df = pd.DataFrame(v)
 		if not df.empty:
 			df_pivot = pd.pivot_table(df, index=["state_name"], values=["GEOID"],
 								aggfunc=[np.count_nonzero], fill_value=0)
@@ -32,9 +29,10 @@ def generate_tables():
 			df_pivot = df_pivot.sort_values(by="GEOID", ascending=False)
 		else:
 			df_pivot = pd.DataFrame()
-		html_var["subtitle_{}".format(i+1)] = d
+		html_var["subtitle_{}".format(i+1)] = k
 		html_var["full_{}".format(i+1)] = df.to_html()
 		html_var["pivot_{}".format(i+1)] = df_pivot.to_html()
+		i += 1
 
 	template_vars = {"title" : "Weekly Summary of {} - {}".format(date_list[-1], date_list[0])}
 	template_vars.update(html_var)
@@ -54,22 +52,16 @@ def generate_html(template_vars):
 	html_file.close()
 
 
+##### Helper Functions #####
 
-def get_lisa_data(dataset):
 
-	date_list = get_date()
+def rename_column_usafacts(colnames):
 
-	final_output = {}
-
-	for file in dataset:
-		path = "data/" + file
-		name = file
-
-		with open(path) as f:
-			data = json.load(f)
-
-		final_output[name] = get_high_high_county(data, date_list)
-	return final_output
+	for i, n in enumerate(colnames):
+		if re.match('^[0-9]+', n):
+			n  = datetime.strptime(n, '%m/%d/%y').strftime('%Y-%m-%d')
+			colnames[i] = n
+	return colnames
 
 
 
@@ -92,6 +84,9 @@ def get_high_high_county(data, date_list):
 	return output
 
 
-if __name__ == '__main__':
-	template_vars = generate_tables()
-	generate_html(template_vars)
+
+def get_month_day():
+    month = str(datetime.now(pytz.timezone('US/Central')).month)
+    day   = str(datetime.now(pytz.timezone('US/Central')).day).zfill(2)
+
+    return month + '.' + day
