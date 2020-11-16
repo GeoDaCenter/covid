@@ -92,7 +92,9 @@ We highly appreciate our many contributors and volunteers, including:
 ## CONTACT US
 If you have a question regarding a specific dataset, please contact the dataset author(s) directly. If you have any questions regarding the Atlas, feel free to pose an issue here or contact us by: mkolak@uchicago.edu or qinyunlin@uchicago.edu.  
 
-
+## HOW TO CITE US
+Please cite us using: 
+Xun Li, Qinyun Lin, Marynia Kolak, Robert Martin, Stephanie Yang, Moksha Menghaney, Ari Israel, Ryan Wang, Vidal Anguiano Jr., Erin Abbott, Dylan Halbern, Sihan-Mao. (2020, October 12). GeoDaCenter/covid: beta (Version beta). Zenodo. http://doi.org/10.5281/zenodo.4081869
 
 
 
