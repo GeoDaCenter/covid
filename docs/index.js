@@ -244,7 +244,7 @@ var selectedDate = null;
 var latestDate = null;
 var use_fixed_bins = true; 
 var selectedVariable = params_dict['var'] !== undefined ? config.VALID[selectedDataset][params_dict['var']] : config.DEFAULT[selectedDataset];
-var selectedMethod = params_dict['mthd'] !== undefined ? decodeURI(params_dict['mthd']) : 'natural_breaks'; // set cloropleth as default mode
+var selectedMethod = params_dict['mthd'] !== undefined ? decodeURI(params_dict['mthd']) !== 'lisa' ? decodeURI(params_dict['mthd']) : 'natural_breaks' : 'natural_breaks' // set cloropleth as default mode
 var shouldShowLabels = false;
 var cartogramDeselected = false;
 var shouldShowOverlays = {
@@ -1159,7 +1159,7 @@ function init_state() {
     nb = testing_breaks 
   } else if (selectedMethod == "testing_cap_fixed_bins") {
     nb = testing_cap_breaks 
-  }
+  } 
   
   colorScale = function (x) {
     if (selectedMethod == "natural_breaks") {
@@ -1252,13 +1252,10 @@ function OnSourceClick(evt) {
   }
 
   UpdateMap();
-  // if (evt.innerText.indexOf('1Point3Acres.com') >= 0) {
-  //   document.getElementById("btn-7day").style.display = "none";
-  //   document.getElementById("btn-7day-per100K").style.display = "none";
-  // } else {
-  //   document.getElementById("btn-7day").style.display = "block";
-  //   document.getElementById("btn-7day-per100K").style.display = "block";
-  // }
+  updateVariables(evt);
+}
+
+function updateVariables(evt){
   if (evt.innerText.indexOf('State') >= 0){
     document.getElementById("btn-uninprc").style.display = "none";
     document.getElementById("btn-over65yearsprc").style.display = "none";
@@ -2284,7 +2281,7 @@ function createMap(data) {
     console.log('Mapbox did not load in time.')
     setTimeout(function(){
       createMap(data)
-    }, 100)
+    }, 250)
   }
   
 }
@@ -2523,7 +2520,7 @@ function GetDataValues(inputDate) {
   } else if (inputDate == undefined || inputDate == null) {
     inputDate = selectedDate;
   }
-
+  
   let json = selectedDataset;
   let txt = data_btn.innerText;
   if (txt == "Confirmed Count") {
@@ -3664,6 +3661,50 @@ function ShareMap() {
 var Module = {
   onRuntimeInitialized: function () {
     gda_proxy = new GeodaProxy();
-    OnCountyClick();
+
+    if ((params_dict['src'] == undefined) && (params_dict['mthd'] == undefined)) {
+      OnCountyClick();
+    } else if ((params_dict['src'] != undefined) && (params_dict['mthd'] == undefined)) {
+      if (dataset_index[parseInt(params_dict['src'])].includes("state")) {
+        OnStateClick();
+      } else {
+        OnCountyClick();
+      }
+    } else if ((params_dict['src'] == undefined) && (params_dict['mthd'] != undefined)) {
+      if (params_dict['mthd'] == 'lisa') {
+        OnCountyClick();
+        try {
+          setTimeout(function(){
+            OnLISAClick(document.getElementById('btn-lisa'));
+          }, 1000)
+        } catch {
+          setTimeout(function(){
+            OnLISAClick(document.getElementById('btn-lisa'));
+          }, 5000)
+        }
+      } else {
+        OnCountyClick();
+      }
+    } else if ((params_dict['src'] != undefined) && (params_dict['mthd'] != undefined)) {
+
+      if (dataset_index[parseInt(params_dict['src'])].includes("state")) {
+        OnStateClick();
+      } else {
+        OnCountyClick();
+      }
+
+      if (params_dict['mthd'] == 'lisa') {
+        OnCountyClick();
+        try {
+          setTimeout(function(){
+            OnLISAClick(document.getElementById('btn-lisa'));
+          }, 1000)
+        } catch {
+          setTimeout(function(){
+            OnLISAClick(document.getElementById('btn-lisa'));
+          }, 5000)
+        }
+      }
+    }
   }
 };
