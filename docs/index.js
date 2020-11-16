@@ -1430,25 +1430,26 @@ function OnShowTime(el) {
   let disp = el.checked ? 'block' : 'none';
   document.getElementById('time-container').parentElement.style.display = disp;
 }
+  
+const handlePos = (val) => {
+  let formatted = val;
+  if (val >= 0) {
+    return Math.round(val*1000)/10 + "%";
+  }
+  if (!val || val === '' || val < 0) return 'N/A';
+}
+
+const handleTcap = (val) => {
+  let formatted = val;
+  if (val >= 0) {
+    return Math.round(val*100)/100;
+  }
+  if (!val || val === '' || val < 0) return 'N/A';
+}
 
 function getTooltipHtml(id, values, state_map) {
   const handle = val => val >= 0 ? val : 'N/A'; // dont show negative values
-  
-  const handlePos = (val) => {
-    let formatted = val;
-    if (val >= 0) {
-      return Math.round(val*1000)/10 + "%";
-    }
-    if (!val || val === '' || val < 0) return 'N/A';
-  }
 
-  const handleTcap = (val) => {
-    let formatted = val;
-    if (val >= 0) {
-      return Math.round(val*100)/100;
-    }
-    if (!val || val === '' || val < 0) return 'N/A';
-  }
 
   let text = state_map ? `
     <h3>${values.entityName}</h3><hr>
@@ -1947,8 +1948,8 @@ function updateDataPanel(e) {
     <div><b>New Deaths per 100k Population</b> ${newDeathsPer100k}</div>
     <div><b>Licensed Hospital Beds:</b> ${numberWithCommas(beds)}</div>
     <div><b>Cases per Bed:</b> ${casesPerBed}</div>
-    <div><b>Total Testing:</b> ${testing}</div>
-    <div><b>7 Day Testing Capacity:</b> ${testingTcap}</div>
+    <div><b>Total Testing:</b> ${testing.toLocaleString('en-US')}</div>
+    <div><b>7 Day Testing Capacity:</b> ${handleTcap(testingTcap)}</div>
     <div><b>7 Day Confirmed Case per Testing %:</b> ${Math.round(testingCcpt*10000)/100}%</div>
     <div><b>Testing Criteria:</b> ${criteria}</div>
     `
