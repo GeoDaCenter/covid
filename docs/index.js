@@ -244,7 +244,7 @@ var selectedDate = null;
 var latestDate = null;
 var use_fixed_bins = true; 
 var selectedVariable = params_dict['var'] !== undefined ? config.VALID[selectedDataset][params_dict['var']] : config.DEFAULT[selectedDataset];
-var selectedMethod = params_dict['mthd'] !== undefined ? decodeURI(params_dict['mthd']) : 'natural_breaks'; // set cloropleth as default mode
+var selectedMethod = params_dict['mthd'] !== undefined ? decodeURI(params_dict['mthd']) !== 'lisa' ? decodeURI(params_dict['mthd']) : 'natural_breaks' : 'natural_breaks' // set cloropleth as default mode
 var shouldShowLabels = false;
 var cartogramDeselected = false;
 var shouldShowOverlays = {
@@ -1256,7 +1256,6 @@ function OnSourceClick(evt) {
 }
 
 function updateVariables(evt){
-  console.log(evt.innerText)
   if (evt.innerText.indexOf('State') >= 0){
     document.getElementById("btn-uninprc").style.display = "none";
     document.getElementById("btn-over65yearsprc").style.display = "none";
@@ -2521,7 +2520,7 @@ function GetDataValues(inputDate) {
   } else if (inputDate == undefined || inputDate == null) {
     inputDate = selectedDate;
   }
-
+  
   let json = selectedDataset;
   let txt = data_btn.innerText;
   if (txt == "Confirmed Count") {
@@ -3662,16 +3661,50 @@ function ShareMap() {
 var Module = {
   onRuntimeInitialized: function () {
     gda_proxy = new GeodaProxy();
-    
-    if (params_dict['src'] != undefined) {
+
+    if ((params_dict['src'] == undefined) && (params_dict['mthd'] == undefined)) {
+      OnCountyClick();
+    } else if ((params_dict['src'] != undefined) && (params_dict['mthd'] == undefined)) {
       if (dataset_index[parseInt(params_dict['src'])].includes("state")) {
         OnStateClick();
-        updateVariables({'innerText':'State'})
       } else {
         OnCountyClick();
       }
-    } else {
-      OnCountyClick();
+    } else if ((params_dict['src'] == undefined) && (params_dict['mthd'] != undefined)) {
+      if (params_dict['mthd'] == 'lisa') {
+        OnCountyClick();
+        try {
+          setTimeout(function(){
+            OnLISAClick(document.getElementById('btn-lisa'));
+          }, 1000)
+        } catch {
+          setTimeout(function(){
+            OnLISAClick(document.getElementById('btn-lisa'));
+          }, 5000)
+        }
+      } else {
+        OnCountyClick();
+      }
+    } else if ((params_dict['src'] != undefined) && (params_dict['mthd'] != undefined)) {
+
+      if (dataset_index[parseInt(params_dict['src'])].includes("state")) {
+        OnStateClick();
+      } else {
+        OnCountyClick();
+      }
+
+      if (params_dict['mthd'] == 'lisa') {
+        OnCountyClick();
+        try {
+          setTimeout(function(){
+            OnLISAClick(document.getElementById('btn-lisa'));
+          }, 1000)
+        } catch {
+          setTimeout(function(){
+            OnLISAClick(document.getElementById('btn-lisa'));
+          }, 5000)
+        }
+      }
     }
   }
 };
