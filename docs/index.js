@@ -84,7 +84,7 @@ function setupTutorial(){
     
   }
   dotsContainer.innerHTML = html;
-
+  showTutorial(true)
   document.getElementById("left-arrow").addEventListener("click", () => tutorialScroll('left'));
   document.getElementById("right-arrow").addEventListener("click", () => tutorialScroll('right'));
   document.getElementById("close-tutorial").addEventListener("click", () => showTutorial(false));
