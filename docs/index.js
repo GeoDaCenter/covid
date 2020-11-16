@@ -1159,7 +1159,7 @@ function init_state() {
     nb = testing_breaks 
   } else if (selectedMethod == "testing_cap_fixed_bins") {
     nb = testing_cap_breaks 
-  }
+  } 
   
   colorScale = function (x) {
     if (selectedMethod == "natural_breaks") {
@@ -2284,7 +2284,7 @@ function createMap(data) {
     console.log('Mapbox did not load in time.')
     setTimeout(function(){
       createMap(data)
-    }, 100)
+    }, 250)
   }
   
 }
@@ -3664,6 +3664,11 @@ function ShareMap() {
 var Module = {
   onRuntimeInitialized: function () {
     gda_proxy = new GeodaProxy();
-    OnCountyClick();
+    
+    if (dataset_index[parseInt(params_dict['src'])].includes("state")) {
+      OnStateClick();
+    } else {
+      OnCountyClick();
+    }
   }
 };
