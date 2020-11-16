@@ -97,7 +97,7 @@ def fetch_covid_data():
     response = urllib.request.urlopen(url)
     cr = csv.reader(io.TextIOWrapper(response))
 
-    with io.open('cases.csv', 'w', encoding='utf-8') as file:
+    with io.open(os.path.join(dir_path, 'cases.csv'), 'w', encoding='utf-8') as file:
         data = response.read()
         text = data.decode('utf-8')
         file.write(text)
@@ -143,9 +143,11 @@ def create_county_files(raw_data):
             file.write('%s\n' % item)
 
 if __name__ == '__main__':
-    raw_data = pd.read_csv(os.path.join(repo_root, 'data-scripts/_1p3a/cases.csv'))
 
     fetch_covid_data()
+
+    raw_data = pd.read_csv(os.path.join(repo_root, 'data-scripts/_1p3a/cases.csv'))
+
     create_state_files(raw_data)
     create_county_files(raw_data)
 
