@@ -1252,13 +1252,11 @@ function OnSourceClick(evt) {
   }
 
   UpdateMap();
-  // if (evt.innerText.indexOf('1Point3Acres.com') >= 0) {
-  //   document.getElementById("btn-7day").style.display = "none";
-  //   document.getElementById("btn-7day-per100K").style.display = "none";
-  // } else {
-  //   document.getElementById("btn-7day").style.display = "block";
-  //   document.getElementById("btn-7day-per100K").style.display = "block";
-  // }
+  updateVariables(evt);
+}
+
+function updateVariables(evt){
+  console.log(evt.innerText)
   if (evt.innerText.indexOf('State') >= 0){
     document.getElementById("btn-uninprc").style.display = "none";
     document.getElementById("btn-over65yearsprc").style.display = "none";
@@ -3665,8 +3663,13 @@ var Module = {
   onRuntimeInitialized: function () {
     gda_proxy = new GeodaProxy();
     
-    if (dataset_index[parseInt(params_dict['src'])].includes("state")) {
-      OnStateClick();
+    if (params_dict['src'] != undefined) {
+      if (dataset_index[parseInt(params_dict['src'])].includes("state")) {
+        OnStateClick();
+        updateVariables({'innerText':'State'})
+      } else {
+        OnCountyClick();
+      }
     } else {
       OnCountyClick();
     }
