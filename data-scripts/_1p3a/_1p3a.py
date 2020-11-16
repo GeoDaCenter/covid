@@ -1,15 +1,11 @@
-# This script will fetch the covid19 data from 1point3acre and update to states.geojson
-# lixun910@gmail.com
-# env:
-# python 3.7
-# pip install apscheduler
-#from apscheduler.schedulers.blocking import BlockingScheduler
 import urllib.request
 import csv
 import os
 import io
 import json
 import boto3
+import pandas as pd
+import geopandas as gpd
 from datetime import datetime
 
 county_fix_code = {
@@ -87,16 +83,6 @@ county_fix_code = {
     'johnsonnc':'johnstonnc'
 }
 
-# la portein is a city in IN
-# russellga did not find russell in ga
-# edgefieldga did not find edgefield in ga
-# tallapoosaga tallapoosaga is a city in ga
-# bear river ut is treated as bear river city in box elder (considering the nubmer of cases)
-# tricounty covers Duchesne, Uintah, Daggett counties, thus not included
-# benton and franklinwa includes more than one county
-# bristol bay plus lake peninsulaak includes more than one county
-# no idea what is out county in OH, 1 confirmed cases showed for 0530, ignore for now
-# yakutat plus hoonah-angoonak includes more than one county
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 repo_root = os.path.abspath(os.path.join(dir_path, '..', '..'))
@@ -111,268 +97,67 @@ def fetch_covid_data():
     response = urllib.request.urlopen(url)
     cr = csv.reader(io.TextIOWrapper(response))
 
-    with io.open('cases.csv', 'w', encoding='utf-8') as file:
+    with io.open(os.path.join(dir_path, 'cases.csv'), 'w', encoding='utf-8') as file:
         data = response.read()
         text = data.decode('utf-8')
         file.write(text)
 
+def create_state_files(raw_data):
+    states = gpd.read_file(os.path.join(repo_root, 'data/states.geojson'))
+    states = pd.DataFrame(states[['GEOID','STUSPS','NAME']])
+    state_agg = raw_data[['confirmed_date','state_name','confirmed_count','death_count']].groupby(['confirmed_date','state_name']).sum().reset_index()
+    state_deaths = state_agg.pivot(index='state_name', columns='confirmed_date',values='death_count').reset_index()
+    state_confir = state_agg.pivot(index='state_name', columns='confirmed_date',values='confirmed_count').reset_index()
 
-    with open("cases.csv") as csvfile:
-        cr = csv.reader(csvfile)
-        read_covid_data(cr)
+    states_deaths_final = pd.merge(states, state_deaths, left_on='STUSPS', right_on='state_name', how='left').fillna(0).drop(columns=['STUSPS','state_name'])
+    states_confir_final = pd.merge(states, state_confir, left_on='STUSPS', right_on='state_name', how='left').fillna(0).drop(columns=['STUSPS','state_name'])
 
+    states_deaths_final.to_csv(os.path.join(repo_root, 'docs/csv/covid_deaths_1p3a_state.csv'), index=False)
+    states_confir_final.to_csv(os.path.join(repo_root, 'docs/csv/covid_confirmed_1p3a_state.csv'), index=False)
 
-def read_covid_data(cr):
+def create_county_files(raw_data):
+    counties = gpd.read_file(os.path.join(repo_root, 'data/county_2018.geojson'))
+    counties = pd.DataFrame(counties[['STATEFP','COUNTYFP','COUNTYNS','AFFGEOID','GEOID','NAME','LSAD','state_abbr']])
+    counties['name_merge'] = counties.apply(lambda x: x['NAME'].lower() + x['state_abbr'].lower(), axis=1)
 
-    state_count = {}
-    state_deathcount = {}
+    raw_data['name_merge'] = raw_data.apply(lambda x: x['county_name'].lower() + x['state_name'].lower(), axis=1)
+    raw_data['name_merge'] = raw_data['name_merge'].apply(lambda x: county_fix_code.get(x, x))
 
-    county_count = {}
-    county_deathcount = {}
+    county_agg = raw_data[['confirmed_date','name_merge','confirmed_count','death_count']].groupby(['confirmed_date','name_merge']).sum().reset_index()
 
-    date_state_count = {}
-    date_state_deathcount = {}
+    county_deaths = county_agg.pivot(index='name_merge', columns='confirmed_date',values='death_count').reset_index()
+    county_confir = county_agg.pivot(index='name_merge', columns='confirmed_date',values='confirmed_count').reset_index()
 
-    date_county_count = {}
-    date_county_deathcount = {}
+    county_deaths_final = pd.merge(counties, county_deaths, left_on='name_merge', right_on='name_merge',how='left').drop(columns=['name_merge']).fillna(0).drop(columns=['state_abbr'])
+    county_confir_final = pd.merge(counties, county_confir, left_on='name_merge', right_on='name_merge',how='left').drop(columns=['name_merge']).fillna(0).drop(columns=['state_abbr'])
 
-    # case_id, confirmed_date,state_name,county_name,confirmed_count,death_count
-    next(cr)
-    i = 0
-    for row in cr:
-        if len(row) ==0:
-            continue
+    county_deaths_final.to_csv(os.path.join(repo_root, 'docs/csv/covid_deaths_1p3a.csv'), index=False)
+    county_confir_final.to_csv(os.path.join(repo_root, 'docs/csv/covid_confirmed_1p3a.csv'), index=False)
 
-        i += 1
-        case_id, confirmed_date,state_name,county_name,confirmed_count,death_count = row[:6]
-        confirmed_count = (int)(confirmed_count)
-        death_count = (int)(death_count)
+    unmatched = pd.merge(counties, county_deaths, left_on='name_merge', right_on='name_merge',how='right')
+    unmatched_locs = list(unmatched[unmatched['STATEFP'].isna()].name_merge)
+    unmatched_locs = [ct for ct in unmatched_locs if ('unknown' not in ct and 'unassigned' not in ct and 'princess' not in ct and 'out-of-state' not in ct and 'out of state' not in ct)]
 
-        if state_name not in state_count:
-            state_count[state_name] = 0
-            state_deathcount[state_name] = 0
-        state_count[state_name] += confirmed_count
-        state_deathcount[state_name] += death_count
+    with open(os.path.join(dir_path, 'unmatched.txt'), 'w') as file:
+        for item in unmatched_locs:
+            file.write('%s\n' % item)
 
-        county_name = county_name.encode('ascii', 'ignore').decode("utf-8")
-        county_name = county_name.strip().lower() + state_name.strip().lower()
+if __name__ == '__main__':
 
-        # fix any known issue from 1p3a
-        if county_name in county_fix_code:
-            county_name = county_fix_code[county_name]
+    fetch_covid_data()
 
-        if county_name not in county_count:
-            county_count[county_name] = 0
-            county_deathcount[county_name] = 0
-        county_count[county_name] += confirmed_count
-        county_deathcount[county_name] += death_count
+    raw_data = pd.read_csv(os.path.join(repo_root, 'data-scripts/_1p3a/cases.csv'))
 
-        if confirmed_date not in date_state_count:
-            date_state_count[confirmed_date] = {}
-            date_state_deathcount[confirmed_date] = {}
-        if state_name not in date_state_count[confirmed_date]:
-            date_state_count[confirmed_date][state_name] = 0
-        if state_name not in date_state_deathcount[confirmed_date]:
-            date_state_deathcount[confirmed_date][state_name] = 0
-        date_state_count[confirmed_date][state_name] += confirmed_count
-        date_state_deathcount[confirmed_date][state_name] += death_count
+    create_state_files(raw_data)
+    create_county_files(raw_data)
 
-        if confirmed_date not in date_county_count:
-            date_county_count[confirmed_date] = {}
-            date_county_deathcount[confirmed_date] = {}
-        if county_name not in date_county_count[confirmed_date]:
-            date_county_count[confirmed_date][county_name] = 0
-        if county_name not in date_county_deathcount[confirmed_date]:
-            date_county_deathcount[confirmed_date][county_name] = 0
-        date_county_count[confirmed_date][county_name] += confirmed_count
-        date_county_deathcount[confirmed_date][county_name] += death_count
-
-    update_state_geojson(state_count, state_deathcount, date_state_count, date_state_deathcount)
-    update_county_geojson(county_count, county_deathcount, date_county_count, date_county_deathcount)
-
-def update_state_beds(geojson):
-    with open(os.path.join(repo_root, "data/state_beds.csv")) as csvfile:
-        cr = csv.reader(csvfile)
-        next(cr)
-        beds_dict = {}
-        for row in cr:
-            state_abb = row[0]
-            #staff_beds = row[2]
-            #icu_beds = row[3]
-            all_beds = row[4]
-
-            if state_abb not in beds_dict:
-                beds_dict[state_abb] = 0
-            beds_dict[state_abb] += (int)((float)(all_beds))
-
-        features = geojson["features"]
-        for feat in features:
-            state_abb = feat["properties"]["STUSPS"]
-            if state_abb in beds_dict:
-                feat["properties"]["beds"] = beds_dict[state_abb]
-            else:
-                feat["properties"]["beds"] = 0
-
-def update_state_population(geojson):
-    with open(os.path.join(repo_root, "data/county_pop.csv")) as csvfile:
-        cr = csv.reader(csvfile)
-        next(cr)
-        pop_dict = {}
-        for row in cr:
-            id, geoid, name, total_population, male, female, male_50above, femal_50above = row
-            county_name, state_name = name.split(',')
-            state_name = state_name.strip()
-            if state_name not in pop_dict:
-                pop_dict[state_name] = 0
-            pop_dict[state_name] += (int)(total_population)
-
-        features = geojson["features"]
-        for feat in features:
-            state_name = feat["properties"]["NAME"]
-            if state_name in pop_dict:
-                feat["properties"]["population"] = pop_dict[state_name]
-            else:
-                feat["properties"]["population"] = 0
-
-def update_county_beds(geojson):
-    with open(os.path.join(repo_root, "data/county_beds.csv")) as csvfile:
-        cr = csv.reader(csvfile)
-        next(cr)
-        beds_dict = {}
-        for row in cr:
-            state_abb = row[0]
-            county_nm = row[1]
-            #icu_beds = row[3]
-            all_beds = row[4]
-            county_key = state_abb.lower() + county_nm.lower()
-            if county_key not in beds_dict:
-                beds_dict[county_key] = 0
-            beds_dict[county_key] += (int)((float)(all_beds))
-
-        features = geojson["features"]
-        for feat in features:
-            state_abb = feat["properties"]["state_abbr"]
-            county_nm = feat["properties"]["NAME"]
-            county_key = state_abb.lower() + county_nm.lower()
-
-            if county_key in beds_dict:
-                feat["properties"]["beds"] = beds_dict[county_key]
-            else:
-                feat["properties"]["beds"] = 0
-
-def update_county_population(geojson):
-    with open(os.path.join(repo_root, "data/county_pop.csv")) as csvfile:
-        cr = csv.reader(csvfile)
-        next(cr)
-        pop_dict = {}
-        for row in cr:
-            id, geoid, name, total_population, male, female, male_50above, femal_50above = row
-            pop_dict[geoid] = (int)(total_population)
-
-        features = geojson["features"]
-        for feat in features:
-            geoid= feat["properties"]["GEOID"]
-            if geoid in pop_dict:
-                feat["properties"]["population"] = pop_dict[geoid]
-            else:
-                feat["properties"]["population"] = 0
-
-def update_state_geojson(state_count, state_deathcount, date_state_count, date_state_deathcount):
-    with open(os.path.join(repo_root, "data/states.geojson")) as f:
-        geojson = json.load(f)
-        features = geojson["features"]
-        for feat in features:
-            state_id = feat["properties"]["STUSPS"]
-
-            if state_id in state_count:
-                feat["properties"]["confirmed_count"] = state_count[state_id]
-            else:
-                feat["properties"]["confirmed_count"] = 0
-
-            if state_id in state_deathcount:
-                feat["properties"]["death_count"] = state_deathcount[state_id]
-            else:
-                feat["properties"]["death_count"] = 0
-
-            for dat in date_state_count.keys():
-                cnt = 0 if state_id not in date_state_count[dat] else date_state_count[dat][state_id]
-                feat["properties"][dat] = cnt
-
-            for dat in date_state_deathcount.keys():
-                cnt = 0 if state_id not in date_state_deathcount[dat] else date_state_deathcount[dat][state_id]
-                col_name = "d" + dat
-                feat["properties"][col_name] = cnt
-
-        update_state_population(geojson)
-        update_state_beds(geojson)
-
-        with open(os.path.join(repo_root, 'docs/states_update.geojson'), 'w') as outfile:
-            json.dump(geojson, outfile)
-
-def update_county_geojson(county_count, county_deathcount, date_county_count, date_county_deathcount):
-    with io.open(os.path.join(repo_root, "data/county_2018.geojson"), 'r', encoding='utf-8') as f:
-    #with open("..data/county_2018.geojson") as f:
-        geojson = json.load(f)
-        features = geojson["features"]
-        county_id_dict = {}
-
-        i = 0
-        for feat in features:
-            i += 1
-            county_id = feat["properties"]["NAME"].lower() + feat["properties"]["state_abbr"].lower()
-            county_id_dict[county_id] = 1
-            if county_id in county_count:
-                feat["properties"]["confirmed_count"] = county_count[county_id]
-            else:
-                feat["properties"]["confirmed_count"] = 0
-
-            if county_id in county_deathcount:
-                feat["properties"]["death_count"] = county_deathcount[county_id]
-            else:
-                feat["properties"]["death_count"] = 0
-
-            for dat in date_county_count.keys():
-                cnt = 0 if county_id not in date_county_count[dat] else date_county_count[dat][county_id]
-                feat["properties"][dat] = cnt
-
-            for dat in date_county_deathcount.keys():
-                cnt = 0 if county_id not in date_county_deathcount[dat] else date_county_deathcount[dat][county_id]
-                col_name = "d" + dat
-                feat["properties"][col_name] = cnt
-
-        update_county_population(geojson)
-        update_county_beds(geojson)
-
-        with open(os.path.join(repo_root, 'docs/counties_update.geojson'), 'w') as outfile:
-            json.dump(geojson, outfile)
-
-        # check input county
-        with io.open('unmatched.txt', 'w', encoding='utf-8') as o:
-            for ct in county_count.keys():
-                if ct not in county_id_dict:
-                    if 'unknown' in ct or 'unassigned' in ct or 'princess' in ct or 'out-of-state' in ct or 'out of state' in ct:
-                        continue
-                    else:
-                        o.write(ct + '\n')
-
-fetch_covid_data()
-with open("cases.csv") as csvfile:
-    cr = csv.reader(csvfile)
-    read_covid_data(cr)
-
-try:
-    print('Writing to S3...')
-    s3 = boto3.resource('s3')
-    s3.Object('geoda-covid-atlas', 'counties_update.geojson').put(Body=open(os.path.join(repo_root, 'docs/counties_update.geojson'), 'rb'))
-    s3.Object('geoda-covid-atlas', 'states_update.geojson').put(Body=open(os.path.join(repo_root, 'docs/states_update.geojson'), 'rb'))
-    print('Write to S3 complete.')
-except Exception as e:
-    print(e)
-
-os.system('apt install zip')
-os.system('rm {}/docs/counties_update.geojson.zip {}/docs/states_update.geojson.zip'.format(repo_root, repo_root))
-os.system('zip -r {}/docs/counties_update.geojson.zip {}/docs/counties_update.geojson'.format(repo_root, repo_root))
-os.system('zip -r {}/docs/states_update.geojson.zip {}/docs/states_update.geojson'.format(repo_root, repo_root))
-#scheduler = BlockingScheduler()
-#scheduler.add_job(fetch_covid_data, 'interval', hours=1)
-#scheduler.start()
+    try:
+        print('Writing to S3...')
+        s3 = boto3.resource('s3')
+        s3.Object('geoda-covid-atlas', 'covid_confirmed_1p3a_state.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_confirmed_1p3a_state.csv'), 'rb'))
+        s3.Object('geoda-covid-atlas', 'covid_deaths_1p3a_state.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_deaths_1p3a_state.csv'), 'rb'))
+        s3.Object('geoda-covid-atlas', 'covid_confirmed_1p3a.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_confirmed_1p3a.csv'), 'rb'))
+        s3.Object('geoda-covid-atlas', 'covid_deaths_1p3a.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_deaths_1p3a.csv'), 'rb'))
+        print('Write to S3 complete.')
+    except Exception as e:
+        print(e)
