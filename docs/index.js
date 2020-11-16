@@ -577,8 +577,8 @@ async function load1p3aStateData(url, callback) {
     ] = await Promise.all([
       GetParseCSV('./csv/covid_confirmed_1p3a_state.csv'),
       GetParseCSV('./csv/covid_deaths_1p3a_state.csv'),
+      GetParseCSV('./csv/covid_testing_1p3a_state.csv'),
       GetParseCSV('./csv/covid_wk_pos_1p3a_state.csv'),
-      GetParseCSV('./csv/covid_confirmed_1p3a.csv'),
       GetParseCSV('./csv/covid_tcap_1p3a_state.csv'),
       GetParseCSV('./csv/covid_ccpt_1p3a_state.csv'),
       chrhlthfactorData,
@@ -800,7 +800,7 @@ function parse1P3ACountyData(data, confirm_data, death_data) { // testing, testi
           // case data with accumulation
           caseData[json][d][i] = caseData[json][d1][i] + (conf_dict[geoid][d] == '' ? 0 : conf_dict[geoid][d]);
           // death data with accumulation
-          deathsData[json][d][i] = deathsData[json][d1][i] + (conf_dict[geoid][d] == '' ? 0 : conf_dict[geoid][d]);
+          deathsData[json][d][i] = deathsData[json][d1][i] + (death_dict[geoid][d] == '' ? 0 : death_dict[geoid][d]);
           // fatality data
           fatalityData[json][d][i] = 0;
         } else {
@@ -901,7 +901,7 @@ function parse1P3AStateData(data, confirm_data, death_data, testing, testingpos,
           // case data with accumulation
           caseData[json][d][i] = caseData[json][d1][i] + (conf_dict[geoid][d] == '' ? 0 : conf_dict[geoid][d]);
           // death data with accumulation
-          deathsData[json][d][i] = deathsData[json][d1][i] + (conf_dict[geoid][d] == '' ? 0 : conf_dict[geoid][d]);
+          deathsData[json][d][i] = deathsData[json][d1][i] + (death_dict[geoid][d] == '' ? 0 : death_dict[geoid][d]);
           // fatality data
           fatalityData[json][d][i] = 0;
         } else {
@@ -1591,6 +1591,7 @@ function updateTooltip(e) {
       testingCcpt,
       criteria,
     };
+
     text = getTooltipHtml(id, values, state_map);
     
     // set html
@@ -1946,7 +1947,7 @@ function updateDataPanel(e) {
     <div><b>New Deaths per 100k Population</b> ${newDeathsPer100k}</div>
     <div><b>Licensed Hospital Beds:</b> ${numberWithCommas(beds)}</div>
     <div><b>Cases per Bed:</b> ${casesPerBed}</div>
-    <div><b>Total Testing:</b> ${numberWithCommas(testing)}</div>
+    <div><b>Total Testing:</b> ${testing}</div>
     <div><b>7 Day Testing Capacity:</b> ${testingTcap}</div>
     <div><b>7 Day Confirmed Case per Testing %:</b> ${Math.round(testingCcpt*10000)/100}%</div>
     <div><b>Testing Criteria:</b> ${criteria}</div>
