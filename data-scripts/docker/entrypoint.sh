@@ -6,11 +6,12 @@ git config --global user.name "theuscovidatlas"
 
 case $REPO in
 	covid)
-		git clone git@github.com:linqinyu/covid.git && cd covid
+		git clone git@github.com:GeoDaCenter/covid.git && cd covid
 	;;
 
 	testing)
-		git clone git@github.com:GeoDaCenter/covid-atlas-research.git && cd covid-atlas-research/Testing_Data/python
+		git clone git@github.com:GeoDaCenter/covid-atlas-research.git
+		git clone git@github.com:GeoDaCenter/covid.git
 
 	;;
 esac
@@ -34,7 +35,7 @@ case $DATA_SOURCE in
 		;;
 
 	testing)
-		export COMMAND='bash scrape.sh'
+		export COMMAND='bash /tmp/covid-atlas-research/Testing_Data/run_testing.sh'
 
 esac
 
@@ -43,6 +44,8 @@ if $COMMAND;
  		then
 		if [ "$DATA_SOURCE" = "lisa" ];
 	  	then exit 0;
+		elif [ "$DATA_SOURCE" = "testing" ];
+			then exit 0;
 		else
 			git add . && git commit -m "Updated: `date +'%Y-%m-%d %H:%M:%S'`"&& git push;
 		fi
