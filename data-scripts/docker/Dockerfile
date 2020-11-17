@@ -3,8 +3,9 @@ WORKDIR /tmp
 
 # Install the compilation tools
 RUN apt-get update -y && \
-  apt-get install build-essential zip unzip ca-certificates git -y && \
-  pip install --upgrade pip
+  apt-get install -y build-essential software-properties-common zip unzip ca-certificates git -y && \
+  pip install --upgrade pip && \
+  apt-get update
 
 # Install libspatialindex
 RUN wget http://download.osgeo.org/libspatialindex/spatialindex-src-1.8.5.tar.gz && \
@@ -16,7 +17,10 @@ RUN wget http://download.osgeo.org/libspatialindex/spatialindex-src-1.8.5.tar.gz
   cd - && \
   rm -rf spatialindex-src-1.8.5* && \
   ldconfig && \
-  pip install git+https://gitee.com/lixun910/pygeoda
+  pip install pygeoda && \
+  apt-get install -y --no-install-recommends r-base && \
+  apt-get install -y libudunits2-dev gfortran libgdal-dev && \
+  Rscript -e "install.packages(c('dplyr', 'classInt', 'sf'))"
 
 
 # Install geopandas
