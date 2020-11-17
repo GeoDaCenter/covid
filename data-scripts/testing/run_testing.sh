@@ -5,11 +5,11 @@ git config --global user.name "theuscovidatlas"
 
 cd /tmp/covid/data-scripts/testing
 
-python states_update_testing.py
+python ./states_update_testing.py
 
-Rscript /tmp/covid/data-scripts/testing/states_process_testing.R
+Rscript ./states_process_testing.R
 
-python s3_upload.py
+python ./s3_upload.py
 
 cd /tmp/covid
 
