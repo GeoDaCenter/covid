@@ -1375,7 +1375,8 @@ function UpdateSlider(){
   // hide time slider if needed
   if (selectedVariable == "Uninsured % (Community Health Factor)" ||
       selectedVariable == "Over 65 Years % (Community Health Context)" ||
-      selectedVariable == "Life expectancy (Length and Quality of Life)") {
+      selectedVariable == "Life expectancy (Length and Quality of Life)" ||
+      selectedVariable == "Forecasting (5-Day Severity Index)") {
     // hide slider bar
     document.getElementById("sliderdiv").style.display = 'none';
   } else {
@@ -1415,11 +1416,17 @@ function rightPanelCollapse() {
     icon.classList.add('fa-chevron-right');
     panel.classList.remove('right-panel--collapsed');
     button.classList.remove('right-panel--collapsed');
+    document.querySelector('.mapboxgl-ctrl-bottom-right').className += " inset"
+    document.querySelector('#tutorial').className += " inset"
+    document.querySelector('#additional-buttons').className += " inset"
   } else {
     icon.classList.remove('fa-chevron-right');
     icon.classList.add('fa-chevron-left');
     panel.classList.add('right-panel--collapsed');
     button.classList.add('right-panel--collapsed');
+    document.querySelector('.mapboxgl-ctrl-bottom-right').className = 'mapboxgl-ctrl-bottom-right'
+    document.querySelector('#tutorial').className -= " inset"
+    document.querySelector('#additional-buttons').className -= " inset"
   }
 }
 
@@ -1986,6 +1993,13 @@ function updateDataPanel(e) {
   bodyElem.innerHTML = html;
   collapseBtnElem.classList.remove('hide');
   panelElem.removeAttribute('hidden');
+  
+  if (document.querySelector('.right-panel--collapsed') ? false : true) {
+    document.querySelector('.mapboxgl-ctrl-bottom-right').className += " inset"
+    document.querySelector('#additional-buttons').className += " inset"
+    document.querySelector('#tutorial').className += " inset"
+  }
+
   updateTooltips();
 }
 /*
@@ -2516,7 +2530,7 @@ function GetFeatureValue(id) {
 function GetDataValues(inputDate) {
   // check for URL parameters date
   if (params_dict['dt'] != undefined && initial_load) {
-    inputDate = latestDate
+    inputDate = params_dict['dt']
   } else if (inputDate == undefined || inputDate == null) {
     inputDate = selectedDate;
   }

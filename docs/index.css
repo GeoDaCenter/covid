@@ -142,13 +142,13 @@ a:visited {
 
 .options-panel .source-link a {
   font-family: Lato, sans-serif;
-      font-size: 12px;
-      line-height: 1.5;
-      letter-spacing: 2px;
-      font-weight: 400;
-      font-stretch: ultra-expanded;
-      color: #d8d8d8;
-      opacity: 0.8;
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 2px;
+  font-weight: 400;
+  font-stretch: ultra-expanded;
+  color: #fff;
+  opacity: 0.8;
 }
 
 .options-panel {
@@ -236,8 +236,16 @@ a:visited {
   background-color: #444;
   color: #fff;
   height: 40px;
-  width: 30px;
+  min-width: 30px;
   cursor: pointer;
+}
+.collapse-btn p{
+  padding:0 5px;
+  display: none;
+}
+
+.collapse-btn.right-panel--collapsed p, .collapse-btn.left-panel--collapsed p  {
+  display: inline;
 }
 
 #left-collapse {
@@ -317,13 +325,18 @@ a:visited {
   cursor: pointer;
   color: #fff;
   font-family: Lato, sans-serif;
-      font-size: 12px;
-      line-height: 1.5;
-      letter-spacing: 1.75px;
-      font-weight: 600;
-      font-stretch: normal;
-      color: #d8d8d8;
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 1.75px;
+  font-weight: 600;
+  font-stretch: normal;
+      /* color: #d8d8d8; */
 
+}
+.dropbtn span {
+  letter-spacing:normal;
+  line-height: initial;
+  font-weight: initial;
 }
 
 /* The container <div> - needed to position the dropdown content */
@@ -573,6 +586,10 @@ data panel
   border-radius: 4px;
 }
 
+#additional-buttons.inset {
+  right:300px;
+}
+
 #additional-buttons div {
   width:100%;
   height:29px;
@@ -583,6 +600,9 @@ data panel
   fill:#303030;
   padding: 4px;
   box-sizing: border-box;
+} 
+div.mapboxgl-ctrl-bottom-right.inset div.mapboxgl-ctrl-group {
+  margin-right:300px;
 }
 
 input#share-url {
@@ -707,6 +727,10 @@ input#share-url {
   -moz-user-select: none; /* Old versions of Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+}
+
+#tutorial.inset {
+  right:340px;
 }
 
 #tutorial h3, #tutorial p.subtitle {
