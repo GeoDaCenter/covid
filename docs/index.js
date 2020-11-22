@@ -1654,7 +1654,7 @@ function getTooltipHtml(id, values, state_map) {
     <div>Total Testing: ${handle(values.testing).toLocaleString()}</div>
     <div>7 Day Positivity Rate: ${handlePos(values.testingPos).toLocaleString()}</div>
     <div>7 Day Testing Capacity: ${handleTcap(values.testingTcap)}</div>
-    <div>7 Day Confirmed Cases per Testing %: ${handlePos(values.testingCcpt)}</div>
+    <div>7 Day Confirmed Cases per Testing: ${handlePos(values.testingCcpt)}</div>
     <div>Testing Criterion: ${values.criteria}</div>
   ` : ` 
     <h3>${values.entityName}</h3><hr>
@@ -2144,7 +2144,7 @@ function updateDataPanel(e) {
     <div><b>Cases per Bed:</b> ${casesPerBed}</div>
     <div><b>Total Testing:</b> ${testing.toLocaleString('en-US')}</div>
     <div><b>7 Day Testing Capacity:</b> ${handleTcap(testingTcap)}</div>
-    <div><b>7 Day Confirmed Case per Testing %:</b> ${Math.round(testingCcpt*10000)/100}%</div>
+    <div><b>7 Day Confirmed Case per Testing:</b> ${Math.round(testingCcpt*10000)/100}%</div>
     <div><b>Testing Criteria:</b> ${criteria}</div>
     `
     
