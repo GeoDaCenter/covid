@@ -24,6 +24,8 @@ def usafacts():
 
     validate_and_process()
 
+    create_state_files()
+
     month_day = get_month_day()
 
     create_geojson_files(month_day)
@@ -33,6 +35,8 @@ def usafacts():
         s3 = boto3.resource('s3')
         s3.Object('geoda-covid-atlas', 'covid_confirmed_usafacts.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_confirmed_usafacts.csv'), 'rb'))
         s3.Object('geoda-covid-atlas', 'covid_deaths_usafacts.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_deaths_usafacts.csv'), 'rb'))
+        s3.Object('geoda-covid-atlas', 'covid_confirmed_usafacts_state.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_confirmed_usafacts_state.csv'), 'rb'))
+        s3.Object('geoda-covid-atlas', 'covid_deaths_usafacts_state.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_deaths_usafacts_state.csv'), 'rb'))
 
         s3.Object('geoda-covid-atlas', 'covid_confirmed_usafacts.geojson').put(Body=open(os.path.join(repo_root, 'download/usafacts_confirmed_{}.geojson'.format(month_day)), 'rb'))
         s3.Object('geoda-covid-atlas', 'covid_deaths_usafacts.geojson').put(Body=open(os.path.join(repo_root, 'download/usafacts_deaths_{}.geojson'.format(month_day)), 'rb'))
@@ -68,14 +72,14 @@ def validate_and_process():
       print(yesterday_source_field)
       cases_last_date = cases_source_field_names[-1]
       print(cases_last_date)
-      if cases_last_date != yesterday_source_field:
-        raise ValueError("Cases do not contain yesterday's data; last date {}".format(cases_last_date))
+      # if cases_last_date != yesterday_source_field:
+      #   raise ValueError("Cases do not contain yesterday's data; last date {}".format(cases_last_date))
 
       # VALIDATE: make sure deaths contain yesterday's data
       deaths_last_date = deaths_source_field_names[-1]
 
-      if deaths_last_date != yesterday_source_field:
-        raise ValueError("Deaths do not contain yesterday's data; last date {}".format(deaths_last_date))
+      # if deaths_last_date != yesterday_source_field:
+      #   raise ValueError("Deaths do not contain yesterday's data; last date {}".format(deaths_last_date))
 
       cases_out_rows = []
       deaths_out_rows = []
@@ -155,6 +159,17 @@ def get_month_day():
     day   = str(datetime.now(pytz.timezone('US/Central')).day).zfill(2)
 
     return month + '.' + day
+
+
+def create_state_files():
+    for type_ in ['cases', 'deaths']:
+        data = pd.read_csv(os.path.join(dir_path, '_working/{}_raw.csv'.format(type_)))
+        base_cols = data.copy()[['State', 'stateFIPS']].drop_duplicates()
+        agg = data.groupby('State').sum().reset_index().drop(columns=['countyFIPS','stateFIPS'])
+        final = pd.merge(base_cols, agg, how='inner', on = 'State')
+        if type_ == 'cases':
+            type_ = 'confirmed'
+        final.to_csv(os.path.join(repo_root, 'docs/csv/covid_{}_usafacts_state.csv'.format(type_)))
 
 if __name__ == '__main__':
     usafacts()
