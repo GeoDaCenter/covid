@@ -279,7 +279,7 @@ if (params_dict['var'] != undefined) {
 }
 if (params_dict['src']) source_btn.innerText = datasource_names[dataset_index[parseInt(params_dict['src'])]]
 
-var stateMap = 'state_1p3a.geojson';
+var stateMap = 'state_usafacts.geojson';
 
 function isState() {
   return source_btn.innerText.indexOf('State') >= 0;
@@ -3231,8 +3231,33 @@ function OnLISAClick(evt) {
     if (!(field in lisaData[selectedDataset][selectedDate])) lisaData[selectedDataset][selectedDate][field] = {}
     lisaData[selectedDataset][selectedDate][field]['clusters'] = clusters;
     lisaData[selectedDataset][selectedDate][field]['pvalues'] = sig;
-  }
+  } 
+  
+  color_vec[0] = '#ffffff';
 
+  getFillColor = function(f) {
+    var c = clusters[f.properties.id];
+    if (c == 0 || c == undefined) return [255, 255, 255, 200];
+    return hexToRgb(color_vec[c]);
+  };
+
+  getLineColor = function(f) {
+    //return f.properties.id == selectedId ? [255, 0, 0] : [255, 255, 255, 50];
+    return  [255, 255, 255, 50];
+  };
+
+  UpdateLisaLegend(color_vec);
+  UpdateLisaLabels(labels);
+  UpdateLegendTitle();
+
+  evt.classList.add("checked");
+  document.getElementById("btn-nb").classList.remove("checked");
+
+  if (isState()) {
+    loadMap(stateMap);
+  } else {
+    loadMap(selectedDataset);
+  }
 }
 
 function loadScript(url) {
