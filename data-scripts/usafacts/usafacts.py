@@ -72,14 +72,14 @@ def validate_and_process():
       print(yesterday_source_field)
       cases_last_date = cases_source_field_names[-1]
       print(cases_last_date)
-      # if cases_last_date != yesterday_source_field:
-      #   raise ValueError("Cases do not contain yesterday's data; last date {}".format(cases_last_date))
+      if cases_last_date != yesterday_source_field:
+        raise ValueError("Cases do not contain yesterday's data; last date {}".format(cases_last_date))
 
       # VALIDATE: make sure deaths contain yesterday's data
       deaths_last_date = deaths_source_field_names[-1]
 
-      # if deaths_last_date != yesterday_source_field:
-      #   raise ValueError("Deaths do not contain yesterday's data; last date {}".format(deaths_last_date))
+      if deaths_last_date != yesterday_source_field:
+        raise ValueError("Deaths do not contain yesterday's data; last date {}".format(deaths_last_date))
 
       cases_out_rows = []
       deaths_out_rows = []

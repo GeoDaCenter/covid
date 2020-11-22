@@ -4,18 +4,6 @@ git config --global user.email "theuscovidatlas@gmail.com"
 git config --global user.name "theuscovidatlas"
 
 
-# case $REPO in
-# 	covid)
-# 		git clone git@github.com:GeoDaCenter/covid.git && cd covid
-# 	;;
-#
-# 	testing)
-# 		git clone git@github.com:GeoDaCenter/covid-atlas-research.git
-# 		git clone git@github.com:GeoDaCenter/covid.git
-#
-# 	;;
-# esac
-
 git clone git@github.com:GeoDaCenter/covid.git && cd covid
 
 case $DATA_SOURCE in
