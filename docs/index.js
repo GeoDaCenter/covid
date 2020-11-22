@@ -163,9 +163,8 @@ var usafactsCases;
 var usafactsDeaths;
 var usafactsData;
 var usaFactsStateData;
-var usafactsCases;
-var usafactsDeaths;
-var usafactsData;
+var usafactsStateCases;
+var usafactsStateDeaths;
 var usafactsStateCases;
 var usafactsStateDeaths;
 var usafactsStateData;
@@ -711,9 +710,9 @@ async function loadUSAFactsStateData(url, callback) {
   // update state
   // TODO isn't there a function that does this?
   updateSelectedDataset(selectedDataset);
-
+  
   // merge usfacts csv data
-  parseUsafactsStateData(featuresWithIds, onep3aStateCases, onep3aStateDeaths, usafactsStateTesting, usafactsStateTestingPos, usafactsStateTestingTcap, usafactsStateTestingCcpt); //usafactsTesting, usafactsTestingPos, usafactsTestingTcap, usafactsTestingCcpt
+  parseUsafactsStateData(featuresWithIds, usafactsStateCases,usafactsStateDeaths,usafactsStateTesting,usafactsStateTestingPos,usafactsStateTestingTcap,usafactsStateTestingCcpt); //usafactsTesting, usafactsTestingPos, usafactsTestingTcap, usafactsTestingCcpt
   jsondata[selectedDataset] = featuresWithIds;
 
   // read as bytearray for GeoDaWASM
@@ -743,7 +742,7 @@ function loadData(url, callback) {
   } else if (url.endsWith('county_1p3a.geojson')) {
     load1p3aCountyData(url, callback);
   } else {
-    load1p3aStateData(url,callback);
+    loadUSAFactsStateData(url,callback);
   }
 }
 
@@ -945,14 +944,14 @@ function parseUsafactsStateData(data, confirm_data, death_data, testing, testing
   let testingpos_dict = {};
 
   for (let i = 0; i < confirm_data.length; ++i) {
-    conf_dict[confirm_data[i].GEOID] = confirm_data[i];
-    death_dict[death_data[i].GEOID] = death_data[i];
-    testing_dict[testing[i].GEOID] = testing[i];
-    testingtcap_dict[testingtcap[i].GEOID] = testingtcap[i];
-    testingccpt_dict[testingccpt[i].GEOID] = testingccpt[i];
-    testingpos_dict[testingpos[i].GEOID] = testingpos[i];
+    conf_dict[confirm_data[i].stateFIPS] = confirm_data[i];
+    death_dict[death_data[i].stateFIPS] = death_data[i];
+    testing_dict[testing[i].stateFIPS] = testing[i];
+    testingtcap_dict[testingtcap[i].stateFIPS] = testingtcap[i];
+    testingccpt_dict[testingccpt[i].stateFIPS] = testingccpt[i];
+    testingpos_dict[testingpos[i].stateFIPS] = testingpos[i];
   }
-  
+
   for (let i = 0; i < data.features.length; i++) {
     let pop = data.features[i].properties.population;
     let geoid = parseInt(data.features[i].properties.GEOID);
@@ -965,7 +964,7 @@ function parseUsafactsStateData(data, confirm_data, death_data, testing, testing
 
     let j = 0;
     if (!(geoid in conf_dict)) {
-      console.log("1P3A Counties does not have:", data.features[i].properties);
+      console.log("UsaFacts states does not have:", data.features[i].properties);
       while (j < dates[selectedDataset].length) {
         let d = dates[selectedDataset][j];
         caseData[json][d][i] = 0;
@@ -1133,8 +1132,8 @@ function updateDates() {
     }
   } else {
     // todo: the following line should be updated to current date
-    dates[selectedDataset] = getDatesFrom1p3a(onep3aStateCases);
-    if (selectedDate == null || selectedDate.indexOf('/') >= 0) {
+    dates[selectedDataset] = getDatesFromUsafacts(usafactsStateCases);
+    if (selectedDate == null || selectedDate.indexOf('-') >= 0) {
       selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
       latestDate = selectedDate;
     }
