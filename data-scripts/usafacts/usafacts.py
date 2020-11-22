@@ -169,7 +169,7 @@ def create_state_files():
         final = pd.merge(base_cols, agg, how='inner', on = 'State')
         if type_ == 'cases':
             type_ = 'confirmed'
-        final.to_csv(os.path.join(repo_root, 'docs/csv/covid_{}_usafacts_state.csv'.format(type_)))
+        final.to_csv(os.path.join(repo_root, 'docs/csv/covid_{}_usafacts_state.csv'.format(type_)), index=False)
 
 if __name__ == '__main__':
     usafacts()
