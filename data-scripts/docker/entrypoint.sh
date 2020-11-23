@@ -4,7 +4,17 @@ git config --global user.email "theuscovidatlas@gmail.com"
 git config --global user.name "theuscovidatlas"
 
 
-git clone git@github.com:GeoDaCenter/covid.git && cd covid
+case $REPO in
+	covid)
+		git clone git@github.com:linqinyu/covid.git && cd covid
+	;;
+
+	testing)
+		git clone git@github.com:GeoDaCenter/covid-atlas-research.git
+		git clone git@github.com:linqinyu/covid.git
+
+	;;
+esac
 
 case $DATA_SOURCE in
 
@@ -25,7 +35,7 @@ case $DATA_SOURCE in
 		;;
 
 	testing)
-		export COMMAND='bash ./data-scripts/testing/run_testing.sh'
+		export COMMAND='bash /tmp/covid-atlas-research/Testing_Data/run_testing.sh'
 
 esac
 

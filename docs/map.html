@@ -122,7 +122,7 @@
           <div class="dropdown-content">
             <a href="#" onclick="OnSourceClick(this)">By County (UsaFacts.com)</a>
             <a href="#" onclick="OnSourceClick(this)">By County (1Point3Acres.com)</a>
-            <a href="#" onclick="OnSourceClick(this)">By State (1Point3Acres.com)</a>
+            <a href="#" onclick="OnSourceClick(this)">By State (UsaFacts.com)</a>
           </div>
         </div>
       </div>
@@ -145,7 +145,7 @@
             <a href="#" onclick="OnDataClick(this)" id="btn-7day-per100K">7-Day Average Daily New Confirmed Count per 100K Pop</a>
             <a href="#" onclick="OnDataClick(this)">Daily New Death Count</a>
             <a href="#" onclick="OnDataClick(this)">Daily New Death Count per 100K Pop</a>
-            <a href="#" onclick="OnDataClick(this)">Forecasting (5-Day Severity Index)</a>
+            <a href="#" onclick="OnDataClick(this)" id="btn-forecasting">Forecasting (5-Day Severity Index)</a>
             <a href="#" onclick="OnDataClick(this)" id="btn-7day-pos" style="display:none">7 Day Testing Positivity Rate %</a>
             <a href="#" onclick="OnDataClick(this)" id="btn-7day-cap" style="display:none">7 Day Testing Capacity</a>
             <a href="#" onclick="OnDataClick(this)" id="btn-7day-conf" style="display:none">7 Day Confirmed Cases per Testing %</a>
@@ -318,8 +318,10 @@
     <div id="legend-labels">
     </div>
   </div>
-  <div id="left-collapse" class="collapse-btn" onclick="leftPanelCollapse()"><i
-      class="fa fa-chevron-left"></i></div>
+  <div id="left-collapse" class="collapse-btn" onclick="leftPanelCollapse()">
+    <p>Variable Panel</p>
+    <i class="fa fa-chevron-left"></i>
+    </div>
 
   <div class="data-panel right-panel" hidden>
     <input id="geoid" hidden></input>
@@ -330,17 +332,16 @@
 
   </div>
 
-  <div id="right-collapse" class="collapse-btn hide" onclick="rightPanelCollapse()"><i
-      class="fa fa-chevron-right"></i>
+  <div id="right-collapse" class="collapse-btn hide" onclick="rightPanelCollapse()">
+    <p>Data Panel</p>
+    <i class="fa fa-chevron-right"></i>
   </div>
   <div id="tutorial" style="display:none;">
     <div id="panel-container" style="left:0%;">
       <div class="panel" id="panel-1">
         <h3>Welcome to the US Covid Atlas</h3>
-        <p class="subtitle">November Release Notes</p>
-        <p>This release of the US Covid Atlas includes new tools 
-          to explore and understand the COVID-19 pandemic's
-          spread in the United States.<br><br>
+        <p class="subtitle">11/22 Hotfix Notes</p>
+        <p>Please note that we are now using UsaFacts State level data by default. You can explore this dataset under "Data Source" and then "By State"<br/><br/>
           
           If you are returning to this site, please try clearing your
           page cache with a hard refresh (control + shift + R or

@@ -66,7 +66,7 @@ config.VARIABLES = [
 
 config.VALID = {}
 
-config.VALID['state_1p3a.geojson'] = [
+config.VALID['state_usafacts.geojson'] = [
   'Confirmed Count',
   'Confirmed Count per 100K Population',
   'Confirmed Count per Licensed Bed',
@@ -125,7 +125,7 @@ config.VALID['county_usfacts.geojson'] = [
 
 config.DEFAULT = {}
 
-config.DEFAULT['state_1p3a.geojson'] = '7-Day Average Daily New Confirmed Count per 100K Pop';
+config.DEFAULT['state_usafacts.geojson'] = '7-Day Average Daily New Confirmed Count per 100K Pop';
 config.DEFAULT['county_1p3a.geojson'] = '7-Day Average Daily New Confirmed Count per 100K Pop';
 config.DEFAULT['county_usfacts.geojson'] = '7-Day Average Daily New Confirmed Count per 100K Pop';
 
@@ -195,9 +195,9 @@ const COLOR_SCALE = {
   ],
   'forecasting' : [
     [240, 240, 240],
-    [69, 117, 180],
-    [250, 227, 212],
-    [215, 48, 39],
+    [254,232,200],
+    [253,187,132],
+    [227,74,51],
   ],
   'testing_fixed_bins' : [
     [240,240,240],
@@ -236,7 +236,7 @@ const testing_cap_breaks = {
 var lisa_labels = ["Not significant", "High-High", "Low-Low", "Low-High", "High-Low", "Undefined", "Isolated"];
 var lisa_colors = ["#ffffff", "#FF0000", "#0000FF", "#a7adf9", "#f4ada8", "#464646", "#999999"];
 
-const dataset_index = ['county_usfacts.geojson', 'county_1p3a.geojson', 'state_1p3a.geojson']
+const dataset_index = ['county_usfacts.geojson', 'county_1p3a.geojson', 'state_usafacts.geojson']
 
 config.LEGEND_TEXT = {
   'Confirmed Count':'Confirmed Count',
