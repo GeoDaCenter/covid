@@ -22,7 +22,14 @@ def write_to_s3(filename):
 
 if __name__ == '__main__':
 
-    files_to_upload = ['covid_tcap_1p3a_state.csv', 'covid_wk_pos_1p3a_state.csv', 'covid_testing_1p3a_state.csv', 'covid_ccpt_1p3a_state.csv'，
-    'covid_tcap_usafacts_state.csv', 'covid_wk_pos_usafacts_state.csv', 'covid_testing_usafacts_state.csv', 'covid_ccpt_usafacts_state.csv']
+    files_to_upload = [
+                       # 'covid_tcap_1p3a_state.csv', 
+                       # 'covid_wk_pos_1p3a_state.csv',
+                       # 'covid_testing_1p3a_state.csv',
+                       # 'covid_ccpt_1p3a_state.csv'，
+                       'covid_tcap_usafacts_state.csv',
+                       'covid_wk_pos_usafacts_state.csv',
+                       'covid_testing_usafacts_state.csv',
+                       'covid_ccpt_usafacts_state.csv']
 
     upload_files(files_to_upload)
