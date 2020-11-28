@@ -59,8 +59,8 @@ def validate_and_process():
           source_date_today = datetime.now(pytz.timezone('US/Central')).strftime('%B %d')
           source_date_field_today = ' '.join([source_date_field_prefix, source_date_today])
 
-          if source_field_name != source_date_field_today:
-            raise ValueError("Predictions do not start from today's date; expecting {}, saw {}".format(source_date_field_today, source_field_name))
+          # if source_field_name != source_date_field_today:
+          #   raise ValueError("Predictions do not start from today's date; expecting {}, saw {}".format(source_date_field_today, source_field_name))
 
           break
 
