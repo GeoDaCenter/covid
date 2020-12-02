@@ -3,8 +3,8 @@ library(dplyr)
 library(sf)
 
 ### Take Testing Input
-new_pos <- read.csv("/Users/ryan/Documents/GitHub/covid/data-scripts/testing/state_testing_positive.csv") %>% select(-criteria)
-new_num <- read.csv("/Users/ryan/Documents/GitHub/covid/data-scripts/testing/state_testing_numbers.csv") %>% select(-criteria)
+new_pos <- read.csv("/tmp/covid/data-scripts/testing/state_testing_positive.csv") %>% select(-criteria)
+new_num <- read.csv("/tmp/covid/data-scripts/testing/state_testing_numbers.csv") %>% select(-criteria)
 
 today_date <- sub(".", "", colnames(new_pos[2]))
 today_date <- paste(substr(today_date, 1, 4), "-", substr(today_date, 5, 6), "-", substr(today_date, 7, 8), sep = "")
@@ -76,10 +76,10 @@ change_date <- function(den){
 }
 
 # Take population info
-states_update <- as.data.frame(st_read("/Users/ryan/Documents/GitHub/covid/docs/state_1p3a.geojson")) %>% select(-geometry, -GEOID)
+states_update <- as.data.frame(st_read("/tmp/covid/docs/state_1p3a.geojson")) %>% select(-geometry, -GEOID)
 names(states_update)[5] <- "State"
 states_update <- states_update[-c(17, 53, 54, 55, 56),]
-states_cases <- read.csv("/Users/ryan/Documents/GitHub/covid/docs/csv/covid_confirmed_usafacts_state.csv")
+states_cases <- read.csv("/tmp/covid/docs/csv/covid_confirmed_usafacts_state.csv")
 states_update <- left_join(states_update, states_cases, by = "State")
 
 for (i in 18:(322+diff)) {
@@ -213,9 +213,9 @@ for (i in 1:ncol(testing)){
   names(testing)[i] <- paste(as.character(as.numeric(substr(names(testing)[i],7,8))), "/",
                              as.character(as.numeric(substr(names(testing)[i],10,11))), "/", "20", sep = "")
 }
-testing <- testing[,order(ncol(testing):1)]
+testing <- testing[order(as.Date(colnames(testing), "%m/%d/%y"))]
 testing <- cbind(usaf_var, testing)
-write.csv(testing,'/Users/ryan/Documents/GitHub/covid/docs/csv/covid_testing_usafacts_state.csv', row.names=FALSE)
+write.csv(testing,'/tmp/covid/docs/csv/covid_testing_usafacts_state.csv', row.names=FALSE)
 
 Testingccpt <- states_update %>%
   select(starts_with("ccpt2020"))
@@ -223,9 +223,9 @@ for (i in 1:ncol(Testingccpt)){
   names(Testingccpt)[i] <- paste(as.character(as.numeric(substr(names(Testingccpt)[i],10,11))), "/",
                                  as.character(as.numeric(substr(names(Testingccpt)[i],13,14))), "/", "20", sep = "")
 }
-Testingccpt <- Testingccpt[,order(ncol(Testingccpt):1)]
+Testingccpt <- Testingccpt[order(as.Date(colnames(Testingccpt), "%m/%d/%y"))]
 Testingccpt <- cbind(usaf_var, Testingccpt)
-write.csv(Testingccpt,'/Users/ryan/Documents/GitHub/covid/docs/csv/covid_ccpt_usafacts_state.csv', row.names=FALSE)
+write.csv(Testingccpt,'/tmp/covid/docs/csv/covid_ccpt_usafacts_state.csv', row.names=FALSE)
 
 Testingtcap <- states_update %>%
   select(starts_with("tcap2020"))
@@ -233,9 +233,9 @@ for (i in 1:ncol(Testingtcap)){
   names(Testingtcap)[i] <- paste(as.character(as.numeric(substr(names(Testingtcap)[i],10,11))), "/",
                                  as.character(as.numeric(substr(names(Testingtcap)[i],13,14))), "/", "20", sep = "")
 }
-Testingtcap <- Testingtcap[,order(ncol(Testingtcap):1)]
+Testingtcap <- Testingtcap[order(as.Date(colnames(Testingtcap), "%m/%d/%y"))]
 Testingtcap <- cbind(usaf_var, Testingtcap)
-write.csv(Testingtcap,'/Users/ryan/Documents/GitHub/covid/docs/csv/covid_tcap_usafacts_state.csv', row.names=FALSE)
+write.csv(Testingtcap,'/tmp/covid/docs/csv/covid_tcap_usafacts_state.csv', row.names=FALSE)
 
 
 Testingwktpos <- states_update %>%
@@ -244,6 +244,6 @@ for (i in 1:ncol(Testingwktpos)){
   names(Testingwktpos)[i] <- paste(as.character(as.numeric(substr(names(Testingwktpos)[i],12,13))), "/",
                                    as.character(as.numeric(substr(names(Testingwktpos)[i],15,16))), "/", "20", sep = "")
 }
-Testingwktpos <- Testingwktpos[,order(ncol(Testingwktpos):1)]
+Testingwktpos <- Testingwktpos[order(as.Date(colnames(Testingwktpos), "%m/%d/%y"))]
 Testingwktpos <- cbind(usaf_var, Testingwktpos)
-write.csv(Testingwktpos,'/Users/ryan/Documents/GitHub/covid/docs/csv/covid_wk_pos_usafacts_state.csv', row.names=FALSE)
+write.csv(Testingwktpos,'/tmp/covid/docs/csv/covid_wk_pos_usafacts_state.csv', row.names=FALSE)
