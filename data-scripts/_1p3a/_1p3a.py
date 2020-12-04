@@ -93,7 +93,7 @@ def fetch_covid_data():
     out.write(now.strftime("%d/%m/%Y %H:%M:%S"))
     out.close()
 
-    os.system('curl -o {}/cases.txt https://instant.1point3acres.com/v1/api/coronavirus/us/cases?token=PFl0dpfo'.format(dir_path))
+    os.system('curl -o {}/cases.csv https://instant.1point3acres.com/v1/api/coronavirus/us/cases?token=PFl0dpfo'.format(dir_path))
 
 def create_state_files(raw_data):
     states = gpd.read_file(os.path.join(repo_root, 'data/states.geojson'))
