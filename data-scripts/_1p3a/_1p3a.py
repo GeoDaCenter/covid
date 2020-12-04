@@ -93,7 +93,7 @@ def fetch_covid_data():
     out.write(now.strftime("%d/%m/%Y %H:%M:%S"))
     out.close()
 
-    os.system('curl -o {}/cases.csv https://instant.1point3acres.com/v1/api/coronavirus/us/cases?token=PFl0dpfo'.format(dir_path))
+    # os.system('curl -o {}/cases.csv https://instant.1point3acres.com/v1/api/coronavirus/us/cases?token=PFl0dpfo'.format(dir_path))
 
 def create_state_files(raw_data):
     states = gpd.read_file(os.path.join(repo_root, 'data/states.geojson'))
@@ -107,6 +107,15 @@ def create_state_files(raw_data):
 
     states_deaths_final.to_csv(os.path.join(repo_root, 'docs/csv/covid_deaths_1p3a_state.csv'), index=False)
     states_confir_final.to_csv(os.path.join(repo_root, 'docs/csv/covid_confirmed_1p3a_state.csv'), index=False)
+
+    states = gpd.read_file(os.path.join(repo_root, 'data/states.geojson'))
+    states_deaths_sim = states_deaths_final.copy().drop(columns=['NAME'])
+    states_deaths_sim.columns = ['d' + x if x != 'GEOID' else x for x in states_deaths_sim.columns]
+    states_confir_json = states_confir_final.copy()
+    state_json = pd.merge(states_deaths_sim, states_confir_final, how='inner', on='GEOID')
+    state_json = state_json.merge(states[['GEOID','geometry']], how='inner', on='GEOID')
+    state_json = gpd.GeoDataFrame(state_json, geometry=state_json.geometry)
+    state_json.to_file(os.path.join(repo_root, 'docs/states_update.geojson'), driver='GeoJSON')
 
 def create_county_files(raw_data):
     counties = gpd.read_file(os.path.join(repo_root, 'data/county_2018.geojson'))
@@ -134,6 +143,15 @@ def create_county_files(raw_data):
     with open(os.path.join(dir_path, 'unmatched.txt'), 'w') as file:
         for item in unmatched_locs:
             file.write('%s\n' % item)
+
+    counties = gpd.read_file(os.path.join(repo_root, 'data/county_2018.geojson'))
+    county_deaths_sim = county_deaths_final.copy().drop(columns=['STATEFP', 'COUNTYFP', 'AFFGEOID', 'GEOID', 'NAME', 'LSAD'])
+    county_deaths_sim.columns = ['d' + x if x != 'COUNTYNS' else x for x in county_deaths_sim.columns]
+    county_confir_json = county_confir_final.copy()
+    county_json = pd.merge(county_deaths_sim, county_confir_final, how='inner', on='COUNTYNS')
+    county_json = county_json.merge(counties[['COUNTYNS','geometry']], how='inner', on='COUNTYNS')
+    county_json = gpd.GeoDataFrame(county_json, geometry=county_json.geometry)
+    county_json.to_file(os.path.join(repo_root, 'docs/counties_update.geojson'), driver='GeoJSON')
 
 if __name__ == '__main__':
 
