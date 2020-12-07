@@ -6,6 +6,7 @@ import numpy as np
 import re
 import pytz
 from jinja2 import Environment, FileSystemLoader
+import geopandas
 
 
 ##### Generate HTML #####
@@ -22,11 +23,17 @@ def generate_tables(output):
 	for k, v in output.items():
 
 		df = pd.DataFrame(v)
+		df = df.sort_values(by="average", ascending=False)
 		if not df.empty:
+			with open('number_county.json') as f:
+				number_county = json.load(f)
 			df_pivot = pd.pivot_table(df, index=["state_name"], values=["GEOID"],
 								aggfunc=[np.count_nonzero], fill_value=0)
 			df_pivot = df_pivot.count_nonzero
+			df_pivot["percentage"] = df_pivot["GEOID"]/df_pivot.index.map(number_county)
 			df_pivot = df_pivot.sort_values(by="GEOID", ascending=False)
+			df_pivot = df_pivot.rename(columns={"GEOID": "number of county"})
+			df_pivot['percentage'] = pd.Series(["{0:.2f}%".format(val * 100) for val in df_pivot['percentage']], index = df_pivot.index)
 		else:
 			df_pivot = pd.DataFrame()
 		html_var["subtitle_{}".format(i+1)] = k
@@ -65,9 +72,11 @@ def rename_column_usafacts(colnames):
 
 
 
-def get_date(ndays = 8):
-
-	yesterday = datetime.today()+ timedelta(days=-1)
+def get_date(ndays = 7, date = None):
+	if not date:
+		yesterday = datetime.today()+ timedelta(days=-1)
+	else:
+		yesterday = datetime.strptime(date, "%Y-%m-%d")
 	return [(yesterday + timedelta(days=-x)).strftime("%Y-%m-%d") for x in range(0,ndays)]
 
 
@@ -75,7 +84,7 @@ def get_date(ndays = 8):
 def get_high_high_county(data, date_list):
 
 	output = []
-	info = ["GEOID", "NAME", "state_name", "state_abbr", "confirmed_count", "death_count"]
+	info = ["GEOID", "NAME", "state_name", "state_abbr", "confirmed_count", "death_count", "average"]
 
 	for county in data["features"]:
 		if all([county[x] == 1 for x in date_list if x in county]):
@@ -90,3 +99,15 @@ def get_month_day():
     day   = str(datetime.now(pytz.timezone('US/Central')).day).zfill(2)
 
     return month + '.' + day
+
+
+
+def get_number_of_county():
+	gdf = geopandas.read_file("../download/usafacts_confirmed_11.29.geojson")
+	count = gdf.groupby("state_name")["GEOID"].count().to_dict()
+	with open('number_county.json', 'w') as fp:
+		json.dump(count, fp)
+	return
+
+
+

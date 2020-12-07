@@ -6,29 +6,41 @@
 </head>
 <body>
 	<h1> {{ title }} </h1>
+	<div>
+
+	</div>
 		<h3>{{ subtitle_1 }}</h3>
-			<h4> Full Data </h4>
-				{{ full_1 }}
+		<p>Corresponding to 7-Day Average Daily New Confirmed Count on Atlas</p>
+		<p>Notes:</p>
+		<p>The average column indicates average of seven-day-average metric as defined below:</p>
+		<p>For 7 day average, see below for how we calculate this: 
+"We calculated this variable by taking the difference between the current day’s confirmed count and the confirmed count 7 days ago, and then dividing this difference by 7. For example, we took the difference between the confirmed count as of June 30th and that as of June 23rd, divided the difference by 7, then used this as an estimate for 7 Day Average Daily Confirmed Count for June 30th. Technically speaking, this measures the daily average growth for the week right before June 30th. Also note that this calculation is only available with USAFacts data because of data completeness (1P3A has several days’ data missing in January and February)." </p>
 			<h4> Pivot Table </h4>
 				{{ pivot_1 }}
+			<h4> Full Data </h4>
+				{{ full_1 }}
 
 		<h3>{{ subtitle_2 }}</h3>
-			<h4> Full Data </h4>
-				{{ full_2 }}
+		<p>Corresponding to 7-Day Average Daily New Confirmed Count per 100k Population on Atlas</p>
 			<h4> Pivot Table </h4>
 				{{ pivot_2 }}
+			<h4> Full Data </h4>
+				{{ full_2 }}
 
 		<h3>{{ subtitle_3 }}</h3>
-			<h4> Full Data </h4>
-				{{ full_3 }}
+		<p>Corresponding to Total Confirmed Count on Atlas</p>
 			<h4> Pivot Table </h4>
 				{{ pivot_3 }}
+			<h4> Full Data </h4>
+				{{ full_3 }}
 
 		<h3>{{ subtitle_4 }}</h3>
-			<h4> Full Data </h4>
-				{{ full_4 }}
+		<p>Corresponding to Total Confirmed Count per 100k Population on Atlas</p>
 			<h4> Pivot Table </h4>
 				{{ pivot_4 }}
+			<h4> Full Data </h4>
+				{{ full_4 }}
+
 
 </body>
 </html>
