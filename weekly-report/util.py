@@ -39,6 +39,10 @@ def generate_tables(output):
 		html_var["subtitle_{}".format(i+1)] = k
 		html_var["full_{}".format(i+1)] = df.to_html()
 		html_var["pivot_{}".format(i+1)] = df_pivot.to_html()
+
+		df.to_csv(f'./csvs/full_data_{k}.csv', index=False)
+		df_pivot.to_csv(f'./csvs/pivot_data_{k}.csv', index=False)
+
 		i += 1
 
 	template_vars = {"title" : "Weekly Summary of {} - {}".format(date_list[-1], date_list[0])}
