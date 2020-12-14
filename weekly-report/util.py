@@ -40,8 +40,8 @@ def generate_tables(output):
 		html_var["full_{}".format(i+1)] = df.to_html()
 		html_var["pivot_{}".format(i+1)] = df_pivot.to_html()
 
-		df.to_csv(f'./csvs/full_data_{k}.csv', index=False)
-		df_pivot.to_csv(f'./csvs/pivot_data_{k}.csv', index=False)
+		df.to_csv(f'./csvs/full_data_{k}.csv')
+		df_pivot.to_csv(f'./csvs/pivot_data_{k}.csv')
 
 		i += 1
 
