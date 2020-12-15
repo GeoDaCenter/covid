@@ -8,12 +8,12 @@ NYTData = NYTData[NYTData.fips.notnull()]
 
 # convert columns to int type
 NYTData['fips'] = NYTData['fips'].astype(int)
-NYTData['cases'] = NYTData['cases'].astype(int)
-NYTData['deaths'] = NYTData['deaths'].astype(int)
+# NYTData['cases'] = NYTData['cases'].astype(int)
+# NYTData['deaths'] = NYTData['deaths'].astype(int)
 
 #sort based on fips 
 NYTData = NYTData.sort_values('fips')
-
+print('NYT sorted')
 # get list of uniqFips for iterating and uniqDates for placeholder DF
 uniqFips = NYTData['fips'].unique()
 uniqDates = NYTData['date'].unique()
@@ -25,13 +25,15 @@ parsedData.insert(loc=0, column='fips', value=[0])
 # loop through fips, orient to columns, append to parsed DF
 # todo - think more about data transformations here to speed this up. 
 for i in range(0, len(uniqFips)):
+    print(f"{i}/{len(uniqFips)}")
     tempDf = NYTData[NYTData.fips==uniqFips[i]].sort_values('date')[['date','cases','deaths']].set_index('date').T.reset_index()
     tempDf.insert(loc=0, column='fips', value=[uniqFips[i],uniqFips[i]])
     parsedData = parsedData.append(tempDf)
 
+print('data parsed')
 # clean up column names to lead with FIPS and Index
 cols = parsedData.columns.tolist()[:-2]
-cols.insert(0, 'fips') 
+# cols.insert(0, 'fips') 
 cols.insert(0, 'index') 
 
 # remove placeholder index column
