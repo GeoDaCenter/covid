@@ -30,13 +30,13 @@ def parseNYT(url):
         tempDf = NYTData[NYTData.fips==uniqFips[i]].sort_values('date')[['date','cases','deaths']].set_index('date').T.reset_index()
         tempDf.insert(loc=0, column='fips', value=[uniqFips[i],uniqFips[i]])
         parsedData = parsedData.append(tempDf)
-
     # clean up column names to lead with FIPS and Index
     cols = parsedData.columns.tolist()[:-2]
     cols.insert(0, 'index') 
+    cols.insert(0, 'fips') 
 
     # remove placeholder index column
-    parsedData = parsedData[cols].iloc[1:]
+    parsedData = parsedData[cols]
 
     return parsedData
 
@@ -44,14 +44,14 @@ if __name__ == '__main__':
     # return CSV ready DataFrames for State and County Data
     stateData = parseNYT("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
     countyData = parseNYT("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv")
-
+    
     # export CSVs to local folder and docs
-    countyData[countyData['index']=="cases"].to_csv('./covid_confirmed_nyt.csv', index=False)
-    countyData[countyData['index']=="deaths"].to_csv('./covid_deaths_nyt.csv', index=False)
-    countyData[countyData['index']=="cases"].to_csv('../../docs/csv/covid_confirmed_nyt.csv', index=False)
-    countyData[countyData['index']=="deaths"].to_csv('../../docs/csv/covid_deaths_nyt.csv', index=False)
+    countyData[countyData['index']=="cases"].drop(['index'], axis=1).to_csv('./covid_confirmed_nyt.csv', index=False)
+    countyData[countyData['index']=="deaths"].drop(['index'], axis=1).to_csv('./covid_deaths_nyt.csv', index=False)
+    countyData[countyData['index']=="cases"].drop(['index'], axis=1).to_csv('../../docs/csv/covid_confirmed_nyt.csv', index=False)
+    countyData[countyData['index']=="deaths"].drop(['index'], axis=1).to_csv('../../docs/csv/covid_deaths_nyt.csv', index=False)
 
-    stateData[stateData['index']=="cases"].to_csv('./covid_confirmed_nyt_state.csv', index=False)
-    stateData[stateData['index']=="deaths"].to_csv('./covid_deaths_nyt_state.csv', index=False)
-    stateData[stateData['index']=="cases"].to_csv('../../docs/csv/covid_confirmed_nyt_state.csv', index=False)
-    stateData[stateData['index']=="deaths"].to_csv('../../docs/csv/covid_deaths_nyt_state.csv', index=False)
+    stateData[stateData['index']=="cases"].drop(['index'], axis=1).to_csv('./covid_confirmed_nyt_state.csv', index=False)
+    stateData[stateData['index']=="deaths"].drop(['index'], axis=1).to_csv('./covid_deaths_nyt_state.csv', index=False)
+    stateData[stateData['index']=="cases"].drop(['index'], axis=1).to_csv('../../docs/csv/covid_confirmed_nyt_state.csv', index=False)
+    stateData[stateData['index']=="deaths"].drop(['index'], axis=1).to_csv('../../docs/csv/covid_deaths_nyt_state.csv', index=False)
