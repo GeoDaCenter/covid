@@ -170,7 +170,7 @@ states_update$"tcap2020-01-26" <- -1
 states_update$"tcap2020-01-30" <- -1
 states_update$"tcap2020-01-31" <- -1
 
-states_update <- states_update %>% select(-starts_with("pos2020"))
+states_update <- states_update %>% select(-starts_with("pos202"))
 
 
 
@@ -178,7 +178,7 @@ states_update <- states_update %>% select(-starts_with("pos2020"))
 
 testing <- states_update %>%
   select(GEOID, NAME,
-         starts_with("t2020"))
+         starts_with("t202"))
 for (i in 3:ncol(testing)){
   names(testing)[i] <- paste(substr(names(testing)[i],2,11))
 }
@@ -186,7 +186,7 @@ write.csv(testing,'/tmp/covid/docs/csv/covid_testing_1p3a_state.csv', row.names=
 
 Testingccpt <- states_update %>%
   select(GEOID, NAME,
-         starts_with("ccpt2020"))
+         starts_with("ccpt202"))
 for (i in 3:ncol(Testingccpt)){
   names(Testingccpt)[i] <- paste(substr(names(Testingccpt)[i],5,14))
 }
@@ -194,7 +194,7 @@ write.csv(Testingccpt,'/tmp/covid/docs/csv/covid_ccpt_1p3a_state.csv', row.names
 
 Testingtcap <- states_update %>%
   select(GEOID, NAME,
-         starts_with("tcap2020"))
+         starts_with("tcap202"))
 for (i in 3:ncol(Testingtcap)){
   names(Testingtcap)[i] <- paste(substr(names(Testingtcap)[i],5,14))
 }
@@ -203,7 +203,7 @@ write.csv(Testingtcap,'/tmp/covid/docs/csv/covid_tcap_1p3a_state.csv', row.names
 
 Testingwktpos <- states_update %>%
   select(GEOID, NAME,
-         starts_with("wktpos2020"))
+         starts_with("wktpos202"))
 for (i in 3:ncol(Testingwktpos)){
   names(Testingwktpos)[i] <- paste(substr(names(Testingwktpos)[i],7,16))
 }
