@@ -41,6 +41,7 @@ function getURLParams(){
 
 const datasource_names = {
   'county_1p3a.geojson':'By County (1Point3Acres.com)',
+  'state_1p3a.geojson':'By State (1Point3Acres.com)',
   'state_usafacts.geojson':'By State (UsaFacts.com)',
 }
 
@@ -198,6 +199,7 @@ var testingTcapData = {};
 var testingCcptData = {};
 var lisaData = {
   'county_usfacts.geojson': {},
+  'county_1p3a.geojson': {}
 };
 
 // this is an object indexed by county fips.
@@ -249,7 +251,7 @@ var getLineColor = function() {
 // these look like dataset file name constants, but they are actually default
 // values for state variables. for example, selectedDataset can change when switching
 // between 1p3a counties and usafacts counties.
-var selectedDataset = params_dict['src'] !== undefined ? dataset_index[parseInt(params_dict['src'])] : 'county_usfacts.geojson';
+var selectedDataset = params_dict['src'] !== undefined ? dataset_index[parseInt(params_dict['src'])] : 'county_1p3a.geojson';
 var selectedId = null;
 var selectedDate = null;
 var latestDate = null;
@@ -279,7 +281,7 @@ if (params_dict['var'] != undefined) {
 }
 if (params_dict['src']) source_btn.innerText = datasource_names[dataset_index[parseInt(params_dict['src'])]]
 
-var stateMap = 'state_usafacts.geojson';
+var stateMap =  'state_1p3a.geojson';//'state_usafacts.geojson';
 
 function isState() {
   return source_btn.innerText.indexOf('State') >= 0;
@@ -313,7 +315,7 @@ function updateSelectedDataset(url, callback = () => {}) {
     if (url.endsWith('county_1p3a.geojson')) {
       selectedDataset = 'county_1p3a.geojson';
     } else {
-      selectedDataset = 'state_usafacts.geojson';
+      selectedDataset = 'state_1p3a.geojson'; //'state_usafacts.geojson';
     }
   }
   updateDates();
@@ -741,6 +743,8 @@ function loadData(url, callback) {
     loadUsafactsData(url, callback);
   } else if (url.endsWith('county_1p3a.geojson')) {
     load1p3aCountyData(url, callback);
+  } else if (url.endsWith('state_1p3a.geojson')) {
+    load1p3aStateData(url, callback);
   } else {
     loadUSAFactsStateData(url,callback);
   }
@@ -750,7 +754,7 @@ function getDatesFromUsafacts(cases) {
   var xLabels = [];
   let n = cases.length;
   for (let col in cases[0]) {
-    if (col.endsWith('20')) {
+    if (col.endsWith('20')||col.endsWith('21')) {
       xLabels.push(col);
     }
   }
@@ -761,7 +765,7 @@ function getDatesFrom1p3a(cases) {
   var xLabels = [];
   let n = cases.length;
   for (let col in cases[0]) {
-    if (col.startsWith('20')) {
+    if (col.startsWith('20')||col.startsWith('21')) {
       xLabels.push(col);
     }
   }
@@ -1130,6 +1134,13 @@ function updateDates() {
       selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
       latestDate = selectedDate;
     }
+  } else if (selectedDataset == 'state_1p3a.geojson') {
+    // todo: the following line should be updated to current date
+    dates[selectedDataset] = getDatesFrom1p3a(onep3aCases);
+    if (selectedDate == null || selectedDate.indexOf('/') >= 0) {
+      selectedDate = dates[selectedDataset][dates[selectedDataset].length - 1];
+      latestDate = selectedDate;
+    }
   } else {
     // todo: the following line should be updated to current date
     dates[selectedDataset] = getDatesFromUsafacts(usafactsStateCases);
@@ -1359,7 +1370,7 @@ function init_state() {
           return COLOR_SCALE[selectedMethod][i];
       }
     } else if (selectedMethod.includes("testing")){
-      if (x == -1) return COLOR_SCALE[selectedMethod][0];
+      if (x === -1 || x === -100) return [240,240,240];
       for (var i = 1; i < nb.breaks.length; ++i) {
         if (x <= nb.breaks[i])
           return COLOR_SCALE[selectedMethod][i];
@@ -1428,6 +1439,8 @@ function OnSourceClick(evt) {
     selectedDataset = 'county_usfacts.geojson';
   } else if (evt.innerText.indexOf('County (1Point3Acres.com)') >= 0) {
     selectedDataset = 'county_1p3a.geojson';
+  } else if (evt.innerText.indexOf('State (1Point3Acres.com)') >= 0) {
+    selectedDataset = 'state_1p3a.geojson';
   } else {
     selectedDataset = 'state_usafacts.geojson';
   }

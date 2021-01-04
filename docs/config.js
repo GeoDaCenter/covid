@@ -85,6 +85,25 @@ config.VALID['state_usafacts.geojson'] = [
   '7 Day Confirmed Cases per Testing %',
 ];
 
+config.VALID['state_1p3a.geojson'] = [
+  'Confirmed Count',
+  'Confirmed Count per 100K Population',
+  'Confirmed Count per Licensed Bed',
+  'Death Count',
+  'Death Count per 100K Population',
+  'Death Count/Confirmed Count',
+  'Daily New Confirmed Count',
+  'Daily New Confirmed Count per 100K Pop',
+  '7-Day Average Daily New Confirmed Count',
+  '7-Day Average Daily New Confirmed Count per 100K Pop',
+  'Daily New Death Count',
+  'Daily New Death Count per 100K Pop',
+  'Forecasting (5-Day Severity Index)',
+  '7 Day Testing Positivity Rate %',
+  '7 Day Testing Capacity',
+  '7 Day Confirmed Cases per Testing %',
+];
+
 config.VALID['county_1p3a.geojson'] = [
   'Confirmed Count',
   'Confirmed Count per 100K Population',
