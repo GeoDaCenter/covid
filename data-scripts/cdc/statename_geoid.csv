@@ -1,57 +1,57 @@
-GEOID,STUSPS
-"54",WV
-"12",FL
-"17",IL
-"27",MN
-"24",MD
-"44",RI
-"16",ID
-"33",NH
-"37",NC
-"50",VT
-"09",CT
-"10",DE
-"35",NM
-"06",CA
-"34",NJ
-"55",WI
-"41",OR
-"31",NE
-"42",PA
-"53",WA
-"22",LA
-"13",GA
-"01",AL
-"49",UT
-"39",OH
-"48",TX
-"08",CO
-"45",SC
-"40",OK
-"47",TN
-"56",WY
-"15",HI
-"38",ND
-"21",KY
-"78",VI
-"69",MP
-"66",GU
-"23",ME
-"36",NY
-"32",NV
-"02",AK
-"60",AS
-"26",MI
-"05",AR
-"28",MS
-"29",MO
-"30",MT
-"20",KS
-"18",IN
-"72",PR
-"46",SD
-"25",MA
-"51",VA
-"11",DC
-"19",IA
-"04",AZ
+,GEOID,STUSPS,NAME
+0,54,WV,West Virginia
+1,12,FL,Florida
+2,17,IL,Illinois
+3,27,MN,Minnesota
+4,24,MD,Maryland
+5,44,RI,Rhode Island
+6,16,ID,Idaho
+7,33,NH,New Hampshire
+8,37,NC,North Carolina
+9,50,VT,Vermont
+10,9,CT,Connecticut
+11,10,DE,Delaware
+12,35,NM,New Mexico
+13,6,CA,California
+14,34,NJ,New Jersey
+15,55,WI,Wisconsin
+16,41,OR,Oregon
+17,31,NE,Nebraska
+18,42,PA,Pennsylvania
+19,53,WA,Washington
+20,22,LA,Louisiana
+21,13,GA,Georgia
+22,1,AL,Alabama
+23,49,UT,Utah
+24,39,OH,Ohio
+25,48,TX,Texas
+26,8,CO,Colorado
+27,45,SC,South Carolina
+28,40,OK,Oklahoma
+29,47,TN,Tennessee
+30,56,WY,Wyoming
+31,15,HI,Hawaii
+32,38,ND,North Dakota
+33,21,KY,Kentucky
+34,78,VI,United States Virgin Islands
+35,69,MP,Commonwealth of the Northern Mariana Islands
+36,66,GU,Guam
+37,23,ME,Maine
+38,36,NY,New York
+39,32,NV,Nevada
+40,2,AK,Alaska
+41,60,AS,American Samoa
+42,26,MI,Michigan
+43,5,AR,Arkansas
+44,28,MS,Mississippi
+45,29,MO,Missouri
+46,30,MT,Montana
+47,20,KS,Kansas
+48,18,IN,Indiana
+49,72,PR,Puerto Rico
+50,46,SD,South Dakota
+51,25,MA,Massachusetts
+52,51,VA,Virginia
+53,11,DC,District of Columbia
+54,19,IA,Iowa
+55,4,AZ,Arizona
