@@ -6,8 +6,8 @@ def downloadCDCVaccinationData():
     raw = requests.get('https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_data')
     loadedJson = raw.json()['vaccination_data']
     vaccinationData = pd.DataFrame(loadedJson)
-
-    with open(f'./json/cdc_vaccine_data_{loadedJson[0]["Date"]}.json', 'w') as outfile:
+    outputDate = loadedJson[0]["Date"].replace('/','-')
+    with open(f'./json/cdc_vaccine_data_{outputDate}.json', 'w') as outfile:
         json.dump(loadedJson, outfile)
 
     return glob('./json/*.json')
