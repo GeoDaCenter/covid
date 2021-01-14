@@ -7,6 +7,7 @@ import re
 import pytz
 from jinja2 import Environment, FileSystemLoader
 import geopandas
+import pygeoda
 
 
 ##### Generate HTML #####
@@ -66,22 +67,65 @@ def generate_html(template_vars):
 ##### Helper Functions #####
 
 
-def rename_column_usafacts(colnames):
-
-	for i, n in enumerate(colnames):
-		if re.match('^[0-9]+', n):
-			n  = datetime.strptime(n, '%m/%d/%y').strftime('%Y-%m-%d')
-			colnames[i] = n
-	return colnames
-
-
 
 def get_date(ndays = 7, date = None):
 	if not date:
 		yesterday = datetime.today()+ timedelta(days=-1)
 	else:
 		yesterday = datetime.strptime(date, "%Y-%m-%d")
-	return [(yesterday + timedelta(days=-x)).strftime("%Y-%m-%d") for x in range(0,ndays)]
+	date = [(yesterday + timedelta(days=-x)).strftime("%Y-%m-%d") for x in range(0,ndays)]
+	return date
+
+
+def rolling_average(gdf, thirteen_dates , seven_dates, adjusted_population):
+	df = gdf.loc[:,thirteen_dates+["GEOID"]].set_index("GEOID")
+	new_df = df.rolling(window=7, axis=1).mean().shift(-6,axis=1).dropna(1).reset_index()
+	new_df = pd.merge(new_df, gdf.loc[:,["GEOID", "population", "geometry", "NAME", "state_name", 
+		"state_abbr"]], left_on = "GEOID", right_on = "GEOID")
+
+	if not adjusted_population:
+		new_df["average"] = new_df.loc[:, seven_dates].mean(axis=1)
+		return new_df
+
+	for day in seven_dates:
+		new_df.loc[:,day] = new_df.loc[:,day]*100000/gdf['population']
+	new_df["average"] = new_df.loc[:, seven_dates].mean(axis=1)
+	return new_df
+
+
+
+def rolling_sum(gdf, thirteen_dates , seven_dates, adjusted_population):
+	df = gdf.loc[:,thirteen_dates+["GEOID"]].set_index("GEOID")
+	new_df = df.rolling(window=7, axis=1).sum().shift(-6,axis=1).dropna(1).reset_index()
+	new_df = pd.merge(new_df, gdf.loc[:,["GEOID", "population", "geometry", "NAME", "state_name", 
+		"state_abbr"]], left_on = "GEOID", right_on = "GEOID")
+
+	if not adjusted_population:
+		new_df["average"] = new_df.loc[:, seven_dates].mean(axis=1)
+		return new_df
+
+	for day in seven_dates:
+		new_df.loc[:,day] = new_df.loc[:,day]*100000/gdf['population']
+	new_df["average"] = new_df.loc[:, seven_dates].mean(axis=1)
+	return new_df
+
+
+def calculate_lisa(lisa_dic, k, seven_dates):
+
+	df = lisa_dic[k]
+
+	counties = pygeoda.geopandas_to_geoda(df)
+	w = pygeoda.weights.queen(counties)
+
+	int_data = [df[c].tolist() for c in seven_dates]
+
+	lisa = pygeoda.batch_local_moran(w, int_data, nCPUs=1, perm=999)
+	for i, col in enumerate(seven_dates):
+		df[col] = lisa.GetClusterIndicators(i)
+	dic = df.to_dict(orient="records")
+	dic = {"type": k, "source": "USAFacts", "features": dic}
+	lisa_dic[k] = dic
+	print(k + " updated!")
 
 
 
@@ -97,6 +141,14 @@ def get_high_high_county(data, date_list):
 	return output
 
 
+def get_number_of_county():
+	gdf = geopandas.read_file("../download/usafacts_confirmed_11.29.geojson")
+	count = gdf.groupby("state_name")["GEOID"].count().to_dict()
+	with open('number_county.json', 'w') as fp:
+		json.dump(count, fp)
+	return
+
+
 
 def get_month_day():
     month = str(datetime.now(pytz.timezone('US/Central')).month)
@@ -106,12 +158,11 @@ def get_month_day():
 
 
 
-def get_number_of_county():
-	gdf = geopandas.read_file("../download/usafacts_confirmed_11.29.geojson")
-	count = gdf.groupby("state_name")["GEOID"].count().to_dict()
-	with open('number_county.json', 'w') as fp:
-		json.dump(count, fp)
-	return
+def rename_column_usafacts(colnames):
 
-
+	for i, n in enumerate(colnames):
+		if re.match('^[0-9]+', n):
+			n  = datetime.strptime(n, '%m/%d/%y').strftime('%Y-%m-%d')
+			colnames[i] = n
+	return colnames
 
