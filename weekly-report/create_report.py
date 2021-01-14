@@ -34,7 +34,6 @@ def calculate_seven_day_lisa():
 
 
 	# Calculate LISA
-
 	lisa = {
 	"emerging_hotspot" : emerging_hotspot,
 	"emerging_hotspot_adjusted": emerging_hotspot_adjusted,

@@ -15,6 +15,7 @@ import pygeoda
 
 def generate_tables(output):
 
+	'''Generate HTML table strings and save the tables locally'''
 
 	date_list = get_date()
 
@@ -55,6 +56,8 @@ def generate_tables(output):
 
 def generate_html(template_vars):
 
+	'''Generate HTML page'''
+
 	env = Environment(loader=FileSystemLoader('.'))
 	template = env.get_template("report_template.html")
 	html_out = template.render(template_vars)
@@ -69,6 +72,9 @@ def generate_html(template_vars):
 
 
 def get_date(ndays = 7, date = None):
+
+	'''Get list of dates for n previous days'''
+
 	if not date:
 		yesterday = datetime.today()+ timedelta(days=-1)
 	else:
@@ -78,6 +84,9 @@ def get_date(ndays = 7, date = None):
 
 
 def rolling_average(gdf, thirteen_dates , seven_dates, adjusted_population):
+
+	'''Calculate 7-day rolling average'''
+
 	df = gdf.loc[:,thirteen_dates+["GEOID"]].set_index("GEOID")
 	new_df = df.rolling(window=7, axis=1).mean().shift(-6,axis=1).dropna(1).reset_index()
 	new_df = pd.merge(new_df, gdf.loc[:,["GEOID", "population", "geometry", "NAME", "state_name", 
@@ -95,6 +104,9 @@ def rolling_average(gdf, thirteen_dates , seven_dates, adjusted_population):
 
 
 def rolling_sum(gdf, thirteen_dates , seven_dates, adjusted_population):
+
+	'''Calculate 7-day rolling sum'''
+
 	df = gdf.loc[:,thirteen_dates+["GEOID"]].set_index("GEOID")
 	new_df = df.rolling(window=7, axis=1).sum().shift(-6,axis=1).dropna(1).reset_index()
 	new_df = pd.merge(new_df, gdf.loc[:,["GEOID", "population", "geometry", "NAME", "state_name", 
@@ -111,6 +123,8 @@ def rolling_sum(gdf, thirteen_dates , seven_dates, adjusted_population):
 
 
 def calculate_lisa(lisa_dic, k, seven_dates):
+
+	'''Calculate lisa'''
 
 	df = lisa_dic[k]
 
@@ -130,6 +144,8 @@ def calculate_lisa(lisa_dic, k, seven_dates):
 
 
 def get_high_high_county(data, date_list):
+
+	'''Return counties having high-high indicators in all days'''
 
 	output = []
 	info = ["GEOID", "NAME", "state_name", "state_abbr", "confirmed_count", "death_count", "average"]
