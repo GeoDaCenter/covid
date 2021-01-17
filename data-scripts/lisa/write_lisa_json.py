@@ -111,7 +111,7 @@ def write_confirmed_lisa_usafacts():
 
 	month_day = get_month_day()
 
-	gdf = geopandas.read_file(os.path.join(repo_root, "download/usafacts_confirmed_{}.geojson".format(month_day)))
+	gdf = geopandas.read_file(os.path.join(repo_root, "download/usafacts_confirmed.geojson".format(month_day)))
 	gdf.columns = rename_column_usafacts(gdf.columns.tolist())
 	cluster  = gdf.copy()
 
@@ -141,7 +141,7 @@ def write_death_lisa_usafacts():
 
 	month_day = get_month_day()
 
-	gdf = geopandas.read_file(os.path.join(repo_root, "download/usafacts_deaths_{}.geojson".format(month_day)))
+	gdf = geopandas.read_file(os.path.join(repo_root, "download/usafacts_deaths.geojson".format(month_day)))
 	gdf.columns = rename_column_usafacts(gdf.columns.tolist())
 	cluster  = gdf.copy()
 

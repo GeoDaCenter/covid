@@ -35,12 +35,13 @@ def county_update_lisa_1P3A():
 	# Find new dates
 	lisa_dates = list(old_lisa_confirmed["features"][0].keys())
 
-	dates = list(gdf.loc[:,:'d2020-01-21'].iloc[:,:-1].columns)
+	dates = list([col for col in gdf.columns if len(col) == 10])
 	select_vars = [i for i in dates if i not in lisa_dates]
 	if not select_vars:
 		print("1P3A - County: Already Updated!")
 		return None
 	select_vars.extend(["d"+i for i in select_vars])
+	print(select_vars)
 
 
 	# Calculate moran
@@ -56,7 +57,7 @@ def county_update_lisa_1P3A():
 		cluster[select_vars[i]] = lisa.GetClusterIndicators(i)
 
 	# Update Confirmed LISA json
-	confirmed = cluster[["GEOID"] + cluster.filter(regex='^2020').columns.tolist()]
+	confirmed = cluster[["GEOID"] + cluster.filter(regex='^202').columns.tolist()]
 	features = []
 	for county in old_lisa_confirmed["features"]:
 		geoid = county["GEOID"]
@@ -98,7 +99,7 @@ def state_update_lisa_1P3A():
 
 	# Find new dates
 	lisa_dates = list(old_lisa_confirmed["features"][0].keys())
-	dates = list(gdf.loc[:,:'d2020-01-21'].iloc[:,:-1].columns)
+	dates = list([col for col in gdf.columns if len(col) == 10])
 	select_vars = [i for i in dates if i not in lisa_dates]
 	if not select_vars:
 		print("1P3A - State: Already Updated!")
@@ -118,7 +119,7 @@ def state_update_lisa_1P3A():
 		cluster[select_vars[i]] = lisa.GetClusterIndicators(i)
 
 	# Update Confirmed LISA json
-	confirmed = cluster[["GEOID"] + cluster.filter(regex='^2020').columns.tolist()]
+	confirmed = cluster[["GEOID"] + cluster.filter(regex='^202').columns.tolist()]
 
 	features = []
 	for county in old_lisa_confirmed["features"]:
@@ -152,8 +153,7 @@ def state_update_lisa_1P3A():
 def update_lisa_usafacts(type_):
 
 	# Check if new file exists
-	month_day = get_month_day()
-	file = os.path.join(repo_root, "download/usafacts_{}_{}.geojson".format(type_, month_day))
+	file = os.path.join(repo_root, "download/usafacts_{}.geojson".format(type_))
 	if not os.path.isfile(file):
 		print("USAFacts - {}: No Updates!".format(type_))
 		return None
