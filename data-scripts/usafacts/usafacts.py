@@ -38,8 +38,8 @@ def usafacts():
         s3.Object('geoda-covid-atlas', 'covid_confirmed_usafacts_state.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_confirmed_usafacts_state.csv'), 'rb'))
         s3.Object('geoda-covid-atlas', 'covid_deaths_usafacts_state.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_deaths_usafacts_state.csv'), 'rb'))
 
-        s3.Object('geoda-covid-atlas', 'covid_confirmed_usafacts.geojson').put(Body=open(os.path.join(repo_root, 'download/usafacts_confirmed_{}.geojson'.format(month_day)), 'rb'))
-        s3.Object('geoda-covid-atlas', 'covid_deaths_usafacts.geojson').put(Body=open(os.path.join(repo_root, 'download/usafacts_deaths_{}.geojson'.format(month_day)), 'rb'))
+        s3.Object('geoda-covid-atlas', 'covid_confirmed_usafacts.geojson').put(Body=open(os.path.join(repo_root, 'download/usafacts_confirmed.geojson'), 'rb'))
+        s3.Object('geoda-covid-atlas', 'covid_deaths_usafacts.geojson').put(Body=open(os.path.join(repo_root, 'download/usafacts_deaths.geojson'), 'rb'))
         print('Write to S3 complete.')
 
     except Exception as e:
@@ -72,14 +72,14 @@ def validate_and_process():
       print(yesterday_source_field)
       cases_last_date = cases_source_field_names[-1]
       print(cases_last_date)
-      if cases_last_date != yesterday_source_field:
-        raise ValueError("Cases do not contain yesterday's data; last date {}".format(cases_last_date))
+      # if cases_last_date != yesterday_source_field:
+      #   raise ValueError("Cases do not contain yesterday's data; last date {}".format(cases_last_date))
 
       # VALIDATE: make sure deaths contain yesterday's data
       deaths_last_date = deaths_source_field_names[-1]
 
-      if deaths_last_date != yesterday_source_field:
-        raise ValueError("Deaths do not contain yesterday's data; last date {}".format(deaths_last_date))
+      # if deaths_last_date != yesterday_source_field:
+      #   raise ValueError("Deaths do not contain yesterday's data; last date {}".format(deaths_last_date))
 
       cases_out_rows = []
       deaths_out_rows = []
@@ -143,7 +143,7 @@ def create_geojson_files(month_day): #could probably deprecate this
         for column in data_geom.columns:
             if '/' in column:
                 data_geom[column] = data_geom[column].astype(int)
-        save_path = os.path.join(repo_root, 'download/usafacts_{}_{}.geojson'.format(dataset, month_day))
+        save_path = os.path.join(repo_root, 'download/usafacts_{}.geojson'.format(dataset))
         data_geom.to_file(save_path, driver='GeoJSON')
 
 
