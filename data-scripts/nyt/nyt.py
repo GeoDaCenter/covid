@@ -1,4 +1,8 @@
+import os
 import pandas as pd
+
+dir_path = os.path.dirname(os.path.realpath(__file__))
+repo_root = os.path.abspath(os.path.join(dir_path, '..', '..'))
 
 def parseNYT(url):
     # read in CORS compatible CSV
@@ -14,7 +18,7 @@ def parseNYT(url):
     NYTData['deaths'] = NYTData['deaths'].astype(int, errors = 'ignore')
     NYTData = NYTData.sort_values('date')
 
-    #sort based on fips 
+    #sort based on fips
     NYTData = NYTData.sort_values('fips')
     # get list of uniqFips for iterating and uniqDates for placeholder DF
     uniqFips = NYTData['fips'].unique()
@@ -31,7 +35,7 @@ def parseNYT(url):
     cases = cases.pivot_table(index='fips', columns='date').swaplevel(0, 1, 1).sort_index(1).reset_index()
     cases.columns = [column[0] for column in list(cases.columns)]
 
-    return { 
+    return {
         'cases': cases,
         'deaths': deaths
     }
@@ -40,14 +44,14 @@ if __name__ == '__main__':
     # return CSV ready DataFrames for State and County Data
     stateData = parseNYT("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
     countyData = parseNYT("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv")
-    
-    # export CSVs to local folder and docs
-    countyData['cases'].to_csv('./covid_confirmed_nyt.csv', index=False)
-    countyData['deaths'].to_csv('./covid_deaths_nyt.csv', index=False)
-    countyData['cases'].to_csv('../../docs/csv/covid_confirmed_nyt.csv', index=False)
-    countyData['deaths'].to_csv('../../docs/csv/covid_deaths_nyt.csv', index=False)
 
-    stateData['cases'].to_csv('./covid_confirmed_nyt_state.csv', index=False)
-    stateData['deaths'].to_csv('./covid_deaths_nyt_state.csv', index=False)
-    stateData['cases'].to_csv('../../docs/csv/covid_confirmed_nyt_state.csv', index=False)
-    stateData['deaths'].to_csv('../../docs/csv/covid_deaths_nyt_state.csv', index=False)
+    # export CSVs to local folder and docs
+    # countyData['cases'].to_csv('./covid_confirmed_nyt.csv', index=False)
+    # countyData['deaths'].to_csv('./covid_deaths_nyt.csv', index=False)
+    countyData['cases'].to_csv(os.path.join(repo_root, 'docs/csv/covid_confirmed_nyt.csv'), index=False)
+    countyData['deaths'].to_csv(os.path.join(repo_root, 'docs/csv/covid_deaths_nyt.csv'), index=False)
+
+    # stateData['cases'].to_csv('./covid_confirmed_nyt_state.csv', index=False)
+    # stateData['deaths'].to_csv('./covid_deaths_nyt_state.csv', index=False)
+    stateData['cases'].to_csv(os.path.join(repo_root, 'docs/csv/covid_confirmed_nyt_state.csv'), index=False)
+    stateData['deaths'].to_csv(os.path.join(repo_root, 'docs/csv/covid_deaths_nyt_state.csv'), index=False)
