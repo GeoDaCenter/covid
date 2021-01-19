@@ -1,8 +1,10 @@
 # README
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/f97601fe-2d82-482a-befe-b58f1bd7aa90/deploy-status)](https://app.netlify.com/sites/hardcore-wozniak-6dbde2/deploys)
+
 The U.S. COVID-19 Atlas provides county-level visualizations and analytics to reveal a more detailed pandemic landscape with local hotspots of surging COVID cases that are missed by state-level data. 
 
-The current production Atlas is available here: https://geodacenter.github.io/covid/. The Atlas is being updated everyday before 12pm, CT. We are working on releasing regular updates with more data, functions, and analysis. This repo is the experimental branch, a refactor based on React/Redux.
+The current Atlas is available here: [https://USCovidAtlas.org](https://USCovidAtlas.org). The Atlas is being updated everyday before 12pm, CT. We are working on releasing regular updates with more data, functions, and analysis.
 ![screenshot](https://github.com/GeoDaCenter/covid/blob/master/data/screenshot.PNG)
 
 ## DATA
@@ -13,6 +15,8 @@ For more information about additional datasets used in the Atlas, see our Data p
 Because there is no one single validated source for county-level COVID cases and deaths for real-time analysis, we incorporate multiple datasets from multiple projects to allow for comparisons. For now, two datasets are available. More will be incorporated later. 
 + [*USAFacts*](https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/?utm_source=MailChimp&utm_campaign=census-covid2):this dataset is provided by a non-profit organization. The data are aggregated from CDC, state- and local-level public health agencies. County-level data is confirmed by referencing state and local agencies directly.
 + [*1P3A*](https://coronavirus.1point3acres.com/en): This was the initial, crowdsourced data project that served as a volunteer project led by Dr. Yu Gao, Head of Machine Learning Platform at Uber. We access this data stream using a token provided by the group.
++ [*CDC*](https://covid.cdc.gov/covid-data-tracker): the US Center for Disease Control and Prevention is the nation's health protection agency. The data provided includes vaccination and county level testing data.
++ [*New York Times*](https://github.com/nytimes/covid-19-data): the New York Times newspaper releases time-series data compiled from state and local governments and health departments. The data is available via their github repository and is updated several times each day.
 
 We also include information from the following datasets: 
 + *American Community Survey*. We incorporate population data used to generate rates, and will add more information as needed in future iterations.
@@ -24,18 +28,18 @@ We also include information from the following datasets:
 
 ### Future Release
 We have multiple datasets planned for future inclusion in the atlas, including:
-+ [Bin Yu Group](https://github.com/Yu-Group/covid19-severity-prediction): Hospital Severity Index forecasting by hospital location
-+ [Data.gov](http://data.gov): Indian Reservation Boundaries
+<!-- + [Bin Yu Group](https://github.com/Yu-Group/covid19-severity-prediction): Hospital Severity Index forecasting by hospital location -->
+<!-- + [Data.gov](http://data.gov): Indian Reservation Boundaries -->
 + [DesCartes Lab](https://github.com/descarteslabs/DL-COVID-19): Mobility index by County
-+ [NYTimes](https://github.com/nytimes/covid-19-data): Confirmed Cases and Deaths by County & State
+<!-- + [NYTimes](https://github.com/nytimes/covid-19-data): Confirmed Cases and Deaths by County & State -->
 + [PlaceIQ, Couture et al](https://github.com/COVIDExposureIndices/COVIDExposureIndices): Limited Exposure Index by County 
 
 ### Data Details
 #### USAFacts
-You can download the most updated county level data merged with USAFacts [here](https://github.com/GeoDaCenter/covid/tree/master/): 
+<!-- You can download the most updated county level data merged with USAFacts [here](https://github.com/GeoDaCenter/covid/tree/master/): 
 + usafacts_confirmed_*date*.geojson: the county level data (confirmed cases) using [*USAFacts*](https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/?utm_source=MailChimp&utm_campaign=census-covid2), together with population and number of hospital beds. 
 + usafacts_deaths_*date*.geojson: the county level data (death counts) using [*USAFacts*](https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/?utm_source=MailChimp&utm_campaign=census-covid2), together with population and number of hospital beds. 
-+ *date*_confirm_per10K_usafacts.gif: the animation (.gif) showing how the pandemic has been changing over time (using confirmed cases per 100K population), which is also displayed in the Atlas. The GIF is updated weekly. If you would like to get a more timely gif, send us an email (qinyunlin@uchicago.edu) and we can prepare that for you.  
++ *date*_confirm_per10K_usafacts.gif: the animation (.gif) showing how the pandemic has been changing over time (using confirmed cases per 100K population), which is also displayed in the Atlas. The GIF is updated weekly. If you would like to get a more timely gif, send us an email (qinyunlin@uchicago.edu) and we can prepare that for you.   -->
 
 #### 1P3A
 To access raw 1P3A data, you must contact the 1P3A for a token directly.  
