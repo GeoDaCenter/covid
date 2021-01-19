@@ -1,7 +1,11 @@
+import os
 import grequests
 from datetime import datetime
 import pandas as pd
 import numpy as np
+
+dir_path = os.path.dirname(os.path.realpath(__file__))
+repo_root = os.path.abspath(os.path.join(dir_path, '..', '..'))
 
 # fetches current CDC county level data
 def getCdcCountyData():
@@ -10,7 +14,7 @@ def getCdcCountyData():
 
     # get list of URL endpoints
     urls = [f"https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=integrated_county_timeseries_state_{stateCode}_external" for stateCode in state2Digit]
-    
+
     # fetch data in groups of 12
     # fetching more than 12 causes issues
     breakpoint = 12
@@ -54,9 +58,9 @@ def parseCsvOutput(df, colName, operation=None):
         if operation['operator'] == 'divide':
             for column in tempDf.columns[operation['dateIndex']:]:
                 tempDf[column] = tempDf[column]/operation['denominator']
-    
+
     return tempDf
-    
+
 # calculates numerator and denominator time series DF and returns DF
 # for CSV output
 def parseNewMeasure(df, colName1, colName2, dateIndex):
@@ -70,7 +74,7 @@ def parseNewMeasure(df, colName1, colName2, dateIndex):
 
     for column in tempDf.columns[dateIndex:]:
         tempDf[column] = tempDf[column] / tempDf2[column]
-    
+
     return tempDf
 
 def parsePopulationNormalized(df, colName):
@@ -79,7 +83,7 @@ def parsePopulationNormalized(df, colName):
     tempDf.columns = [column[0] for column in list(tempDf.columns)]
     outputColumns = list(tempDf.columns).copy()
 
-    popDf = pd.read_csv('./county_populations.csv')
+    popDf = pd.read_csv(os.path.join(dir_path, 'county_populations.csv'))
     tempDf = tempDf.merge(popDf, left_on="fips_code", right_on="GEOID", how="left")
 
     for column in outputColumns[1:]:
@@ -101,13 +105,13 @@ if __name__ == "__main__":
             'operation':None
         },
         {
-            'column':'new_deaths_7_day_rolling_average', 
-            'csv':'covid_deaths_cdc', 
+            'column':'new_deaths_7_day_rolling_average',
+            'csv':'covid_deaths_cdc',
             'roundTo':1,
             'operation':None
         },
         {
-            'column':'new_test_results_reported_7_day_rolling_average', 
+            'column':'new_test_results_reported_7_day_rolling_average',
             'csv':'covid_testing_cdc',
             'roundTo':1,
             'operation':None
@@ -147,14 +151,16 @@ if __name__ == "__main__":
     # output CSV to this folder and docs
     for entry in colsToParse:
         tempDf = parseCsvOutput(raw, entry['column'], entry['operation']).replace([np.inf, -np.inf], np.nan).round(entry['roundTo'])
-        tempDf.to_csv(f'./csv/{entry["csv"]}.csv', index=False)
+        # tempDf.to_csv(os.path.join(repo_root, f'docs/csv/{entry["csv"]}.csv'), index=False)
+        tempDf.to_csv(os.path.join(repo_root, f'docs/csv/{entry["csv"]}.csv'), index=False)
 
     for entry in colsToCalculate:
         tempDf = parseNewMeasure(raw, entry['numerator'], entry['denominator'], 1).replace([np.inf, -np.inf], np.nan).round(entry['roundTo'])
-        tempDf.to_csv(f'./csv/{entry["csv"]}.csv', index=False)
-        
-    
+        # tempDf.to_csv(os.path.join(repo_root, f'docs/csv/{entry["csv"]}.csv'), index=False)
+        tempDf.to_csv(os.path.join(repo_root, f'docs/csv/{entry["csv"]}.csv'), index=False)
+
+
     for entry in colsToNormalize:
         tempDf = parsePopulationNormalized(raw, entry['column']).replace([np.inf, -np.inf], np.nan).round(entry['roundTo'])
-        tempDf.to_csv(f'./csv/{entry["csv"]}.csv', index=False)
-        
+        # tempDf.to_csv(os.path.join(repo_root, f'docs/csv/{entry["csv"]}.csv'), index=False)
+        tempDf.to_csv(os.path.join(repo_root, f'docs/csv/{entry["csv"]}.csv'), index=False)
