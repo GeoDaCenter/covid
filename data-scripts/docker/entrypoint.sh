@@ -4,17 +4,7 @@ git config --global user.email "theuscovidatlas@gmail.com"
 git config --global user.name "theuscovidatlas"
 
 
-case $REPO in
-	covid)
-		git clone git@github.com:linqinyu/covid.git && cd covid
-	;;
-
-	testing)
-		git clone git@github.com:GeoDaCenter/covid-atlas-research.git
-		git clone git@github.com:linqinyu/covid.git
-
-	;;
-esac
+git clone git@github.com:linqinyu/covid.git && cd covid
 
 case $DATA_SOURCE in
 
@@ -32,6 +22,14 @@ case $DATA_SOURCE in
 
 	lisa)
 		export COMMAND="python ./data-scripts/lisa/update_lisa_json.py"
+		;;
+
+	nyt)
+		export COMMAND="python ./data-scripts/nyt/nyt.py"
+		;;
+
+	cdc)
+		export COMMAND="python ./data-scripts/cdc/getCdcCountyData.py && python ./data-scripts/cdc/getCdcVaccinationData.py"
 		;;
 
 	testing)
