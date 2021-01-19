@@ -1,0 +1,91 @@
+<html>
+  <head>
+    <title>COVID19 USA States</title>
+
+    <link rel="stylesheet" href="index.css"></link>
+
+    <script src="https://unpkg.com/deck.gl@^7.0.0/dist.min.js"></script>
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+
+    <style type="text/css">
+
+    </style>
+  </head>
+
+  <body>
+    <div id="tooltip"></div>
+    <div class="options-panel top-right " tabindex="0">
+        <div>
+            <h3>COVID19 Map</h3>
+            <p>The covid19 confirmed cases in the United States of America</p>
+            <div class="layout">
+                <button class="stat col-1-2 checked" id="btn-state" onclick="OnStateClick(this)">By State</button>
+                <button class="stat col-1-2" id="btn-county" onclick="OnCountyClick(this)">By County</button>
+            </div>
+            <p>Data:</p>
+            <div class="layout">
+                <div class="dropdown">
+                    <button class="dropbtn" id="select-data">Confirmed Count</button>
+                    <div class="dropdown-content">
+                      <a href="#" onclick="OnDataClick(this)">Confirmed Count</a>
+                      <a href="#" onclick="OnDataClick(this)">Confirmed Count per 1M Population</a>
+                      <a href="#" onclick="OnDataClick(this)">Death Count</a>
+                      <a href="#" onclick="OnDataClick(this)">Death Count per 1M Population</a>
+                      <a href="#" onclick="OnDataClick(this)">Fatality Rate</a>
+                    </div>
+                  </div>
+            </div>
+            <p>Map type:</p>
+            <div class="layout">
+                <button class="stat col-1-2 checked" id="btn-nb" onclick="OnChoroplethClick(this)">Choropleth</button>
+                <button class="stat col-1-2" id="btn-lisa" onclick="OnLISAClick(this)">Local Clustering</button>
+            </div>
+            <p></p>
+            <div class="layout" id="legend">
+                <div class="legend" style="background: rgb(240, 240, 240); width: 7.69231%;"></div>
+                <div class="legend" style="background: rgb(255, 237, 160); width: 7.69231%;"></div>
+                <div class="legend" style="background: rgb(254, 217, 118); width: 7.69231%;"></div>
+                <div class="legend" style="background: rgb(254, 178, 76); width: 7.69231%;"></div>
+                <div class="legend" style="background: rgb(253, 141, 60); width: 7.69231%;"></div>
+                <div class="legend" style="background: rgb(252, 78, 42); width: 7.69231%;"></div>
+                <div class="legend" style="background: rgb(227, 26, 28); width: 7.69231%;"></div>
+                <div class="legend" style="background: rgb(189, 0, 38); width: 7.69231%;"></div>
+                <div class="legend" style="background: rgb(128, 0, 38); width: 7.69231%;"></div>
+            </div>
+            <div class="layout" id="legend-labels">
+                <div style="width: 7.69231%;"></div>
+                <div style="width: 7.69231%;"></div>
+                <div style="width: 7.69231%;"></div>
+                <div style="width: 7.69231%;"></div>
+                <div style="width: 7.69231%;"></div>
+                <div style="width: 7.69231%;"></div>
+                <div style="width: 7.69231%;"></div>
+                <div style="width: 7.69231%;"></div>
+                <div style="width: 7.69231%;"></div>
+            </div>
+            <p>New cases:</p>
+            <div class="layout" id="linechart"></div>
+            <p>All cases:</p>
+            <div class="layout" id="slider-svg"></div>
+            <div class="layout" id="sliderdiv"><input id="slider" type="range" min="1" max="100" step="1" value="20"/></div>
+            <p><n><b>Data</b>:&nbsp;<a href="https://covidvirus.1point3acres.com/">1point3acres.com</a> with more sources coming soon.</p>
+            <p>
+              <input type="checkbox" onchange="OnShowLabels(this)">Show Hotspot Label
+              <input type="checkbox" onchange="OnShowTime(this)">Show Time Label
+            </p>
+        </div>
+        <div class="source-link" align="center">
+			<a href="https://spatial.uchicago.edu" target="_new"><img align="center" src="logo_gray.png"  width=200px alt="Center for Spatial Data Science logo"/></a><br>
+            
+            <button onclick="OnSave(this)" style="display:none">save</button>
+        </div>
+    </div> 
+    <div class="time-panel bottom-left" id="time-container">2020-03-23
+    </div>
+  </body>
+  <script async type="text/javascript" src="./gen/jsgeoda.js"></script>
+  <script src="index.js"></script>
+
+  
+</html>
