@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>The US Covid Atlas</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1024">
+
+
+  <!-- CSS only -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+  <link href="css/index.css" rel="stylesheet" type="text/css">
+
+  <!-- JS, Popper.js, and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+  <!-- Fonts -->
+
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Montserrat:wght@400;600;800&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+
+    
+  <!-- Icon Library -->
+
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
+   <!-- Mailchimp -->
+
+  <link href="//cdn-images.mailchimp.com/embedcode/slim-10_7.css" rel="stylesheet" type="text/css">
+
+    
+  <link href="//cdn-images.mailchimp.com/embedcode/slim-10_7.css" rel="stylesheet" type="text/css">
+  
+  <link href="//cdn-images.mailchimp.com/embedcode/slim-10_7.css" rel="stylesheet" type="text/css">
+  
+
+  <!-- Favicon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="./favicon/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="./favicon/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="./favicon/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="./favicon/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="./favicon/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="./favicon/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="./favicon/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="./favicon/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192"  href="./favicon/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="./favicon/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
+  <link rel="manifest" href="./manifest.json">
+  <meta name="msapplication-TileColor" content="#ec1e24">
+  <meta name="msapplication-TileImage" content="./favicon/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ec1e24">
+</head>
+
+
+
+
+<nav nav class="navbar navbar-expand-md" style="background-color: #c1ebeb; height: 93px;">
+  <div class="container">
+  
+  <a href="index.html"><img src="img/us-covid-atlas-cluster-logo.svg"
+     class="US_Covid_Atlas_ClusterLogo"></a>
+                      
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarText">
+    <ul class="navbar-nav ml-auto na">
+      <li class="nav-item dropdown">
+        <a class="Nav-Text nav-link dropdown-toggle" href="map.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          MAP
+        </a>
+        <div class="Nav-Text2 dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: #00575c;">
+          <a class="dropdown-item" href="map.html">EXPLORE</a>
+          <a class="dropdown-item" href="data.html">DATA</a>
+          <a class="dropdown-item" href="methods.html">METHODS</a>
+          <a class="dropdown-item" href="faq.html">HELP + FAQ</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="Nav-Text nav-link" href="https://medium.com/covidatlas">INSIGHTS</a>
+      </li>
+      <li class="nav-item">
+        <a class="Nav-Text nav-link" href="about.html">ABOUT</a>
+      </li>
+      <li class="nav-item">
+        <a class="Nav-Text nav-link" href="contact.html">CONTACT</a>
+      </li>
+    </ul>
+  </div>
+</div>
+</nav>
+
+<body>
+
+
+<div class="covidatlas">
+
+  <div class="container">    
+     <br><br>
+
+    <div class = "row">
+
+      
+      <div class="col-lg-12">
+      <h1> API 
+      </h1>
+
+      <hr>
+
+      <p> The Covid Atlas’ public data API provides access to state-level and county-level USAFacts confirmed and death count data, and local indicator of spatial association results (LISA statistics).</p>
+
+        <li> All dates and times are in US central time (CDT). Data are updated on a daily basis every afternoon.</li>
+
+        <li> Users should first register for <a href="https://docs.google.com/forms/d/e/1FAIpQLSc4OBaQjEiwFGXxZfQJ3vaanCO5qWzQ2XQ8fxIdhl4l3xY-9w/viewform" target="_blank"> API access</a>. A confirmed email will be sent once we verified your information. </li>
+
+<!--         <li>  Maximum pull requests allowed per month is set as XX.
+        </li> -->
+
+        <li> All data are returned in json format. </li>
+        <br>
+ 
+      <br>
+      <h3> API Domain </h3> <br>
+
+      All API requests should be made to: <code style="color:black;font-weight: bold;">https://api.theuscovidatlas.org</code> <br>
+
+      <br>
+      <br>
+      <h3>Confirmed COVID Cases, Death  </h3> <br>
+
+      <h2> DATA SOURCES </h2>
+
+      <p> <b> Confirmed and Death Count:</b> USAFacts </p>
+      <p> USAFacts provides county-level death and confirmed data on a daily basis with updates every afternoon.</p>
+
+      <!-- <p><b> Testing Count: </b> Worldometer, Corona Data Scraper, Web Crawlers  (COMING SOON)</p>
+
+      <ol><a href="https://www.worldometers.info/">Worldometer</a>
+
+      <p> Worldometer is an international independent team run by developers, researchers and volunteers. Its data is trusted by national governments and media authorities. Testing data of New York, Washington and Taxes are collected from Worldometer. </p> </ol>
+  
+      <ol><a href="https://www.worldometers.info/">Corona Data Scraper </a>
+
+      <p> Corona Data Scraper is another provider of global covid data. We collected 12 states’ county-level testing data from Corona Data Scraper: Arizona, California, Florida, Illinois, Nebraska, Nevada, New Jersey, North Dakota, Oregon, Pennsylvania, Tennessee, and Wisconsin. </p> </ol>
+
+       <ol><a href="https://www.worldometers.info/">States’ Health Department Websites </a> 
+
+      <p> Additionally, we designed web crawlers to scrape data from states’ health department websites. At this stage, two crawlers were successfully implemented: Indiana: from https://www.coronavirus.in.gov/map and New Mexico: from https://cv.nmhealth.org/, <p> </ol> -->
+
+      <br>
+      <h2>API PARAMETERS </h2>
+
+      <li> <b> state </b> (required):
+      <code>str   </code>  case insensitive state abbreviation</li> 
+
+      <li> <b> category </b>(required):
+      <code>str   </code>  "data" </li> 
+
+      <li> <b> type </b> (optional): 
+      <code>str </code>  “confirmed”, “death”,  default as “death”</li> 
+
+      <li> <b> source </b> (optional): 
+      <code>str </code>  “usafacts” or “1p3a” case insensitive, default as “usafacts”</li> 
+
+      <li> <b> level </b> (optional): 
+      <code>str </code>  “state” or “county”, default as “county”</li>
+
+      <li> <b> start </b> (optional): 
+      <code>8-digit integer </code>  start date in format as “20201005”, default as 7 days prior to today. Range from 20200122 to today</li> 
+
+      <li> <b> end </b> (optional): 
+      <code>8-digit integer </code>  end date in format as “20201005”, default as today. Range from 20200122 to today</li> </p>
+
+
+      <br>
+      <h2>API QUERY EXAMPLE</h2>
+  
+      <p>To get county-level death data of Illinois from September 1st, 2020 to October 1st, 2020, the query should be set as:<br>
+
+      <code>domain/v1/lisa/?state=il&category=data&start=20200901&end=20201001&type=death </code>
+      <p>
+
+      <br>
+      <h2>POSSIBLE ERROR MESSAGES </h2>
+
+      <li>Invalid State Input: if the field is missing or have typos</li>
+      <li>Invalid Date: if start date is before 20200122 or end date after today, or end date before start date </li>
+      <li>Invalid Type: if type input is other than “death” or “confirmed”</li>
+      <li>Invalid Level Type: if level input is other than “state” or “county”</li>
+    </p>
+
+
+      <br>
+      <br>
+      <h3>LISA "HotSpot" Statistics  </h3> <br>
+
+      <h2> DATA SOURCES </h2>
+
+      <p> The Covid Atlas team calculated LISA statistics using the library <a href="https://github.com/lixun910/pygeoda">pygeoda</a>. Data used in calculation were confirmed and death data provided by USAFacts and 1 Point 3 Acres. The LISA for each observation gives an indication of the extent of significant spatial clustering of similar values around that observation.In our case, county are divided into five categories: 
+      <li>1 High-high: area with high values and neighborhood by area with high values; </li>
+      <li>2 Low-low: area with low values and neighborhood by area with low values; </li>
+      <li>3 High-low: area with high values and neighborhood by area with low values;</li>
+      <li>4 Low-high: area with low values and neighborhood by area with high values;</li>
+      <li>5 Not significant</li> </p>
+
+      <br>
+      <h2>API PARAMETERS </h2>
+
+      <li> <b> state </b> (required):
+      <code>str   </code>  case insensitive state abbreviation</li> 
+
+      <li> <b> category </b>(required):
+      <code>str   </code>  "lisa" </li> 
+
+      <li> <b> type </b> (optional): 
+      <code>str </code>  “confirmed”, “death”,  default as “death”</li> 
+
+      <li> <b> source </b> (optional): 
+      <code>str </code>  “usafacts” or “1p3a” case insensitive, default as “usafacts”</li> 
+
+      <li> <b> level </b> (optional): 
+      <code>str </code>  “state” or “county”, default as “county”</li> 
+
+      <li> <b> start </b> (optional): 
+      <code>8-digit integer </code>  start date in format as “20201005”, default as 7 days prior to today. Range from 20200122 to today</li> 
+
+      <li> <b> end </b> (optional): 
+      <code>8-digit integer </code>  end date in format as “20201005”, default as today. Range from 20200122 to today</li> </p>
+
+      <br>
+      <h2>API QUERY EXAMPLE</h2>
+  
+      <p>To get county-level death lisa of Illinois using 1P3A data from September 1st, 2020 to October 1st, 2020, the query should be set as:<br>
+
+      <code>domain/v1/lisa/?state=IL&category=lisa&start=20200901&end=20201001&source=1p3a&type=death&level=county </code>
+      </p>
+
+      <br>
+      <h2>POSSIBLE ERROR MESSAGES </h2>
+
+      <li> Invalid State Input: if the field is missing or have typos </li>
+      <li>Invalid Date: if start date is before 20200122 or end date after today, or end date before start date </li>
+      <li>Invalid Type: if type input is other than “death” or “confirmed” </li>
+      <li> Invalid Level Type: if level input is other than “state” or “county”</li>
+        
+      <br>
+      <br>
+      <h3> Python Example</h3> <br>
+
+      <div style="background-color: #f1f1f1">
+        <p style="text-indent: 2em;"><code style="color: black">  import requests</code> <br></p>
+        <p style="text-indent: 2em;"><code style="color: black">  url = 'https://api.theuscovidatlas.org/v1/lisa/?state=AZ&category=lisa'</code> <br></p>
+        <p style="text-indent: 2em;"><code style="color: black">  header = {'your-api-key': 'your-api-secret-key'}</code> <br></p>
+        <p style="text-indent: 2em;"><code style="color: black">  req = requests.get(url, headers=header</code> <br></p>
+        <p style="text-indent: 2em;"><code style="color: black">  req.text</code> <br></p>
+        
+      </div>
+
+
+
+    </div>
+
+
+
+
+      
+  </div>
+  </div>
+
+    
+  </div>
+</div>
+   <br><br>
+
+</body>
+
+
+    <div class="footer-dark">
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3 item">
+                        <h3>Explore</h3>
+                        <ul>
+                            <li><a href="map.html">The Atlas</a></li>
+                            <li><a href="data.html">Data</a></li>
+                            <li><a href="methods.html">Methods</a></li>
+                            <li><a href="faq.html">Help & FAQ</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4 item">
+                        <h3>About</h3>
+                        <ul>
+                            <li><a href="about.html">Our Team</a></li>
+                             <li><a href="contact.html">Contact Us</a></li>
+                             <li><a href="https://geodacenter.github.io/">GeoDa Open Software</a></li>
+                            <li><a href="https://covidatlas.healthcarecommunities.org">Learning Community</a></li>
+
+                        </ul>
+                    </div>
+                    <div class="col-md-5 item">
+                      <img style="text-align: right; opacity: 0.7; padding-bottom: 10px" src="img/csds-university-wordmark-white.png" width = 100%; alt="Center for Spatial Data Science logo">
+
+                    <p class="copyright">
+                      Brought to you by the Center for Spatial Data Science <a href="#">@UChicago</a>. Powered by <a href="#">GeoDa</a>. Funded in part by the <a href="#">Robert Wood Johnson Foundation</a>.
+                    </p>
+                    
+                </div>
+
+        </footer>
+    </div>
+
+</html>

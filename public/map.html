@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- google analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-72724100-4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-72724100-4');
+  </script>
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-72724100-5"></script>
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+
+  gtag('config', 'UA-72724100-5');
+  </script>
+
+  <meta charset="utf-8">
+  <title>US Covid Atlas</title>
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta property="og:title" content="US Covid Atlas">
+  <meta property="og:description" content="Near Real-Time Exploration of the COVID-19 Pandemic. The US COVID Atlas is a visualization tool led by a University of Chicago research coalition.
+  In a quickly changing pandemic landscape, our tool connects COVID case data and community indicators across the United States from its beginning to today. ">
+  <meta property="og:image" content="http://linqinyu.github.io/covid/img/thumbnail.jpg">
+  <meta property="og:url" content="https://theuscovidatlas.org/map.html">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="index.css?v=9_28" rel="stylesheet">
+  <link href="https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css" type="text/css"/>
+
+  <script defer src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
+  <script defer src="https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.js"></script>
+  <script defer src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+  <!-- Promise polyfill script required to use Mapbox GL Geocoder in IE 11 -->
+  <script defer src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js"></script>
+  <!-- <script defer src="js/zip.js"></script> -->
+  <!-- <script defer src="https://unpkg.com/pbf@3.2.0/dist/pbf.js"></script> -->
+  <script defer src="js/GeodaProxy.js"></script>
+  <!-- <script defer src="js/mapbox-vector-tile.js"></script> -->
+  <script src="config.js"></script>
+  <script defer src="index.js"></script>
+  <script defer src="gen/jsgeoda.js"></script>
+
+  <link href="css/index.css?v=9_28" rel="stylesheet" type="text/css">
+
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Montserrat:wght@400;600;800&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+  
+  <!-- Favicon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="./favicon/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="./favicon/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="./favicon/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="./favicon/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="./favicon/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="./favicon/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="./favicon/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="./favicon/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192"  href="./favicon/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="./favicon/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
+  <link rel="manifest" href="./manifest.json">
+  <meta name="msapplication-TileColor" content="#ec1e24">
+  <meta name="msapplication-TileImage" content="./favicon/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ec1e24">
+</head>
+
+<body>
+  <div id="map"></div>
+  <div class="navbar">
+    <div class="nav-logo"><img src="img/logoshort.png" style="height: 30px; padding-right: 5px"><a href="index.html">US COVID ATLAS </a></div>
+    <ul> 
+      <li><a href="data.html">DATA</a></li>
+      <li><a href="api.html">API</a></li>
+      <li><a href="methods.html">METHODS</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+      <li><a href="about.html">INSIGHTS</a></li>
+      <li><a href="about.html">ABOUT</a></li>
+      <li><a href="contact.html">CONTACT</a></li>
+    </ul>
+  </div>
+  <div id="tooltip" class="center-shadow"></div>
+  <div class="time-panel">
+    <label class="unselectable" id="time-container">2020-03-23</label>
+  </div>
+  <div id="additional-buttons">
+    <div id="reset-tutorial">
+      <a herf="#">
+        <svg viewBox="0 0 100 100" x="0px" y="0px"><g><path d="M 62.0763 27.4552 C 64.0258 25.642 65 23.4406 65 20.8589 C 65 18.2815 64.0258 16.0809 62.0763 14.2511 C 60.1273 12.4207 57.7859 11.5 55.0413 11.5 C 52.3076 11.5 49.9438 12.4207 47.9833 14.2511 C 46.0343 16.0809 45.0487 18.2815 45.0487 20.8589 C 45.0487 23.4406 46.0343 25.642 47.9833 27.4552 C 49.9438 29.2682 52.3076 30.178 55.0413 30.178 C 57.7859 30.178 60.1273 29.2682 62.0763 27.4552 ZM 57.5841 88.0802 C 61.1017 86.4348 62.9616 83.3419 61.1353 81.9274 C 60.0823 81.1132 58.7041 82.4604 57.6963 82.4604 C 55.5343 82.4604 54.0103 82.1065 53.1367 81.3939 C 52.2518 80.6754 51.8261 79.3446 51.8261 77.3796 C 51.8261 76.5942 51.9493 75.4433 52.2182 73.9213 C 52.487 72.395 52.8007 71.0302 53.1367 69.8404 L 57.3153 55.0418 C 57.7073 53.683 57.9988 52.1893 58.1554 50.5672 C 58.301 48.9276 58.3798 47.7935 58.3798 47.1533 C 58.3798 44.0378 57.2817 41.5004 55.0971 39.5465 C 52.9237 37.5991 49.8094 36.6159 45.7765 36.6159 C 43.5361 36.6159 41.1501 36.9472 38.652 37.8117 C 33.7564 39.5293 34.8432 43.7968 35.9296 43.7968 C 38.1364 43.7968 39.6152 44.1722 40.3995 44.9193 C 41.1837 45.6604 41.5868 46.9796 41.5868 48.8828 C 41.5868 49.9269 41.4413 51.1007 41.1947 52.3689 C 40.9369 53.6381 40.635 54.9909 40.2541 56.4111 L 36.053 71.2659 C 35.6947 72.8267 35.4253 74.2246 35.2463 75.4648 C 35.0784 76.7058 35 77.9187 35 79.1091 C 35 82.1578 36.12 84.6722 38.3716 86.6596 C 40.6238 88.6528 44.0854 90.5 48.1405 90.5 C 50.7731 90.5 54.537 89.518 57.5841 88.0802 Z"></path></g></svg>
+      </a>
+    </div>
+    <div id="share-container">
+      <a href="#" onclick="ShareMap()">
+        <svg x="0px" y="0px" viewBox="0 0 100 100"><path d="M22.5,65c4.043,0,7.706-1.607,10.403-4.208l29.722,14.861C62.551,76.259,62.5,76.873,62.5,77.5c0,8.284,6.716,15,15,15   s15-6.716,15-15c0-8.284-6.716-15-15-15c-4.043,0-7.706,1.608-10.403,4.209L37.375,51.847C37.449,51.241,37.5,50.627,37.5,50   c0-0.627-0.051-1.241-0.125-1.847l29.722-14.861c2.698,2.601,6.36,4.209,10.403,4.209c8.284,0,15-6.716,15-15   c0-8.284-6.716-15-15-15s-15,6.716-15,15c0,0.627,0.051,1.241,0.125,1.848L32.903,39.208C30.206,36.607,26.543,35,22.5,35   c-8.284,0-15,6.716-15,15C7.5,58.284,14.216,65,22.5,65z"></path></svg>
+      </a>  
+      <input type="text" value="" id="share-url">
+    </div>
+  </div>
+  
+  <div class="options-panel left-panel" tabindex="0">
+    <div id="toolbox">
+      <p>
+        Data Source:
+      </p>
+      <div class="layout">
+        <div class="dropdown">
+          <button class="dropbtn" id="select-source">By County (UsaFacts.com)</button>
+          <div class="dropdown-content">
+            <a href="#" onclick="OnSourceClick(this)">By County (UsaFacts.com)</a>
+            <a href="#" onclick="OnSourceClick(this)">By County (1Point3Acres.com)</a>
+            <a href="#" onclick="OnSourceClick(this)">By State (UsaFacts.com)</a>
+          </div>
+        </div>
+      </div>
+      <p>
+        Map Variable:
+      </p>
+      <div class="layout">
+        <div class="dropdown">
+          <button class="dropbtn" id="select-data">7-Day Average Daily New Confirmed Count per 100K Pop</button>
+          <div class="dropdown-content">
+            <a href="#" onclick="OnDataClick(this)" id="btn-conf-count">Confirmed Count</a>
+            <a href="#" onclick="OnDataClick(this)">Confirmed Count per 100K Population</a>
+            <a href="#" onclick="OnDataClick(this)">Confirmed Count per Licensed Bed</a>
+            <a href="#" onclick="OnDataClick(this)">Death Count</a>
+            <a href="#" onclick="OnDataClick(this)">Death Count per 100K Population</a>
+            <a href="#" onclick="OnDataClick(this)">Death Count/Confirmed Count</a>
+            <a href="#" onclick="OnDataClick(this)">Daily New Confirmed Count</a>
+            <a href="#" onclick="OnDataClick(this)">Daily New Confirmed Count per 100K Pop</a>
+            <a href='#' onclick="OnDataClick(this)" id="btn-7day">7-Day Average Daily New Confirmed Count</a>
+            <a href="#" onclick="OnDataClick(this)" id="btn-7day-per100K">7-Day Average Daily New Confirmed Count per 100K Pop</a>
+            <a href="#" onclick="OnDataClick(this)">Daily New Death Count</a>
+            <a href="#" onclick="OnDataClick(this)">Daily New Death Count per 100K Pop</a>
+            <a href="#" onclick="OnDataClick(this)" id="btn-forecasting">Forecasting (5-Day Severity Index)</a>
+            <a href="#" onclick="OnDataClick(this)" id="btn-7day-pos" style="display:none">7 Day Testing Positivity Rate %</a>
+            <a href="#" onclick="OnDataClick(this)" id="btn-7day-cap" style="display:none">7 Day Testing Capacity</a>
+            <a href="#" onclick="OnDataClick(this)" id="btn-7day-conf" style="display:none">7 Day Confirmed Cases per Testing %</a>
+            <a href="#" onclick="OnDataClick(this)" id="btn-uninprc">Uninsured % (Community Health Factor)</a>
+            <a href="#" onclick="OnDataClick(this)" id="btn-over65yearsprc">Over 65 Years % (Community Health Context)</a>
+            <a href="#" onclick="OnDataClick(this)" id="btn-lfexprt">Life expectancy (Length and Quality of Life)</a>
+            
+          </div>
+        </div>
+      </div>
+
+      <p>
+        Map Type:
+      </p>
+      <div class="layout">
+        <div class="dropdown"  style="width:50%">
+          <button class="dropbtn" id="select-map">Choropleth
+            <div class="info-tooltip" id="info-Choropleth">
+              <i class="fa fa-info-circle"  aria-hidden="true"></i>
+              <span class="right tooltip-text"></span>
+            </div>
+          </button>
+          <div class="dropdown-content" style="width:200px;">
+            <a href="#" id="btn-nb" onclick="OnChoroplethClick(this, 'natural_breaks', true)">Natural Breaks (fixed bins)
+              <div class="info-tooltip" id="info-NaturalBreaksFixed">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="right tooltip-text"></span>
+              </div>
+            </a>
+            <a href="#" id="btn-nb" onclick="OnChoroplethClick(this, 'natural_breaks', false)">Natural Breaks
+              <div class="info-tooltip" id="info-NaturalBreaks">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="right tooltip-text"></span>
+              </div>
+            </a>
+            <!--<a href="#" id="btn-nb" onclick="OnChoroplethClick(this, 'hinge30_breaks', false)">Box Map (Hinge=3.0)
+              <div class="info-tooltip" id="info-Choropleth">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="right tooltip-text"></span>
+              </div>
+            </a>-->
+            <a href="#" id="btn-nb" onclick="OnChoroplethClick(this, 'hinge15_breaks', false)">Box Map <!--(Hinge=1.5)-->
+              <div class="info-tooltip" id="info-BoxMap">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="right tooltip-text"></span>
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <button class="dropbtn" id="select-hotspot">Hotspot
+            <div class="info-tooltip" id="info-LocalClustering">
+              <i class="fa fa-info-circle"  aria-hidden="true"></i>
+              <span class="left tooltip-text"></span>
+            </div>
+          </button>
+          <div class="dropdown-content">
+            <a href="#" id="btn-lisa" onclick="OnLISAClick(this)">Local Moran 
+              <div class="info-tooltip" id="info-LocalMoran">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="left tooltip-text"></span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <p class="btn-cartogram">
+        <input type="checkbox" id="cartogram-ckb" onchange="OnCartogramClick(this)">Using Cartogram
+      </p>
+
+      <p>
+        Map Overlay:
+      </p>
+      <div class="layout">
+        <div class="dropdown"  style="width:50%">
+          <button class="dropbtn" id="select-highlight">Area Highlight
+          </button>
+          <div class="dropdown-content" style="width:200px;">
+            <a href="#" id="btn-clear-overlays" onclick="UpdateOverlays(null)">None</a>
+            <a href="#" id="btn-Reservations" onclick="UpdateOverlays(this)">Native American Reservations</a>
+            <a href="#" id="btn-HypersegregatedCities" onclick="UpdateOverlays(this)">Hypersegregated Cities
+              <div class="info-tooltip" id="info-Hypersegregated">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="left tooltip-text"></span>
+              </div>
+            </a>
+            <a href="#" id="btn-BlackBelt" onclick="UpdateOverlays(this)">Black Belt Counties
+              <div class="info-tooltip" id="info-BlackBelt">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="left tooltip-text"></span>
+              </div>
+            </a>
+            <a href="#" id="btn-USCongress" onclick="UpdateOverlays(this)">US Congressional Districts
+              <div class="info-tooltip" id="info-USCongress">
+                <i class="fa fa-info-circle"  aria-hidden="true"></i>
+                <span class="left tooltip-text"></span>
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <button class="dropbtn" id="select-resource">Resources
+          </button>
+          <div class="dropdown-content">
+            <a href="#" id="btn-clear-resources" onclick="UpdateResources(null)">None</a>
+            <a href="#" id="btn-ClinicsHospitals" onclick="UpdateResources(this)">Health Clinics and Hospitals</a>
+            <a href="#" id="btn-Clinics" onclick="UpdateResources(this)">Health Clinics</a>
+            <a href="#" id="btn-Hospitals" onclick="UpdateResources(this)">Hospitals</a>
+          </div>
+        </div>
+      </div>
+
+      <!--Dark mode:--> <i class="fa fa-toggle-on" aria-hidden="true" style="font-size: 20px; vertical-align:middle; display: none;" onclick="ToggleDarkMode(this)"></i>
+      <!-- <div class="map-overlay-toggles--hidden">
+        <input id="hotspot-labels-toggle" type="checkbox" onclick="OnShowLabels(this)">
+        <label for="hotspot-labels-toggle">Show Hotspot Labels</label>
+  
+        <input id="time-label-toggle" type="checkbox" onchange="OnShowTime(this)">
+        <label for="time-label-toggle">Show Time Label</label>
+      </div> -->
+
+      <p>New cases:</p>
+      <div class="layout" id="linechart"></div>
+      <div class="hidden layout" id="slider-svg"></div>
+      <p class="note"><b>Note:</b> Data is updated with freshest available data at 3pm CST daily, at minimum. In case of data discrepancy, local health departments are considered most accurate as per CDC recommendations. More information on <a href="data.html">data</a>, <a href="methods.html">methods</a>, and <a href="FAQ.html">FAQ</a> at main site.</p>
+
+
+      <div class="source-link" align="center">
+      
+<!--         <a href="https://spatial.uchicago.edu" target="_new">
+          <img align="center" src="img/logo_gray.png" width=300px alt="Center for Spatial Data Science logo" />
+        </a>  -->
+        <br>
+        <div class="poweredByGeoda">
+          <div class="geoda-link">
+            <img src="img/geoda-logo.png">
+            <a href="https://geodacenter.github.io" target="_blank" rel="noopener noreferrer">POWERED BY GEODA</a>
+          </div>
+        </div> 
+      </div>
+
+
+    </div>
+
+
+  </div>
+  <div id="sliderdiv">
+    <span id="slider-min" class="float: left; "></span><span id="slider-max" style="float: right;"></span><br>
+    <div style="text-align: center;">
+    <img src="img/play-icon.png" id="play-button" style="display: inline-block;vertical-align: middle;width:40px">
+    <input style="display: inline-block;vertical-align: middle;width:250px" id="slider" type="range" min="1" max="100" step="1" value="100" />
+    </div>
+    <output for="slider" id="bubble"></output>
+  </div>
+
+  <div class="legend-wrap">
+    <div class="layout" id="legend_title" style="text-align: center;margin:5px;">Natural Breaks (fixed bins)</div>
+    <div id="legend">
+      <div class="legend" style="background: rgb(240, 240, 240);"></div>
+      <div class="legend" style="background: rgb(255, 237, 160);"></div>
+      <div class="legend" style="background: rgb(254, 217, 118);"></div>
+      <div class="legend" style="background: rgb(254, 178, 76);"></div>
+      <div class="legend" style="background: rgb(253, 141, 60);"></div>
+      <div class="legend" style="background: rgb(252, 78, 42);"></div>
+      <div class="legend" style="background: rgb(227, 26, 28);"></div>
+      <div class="legend" style="background: rgb(189, 0, 38);"></div>
+      <div class="legend" style="background: rgb(128, 0, 38);"></div>
+    </div>
+    <div id="legend-labels">
+    </div>
+  </div>
+  <div id="left-collapse" class="collapse-btn" onclick="leftPanelCollapse()">
+    <p>Variable Panel</p>
+    <i class="fa fa-chevron-left"></i>
+    </div>
+
+  <div class="data-panel right-panel" hidden>
+    <input id="geoid" hidden></input>
+    <h2 id="data-panel__header">Nocounty, Nostate</h2>
+    <hr>
+    <div id="data-panel__body">
+    </div>
+
+  </div>
+
+  <div id="right-collapse" class="collapse-btn hide" onclick="rightPanelCollapse()">
+    <p>Data Panel</p>
+    <i class="fa fa-chevron-right"></i>
+  </div>
+  <div id="tutorial" style="display:none;">
+    <div id="panel-container" style="left:0%;">
+      <div class="panel" id="panel-1">
+        <h3>Welcome to the US Covid Atlas</h3>
+        <p class="subtitle">11/22 Hotfix Notes</p>
+        <p>Please note that we are now using UsaFacts State level data by default. You can explore this dataset under "Data Source" and then "By State"<br/><br/>
+          
+          If you are returning to this site, please try clearing your
+          page cache with a hard refresh (control + shift + R or
+          command + shift + R) to avoid any display issues.
+        </p>
+      </div>
+      <div class="panel" id="panel-2">
+        <h3>New Features</h3>
+        <p class="subtitle">November Release Notes</p>
+        <p>
+          The November release includes state level testing data, new resource layers for hospitals and clinics, map sharing capabilities, and improved data loading times.<br><br>
+          State level testing data has a variables for testing positivity, capacity, and confirmed cases. With the new map share button on the right, you can share a link to the map you are viewing. Using the re-designed map overlays, you can overlay a collection of map resources and regional highlights.
+        </p>
+
+      </div>
+      <div class="panel" id="panel-3">
+        <h3>Getting Started</h3>
+        <p class="subtitle">November Release Notes</p>
+        <p>
+          To get started, try the following:
+          <ul>
+            <li>Click the play button in the <a href="#" onclick="highlightElement('sliderdiv', 'id')">timeline</a> on the top of the page to see how the pandemic has unfolded</li>
+            <li>Explore <a href="#" onclick="highlightElement('select-source', 'id')">state level data</a> on testing positivity rates and capacities</li>
+            <li>Use the <a href="#" onclick="highlightElement('mapboxgl-ctrl-geolocate', 'class')">geolocation</a> function and <a href="#" onclick="highlightElement('select-resource', 'id')">Health Clinics layers</a> to find COVID-19 testing near you</li>
+            <li><a href="#" onclick="highlightElement('share-container', 'id')">Share your map</a> on Social Media, or with a colleague or community member</li>
+          </ul>
+        </p>
+
+      </div>
+      <div class="panel" id="panel-4">
+        <h3>Found a bug or have a suggestion?</h3>
+        <p class="subtitle">November Release Notes</p>
+        <p>
+          The US Covid Atlas team is always working to improve
+          the platform and its ability to generate insights.<br><br>
+          
+          Please contact the team at <a href="mailto:contact@theuscovidatlas.org">contact@theuscovidatlas.org</a>
+          or reach out on social media below.
+          <div class="social-container">
+            <a href="https://twitter.com/covid_atlas" target="_blank" rel="noopener noreferrer">
+              <img src="./icons/twitter-icon.png" alt="Twitter Icon">
+            </a>
+            <a href="https://github.com/GeoDaCenter/covid"  target="_blank" rel="noopener noreferrer">
+              <img src="./icons/github-icon.png" alt="Twitter Icon">
+            </a>
+          </div>
+        </p>
+
+      </div>
+    </div>
+    <svg viewBox="0 0 100 100" id="left-arrow"><g transform="translate(0,-952.36218)"><path d="m 71.20311,1002.3622 -2.84375,-3.28121 -31.99997,-37 -7.5625,6.5624 29.15622,33.71881 -29.15622,33.7188 7.5625,6.5624 31.99997,-37 2.84375,-3.2812 z"></path></g></svg>
+    <svg viewBox="0 0 100 100" id="right-arrow"><g transform="translate(0,-952.36218)"><path d="m 71.20311,1002.3622 -2.84375,-3.28121 -31.99997,-37 -7.5625,6.5624 29.15622,33.71881 -29.15622,33.7188 7.5625,6.5624 31.99997,-37 2.84375,-3.2812 z"></path></g></svg>
+    <div id="close-tutorial">×</div>    
+    <div id="dots-container"></div>
+  </div>
+  <div id="alert-container">
+    <h3>Notification:</h3>
+    <p id="alert-msg"></p>
+    <div id="close-notification">×</div>   
+  </div>
+</body>
+
+</html>

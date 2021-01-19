@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- google analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-72724100-4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-72724100-4');
+  </script>
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-72724100-5"></script>
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+
+  gtag('config', 'UA-72724100-5');
+  </script>
+  
+  <title>The US Covid Atlas</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1100">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+  <!-- CSS only -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+  <link href="css/index.css" rel="stylesheet" type="text/css">
+
+  <!-- JS, Popper.js, and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+  <!-- Fonts -->
+
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Montserrat:wght@400;600;800&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+
+    
+  <!-- Icon Library -->
+
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
+   <!-- Mailchimp -->
+
+  <link href="//cdn-images.mailchimp.com/embedcode/slim-10_7.css" rel="stylesheet" type="text/css">
+
+    
+  <link href="//cdn-images.mailchimp.com/embedcode/slim-10_7.css" rel="stylesheet" type="text/css">
+  
+  <link href="//cdn-images.mailchimp.com/embedcode/slim-10_7.css" rel="stylesheet" type="text/css">
+  
+  <!-- Favicon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="./favicon/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="./favicon/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="./favicon/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="./favicon/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="./favicon/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="./favicon/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="./favicon/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="./favicon/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192"  href="./favicon/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="./favicon/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
+  <link rel="manifest" href="./manifest.json">
+  <meta name="msapplication-TileColor" content="#ec1e24">
+  <meta name="msapplication-TileImage" content="./favicon/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ec1e24">
+
+</head>
+
+
+<body>
+
+
+<nav nav class="navbar navbar-expand-md" style="background-color: #c1ebeb; height: 93px;">
+  <div class="container">
+  
+  <a href="index.html"><img src="img/us-covid-atlas-cluster-logo.svg"
+     class="US_Covid_Atlas_ClusterLogo"></a>
+                      
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarText">
+    <ul class="navbar-nav ml-auto na">
+      <li class="nav-item dropdown">
+        <a class="Nav-Text nav-link dropdown-toggle" href="map.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          MAP
+        </a>
+        <div class="Nav-Text2 dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: #00575c;">
+          <a class="dropdown-item" href="map.html">EXPLORE</a>
+          <a class="dropdown-item" href="data.html">DATA</a>
+          <a class="dropdown-item" href="api.html">API</a>
+          <a class="dropdown-item" href="methods.html">METHODS</a>
+          <a class="dropdown-item" href="faq.html">HELP + FAQ</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="Nav-Text nav-link" href="https://medium.com/covidatlas">INSIGHTS</a>
+      </li>
+      <li class="nav-item">
+        <a class="Nav-Text nav-link" href="about.html">ABOUT</a>
+      </li>
+      <li class="nav-item">
+        <a class="Nav-Text nav-link" href="contact.html">CONTACT</a>
+      </li>
+    </ul>
+  </div>
+</div>
+</nav>
+
+
+<section id="hero" style="background-color: #0d0d0d;">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-1"></div>
+      <div class="jumbotron vertical-center jumbotron jumbotron-fluid col-lg-10" style="background:transparent !important">
+        
+        <h1 class="Near-Real-Time-Explo">Near Real-Time Exploration of the <br>COVID-19 Pandemic</h1>
+        
+        <h2 class="The-US-COVID-Atlas-i">The US COVID Atlas is a visualization tool led by a University of Chicago research coalition. <br>In a quickly changing pandemic landscape, our tool connects COVID case data and community indicators across the United States from its beginning to today. The Atlas helps you access current, validated county-level data and spatial analysis to better understand the spread in communities and to bolster planning efforts.</p><br>
+
+          <a class="btn btn-lg Button-Text" style="background-color: #f37e43; color: #0d0d0d;" href="map.html" role="button">
+            EXPLORE THE ATLAS 
+        </a>
+        <br><br>
+      </div>
+      <div class="col-lg-1"></div>
+    </div>
+  </div> 
+</section>
+
+<section style="background-color: #0d0d0d;">
+  <div class="container">
+    <div class="row justify-content-md-center">
+        <a href="map.html"><img src="img/Landingpage_0501_1002.gif" style="width: 780px; height: 416px;" ></a>
+    </div>
+  </div>
+  <br>
+</section>
+
+<section id="gif" style="background-color: #0d0d0d;">
+  <div class="container">
+   <div class="row justify-content-md-center"> 
+
+      <svg width="30px" height="30px" viewBox="0 0 16 16" class="bi bi-info-circle" fill="#f37e44" xmlns="http://www.w3.org/2000/svg" style="padding-right: 10px">
+        <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+        <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z"/>
+        <circle cx="8" cy="4.5" r="1"/>
+      </svg>
+ 
+     <h3 class="From-January-22-202">Choropleth map showing COVID-19 spreading from May 1st to today, based on confirmed case per 10,000 persons at the county level. The Atlas is updated by 3pm each afternoon with the latest available data.
+
+     </h3>
+
+   </div>
+
+
+  </div>
+</section>
+
+
+
+<section id="feature-overview" style="background-color: #0d0d0d;">
+  <div class="container">>
+          <br><br>
+        <hr>
+          <br><br>
+
+    <div class= "row justify-content-md-center">
+      <br><br>
+
+       <h4 class="Atlas-Features">Atlas Features</h4>
+       <br><br><br><br>
+     </div>
+    <div class="row">
+      <div class="col-md-3">
+        <div class="panel">
+          <div class="panel-heading" src="index.js">
+            <div style="text-align: center;">
+              <img src="icons/regional-hot-spots.png" class="regionalHotSpots"><br><br>
+            </div>
+              <h5 style= "text-align: center" class="Track">Track regional hotspots in real-time </h5>
+              <h4 style="text-align: center;" class="Track-Text"> Statistical clusters of both confirmed and daily new COVID cases & deaths, with and without population adjustment.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="panel">
+          <div class="panel-heading" src="index.js">
+            <div style="text-align: center;">
+              <img src="icons/spread-over-time-2@2x.png" class="regionalHotSpots"><br><br>
+            </div>
+              <h5 style= "text-align: center" class="Track">Watch COVID-19 spread across the country</h5>
+              <h4 style="text-align: center;" class="Track-Text"> Watch the spread of accumulated or daily new COVID cases using a time slider and live time-animation. </p>
+            </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="panel">
+          <div class="panel-heading" src="index.js">
+            <div style="text-align: center;">
+              <img src="icons/county-level-data@2x.png" class="regionalHotSpots"><br><br>
+            </div>
+              <h5 style= "text-align: center" class="Track">Zoom in to focus down to the county level</h5>
+              <h4 style="text-align: center;" class="Track-Text"> Uncover trends of the pandemic by comparing different data sources, variables, and spatial analytic insights.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="panel">
+          <div class="panel-heading" src="index.js">
+            <div style="text-align: center;">
+              <img src="icons/comm-health-context@2x.png" class="regionalHotSpots"><br><br>
+            </div>
+              <h5 style= "text-align: center" class="Track">Tap into community and health contexts</h5>
+              <h4 style="text-align: center;" class="Track-Text">Connect to relevant social, economic, and health indicators to provide meaningful community context. </p>
+      <br><br><br>
+            </div>
+        </div>
+      </div>
+
+
+
+    </div> <br><br> <!-- close row --> 
+  </div>
+</section>
+
+
+<section id="BlueBanner"><br>
+    <div class="row justify-content-md-center">
+      <h1 class="How-can-the-Atlas-be">How can the Atlas better equip you to respond to the pandemic?</h1>
+    </div>
+
+    <div class="row justify-content-md-center">
+      <div class="Arrow"></div>
+    </div>
+</section>
+
+<br><br>
+
+
+<section id="feature-1">
+  <div class="container">
+    <br><br>
+      <div class="row">
+      <br><br>
+      <div class="col-lg-6" >
+        <div style="text-align: center;">
+        <img src="img/Landingpage_usage1.gif" style="width: 400px; height: 350px;"></div>
+      </div>
+      <div class="col-lg-6">
+          <div class="usage" style="background-color: #face00;"><b>Usage #1</b></div><br>
+          <h5> Identify Regional Hotspots for Mitigation </h5>
+          <p> Use spatial statistics to detect hot spots with raw case data or by adjusting for population. Because of the infectious nature of COVID, high numbers of cases anywhere will be of concern. At the same time, identifying areas that have a disporotionately high number of cases within the population is necessary to locate areas hit hardest by the pandemic. </p>
+          </div>
+      </div>
+    </div> 
+    <br><br>
+  </div>
+</section>
+
+<section id="feature-2">
+  <div class="container">
+    <br><br>
+    <div class="row">
+      <br><br>
+      <div class="col-lg-6">
+      <div class="usage" style="background-color: #f37e43;"><b>Usage #2</b></div><br>
+      <h5> Track patterns to better plan ahead </h5>
+      <p> Visualize change over time to better understand the distribution and spread of COVID in the US throughout the pandemic. Move the time slider yourself or click the play button and watch the spread of COVID. Analyze patterns of the spread to support planning for resource allocation. <p>
+      </div>
+      <div class="col-lg-6" >
+        <div style="text-align: center;">
+        <img src="img/Landingpage_usage2.gif" style="width: 400px; height: 350px;"></div>      
+      </div>
+    </div> 
+    <br><br>
+  </div>
+</section>
+
+<section id="feature-3">
+  <div class="container">
+    <br><br>
+    <div class="row">
+      <br><br>
+      <div class="col-lg-6" >
+        <div style="text-align: center;">
+        <img src="img/Landingpage_usage3.gif" style="width: 400px; height: 350px;"></div>
+      </div>
+      <div class="col-lg-6">
+      <div class="usage" style="background-color: #face00;"><b>Usage #3</b></div><br>
+      <h5> Interact and forecast viral spread at state and county levels </h5>
+      <p> Switch between the state and county thematic maps (ie. choropleth maps) to find COVID at a local level. Then, select and track hotspots over time using the Local Moran's I statistic. Use a powerful visual analytic tool to find COVID spillovers along state borders, emerging from one county to areas nearby, and more.  <p>
+      </div>
+    </div> 
+    <br><br>
+  </div>
+</section>
+
+<section id="feature-4">
+  <div class="container">
+    <br><br>
+    <div class="row">
+      <br><br>
+      <div class="col-lg-6">
+      <div class="usage" style="background-color: #f37e43;"><b>Usage #4</b></div><br>
+      <h5> Make visible vulnerable communities </h5>
+      <p> Click on counties to get more information about community health factors and socioeconomic indicatore like average length of life in an area, percent uninsured, or income inequality metrics. In the main selection panel, overlay segregated cities or Native American Reservation boundaries to identify uniquely vulnerable locales. <p>
+      </div>
+      <div class="col-lg-6" >
+        <div style="text-align: center;">
+          <img src="img/Landingpage_usage4.gif" style="width: 400px; height: 350px;"></div>      
+        </div>
+      </div> 
+    <br><br>
+  </div>
+</section>
+
+<section id="feature-3">
+  <div class="container">
+    <br><br>
+    <div class="row">
+      <br><br>
+      <div class="col-lg-6" >
+        <div style="text-align: center;">
+        <img src="img/Landingpage_usage5.gif" style="width: 400px; height: 350px;"></div>
+      </div>
+      <div class="col-lg-6">
+      <div class="usage" style="background-color: #face00;"><b>Usage #5</b></div><br>
+      <h5> Identify emerging risk </h5>
+      <p> Watch hotspots progress or diminish over time, and identify areas of emerging risk early. Some hotspots begin as spatial outliers -- shown as pink in the map, meaning cases are high in that county but low in neighboring counties. If cases continue to grow and spillover nearby counties, the areas will turn red. Mature hotspots are clusters of counties that remain red over time and continue to grow.  <p>
+      </div>
+    </div> 
+    <br><br>
+  </div>
+</section>
+
+
+<section id="subscribe" style="background-color: #00575c;">
+      
+      <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="vertical-center col-lg-8">
+          
+          <br><br>
+          <h1 class="Sign-up-for-our-News">Sign up for the Newsletter</h1>
+          
+          <h2 class="Well-keep-you-up-to">
+           We'll keep you up to date with new updates, features, and insights on the COVID-19 <br>pandemic. Follow the US COVID Atlas team on Medium too.</h2>
+
+           <br>
+
+            <form action="https://github.us10.list-manage.com/subscribe/post?u=5ed730d26727290870ec65153&amp;id=74f209d5ed" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate form-inline vertical-center" target="_blank" novalidate>
+
+              <label class="sr-only" for="inlineFormInputGroupUsername2">Username</label>
+              
+              <div class="col-sm-3"></div>
+              <div class="input-group mb-2 col-sm-6">
+                         
+                <input type="email" class="form-control EnterEmailBox" name="b_5ed730d26727290870ec65153_74f209d5ed" placeholder="Enter email address">
+
+                <input type="submit" value="SUBSCRIBE" name="subscribe" id="mc-embedded-subscribe" class="btn btn-lg SubmitEmailBox" style="background-color: #f37e43; color: #0d0d0d">
+              </div>
+              <div class="col-sm-3"></div>
+            </form>
+            <br><hr>
+
+        </div>
+        <div class="col-lg-2"></div>
+      </div>
+
+
+  </section>
+
+
+
+</body>
+
+
+    <div class="footer-dark">
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3 item">
+                        <h3>Explore</h3>
+                        <ul>
+                            <li><a href="map.html">The Atlas</a></li>
+                            <li><a href="data.html">Data</a></li>
+                            <li><a href="methods.html">Methods</a></li>
+                            <li><a href="faq.html">Help + FAQ</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4 item">
+                        <h3>About</h3>
+                        <ul>
+                            <li><a href="about.html">Our Team</a></li>
+                             <li><a href="contact.html">Contact Us</a></li>
+                             <li><a href="https://geodacenter.github.io/" target="_blank" rel="noopener noreferrer">GeoDa Open Software</a></li>
+                            <li><a href="https://covidatlas.healthcarecommunities.org" target="_blank" rel="noopener noreferrer">Learning Community</a></li>
+
+                        </ul>
+                    </div>
+                    <div class="col-md-5 item">
+                      <img style="text-align: right; opacity: 0.7; padding-bottom: 10px" src="img/csds-university-wordmark-white.png" width = 100%; alt="Center for Spatial Data Science logo">
+
+                    <p class="copyright">
+                      Brought to you by the Center for Spatial Data Science <a href="https://spatial.uchicago.edu/" target="_blank" rel="noopener noreferrer">@UChicago</a>. Powered by <a href="https://geodacenter.github.io/" target="_blank" rel="noopener noreferrer">GeoDa</a>. Funded in part by the <a href="https://www.rwjf.org/" target="_blank" rel="noopener noreferrer">Robert Wood Johnson Foundation</a>.
+                    </p>
+                    
+                </div>
+
+        </footer>
+    </div>
+
+</body>
+</html>
