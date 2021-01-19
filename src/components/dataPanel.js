@@ -268,7 +268,7 @@ const DataPanel = () => {
   // de-structure sidebarData, which houses selected geography data
   const datasetList = ['properties', 'cases', 'deaths', 'predictions',
     'chr_health_factors', 'chr_life', 'chr_health_context',
-    'testing_ccpt', 'testing_tcap', 'testing_wk_pos', 'testing', 'vaccinesAdmin']
+    'testing', 'vaccinesAdmin']
   const [ properties, cases, deaths, predictions,
     chr_health_factors, chr_life, chr_health_context,
     testing, vaccinesAdmin
@@ -349,7 +349,6 @@ const DataPanel = () => {
   const aggregateProperty = (dataset, property, operation, specialCase=null) => {
     let dataArray; 
     let totalPopulation = 0;
-
     if (operation === 'weighted_average') {
       dataArray = selectionIndex.map(selection => {
         let selectionPop = storedData[currentData][selection]['properties']['population'];
