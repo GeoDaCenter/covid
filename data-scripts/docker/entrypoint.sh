@@ -4,7 +4,7 @@ git config --global user.email "theuscovidatlas@gmail.com"
 git config --global user.name "theuscovidatlas"
 
 
-git clone git@github.com:linqinyu/covid.git && cd covid
+git clone --depth 1 git@github.com:GeoDaCenter/covid.git && cd covid
 
 case $DATA_SOURCE in
 
