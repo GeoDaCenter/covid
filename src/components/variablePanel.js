@@ -842,6 +842,7 @@ const VariablePanel = (props) => {
         <StyledDropDown id="newVariableSelect">
           <InputLabel htmlFor="newVariableSelect">Variable</InputLabel>
           <Select
+            id="dataSource"
             value={newVariable}
             onChange={handleNewVariable}
             >
@@ -1132,9 +1133,9 @@ const VariablePanel = (props) => {
               onChange={handleMapResource}
             >
               <MenuItem value="" key='None'>None</MenuItem> 
-              <MenuItem value={'clinics_hospitals'} key={'variable1'}>Clinics and Hospitals</MenuItem>
-              <MenuItem value={'clinics'} key={'variable2'}>Clinics</MenuItem>
-              <MenuItem value={'hospitals'} key={'variable3'}>Hospitals</MenuItem>
+              <MenuItem value={'clinics_hospitals'} key={'variable1'}>Clinics and Hospitals<Tooltip id="ClinicsAndHospitals"/></MenuItem>
+              <MenuItem value={'clinics'} key={'variable2'}>Clinics<Tooltip id="Clinics"/></MenuItem>
+              <MenuItem value={'hospitals'} key={'variable3'}>Hospitals<Tooltip id="Hospitals"/></MenuItem>
             </Select>
           </StyledDropDown>
         </TwoUp>        

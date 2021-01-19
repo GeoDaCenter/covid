@@ -24,7 +24,7 @@ const PlayPauseButton = styled(Button)`
     margin:0;
     transform:translate(-20px, -5px);
     @media (max-width: 600px) {
-        transform:translate(-20px, 18px);
+        transform:translate(-20px, 3px);
     }
     svg {
         width: 24px;
@@ -97,9 +97,10 @@ const RangeSlider = styled(Slider)`
         margin-left:13%;
         box-sizing:border-box;
         color:#FFFFFF55;
+        padding-top: 50px;
         @media (max-width: 600px) {
-            width:50%;
-            margin-left:24%;
+            width:90%;
+            margin-left:0;
         }
     }
     span.MuiSlider-rail {
@@ -146,7 +147,7 @@ const InitialDate = styled.p`
     bottom:8px;
     font-size:75%;
     @media (max-width: 600px) {
-        bottom:0px;
+        bottom:15px;
         left:12%;
     }
 `
@@ -236,7 +237,7 @@ const DateSlider = () => {
         }
     }
 
-    const valuetext = (value) => `${dates[value].slice(0,-3)}`;
+    const valuetext = (value) => `${dates[value].slice(-5,-3)}-${dates[value].slice(2,4)}`;
     
     const formatDate = (date) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };

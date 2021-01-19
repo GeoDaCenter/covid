@@ -321,7 +321,7 @@ const Map = () => {
             default:
                 //
         }
-    }, [mapParams.vizType, currentData])
+    }, [mapParams.vizType])
 
     useEffect(() => {
         let tempData = storedLisaData[getVarId(currentData, dataParams)]
@@ -424,7 +424,6 @@ const Map = () => {
     }
 
     const handleGeocoder = (viewState) => {
-        console.log(viewState)
         setViewState(view => ({
             ...view,
             latitude: viewState.latitude,

@@ -83,8 +83,8 @@ const BodyContainer = styled.div`
     overflow-y:scroll;
     height:calc(100% - 25px);
     width:calc(100% - 105px);
-    font-size:125% !important;
-    line-height:1.5 !important;
+    font-size:115% !important;
+    line-height:1.75 !important;
     .social-container {
         a {
             img {
@@ -102,6 +102,7 @@ const BodyContainer = styled.div`
     button.hoverButton {
         background:none;
         border:none;
+        font-size:100% !important;
         border-bottom:1px solid ${colors.yellow};
         outline:none;
         color:${colors.yellow};
@@ -122,13 +123,14 @@ const BodyContainer = styled.div`
 const TutorialButton = styled.button`
     background:none;
     outline:none;
+    box-sizing:border-box;
     border:1px solid white;
     cursor:pointer;
     text-align:left;
     padding:5px;
-    max-width:40%;
+    width:calc(50% - 10px);
+    margin: 5px;
     display:inline-block;
-    float:left;
     color:${colors.white};
     font-family:'Lato', sans-serif;
     padding:10px;
@@ -159,7 +161,22 @@ const tutorialInfo = [
         "title":"Choropleth Maps",
         "subtitle": "Explore counts and percentages of cases, deaths, hosipital beds, and testing data.",
         "link": "choropleth-tutorial"
-    }
+    },
+    {
+        "title":"Hotspots",
+        "subtitle": "Find groups of counties and states affected by the virus.",
+        "link": "hotspot-tutorial"
+    },
+    // {
+    //     "title":"Emerging Trends",
+    //     "subtitle": "Locate areas that will soon be significantly affected by COVID.",
+    //     "link": "emerging-tutorial"
+    // },
+    // {
+    //     "title":"Change Over Time",
+    //     "subtitle": "See the history of the virus by county and state.",
+    //     "link": "change-tutorial"
+    // },
 ]
 
 
@@ -168,7 +185,6 @@ const InfoBox = () => {
     const [currArticle, setCurrArticle] = useState("welcome")
     
     const handleSelect = (e) => {
-        console.log(e)
         setCurrArticle(e.target.value)
     }
 
@@ -214,7 +230,7 @@ const InfoBox = () => {
                 </PagesDropDown>
             <BodyContainer>
                 {pages[currArticle]['content']}
-                {(currArticle === "tutorials" || currArticle === "getting-started") && 
+                {(currArticle === "getting-started") && 
                     tutorialInfo.map(tutorial => 
                         <TutorialButton onClick={() => setCurrArticle(tutorial.link)}>
                             <h3>{tutorial.title}</h3>
@@ -222,6 +238,7 @@ const InfoBox = () => {
                         </TutorialButton>
                     )
                 }
+                {currArticle.includes('tutorial') && <TutorialButton onClick={() => setCurrArticle('getting-started')}>Return to Tutorials</TutorialButton>}
             </BodyContainer>
         </InfoContainer>
     )

@@ -112,51 +112,6 @@ export const pages = {
                 </ul>
             </div>
     },
-    // "tutorials":{
-    //     "pageName":"Tutorials"
-    // },
-    "choropleth-tutorial": {
-        "pageName":null,
-        "content": 
-            <div>
-                <h1>Choropleth Maps</h1>
-                <p>
-                    Choropleth maps use color to show the count or percentage of a variable.
-                </p>
-                <p> 
-                    The Atlas uses color to show the count and percentage of all coronavirus cases, daily new cases, deaths, and hospital beds. 
-                    Use choropleth maps to see data about the virus on a particular day.
-                </p>
-                <p>
-                    For more details on how the Atlas created the choropleth maps, please see the <a href="./methods.html">Methods page</a>.
-                </p>
-                <hr/>
-                <ol className="tutorialSteps">
-                    <li>
-                        <p>
-                            The choropleth map is the default display for the atlas webpage. To change data settings, 
-                            use the <HoverButton selector="#variablePanel" backup="#showHideLeft" text="Variables Panel" />
-                        </p>
-                    </li>
-                    <li>
-                        <p>
-                            Select the <HoverButton selector="#dataSource" backup="#showHideLeft" text="Data Source"/> and <HoverButton selector="#variableSelect" backup="#showHideLeft" text="Variable"/> you would like to map.
-                        </p>
-                    </li>
-                    <li>
-                        <p>
-                            Click on "Natural Breaks" in the <HoverButton selector="#mapType" backup="#showHideLeft" text="Map Type"/> button group, if not already selected.
-                        </p>
-                    </li>
-                    <li>
-                        <p>
-                            Use the <HoverButton selector="#bottomPanel" text="Color Ramp"/> at the bottom of the screen to interpret the count or percentage for each county or state.
-                            Brighter reds represent larger counts and percentages. Paler yellows represent smaller counts and percentages.
-                        </p>
-                    </li>
-                </ol>
-            </div>
-    },
     "interface":{
         "pageName": "Interface",
         "icon": "info",
@@ -173,13 +128,16 @@ export const pages = {
                 the controls to change data sources, the variable being visualized, how it is visualized, and any informational overlays.
             </p>
             <p>
-                The <HoverButton selector="#dataSource" backup="#showHideLeft" text="Data Source"/> selection contains the county and state 
-                level datasets currently available in the Atlas. Different datasets are available at the state and county level, and contain
-                different variables depending on the published data. Explore different datasets or read more in the data sources tab below.
+                The <HoverButton selector="#newVariableSelect" backup="#showHideLeft" text="Variable"/> selection contains the available variables
+                for your selected dataset, including data like cases, deaths, testing rates, forecasting, and community health factors.
             </p>
             <p>
-                The <HoverButton selector="#variableSelect" backup="#showHideLeft" text="Variable"/> selection contains the available variables
-                for your selected dataset, including data like cases, deaths, testing rates, forecasting, and community health factors.
+                The <HoverButton selector="#dateSelector" text="Timescale" /> dropdown can change the aggregation over time between daily, weekly, cumulative, or custom date ranges. 
+                The <HoverButton selector="#binModeSwitch" text="Binning Switch" /> can change between fixed bins relative to the today and bins relative to the selected date. 
+            </p>
+            <p>
+                The <HoverButton selector="#geographySelect" backup="#showHideLeft" text="Geography"/> selector shows the relevant geography (county or state) for your selected variable.
+                The <HoverButton selector="#datasetSelect" backup="#showHideLeft" text="Data Source"/> selector contains the available dataset for your chosen variable and geography.
             </p>
             <p>
                 The <HoverButton selector="#mapType" backup="#showHideLeft" text="Map Type"/> buttons change how the map is colored and how the data is symbolized.
@@ -202,8 +160,6 @@ export const pages = {
             </p>
             <p>
                 The <HoverButton selector="#timeSlider" text="Slider" /> can change the date selection for your selected variable. 
-                The <HoverButton selector="#dateSelector" text="Timescale" /> dropdown can change the aggregation over time between daily, weekly, cumulative, or custom date ranges. 
-                The <HoverButton selector="#binModeSwitch" text="Binning Switch" /> can change between fixed bins relative to the today and bins relative to the selected date. 
                 You can animate the map by clicking the <HoverButton selector="#playPause" text="Play/Pause Button" />.
             </p>
 
@@ -216,7 +172,7 @@ export const pages = {
         "content":
             <div>
                 <h1 id="data-sources">Data Sources</h1>
-                <p><i>Read detailed information <a href="https://theuscovidatlas.org/data.html">here</a></i></p>
+                <p><i>Read more detailed information <a href="https://theuscovidatlas.org/data.html">here</a></i></p>
                 <h2 id="covid-data">COVID Data</h2>
                 <h3 id="-usa-facts-https-usafacts-org-visualizations-coronavirus-covid-19-spread-map-"><a href="https://usafacts.org/visualizations/coronavirus-covid-19-spread-map">USA Facts</a></h3>
                 <p>Available at the county level this data aggregates from CDC, state- and local-level public health agencies. </p>
@@ -226,8 +182,8 @@ export const pages = {
                 <p>The New York Times has made data available aggregated from dozens of journalists working to collect and monitor data from new conferences. They communicate with public officials to clarify and categorize cases. </p>
                 <h3 id="-cdc-https-covid-cdc-gov-covid-data-tracker-"><a href="https://covid.cdc.gov/covid-data-tracker/">CDC</a></h3>
                 <p>CDC data includes detailed historic testing data and case data aggregated to rolling 7-day averages.</p>
-                <h3 id="-forecasting-statistics-https-github-com-yu-group-covid19-severity-prediction-"><a href="https://github.com/Yu-Group/covid19-severity-prediction">Forecasting Statistics</a></h3>
-                <p>The Yu Group at UC Berkeley Statistics and EECS has compiled, cleaned and continues to update a large corpus of hospital- and county-level data from a variety of public sources to aid data science efforts to combat COVID-19 (see covidseverity.com).</p>
+                {/* <h3 id="-forecasting-statistics-https-github-com-yu-group-covid19-severity-prediction-"><a href="https://github.com/Yu-Group/covid19-severity-prediction">Forecasting Statistics</a></h3>
+                <p>The Yu Group at UC Berkeley Statistics and EECS has compiled, cleaned and continues to update a large corpus of hospital- and county-level data from a variety of public sources to aid data science efforts to combat COVID-19 (see covidseverity.com).</p> */}
                 <h2 id="county-and-state-data">County and State Data</h2>
                 <h3 id="-covidcaremap-https-github-com-covidcaremap-covid19-healthsystemcapacity-tree-v0-2-data-"><a href="https://github.com/covidcaremap/covid19-healthsystemcapacity/tree/v0.2/data">COVIDCareMap</a></h3>
                 <p>Healthcare System Capacity includes Staffed beds, Staffed ICU beds, Licensed Beds by County. The data is from 2018 facility reports with additions/edits allowed in real-time.</p>
@@ -274,11 +230,11 @@ export const pages = {
                     <li>Vaccinations Distributed per 100K Population: The total number of vaccination doses that have been distributed in the state, normalized to number of doses distributed per 100K population. </li>
                 </ul>
                 
-                <h3>Forecasting</h3>
+                {/* <h3>Forecasting</h3>
                 <i>Current snapshot data</i>
                 <ul>
                     <li>Severity Index: Data and models (updated daily) for forecasting COVID-19 severity for individual counties and hospitals in the US</li>
-                </ul>
+                </ul> */}
 
                 <h3>Community Health</h3>
                 <i>Characteristic data</i>
@@ -311,5 +267,122 @@ export const pages = {
                 </a>
             </div>
         </div>
-    }
+    },
+    // tutorials section
+    "choropleth-tutorial": {
+        "pageName":null,
+        "content": 
+            <div>
+                <h1>Choropleth Maps</h1>
+                <p>
+                    Choropleth maps use color to show the count or percentage of a variable.
+                </p>
+                <p> 
+                    The Atlas uses color to show the count and percentage of all coronavirus cases, daily new cases, deaths, and hospital beds. 
+                    Use choropleth maps to see data about the virus on a particular day.
+                </p>
+                <p>
+                    For more details on how the Atlas created the choropleth maps, please see the <a href="./methods.html">Methods page</a>.
+                </p>
+                <hr/>
+                <ol className="tutorialSteps">
+                    <li>
+                        <p>
+                            The choropleth map is the default display for the atlas webpage. To change data settings, 
+                            use the <HoverButton selector="#variablePanel" backup="#showHideLeft" text="Variables Panel" />
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Select the <HoverButton selector="#newVariableSelect" backup="#showHideLeft" text="Variable"/> you would like to map. 
+                            You can also select a different <HoverButton selector="#geographySelect" backup="#showHideLeft" text="Geography"/> and <HoverButton selector="#datasetSelect" backup="#showHideLeft" text="Data Source"/> if
+                             available for your chosen variable.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Click on "Natural Breaks" in the <HoverButton selector="#mapType" backup="#showHideLeft" text="Map Type"/> button group, if not already selected.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Use the <HoverButton selector="#bottomPanel" text="Color Ramp"/> at the bottom of the screen to interpret the count or percentage for each county or state.
+                            Brighter reds represent larger counts and percentages. Paler yellows represent smaller counts and percentages.
+                        </p>
+                    </li>
+                </ol>
+            </div>
+    },
+    "hotspot-tutorial": {
+        "pageName":null,
+        "content": 
+            <div>
+                <h1>Hotspots</h1>
+                <p>
+                    Local clusters are areas that neighbor one another and share a particular quality, such as high numbers of Covid-19 cases. A hot spot is an area that is significantly different from the areas surrounding it. A hot spot may be one place or a cluster of places.
+                    <br/><br/>
+                    The Atlas shows patterns in the spread of the disease by displaying hot spots and clusters. See the Methods page for details about detecting clusters.
+                    <br/><br/>
+                    The Atlas shows four types of hot spots:
+                    <ul>
+                        <li>
+                            <b>High-High:</b> Areas with high numbers whose neighbors also have high numbers. Bright red counties have a significantly high number of cases or deaths, or significantly fewer hospital beds per case. Neighbors for these areas also have a high number of cases.
+                        </li>
+                        <br/>
+                        <li>
+                            <b>Low-Low:</b> Areas with low numbers whose neighbors also have low numbers. Bright blue counties have significantly fewer cases or deaths, or significantly more hospital beds per case. Neighbors for these areas also have a low number of cases.
+                        </li>
+                        <br/>
+                        <li>
+                            <b>High-Low:</b> Areas with high numbers whose neighbors have low numbers. This type of hot spot is also called an outlier, because it differs so much from its neighbors. Pale red counties have more cases, deaths, or fewer hospital beds per case than do their immediate neighbors. The surrounding areas may experience significant spread of the virus in future weeks.
+                        </li>
+                        <br/>
+                        <li>
+                            <b>Low-High:</b> Areas with low numbers whose neighbors have high numbers. This type of hot spot is also called an outlier, because it differs so much from its neighbors. Pale blue counties have fewer cases, deaths, or more hospital beds per case than do their immediate neighbors. These areas may experience significant spread of the virus from surrounding areas in future weeks.
+                        </li> 
+                    </ul>
+                    Use local clustering to explore geographic patterns of the virus and to help locate areas that will soon be significantly affected by the virus.
+                </p>
+                <hr/>
+                <ol className="tutorialSteps">
+                    <li>
+                        <p>
+                            Select the <HoverButton selector="#newVariableSelect" backup="#showHideLeft" text="Variable"/> you would like to map from the <HoverButton selector="#variablePanel" backup="#showHideLeft" text="Variables Panel" />.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Select "Hotspot" under the <HoverButton selector="#mapType" backup="#showHideLeft" text="Map Type"/> selection.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Use the <HoverButton selector="#bottomPanel" text="Color Ramp"/> at the bottom of the screen to see if a county falls into a hotspot category. 
+                            <br/><br/>
+                            Reds represent high numbers and percentages and blues represent low counts and percentages. Gray represents areas that do not fall into a hotspot.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Use the above hot spot types to determine if a county or state on the map is significantly affected by Covid-19: High-High and High-Low spots.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Look for neighboring areas that are significantly affected. High-Low and Low-High spots may show an emerging trend.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Click on a county or state in the map for a popup containing all data variables, socioeconomic indicators, and a disease forecast for that area.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Move the time <HoverButton selector="#timeSlider" text="Slider" /> at the top of the map to see counts and percentages of cases, deaths, or hospital beds on different dates.
+                        </p>
+                    </li>
+                </ol>
+            </div>
+    },
 }
