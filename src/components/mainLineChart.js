@@ -282,7 +282,7 @@ const MainLineChart = () => {
     }
 
     return (
-        <ChartContainer>
+        <ChartContainer id="lineChart">
             {selectionKeys.length < 2 && 
                 <ChartTitle>Total Cases and 7-Day Average New Cases
                     {selectionKeys.length>0 && `: ${selectionKeys[0]}`}

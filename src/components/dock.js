@@ -77,6 +77,7 @@ const Dock = () => {
         <DockContainer>
             <DockButton
                 title="Show Line Chart"
+                id="showLineChart"
                 isActive={panelState.lineChart}
                 onClick={() => handlePanelButton('lineChart')}
             >   
@@ -84,6 +85,7 @@ const Dock = () => {
             </DockButton>
             <DockButton
                 title="Show Tutorial"
+                id="showTutorial"
                 isActive={panelState.tutorial}
                 onClick={() => handlePanelButton('tutorial')}
             >

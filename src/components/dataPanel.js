@@ -225,28 +225,6 @@ const ExpandSelect = styled(FormControl)`
   }
 
 `
-// const ResizeButton = styled.button`
-//     position:absolute;
-//     left:5px;
-//     bottom:50%;
-//     background:none;
-//     outline:none;
-//     border:none;
-//     transform: translateY(-50%);
-//     cursor:grab;
-//     width:10px;
-//     padding:0;
-//     margin:0;
-//     height:20px;
-//     svg {
-//       width:15px;
-//       height:30px;
-//       fill:white;
-//     }
-//     @media (max-width:1024px) {
-//       display:none;
-//     }
-// `
 
 const DataPanel = () => {
 
@@ -264,7 +242,9 @@ const DataPanel = () => {
   const panelState = useSelector(state => state.panelState);
   //column names
   const cols = useSelector(state => state.cols);
+  const [expanded, setExpanded] = useState(true)
 
+  console.log(currentData)
   // de-structure sidebarData, which houses selected geography data
   const datasetList = ['properties', 'cases', 'deaths', 'predictions',
     'chr_health_factors', 'chr_life', 'chr_health_context',
@@ -280,56 +260,13 @@ const DataPanel = () => {
     }
   });
 
-  const [expanded, setExpanded] = useState(true)
-  // const [width, setWidth] = useState(250);
-  // const [colCount, setColCount] = useState(1);
-  // const [currXPos, setCurrXPos] = useState(false);
-
+  
   // helper for predictions data
   const parsePredictedDate = (list) => `${list.slice(-2,)[0]}/${list.slice(-1,)[0]}`
 
   // handles panel open/close
   const handleOpenClose = () => panelState.info ? dispatch(setPanelState({info:false})) : dispatch(setPanelState({info:true}))
   
-  // const listener = (e) => {
-  //   setWidth(prevWidth => {
-  //     if ((prevWidth - (window.innerWidth-e.screenX) < 25) && (prevWidth - (window.innerWidth-e.screenX) > -25)){
-  //       return prevWidth;
-  //     } else if ((window.innerWidth-e.screenX) < 300) {
-  //       setColCount(1);
-  //       return 300;
-  //     } else {
-  //       setColCount(Math.floor((window.innerWidth-e.screenX)/300));
-  //       return window.innerWidth-e.screenX
-  //     }
-  //   })
-  // }
-
-  // const touchListener = (e) => {
-  //     setWidth(prev => (e?.targetTouches[0]?.clientX-currXPos) || prev)
-  // }
-
-  // const removeListener = () => {
-  //     window.removeEventListener('mousemove', listener)
-  //     window.removeEventListener('mouseup', removeListener)
-  // }
-
-  // const removeTouchListener = () => {
-  //     window.removeEventListener('touchmove', touchListener);
-  //     window.removeEventListener('touchend', removeTouchListener);
-  // }
-
-  // const handleDown = () => {
-  //     window.addEventListener('mousemove', listener)
-  //     window.addEventListener('mouseup', removeListener)
-  // }
-
-  // const handleTouch = (e) => {
-  //     setCurrXPos(+e.target.parentNode.parentNode.parentNode.style.left.slice(0,-2))
-  //     window.addEventListener('touchmove', touchListener)
-  //     window.addEventListener('touchend', removeTouchListener)
-  // }
-
   // DRY issue -- refactor these functions
 
   const performOperation = (dataArray, operation, totalPopulation) => {
@@ -349,15 +286,19 @@ const DataPanel = () => {
   const aggregateProperty = (dataset, property, operation, specialCase=null) => {
     let dataArray; 
     let totalPopulation = 0;
-    if (operation === 'weighted_average') {
-      dataArray = selectionIndex.map(selection => {
-        let selectionPop = storedData[currentData][selection]['properties']['population'];
-        totalPopulation+=selectionPop;
-        if (specialCase === 'pcp') try { return parseInt(storedData[currentData][selection][dataset][property].split(':')[0])*selectionPop } catch { return 0}
-        return storedData[currentData][selection][dataset][property]*selectionPop
-      })
-    } else {
-      dataArray = selectionIndex.map(selection => storedData[currentData][selection][dataset][property]);
+    try {
+      if (operation === 'weighted_average') {
+        dataArray = selectionIndex.map(selection => {
+          let selectionPop = storedData[currentData][selection]['properties']['population'];
+          totalPopulation+=selectionPop;
+          if (specialCase === 'pcp') try { return parseInt(storedData[currentData][selection][dataset][property].split(':')[0])*selectionPop } catch { return 0}
+          return storedData[currentData][selection][dataset][property]*selectionPop
+        })
+      } else {
+        dataArray = selectionIndex.map(selection => storedData[currentData][selection][dataset][property]);
+      }
+    } catch {
+      return 0
     }
 
     return performOperation(dataArray, operation, totalPopulation);
@@ -366,15 +307,18 @@ const DataPanel = () => {
   const aggregateTimeseries = (dataset, index, operation) => {
     let dataArray; 
     let totalPopulation = 0;
-
-    if (operation === 'weighted_average') {
-      dataArray = selectionIndex.map(selection => {
-        let selectionPop = storedData[currentData][selection]['properties']['population'];
-        totalPopulation+=selectionPop;
-        return storedData[currentData][selection][dataset].slice(index,)[0]*selectionPop
-      })
-    } else {
-      dataArray = selectionIndex.map(selection => storedData[currentData][selection][dataset].slice(index,)[0]);
+    try {
+      if (operation === 'weighted_average') {
+        dataArray = selectionIndex.map(selection => {
+          let selectionPop = storedData[currentData][selection]['properties']['population'];
+          totalPopulation+=selectionPop;
+          return storedData[currentData][selection][dataset].slice(index,)[0]*selectionPop
+        })
+      } else {
+        dataArray = selectionIndex.map(selection => storedData[currentData][selection][dataset].slice(index,)[0]);
+      }
+    } catch {
+      return 0
     }
 
     return performOperation(dataArray, operation, totalPopulation);
@@ -382,11 +326,16 @@ const DataPanel = () => {
 
   const aggregate2WeekTimeSeries = (dataset, index, operation) => {
     let lookbackPeriod = []
-    for (let i=-13;i<1;i++) {
-      lookbackPeriod.push(index+i)
-    }
-    let rtn = lookbackPeriod.map(day => aggregateTimeseries(dataset, day, operation))
+    let rtn;
 
+    try {
+      for (let i=-13;i<1;i++) {
+        lookbackPeriod.push(index+i)
+      }
+      rtn = lookbackPeriod.map(day => aggregateTimeseries(dataset, day, operation))
+    } catch {
+      return 0
+    }
     return rtn;
   }
   
@@ -394,15 +343,18 @@ const DataPanel = () => {
     
     let dataArray; 
     let totalPopulation = 0;
-
-    if (operation === 'weighted_average') {
-      dataArray = selectionIndex.map(selection => {
-        let selectionPop = storedData[currentData][selection]['properties']['population'];
-        totalPopulation+=selectionPop;
-        return dataFn(storedData[currentData][selection][numerator], storedData[currentData][selection][denominator], params)*selectionPop
-      })
-    } else {
-      dataArray = selectionIndex.map(selection => dataFn(storedData[currentData][selection][numerator], storedData[currentData][selection][denominator], params));
+    try {
+      if (operation === 'weighted_average') {
+        dataArray = selectionIndex.map(selection => {
+          let selectionPop = storedData[currentData][selection]['properties']['population'];
+          totalPopulation+=selectionPop;
+          return dataFn(storedData[currentData][selection][numerator], storedData[currentData][selection][denominator], params)*selectionPop
+        })
+      } else {
+        dataArray = selectionIndex.map(selection => dataFn(storedData[currentData][selection][numerator], storedData[currentData][selection][denominator], params));
+      }
+    } catch {
+      return 0
     }
 
     return performOperation(dataArray, operation, totalPopulation);
@@ -415,22 +367,24 @@ const DataPanel = () => {
   
 
   const aggregateQualitative = (dataset, property) => {
-    let dataArray = selectionIndex.map(selection => storedData[currentData][selection][dataset][property]);
-    let dataObj = {}
-    for (let i=0; i<dataArray.length; i++){
-      if (dataObj[dataArray[i]] === undefined) {
-        dataObj[dataArray[i]] = 1
-      } else {
-        dataObj[dataArray[i]] += 1
-      }
-    }
-
+    let dataObj = {};
     let returnStr = [];
-
-    for (let i=0; i<Object.keys(dataObj).length; i++){
-      returnStr.push(`${[Object.keys(dataObj)[i]]}: ${Math.round(dataObj[Object.keys(dataObj)[i]]/dataArray.length*10000)/100}%`)
+    try {
+      let dataArray = selectionIndex.map(selection => storedData[currentData][selection][dataset][property]);
+    
+      for (let i=0; i<dataArray.length; i++){
+        if (dataObj[dataArray[i]] === undefined) {
+          dataObj[dataArray[i]] = 1
+        } else {
+          dataObj[dataArray[i]] += 1
+        }
+      }  
+      for (let i=0; i<Object.keys(dataObj).length; i++){
+        returnStr.push(`${[Object.keys(dataObj)[i]]}: ${Math.round(dataObj[Object.keys(dataObj)[i]]/dataArray.length*10000)/100}%`)
+      }
+    } catch {
+      return 0
     }
-
     return returnStr;
   }
 

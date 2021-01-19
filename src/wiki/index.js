@@ -385,4 +385,137 @@ export const pages = {
                 </ol>
             </div>
     },
+    "emerging-tutorial": {
+        "pageName":null,
+        "content": 
+            <div>
+                <h1>Emerging Trends</h1>
+                <p>
+                    We can make educated guesses about the future spread of the pandemic by using data from the past and present. It is important to look at several variables together when looking for emerging virus trends.
+                    <br/><br/>
+                    Use Choropleth maps, Hotspots, and the Time Animated Slider and Graph to find areas that may soon be significantly affected by Covid-19.
+                </p>
+                <hr/>
+                <ol className="tutorialSteps">
+                    <h4>Choropleth: Map Today’s Data for Individual Counties</h4>
+                    <li>
+                        <p>
+                            Select Confirmed Count as the <HoverButton selector="#newVariableSelect" backup="#showHideLeft" text="Variable"/>.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Click on the "Natural Breaks" button under <HoverButton selector="#mapType" backup="#showHideLeft" text="Map Type"/>. Bright red counties have a high number of Covid-19 cases.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Change the <HoverButton selector="#newVariableSelect" backup="#showHideLeft" text="Variable"/> to Confirmed Count per 100K Population. 
+                            Now bright red counties show populations with a high percentage of cases. 
+                            The percentage is useful for looking at counties with small populations and the severity of the virus in a place.
+                            <br/><br/>
+                            The count and the percentage of cases in a county are important for understanding the impact of the virus, but they only show one day of data. 
+                            Next, select "Hotspot" under <HoverButton selector="#mapType" backup="#showHideLeft" text="Map Type"/> to see how cases compare across counties.
+
+                        </p>
+                    </li>
+                    <hr/>
+                    <h4>Hotspots: Map Today’s Data Across Counties</h4>
+                    <li>
+                        <p>
+                            Select Confirmed Count as the <HoverButton selector="#newVariableSelect" backup="#showHideLeft" text="Variable"/>.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Click on "Hotspots" under <HoverButton selector="#mapType" backup="#showHideLeft" text="Map Type"/>. Bright red counties have high case counts and are surrounded by similar areas. These regions are currently significantly affected by Covid-19.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Find counties in pale blue. These are outlier counties: they have a low number of cases compared to the high number of cases in neighboring counties. This means that pale blue counties may soon be affected by Covid-19 through spread from nearby counties.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Find counties in pale red. These are also outlier counties, but they have a high case count compared to neighboring counties. Areas close to pale red counties may soon be affected by Covid-19 as the virus spreads.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Change the <HoverButton selector="#newVariableSelect" backup="#showHideLeft" text="Variable"/> to Confirmed Count per 100K Population and explore clusters of high virus percentages and outliers. 
+                            The percentage is useful for looking at counties with small populations and for comparing counties.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Explore the variables with different time aggregation (daily, weekly, custom, and cumulative) 
+                            using the <HoverButton selector="#dateSelector" backup="#showHideLeft" text="Date Range" /> selector. 
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Clusters of high counts and percentages of new cases may also mean that nearby areas will soon see an increase in virus spread.
+                            <br/><br/>
+                            Local clustering shows current groups of counties that are significantly affected and nearby places that may soon see an increase in virus spread. Next, use the Time Graph to see the history of the virus spread to learn about the trajectory of new cases.
+                        </p>
+                    </li>
+                </ol>
+            </div>
+    },
+    "change-tutorial": {
+        "pageName":null,
+        "content": 
+            <div>
+                <h1>Change Over Time</h1>
+                <p>
+                    How a variable changed over time offers insights into what will happen next. The Atlas uses the animated slider and the time graph to show the history of Covid-19’s spread. Read the <a href="./methods.html">Methods</a> page for more information on data limitations and reporting lags.
+                </p>
+                <hr/>
+                <ol className="tutorialSteps">
+                    <p><b>Slider</b></p>
+                    <li>
+                        <p>
+                            Select the <HoverButton selector="#newVariableSelect" backup="#showHideLeft" text="Variable"/> you would like to map from the <HoverButton selector="#variablePanel" backup="#showHideLeft" text="Variables Panel" />.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            From the map, locate the animated <HoverButton selector="#timeSlider" text="Slider" /> at the top.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Click and drag your cursor along the slider to change the date of the map display.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Click the <HoverButton selector="#playPause" text="Play/Pause Button"/> to watch the data change over time. You can pan and scroll on the map as it is animating.
+                        </p>
+                    </li>
+                    <p><b>Time Graph</b></p>
+                    <li>
+                        <p>
+                            The <HoverButton selector="#showLineChart" text="Line Chart"/> button opens a panel that shows new cases in the US since January 2020.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            The graph will animate with the <HoverButton selector="#timeSlider" text="Slider" />, highlighting each new day of data as the slider moves forward in time.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            Click on a county to show the entire history of daily new cases for that county.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                        Adjusting the animated <HoverButton selector="#timeSlider" text="Slider" /> will update the line chart, as well as tooltips and data information.
+                        </p>
+                    </li>
+                </ol>
+            </div>
+    },
 }

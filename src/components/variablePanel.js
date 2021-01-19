@@ -842,7 +842,6 @@ const VariablePanel = (props) => {
         <StyledDropDown id="newVariableSelect">
           <InputLabel htmlFor="newVariableSelect">Variable</InputLabel>
           <Select
-            id="dataSource"
             value={newVariable}
             onChange={handleNewVariable}
             >

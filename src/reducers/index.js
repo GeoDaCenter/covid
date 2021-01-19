@@ -278,6 +278,8 @@ var reducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 dataParams: dataAndParamsObj,
                 mapParams: dataAndMapParamsObj,
+                selectionKeys: [],
+                selectionIndex: [],
                 currentData: dataset
             };
         case 'SET_Z_VARIABLE_PARAMS':

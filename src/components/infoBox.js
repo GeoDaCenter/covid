@@ -167,16 +167,16 @@ const tutorialInfo = [
         "subtitle": "Find groups of counties and states affected by the virus.",
         "link": "hotspot-tutorial"
     },
-    // {
-    //     "title":"Emerging Trends",
-    //     "subtitle": "Locate areas that will soon be significantly affected by COVID.",
-    //     "link": "emerging-tutorial"
-    // },
-    // {
-    //     "title":"Change Over Time",
-    //     "subtitle": "See the history of the virus by county and state.",
-    //     "link": "change-tutorial"
-    // },
+    {
+        "title":"Emerging Trends",
+        "subtitle": "Locate areas that will soon be significantly affected by COVID.",
+        "link": "emerging-tutorial"
+    },
+    {
+        "title":"Change Over Time",
+        "subtitle": "See the history of the virus by county and state.",
+        "link": "change-tutorial"
+    },
 ]
 
 
