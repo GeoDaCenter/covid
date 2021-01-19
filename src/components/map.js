@@ -20,6 +20,7 @@ import { mapFn, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, 
 import { colors, colorScales } from '../config';
 import MAP_STYLE from '../config/style.json';
 import { selectRect } from '../config/svg'; 
+import { compose } from 'redux';
 
 // const cartoGeom = new IcoSphereGeometry({
 //   iterations: 1
@@ -153,7 +154,7 @@ const Map = () => {
     
     const { storedData, storedGeojson, currentData, storedLisaData, dateIndices,
         storedCartogramData, panelState, dates, dataParams, mapParams,
-        currentVariable, startDateIndex, urlParams } = useSelector(state => state);
+        currentVariable, startDateIndex, urlParams, mapLoaded } = useSelector(state => state);
 
     const [hoverInfo, setHoverInfo] = useState(false);
     const [highlightGeog, setHighlightGeog] = useState([]);
@@ -244,6 +245,26 @@ const Map = () => {
             }
         });
     },[])
+
+    useEffect(() => {
+        try {
+            if (Object.keys(storedData).length === 1) {
+                document.querySelector(".mapboxgl-ctrl-top-right").addEventListener("click", () => {
+                    setChoroplethInteractive(false);
+                    setTimeout(() => {document.querySelector('.mapboxgl-ctrl-geocoder--input').select()},50)
+                })
+            }
+        } catch {
+            setTimeout(() => {
+                if (Object.keys(storedData).length === 1) {
+                    document.querySelector(".mapboxgl-ctrl-top-right").addEventListener("click", () => {
+                        setChoroplethInteractive(false)
+                        setTimeout(() => {document.querySelector('.mapboxgl-ctrl-geocoder--input').select()},50)
+                    })
+                }
+            }, 5000)
+        }
+    },[storedData])
 
     useEffect(() => {
         let arr = [];
@@ -402,6 +423,24 @@ const Map = () => {
         }))
     }
 
+    const handleGeocoder = (viewState) => {
+        console.log(viewState)
+        setViewState(view => ({
+            ...view,
+            latitude: viewState.latitude,
+            longitude: viewState.longitude,
+            zoom: 8,
+            transitionInterpolator: new FlyToInterpolator(),
+            transitionDuration: 250,
+            onTransitionEnd: () => {
+                document.querySelector('.mapboxgl-ctrl-geocoder--button').click()
+                setChoroplethInteractive(true)
+            }
+        }))
+    }
+
+    
+
     const getCartogramFillColor = (val, id, bins, mapType) => {
         
         if (!bins.hasOwnProperty("bins")) {
@@ -439,13 +478,17 @@ const Map = () => {
     }
 
     const handleKeyDown = (e) => {
-        if (e.ctrlKey) setMultipleSelect(true);
-        if (e.shiftKey) setBoxSelect(true);
+        if (e.target.selectionStart === undefined){
+            if (e.ctrlKey) setMultipleSelect(true);
+            if (e.shiftKey) setBoxSelect(true);
+        }
     }
 
     const handleKeyUp = (e) => {
-        if (!e.ctrlKey) setMultipleSelect(false);
-        if (!e.shiftKey) setBoxSelect(false);
+        if (e.target.selectionStart === undefined){
+            if (!e.ctrlKey) setMultipleSelect(false);
+            if (!e.shiftKey) setBoxSelect(false);
+        }
     }
 
     
@@ -925,7 +968,7 @@ const Map = () => {
             onKeyDown={handleKeyDown}
             onKeyUp={handleKeyUp}
             onMouseDown={e => boxSelect ? handleBoxSelect(e) : null}
-            onMouseUp={e => boxSelect ? handleBoxSelect(e) : null}
+            onMouseUp={e => boxSelect ? handleBoxSelect(e) : null} 
         >
             {
                 // boxSelectDims.hasOwnProperty('x') && 
@@ -980,16 +1023,17 @@ const Map = () => {
                         dispatch(setMapLoaded(true))
                     }}
                     >
-                        
                     <MapGeocoder 
                         mapRef={mapRef}
                         id="mapGeocoder"
-                        onViewportChange={viewState  => setViewState(viewState)}
+                        onViewportChange={handleGeocoder}
+                        onClear={() => setTimeout(() => {setChoroplethInteractive(true)},500)}
+                        clearOnBlur={true}
                         mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
                         position="top-right"                        
                         placeholder="Search by Location"
-                        clearAndBlurOnEsc={true}
                         style={{position: 'fixed', top:'5px', right:'5px'}}
+                        countries={"US"}
                     />
                         
                     <MapButtonContainer 

@@ -44,7 +44,5 @@ if __name__ == "__main__":
     fileList = downloadCDCVaccinationData()
     parsedData = parseVaccinationData(fileList)
 
-    parsedData['vaccineDistributed'].to_csv('./csv/vaccine_dist_cdc.csv', index=False)
     parsedData['vaccineDistributed'].to_csv('../../docs/csv/vaccine_dist_cdc.csv', index=False)
-    parsedData['vaccineAdministered'].to_csv('./csv/vaccine_admin_cdc.csv', index=False)
     parsedData['vaccineAdministered'].to_csv('../../docs/csv/vaccine_admin_cdc.csv', index=False)
