@@ -244,7 +244,6 @@ const DataPanel = () => {
   const cols = useSelector(state => state.cols);
   const [expanded, setExpanded] = useState(true)
 
-  console.log(currentData)
   // de-structure sidebarData, which houses selected geography data
   const datasetList = ['properties', 'cases', 'deaths', 'predictions',
     'chr_health_factors', 'chr_life', 'chr_health_context',

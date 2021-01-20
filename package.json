@@ -42,7 +42,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "cd public && del /f /s /q csv && cd .. && mv ./docs/csv ./public/ && react-scripts build && del /f /s /q docs 1>nul && rmdir /s /q docs && mv ./build ./docs && mv ./docs/index.html ./docs/map.html && mv ./docs/index_main.html ./docs/index.html",
+    "build": "cd public && del /f /s /q csv && del /f /s /q csv &&  cd .. && mv ./docs/csv ./public/ && react-scripts build && del /f /s /q docs 1>nul && rmdir /s /q docs && mv ./build ./docs && mv ./docs/index.html ./docs/map.html && mv ./docs/index_main.html ./docs/index.html",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

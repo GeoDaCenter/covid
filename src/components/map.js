@@ -8,8 +8,6 @@ import DeckGL from '@deck.gl/react';
 import {MapView, FlyToInterpolator} from '@deck.gl/core';
 import { GeoJsonLayer, PolygonLayer, ScatterplotLayer, IconLayer, TextLayer } from '@deck.gl/layers';
 import {fitBounds} from '@math.gl/web-mercator';
-// import {SimpleMeshLayer} from '@deck.gl/mesh-layers';
-// import {IcoSphereGeometry} from '@luma.gl/engine';
 
 import MapboxGLMap, {NavigationControl, GeolocateControl } from 'react-map-gl';
 import Geocoder from 'react-map-gl-geocoder';
@@ -20,11 +18,7 @@ import { mapFn, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, 
 import { colors, colorScales } from '../config';
 import MAP_STYLE from '../config/style.json';
 import { selectRect } from '../config/svg'; 
-import { compose } from 'redux';
 
-// const cartoGeom = new IcoSphereGeometry({
-//   iterations: 1
-// });
 const bounds = fitBounds({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -154,7 +148,7 @@ const Map = () => {
     
     const { storedData, storedGeojson, currentData, storedLisaData, dateIndices,
         storedCartogramData, panelState, dates, dataParams, mapParams,
-        currentVariable, startDateIndex, urlParams, mapLoaded } = useSelector(state => state);
+        currentVariable, urlParams, mapLoaded } = useSelector(state => state);
 
     const [hoverInfo, setHoverInfo] = useState(false);
     const [highlightGeog, setHighlightGeog] = useState([]);
@@ -170,39 +164,6 @@ const Map = () => {
         bearing:0,
         pitch:0
     })
-
-    // const [viewStates, setViewStates] = useState({
-    //     'main': {
-    //         latitude: +urlParams.lat || bounds.latitude,
-    //         longitude: +urlParams.lon || bounds.longitude,
-    //         zoom: +urlParams.z || bounds.zoom,
-    //         bearing:0,
-    //         pitch:0
-    //     },
-    //     'hawaiiMap': {
-    //         latitude: hawaiiBounds.latitude,
-    //         longitude: hawaiiBounds.longitude,
-    //         zoom: hawaiiBounds.zoom,
-    //         bearing:0,
-    //         pitch:0
-    //     },
-    //     'alaskaMap': {
-    //         latitude: alaskaBounds.latitude,
-    //         longitude: alaskaBounds.longitude,
-    //         zoom: alaskaBounds.zoom,
-    //         bearing:0,
-    //         pitch:0
-    //     }
-    // });
-
-    // const onViewStateChange = useCallback(({viewId, viewState}) => {
-    //     if (viewId === 'main') {
-    //       setViewStates(currentViewStates => ({
-    //         ...currentViewStates,
-    //         main: viewState
-    //       }));
-    //     } 
-    // }, []);
 
     const [cartogramData, setCartogramData] = useState([]);
     const [currVarId, setCurrVarId] = useState(null);
@@ -405,7 +366,7 @@ const Map = () => {
         }
     }
     
-    const GetHeight = (f) => dataFn(f[dataParams.numerator], f[dataParams.denominator], dataParams)*(dataParams.scale3D/((dataParams.nType === "time-series" && dataParams.nRange === null) ? (dataParams.nIndex-startDateIndex)/10 : 1))
+    const GetHeight = (f) => dataFn(f[dataParams.numerator], f[dataParams.denominator], dataParams)*(dataParams.scale3D/((dataParams.nType === "time-series" && dataParams.nRange === null) ? (dataParams.nIndex)/10 : 1))
         // if (dataParams.zAxisParams === null) {
         //     return dataFn(f[dataParams.numerator], f[dataParams.denominator], dataParams)*(dataParams.scale3D)
         // } else {
@@ -528,18 +489,14 @@ const Map = () => {
             extruded: mapParams.vizType === '3D',
             opacity: 0.8,
             material:false,
-            getFillColor: f => GetFillColor(f, mapParams.bins, mapParams.mapType),
+            getFillColor: f => GetFillColor(f, {bins: mapParams.bins.bins, breaks:mapParams.bins.breaks}, mapParams.mapType),
             getElevation: f => GetHeight(f),
-            // getLineColor: [255, 80, 80],
-            // getLineWidth:50,
-            // minLineWidth:20,
-            // lineWidthScale: 20,
-            // updateTriggers: {
-            //     data: currentData,
-            //     pickable: mapParams.vizType,
-            //     // getFillColor: [dataParams, mapParams.mapType, mapParams.bins, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale],
-            //     // getElevation: [dataParams, mapParams.mapType, mapParams.bins, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale],
-            // },
+            updateTriggers: {
+                data: currentData,
+                pickable: [mapParams.vizType, choroplethInteractive],
+                getFillColor: [mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale],
+                getElevation: [mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale],
+            },
             onHover: handleMapHover,
             onClick: info => {
                 let dataName = info?.object?.properties?.state_abbr !== undefined ? `${info.object?.properties?.NAME}, ${info?.object?.properties?.state_abbr}` : `${info.object?.properties?.NAME}`
@@ -604,9 +561,6 @@ const Map = () => {
                     } catch {}
                 }
             },
-                // parameters: {
-                //     depthTest: false
-                // }
         }),
         new GeoJsonLayer({
             id: 'highlightLayer',
@@ -792,57 +746,9 @@ const Map = () => {
                 visible: [cartogramData, mapParams, dataParams, currVarId]
             }
           }),
-        // new SimpleMeshLayer({
-        //     id: 'cartogram layer',
-        //     data: cartogramData,
-        //     // texture: 'texture.png',
-        //     sizeScale:10,
-        //     visible: mapParams.vizType === 'cartogram',
-        //     mesh: cartoGeom,
-        //     getPosition: f => {
-        //         try {
-        //             return storedCartogramData[currVarId][f.id].position;
-        //         } catch {
-        //             return [0,0];
-        //         }
-        //     },
-        //     getColor: f => getCartogramFillColor(storedCartogramData[currVarId][f.id].value, mapParams.bins, mapParams.mapType),
-        //     getScale: f => 500,
-        //     // getTranslation: f => getCartogramTranslation(storedCartogramData[currVarId][f.id]),
-        //     transitions: {
-        //         getPosition: 150,
-        //         getColor: 150,
-        //         getScale: 150,
-        //         getTranslation: 150
-        //     },   
-        //     updateTriggers: {
-        //         getPosition: [mapParams, dataParams, currVarId],
-        //         getColor: [mapParams, dataParams, currVarId],
-        //         getScale: [mapParams, dataParams, currVarId],
-        //         getTranslation: [mapParams, dataParams, currVarId]
-        //     }
-        //   })
     ]
 
-    // const viewGlobe = new GlobeView({id: 'globe', controller: false, resolution:1});
     const view = new MapView({repeat: true});
-
-    // const views = [
-    //     new MapView({id: 'main', controller: true}),
-    //     new MapView({id: 'hawaiiMap', x: 0, y: '86%', width: '15%', height: '12%', controller: false}),
-    //     new MapView({id: 'alaskaMap', x: '14%', y: '86%', width: '15%', height: '12%', controller: false})
-    // ]
-
-    // const [insetMap, setInsetMap] = useState(false)
-    
-    // try {
-        
-    // console.log(deckRef.current.pickObjects({x: 200, y: 200, width:500, height:500, layerIds: ['choropleth']}));
-
-    // } catch {
-
-    // }
-
     const handleSelectionBoxStart = () => {
         setBoxSelect(true)
     }
@@ -979,15 +885,6 @@ const Map = () => {
                     height={boxSelectDims.height}>
                 </IndicatorBox>
             }
-            {/* <svg height="0" width="0">
-            <defs>
-                <clipPath id="window">
-                    {!insetMap && <rect y="0" x="0" width={window.innerWidth} height={window.innerHeight}/>}
-                    <rect y="0" x="0" width={window.innerWidth} height={window.innerHeight*.8}/>
-                    <rect y={window.innerHeight*.8} x={window.innerWidth*.3} width={window.innerWidth*.7} height={window.innerHeight*.2}/>
-                </clipPath>
-            </defs>
-            </svg> */}
             <DeckGL
                 layers={Layers}
                 ref={deckRef}
@@ -1082,7 +979,7 @@ const Map = () => {
             
             {hoverInfo.object && (
                 <HoverDiv style={{transition: '0ms all', position: 'absolute', zIndex: 1, pointerEvents: 'none', left: hoverInfo.x, top: hoverInfo.y}}>
-                    <MapTooltipContent content={hoverInfo.object} index={dataParams.nIndex-startDateIndex} />
+                    <MapTooltipContent content={hoverInfo.object} index={dataParams.nIndex} />
                 </HoverDiv>
                 )}
         </MapContainer>
