@@ -18,7 +18,7 @@ def fetch_testing_data_state(): #for state leve, do not need to write any code, 
     
     state_testing = pd.read_csv("~/Documents/GitHub/covid-atlas-research/Testing_Data/python/state_testing.csv")
     #use pd to add "t" and "-": from 20201001 to t2020-10-01.
-    state_positivity = gpd.read_file("~/Documents/GitHub/lqycovid/docs/states_update.geojson") # this geojson already contains everything we need at the state level.
+    state_positivity = gpd.read_file("~/Documents/GitHub/lqycovid/data/states_update.geojson") # this geojson already contains everything we need at the state level.
     delete_index_column()
     #Further automation: do not need data from other repo, this could be calculated on the fly in here using just the raw data.
     #To accomplish that, we need to write a script in Python to calculate positivity rate, which is a future step. (Currently accomplished in R.)

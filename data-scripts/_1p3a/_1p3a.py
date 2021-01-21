@@ -115,7 +115,7 @@ def create_state_files(raw_data):
     state_json = pd.merge(states_deaths_sim, states_confir_final, how='inner', on='GEOID')
     state_json = state_json.merge(states[['GEOID','geometry']], how='inner', on='GEOID')
     state_json = gpd.GeoDataFrame(state_json, geometry=state_json.geometry)
-    state_json.to_file(os.path.join(repo_root, 'docs/states_update.geojson'), driver='GeoJSON')
+    state_json.to_file(os.path.join(repo_root, 'data/states_update.geojson'), driver='GeoJSON')
 
 def create_county_files(raw_data):
     counties = gpd.read_file(os.path.join(repo_root, 'data/county_2018.geojson'))
@@ -151,7 +151,7 @@ def create_county_files(raw_data):
     county_json = pd.merge(county_deaths_sim, county_confir_final, how='inner', on='COUNTYNS')
     county_json = county_json.merge(counties[['COUNTYNS','geometry']], how='inner', on='COUNTYNS')
     county_json = gpd.GeoDataFrame(county_json, geometry=county_json.geometry)
-    county_json.to_file(os.path.join(repo_root, 'docs/counties_update.geojson'), driver='GeoJSON')
+    county_json.to_file(os.path.join(repo_root, 'data/counties_update.geojson'), driver='GeoJSON')
 
 if __name__ == '__main__':
 

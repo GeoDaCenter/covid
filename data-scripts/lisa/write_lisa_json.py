@@ -29,7 +29,7 @@ os.makedirs(working_dir, exist_ok=True)
 
 def write_new_json_county():
 
-	gdf = geopandas.read_file(os.path.join(repo_root, "docs/counties_update.geojson"))
+	gdf = geopandas.read_file(os.path.join(repo_root, "data/counties_update.geojson"))
 	cluster  = gdf.copy()
 
 	counties = pygeoda.geopandas_to_geoda(gdf)
@@ -65,7 +65,7 @@ def write_new_json_county():
 
 def write_new_json_state():
 
-	gdf = geopandas.read_file(os.path.join(repo_root, "docs/states_update.geojson"))
+	gdf = geopandas.read_file(os.path.join(repo_root, "data/states_update.geojson"))
 	cluster  = gdf.copy()
 
 	counties = pygeoda.geopandas_to_geoda(gdf)

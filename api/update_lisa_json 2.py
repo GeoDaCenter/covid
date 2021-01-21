@@ -15,7 +15,7 @@ def county_update_lisa_1P3A():
 		old_lisa_confirmed = json.load(f)
 	with open('lisa/lisa_county_death_1P3A.json') as f:
 		old_lisa_death = json.load(f)
-	gdf = geopandas.read_file("../docs/counties_update.geojson")
+	gdf = geopandas.read_file("../data/counties_update.geojson")
 
 	# Find new dates
 	lisa_dates = list(old_lisa_confirmed["features"][0].keys())
@@ -76,7 +76,7 @@ def state_update_lisa_1P3A():
 		old_lisa_confirmed = json.load(f)
 	with open('lisa/lisa_state_death_1P3A.json') as f:
 		old_lisa_death = json.load(f)
-	gdf = geopandas.read_file("../docs/states_update.geojson")
+	gdf = geopandas.read_file("../data/states_update.geojson")
 
 	# Find new dates
 	lisa_dates = list(old_lisa_confirmed["features"][0].keys())

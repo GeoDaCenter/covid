@@ -17,7 +17,7 @@ from datetime import datetime
 
 def write_new_json_county():
 
-	gdf = geopandas.read_file("../docs/counties_update.geojson")
+	gdf = geopandas.read_file("../data/counties_update.geojson")
 	cluster  = gdf.copy()
 
 	counties = pygeoda.geopandas_to_geoda(gdf)
@@ -52,7 +52,7 @@ def write_new_json_county():
 
 def write_new_json_state():
 
-	gdf = geopandas.read_file("../docs/states_update.geojson")
+	gdf = geopandas.read_file("../data/states_update.geojson")
 	cluster  = gdf.copy()
 
 	counties = pygeoda.geopandas_to_geoda(gdf)

@@ -30,7 +30,7 @@ def county_update_lisa_1P3A():
 	s3.Bucket('geoda-covid-atlas').download_file('lisa_county_death_1P3A.json', os.path.join(dir_path, '_working/lisa_county_death_1P3A.json'))
 	with open(os.path.join(dir_path, '_working/lisa_county_death_1P3A.json')) as f:
 		old_lisa_death = json.load(f)
-	gdf = geopandas.read_file(os.path.join(repo_root, "docs/counties_update.geojson"))
+	gdf = geopandas.read_file(os.path.join(repo_root, "data/counties_update.geojson"))
 
 	# Find new dates
 	lisa_dates = list(old_lisa_confirmed["features"][0].keys())
@@ -94,7 +94,7 @@ def state_update_lisa_1P3A():
 	s3.Bucket('geoda-covid-atlas').download_file('lisa_state_death_1P3A.json', os.path.join(dir_path, '_working/lisa_state_death_1P3A.json'))
 	with open(os.path.join(dir_path, '_working/lisa_state_death_1P3A.json')) as f:
 		old_lisa_death = json.load(f)
-	gdf = geopandas.read_file(os.path.join(repo_root, "docs/states_update.geojson"))
+	gdf = geopandas.read_file(os.path.join(repo_root, "data/states_update.geojson"))
 
 	# Find new dates
 	lisa_dates = list(old_lisa_confirmed["features"][0].keys())

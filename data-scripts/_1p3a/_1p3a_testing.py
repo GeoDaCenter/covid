@@ -104,7 +104,7 @@ def process_testing_data_state(cr):
     update_state_geojson(state_test, state_positivity, date_state_test, date_state_positivity)
 
 def update_state_geojson(state_test, state_positivity, date_state_test, date_state_positivity):
-    with io.open(os.path.join(repo_root, "docs/states_update_processing.geojson"), 'r', encoding='utf-8') as f:
+    with io.open(os.path.join(repo_root, "data/states_update_processing.geojson"), 'r', encoding='utf-8') as f:
         geojson = json.load(f)
         features = geojson["features"]
         for feat in features:
@@ -130,7 +130,7 @@ def update_state_geojson(state_test, state_positivity, date_state_test, date_sta
                 col_name = "tpos" + dat
                 feat["properties"][col_name] = cnt
                 
-    with open(os.path.join(repo_root, 'docs/states_update.geojson'), 'w') as outfile:
+    with open(os.path.join(repo_root, 'data/states_update.geojson'), 'w') as outfile:
         json.dump(geojson, outfile)
 
 
@@ -231,7 +231,7 @@ def process_testing_data_county(cr):
     update_county_geojson(county_test, county_positivity, date_county_test, date_county_positivity)
 
 def update_county_geojson(county_test, county_positivity, date_county_test, date_county_positivity):
-    with io.open(os.path.join(repo_root, "docs/counties_update_processing.geojson"), 'r', encoding='utf-8') as f:
+    with io.open(os.path.join(repo_root, "data/counties_update_processing.geojson"), 'r', encoding='utf-8') as f:
         geojson = json.load(f)
         features = geojson["features"]
         for feat in features:
@@ -258,7 +258,7 @@ def update_county_geojson(county_test, county_positivity, date_county_test, date
                 feat["properties"][col_name] = cnt
     # read in both datasets and merge   
     # gpd.merge(data_set_1, data_set_2, left, right, left_index, right_index)      
-    with open(os.path.join(repo_root, 'docs/counties_update.geojson'), 'w') as outfile:
+    with open(os.path.join(repo_root, 'data/counties_update.geojson'), 'w') as outfile:
         json.dump(geojson, outfile)    
 
 def download_data(url, target_dir, filename):

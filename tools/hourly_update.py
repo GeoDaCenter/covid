@@ -304,7 +304,7 @@ def update_state_geojson(state_count, state_deathcount, date_state_count, date_s
         update_state_population(geojson)
         update_state_beds(geojson)
 
-        with open('../docs/states_update.geojson', 'w') as outfile:
+        with open('../data/states_update.geojson', 'w') as outfile:
             json.dump(geojson, outfile)
 
 def update_county_geojson(county_count, county_deathcount, date_county_count, date_county_deathcount):
@@ -341,7 +341,7 @@ def update_county_geojson(county_count, county_deathcount, date_county_count, da
         update_county_population(geojson)
         update_county_beds(geojson)
         
-        with open('../docs/counties_update.geojson', 'w') as outfile:
+        with open('../data/counties_update.geojson', 'w') as outfile:
             json.dump(geojson, outfile)
 
         # check input county
