@@ -1,4 +1,3 @@
-
 export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 git config --global user.email "theuscovidatlas@gmail.com"
 git config --global user.name "theuscovidatlas"
@@ -33,7 +32,7 @@ case $DATA_SOURCE in
 		;;
 
 	testing)
-		export COMMAND='bash /tmp/covid-atlas-research/Testing_Data/run_testing.sh'
+		export COMMAND='bash ./data-scripts/testing/run_testing.sh'
 
 esac
 
