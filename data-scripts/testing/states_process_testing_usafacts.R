@@ -75,6 +75,7 @@ change_date <- function(den){
   return(den)
 }
 
+
 # Take population info
 states_update <- as.data.frame(st_read("/tmp/covid/docs/geojson/state_1p3a.geojson")) %>% select(-geometry, -GEOID)
 names(states_update)[5] <- "State"
