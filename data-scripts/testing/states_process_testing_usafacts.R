@@ -76,14 +76,14 @@ change_date <- function(den){
 }
 
 # Take population info
-states_update <- as.data.frame(st_read("/tmp/covid/docs/state_1p3a.geojson")) %>% select(-geometry, -GEOID)
+states_update <- as.data.frame(st_read("/tmp/covid/docs/geojson/state_1p3a.geojson")) %>% select(-geometry, -GEOID)
 names(states_update)[5] <- "State"
 states_update <- states_update[-c(17, 53, 54, 55, 56),]
 states_cases <- read.csv("/tmp/covid/docs/csv/covid_confirmed_usafacts_state.csv")
 states_update <- left_join(states_update, states_cases, by = "State")
 
 for (i in 18:(322+diff)) {
-  names(states_update)[i] <- 
+  names(states_update)[i] <-
    change_date(names(states_update)[i])
 }
 
@@ -114,7 +114,7 @@ for (i in 1:datenum){
     }
     if (states_update[j, colstart+i]>1) {
       states_update[j, colstart+i] <- -1
-    }  
+    }
   }
   # print(i)
   names(states_update)[colstart+i] <- paste("ccpt",den, sep = "")
