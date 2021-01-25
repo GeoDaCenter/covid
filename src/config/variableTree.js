@@ -203,15 +203,15 @@ export const variableTree = {
             }
         },
     },
-    // "HEADER:forecasting":{},
-    // "Forecasting (5-Day Severity Index)":{
-    //     "County": {
-    //         "Yu Group at Berkeley": {
-    //             "geojson":'county_usfacts.geojson',
-    //             "csv":['berkeley_predictions']
-    //         }
-    //     }
-    // },
+    "HEADER:forecasting":{},
+    "Forecasting (5-Day Severity Index)":{
+        "County": {
+            "Yu Group at Berkeley": {
+                "geojson":'county_usfacts.geojson',
+                "csv":['berkeley_predictions']
+            }
+        }
+    },
     "HEADER:community health information":{},
     "Uninsured %": {
         "County": {

@@ -833,7 +833,7 @@ const VariablePanel = (props) => {
   }
 
   const allGeographies = ['County', 'State']
-  const allDatasets = ['1point3acres', 'USA Facts', 'New York Times', 'CDC', 'County Health Rankings'] //'Yu Group at Berkeley', 
+  const allDatasets = ['1point3acres', 'USA Facts', 'New York Times', 'CDC', 'County Health Rankings', 'Yu Group at Berkeley'] //
 
   return (
     <VariablePanelContainer className={panelState.variables ? '' : 'hidden'} otherPanels={panelState.info} id="variablePanel">
