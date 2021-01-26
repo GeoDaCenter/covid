@@ -9,7 +9,7 @@ const getURLParams = (params) => {
     let bin = mapParams.binMode !== '' ? '&dbin=True' : ''        
     let date = lastDateIndex !== null && dataParams.nIndex !== lastDateIndex.slice(-1,)[0] ? `&date=${dataParams.nIndex}` : '';
     let dateRange = dataParams.nRange !== 7 && dataParams.nType === 'time-series' ? `&range=${dataParams.nRange}` : ''
-    let overlay = mapParams.overlay ? `&ovr=${mapParams}` : '';
+    let overlay = mapParams.overlay ? `&ovr=${mapParams.overlay}` : '';
     let resource = mapParams.resource ? `&res=${mapParams.resource}` : '';
     let mapType = mapParams.vizType === "cartogram" ? `&viz=cartogram` : mapParams.vizType === '3D' ? '&viz=3D' : '';
   
