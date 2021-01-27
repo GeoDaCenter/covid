@@ -483,7 +483,7 @@ const DataPanel = () => {
                   <p>% of Population<br className="bigOnly"/>  Received Second Dose</p>
                   <h3>{aggregateDataFunction('vaccinesAdmin2', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: 'population', dIndex: null, dRange: null, scale: 100}, 'weighted_average')?.toFixed(2).toLocaleString('en')}%</h3>
 
-                  <p>Doses Available<br className="bigOnly"/>  Per 100k Population</p>
+                  <p>Doses to be Administed<br className="bigOnly"/>  Per 100k Population</p>
                   <h3>{aggregateDataFunction('vaccinesDist', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: 'population', dIndex: null, dRange: null, scale: 100000}, 'weighted_average')?.toFixed(2).toLocaleString('en')}</h3>
                 
                 </ReportSection>

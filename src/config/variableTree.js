@@ -203,7 +203,7 @@ export const variableTree = {
             }
         },
     },
-    "Doses Available per 100K Population":{
+    "Doses to be Administed per 100K Population":{
         "State": {
             "CDC": {
                 "geojson": "state_1p3a.geojson",

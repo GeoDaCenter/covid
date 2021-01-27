@@ -445,8 +445,8 @@ const VariablePanel = (props) => {
         colorScale: 'greenSingleHue8',
         fixedScale: null,
     },
-    "Doses Available per 100K Population": {
-        variableName:"Doses Available per 100K Population",
+    "Doses to be Administed per 100K Population": {
+        variableName:"Doses to be Administed per 100K Population",
         numerator: 'vaccinesDist',
         nType: 'time-series',
         nProperty: null,
