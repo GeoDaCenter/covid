@@ -17,7 +17,8 @@ def downloadCDCVaccinationData():
     return glob(os.path.join(dir_path, 'json/*.json'))
 
 def parseVaccinationData(vaccinationDataList):
-    geoidTable = pd.read_csv(os.path.join(dir_path, 'statename_geoid.csv'))
+    geoidTable = pd.read_csv('./statename_geoid.csv')
+    vaccineAdministered1 = ''
 
     for idx, file in enumerate(vaccinationDataList):
         with open(file) as f:
@@ -25,30 +26,41 @@ def parseVaccinationData(vaccinationDataList):
             if (type(data)==dict):
                 data = data['vaccination_data']
         currDate = data[0]['Date']
-        vaccinationDf = pd.DataFrame(data) \
-            .merge(geoidTable, left_on="Location", right_on="STUSPS", how="inner")[['GEOID','NAME','Doses_Distributed','Doses_Administered']]
 
-        if idx == 0:
-            vaccineAdministered = vaccinationDf[['GEOID','Doses_Administered']]
-            vaccineDistributed = vaccinationDf[['GEOID','Doses_Distributed']]
-            vaccineAdministered.columns = ['fips',currDate]
+        try:
+            vaccinationDf = pd.DataFrame(data) \
+                .merge(geoidTable, left_on="Location", right_on="STUSPS", how="inner")[['GEOID','NAME','Doses_Distributed', 'Doses_Administered','Administered_Dose1','Administered_Dose2']]
+        except:
+            continue
+
+        if len(vaccineAdministered1) == 0:
+            vaccineAdministered1 = vaccinationDf[['GEOID','Administered_Dose1']]
+            vaccineAdministered2 = vaccinationDf[['GEOID','Administered_Dose2']]
+            vaccineDistributed = vaccinationDf[['GEOID','Doses_Administered','Doses_Distributed']]
+            vaccineDistributed['remaining'] = vaccineDistributed['Doses_Distributed'] - vaccineDistributed['Doses_Administered']
+            vaccineDistributed = vaccineDistributed[['GEOID','remaining']]
+            vaccineAdministered1.columns = ['fips',currDate]
+            vaccineAdministered2.columns = ['fips',currDate]
             vaccineDistributed.columns = ['fips',currDate]
         else:
-            dailyVaccineAdministered = vaccinationDf[['GEOID','Doses_Administered']]
-            dailyVaccineDistributed = vaccinationDf[['GEOID','Doses_Distributed']]
-            dailyVaccineAdministered.columns = ['fips',currDate]
+            dailyVaccineAdministered1 = vaccinationDf[['GEOID','Administered_Dose1']]
+            dailyVaccineAdministered2 = vaccinationDf[['GEOID','Administered_Dose2']]
+            dailyVaccineDistributed = vaccinationDf[['GEOID','Doses_Administered','Doses_Distributed']]
+            dailyVaccineDistributed['remaining'] = dailyVaccineDistributed['Doses_Distributed'] - dailyVaccineDistributed['Doses_Administered']
+            dailyVaccineDistributed = dailyVaccineDistributed[['GEOID','remaining']]
+            dailyVaccineAdministered1.columns = ['fips',currDate]
+            dailyVaccineAdministered2.columns = ['fips',currDate]
             dailyVaccineDistributed.columns = ['fips',currDate]
 
-            vaccineAdministered = vaccineAdministered.merge(dailyVaccineAdministered, on=["fips"])
+            vaccineAdministered1 = vaccineAdministered1.merge(dailyVaccineAdministered1, on=["fips"])
+            vaccineAdministered2 = vaccineAdministered2.merge(dailyVaccineAdministered2, on=["fips"])
             vaccineDistributed = vaccineDistributed.merge(dailyVaccineDistributed, on=["fips"])
-
-    return { 'vaccineAdministered': vaccineAdministered, 'vaccineDistributed': vaccineDistributed }
+    return { 'vaccineAdministered1': vaccineAdministered1, 'vaccineAdministered2': vaccineAdministered2, 'vaccineDistributed': vaccineDistributed }
 
 if __name__ == "__main__":
     fileList = downloadCDCVaccinationData()
     parsedData = parseVaccinationData(fileList)
 
-    # parsedData['vaccineDistributed'].to_csv('./csv/vaccine_dist_cdc.csv', index=False)
     parsedData['vaccineDistributed'].to_csv(os.path.join(repo_root, 'docs/csv/vaccine_dist_cdc.csv'), index=False)
-    # parsedData['vaccineAdministered'].to_csv('./csv/vaccine_admin_cdc.csv', index=False)
-    parsedData['vaccineAdministered'].to_csv(os.path.join(repo_root, 'docs/csv/vaccine_admin_cdc.csv'), index=False)
+    parsedData['vaccineAdministered1'].to_csv(os.path.join(repo_root, 'docs/csv/vaccine_admin1_cdc.csv'), index=False)
+    parsedData['vaccineAdministered2'].to_csv(os.path.join(repo_root, 'docs/csv/vaccine_admin2_cdc.csv'), index=False)

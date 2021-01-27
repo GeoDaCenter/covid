@@ -20,8 +20,6 @@ const getLisaValues = (gda_proxy, dataset, data, geoids) => {
     clusters = gda_proxy.parseVecDouble(lisa.clusters());
     sig = gda_proxy.parseVecDouble(lisa.significances());
   }
-  console.log(w.w_uuid)
-  console.log(w.map_uuid)
   return clusters;
 }
 

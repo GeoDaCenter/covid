@@ -247,10 +247,10 @@ const DataPanel = () => {
   // de-structure sidebarData, which houses selected geography data
   const datasetList = ['properties', 'cases', 'deaths', 'predictions',
     'chr_health_factors', 'chr_life', 'chr_health_context',
-    'testing', 'vaccinesAdmin']
+    'testing', 'vaccinesAdmin1', 'vaccinesAdmin2', 'vaccinesDist']
   const [ properties, cases, deaths, predictions,
     chr_health_factors, chr_life, chr_health_context,
-    testing, vaccinesAdmin
+    testing, vaccinesAdmin1, vaccinesAdmin2, vaccinesDist
   ] = datasetList.map(dataset => {
     if (storedData[currentData] === undefined) {
       return false 
@@ -466,26 +466,24 @@ const DataPanel = () => {
                 <h3>{aggregateQualitative('properties', 'criteria').map(f => <span>{f}<br/></span>)}</h3>
               </ReportSection>
             }
-            {(vaccinesAdmin && selectionIndex.length) &&
+            {(vaccinesAdmin1 && selectionIndex.length) &&
                 <ReportSection>
                   <h2>COVID Vaccination</h2><br/>
                   <h6>Source: <a href="https://covid.cdc.gov/covid-data-tracker/#vaccinations" target="_blank" rel="noopener noreferrer">CDC COVID Data Tracker</a></h6>            
                 
-                  <p>Vaccines Administered</p>
+                  {/* <p>% of Population Received First Dose</p>
                   <div className="numberChartContainer">
-                    <h3>{Math.round(aggregateTimeseries('vaccinesAdmin', currDateIndex, 'weighted_average'))?.toLocaleString('en')}</h3>
-                    {expanded && <TwoWeekChart data={aggregate2WeekTimeSeries('vaccinesAdmin', currDateIndex, 'weighted_average')} schema='vaccination'/>}
-                  </div>
-                  <p>Vaccines Administered<br className="bigOnly"/> Per 100k Population</p>
-                  <h3>{aggregateDataFunction('vaccinesAdmin', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: 'population', dIndex: null, dRange: null, scale: 100000}, 'weighted_average')?.toFixed(2).toLocaleString('en')}</h3>
-                  
-                  <p>Vaccines Distributed</p>
-                  <div className="numberChartContainer">
-                    <h3>{Math.round(aggregateTimeseries('vaccinesDist', currDateIndex, 'weighted_average'))?.toLocaleString('en')}</h3>
-                    {expanded && <TwoWeekChart data={aggregate2WeekTimeSeries('vaccinesDist', currDateIndex, 'weighted_average')} schema='vaccination'/>}
-                  </div>
+                    <h3>{Math.round(aggregateTimeseries('vaccineAdmin1', currDateIndex, 'weighted_average'))?.toLocaleString('en')}</h3>
+                    {expanded && <TwoWeekChart data={aggregate2WeekTimeSeries('vaccineAdmin1', currDateIndex, 'weighted_average')} schema='testingCap'/>}
+                  </div> */}
 
-                  <p>Vaccines Distributed<br className="bigOnly"/>  Per 100k Population</p>
+                  <p>% of Population<br className="bigOnly"/>  Received First Dose</p>
+                  <h3>{aggregateDataFunction('vaccinesAdmin1', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: 'population', dIndex: null, dRange: null, scale: 100}, 'weighted_average')?.toFixed(2).toLocaleString('en')}%</h3>
+                  
+                  <p>% of Population<br className="bigOnly"/>  Received Second Dose</p>
+                  <h3>{aggregateDataFunction('vaccinesAdmin2', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: 'population', dIndex: null, dRange: null, scale: 100}, 'weighted_average')?.toFixed(2).toLocaleString('en')}%</h3>
+
+                  <p>Doses Available<br className="bigOnly"/>  Per 100k Population</p>
                   <h3>{aggregateDataFunction('vaccinesDist', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: 'population', dIndex: null, dRange: null, scale: 100000}, 'weighted_average')?.toFixed(2).toLocaleString('en')}</h3>
                 
                 </ReportSection>

@@ -9,7 +9,7 @@ import * as jsgeoda from 'jsgeoda';
 import { 
   getParseCSV, mergeData, getColumns, loadJson,
   getDataForBins, getDataForCharts, getDataForLisa, getDateLists,
-  getLisaValues, getVarId, getCartogramValues, getDateIndices } from './utils';
+  getLisaValues, getVarId, getCartogramValues, getDateIndices, parseBinPairs } from './utils';
 
 // Actions -- Redux state manipulation following Flux architecture //
 // first row: data storage
@@ -127,7 +127,7 @@ function App() {
       let denomIndices = DateIndices[dataParams.numerator]
       let lastIndex = denomIndices !== null ? denomIndices.slice(-1,)[0] : null;
       let chartData = getDataForCharts(tempData, 'cases', DateIndices['cases'], dateLists.isoDateList);
-      let binData = getDataForBins(tempData, {...dataParams, nIndex: lastIndex || dataParams.nIndex, binIndex: lastIndex || dataParams.bomOmdex});
+      let binData = getDataForBins(tempData, {...dataParams, nIndex: lastIndex || dataParams.nIndex, binIndex: lastIndex || dataParams.binIndex});
       let bins;
 
       if (dataParams.fixedScale === null || dataParams.fixedScale === undefined){
@@ -138,7 +138,8 @@ function App() {
           mapParams.nBins,
           null,
           binData
-        );
+        );        
+
         bins = {
           bins: mapParams.mapType === "natural_breaks" ? nb.bins : ['Lower Outlier','< 25%','25-50%','50-75%','>75%','Upper Outlier'],
           breaks: [-Math.pow(10, 12), ...nb.breaks.slice(1,-1), Math.pow(10, 12)]
@@ -190,13 +191,15 @@ function App() {
 
     if (gda_proxy !== null && storedData.hasOwnProperty(currentData) && mapParams.mapType !== "lisa"){
       if (dataParams.fixedScale === null || mapParams.mapType !== 'natural_breaks') {
+        let binData = getDataForBins( storedData[currentData], dataParams )
         let nb = gda_proxy.custom_breaks(
           currentData, 
           mapParams.mapType, 
           mapParams.nBins, 
           null, 
-          getDataForBins( storedData[currentData], dataParams )
-        )      
+          binData
+        )
+
         dispatch(
           setMapParams({
             bins: {

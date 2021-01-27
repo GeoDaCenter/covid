@@ -2,7 +2,6 @@ import dataFn from './dataFunction';
 
 // this function loops through the current data set and provides data for GeodaJS to create custom breaks 
 const getDataForLisa = (tableData, dataParams, order) => {
-    let t0 = performance.now() // logging performance
     
     const { numerator, nProperty, nIndex, denominator, dType, dIndex} = dataParams;
 
@@ -40,8 +39,6 @@ const getDataForLisa = (tableData, dataParams, order) => {
         rtn.push(tempDict[order[keys[n]]]);
         n++;
     }
-
-    console.log(performance.now() - t0);
 
     return rtn;
     

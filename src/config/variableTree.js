@@ -187,7 +187,7 @@ export const variableTree = {
         }
     },
     "HEADER:vaccination":{},
-    "Vaccinations Administered per 100K Population":{
+    "% Received First Dose":{
         "State": {
             "CDC": {
                 "geojson": "state_1p3a.geojson",
@@ -195,11 +195,19 @@ export const variableTree = {
             }
         },
     },
-    "Vaccinations Distributed per 100K Population":{
+    "% Received Second Dose":{
         "State": {
             "CDC": {
                 "geojson": "state_1p3a.geojson",
-                "csv": ["vaccine_dist_cdc_1p3a_state"],
+                "csv": ["vaccine_admin_cdc_1p3a_state"],
+            }
+        },
+    },
+    "Doses Available per 100K Population":{
+        "State": {
+            "CDC": {
+                "geojson": "state_1p3a.geojson",
+                "csv": ["vaccine_admin_cdc_1p3a_state"],
             }
         },
     },

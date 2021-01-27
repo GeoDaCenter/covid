@@ -171,3 +171,7 @@ button.mapboxgl-ctrl-attrib-button {
   75% {box-shadow:5px 0px 3px red, -5px -5px 3px red, 5px 5px 3px red, -5px 0px 3px red !important;}
   100% {box-shadow:0px 0px 3px red, -5px 0px 3px red, 5px -5px 3px red, 0px 5px 3px red !important;}
 } */
+
+hr.lightHr {
+  border-bottom:1px solid rgba(255,255,255,0.6);
+}

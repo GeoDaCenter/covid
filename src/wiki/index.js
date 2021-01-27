@@ -81,6 +81,21 @@ export const pages = {
         "icon": "info",
         "content": 
             <div>
+                <h3>Changelog 1/27</h3>
+                <p>Vaccination Data Updates</p>
+                <ul>
+                    <li>
+                        New vaccination data specifying first and second doses has been made available, and three new variables
+                        are ready for the Atlas: % of population who received a first dose, % of population who received a second dose, animated
+                        vaccines available for distribution (vaccines distributed to each state, but not yet administered).
+                    </li>
+                    <li>
+                        Vaccination data has been added to state-level tooltips
+                    </li>
+                    <li>
+                        Various bugs have been fixed
+                    </li>
+                </ul>
                 <h3>Changelog 1/12</h3>
                 <p>Refactor Update</p>
                 <ul>
@@ -161,6 +176,17 @@ export const pages = {
             <p>
                 The <HoverButton selector="#timeSlider" text="Slider" /> can change the date selection for your selected variable. 
                 You can animate the map by clicking the <HoverButton selector="#playPause" text="Play/Pause Button" />.
+            </p>
+            <h3>Aggregating Geographies</h3>
+            <p>
+                To select multiple geographies, there are two controls. First you can hold down <b>Control</b> on your keyboard and click on states or counties on the map. Each will be highlighted and added 
+                to the line chart and report panel. Additionally, you may hold down <b>Shift</b> and draw a box to select multiple areas. The <HoverButton selector="#boxSelect" text="Selection Box"/> button 
+                in the bottom right also initiates area selection.
+            </p>
+            <h3>Sharing a Map</h3>
+            <p>
+                Use the <HoverButton selector="#shareButton" text="Share Button"/> in the bottom right to generate a link to the map you are currently viewing. The map link will include the map coordinates you are viewing, the data source, variable, geography,
+                and map mode. The link will be directly copied to your clipboard to share with your community, on social media, or to advocate for policy change.
             </p>
 
             

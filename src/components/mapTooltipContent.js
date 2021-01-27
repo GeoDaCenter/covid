@@ -7,17 +7,18 @@ const MapTooltipContent = (props) => {
     // destructure the object for cleaner formatting
 
     const { properties, cases, deaths, // county data
-            testing_ccpt, testing_tcap, testing_wk_pos, testing // state data
+            testing_ccpt, testing_tcap, testing_wk_pos, testing, vaccinesAdmin1, vaccinesAdmin2, vaccinesDist // state data
      } = props.content;
 
     // get lengths of time series data for reference below
     let caseN = cases && props.index;
     let deathN = deaths && props.index;
     let testingN = testing && props.index;
+    let vaccineN = vaccinesAdmin1 && props.index
 
     // conditional returns for combination of information
     // this is not elegant but a bit more reliable than JSX conditional rendering
-    if (properties && cases && deaths && testing) { // State Feature
+    if (properties && cases && deaths && testing ) { // State Feature
         return (
             <div>
                 <h3>
@@ -26,14 +27,19 @@ const MapTooltipContent = (props) => {
                 <div>
                     <hr />
                     Cases: {cases[caseN]?.toLocaleString('en')}<br/>
-                    New Cases: {(cases[caseN]-cases[caseN-1])?.toLocaleString('en')}<br/>
                     Deaths: {deaths[deathN]?.toLocaleString('en')}<br/>
-                    New Deaths: {(deaths[deathN]-deaths[deathN-1])?.toLocaleString('en')}<br/>
+                    <br/>
+                    7-Day New Cases: {(cases[caseN]-cases[caseN-7])?.toLocaleString('en')}<br/>
+                    7-Day New Deaths: {(deaths[deathN]-deaths[deathN-7])?.toLocaleString('en')}<br/>
+                    <br/>
                     Total Testing: {(testing[testingN])?.toLocaleString('en')}<br/>
                     7-Day Positivity Rate: {(testing_wk_pos[testingN]*100)?.toFixed(2)}%<br/>
                     7-Day Testing Capacity: {(testing_tcap[testingN])?.toFixed(2)}<br/>
-                    7-Day Confirmed Cases per Testing: {(testing_ccpt[testingN]*100)?.toFixed(2)}%<br/>
+                    <br/>
                     Testing Criterion: {properties.criteria}<br/>
+                    First dose administered: {Math.round((vaccinesAdmin1[testingN]/properties.population)*1000)/10}%<br/>
+                    Second dose administered: {Math.round((vaccinesAdmin2[testingN]/properties.population)*1000)/10}%<br/>
+                    Doses Available Per 100K: {Math.round((vaccinesDist[testingN]/properties.population)*100000)?.toLocaleString()}<br/>
                 </div>
             </div>
         )
@@ -47,8 +53,9 @@ const MapTooltipContent = (props) => {
                     <hr />
                     Cases: {cases[caseN]?.toLocaleString('en')}<br/>
                     Deaths: {deaths[deathN]?.toLocaleString('en')}<br/>
-                    New Cases: {(cases[caseN]-cases[caseN-1])?.toLocaleString('en')}<br/>
-                    New Deaths: {(deaths[deathN]-deaths[deathN-1])?.toLocaleString('en')}<br/>
+                    <br/>
+                    7-Day New Cases: {(cases[caseN]-cases[caseN-7])?.toLocaleString('en')}<br/>
+                    7-Day New Deaths: {(deaths[deathN]-deaths[deathN-7])?.toLocaleString('en')}<br/>
                 </div>
             </div>
         )

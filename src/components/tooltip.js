@@ -12,7 +12,9 @@ const TooltipContainer = styled.button`
     outline:none;
     border:none;
     padding:0;
-    margin:4px;
+    margin:0 4px;
+    transform:translateY(2px);
+    display:inline-grid;
 `
 
 const Tooltip = (props) => {

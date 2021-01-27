@@ -5,7 +5,8 @@ const getDataForBins = (tableData, dataParams) => {
     const { numerator, nProperty, nIndex, denominator, dType, dIndex} = dataParams;
     if (tableData[0][denominator] === undefined) return;
     // declare empty array for return variables
-    let rtn = [];
+    let rtn = new Array(tableData.length);
+    // let rtnIndex = {};
 
     // length of data table to loop through
     let n = tableData.length;
@@ -19,12 +20,14 @@ const getDataForBins = (tableData, dataParams) => {
         // loop through, do appropriate calculation. add returned value to rtn array
         while (n>0) {
             n--;
-            rtn.unshift(dataFn(tableData[n][numerator], tableData[n][denominator], {...dataParams, nIndex:tempIndex, dIndex: tempDIndex})||0)
+            rtn[n] = dataFn(tableData[n][numerator], tableData[n][denominator], {...dataParams, nIndex:tempIndex, dIndex: tempDIndex})||0
+            // rtnIndex[tableData[n].properties.GEOID] = n 
         }
     } else {
        while (n>0) {
             n--;
-            rtn.unshift(dataFn(tableData[n][numerator], tableData[n][denominator], dataParams)||0)
+            rtn[n] = dataFn(tableData[n][numerator], tableData[n][denominator], dataParams)||0
+            // rtnIndex[tableData[n].properties.GEOID] = n 
         }
     }
     return rtn;   

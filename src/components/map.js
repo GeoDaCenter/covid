@@ -942,6 +942,7 @@ const Map = () => {
                         >
                         <NavInlineButton
                             title="Selection Box"
+                            id="boxSelect"
                             isActive={boxSelect}
                             onClick={() => handleSelectionBoxStart()}
                         >
@@ -959,6 +960,7 @@ const Map = () => {
                         
                         <NavInlineButton
                             title="Share this Map"
+                            id="shareButton"
                             shareNotification={shared}
                             onClick={() => handleShare({mapParams, dataParams, currentData, coords: mapRef.current.props.viewState, lastDateIndex: dateIndices[currentData][dataParams.numerator]})}
                         >
