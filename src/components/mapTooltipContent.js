@@ -18,7 +18,7 @@ const MapTooltipContent = (props) => {
 
     // conditional returns for combination of information
     // this is not elegant but a bit more reliable than JSX conditional rendering
-    if (properties && cases && deaths && testing ) { // State Feature
+    if (properties && cases && deaths && testing && vaccinesAdmin1) { // State Feature
         return (
             <div>
                 <h3>
@@ -40,6 +40,26 @@ const MapTooltipContent = (props) => {
                     First dose administered: {Math.round((vaccinesAdmin1[testingN]/properties.population)*1000)/10}%<br/>
                     Second dose administered: {Math.round((vaccinesAdmin2[testingN]/properties.population)*1000)/10}%<br/>
                     Doses to be administed per 100K: {Math.round((vaccinesDist[testingN]/properties.population)*100000)?.toLocaleString()}<br/>
+                </div>
+            </div>
+        )
+    } else if (properties && cases && deaths && testing) { // State Feature
+        return (
+            <div>
+                <h3>
+                    {properties.NAME}
+                </h3>
+                <div>
+                    <hr />
+                    Cases: {cases[caseN]?.toLocaleString('en')}<br/>
+                    Deaths: {deaths[deathN]?.toLocaleString('en')}<br/>
+                    <br/>
+                    7-Day New Cases: {(cases[caseN]-cases[caseN-7])?.toLocaleString('en')}<br/>
+                    7-Day New Deaths: {(deaths[deathN]-deaths[deathN-7])?.toLocaleString('en')}<br/>
+                    <br/>
+                    Total Testing: {(testing[testingN])?.toLocaleString('en')}<br/>
+                    7-Day Positivity Rate: {(testing_wk_pos[testingN]*100)?.toFixed(2)}%<br/>
+                    7-Day Testing Capacity: {(testing_tcap[testingN])?.toFixed(2)}<br/>
                 </div>
             </div>
         )
