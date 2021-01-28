@@ -29,8 +29,8 @@ const MapTooltipContent = (props) => {
                     Cases: {cases[caseN]?.toLocaleString('en')}<br/>
                     Deaths: {deaths[deathN]?.toLocaleString('en')}<br/>
                     <br/>
-                    7-Day New Cases: {(cases[caseN]-cases[caseN-7])?.toLocaleString('en')}<br/>
-                    7-Day New Deaths: {(deaths[deathN]-deaths[deathN-7])?.toLocaleString('en')}<br/>
+                    Daily New Cases: {(cases[caseN]-cases[caseN-1])?.toLocaleString('en')}<br/>
+                    Daily New Deaths: {(deaths[deathN]-deaths[deathN-1])?.toLocaleString('en')}<br/>
                     <br/>
                     Total Testing: {(testing[testingN])?.toLocaleString('en')}<br/>
                     7-Day Positivity Rate: {(testing_wk_pos[testingN]*100)?.toFixed(2)}%<br/>
@@ -54,8 +54,8 @@ const MapTooltipContent = (props) => {
                     Cases: {cases[caseN]?.toLocaleString('en')}<br/>
                     Deaths: {deaths[deathN]?.toLocaleString('en')}<br/>
                     <br/>
-                    7-Day New Cases: {(cases[caseN]-cases[caseN-7])?.toLocaleString('en')}<br/>
-                    7-Day New Deaths: {(deaths[deathN]-deaths[deathN-7])?.toLocaleString('en')}<br/>
+                    Daily New Cases: {(cases[caseN]-cases[caseN-1])?.toLocaleString('en')}<br/>
+                    Daily New Deaths: {(deaths[deathN]-deaths[deathN-1])?.toLocaleString('en')}<br/>
                     <br/>
                     Total Testing: {(testing[testingN])?.toLocaleString('en')}<br/>
                     7-Day Positivity Rate: {(testing_wk_pos[testingN]*100)?.toFixed(2)}%<br/>
@@ -74,8 +74,8 @@ const MapTooltipContent = (props) => {
                     Cases: {cases[caseN]?.toLocaleString('en')}<br/>
                     Deaths: {deaths[deathN]?.toLocaleString('en')}<br/>
                     <br/>
-                    7-Day New Cases: {(cases[caseN]-cases[caseN-7])?.toLocaleString('en')}<br/>
-                    7-Day New Deaths: {(deaths[deathN]-deaths[deathN-7])?.toLocaleString('en')}<br/>
+                    Daily New Cases: {(cases[caseN]-cases[caseN-1])?.toLocaleString('en')}<br/>
+                    Daily New Deaths: {(deaths[deathN]-deaths[deathN-1])?.toLocaleString('en')}<br/>
                 </div>
             </div>
         )
