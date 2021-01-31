@@ -19,7 +19,7 @@ import {
   dataLoad, dataLoadExisting, storeLisaValues, storeCartogramData, setDates, setNotification,
   setMapParams, setUrlParams, setPanelState } from './actions';
 
-import { Map, NavBar, VariablePanel, BottomPanel,  TopPanel, Preloader,
+import { Map, NavBar, VariablePanel, Legend,  TopPanel, Preloader,
   DataPanel, MainLineChart, Scaleable, Draggable, InfoBox,
   NotificationBox, Popover } from './components';  
 
@@ -316,8 +316,6 @@ function App() {
   // Both of these are computationally heavy.
   useEffect(() => {
     if (gda_proxy !== null && mapParams.mapType === "lisa"){
-      let tempId = getVarId(currentData, dataParams)
-      if (!(storedLisaData.hasOwnProperty(tempId))) {
         dispatch(
           storeLisaValues(
             getLisaValues(
@@ -328,28 +326,25 @@ function App() {
                 dataParams,
                 storedGeojson[currentData].indexOrder
               )
-            ),
-            tempId
+            )
           )
         )
-      }
     }
     if (gda_proxy !== null && mapParams.vizType === 'cartogram'){
       let tempId = getVarId(currentData, dataParams)
-      if (!(storedCartogramData.hasOwnProperty(tempId))) {
+      if (storedGeojson[currentData] !== undefined) {
         dispatch(
           storeCartogramData(
             getCartogramValues(
               gda_proxy, 
               currentData, 
               getDataForLisa( storedData[currentData], dataParams, storedGeojson[currentData].indexOrder )
-            ),
-            tempId
+            )
           )
         )
       }
     }
-  }, [dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.nIndex, dataParams.dIndex, mapParams.binMode, dataParams.variableName, mapParams.mapType])
+  }, [currentData, storedGeojson[currentData], dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.nIndex, dataParams.dIndex, mapParams.binMode, dataParams.variableName, mapParams.mapType, mapParams.vizType])
 
   // Trigger on parameter change for metric values
   // Gets bins and sets map parameters
@@ -357,14 +352,14 @@ function App() {
     if (storedData.hasOwnProperty(currentData) && gda_proxy !== null && mapParams.binMode !== 'dynamic' && mapParams.mapType !== 'lisa') {
       updateBins( { storedData, currentData, dataParams, mapParams, gda_proxy, colorScales } );
     }
-  }, [dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.dRange, mapParams.mapType] );
+  }, [dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.dRange, mapParams.mapType, mapParams.vizType] );
 
   // Trigger on index change while dynamic bin mode
   useEffect(() => {
     if (storedData.hasOwnProperty(currentData) && gda_proxy !== null && mapParams.binMode === 'dynamic' && mapParams.mapType !== 'lisa') {
       updateBins( { storedData, currentData, dataParams: { ...dataParams, binIndex: dataParams.nIndex }, mapParams, gda_proxy, colorScales } );
     }
-  }, [dataParams.nIndex, dataParams.dIndex, mapParams.binMode, dataParams.variableName, dataParams.nRange, mapParams.mapType] ); 
+  }, [dataParams.nIndex, dataParams.dIndex, mapParams.binMode, dataParams.variableName, dataParams.nRange, mapParams.mapType, mapParams.vizType] ); 
 
   // default width handlers on resize
   useEffect(() => {
@@ -427,7 +422,12 @@ function App() {
       <div id="mainContainer">
         <Map />
         <TopPanel />
-        <BottomPanel />
+        <Legend 
+          variableName={dataParams.variableName} 
+          colorScale={mapParams.colorScale}
+          bins={mapParams.bins.bins}
+          fixedScale={dataParams.fixedScale}
+          />
         <VariablePanel />
         <DataPanel />
         <Popover /> 

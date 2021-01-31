@@ -67,7 +67,7 @@ const ChartTitle = styled.h3`
 // `
 
 
-const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const monthNames = ["Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const millionFormatter = val => { return `${val/1000000}M` };
 const thousandFormatter = val => { return `${val/1000}K` };
@@ -146,7 +146,7 @@ const getDateRange = ({startDate, endDate}) => {
             n = 1
         }
         while (n<13) {
-            let dateString = `${n}/${1}/${yearStr.slice(-2,)}`
+            let dateString = `${yearStr}-${n<10?0:''}${n}-0${1}`
             if (new Date(dateString) > endDate) break
             dateArray.push(dateString)
             n++
@@ -280,7 +280,6 @@ const MainLineChart = () => {
     const handleLegendLeave = () => {
         setStrokeOpacities(null)
     }
-
     return (
         <ChartContainer id="lineChart">
             {selectionKeys.length < 2 && 

@@ -114,22 +114,14 @@ var reducer = (state = INITIAL_STATE, action) => {
                 storedGeojson: geojsonObj
             };
         case 'SET_STORED_LISA_DATA':
-            let lisaObj = {
-                ...state.storedLisaData,
-            }
-            lisaObj[action.payload.name] = action.payload.data
             return {
                 ...state,
-                storedLisaData: lisaObj
+                storedLisaData: action.payload.data
             };
         case 'SET_STORED_CARTOGRAM_DATA':
-            let cartoObj = {
-                ...state.storedCartogramData,
-            }
-            cartoObj[action.payload.name] = action.payload.data
             return {
                 ...state,
-                storedCartogramData: cartoObj
+                storedCartogramData: action.payload.data
             };
         case 'SET_STORED_MOBILITY_DATA':
             return {

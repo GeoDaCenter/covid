@@ -1,8 +1,56 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import BinsList from './binsList';
+import { colors } from '../config';
+
+const BottomPanel = styled.div`
+    position: fixed;
+    bottom:0;
+    left:50%;
+    background:${colors.gray};
+    transform:translateX(-50%);
+    width:38vw;
+    max-width: 500px;
+    box-sizing: border-box;
+    padding:0 0 5px 0;
+    margin:0;
+    box-shadow: 0px 0px 5px rgba(0,0,0,0.7);
+    border-radius:0.5vh 0.5vh 0 0;
+    transition:250ms all;
+    hr {
+        opacity:0.5;
+    }
+    @media (max-width:1024px){
+        width:50vw;
+        div {
+            padding-bottom:5px;
+        }
+        #binModeSwitch {
+            position:absolute !important;
+            right: 10px !important;
+            top: 10px !important;
+        }
+        #dateRangeSelector {
+            position:absolute !important;
+            left: 66% !important;
+            transform:translateX(-50%) !important;
+            top: 10px !important;
+        }
+    }
+
+    @media (max-width:768px){
+
+        width:100%;
+        max-width:100%;
+        padding:0;
+        left:0;
+        transform:none;
+    }
+    @media (max-width:750px) and (orientation: landscape) {
+        // bottom all the way down for landscape phone
+    }
+`
 
 const LegendContainer = styled.div`
     width:100%;
@@ -61,39 +109,38 @@ const BinBars = styled.div`
 `
 
 
-const Legend =  () => {
+const Legend =  (props) => {
     
-    const mapParams = useSelector(state => state.mapParams);
-    const dataParams = useSelector(state => state.dataParams);
-
     return (
-        <LegendContainer>
-            <Grid container spacing={2} id='legend-bins-container'>
-                <Grid item xs={12}>
-                    <LegendTitle>
-                        {dataParams.variableName}
-                    </LegendTitle>
-                </Grid>
-                <Grid item xs={12}>
-                    {mapParams.colorScale !== undefined &&  
-                        <span>
-                            <BinBars firstBinZero={`${mapParams.colorScale[0]}` === `240,240,240` && dataParams.fixedScale === null}>
-                                {mapParams.colorScale.map(color => <div className="bin color" key={`${color[0]}${color[1]}`}style={{backgroundColor:`rgb(${color[0]},${color[1]},${color[2]})`}}></div>)}
-                            </BinBars>
-                            <BinLabels firstBinZero={`${mapParams.colorScale[0]}` === `240,240,240`} binLength={mapParams.bins.bins.length}>
-                                {(`${mapParams.colorScale[0]}` === `240,240,240` && dataParams.fixedScale === null) && <div className="bin firstBin">0</div>}
+        <BottomPanel>
+            <LegendContainer>
+                <Grid container spacing={2} id='legend-bins-container'>
+                    <Grid item xs={12}>
+                        <LegendTitle>
+                            {props.variableName}
+                        </LegendTitle>
+                    </Grid>
+                    <Grid item xs={12}>
+                        {props.colorScale !== undefined &&  
+                            <span>
+                                <BinBars firstBinZero={`${props.colorScale[0]}` === `240,240,240` && props.fixedScale === null}>
+                                    {props.colorScale.map(color => <div className="bin color" key={`${color[0]}${color[1]}`}style={{backgroundColor:`rgb(${color[0]},${color[1]},${color[2]})`}}></div>)}
+                                </BinBars>
+                                <BinLabels firstBinZero={`${props.colorScale[0]}` === `240,240,240`} binLength={props.bins.length}>
+                                    {(`${props.colorScale[0]}` === `240,240,240` && props.fixedScale === null) && <div className="bin firstBin">0</div>}
 
-                                {
-                                    mapParams.bins.bins !== undefined && 
-                                    <BinsList data={mapParams.bins.bins} />
-                                }
-                                
-                            </BinLabels>
-                        </span>
-                    }
+                                    {
+                                        props.bins !== undefined && 
+                                        <BinsList data={props.bins} />
+                                    }
+                                    
+                                </BinLabels>
+                            </span>
+                        }
+                    </Grid>
                 </Grid>
-            </Grid>
-        </LegendContainer>
+            </LegendContainer>
+        </BottomPanel>
     )
 }
 
