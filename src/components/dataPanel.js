@@ -268,7 +268,7 @@ const DataPanel = () => {
   
   // DRY issue -- refactor these functions
   const cleanData = (inputData) => inputData.map(d => d >=0 ? d : isNaN(d) || d===null ? 0 : d)
-  console.log(cleanData([null]))
+  
   const performOperation = (dataArray, operation, totalPopulation) => {
     const reducer = (accumulator, currentValue) => accumulator + currentValue;
     let clean = cleanData(dataArray);
