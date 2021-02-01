@@ -71,23 +71,21 @@ export const storeMobilityData = (data) => {
 }
 
 // store lisa values with specific variable combination
-export const storeLisaValues = (data, name) => {
+export const storeLisaValues = (data) => {
     return {
         type: 'SET_STORED_LISA_DATA',
         payload: {
-            data,
-            name
+            data
         }   
     }
 }
 
 // store cartogra data, just like lisa
-export const storeCartogramData = (data, name) => {
+export const storeCartogramData = (data) => {
     return {
         type: 'SET_STORED_CARTOGRAM_DATA',
         payload: {
-            data,
-            name
+            data
         }   
     }
 }

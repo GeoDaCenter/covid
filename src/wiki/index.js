@@ -81,6 +81,17 @@ export const pages = {
         "icon": "info",
         "content": 
             <div>
+                <h3>Changelog 1/31</h3>
+                <p>Optimization Updates</p>
+                <ul>
+                    <li>
+                        Layers performance has been improved. Tooltip, aggregation, and selection speeds are much faster.  
+                    </li>
+                    <li>
+                        Main choropleth layers use Deck.gl <code>PolygonLayer</code> instead of <code>GeoJSONLayer</code>. 
+                    </li>
+                </ul>
+                <hr/>
                 <h3>Changelog 1/27</h3>
                 <p>Vaccination Data Updates</p>
                 <ul>
@@ -96,6 +107,7 @@ export const pages = {
                         Various bugs have been fixed
                     </li>
                 </ul>
+                <hr/>
                 <h3>Changelog 1/12</h3>
                 <p>Refactor Update</p>
                 <ul>

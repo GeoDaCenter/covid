@@ -1,11 +1,11 @@
 const getCartogramValues = (gda_proxy, dataset, data ) => {
     let cartogramData = gda_proxy.cartogram(dataset, data)
-    let tempObj = {}
+    let tempArray = new Array(cartogramData.length)
     for (let i=0; i<cartogramData.length; i++){
         cartogramData[i].value = data[i]
-        tempObj[i] = cartogramData[i]
+        tempArray[i] = cartogramData[i]
     }
-    return tempObj;
+    return tempArray;
 }
 
 export default getCartogramValues;

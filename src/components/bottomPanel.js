@@ -72,7 +72,6 @@ const BottomPanel = () => {
     
     return (
         <BottomDrawer bottom={panelState.chart ? 0 : bottomMargin } id="bottomPanel">
-            <Legend />
             {/* <DateSlider /> */}
             {/* <hr />
             <MainLineChart />

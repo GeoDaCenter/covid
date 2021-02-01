@@ -67,7 +67,7 @@ const MapTooltipContent = (props) => {
         return (
             <div>
                 <h3>
-                    {properties.NAME} {properties.state_name && `, ${properties.state_name}`}
+                    {`${properties.NAME}${properties.state_name && `, ${properties.state_name}`}`}
                 </h3>
                 <div>
                     <hr />

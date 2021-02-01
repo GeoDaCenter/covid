@@ -39,13 +39,14 @@
 
 const dataFn = (numeratorData, denominatorData, dataParams)  => {
   const { 
-    nProperty, nIndex, nRange,
-    dProperty, dIndex, dRange, 
+    nProperty, nIndex,
+    dProperty, dIndex, 
     nType, dType,
     scale
   } = dataParams;
 
-  if ( nIndex < nRange ) nRange = nIndex
+  const nRange = nIndex <= dataParams.nRange ? nIndex : dataParams.nRange;
+  const dRange = dIndex <= dataParams.dRange ? dIndex : dataParams.dRange;
   
   if (numeratorData === undefined) {
     return null;
