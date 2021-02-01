@@ -7,9 +7,8 @@ const MapTooltipContent = (props) => {
     // destructure the object for cleaner formatting
 
     const { properties, cases, deaths, // county data
-            testing_ccpt, testing_tcap, testing_wk_pos, testing, vaccinesAdmin1, vaccinesAdmin2, vaccinesDist // state data
-     } = props.content;
-
+        testing_ccpt, testing_tcap, testing_wk_pos, testing, vaccinesAdmin1, vaccinesAdmin2, vaccinesDist // state data
+    } = props.content;
     // get lengths of time series data for reference below
     let caseN = cases && props.index;
     let deathN = deaths && props.index;
@@ -71,11 +70,11 @@ const MapTooltipContent = (props) => {
                 </h3>
                 <div>
                     <hr />
-                    Cases: {cases[caseN]?.toLocaleString('en')}<br/>
-                    Deaths: {deaths[deathN]?.toLocaleString('en')}<br/>
+                    Cases: {cases[caseN]===undefined ? 0 : cases[caseN]?.toLocaleString('en')}<br/>
+                    Deaths: {deaths[deathN]===undefined ? 0 : deaths[deathN]?.toLocaleString('en')||0}<br/>
                     <br/>
-                    Daily New Cases: {(cases[caseN]-cases[caseN-1])?.toLocaleString('en')}<br/>
-                    Daily New Deaths: {(deaths[deathN]-deaths[deathN-1])?.toLocaleString('en')}<br/>
+                    Daily New Cases: {cases[caseN]===undefined ? 0 : (cases[caseN]-cases[caseN-1])?.toLocaleString('en')}<br/>
+                    Daily New Deaths: {deaths[deathN]===undefined ? 0 : (deaths[deathN]-deaths[deathN-1])?.toLocaleString('en')}<br/>
                 </div>
             </div>
         )
