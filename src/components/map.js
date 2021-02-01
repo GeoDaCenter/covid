@@ -530,12 +530,12 @@ const Map = (props) => {
         }
     }
 
-    const handleMapHover = ({x, y, object}) => {
+    const handleMapHover = ({x, y, object, layer}) => {
         setHoverInfo(
             {
                 x, 
                 y, 
-                object: find(storedData[currentData],o => o.properties.GEOID === object?.GEOID)
+                object: Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : find(storedData[currentData],o => o.properties.GEOID === object?.GEOID) //layer.props?.hasOwnProperty('getIcon') ? object : 
             }
         )
     }
@@ -648,7 +648,7 @@ const Map = (props) => {
             id: 'hoverHighlightlayer',    
             data: currentMapData.data,
             getPolygon: d => d.geom,
-            getLineColor: d => hoverInfo.object?.properties.GEOID === d.GEOID ? [50, 50, 50] : [50, 50, 50, 0], 
+            getLineColor: d => hoverInfo?.object?.properties?.GEOID === d.GEOID ? [50, 50, 50] : [50, 50, 50, 0], 
             getElevation: d => d.height,
             pickable: false,
             stroked: true,

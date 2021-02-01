@@ -67,12 +67,12 @@ const ChartTitle = styled.h3`
 // `
 
 
-const monthNames = ["Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const monthNames = ["Jan","Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const millionFormatter = val => { return `${val/1000000}M` };
 const thousandFormatter = val => { return `${val/1000}K` };
 const dateFormatter = val => { 
-    let tempDate = new Date(val).getMonth();
+    let tempDate = (new Date(val).getMonth()+1)%12;
     return `${monthNames[tempDate]}`
 };
 
@@ -125,13 +125,12 @@ const CustomTick = props => {
 const getDateRange = ({startDate, endDate}) => {
     let dateArray = [];
 
-    let years;
+    let years = [];
 
     if (startDate.getUTCFullYear() === endDate.getUTCFullYear()) {
         years = [endDate.getUTCFullYear()]
     } else {
-        years = []
-        for (let i=startDate.getUTCFullYear(); i<endDate.getUTCFullYear(); i++) {
+        for (let i=startDate.getUTCFullYear(); i<=endDate.getUTCFullYear(); i++) {
             years.push(i)
         }
     }
@@ -145,9 +144,10 @@ const getDateRange = ({startDate, endDate}) => {
         } else {
             n = 1
         }
-        while (n<13) {
-            let dateString = `${yearStr}-${n<10?0:''}${n}-0${1}`
-            if (new Date(dateString) > endDate) break
+
+        let dateString = `${yearStr}-${n<10?0:''}${n}-01`
+        while (n < 13) {
+            dateString = `${yearStr}-${n<10?0:''}${n}-01`
             dateArray.push(dateString)
             n++
         }
