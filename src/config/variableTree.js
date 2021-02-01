@@ -172,7 +172,7 @@ export const variableTree = {
             },
         }
     },
-    "7 Day Testing Capacity":{
+    "7 Day Testing Capacity per 100K Population":{
         "County": {
             "CDC": {
                 "geojson": "cdc.geojson",

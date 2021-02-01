@@ -380,8 +380,8 @@ const VariablePanel = (props) => {
       colorScale: 'testing',
       scale3D: 10000000
     },
-    "7 Day Testing Capacity": {
-      variableName:"7 Day Testing Capacity",
+    "7 Day Testing Capacity per 100K Population": {
+      variableName:"7 Day Testing Capacity per 100K Population",
       numerator: 'testing_tcap',
       nType: 'time-series',
       nProperty: null,

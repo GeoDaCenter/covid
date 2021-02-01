@@ -492,6 +492,38 @@ export const variablePresets = {
       colorScale: 'testingCap',
       scale3D: 3000
     }, 
+    "7 Day Testing Capacity per 100K": {
+      variableName:"7 Day Testing Capacity per 100K Population",
+      numerator: 'testing_tcap',
+      nType: 'time-series',
+      nProperty: null,
+      nRange: null,
+      denominator: 'properties',
+      dType: null,
+      dProperty: null,
+      dRange:null,
+      dIndex:null,
+      scale:1,
+      fixedScale: 'testingCap',
+      colorScale: 'testingCap',
+      scale3D: 3000
+    }, 
+    "7 Day Testing Capacity per 100K Population": {
+        variableName:"7 Day Testing Capacity per 100K Population",
+        numerator: 'testing_tcap',
+        nType: 'time-series',
+        nProperty: null,
+        nRange: null,
+        denominator: 'properties',
+        dType: null,
+        dProperty: null,
+        dRange:null,
+        dIndex:null,
+        scale:1,
+        fixedScale: 'testingCap',
+        colorScale: 'testingCap',
+        scale3D: 3000
+    }, 
     "7 Day Confirmed Cases per Testing %":{
       variableName:"7 Day Confirmed Cases per Testing %",
       numerator: 'testing_ccpt',
