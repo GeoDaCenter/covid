@@ -166,7 +166,7 @@ export const variableTree = {
             }
         },
         "State": {
-            "1point3acres": {
+            "CDC": {
                 "geojson":'state_1p3a.geojson',
                 "csv":['covid_wk_pos_1p3a_state']
             },
@@ -180,7 +180,7 @@ export const variableTree = {
             }
         },
         "State": {
-            "1point3acres": {
+            "CDC": {
                 "geojson":'state_1p3a.geojson',
                 "csv":['covid_tcap_1p3a_state']
             },
