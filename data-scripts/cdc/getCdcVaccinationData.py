@@ -36,8 +36,8 @@ def parseVaccinationData(vaccinationDataList):
         if len(vaccineAdministered1) == 0:
             vaccineAdministered1 = vaccinationDf[['GEOID','Administered_Dose1']]
             vaccineAdministered2 = vaccinationDf[['GEOID','Administered_Dose2']]
-            vaccineDistributed = vaccinationDf[['GEOID','Doses_Administered','Doses_Distributed']]
-            vaccineDistributed['remaining'] = vaccineDistributed['Doses_Distributed'] - vaccineDistributed['Doses_Administered']
+            vaccineDistributed = vaccinationDf[['GEOID','Doses_Administered','Doses_Distributed']].reset_index(drop=True)
+            vaccineDistributed.loc[:,'remaining'] = vaccineDistributed['Doses_Distributed'] - vaccineDistributed['Doses_Administered']
             vaccineDistributed = vaccineDistributed[['GEOID','remaining']]
             vaccineAdministered1.columns = ['fips',currDate]
             vaccineAdministered2.columns = ['fips',currDate]
@@ -45,8 +45,8 @@ def parseVaccinationData(vaccinationDataList):
         else:
             dailyVaccineAdministered1 = vaccinationDf[['GEOID','Administered_Dose1']]
             dailyVaccineAdministered2 = vaccinationDf[['GEOID','Administered_Dose2']]
-            dailyVaccineDistributed = vaccinationDf[['GEOID','Doses_Administered','Doses_Distributed']]
-            dailyVaccineDistributed['remaining'] = dailyVaccineDistributed['Doses_Distributed'] - dailyVaccineDistributed['Doses_Administered']
+            dailyVaccineDistributed = vaccinationDf[['GEOID','Doses_Administered','Doses_Distributed']].reset_index(drop=True)
+            dailyVaccineDistributed.loc[:,'remaining'] = dailyVaccineDistributed['Doses_Distributed'] - dailyVaccineDistributed['Doses_Administered']
             dailyVaccineDistributed = dailyVaccineDistributed[['GEOID','remaining']]
             dailyVaccineAdministered1.columns = ['fips',currDate]
             dailyVaccineAdministered2.columns = ['fips',currDate]

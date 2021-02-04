@@ -83,7 +83,7 @@ def parsePopulationNormalized(df, colName):
     tempDf.columns = [column[0] for column in list(tempDf.columns)]
     outputColumns = list(tempDf.columns).copy()
 
-    popDf = pd.read_csv(os.path.join(dir_path, 'county_populations.csv'))
+    popDf = pd.read_csv(os.path.join(dir_path, 'county_populations.csv'))[["GEOID","population"]]
     tempDf = tempDf.merge(popDf, left_on="fips_code", right_on="GEOID", how="left")
 
     for column in outputColumns[1:]:
@@ -91,6 +91,27 @@ def parsePopulationNormalized(df, colName):
 
     return tempDf[outputColumns]
 
+def getWeightedResults(df):
+    countyPops = pd.read_csv('county_populations.csv')[['GEOID','state','population']].rename(columns={"GEOID":"fips_code"})
+
+    stateFips = countyPops[['fips_code','state']].reset_index(drop=True)
+    stateFips.loc[:,'fips_code'] = stateFips['fips_code'].astype(str).str.slice(0,-3)
+    stateFips = stateFips.drop_duplicates()
+    
+    joined = df.merge(countyPops, on="fips_code", how="left")
+    joined = joined.merge(joined[['state','population']].groupby('state') \
+    .sum().rename(columns={'population': 'statePopulation'}).reset_index(),
+                      how="left", on="state")
+    joined['proportion'] = joined['population']/joined['statePopulation']
+    dateColumns = joined.columns[1:-4]
+
+    for column in dateColumns:
+        joined[column] = joined[column] * joined['proportion']
+
+    weighted_results = joined[['state'] + list(dateColumns)].groupby('state').sum() \
+        .reset_index().merge(stateFips, how="left", on="state")[['fips_code'] + list(dateColumns)]
+    
+    return weighted_results
 
 if __name__ == "__main__":
     # fetch data
@@ -151,16 +172,19 @@ if __name__ == "__main__":
     # output CSV to this folder and docs
     for entry in colsToParse:
         tempDf = parseCsvOutput(raw, entry['column'], entry['operation']).replace([np.inf, -np.inf], np.nan).round(entry['roundTo'])
-        # tempDf.to_csv(os.path.join(repo_root, f'docs/csv/{entry["csv"]}.csv'), index=False)
+        stateDf = getWeightedResults(tempDf)
         tempDf.to_csv(os.path.join(repo_root, f'docs/csv/{entry["csv"]}.csv'), index=False)
+        stateDf.to_csv(os.path.join(repo_root, f'docs/csv/{entry["csv"]}_state.csv'), index=False)
 
     for entry in colsToCalculate:
         tempDf = parseNewMeasure(raw, entry['numerator'], entry['denominator'], 1).replace([np.inf, -np.inf], np.nan).round(entry['roundTo'])
-        # tempDf.to_csv(os.path.join(repo_root, f'docs/csv/{entry["csv"]}.csv'), index=False)
+        stateDf = getWeightedResults(tempDf)
         tempDf.to_csv(os.path.join(repo_root, f'docs/csv/{entry["csv"]}.csv'), index=False)
+        stateDf.to_csv(os.path.join(repo_root, f'docs/csv/{entry["csv"]}_state.csv'), index=False)
 
 
     for entry in colsToNormalize:
         tempDf = parsePopulationNormalized(raw, entry['column']).replace([np.inf, -np.inf], np.nan).round(entry['roundTo'])
-        # tempDf.to_csv(os.path.join(repo_root, f'docs/csv/{entry["csv"]}.csv'), index=False)
+        stateDf = getWeightedResults(tempDf)
         tempDf.to_csv(os.path.join(repo_root, f'docs/csv/{entry["csv"]}.csv'), index=False)
+        stateDf.to_csv(os.path.join(repo_root, f'docs/csv/{entry["csv"]}_state.csv'), index=False)
