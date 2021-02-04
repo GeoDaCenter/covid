@@ -14,7 +14,6 @@ const MapTooltipContent = (props) => {
     let deathN = deaths && props.index;
     let testingN = testing && props.index;
     let vaccineN = vaccinesAdmin1 && props.index
-
     // conditional returns for combination of information
     // this is not elegant but a bit more reliable than JSX conditional rendering
     if (properties && cases && deaths && testing && vaccinesAdmin1) { // State Feature
@@ -31,7 +30,7 @@ const MapTooltipContent = (props) => {
                     Daily New Cases: {(cases[caseN]-cases[caseN-1])?.toLocaleString('en')}<br/>
                     Daily New Deaths: {(deaths[deathN]-deaths[deathN-1])?.toLocaleString('en')}<br/>
                     <br/>
-                    Total Testing: {(testing[testingN])?.toLocaleString('en')}<br/>
+                    Total Testing: {testing[testingN].toLocaleString('en')}<br/>
                     7-Day Positivity Rate: {(testing_wk_pos[testingN]*100)?.toFixed(2)}%<br/>
                     7-Day Testing Capacity per 100K: {(testing_tcap[testingN])?.toFixed(2)}<br/>
                     <br/>
@@ -58,7 +57,7 @@ const MapTooltipContent = (props) => {
                     <br/>
                     Total Testing: {(testing[testingN])?.toLocaleString('en')}<br/>
                     7-Day Positivity Rate: {(testing_wk_pos[testingN]*100)?.toFixed(2)}%<br/>
-                    7-Day Testing Capacity: {(testing_tcap[testingN])?.toFixed(2)}<br/>
+                    7-Day Testing Capacity per 100K: {(testing_tcap[testingN])?.toFixed(2)}<br/>
                 </div>
             </div>
         )

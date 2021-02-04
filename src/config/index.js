@@ -300,7 +300,7 @@ export const dataPresets = {
 			'vaccinesDist'
         ],
         joinCols: ['GEOID', ['FIPS','fips','fips_code','state_fips','countyFIPS','GEOID']], 
-        accumulate: ['covid_confirmed_1p3a_state','covid_deaths_1p3a_state'],
+        accumulate: ['covid_confirmed_1p3a_state','covid_deaths_1p3a_state','covid_testing_cdc_state'],
         dateList: {
             'covid_confirmed_1p3a_state': 'isoDateList', 
             'covid_deaths_1p3a_state': 'isoDateList', 
@@ -339,7 +339,7 @@ export const dataPresets = {
             'testing_ccpt'
         ],
         joinCols: ['GEOID', ['FIPS','fips','fips_code','state_fips','stateFIPS']],
-        accumulate: [],
+        accumulate: ['covid_testing_cdc_state'],
         dateList: {
             'covid_confirmed_1p3a_state': 'usDateList', 
             'covid_deaths_1p3a_state': 'usDateList', 
@@ -382,7 +382,7 @@ export const dataPresets = {
             'vaccinesAdmin', 
             'vaccinesDist'
         ],
-        accumulate: [],
+        accumulate: ['covid_testing_cdc_state'],
         dateList: {
             'covid_confirmed_nyt_state': 'isoDateList', 
             'covid_deaths_nyt_state': 'isoDateList',
