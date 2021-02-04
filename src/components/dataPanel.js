@@ -465,8 +465,8 @@ const DataPanel = () => {
                 <p>7-Day Confirmed Cases<br className="bigOnly"/>  per Testing</p>
                 <h3>{Math.round(aggregateTimeseries('testing_ccpt', currDateIndex, 'weighted_average')?.toLocaleString('en')*100)}%</h3>
 
-                <p>Testing Criterion</p><br className="bigOnly"/>
-                <h3>{aggregateQualitative('properties', 'criteria').map(f => <span>{f}<br/></span>)}</h3>
+                {/* <p>Testing Criterion</p><br className="bigOnly"/>
+                <h3>{aggregateQualitative('properties', 'criteria').map(f => <span>{f}<br/></span>)}</h3> */}
               </ReportSection>
             }
             {(vaccinesAdmin1 && selectionIndex.length) &&
