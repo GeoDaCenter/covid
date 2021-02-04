@@ -33,7 +33,7 @@ const MapTooltipContent = (props) => {
                     <br/>
                     Total Testing: {(testing[testingN])?.toLocaleString('en')}<br/>
                     7-Day Positivity Rate: {(testing_wk_pos[testingN]*100)?.toFixed(2)}%<br/>
-                    7-Day Testing Capacity: {(testing_tcap[testingN])?.toFixed(2)}<br/>
+                    7-Day Testing Capacity per 100K: {(testing_tcap[testingN])?.toFixed(2)}<br/>
                     <br/>
                     Testing Criterion: {properties.criteria}<br/>
                     First dose administered: {Math.round((vaccinesAdmin1[testingN]/properties.population)*1000)/10}%<br/>

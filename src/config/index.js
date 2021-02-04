@@ -191,31 +191,82 @@ export const defaultData = 'county_usfacts.geojson';
 
 export const dataPresets = {
     'county_usfacts.geojson': {
-        plainName: 'USA Facts County',
-        geojson: 'county_usfacts.geojson', 
-        csvs: ['covid_confirmed_usafacts','covid_deaths_usafacts', 'berkeley_predictions', 'chr_health_context', 'chr_life', 'chr_health_factors'], 
-        joinCols: ['GEOID', ['FIPS','fips','countyFIPS']], 
-        tableNames: ['cases','deaths', 'predictions', 'chr_health_context', 'chr_life', 'chr_health_factors',],
-        accumulate: [],
-        dateList: {'covid_confirmed_usafacts': 'usDateList', 'covid_deaths_usafacts': 'usDateList'}
+        plainName: 'USA Facts County', // Plain english name for dataset
+        geojson: 'county_usfacts.geojson', // geospatial data to join to
+        csvs: [ // list of CSVs to join
+            'covid_confirmed_usafacts',
+            'covid_deaths_usafacts',
+            'berkeley_predictions',
+            'chr_health_context',
+            'chr_life',
+            'chr_health_factors'
+        ], 
+        tableNames: [ // table names in order of CSVs
+            'cases',
+            'deaths',
+            'predictions',
+            'chr_health_context',
+            'chr_life',
+            'chr_health_factors'
+        ],
+        joinCols: ['GEOID', ['FIPS','fips','countyFIPS']], // geospatial data join column and then list of valid table join columns
+        accumulate: [], // CSV names to accumulate over time
+        dateList: { // date lists to parse: isoDateList (eg. '2020-01-01') or usDateList (eg. '01/01/20')
+            'covid_confirmed_usafacts': 'usDateList', 
+            'covid_deaths_usafacts': 'usDateList'
+        }
     },
     'county_1p3a.geojson': {
         plainName: '1Point3Acres County',
         geojson: 'county_1p3a.geojson', 
-        csvs: ['covid_confirmed_1p3a','covid_deaths_1p3a', 'berkeley_predictions', 'chr_health_context', 'chr_life', 'chr_health_factors'], 
+        csvs: [
+            'covid_confirmed_1p3a',
+            'covid_deaths_1p3a',
+            'berkeley_predictions',
+            'chr_health_context',
+            'chr_life',
+            'chr_health_factors'
+        ], 
+        tableNames: [
+            'cases',
+            'deaths',
+            'predictions', 
+            'chr_health_context', 
+            'chr_life', 
+            'chr_health_factors'
+        ],
         joinCols: ['GEOID', ['FIPS','fips','countyFIPS', 'GEOID']], 
-        tableNames: ['cases','deaths', 'predictions', 'chr_health_context', 'chr_life', 'chr_health_factors'],
         accumulate: ['covid_confirmed_1p3a','covid_deaths_1p3a'],
-        dateList: {'covid_confirmed_1p3a': 'isoDateList', 'covid_deaths_1p3a': 'isoDateList'}
+        dateList: {
+            'covid_confirmed_1p3a': 'isoDateList', 
+            'covid_deaths_1p3a': 'isoDateList'
+        }
     },
     'county_nyt.geojson': {
         plainName: 'New York Times County',
         geojson: 'county_nyt.geojson', 
-        csvs: ['covid_confirmed_nyt', 'covid_deaths_nyt', 'berkeley_predictions', 'chr_health_context', 'chr_life', 'chr_health_factors'], 
-        joinCols: ['GEOID', ['FIPS','fips','countyFIPS']], 
-        tableNames: ['cases', 'deaths', 'predictions', 'chr_health_context', 'chr_life', 'chr_health_factors'],
+        csvs: [
+            'covid_confirmed_nyt', 
+            'covid_deaths_nyt', 
+            'berkeley_predictions', 
+            'chr_health_context', 
+            'chr_life', 
+            'chr_health_factors'
+        ],  
+        tableNames: [
+            'cases', 
+            'deaths', 
+            'predictions', 
+            'chr_health_context', 
+            'chr_life', 
+            'chr_health_factors'
+        ],
+        joinCols: ['GEOID', ['FIPS','fips','countyFIPS']],
         accumulate: [],
-        dateList: {'covid_confirmed_nyt': 'isoDateList', 'covid_deaths_nyt': 'isoDateList'}
+        dateList: {
+            'covid_confirmed_nyt': 'isoDateList',
+            'covid_deaths_nyt': 'isoDateList'
+        }
     },
     'state_1p3a.geojson': {
         plainName: '1Point3Acres State',
@@ -234,7 +285,6 @@ export const dataPresets = {
 			'vaccine_admin2_cdc',
 			'vaccine_dist_cdc'
 		], 
-        joinCols: ['GEOID', ['FIPS','fips','fips_code','countyFIPS','GEOID']], 
         tableNames: [
 	        'cases',
 			'deaths',
@@ -248,7 +298,8 @@ export const dataPresets = {
 			'vaccinesAdmin1',
 			'vaccinesAdmin2',
 			'vaccinesDist'
-			],
+        ],
+        joinCols: ['GEOID', ['FIPS','fips','fips_code','state_fips','countyFIPS','GEOID']], 
         accumulate: ['covid_confirmed_1p3a_state','covid_deaths_1p3a_state'],
         dateList: {
             'covid_confirmed_1p3a_state': 'isoDateList', 
@@ -265,9 +316,29 @@ export const dataPresets = {
     'state_usafacts.geojson': {
         plainName: 'USA Facts State',
         geojson: 'state_usafacts.geojson', 
-        csvs: ['covid_confirmed_usafacts_state','covid_deaths_usafacts_state', 'chr_health_context_state', 'chr_life_state', 'chr_health_factors_state', 'covid_testing_cdc_state', 'covid_wk_pos_cdc_state', 'covid_tcap_cdc_state', 'covid_ccpt_cdc_state'], 
-        joinCols: ['GEOID', ['FIPS','fips','fips_code','stateFIPS']], 
-        tableNames: ['cases', 'deaths', 'chr_health_context', 'chr_life', 'chr_health_factors', 'testing', 'testing_wk_pos', 'testing_tcap', 'testing_ccpt'],
+        csvs: [
+            'covid_confirmed_usafacts_state',
+            'covid_deaths_usafacts_state',
+            'chr_health_context_state',
+            'chr_life_state',
+            'chr_health_factors_state',
+            'covid_testing_cdc_state',
+            'covid_wk_pos_cdc_state',
+            'covid_tcap_cdc_state',
+            'covid_ccpt_cdc_state'
+        ],  
+        tableNames: [
+            'cases',
+            'deaths',
+            'chr_health_context',
+            'chr_life',
+            'chr_health_factors',
+            'testing',
+            'testing_wk_pos',
+            'testing_tcap',
+            'testing_ccpt'
+        ],
+        joinCols: ['GEOID', ['FIPS','fips','fips_code','state_fips','stateFIPS']],
         accumulate: [],
         dateList: {
             'covid_confirmed_1p3a_state': 'usDateList', 
@@ -284,28 +355,97 @@ export const dataPresets = {
     'state_nyt.geojson': {
         plainName: 'New York Times State',
         geojson: 'state_nyt.geojson', 
-        csvs: ['covid_confirmed_nyt_state','covid_deaths_nyt_state', 'chr_health_context_state', 'chr_life_state', 'chr_health_factors_state', 'covid_testing_1p3a_state', 'covid_wk_pos_1p3a_state', 'covid_tcap_1p3a_state', 'covid_ccpt_1p3a_state', 'vaccine_admin_cdc', 'vaccine_dist_cdc'], 
+        csvs: [
+            'covid_confirmed_nyt_state',
+            'covid_deaths_nyt_state',
+            'chr_health_context_state',
+            'chr_life_state',
+            'chr_health_factors_state',
+            'covid_testing_1p3a_state',
+            'covid_wk_pos_1p3a_state',
+            'covid_tcap_1p3a_state',
+            'covid_ccpt_1p3a_state',
+            'vaccine_admin_cdc',
+            'vaccine_dist_cdc'
+        ], 
         joinCols: ['GEOID', ['FIPS','fips','countyFIPS']], 
-        tableNames: ['cases', 'deaths', 'chr_health_context', 'chr_life', 'chr_health_factors', 'testing', 'testing_wk_pos', 'testing_tcap', 'testing_ccpt','vaccinesAdmin', 'vaccinesDist'],
+        tableNames: [
+            'cases', 
+            'deaths', 
+            'chr_health_context', 
+            'chr_life', 
+            'chr_health_factors', 
+            'testing', 
+            'testing_wk_pos', 
+            'testing_tcap', 
+            'testing_ccpt',
+            'vaccinesAdmin', 
+            'vaccinesDist'
+        ],
         accumulate: [],
-        dateList: {'covid_confirmed_nyt_state': 'isoDateList', 'covid_deaths_nyt_state': 'isoDateList'}
+        dateList: {
+            'covid_confirmed_nyt_state': 'isoDateList', 
+            'covid_deaths_nyt_state': 'isoDateList',
+            'covid_testing_cdc_state': 'isoDateList', 
+            'covid_wk_pos_cdc_state': 'isoDateList', 
+            'covid_tcap_cdc_state': 'isoDateList', 
+            'covid_ccpt_cdc_state': 'isoDateList', 
+            'vaccine_admin1_cdc': 'isoDateList', 
+            'vaccine_admin2_cdc': 'isoDateList', 
+            'vaccine_dist_cdc': 'isoDateList'
+        }
     },
     'global_jhu.geojson': {
         plainName: 'John Hopkins University (Global)',
         geojson: 'global_jhu.geojson', 
-        csvs: ['covid_confirmed_jhu','covid_deaths_jhu'], 
+        csvs: [
+            'covid_confirmed_jhu',
+            'covid_deaths_jhu'
+        ], 
+        tableNames: [
+            'cases',
+            'deaths'
+        ],
         joinCols: ['GEOID', ['UID']], 
-        tableNames: ['cases', 'deaths'],
         accumulate: []
     },
     'cdc.geojson': {
         plainName: 'Center for Disease Control County',
         geojson: 'cdc.geojson', 
-        csvs: ['covid_confirmed_usafacts','covid_deaths_usafacts','berkeley_predictions', 'chr_health_context', 'chr_life', 'chr_health_factors','covid_testing_cdc','covid_wk_pos_cdc', 'covid_tcap_cdc', 'covid_ccpt_cdc'], 
-        joinCols: ['GEOID', ['fips_code', 'fips', 'FIPS', 'countyFIPS']], 
-        tableNames: ['cases','deaths', 'predictions', 'chr_health_context', 'chr_life', 'chr_health_factors','testing', 'testing_wk_pos', 'testing_tcap', 'testing_ccpt'],
+        csvs: [
+            'covid_confirmed_usafacts',
+            'covid_deaths_usafacts',
+            'berkeley_predictions', 
+            'chr_health_context', 
+            'chr_life', 
+            'chr_health_factors',
+            'covid_testing_cdc',
+            'covid_wk_pos_cdc', 
+            'covid_tcap_cdc', 
+            'covid_ccpt_cdc'
+        ],  
+        tableNames: [
+            'cases',
+            'deaths', 
+            'predictions', 
+            'chr_health_context', 
+            'chr_life', 
+            'chr_health_factors',
+            'testing', 
+            'testing_wk_pos', 
+            'testing_tcap', 
+            'testing_ccpt'
+        ],
+        joinCols: ['GEOID', ['fips_code', 'fips', 'FIPS', 'countyFIPS']],
         accumulate: [],
-        dateList: {'covid_confirmed_usafacts': 'usDateList', 'covid_deaths_usafacts': 'usDateList','covid_testing_cdc': 'isoDateList', 'covid_wk_pos_cdc': 'isoDateList', 'covid_tcap_cdc': 'isoDateList', 'covid_ccpt_cdc': 'isoDateList'}
+        dateList: {
+            'covid_confirmed_usafacts': 'usDateList', 
+            'covid_deaths_usafacts': 'usDateList',
+            'covid_testing_cdc': 'isoDateList', 
+            'covid_wk_pos_cdc': 'isoDateList', 
+            'covid_tcap_cdc': 'isoDateList', 
+            'covid_ccpt_cdc': 'isoDateList'
+        }
     }
 }
 
