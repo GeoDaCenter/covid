@@ -147,17 +147,8 @@ const GeocoderContainer = styled.div`
     top:7px;
     z-index:500;
     width:250px;
-    .MuiFormControl-root {
-        margin:0;
-    }
-    .MuiAutocomplete-inputRoot {
-        background:white;
-        height:36px;
-        border-radius:2px;
-        padding:0 35px;
-    }
-    .MuiAutocomplete-inputRoot[class*="MuiInput-root"] .MuiAutocomplete-input:first-child {
-        padding:0;
+    @media (max-width:600px) {
+        display:none;
     }
 `
 
@@ -601,8 +592,37 @@ const Map = (props) => {
                 transitionInterpolator: new FlyToInterpolator()
             })
         )  
-
     }
+    const handleGeocoder = useCallback(location => {
+        console.log(location)
+        if (location) {
+            let center = location.center;
+            let zoom = 6;
+
+            if (location.bbox) {
+                let bounds = fitBounds({
+                    width: window.innerWidth,
+                    height: window.innerHeight,
+                    bounds: [[location.bbox[0],location.bbox[1]],[location.bbox[2],location.bbox[3]]]
+                })
+                center = [bounds.longitude, bounds.latitude];
+                zoom = bounds.zoom*.9;
+            };
+
+            setViewState(
+                prevView => ({
+                    ...prevView,
+                    longitude: center[0],
+                    latitude: center[1],
+                    zoom: zoom,
+                    bearing:0,
+                    pitch:0,
+                    transitionDuration: 'auto',
+                    transitionInterpolator: new FlyToInterpolator()
+                })
+            )
+        }  
+      }, []);
 
     const FullLayers = {
         choropleth: new PolygonLayer({
@@ -1017,6 +1037,7 @@ const Map = (props) => {
                 <Geocoder 
                     id="Geocoder"
                     API_KEY={MAPBOX_ACCESS_TOKEN}
+                    onChange={handleGeocoder}
                 />
             </GeocoderContainer>
 
