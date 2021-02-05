@@ -187,7 +187,7 @@ export const variableTree = {
         }
     },
     "HEADER:vaccination":{},
-    "% Received First Dose":{
+    "Percent Received First Dose":{
         "State": {
             "CDC": {
                 "geojson": "state_1p3a.geojson",
@@ -195,7 +195,7 @@ export const variableTree = {
             }
         },
     },
-    "% Received Second Dose":{
+    "Percent Received Second Dose":{
         "State": {
             "CDC": {
                 "geojson": "state_1p3a.geojson",

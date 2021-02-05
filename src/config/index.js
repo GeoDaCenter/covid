@@ -749,8 +749,8 @@ export const variablePresets = {
     },
     
     "HEADER:cdc vaccination":{},
-    "% Received First Dose": {
-        variableName:"% Received First Dose",
+    "Percent Received First Dose": {
+        variableName:"Percent Received First Dose",
         numerator: 'vaccinesAdmin1',
         nType: 'time-series',
         nProperty: null,
@@ -765,8 +765,8 @@ export const variablePresets = {
         colorScale: 'purpleSingleHue8',
         fixedScale: null,
     },
-    "% Received Second Dose": {
-        variableName:"% Received Second Dose",
+    "Percent Received Second Dose": {
+        variableName:"Percent Received Second Dose",
         numerator: 'vaccinesAdmin2',
         nType: 'time-series',
         nProperty: null,
