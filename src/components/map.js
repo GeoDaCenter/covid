@@ -10,12 +10,10 @@ import DeckGL from '@deck.gl/react';
 import {MapView, FlyToInterpolator} from '@deck.gl/core';
 import { PolygonLayer, ScatterplotLayer, IconLayer, TextLayer } from '@deck.gl/layers';
 import {fitBounds} from '@math.gl/web-mercator';
-
 import MapboxGLMap from 'react-map-gl';
-import Geocoder from 'react-map-gl-geocoder';
 
 // component, action, util, and config import
-import { MapTooltipContent } from '../components';
+import { MapTooltipContent, Geocoder } from '../components';
 import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData } from '../actions';
 import { mapFn, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, getURLParams } from '../utils';
 import { colors, colorScales } from '../config';
@@ -62,11 +60,6 @@ const MapContainer = styled.div`
     width:100%;
     height:calc(100% - 50px);
     background:${colors.darkgray};
-    @media (max-width:600px) {
-        div.mapboxgl-ctrl-geocoder {
-            display:none;
-        }
-    }
 `
 
 const HoverDiv = styled.div`
@@ -77,12 +70,6 @@ const HoverDiv = styled.div`
     border-radius:0.5vh 0.5vh 0 0;
     h3 {
         margin:2px 0;
-    }
-`
-
-const MapGeocoder = styled(Geocoder)`
-    @media (max-width:600px) {
-        display:none !important;
     }
 `
 
@@ -152,6 +139,26 @@ const IndicatorBox = styled.div`
     border:1px dashed #FFCE00;
     background:rgba(0,0,0,0.25);
     z-index:5;
+`
+
+const GeocoderContainer = styled.div`
+    position:fixed;
+    right:7px;
+    top:7px;
+    z-index:500;
+    width:250px;
+    .MuiFormControl-root {
+        margin:0;
+    }
+    .MuiAutocomplete-inputRoot {
+        background:white;
+        height:36px;
+        border-radius:2px;
+        padding:0 35px;
+    }
+    .MuiAutocomplete-inputRoot[class*="MuiInput-root"] .MuiAutocomplete-input:first-child {
+        padding:0;
+    }
 `
 
 const Map = (props) => { 
@@ -233,27 +240,6 @@ const Map = (props) => {
             }
         });
     },[])
-
-    // shared view receive
-    useEffect(() => {
-        try {
-            if (Object.keys(storedData).length === 1) {
-                document.querySelector(".mapboxgl-ctrl-top-right").addEventListener("click", () => {
-                    setChoroplethInteractive(false);
-                    setTimeout(() => {document.querySelector('.mapboxgl-ctrl-geocoder--input').select()},50)
-                })
-            }
-        } catch {
-            setTimeout(() => {
-                if (Object.keys(storedData).length === 1) {
-                    document.querySelector(".mapboxgl-ctrl-top-right").addEventListener("click", () => {
-                        setChoroplethInteractive(false)
-                        setTimeout(() => {document.querySelector('.mapboxgl-ctrl-geocoder--input').select()},50)
-                    })
-                }
-            }, 5000)
-        }
-    },[storedData])
 
     // create unique var id -- used only for cartogram data
     // TODO: swap this out...
@@ -464,21 +450,6 @@ const Map = (props) => {
     }
 
     const GetHeight = (f) => dataFn(f[dataParams.numerator], f[dataParams.denominator], dataParams)*(dataParams.scale3D/((dataParams.nType === "time-series" && dataParams.nRange === null) ? (dataParams.nIndex)/10 : 1))
-
-    const handleGeocoder = (viewState) => {
-        setViewState(view => ({
-            ...view,
-            latitude: viewState.latitude,
-            longitude: viewState.longitude,
-            zoom: 8,
-            transitionInterpolator: new FlyToInterpolator(),
-            transitionDuration: 250,
-            onTransitionEnd: () => {
-                document.querySelector('.mapboxgl-ctrl-geocoder--button').click()
-                setChoroplethInteractive(true)
-            }
-        }))
-    }
 
     const mapRef = useRef();
     const deckRef = useRef();
@@ -980,18 +951,6 @@ const Map = (props) => {
                         dispatch(setMapLoaded(true))
                     }}
                     >
-                    <MapGeocoder 
-                        mapRef={mapRef}
-                        id="mapGeocoder"
-                        onViewportChange={handleGeocoder}
-                        onClear={() => setTimeout(() => {setChoroplethInteractive(true)},500)}
-                        clearOnBlur={true}
-                        mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
-                        position="top-right"                        
-                        placeholder="Search by Location"
-                        style={{position: 'fixed', top:'5px', right:'5px'}}
-                        countries={"US"}
-                    />
                 </MapboxGLMap >
             </DeckGL>
             <MapButtonContainer 
@@ -1022,14 +981,14 @@ const Map = (props) => {
                     
                         title="Zoom In"
                         id="zoomIn"
-                        onClick={() => handleZoom(1)}
+                        onClick={() => handleZoom(0.5)}
                     >
                         {SVG.plus}
                     </NavInlineButton>
                     <NavInlineButton
                         title="Zoom Out"
                         id="zoomOut"
-                        onClick={() => handleZoom(-1)}
+                        onClick={() => handleZoom(-0.5)}
                     >
                         {SVG.minus}
                     </NavInlineButton>
@@ -1054,7 +1013,13 @@ const Map = (props) => {
                 </NavInlineButtonGroup>
                 <ShareURL type="text" value="" id="share-url" />
             </MapButtonContainer>
-            
+            <GeocoderContainer>
+                <Geocoder 
+                    id="Geocoder"
+                    API_KEY={MAPBOX_ACCESS_TOKEN}
+                />
+            </GeocoderContainer>
+
             {hoverInfo.object && (
                 <HoverDiv style={{position: 'absolute', zIndex: 1, pointerEvents: 'none', left: hoverInfo.x, top: hoverInfo.y}}>
                     <MapTooltipContent content={hoverInfo.object} index={dataParams.nIndex} />

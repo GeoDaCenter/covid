@@ -17,6 +17,7 @@ import Preloader from './preloader';
 import Scaleable from './scaleable';
 import Tooltip from './tooltip';
 import TopPanel from './topPanel';
+import Geocoder from './geocoder';
 
 export {
     BottomPanel,
@@ -24,6 +25,7 @@ export {
     DateSlider,
     Dock,
     Draggable,
+    Geocoder,
     InfoBox,
     Legend,
     MainLineChart,
