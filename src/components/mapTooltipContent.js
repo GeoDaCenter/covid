@@ -36,7 +36,7 @@ const MapTooltipContent = (props) => {
                     <br/>
                     First dose administered: {Math.round((vaccinesAdmin1[testingN]/properties.population)*1000)/10}%<br/>
                     Second dose administered: {Math.round((vaccinesAdmin2[testingN]/properties.population)*1000)/10}%<br/>
-                    Doses to be administed per 100K: {Math.round((vaccinesDist[testingN]/properties.population)*100000)?.toLocaleString()}<br/>
+                    Doses to be administered per 100K: {Math.round((vaccinesDist[testingN]/properties.population)*100000)?.toLocaleString()}<br/>
                 </div>
             </div>
         )
