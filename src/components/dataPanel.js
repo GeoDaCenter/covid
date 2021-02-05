@@ -444,9 +444,38 @@ const DataPanel = () => {
                 {/* <p>Cases per Bed: {dataFn(cases, null, cases.length-1, null, properties, 'beds', null, null, 1)?.toFixed(2)?.toLocaleString('en')}</p><br/> */}
               </ReportSection>
             }
+            {(vaccinesAdmin1 && selectionIndex.length) &&
+                <ReportSection>
+                  <h2>COVID Vaccination</h2><br/>
+                  <h6>Source: <a href="https://covid.cdc.gov/covid-data-tracker/#vaccinations" target="_blank" rel="noopener noreferrer">CDC COVID Data Tracker</a></h6>            
+
+                  <p>% of Population<br className="bigOnly"/>  Received First Dose</p>
+                  <div className="numberChartContainer">
+                    <h3>{aggregateDataFunction('vaccinesAdmin1', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: 'population', dIndex: null, dRange: null, scale: 100}, 'weighted_average')?.toFixed(2).toLocaleString('en')}%</h3>
+                    {expanded && <TwoWeekChart data={aggregate2WeekTimeSeries('vaccinesAdmin1', currDateIndex, 'sum')} schema='vaccination'/>}
+                  </div>
+                  
+                  <p>Total Number<br className="bigOnly"/>  Received First Dose</p>
+                  <h3>{aggregateDataFunction('vaccinesAdmin1', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: null, dIndex: null, dRange: null, scale: 1}, 'sum')?.toLocaleString('en')}</h3>
+                  
+                  <p>% of Population<br className="bigOnly"/>  Received Second Dose</p>
+                  <div className="numberChartContainer">
+                    <h3>{aggregateDataFunction('vaccinesAdmin2', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: 'population', dIndex: null, dRange: null, scale: 100}, 'weighted_average')?.toFixed(2).toLocaleString('en')}%</h3>
+                    {expanded && <TwoWeekChart data={aggregate2WeekTimeSeries('vaccinesAdmin2', currDateIndex, 'sum')} schema='vaccination'/>}
+                  </div>
+
+                  <p>Total Number<br className="bigOnly"/>  Received Second Dose</p>
+                  <h3>{aggregateDataFunction('vaccinesAdmin2', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: null, dIndex: null, dRange: null, scale: 1}, 'sum')?.toLocaleString('en')}</h3>
+
+                  <p>Doses to be Administered<br className="bigOnly"/>  Per 100k Population</p>
+                  <h3>{aggregateDataFunction('vaccinesDist', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: 'population', dIndex: null, dRange: null, scale: 100000}, 'weighted_average')?.toFixed(2).toLocaleString('en')}</h3>
+                
+                </ReportSection>
+              }
           {(testing && selectionIndex.length) &&
               <ReportSection>
                 <h2>Testing</h2><br/>
+                <h6>Source: <a href="https://healthdata.gov/dataset/covid-19-diagnostic-laboratory-testing-pcr-testing-time-series" target="_blank" rel="noopener noreferrer">HHS/CDC</a></h6>       
                 <p>7-Day Positivity Rate</p>
                 <div className="numberChartContainer">
                   <h3>{Math.round(aggregateTimeseries('testing_wk_pos', currDateIndex, 'weighted_average')*100)}%</h3>
@@ -469,28 +498,6 @@ const DataPanel = () => {
                 <h3>{aggregateQualitative('properties', 'criteria').map(f => <span>{f}<br/></span>)}</h3> */}
               </ReportSection>
             }
-            {(vaccinesAdmin1 && selectionIndex.length) &&
-                <ReportSection>
-                  <h2>COVID Vaccination</h2><br/>
-                  <h6>Source: <a href="https://covid.cdc.gov/covid-data-tracker/#vaccinations" target="_blank" rel="noopener noreferrer">CDC COVID Data Tracker</a></h6>            
-                
-                  {/* <p>% of Population Received First Dose</p>
-                  <div className="numberChartContainer">
-                    <h3>{Math.round(aggregateTimeseries('vaccineAdmin1', currDateIndex, 'weighted_average'))?.toLocaleString('en')}</h3>
-                    {expanded && <TwoWeekChart data={aggregate2WeekTimeSeries('vaccineAdmin1', currDateIndex, 'weighted_average')} schema='testingCap'/>}
-                  </div> */}
-
-                  <p>% of Population<br className="bigOnly"/>  Received First Dose</p>
-                  <h3>{aggregateDataFunction('vaccinesAdmin1', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: 'population', dIndex: null, dRange: null, scale: 100}, 'weighted_average')?.toFixed(2).toLocaleString('en')}%</h3>
-                  
-                  <p>% of Population<br className="bigOnly"/>  Received Second Dose</p>
-                  <h3>{aggregateDataFunction('vaccinesAdmin2', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: 'population', dIndex: null, dRange: null, scale: 100}, 'weighted_average')?.toFixed(2).toLocaleString('en')}%</h3>
-
-                  <p>Doses to be Administered<br className="bigOnly"/>  Per 100k Population</p>
-                  <h3>{aggregateDataFunction('vaccinesDist', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: 'population', dIndex: null, dRange: null, scale: 100000}, 'weighted_average')?.toFixed(2).toLocaleString('en')}</h3>
-                
-                </ReportSection>
-              }
           {(chr_health_factors && selectionIndex.length) && 
             <ReportSection>
               <h2>Community Health Factors<Tooltip id="healthfactor"/></h2>

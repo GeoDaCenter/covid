@@ -324,7 +324,7 @@ const DateSlider = () => {
                         />}
                     </Grid>
                     {(dataParams.rangeType !== 'custom' && dataParams.nType !== 'characteristic') && <InitialDate>{dates[0]}</InitialDate>}
-                    {(dataParams.rangeType !== 'custom' && dataParams.nType !== 'characteristic') && <EndDate>{dates.slice(-1,)[0]}</EndDate>}
+                    {(dataParams.rangeType !== 'custom' && dataParams.nType !== 'characteristic') && <EndDate>{dateIndices[currentData] !== undefined && dates[dateIndices[currentData][dataParams.numerator].slice(-1,)[0]]}</EndDate>}
                 </Grid>
             </SliderContainer>
         );
