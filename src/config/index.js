@@ -212,8 +212,8 @@ export const dataPresets = {
         joinCols: ['GEOID', ['FIPS','fips','countyFIPS']], // geospatial data join column and then list of valid table join columns
         accumulate: [], // CSV names to accumulate over time
         dateList: { // date lists to parse: isoDateList (eg. '2020-01-01') or usDateList (eg. '01/01/20')
-            'covid_confirmed_usafacts': 'usDateList', 
-            'covid_deaths_usafacts': 'usDateList'
+            'covid_confirmed_usafacts': 'isoDateList', 
+            'covid_deaths_usafacts': 'isoDateList'
         }
     },
     'county_1p3a.geojson': {
