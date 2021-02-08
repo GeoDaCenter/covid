@@ -341,8 +341,8 @@ export const dataPresets = {
         joinCols: ['GEOID', ['FIPS','fips','fips_code','state_fips','stateFIPS']],
         accumulate: ['covid_testing_cdc_state'],
         dateList: {
-            'covid_confirmed_1p3a_state': 'usDateList', 
-            'covid_deaths_1p3a_state': 'usDateList', 
+            'covid_confirmed_1p3a_state': 'isoDateList', 
+            'covid_deaths_1p3a_state': 'isoDateList', 
             'covid_testing_cdc_state': 'isoDateList', 
             'covid_wk_pos_cdc_state': 'isoDateList', 
             'covid_tcap_cdc_state': 'isoDateList', 
@@ -439,8 +439,8 @@ export const dataPresets = {
         joinCols: ['GEOID', ['fips_code', 'fips', 'FIPS', 'countyFIPS']],
         accumulate: [],
         dateList: {
-            'covid_confirmed_usafacts': 'usDateList', 
-            'covid_deaths_usafacts': 'usDateList',
+            'covid_confirmed_usafacts': 'isoDateList', 
+            'covid_deaths_usafacts': 'isoDateList',
             'covid_testing_cdc': 'isoDateList', 
             'covid_wk_pos_cdc': 'isoDateList', 
             'covid_tcap_cdc': 'isoDateList', 

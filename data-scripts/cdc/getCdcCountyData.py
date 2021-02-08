@@ -37,6 +37,8 @@ def getCdcCountyData():
 
     for responseSet in responses:
         for response in responseSet:
+            if response is None:
+                continue
             if len(parsed)==0:
                 parsed = pd.DataFrame(response.json()['integrated_county_timeseries_external_data'])
             else:
