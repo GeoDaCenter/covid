@@ -417,6 +417,11 @@ var reducer = (state = INITIAL_STATE, action) => {
                 mapParams: urlMapParamsObj,
                 dataParams: urlDataParamsObj
             }
+        case 'SET_MAP_SCREENSHOT':
+            return {
+                ...state,
+                mapScreenshotData: action.payload.mapImage
+            }
         default:
             return state;
     }

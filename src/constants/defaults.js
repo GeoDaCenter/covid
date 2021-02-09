@@ -78,5 +78,6 @@ export const INITIAL_STATE = {
   anchorEl: null,
   mapLoaded: false,
   notification: null,
-  urlParams: {}
+  urlParams: {},
+  mapScreenshotData: ''
 };

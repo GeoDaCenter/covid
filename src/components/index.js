@@ -11,12 +11,13 @@ import Map from './map';
 import MapTooltipContent from './mapTooltipContent';
 import NavBar from './navbar';
 import NotificationBox from './notificationBox';
-import VariablePanel from './variablePanel';
 import Popover from './tooltipPopper';
 import Preloader from './preloader';
+import PrintLayout from './printLayout';
 import Scaleable from './scaleable';
 import Tooltip from './tooltip';
 import TopPanel from './topPanel';
+import VariablePanel from './variablePanel';
 
 export {
     BottomPanel,
@@ -31,10 +32,11 @@ export {
     MapTooltipContent,
     NavBar,
     NotificationBox,
-    VariablePanel,
     Popover,
     Preloader,
+    PrintLayout,
     Scaleable,
     Tooltip, 
-    TopPanel
+    TopPanel,
+    VariablePanel,
 }

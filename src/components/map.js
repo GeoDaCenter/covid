@@ -11,12 +11,12 @@ import {MapView, FlyToInterpolator} from '@deck.gl/core';
 import { PolygonLayer, ScatterplotLayer, IconLayer, TextLayer } from '@deck.gl/layers';
 import {fitBounds} from '@math.gl/web-mercator';
 
-import MapboxGLMap, {NavigationControl, GeolocateControl } from 'react-map-gl';
+import StaticMap, {NavigationControl, GeolocateControl } from 'react-map-gl';
 import Geocoder from 'react-map-gl-geocoder';
 
 // component, action, util, and config import
 import { MapTooltipContent } from '../components';
-import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData } from '../actions';
+import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData, setMapScreenshot } from '../actions';
 import { mapFn, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, getURLParams } from '../utils';
 import { colors, colorScales } from '../config';
 import MAP_STYLE from '../config/style.json';
@@ -197,6 +197,14 @@ const Map = (props) => {
         data: [],
         params: {}
     })
+
+    const [printing, setPrinting] = useState(false)
+
+    useEffect(() => {
+        window.addEventListener("beforeprint", () => setPrinting(true));
+        window.addEventListener("afterprint", () => setPrinting(false));
+    }, [])
+
 
     const dispatch = useDispatch();
 
@@ -934,11 +942,21 @@ const Map = (props) => {
                 }
                 views={view}
 
+                onAfterRender={() => {
+                    if (printing) {
+                        dispatch(setMapScreenshot({
+                            deck: deckRef.current?.deck?.canvas.toDataURL(),
+                            mapbox: mapRef.current.getMap()._canvas.toDataURL()
+                        }))
+                        setPrinting(false)
+                    }
+                }}
+                
                 // onViewStateChange={onViewStateChange}
                 // viewState={viewStates}
                 // views={insetMap ? views : views[0]}
             >
-                <MapboxGLMap
+                <StaticMap
                     reuseMaps
                     ref={mapRef}
                     mapStyle={mapStyle} //{globalMap || mapParams.vizType === 'cartogram' ? 'mapbox://styles/lixun910/ckhtcdx4b0xyc19qzlt4b5c0d' : 'mapbox://styles/lixun910/ckhkoo8ix29s119ruodgwfxec'}
@@ -949,6 +967,7 @@ const Map = (props) => {
                     onLoad={() => {
                         dispatch(setMapLoaded(true))
                     }}
+                    preserveDrawingBuffer={true}
                     >
                     <MapGeocoder 
                         mapRef={mapRef}
@@ -1005,7 +1024,7 @@ const Map = (props) => {
                         <ShareURL type="text" value="" id="share-url" />
                     </MapButtonContainer>
                     <div></div>
-                </MapboxGLMap >
+                </StaticMap >
                 
                 {/* <View id="main" className="test" style={{display:'none'}}/> */}
             </DeckGL>

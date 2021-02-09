@@ -21,7 +21,7 @@ import {
 
 import { Map, NavBar, VariablePanel, Legend,  TopPanel, Preloader,
   DataPanel, MainLineChart, Scaleable, Draggable, InfoBox,
-  NotificationBox, Popover } from './components';  
+  NotificationBox, Popover, PrintLayout } from './components';  
 
 import { colorScales, fixedScales, dataPresets, variablePresets, colors } from './config';
 
@@ -94,6 +94,7 @@ function App() {
   // data in the state is poor for performance, but the App component state only
   // contains gda_proxy.
   const [gda_proxy, set_gda_proxy] = useState(null);
+  const [printing, setPrinting] = useState(false);
   const dispatch = useDispatch();  
   
   // // Dispatch helper functions for side effects and data handling
@@ -266,6 +267,9 @@ function App() {
 
     newGeoda()
     dispatch(setDates(dateLists.isoDateList))
+    
+    window.addEventListener("beforeprint", () => setPrinting(true));
+    window.addEventListener("afterprint", () => setPrinting(false));
   },[])
 
 
@@ -409,16 +413,10 @@ function App() {
   }, [window.innerHeight, window.innerWidth])
   // const dragHandlers = {onStart: this.onStart, onStop: this.onStop};
 
-
   return (
     <div className="App">
       <Preloader loaded={mapLoaded} />
       <NavBar />
-      <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
-        {/* <button onClick={() => console.log(getDataForBins( storedData[currentData], {...dataParams, nIndex: null} ))}>data for bins</button> */}
-        {/* <button onClick={() => console.log(dataParams)}>data params</button>
-        <button onClick={() => console.log(mapParams)}>map params</button> */}
-      </header>
       <div id="mainContainer">
         <Map />
         <TopPanel />
@@ -466,6 +464,7 @@ function App() {
         }/>
 
       </div>
+      <PrintLayout />
     </div>
   );
 }

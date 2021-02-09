@@ -352,3 +352,12 @@ export const setUrlParams = ( urlParams, presets ) => {
         }
     }
 }
+
+export const setMapScreenshot = ( mapImage ) => {
+    return {
+        type: 'SET_MAP_SCREENSHOT',
+        payload: {
+            mapImage
+        }
+    }
+}

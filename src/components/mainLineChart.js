@@ -13,8 +13,8 @@ import { colors } from '../config';
 import { setVariableParams } from '../actions';
 
 const ChartContainer = styled.span`
-    span {
-        color:white;
+    span, h3 {
+        color:${props => props.printing ? colors.black : colors.white};
     }
 `
 
@@ -45,7 +45,6 @@ const ChartTitle = styled.h3`
     padding:0;
     font-weight:normal;
     margin:0;
-    color:white;
 `
 
 // const LegendList = styled.ul`
@@ -185,7 +184,7 @@ const CustomTooltip = props => {
     return null;
 };
 
-const MainLineChart = () => {
+const MainLineChart = (props) => {
     const chartData = useSelector(state => state.chartData);
     const dataParams = useSelector(state => state.dataParams);
     const currentVariable = useSelector(state => state.currentVariable);
@@ -193,7 +192,8 @@ const MainLineChart = () => {
     const dateIndices = useSelector(state => state.dateIndices);
     const selectionKeys = useSelector(state => state.selectionKeys);
 
-    
+    const printing = props.printing;
+
     const [logChart, setLogChart] = useState(false);
     const [strokeOpacities, setStrokeOpacities] = useState([])
 
@@ -281,7 +281,7 @@ const MainLineChart = () => {
         setStrokeOpacities(null)
     }
     return (
-        <ChartContainer id="lineChart">
+        <ChartContainer id="lineChart" printing={printing}>
             {selectionKeys.length < 2 && 
                 <ChartTitle>Total Cases and 7-Day Average New Cases
                     {selectionKeys.length>0 && `: ${selectionKeys[0]}`}
@@ -304,7 +304,7 @@ const MainLineChart = () => {
                         tick={
                             <CustomTick
                             style={{
-                                fill: `${colors.white}88`,
+                                fill: `${printing ? colors.black : colors.white}88`,
                                 fontSize: "10px",
                                 fontFamily: "Lato",
                                 fontWeight: 600,
@@ -319,7 +319,7 @@ const MainLineChart = () => {
                         tick={
                             <CustomTick
                             style={{
-                                fill: colors.lightgray,
+                                fill: printing ? colors.black : colors.lightgray,
                                 fontSize: "10px",
                                 fontFamily: "Lato",
                                 fontWeight: 600
@@ -328,14 +328,14 @@ const MainLineChart = () => {
                             />
                         }
                         >
-                        <Label value="Total Cases" position='insideLeft' style={{marginTop:10, fill:colors.lightgray, fontFamily: 'Lato', fontWeight: 600}} angle={-90}  />
+                        <Label value="Total Cases" position='insideLeft' style={{marginTop:10, fill:printing ? colors.darkgray : colors.lightgray, fontFamily: 'Lato', fontWeight: 600}} angle={-90}  />
                     </YAxis>
                     <YAxis yAxisId="right" orientation="right" scale={logChart ? "log" : "linear"} domain={[0.01, 'dataMax']} allowDataOverflow 
                         ticks={selectionKeys.length === 0 ? rangeIncrement({maximum: maximums.count, increment: 50000}) : []}
                         tick={
                             <CustomTick
                                 style={{
-                                    fill: colors.lightgray,
+                                    fill: printing ? colors.black : colors.lightgray,
                                     fontSize: "10px",
                                     fontFamily: "Lato",
                                     fontWeight: 600,
@@ -344,7 +344,7 @@ const MainLineChart = () => {
                             />
                         }
                         >
-                        <Label value="7-Day Average New Cases" position='insideTopRight' style={{marginTop:10, fill:(selectionKeys.length < 2 ? colors.yellow : colors.lightgray), fontFamily: 'Lato', fontWeight: 600}} angle={-90}  />
+                        <Label value="7-Day Average New Cases" position='insideTopRight' style={{marginTop:10, fill:(selectionKeys.length < 2 ? colors.yellow : printing ? colors.black : colors.lightgray), fontFamily: 'Lato', fontWeight: 600}} angle={-90}  />
                     </YAxis>
                     <Tooltip
                         content={CustomTooltip}
@@ -357,12 +357,12 @@ const MainLineChart = () => {
                             dataParams.variableName.indexOf('Testing') !== -1 ? dataParams.nIndex - 7 : 0
                             : dataParams.nIndex-dataParams.nRange}
                         x2={dataParams.nIndex}
-                        fill="white" 
+                        fill={printing ? colors.lightgray : colors.white}
                         fillOpacity={0.15}
                         isAnimationActive={false}
                     />
-                    {selectionKeys.length < 2 && <Line type="monotone" yAxisId="left" dataKey={selectionKeys.length > 0 ? selectionKeys[0] + " Total Cases" : "sum"} name="Total Cases" stroke={colors.lightgray} dot={false} isAnimationActive={false} /> }
-                    {selectionKeys.length < 2 && <Line type="monotone" yAxisId="right" dataKey={selectionKeys.length > 0 ? selectionKeys[0] + " Daily Count": "count"} name="7-Day Average New Cases" stroke={colors.yellow} dot={false} isAnimationActive={false} /> }
+                    {selectionKeys.length < 2 && <Line type="monotone" yAxisId="left" dataKey={selectionKeys.length > 0 ? selectionKeys[0] + " Total Cases" : "sum"} name="Total Cases" stroke={printing ? colors.darkgray : colors.lightgray} strokeWidth={printing ? 3 : 1} dot={false} isAnimationActive={false} /> }
+                    {selectionKeys.length < 2 && <Line type="monotone" yAxisId="right" dataKey={selectionKeys.length > 0 ? selectionKeys[0] + " Daily Count": "count"} name="7-Day Average New Cases" stroke={colors.yellow} strokeWidth={printing ? 3 : 1} dot={false} isAnimationActive={false} /> }
                     
                     {/* {selectionKeys.length !== 0 && 
                         selectionKeys.map((key,index) => { 
@@ -384,7 +384,7 @@ const MainLineChart = () => {
                                 yAxisId='right'
                                 dataKey='summarized' 
                                 name='Total For Selection' 
-                                stroke={colors.lightgray}
+                                stroke={printing ? colors.black : colors.lightgray}
                                 strokeWidth={3} 
                                 dot={false} 
                                 isAnimationActive={false}  
@@ -412,7 +412,7 @@ const MainLineChart = () => {
                     />
                 </LineChart>
             </ResponsiveContainer>
-            <StyledSwitch>
+            <StyledSwitch id="linearLogSwitch">
                 <Switch
                     checked={logChart}
                     onChange={handleSwitch}
