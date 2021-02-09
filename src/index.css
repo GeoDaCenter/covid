@@ -10,6 +10,11 @@ body {
   background:rgb(15,15,15);
   font-family: 'Lato', sans-serif;
 }
+@media print{
+  body {
+    background:white;
+  }
+}
 
 div#view-default-view, div#view-MapView {
     z-index:500;
@@ -103,6 +108,14 @@ body {
 }
 
 
+@media print {
+  #mainContainer {
+    display:none;
+  }
+  .navbar {
+    display:none;
+  }
+}
 @media only screen and (max-width: 600px) {
   .navbar ul{
     display: none !important;

@@ -222,6 +222,7 @@ export const colors = {
     buttongray: '#f5f5f5',
     lightgray: '#d8d8d8',
     yellow: '#FFCE00',
+    red: '#EC1E24',
     lightblue: '#A1E1E3',
     red: '#EC1E24',
     strongOrange: '#F16622',
