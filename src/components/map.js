@@ -602,8 +602,7 @@ const Map = (props) => {
         )  
     }
     const handleGeocoder = useCallback(location => {
-        console.log(location)
-        if (location) {
+        if (location.center !== undefined) {
             let center = location.center;
             let zoom = 6;
 
