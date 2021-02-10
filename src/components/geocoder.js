@@ -13,7 +13,7 @@ const Container = styled.div`
     .MuiAutocomplete-inputRoot {
         background:white;
         height:36px;
-        border-radius:2px;
+        border-radius:4px;
         padding:0 35px;
     }
     .MuiAutocomplete-inputRoot[class*="MuiInput-root"] .MuiAutocomplete-input:first-child {

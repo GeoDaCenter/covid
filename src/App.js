@@ -21,7 +21,7 @@ import {
 
 import { Map, NavBar, VariablePanel, Legend,  TopPanel, Preloader,
   DataPanel, MainLineChart, Scaleable, Draggable, InfoBox,
-  NotificationBox, Popover } from './components';  
+  NotificationBox, Popover, ContextMenu } from './components';  
 
 import { colorScales, fixedScales, dataPresets, variablePresets, colors } from './config';
 
@@ -464,7 +464,7 @@ function App() {
             minHeight={minHeight}
             minWidth={minWidth} />
         }/>
-
+        <ContextMenu/>
       </div>
     </div>
   );

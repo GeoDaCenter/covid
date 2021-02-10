@@ -352,3 +352,12 @@ export const setUrlParams = ( urlParams, presets ) => {
         }
     }
 }
+
+export const openContextMenu = ( params ) => {
+    return {
+        type: 'OPEN_CONTEXT_MENU',
+        payload: {
+            params
+        }
+    }
+}

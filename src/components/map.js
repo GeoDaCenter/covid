@@ -14,7 +14,7 @@ import MapboxGLMap from 'react-map-gl';
 
 // component, action, util, and config import
 import { MapTooltipContent, Geocoder } from '../components';
-import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData } from '../actions';
+import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData, openContextMenu } from '../actions';
 import { mapFn, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, getURLParams } from '../utils';
 import { colors, colorScales } from '../config';
 import MAP_STYLE from '../config/style.json';
@@ -156,7 +156,7 @@ const Map = (props) => {
     // fetch pieces of state from store    
     const { storedData, storedGeojson, currentData, storedLisaData, dateIndices,
         storedCartogramData, panelState, dates, dataParams, mapParams,
-        currentVariable, urlParams, mapLoaded } = useSelector(state => state);
+        currentVariable, urlParams, mapLoaded, selectMode } = useSelector(state => state);
 
     // component state elements
     // hover and highlight geographies
@@ -230,6 +230,13 @@ const Map = (props) => {
                 )   
             }
         });
+
+        window.addEventListener('contextmenu', (e) => {
+            dispatch(openContextMenu({
+                x:e.pageX,
+                y:e.pageY
+            }))
+        })
     },[])
 
     // create unique var id -- used only for cartogram data
@@ -491,7 +498,8 @@ const Map = (props) => {
         )
     }
 
-    const handleMapClick = (info) => {
+    const handleMapClick = (info, e) => {
+        if (e.rightButton) return;
         let tempData = storedData[currentData][storedData[currentData].findIndex(o => o.properties.GEOID === info.object?.GEOID)]        
         const dataName = tempData.properties.hasOwnProperty('state_abbr') ? `${tempData.properties.NAME}, ${tempData.properties.state_abbr}` : `${tempData.properties.NAME}`
         

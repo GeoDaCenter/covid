@@ -862,6 +862,7 @@ const VariablePanel = (props) => {
           <Select
             value={newVariable}
             onChange={handleNewVariable}
+            MenuProps={{id:'variableMenu'}}
             >
             {Object.keys(variableTree).map(variable => {
               if (variable.split(':')[0]==="HEADER") {

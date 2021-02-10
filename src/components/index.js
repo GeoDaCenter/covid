@@ -1,5 +1,6 @@
 
 import BottomPanel from './bottomPanel';
+import ContextMenu from './contextMenu';
 import DataPanel from './dataPanel';
 import DateSlider from './slider';
 import Dock from './dock';
@@ -21,6 +22,7 @@ import Geocoder from './geocoder';
 
 export {
     BottomPanel,
+    ContextMenu,
     DataPanel,
     DateSlider,
     Dock,
