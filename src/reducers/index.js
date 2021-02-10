@@ -397,7 +397,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                 ...preset,
                 nIndex: urlParams.date || state.dataParams.nIndex,
                 nRange: urlParams.hasOwnProperty('range') ? urlParams.range === 'null' ? null : urlParams.range : state.dataParams.nRange,
-                nProperty: urlParams.prop || state.dataParams.nProperty
+                nProperty: urlParams.propCol || state.dataParams.nProperty
             };
             
             let urlCoordObj = {

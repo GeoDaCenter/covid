@@ -335,7 +335,7 @@ const MainLineChart = () => {
                         tick={
                             <CustomTick
                                 style={{
-                                    fill: colors.lightgray,
+                                    fill: colors.yellow,
                                     fontSize: "10px",
                                     fontFamily: "Lato",
                                     fontWeight: 600,

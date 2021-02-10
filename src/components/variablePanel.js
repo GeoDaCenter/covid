@@ -314,8 +314,8 @@ const VariablePanel = (props) => {
       colorScale: null,
     },
     "HEADER:community health":{},
-    "Uninsured %":{
-      variableName:"Uninsured %",
+    "Uninsured Percent":{
+      variableName:"Uninsured Percent",
       numerator: 'chr_health_factors',
       nType: 'characteristic',
       nProperty: colLookup(cols, currentData, 'chr_health_factors', 'UnInPrc'),
@@ -330,8 +330,8 @@ const VariablePanel = (props) => {
       colorScale: 'uninsured',
       scale3D: 15000,
     },
-    "Over 65 Years %":{
-      variableName:"Over 65 Years %",
+    "Over 65 Years Percent":{
+      variableName:"Over 65 Years Percent",
       numerator: 'chr_health_context',
       nType: 'characteristic',
       nProperty: colLookup(cols, currentData, 'chr_health_context', 'Over65YearsPrc'),
@@ -364,8 +364,8 @@ const VariablePanel = (props) => {
     },
     
     "HEADER:testing":{},
-    "7 Day Testing Positivity Rate %": {
-      variableName:"7 Day Testing Positivity Rate %",
+    "7 Day Testing Positivity Rate Percent": {
+      variableName:"7 Day Testing Positivity Rate Percent",
       numerator: 'testing_wk_pos',
       nType: 'time-series',
       nProperty: null,
@@ -396,22 +396,22 @@ const VariablePanel = (props) => {
       colorScale: 'testingCap',
       scale3D: 3000
     }, 
-    "7 Day Confirmed Cases per Testing %":{
-      variableName:"7 Day Confirmed Cases per Testing %",
-      numerator: 'testing_ccpt',
-      nType: 'time-series',
-      nProperty: null,
-      nRange: null,
-      denominator: 'properties',
-      dType: null,
-      dProperty: null,
-      dRange:null,
-      dIndex:null,
-      scale:1,
-      fixedScale: 'testing',
-      colorScale: 'testing',
-      scale3D: 10000000
-    },
+    // "7 Day Confirmed Cases per Testing %":{
+    //   variableName:"7 Day Confirmed Cases per Testing %",
+    //   numerator: 'testing_ccpt',
+    //   nType: 'time-series',
+    //   nProperty: null,
+    //   nRange: null,
+    //   denominator: 'properties',
+    //   dType: null,
+    //   dProperty: null,
+    //   dRange:null,
+    //   dIndex:null,
+    //   scale:1,
+    //   fixedScale: 'testing',
+    //   colorScale: 'testing',
+    //   scale3D: 10000000
+    // },
     "HEADER:cdc vaccination":{},
     "Percent Received First Dose": {
         variableName:"Percent Received First Dose",

@@ -68,11 +68,25 @@ const MapTooltipContent = (props) => {
                 </h3>
                 <div>
                     <hr />
-                    Cases: {cases[caseN]===undefined ? 0 : cases[caseN]?.toLocaleString('en')}<br/>
-                    Deaths: {deaths[deathN]===undefined ? 0 : deaths[deathN]?.toLocaleString('en')||0}<br/>
+                    Cases: {cases[caseN]===null ? 0 : cases[caseN]?.toLocaleString('en')}<br/>
+                    Deaths: {deaths[deathN]===null ? 0 : deaths[deathN]?.toLocaleString('en')||0}<br/>
                     <br/>
-                    Daily New Cases: {cases[caseN]===undefined ? 0 : (cases[caseN]-cases[caseN-1])?.toLocaleString('en')}<br/>
-                    Daily New Deaths: {deaths[deathN]===undefined ? 0 : (deaths[deathN]-deaths[deathN-1])?.toLocaleString('en')}<br/>
+                    Daily New Cases: {cases[caseN]===null ? 0 : (cases[caseN]-cases[caseN-1])?.toLocaleString('en')}<br/>
+                    Daily New Deaths: {deaths[deathN]===null ? 0 : (deaths[deathN]-deaths[deathN-1])?.toLocaleString('en')}<br/>
+                </div>
+            </div>
+        )
+    } else if (properties && cases){ // County Feature PR NYT
+        return (
+            <div>
+                <h3>
+                    {`${properties.NAME}${properties.state_name && `, ${properties.state_name}`}`}
+                </h3>
+                <div>
+                    <hr />
+                    Cases: {cases[caseN]===null ? 0 : cases[caseN]?.toLocaleString('en')}<br/>
+                    <br/>
+                    Daily New Cases: {cases[caseN]===null ? 0 : (cases[caseN]-cases[caseN-1])?.toLocaleString('en')}<br/>
                 </div>
             </div>
         )
@@ -104,6 +118,14 @@ const MapTooltipContent = (props) => {
             </div>
         )
     
+    } else if (properties){ // County Feature PR NYT
+        return (
+            <div>
+                <h3>
+                    {`${properties.NAME}${properties.state_name && `, ${properties.state_name}`}`}
+                </h3>
+            </div>
+        )
     } else {
         return (
             <div></div>

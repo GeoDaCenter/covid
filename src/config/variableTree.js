@@ -158,7 +158,7 @@ export const variableTree = {
         }
     },
     "HEADER:testing":{},
-    "7 Day Testing Positivity Rate %":{
+    "7 Day Testing Positivity Rate Percent":{
         "County": {
             "CDC": {
                 "geojson": "cdc.geojson",
@@ -221,7 +221,7 @@ export const variableTree = {
         }
     },
     "HEADER:community health information":{},
-    "Uninsured %": {
+    "Uninsured Percent": {
         "County": {
             "County Health Rankings": {
                 "geojson":'county_usfacts.geojson',
@@ -235,7 +235,7 @@ export const variableTree = {
             }
         }
     },
-    "Over 65 Years %": {
+    "Over 65 Years Percent": {
         "County": {
             "County Health Rankings": {
                 "geojson":'county_usfacts.geojson',

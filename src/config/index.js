@@ -586,8 +586,8 @@ export const variablePresets = {
       colorScale: null,
     },
     "HEADER:community health":{},
-    "Uninsured %":{
-      variableName:"Uninsured %",
+    "Uninsured Percent":{
+      variableName:"Uninsured Percent",
       numerator: 'chr_health_factors',
       nType: 'characteristic',
       nProperty: null,
@@ -602,8 +602,8 @@ export const variablePresets = {
       colorScale: 'uninsured',
       scale3D: 15000,
     },
-    "Over 65 Years %":{
-      variableName:"Over 65 Years %",
+    "Over 65 Years Percent":{
+      variableName:"Over 65 Years Percent",
       numerator: 'chr_health_context',
       nType: 'characteristic',
       nProperty: null,
@@ -636,8 +636,8 @@ export const variablePresets = {
     },
     
     "HEADER:testing":{},
-    "7 Day Testing Positivity Rate %": {
-      variableName:"7 Day Testing Positivity Rate %",
+    "7 Day Testing Positivity Rate Percent": {
+      variableName:"7 Day Testing Positivity Rate Percent",
       numerator: 'testing_wk_pos',
       nType: 'time-series',
       nProperty: null,
