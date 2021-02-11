@@ -31,14 +31,15 @@ We also include information from the following datasets:
 We have multiple datasets planned for future inclusion in the atlas, including:
 <!-- + [Bin Yu Group](https://github.com/Yu-Group/covid19-severity-prediction): Hospital Severity Index forecasting by hospital location -->
 <!-- + [Data.gov](http://data.gov): Indian Reservation Boundaries -->
-+ [DesCartes Lab](https://github.com/descarteslabs/DL-COVID-19): Mobility index by County
 <!-- + [NYTimes](https://github.com/nytimes/covid-19-data): Confirmed Cases and Deaths by County & State -->
++ [DesCartes Lab](https://github.com/descarteslabs/DL-COVID-19): Mobility index by County
 + [PlaceIQ, Couture et al](https://github.com/COVIDExposureIndices/COVIDExposureIndices): Limited Exposure Index by County 
 + [Safegraph](https://docs.safegraph.com/docs/social-distancing-metrics): Data on mobility behavior over the course of the pandemic
 + [HHS Hospital Data](https://healthdata.gov/dataset/covid-19-reported-patient-impact-and-hospital-capacity-facility): Facility Level data on hospital occupancy.
 
 ### Data Details
 #### USAFacts
+You can access USAFacts data via our API <a href="https://theuscovidatlas.org/api.html" target="_blank">here</a>.
 <!-- You can download the most updated county level data merged with USAFacts [here](https://github.com/GeoDaCenter/covid/tree/master/): 
 + usafacts_confirmed_*date*.geojson: the county level data (confirmed cases) using [*USAFacts*](https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/?utm_source=MailChimp&utm_campaign=census-covid2), together with population and number of hospital beds. 
 + usafacts_deaths_*date*.geojson: the county level data (death counts) using [*USAFacts*](https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/?utm_source=MailChimp&utm_campaign=census-covid2), together with population and number of hospital beds. 
