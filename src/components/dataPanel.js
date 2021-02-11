@@ -1,14 +1,17 @@
 // This components formats the data for the selected geography
 // and displays it in the right side panel.
 
+// Import main libraries
 import React, {useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
+// Import helper libraries
 import styled from 'styled-components';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
+// Import config and sub-components
 import Tooltip from './tooltip';
 import TwoWeekChart from './twoWeekLineChart';
 import { setPanelState } from '../actions';
@@ -16,7 +19,8 @@ import {dataFn, colLookup} from '../utils';
 import { colors } from '../config';
 import { report } from '../config/svg';
 
-// Styled components CSS
+//// Styled components CSS
+// Main container for entire panel
 const DataPanelContainer = styled.div`
   display: ${props => props.dataLength === 0 ? 'none' : 'initial'};
   position:fixed;
@@ -150,16 +154,18 @@ const DataPanelContainer = styled.div`
     padding-bottom:20vh;
   }
 `
-
+// Scrollable Wrapper for main report information
 const ReportWrapper = styled.div`
   height:100vh;
   overflow-y:scroll;
 `
 
+// Inner container for report content
 const ReportContainer = styled.div`
     padding:5px 0 0 30px;
     box-sizing:border-box;
     overflow-x:visible;
+    // Multi-column layout (NYI)
     // display:flex;
     // flex-direction:column;
     // flex-wrap:wrap;
@@ -197,6 +203,7 @@ const ReportContainer = styled.div`
     
 `
 
+// Subsection of report
 const ReportSection = styled.span`
     padding-right:20px;
     box-sizing:border-box;
@@ -206,6 +213,7 @@ const ReportSection = styled.span`
     margin: 0;
 `
 
+// Toggle styling for condensed and expanded drop down
 const ExpandSelect = styled(FormControl)`
   outline:none;
   border:none;
@@ -226,6 +234,7 @@ const ExpandSelect = styled(FormControl)`
 
 `
 
+// DataPanel Function Component
 const DataPanel = () => {
 
   const dispatch = useDispatch();
@@ -244,10 +253,17 @@ const DataPanel = () => {
   const cols = useSelector(state => state.cols);
   const [expanded, setExpanded] = useState(true)
 
-  // de-structure sidebarData, which houses selected geography data
+  // De-structure sidebarData, which houses selected geography data
+  // Based on if certain data are present or absent, the sidebar data will
+  // conditionally render (short circuit) parts of the component
+
+  // List of all current datasets joined
   const datasetList = ['properties', 'cases', 'deaths', 'predictions',
     'chr_health_factors', 'chr_life', 'chr_health_context',
     'testing', 'vaccinesAdmin1', 'vaccinesAdmin2', 'vaccinesDist']
+
+  // Map datasetList to check if each key is present in the current data
+  // Output variables are checked below for conditional rendering
   const [ properties, cases, deaths, predictions,
     chr_health_factors, chr_life, chr_health_context,
     testing, vaccinesAdmin1, vaccinesAdmin2, vaccinesDist
@@ -264,13 +280,19 @@ const DataPanel = () => {
   const parsePredictedDate = (list) => `${list.slice(-2,)[0]}/${list.slice(-1,)[0]}`
 
   // handles panel open/close
-  const handleOpenClose = () => panelState.info ? dispatch(setPanelState({info:false})) : dispatch(setPanelState({info:true}))
+  const handleOpenClose = () => dispatch(setPanelState({info:panelState.info ? false : true}))
+
+  //// TODO DRY issue -- refactor these functions
   
-  // DRY issue -- refactor these functions
+  // Replace Null/NaN with 0 
   const cleanData = (inputData) => inputData.map(d => d >=0 ? d : isNaN(d) || d===null ? 0 : d)
   
+  // Performs different operations on the data array output
+  // Sum, Average, and weighted average
   const performOperation = (dataArray, operation, totalPopulation) => {
+    // Sum up data
     const reducer = (accumulator, currentValue) => accumulator + currentValue;
+    // Clean data
     let clean = cleanData(dataArray);
     
     switch(operation) {
@@ -285,9 +307,11 @@ const DataPanel = () => {
     }
   } 
 
+  // Prepares data for the previous operation
   const aggregateProperty = (dataset, property, operation, specialCase=null) => {
     let dataArray; 
     let totalPopulation = 0;
+    // Loop through and collect data from selected geographies in SelectionIndex
     try {
       if (operation === 'weighted_average') {
         dataArray = selectionIndex.map(selection => {
@@ -306,6 +330,7 @@ const DataPanel = () => {
     return performOperation(dataArray, operation, totalPopulation);
   }
 
+  // Same as aggregteProperty(), but for time-series data
   const aggregateTimeseries = (dataset, index, operation) => {
     let dataArray; 
     let totalPopulation = 0;
@@ -326,6 +351,7 @@ const DataPanel = () => {
     return performOperation(dataArray, operation, totalPopulation);
   }
 
+  // Generate data for 2-week line charts
   const aggregate2WeekTimeSeries = (dataset, index, operation) => {
     let lookbackPeriod = []
     let rtn;
@@ -341,6 +367,7 @@ const DataPanel = () => {
     return rtn;
   }
   
+  // For more complete data functions (like population normalized)
   const aggregateDataFunction = (numerator, denominator, params, operation) => {
     
     let dataArray; 
@@ -362,12 +389,10 @@ const DataPanel = () => {
     return performOperation(dataArray, operation, totalPopulation);
   }
 
-  const handleExpandContract = (event) => {
-    setExpanded(event.target.value)
-  }
+  // Set expanded or contracted view
+  const handleExpandContract = (event) => setExpanded(event.target.value)
 
-  
-
+  // Not currently used, aggregate qualitative data (like testing criteria)
   const aggregateQualitative = (dataset, property) => {
     let dataObj = {};
     let returnStr = [];
@@ -390,13 +415,14 @@ const DataPanel = () => {
     return returnStr;
   }
 
+  
   return (
     <DataPanelContainer className={panelState.info ? 'open' : ''} id="data-panel"  otherPanels={panelState.variables} dataLength={selectionKeys.length}>
       {properties &&  
       <ExpandSelect>
         <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
+          labelId="expand-view-label"
+          id="expand-view"
           value={null}
           onChange={handleExpandContract}
         >

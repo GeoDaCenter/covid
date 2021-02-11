@@ -1,12 +1,20 @@
+// Dock for panel buttons 
+// Current usage: Line Chart and Wiki/Manual Modal
+
+// Import main libraries
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
+// Import helper libraries
 import styled from 'styled-components';
+
+// Import config and actions
 import { chart, info } from '../config/svg';
 import { colors } from '../config';
-
 import { setPanelState } from '../actions';
 
+
+// Container
 const DockContainer = styled.div`
     position:absolute;
     left:calc(100% + 2px);
@@ -23,6 +31,7 @@ const DockContainer = styled.div`
     }
 `
 
+// Buttons styling
 const DockButton = styled.button`
     background:${props => props.isActive ? colors.lightgray : colors.gray};
     border:none;
@@ -69,10 +78,15 @@ const DockButton = styled.button`
     }
 `
 
+// Dock component
 const Dock = () => {
+    // Redux accessor and dispatch
     const panelState = useSelector(state => state.panelState);
     const dispatch = useDispatch();
-    const handlePanelButton = (panel) => panelState[panel] ? dispatch(setPanelState({[panel]: false})) : dispatch(setPanelState({[panel]: true}))
+
+    // Handle open and close
+    const handlePanelButton = (panel) => dispatch(setPanelState({[panel]: panelState[panel] ? false : true}))
+    
     return (
         <DockContainer>
             <DockButton

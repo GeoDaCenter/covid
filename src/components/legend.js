@@ -112,7 +112,7 @@ const BinBars = styled.div`
 const Legend =  (props) => {
     
     return (
-        <BottomPanel>
+        <BottomPanel id="bottomPanel">
             <LegendContainer>
                 <Grid container spacing={2} id='legend-bins-container'>
                     <Grid item xs={12}>

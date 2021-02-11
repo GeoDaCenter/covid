@@ -1,4 +1,4 @@
-
+// Collect and export all components
 import BottomPanel from './bottomPanel';
 import DataPanel from './dataPanel';
 import DateSlider from './slider';

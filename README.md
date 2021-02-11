@@ -4,7 +4,8 @@
 
 The U.S. COVID-19 Atlas provides county-level visualizations and analytics to reveal a more detailed pandemic landscape with local hotspots of surging COVID cases that are missed by state-level data. 
 
-The current Atlas is available here: [https://USCovidAtlas.org](https://USCovidAtlas.org). The Atlas is being updated everyday before 12pm, CT. We are working on releasing regular updates with more data, functions, and analysis.
+The current Atlas is available here: [https://USCovidAtlas.org](https://USCovidAtlas.org). The Atlas is being updated everyday by midnight EST. We are working on releasing regular updates with more data, functions, and analysis.
+
 ![screenshot](https://github.com/GeoDaCenter/covid/blob/master/data/screenshot.PNG)
 
 ## DATA
@@ -33,6 +34,8 @@ We have multiple datasets planned for future inclusion in the atlas, including:
 + [DesCartes Lab](https://github.com/descarteslabs/DL-COVID-19): Mobility index by County
 <!-- + [NYTimes](https://github.com/nytimes/covid-19-data): Confirmed Cases and Deaths by County & State -->
 + [PlaceIQ, Couture et al](https://github.com/COVIDExposureIndices/COVIDExposureIndices): Limited Exposure Index by County 
++ [Safegraph](https://docs.safegraph.com/docs/social-distancing-metrics): Data on mobility behavior over the course of the pandemic
++ [HHS Hospital Data](https://healthdata.gov/dataset/covid-19-reported-patient-impact-and-hospital-capacity-facility): Facility Level data on hospital occupancy.
 
 ### Data Details
 #### USAFacts
@@ -102,6 +105,10 @@ Xun Li, Qinyun Lin, Marynia Kolak, Robert Martin, Stephanie Yang, Moksha Menghan
 ## Running the React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Data Updates
+
+Data are updated in the `Docs` folder. If you are running the Atlas locally and seeing older data, please copy the contents of `Docs` to `Public`.
 
 ## Available Scripts
 
