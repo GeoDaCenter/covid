@@ -29,6 +29,7 @@ We also include information from the following datasets:
 
 ### Future Release
 We have multiple datasets planned for future inclusion in the atlas, including:
+<!-- ADDED >
 <!-- + [Bin Yu Group](https://github.com/Yu-Group/covid19-severity-prediction): Hospital Severity Index forecasting by hospital location -->
 <!-- + [Data.gov](http://data.gov): Indian Reservation Boundaries -->
 <!-- + [NYTimes](https://github.com/nytimes/covid-19-data): Confirmed Cases and Deaths by County & State -->
@@ -40,6 +41,7 @@ We have multiple datasets planned for future inclusion in the atlas, including:
 ### Data Details
 #### USAFacts
 You can access USAFacts data via our API <a href="https://theuscovidatlas.org/api.html" target="_blank">here</a>.
+<!-- DEPRICATED >
 <!-- You can download the most updated county level data merged with USAFacts [here](https://github.com/GeoDaCenter/covid/tree/master/): 
 + usafacts_confirmed_*date*.geojson: the county level data (confirmed cases) using [*USAFacts*](https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/?utm_source=MailChimp&utm_campaign=census-covid2), together with population and number of hospital beds. 
 + usafacts_deaths_*date*.geojson: the county level data (death counts) using [*USAFacts*](https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/?utm_source=MailChimp&utm_campaign=census-covid2), together with population and number of hospital beds. 
