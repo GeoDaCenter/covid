@@ -155,7 +155,7 @@ def create_county_files(raw_data):
 
 if __name__ == '__main__':
 
-    fetch_covid_data()
+    # fetch_covid_data()
     print('download completes')
     raw_data = pd.read_csv(os.path.join(repo_root, 'data-scripts/_1p3a/cases.csv'))
     print('read completes')
