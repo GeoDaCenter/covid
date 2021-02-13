@@ -21,6 +21,7 @@ def generate_tables(output):
 
 	html_var = {}
 
+
 	i = 0
 	for k, v in output.items():
 
@@ -98,7 +99,7 @@ def rolling_average(gdf, fourteen_dates , seven_dates, adjusted_population):
 		return new_df
 
 	for day in seven_dates:
-		new_df.loc[:,day] = new_df.loc[:,day]*100000/new_df['population']
+		new_df.loc[:,day] = new_df.loc[:,day]/new_df['population']
 	new_df["average"] = new_df.loc[:, seven_dates].mean(axis=1)
 	return new_df
 
@@ -113,14 +114,15 @@ def rolling_sum(gdf, fourteen_dates , seven_dates, adjusted_population):
 	# new_df = pd.merge(new_df, gdf.loc[:,["GEOID", "population", "geometry", "NAME", "state_name", 
 	# 	"state_abbr"]], left_on = "GEOID", right_on = "GEOID")
 
-	new_df = gdf.loc[:,seven_dates+["GEOID", "population", "geometry", "NAME", "state_name", 
-		"state_abbr"]]
+	new_df = gdf.loc[:,["GEOID"]+seven_dates+["population", "geometry", "NAME", "state_name", 
+		"state_abbr"]].set_index("GEOID").reset_index()
+
 	if not adjusted_population:
 		new_df["average"] = new_df.loc[:, seven_dates].mean(axis=1)
 		return new_df
 
 	for day in seven_dates:
-		new_df.loc[:,day] = new_df.loc[:,day]*100000/new_df['population']
+		new_df.loc[:,day] = new_df.loc[:,day]/new_df['population']
 	new_df["average"] = new_df.loc[:, seven_dates].mean(axis=1)
 	return new_df
 

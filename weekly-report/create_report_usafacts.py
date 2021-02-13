@@ -5,7 +5,7 @@ import pandas as pd
 import json
 import re
 from datetime import datetime
-import util
+import util_usafacts as util
 
 
 
@@ -13,24 +13,22 @@ import util
 
 
 def calculate_seven_day_lisa():
-
-	gdf = geopandas.read_file("../data/counties_update.geojson")
+	df = pd.read_csv("http://theuscovidatlas.org/csv/covid_confirmed_usafacts.csv")
+	df = df.rename(columns={"countyFIPS": "GEOID"})
+	df["GEOID"] = df["GEOID"].astype('str')
+	gdf = geopandas.read_file("../data/county_usfacts.geojson")
 	gdf["GEOID"] = gdf["GEOID"].astype('str')
-	population = geopandas.read_file("../docs/geojson/county_usfacts.geojson")
-	population["GEOID"] = population["GEOID"].astype('str').apply(lambda x: x.zfill(5))
 
-	thirteen_dates = util.get_date(ndays = 13)
+	fourteen_dates = util.get_date(ndays = 14)
 	seven_dates = util.get_date(ndays = 7)
 
-	gdf = pd.merge(gdf.loc[:,thirteen_dates+["GEOID", "geometry"]], population.loc[:,["GEOID", "population", 
-		"NAME", "state_name", "state_abbr"]], left_on = "GEOID", right_on = "GEOID")
-
+	gdf = gdf.merge(df.loc[:, fourteen_dates+["GEOID", "County Name"]], left_index = True, right_index = False, on="GEOID")
 
 	# Select informational columns and calculate 7-day average for last 7 days
-	emerging_hotspot  = util.rolling_average(gdf, thirteen_dates , seven_dates, adjusted_population=False)
-	emerging_hotspot_adjusted  = util.rolling_average(gdf, thirteen_dates , seven_dates, adjusted_population=True)
-	stable_hotspot = util.rolling_sum(gdf, thirteen_dates , seven_dates, adjusted_population=False)
-	stable_hotspot_adjusted  = util.rolling_sum(gdf, thirteen_dates , seven_dates, adjusted_population=True)
+	emerging_hotspot  = util.rolling_average(gdf, fourteen_dates , seven_dates, adjusted_population=False)
+	emerging_hotspot_adjusted  = util.rolling_average(gdf, fourteen_dates , seven_dates, adjusted_population=True)
+	stable_hotspot = util.rolling_sum(gdf, fourteen_dates , seven_dates, adjusted_population=False)
+	stable_hotspot_adjusted  = util.rolling_sum(gdf, fourteen_dates , seven_dates, adjusted_population=True)
 
 
 	# Calculate LISA
