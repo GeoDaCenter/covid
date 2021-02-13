@@ -83,12 +83,13 @@ def get_date(ndays = 7, date = None):
 	return date
 
 
-def rolling_average(gdf, thirteen_dates , seven_dates, adjusted_population):
+def rolling_average(gdf, fourteen_dates , seven_dates, adjusted_population):
 
 	'''Calculate 7-day rolling average'''
 
-	df = gdf.loc[:,thirteen_dates+["GEOID"]].set_index("GEOID")
-	new_df = df.rolling(window=7, axis=1).mean().shift(-6,axis=1).dropna(1).reset_index()
+	df = gdf.loc[:,fourteen_dates+["GEOID"]].set_index("GEOID")
+	new_df = df.diff(periods=-7, axis=1).iloc[:,:-7].div(7)
+	# new_df = df.rolling(window=7, axis=1).mean().shift(-6,axis=1).dropna(1).reset_index()
 	new_df = pd.merge(new_df, gdf.loc[:,["GEOID", "population", "geometry", "NAME", "state_name", 
 		"state_abbr"]], left_on = "GEOID", right_on = "GEOID")
 
@@ -97,27 +98,29 @@ def rolling_average(gdf, thirteen_dates , seven_dates, adjusted_population):
 		return new_df
 
 	for day in seven_dates:
-		new_df.loc[:,day] = new_df.loc[:,day]*100000/gdf['population']
+		new_df.loc[:,day] = new_df.loc[:,day]*100000/new_df['population']
 	new_df["average"] = new_df.loc[:, seven_dates].mean(axis=1)
 	return new_df
 
 
 
-def rolling_sum(gdf, thirteen_dates , seven_dates, adjusted_population):
+def rolling_sum(gdf, fourteen_dates , seven_dates, adjusted_population):
 
 	'''Calculate 7-day rolling sum'''
 
-	df = gdf.loc[:,thirteen_dates+["GEOID"]].set_index("GEOID")
-	new_df = df.rolling(window=7, axis=1).sum().shift(-6,axis=1).dropna(1).reset_index()
-	new_df = pd.merge(new_df, gdf.loc[:,["GEOID", "population", "geometry", "NAME", "state_name", 
-		"state_abbr"]], left_on = "GEOID", right_on = "GEOID")
+	# df = gdf.loc[:,fourteen_dates+["GEOID"]].set_index("GEOID")
+	# new_df = df.rolling(window=7, axis=1).sum().shift(-6,axis=1).dropna(1).reset_index()
+	# new_df = pd.merge(new_df, gdf.loc[:,["GEOID", "population", "geometry", "NAME", "state_name", 
+	# 	"state_abbr"]], left_on = "GEOID", right_on = "GEOID")
 
+	new_df = gdf.loc[:,seven_dates+["GEOID", "population", "geometry", "NAME", "state_name", 
+		"state_abbr"]]
 	if not adjusted_population:
 		new_df["average"] = new_df.loc[:, seven_dates].mean(axis=1)
 		return new_df
 
 	for day in seven_dates:
-		new_df.loc[:,day] = new_df.loc[:,day]*100000/gdf['population']
+		new_df.loc[:,day] = new_df.loc[:,day]*100000/new_df['population']
 	new_df["average"] = new_df.loc[:, seven_dates].mean(axis=1)
 	return new_df
 
