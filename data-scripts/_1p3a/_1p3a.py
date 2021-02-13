@@ -168,13 +168,13 @@ if __name__ == '__main__':
     except:
         print('Failed at create_county_files')
 
-    try:
-        print('Writing to S3...')
-        s3 = boto3.resource('s3')
-        s3.Object('geoda-covid-atlas', 'covid_confirmed_1p3a_state.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_confirmed_1p3a_state.csv'), 'rb'))
-        s3.Object('geoda-covid-atlas', 'covid_deaths_1p3a_state.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_deaths_1p3a_state.csv'), 'rb'))
-        s3.Object('geoda-covid-atlas', 'covid_confirmed_1p3a.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_confirmed_1p3a.csv'), 'rb'))
-        s3.Object('geoda-covid-atlas', 'covid_deaths_1p3a.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_deaths_1p3a.csv'), 'rb'))
-        print('Write to S3 complete.')
-    except Exception as e:
-        print(e)
+    # try:
+    #     print('Writing to S3...')
+    #     s3 = boto3.resource('s3')
+    #     s3.Object('geoda-covid-atlas', 'covid_confirmed_1p3a_state.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_confirmed_1p3a_state.csv'), 'rb'))
+    #     s3.Object('geoda-covid-atlas', 'covid_deaths_1p3a_state.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_deaths_1p3a_state.csv'), 'rb'))
+    #     s3.Object('geoda-covid-atlas', 'covid_confirmed_1p3a.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_confirmed_1p3a.csv'), 'rb'))
+    #     s3.Object('geoda-covid-atlas', 'covid_deaths_1p3a.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_deaths_1p3a.csv'), 'rb'))
+    #     print('Write to S3 complete.')
+    # except Exception as e:
+    #     print(e)
