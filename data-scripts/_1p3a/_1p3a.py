@@ -92,7 +92,7 @@ def fetch_covid_data():
     now = datetime.now()
     out.write(now.strftime("%d/%m/%Y %H:%M:%S"))
     out.close()
-
+    print(dir_path)
     os.system('curl -o {}/cases.csv https://api2.1point3acres.com/v1/api/coronavirus/us/cases?token=PFl0dpfo'.format(dir_path))
 
 def create_state_files(raw_data):
@@ -156,15 +156,21 @@ def create_county_files(raw_data):
 if __name__ == '__main__':
 
     fetch_covid_data()
-
+    print('download completes')
     raw_data = pd.read_csv(os.path.join(repo_root, 'data-scripts/_1p3a/cases.csv'))
+    print('read completes')
+
     try:
+        print('state_files attempt')
         create_state_files(raw_data)
+        print('state_files complete')
     except:
         print('Failed at create_state_files')
 
     try:
+        print('county_files attempt')
         create_county_files(raw_data)
+        print('county_files complete')
     except:
         print('Failed at create_county_files')
 
