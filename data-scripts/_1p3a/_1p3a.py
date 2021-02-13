@@ -158,9 +158,15 @@ if __name__ == '__main__':
     fetch_covid_data()
 
     raw_data = pd.read_csv(os.path.join(repo_root, 'data-scripts/_1p3a/cases.csv'))
+    try:
+        create_state_files(raw_data)
+    except:
+        print('Failed at create_state_files')
 
-    create_state_files(raw_data)
-    create_county_files(raw_data)
+    try:
+        create_county_files(raw_data)
+    except:
+        print('Failed at create_county_files')
 
     try:
         print('Writing to S3...')
