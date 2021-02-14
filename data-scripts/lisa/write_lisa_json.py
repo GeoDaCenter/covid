@@ -178,7 +178,7 @@ def rename_column_usafacts(colnames):
 
 	for i, n in enumerate(colnames):
 		if re.match('^[0-9]+', n):
-			n  = datetime.strptime(n, '%m/%d/%y').strftime('%Y-%m-%d')
+			# n  = datetime.strptime(n, '%m/%d/%y').strftime('%Y-%m-%d')
 			colnames[i] = n
 	return colnames
 
