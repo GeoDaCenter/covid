@@ -185,3 +185,17 @@ def rename_column_usafacts(colnames):
 			colnames[i] = n
 	return colnames
 
+
+def check_latest_date(df):
+	latest_update = df.columns[-1]
+	yesterday = (datetime.today()+ timedelta(days=-1)).strftime("%Y-%m-%d")
+	if latest_update == yesterday:
+		return None
+	else:
+		return latest_update
+
+
+
+
+
+
