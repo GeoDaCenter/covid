@@ -124,6 +124,7 @@ def rolling_sum(gdf, fourteen_dates , seven_dates, adjusted_population):
 	for day in seven_dates:
 		new_df.loc[:,day] = new_df.loc[:,day]/new_df['population']
 	new_df["average"] = new_df.loc[:, seven_dates].mean(axis=1)
+
 	return new_df
 
 
@@ -193,9 +194,5 @@ def check_latest_date(df):
 		return None
 	else:
 		return latest_update
-
-
-
-
 
 
