@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- google analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-72724100-4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+
+      gtag('config', 'UA-72724100-4');
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-72724100-5"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-72724100-5');
+    </script>
+    <script>
+      // I'm so sorry there is a bug in jsgeoda where this function isn't defined and its web assembly -_-
+      function isInt(n) {
+        return Number(n) === n && n % 1 === 0;
+      }
+    </script>
+    <meta charset="utf-8">
+    <title>US Covid Atlas</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta property="og:title" content="US Covid Atlas">  
+    <meta property="og:description" content="Near Real-Time Exploration of the COVID-19 Pandemic. The US COVID Atlas is a visualization tool led by a University of Chicago research coalition.
+    In a quickly changing pandemic landscape, our tool connects COVID case data and community indicators across the United States from its beginning to today. ">
+    <meta property="og:image" content="http://theuscovidatlas.org/img/thumbnail.jpg">
+    <meta property="og:url" content="https://theuscovidatlas.org/map.html">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="57x57" href="./favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="./favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="./favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="./favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="./favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="./favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="./favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="./favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="./favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="./favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="msapplication-TileColor" content="#ec1e24">
+    <meta name="msapplication-TileImage" content="./favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ec1e24">
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root">
+      <script>
+        window.onload = function(){
+          let link = window.location.href.split('io/covid/')[1]?.split('.html')[0] ?? ''
+          document.querySelector('#targetLink').href = `https://docs.google.com/presentation/d/1M8ZyYPAuw3TbghIu_pFnk_OcXpLmBf2qPaAGtbFzi9Y/edit?usp=sharing`
+          setTimeout(function(){
+            window.location.replace(`https://docs.google.com/presentation/d/1M8ZyYPAuw3TbghIu_pFnk_OcXpLmBf2qPaAGtbFzi9Y/edit?usp=sharing`);
+          }, 5000)
+        }
+      </script>
+        <div style="background:#2b2b2b;position:fixed;left:0;top:0;width:100%;height:100%;">
+          <div style="color:white;text-align:center;position:fixed;left:50%;top:50%;transform:translate(-50%, -50%);font-family:Arial, Helvetica, sans-serif;padding:0;margin:0;width:100%;">
+            <img src="./assets/img/preloader.gif" style="display:block;margin:40px auto;width:100px; max-width:100%;"/>
+            <h1>You are being redirected to the Slide Deck</h1>
+            <p>If you are not redirected in 5 seconds, <a href="#" id="targetLink" style="color:aquamarine;text-decoration: none;">click here.</a></p>
+          </div>
+        </div>
+    </div>
+  </body>
+</html>
