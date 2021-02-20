@@ -1,5 +1,6 @@
 
 import BottomPanel from './bottomPanel';
+import ContextMenu from './contextMenu';
 import DataPanel from './dataPanel';
 import DateSlider from './slider';
 import Dock from './dock';
@@ -19,6 +20,7 @@ import Scaleable from './scaleable';
 import StaticNavbar from './staticNavbar';
 import Tooltip from './tooltip';
 import TopPanel from './topPanel';
+import Geocoder from './geocoder';
 
 import About from './Pages/About';
 import Api from './Pages/Api';
@@ -38,10 +40,12 @@ import Trends from './Pages/Trends';
 
 export {
     BottomPanel,
+    ContextMenu,
     DataPanel,
     DateSlider,
     Dock,
     Draggable,
+    Geocoder,
     Footer,
     InfoBox,
     Legend,

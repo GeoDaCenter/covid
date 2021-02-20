@@ -37,7 +37,21 @@ div.MuiPaper-root.MuiPopover-paper li.MuiListSubheader-root {
     color: rgba(255,255,255,0.7);
     font-variant: small-caps;
 }
+#variableMenu .MuiPaper-root ul {
+  columns:2;
+  padding-bottom:20px;
+}
+#variableMenu .MuiPaper-root ul li.Mui-disabled {
+  break-after: avoid-column;
+}
 
+@media (max-width:768px){ 
+  #variableMenu .MuiPaper-root ul {
+    columns:1;
+  }
+}
+
+/* break-after: avoid; */
 body {
     margin: 0; 
     padding: 0;

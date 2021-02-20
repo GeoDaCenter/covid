@@ -425,6 +425,19 @@ var reducer = (state = INITIAL_STATE, action) => {
                 mapParams: urlMapParamsObj,
                 dataParams: urlDataParamsObj
             }
+        case "OPEN_CONTEXT_MENU":
+            let contextPanelsObj = {
+                ...state.panelState,
+                context: true,
+                contextPos: {
+                    x: action.payload.params.x,
+                    y: action.payload.params.y
+                }
+            }
+            return {
+                ...state,
+                panelState: contextPanelsObj
+            }
         default:
             return state;
     }
