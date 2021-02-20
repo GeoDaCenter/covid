@@ -153,6 +153,11 @@ export const colors = {
     lightgray: '#d8d8d8',
     yellow: '#FFCE00',
     lightblue: '#A1E1E3',
+    skyblue: '#c1ebeb',
+    blue: '#007bff',
+    teal: '#00575c',
+    orange: '#f37e43',
+    pink: '#e83e8c',
     pairedColors: {
         count: [
             '#1f78b4',

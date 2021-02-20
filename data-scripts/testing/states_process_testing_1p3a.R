@@ -46,8 +46,8 @@ new_num$"t2020-01-31" <- -1
 
 
 # Take population info
-states_update <- as.data.frame(st_read("/tmp/covid/docs/geojson/state_1p3a.geojson")) %>% select(-geometry)
-states_cases <- read.csv("/tmp/covid/docs/csv/covid_confirmed_1p3a_state.csv") %>% select(-GEOID)
+states_update <- as.data.frame(st_read("/tmp/covid/public/state_1p3a.geojson")) %>% select(-geometry)
+states_cases <- read.csv("/tmp/covid/public/csv/covid_confirmed_1p3a_state.csv") %>% select(-GEOID)
 states_update <- left_join(states_update, states_cases, by = "NAME")
 
 states_update[53, "population"] = 106977
@@ -182,7 +182,7 @@ testing <- states_update %>%
 for (i in 3:ncol(testing)){
   names(testing)[i] <- paste(substr(names(testing)[i],2,11))
 }
-write.csv(testing,'/tmp/covid/docs/csv/covid_testing_1p3a_state.csv', row.names=FALSE)
+write.csv(testing,'/tmp/covid/public/csv/covid_testing_1p3a_state.csv', row.names=FALSE)
 
 Testingccpt <- states_update %>%
   select(GEOID, NAME,
@@ -190,7 +190,7 @@ Testingccpt <- states_update %>%
 for (i in 3:ncol(Testingccpt)){
   names(Testingccpt)[i] <- paste(substr(names(Testingccpt)[i],5,14))
 }
-write.csv(Testingccpt,'/tmp/covid/docs/csv/covid_ccpt_1p3a_state.csv', row.names=FALSE)
+write.csv(Testingccpt,'/tmp/covid/public/csv/covid_ccpt_1p3a_state.csv', row.names=FALSE)
 
 Testingtcap <- states_update %>%
   select(GEOID, NAME,
@@ -198,7 +198,7 @@ Testingtcap <- states_update %>%
 for (i in 3:ncol(Testingtcap)){
   names(Testingtcap)[i] <- paste(substr(names(Testingtcap)[i],5,14))
 }
-write.csv(Testingtcap,'/tmp/covid/docs/csv/covid_tcap_1p3a_state.csv', row.names=FALSE)
+write.csv(Testingtcap,'/tmp/covid/public/csv/covid_tcap_1p3a_state.csv', row.names=FALSE)
 
 
 Testingwktpos <- states_update %>%
@@ -207,4 +207,4 @@ Testingwktpos <- states_update %>%
 for (i in 3:ncol(Testingwktpos)){
   names(Testingwktpos)[i] <- paste(substr(names(Testingwktpos)[i],7,16))
 }
-write.csv(Testingwktpos,'/tmp/covid/docs/csv/covid_wk_pos_1p3a_state.csv', row.names=FALSE)
+write.csv(Testingwktpos,'/tmp/covid/public/csv/covid_wk_pos_1p3a_state.csv', row.names=FALSE)

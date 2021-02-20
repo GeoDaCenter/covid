@@ -14,7 +14,7 @@ def upload_files(files):
 def write_to_s3(filename):
     try:
         print('Writing {} to S3...'.format(filename))
-        s3.Object('geoda-covid-atlas', filename).put(Body=open(os.path.join('/tmp/covid/docs/csv', filename), 'rb'))
+        s3.Object('geoda-covid-atlas', filename).put(Body=open(os.path.join('/tmp/covid/public/csv', filename), 'rb'))
         print('Write to S3 complete.')
 
     except Exception as e:

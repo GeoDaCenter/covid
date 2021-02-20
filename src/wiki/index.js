@@ -81,33 +81,6 @@ export const pages = {
         "icon": "info",
         "content": 
             <div>
-                <h3>Changelog 1/31</h3>
-                <p>Optimization Updates</p>
-                <ul>
-                    <li>
-                        Layers performance has been improved. Tooltip, aggregation, and selection speeds are much faster.  
-                    </li>
-                    <li>
-                        Main choropleth layers use Deck.gl <code>PolygonLayer</code> instead of <code>GeoJSONLayer</code>. 
-                    </li>
-                </ul>
-                <hr/>
-                <h3>Changelog 1/27</h3>
-                <p>Vaccination Data Updates</p>
-                <ul>
-                    <li>
-                        New vaccination data specifying first and second doses has been made available, and three new variables
-                        are ready for the Atlas: % of population who received a first dose, % of population who received a second dose, animated
-                        vaccines available for distribution (vaccines distributed to each state, but not yet administered).
-                    </li>
-                    <li>
-                        Vaccination data has been added to state-level tooltips
-                    </li>
-                    <li>
-                        Various bugs have been fixed
-                    </li>
-                </ul>
-                <hr/>
                 <h3>Changelog 1/12</h3>
                 <p>Refactor Update</p>
                 <ul>
@@ -169,7 +142,7 @@ export const pages = {
             <p>
                 The <HoverButton selector="#mapType" backup="#showHideLeft" text="Map Type"/> buttons change how the map is colored and how the data is symbolized.
                 Natural breaks (jenks) uses a non-linear algorithm to classify (bin) data into groups, box map uses the same concept as a box plot chart, and hotspots 
-                identify clusters of high and low rates based on LISA methods. Read more on the <a href="./methods.html" target="_blank" rel="noopener noreferrer">methods</a> page.
+                identify clusters of high and low rates based on LISA methods. Read more on the <a href="/methods" target="_blank" rel="noopener noreferrer">methods</a> page.
             </p>
             <p>
                 The <HoverButton selector="#visualizationType" backup="#showHideLeft" text="Visualization Type"/> buttons change the visual representation of the map. The 2D map is 
@@ -188,17 +161,6 @@ export const pages = {
             <p>
                 The <HoverButton selector="#timeSlider" text="Slider" /> can change the date selection for your selected variable. 
                 You can animate the map by clicking the <HoverButton selector="#playPause" text="Play/Pause Button" />.
-            </p>
-            <h3>Aggregating Geographies</h3>
-            <p>
-                To select multiple geographies, there are two controls. First you can hold down <b>Control</b> on your keyboard and click on states or counties on the map. Each will be highlighted and added 
-                to the line chart and report panel. Additionally, you may hold down <b>Shift</b> and draw a box to select multiple areas. The <HoverButton selector="#boxSelect" text="Selection Box"/> button 
-                in the bottom right also initiates area selection.
-            </p>
-            <h3>Sharing a Map</h3>
-            <p>
-                Use the <HoverButton selector="#shareButton" text="Share Button"/> in the bottom right to generate a link to the map you are currently viewing. The map link will include the map coordinates you are viewing, the data source, variable, geography,
-                and map mode. The link will be directly copied to your clipboard to share with your community, on social media, or to advocate for policy change.
             </p>
 
             
@@ -256,7 +218,7 @@ export const pages = {
                 <h3> Testing</h3>
                 <i>Times-series data</i>
                 <ul>
-                    <li>7 Day Testing Positivity Rate Percent: The percentage of COVID tests returning positive results, aggregated to a 7-day rolling average</li>
+                    <li>7 Day Testing Positivity Rate %: The percentage of COVID tests returning positive results, aggregated to a 7-day rolling average</li>
                     <li>7 Day Testing Capacity: The number of COVID tests administered in the county or state normalized to tests per 100,000 population</li>
                     <li>7 Day Confirmed Cases per Testing %: The number of positive COVID cases per number of COVID tests as a percentage</li>
                 </ul>
@@ -277,8 +239,8 @@ export const pages = {
                 <h3>Community Health</h3>
                 <i>Characteristic data</i>
                 <ul>
-                    <li>Uninsured Percent (Community Health Factor): Percentage of the county or state that does not have health insurance</li>
-                    <li>Over 65 Years Percent (Community Health Context): Percentage of the county or state this is over 65 years of age</li>
+                    <li>Uninsured % (Community Health Factor): Percentage of the county or state that does not have health insurance</li>
+                    <li>Over 65 Years % (Community Health Context): Percentage of the county or state this is over 65 years of age</li>
                     <li>Life expectancy (Length and Quality of Life): Average life expectancy for individuals living in the state or county</li>
                 </ul>
             </div>
@@ -320,7 +282,7 @@ export const pages = {
                     Use choropleth maps to see data about the virus on a particular day.
                 </p>
                 <p>
-                    For more details on how the Atlas created the choropleth maps, please see the <a href="./methods.html">Methods page</a>.
+                    For more details on how the Atlas created the choropleth maps, please see the <a href="/methods">Methods page</a>.
                 </p>
                 <hr/>
                 <ol className="tutorialSteps">
@@ -507,7 +469,7 @@ export const pages = {
             <div>
                 <h1>Change Over Time</h1>
                 <p>
-                    How a variable changed over time offers insights into what will happen next. The Atlas uses the animated slider and the time graph to show the history of Covid-19’s spread. Read the <a href="./methods.html">Methods</a> page for more information on data limitations and reporting lags.
+                    How a variable changed over time offers insights into what will happen next. The Atlas uses the animated slider and the time graph to show the history of Covid-19’s spread. Read the <a href="/methods">Methods</a> page for more information on data limitations and reporting lags.
                 </p>
                 <hr/>
                 <ol className="tutorialSteps">
