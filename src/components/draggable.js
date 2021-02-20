@@ -1,10 +1,15 @@
+// This components (often wrapping Scaleable()) houses a move-able panel
+
+// Import libraries
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components'
 
+// Import config and actions
 import { colors } from '../config';
 import { setPanelState } from '../actions';
 
+// Styles - Container
 const DragContainer = styled.div`
     position:fixed;
     overflow:hidden;
@@ -17,6 +22,8 @@ const DragContainer = styled.div`
         display:none;
     };
 `
+
+// Drag button (crosshair)
 const DragButton = styled.button`
     position:absolute;
     left:0;
@@ -32,7 +39,7 @@ const DragButton = styled.button`
     }
 `
 
-
+// Hide panel // collapse button
 const CollapseButton = styled.button`
     position: absolute;
     top: 3px;
@@ -58,13 +65,17 @@ const CollapseButton = styled.button`
 `
 
 const Draggable = (props) => {
+    // Redux Dispatch and selector
     const dispatch = useDispatch();
     const open = useSelector(state => state.panelState[props.title]);
 
+    // Local state, dragging 
     const [X, setX] = useState(props.defaultX);
     const [Y, setY] = useState(props.defaultY);
     const [isDragging, setIsDragging] = useState(false)
 
+    // Listener and touch listeners for moving
+    // On touch/mouseup, the listeners remove themselves
     const listener = (e) => {
         setX(prevWidth => prevWidth+e.movementX)
         setY(prevHeight => prevHeight+e.movementY)
@@ -97,13 +108,18 @@ const Draggable = (props) => {
         window.addEventListener('touchend', removeTouchListener)
     }
 
+    // End Listeners
+
+    // Hide Panel
     const handleCollapse = () => dispatch(setPanelState({[props.title]: false}))
 
+    // Props change when window changes, updates local state here
     useEffect(() => {
         setX(props.defaultX);
         setY(props.defaultY);
     },[open, props.defaultX, props.defaultY])
 
+    // Component return
     return (
         <DragContainer style={{left:`${X}px`, top: `${Y}px`, zIndex: props.z || 1}} className={open ? '' : 'collapsed'} isDragging={isDragging}>
             {props.content}

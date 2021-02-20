@@ -156,6 +156,11 @@ export const colors = {
     red: '#EC1E24',
     strongOrange: '#F16622',
     orange:'#F37E44',
+    skyblue: '#c1ebeb',
+    blue: '#007bff',
+    teal: '#00575c',
+    // orange: '#f37e43',
+    pink: '#e83e8c',
     pairedColors: {
         count: [
             '#1f78b4',
@@ -215,8 +220,8 @@ export const dataPresets = {
         joinCols: ['GEOID', ['FIPS','fips','countyFIPS']], // geospatial data join column and then list of valid table join columns
         accumulate: [], // CSV names to accumulate over time
         dateList: { // date lists to parse: isoDateList (eg. '2020-01-01') or usDateList (eg. '01/01/20')
-            'covid_confirmed_usafacts': 'usDateList', 
-            'covid_deaths_usafacts': 'usDateList'
+            'covid_confirmed_usafacts': 'isoDateList', 
+            'covid_deaths_usafacts': 'isoDateList'
         }
     },
     'county_1p3a.geojson': {
@@ -344,8 +349,8 @@ export const dataPresets = {
         joinCols: ['GEOID', ['FIPS','fips','fips_code','state_fips','stateFIPS']],
         accumulate: ['covid_testing_cdc_state'],
         dateList: {
-            'covid_confirmed_1p3a_state': 'usDateList', 
-            'covid_deaths_1p3a_state': 'usDateList', 
+            'covid_confirmed_1p3a_state': 'isoDateList', 
+            'covid_deaths_1p3a_state': 'isoDateList', 
             'covid_testing_cdc_state': 'isoDateList', 
             'covid_wk_pos_cdc_state': 'isoDateList', 
             'covid_tcap_cdc_state': 'isoDateList', 
@@ -442,8 +447,8 @@ export const dataPresets = {
         joinCols: ['GEOID', ['fips_code', 'fips', 'FIPS', 'countyFIPS']],
         accumulate: [],
         dateList: {
-            'covid_confirmed_usafacts': 'usDateList', 
-            'covid_deaths_usafacts': 'usDateList',
+            'covid_confirmed_usafacts': 'isoDateList', 
+            'covid_deaths_usafacts': 'isoDateList',
             'covid_testing_cdc': 'isoDateList', 
             'covid_wk_pos_cdc': 'isoDateList', 
             'covid_tcap_cdc': 'isoDateList', 
@@ -589,8 +594,8 @@ export const variablePresets = {
       colorScale: null,
     },
     "HEADER:community health":{},
-    "Uninsured %":{
-      variableName:"Uninsured %",
+    "Uninsured Percent":{
+      variableName:"Uninsured Percent",
       numerator: 'chr_health_factors',
       nType: 'characteristic',
       nProperty: null,
@@ -605,8 +610,8 @@ export const variablePresets = {
       colorScale: 'uninsured',
       scale3D: 15000,
     },
-    "Over 65 Years %":{
-      variableName:"Over 65 Years %",
+    "Over 65 Years Percent":{
+      variableName:"Over 65 Years Percent",
       numerator: 'chr_health_context',
       nType: 'characteristic',
       nProperty: null,
@@ -639,8 +644,8 @@ export const variablePresets = {
     },
     
     "HEADER:testing":{},
-    "7 Day Testing Positivity Rate %": {
-      variableName:"7 Day Testing Positivity Rate %",
+    "7 Day Testing Positivity Rate Percent": {
+      variableName:"7 Day Testing Positivity Rate Percent",
       numerator: 'testing_wk_pos',
       nType: 'time-series',
       nProperty: null,
@@ -749,11 +754,10 @@ export const variablePresets = {
         scale3D: 1000,
         colorScale: 'vaccination',
         fixedScale: null,
-    },
-    
+    },    
     "HEADER:cdc vaccination":{},
-    "% Received First Dose": {
-        variableName:"% Received First Dose",
+    "Percent Received First Dose": {
+        variableName:"Percent Received First Dose",
         numerator: 'vaccinesAdmin1',
         nType: 'time-series',
         nProperty: null,
@@ -765,11 +769,11 @@ export const variablePresets = {
         dIndex:null,
         scale:100,
         scale3D: 1000,
-        colorScale: 'vaccination',
+        colorScale: 'purpleSingleHue8',
         fixedScale: null,
     },
-    "% Received Second Dose": {
-        variableName:"% Received Second Dose",
+    "Percent Received Second Dose": {
+        variableName:"Percent Received Second Dose",
         numerator: 'vaccinesAdmin2',
         nType: 'time-series',
         nProperty: null,
@@ -781,7 +785,23 @@ export const variablePresets = {
         dIndex:null,
         scale:100,
         scale3D: 1000,
-        colorScale: 'vaccination',
+        colorScale: 'greenSingleHue8',
+        fixedScale: null,
+    },
+    "Doses to be Administered per 100K Population": {
+        variableName:"Doses to be Administered per 100K Population",
+        numerator: 'vaccinesDist',
+        nType: 'time-series',
+        nProperty: null,
+        nRange: null,
+        denominator: 'properties',
+        dType: 'characteristic',
+        dProperty: 'population',
+        dRange:null,
+        dIndex:null,
+        scale:100000,
+        scale3D: 1000,
+        colorScale: 'BuPu8',
         fixedScale: null,
     },
     "Doses Available per 100K Population": {

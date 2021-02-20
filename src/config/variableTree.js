@@ -158,7 +158,7 @@ export const variableTree = {
         }
     },
     "HEADER:testing":{},
-    "7 Day Testing Positivity Rate %":{
+    "7 Day Testing Positivity Rate Percent":{
         "County": {
             "CDC": {
                 "geojson": "cdc.geojson",
@@ -187,7 +187,7 @@ export const variableTree = {
         }
     },
     "HEADER:vaccination":{},
-    "% Received First Dose":{
+    "Percent Received First Dose":{
         "State": {
             "CDC": {
                 "geojson": "state_1p3a.geojson",
@@ -195,7 +195,7 @@ export const variableTree = {
             }
         },
     },
-    "% Received Second Dose":{
+    "Percent Received Second Dose":{
         "State": {
             "CDC": {
                 "geojson": "state_1p3a.geojson",
@@ -203,7 +203,7 @@ export const variableTree = {
             }
         },
     },
-    "Doses to be Administed per 100K Population":{
+    "Doses to be Administered per 100K Population":{
         "State": {
             "CDC": {
                 "geojson": "state_1p3a.geojson",
@@ -221,7 +221,7 @@ export const variableTree = {
         }
     },
     "HEADER:community health information":{},
-    "Uninsured %": {
+    "Uninsured Percent": {
         "County": {
             "County Health Rankings": {
                 "geojson":'county_usfacts.geojson',
@@ -235,7 +235,7 @@ export const variableTree = {
             }
         }
     },
-    "Over 65 Years %": {
+    "Over 65 Years Percent": {
         "County": {
             "County Health Rankings": {
                 "geojson":'county_usfacts.geojson',

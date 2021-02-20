@@ -15,14 +15,14 @@ python ./s3_upload.py
 
 cd /tmp/covid
 
-git add ./docs/csv/covid_ccpt_1p3a_state.csv \
-        ./docs/csv/covid_tcap_1p3a_state.csv \
-        ./docs/csv/covid_wk_pos_1p3a_state.csv \
-        ./docs/csv/covid_testing_1p3a_state.csv
-# git add ./docs/csv/covid_ccpt_usafacts_state.csv \
-#         ./docs/csv/covid_tcap_usafacts_state.csv \
-#         ./docs/csv/covid_wk_pos_usafacts_state.csv \
-#         ./docs/csv/covid_testing_usafacts_state.csv
+git add ./public/csv/covid_ccpt_1p3a_state.csv \
+        ./public/csv/covid_tcap_1p3a_state.csv \
+        ./public/csv/covid_wk_pos_1p3a_state.csv \
+        ./public/csv/covid_testing_1p3a_state.csv
+# git add ./public/csv/covid_ccpt_usafacts_state.csv \
+#         ./public/csv/covid_tcap_usafacts_state.csv \
+#         ./public/csv/covid_wk_pos_usafacts_state.csv \
+#         ./public/csv/covid_testing_usafacts_state.csv
 
 git commit -m"Updated: `date +'%Y-%m-%d %H:%M:%S'`"&& git push
 # python s3_upload.py

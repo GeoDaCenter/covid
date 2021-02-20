@@ -1,4 +1,5 @@
-// this components houses the slider, legend, and bottom dock chart
+// DEPRICATED: Bottom panel container
+// Now container in Legend.js
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 

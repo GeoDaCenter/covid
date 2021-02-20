@@ -77,10 +77,10 @@ change_date <- function(den){
 
 
 # Take population info
-states_update <- as.data.frame(st_read("/tmp/covid/docs/geojson/state_1p3a.geojson")) %>% select(-geometry, -GEOID)
+states_update <- as.data.frame(st_read("/tmp/covid/public/geojson/state_1p3a.geojson")) %>% select(-geometry, -GEOID)
 names(states_update)[5] <- "State"
 states_update <- states_update[-c(17, 53, 54, 55, 56),]
-states_cases <- read.csv("/tmp/covid/docs/csv/covid_confirmed_usafacts_state.csv")
+states_cases <- read.csv("/tmp/covid/public/csv/covid_confirmed_usafacts_state.csv")
 states_update <- left_join(states_update, states_cases, by = "State")
 
 for (i in 18:(322+diff)) {
@@ -216,7 +216,7 @@ for (i in 1:ncol(testing)){
 }
 testing <- testing[order(as.Date(colnames(testing), "%m/%d/%y"))]
 testing <- cbind(usaf_var, testing)
-write.csv(testing,'/tmp/covid/docs/csv/covid_testing_usafacts_state.csv', row.names=FALSE)
+write.csv(testing,'/tmp/covid/public/csv/covid_testing_usafacts_state.csv', row.names=FALSE)
 
 Testingccpt <- states_update %>%
   select(starts_with("ccpt2020"))
@@ -226,7 +226,7 @@ for (i in 1:ncol(Testingccpt)){
 }
 Testingccpt <- Testingccpt[order(as.Date(colnames(Testingccpt), "%m/%d/%y"))]
 Testingccpt <- cbind(usaf_var, Testingccpt)
-write.csv(Testingccpt,'/tmp/covid/docs/csv/covid_ccpt_usafacts_state.csv', row.names=FALSE)
+write.csv(Testingccpt,'/tmp/covid/public/csv/covid_ccpt_usafacts_state.csv', row.names=FALSE)
 
 Testingtcap <- states_update %>%
   select(starts_with("tcap2020"))
@@ -236,7 +236,7 @@ for (i in 1:ncol(Testingtcap)){
 }
 Testingtcap <- Testingtcap[order(as.Date(colnames(Testingtcap), "%m/%d/%y"))]
 Testingtcap <- cbind(usaf_var, Testingtcap)
-write.csv(Testingtcap,'/tmp/covid/docs/csv/covid_tcap_usafacts_state.csv', row.names=FALSE)
+write.csv(Testingtcap,'/tmp/covid/public/csv/covid_tcap_usafacts_state.csv', row.names=FALSE)
 
 
 Testingwktpos <- states_update %>%
@@ -247,4 +247,4 @@ for (i in 1:ncol(Testingwktpos)){
 }
 Testingwktpos <- Testingwktpos[order(as.Date(colnames(Testingwktpos), "%m/%d/%y"))]
 Testingwktpos <- cbind(usaf_var, Testingwktpos)
-write.csv(Testingwktpos,'/tmp/covid/docs/csv/covid_wk_pos_usafacts_state.csv', row.names=FALSE)
+write.csv(Testingwktpos,'/tmp/covid/public/csv/covid_wk_pos_usafacts_state.csv', row.names=FALSE)

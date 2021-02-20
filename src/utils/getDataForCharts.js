@@ -1,12 +1,12 @@
-const getDataForCharts = (data, table, dateIndices, dateList, name=null) => {
+const getDataForCharts = (data, table, dateIndices, dateList, name=null, interval=1) => {
     // get list of all features (GEOIDs/FIPS)
     let features = Object.keys(data);
     // counter for days 
     let n = 0;
     // return array
-    let rtn = new Array(dateList.length)
+    let rtn = new Array((Math.ceil(dateList.length/interval))).fill(null)
     // 7 day average delay -- early data
-    let j = -7;
+    let j = interval == 1 ? 7 : 1;
 
     let countCol;
     let sumCol;
@@ -25,9 +25,8 @@ const getDataForCharts = (data, table, dateIndices, dateList, name=null) => {
         if (dateIndices.indexOf(n)===-1){
             tempObj[sumCol] = null;
             tempObj[countCol] = null;
-            rtn[n] = tempObj;
-            n++;
-            j++;
+            rtn[n/interval] = tempObj;
+            n+=interval;
         } else {
             // loop through features and sum values for index
             let sum = 0;
@@ -39,14 +38,13 @@ const getDataForCharts = (data, table, dateIndices, dateList, name=null) => {
             }
             tempObj[sumCol] = sum
             tempObj.date = dateList[n]
-            if (j<0) {
+            if ((n<7 && j==7)||(n<1 && j==1)) {
                 tempObj[countCol] = sum
             } else {
-                tempObj[countCol] = (sum - rtn[j][sumCol])/7
+                tempObj[countCol] = (sum - rtn[n/interval-j][sumCol])/(j)
             }
-            rtn[n] = tempObj;
-            n++;
-            j++;
+            rtn[n/interval] = tempObj;
+            n+=interval;
         }
     }
     return rtn;

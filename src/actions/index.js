@@ -12,6 +12,9 @@ export const setGeoid = (geoid) => {
     }
 }
 
+// Load in new data to the store, including 
+// the GeoJSON and indices, chart data, bins, etc.
+// Used when switching to a new data source
 export const dataLoad = ( load ) => {
     return {
         type: 'DATA_LOAD',
@@ -21,6 +24,9 @@ export const dataLoad = ( load ) => {
     }
 }
 
+// Load existing data, including the dataset to load,
+// bins, chart data, etc.
+// Used when switching back to an already loaded dataset
 export const dataLoadExisting = ( load ) => {
     return {
         type: 'DATA_LOAD_EXISTING',
@@ -30,6 +36,8 @@ export const dataLoadExisting = ( load ) => {
     }
 }
 
+// Update bins with new bin breaks
+// Currently not used
 export const setNewBins = ( load ) => {
     return {
         type: 'SET_NEW_BINS',
@@ -39,7 +47,7 @@ export const setNewBins = ( load ) => {
     }
 }
 
-// main store for map and tabular data
+// Depricated: Replaced with dataLoad
 export const storeData = (data, name) => {
     return {
         type: 'SET_STORED_DATA',
@@ -50,7 +58,10 @@ export const storeData = (data, name) => {
     }
 }
 
-// store GEOJSON and pseudo-hash table
+// Store GEOJSON and pseudo-hash table
+// This keeps the original index pairs and matches them when 
+// performing LISA analysis, which returns data based on the 
+// original GEOJSON index order
 export const storeGeojson = (data, name) => {
     return {
         type: 'SET_STORED_GEOJSON',
@@ -61,6 +72,8 @@ export const storeGeojson = (data, name) => {
     }
 }
 
+// Stores the **VERY LARGE** mobility data for county to county flows
+// Currently not used
 export const storeMobilityData = (data) => {
     return {
         type: 'SET_STORED_MOBILITY_DATA',
@@ -80,7 +93,7 @@ export const storeLisaValues = (data) => {
     }
 }
 
-// store cartogra data, just like lisa
+// store cartogram data, just like lisa
 export const storeCartogramData = (data) => {
     return {
         type: 'SET_STORED_CARTOGRAM_DATA',
@@ -90,7 +103,8 @@ export const storeCartogramData = (data) => {
     }
 }
 
-// sets the name of the current data set, usually a geojson
+// Sets the name of the current data set, usually a geojson
+// Triggers data load event with useEffect in App()
 export const setCurrentData = (data) => {
     return {
         type: 'SET_CURRENT_DATA',
@@ -100,7 +114,9 @@ export const setCurrentData = (data) => {
     }
 }
 
-// not used -- this stored the Geoda Proxy, but was a bad idea
+// Not used -- this stored the Geoda Proxy, but was a bad idea
+// Storing the proxy in the state stops it from being serializable,
+// so we currently store it in the local App() state, and nothing else
 export const setGeodaProxy = (proxy) => {
     return {
         type: 'SET_GEODA_PROXY',
@@ -110,7 +126,7 @@ export const setGeodaProxy = (proxy) => {
     }
 }
 
-// stores parsed centroid data 
+// Stores parsed centroid data 
 export const setCentroids = (data, name) => {
     return {
         type: 'SET_CENTROIDS',
@@ -121,7 +137,7 @@ export const setCentroids = (data, name) => {
     }
 }
 
-// stores valid dates in current data set
+// Stores current dates
 export const setDates = (data) => {
     return {
         type: 'SET_DATES',
@@ -175,7 +191,7 @@ export const setDateIndex = (index) => {
     }
 }
 
-// the first valid date in the main data columns (cases, deaths, etc.)
+// DEPRICATED: the first valid date in the main data columns (cases, deaths, etc.)
 export const setStartDateIndex = (index) => {
     return {
         type: 'SET_START_DATE_INDEX',
@@ -197,7 +213,7 @@ export const setBins = (bins, breaks) => {
     }
 }
 
-// not used -- set map to 3d
+// DEPRICATED: now located in map params
 export const set3D = () => {
     return {
         type: 'SET_3D'

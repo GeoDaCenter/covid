@@ -38,7 +38,7 @@ const TwoWeekLineChart = ( props ) => {
         'cases/deaths': ['green', 'yellow', 'red'],
         'testingCap': ['#f7fbff', '#f7fbff', '#08306b'],
         'testingPos': ['#0d0887', '#cb4679', '#f0f921'],
-        'vaccination': ['#fcfbfd', '#bcbcdb', '#54288f'],
+        'vaccination': ['#FCFBFD', '#D9D8EA', '#bcbcdb'],
     }
     
     // colors derived from green - yellow - red diverging scale

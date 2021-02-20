@@ -45,13 +45,13 @@ if __name__ == '__main__':
     stateData = parseNYT("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
     countyData = parseNYT("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv")
 
-    # export CSVs to local folder and docs
+    # export CSVs to local folder and public
     # countyData['cases'].to_csv('./covid_confirmed_nyt.csv', index=False)
     # countyData['deaths'].to_csv('./covid_deaths_nyt.csv', index=False)
-    countyData['cases'].to_csv(os.path.join(repo_root, 'docs/csv/covid_confirmed_nyt.csv'), index=False)
-    countyData['deaths'].to_csv(os.path.join(repo_root, 'docs/csv/covid_deaths_nyt.csv'), index=False)
+    countyData['cases'].to_csv(os.path.join(repo_root, 'public/csv/covid_confirmed_nyt.csv'), index=False)
+    countyData['deaths'].to_csv(os.path.join(repo_root, 'public/csv/covid_deaths_nyt.csv'), index=False)
 
     # stateData['cases'].to_csv('./covid_confirmed_nyt_state.csv', index=False)
     # stateData['deaths'].to_csv('./covid_deaths_nyt_state.csv', index=False)
-    stateData['cases'].to_csv(os.path.join(repo_root, 'docs/csv/covid_confirmed_nyt_state.csv'), index=False)
-    stateData['deaths'].to_csv(os.path.join(repo_root, 'docs/csv/covid_deaths_nyt_state.csv'), index=False)
+    stateData['cases'].to_csv(os.path.join(repo_root, 'public/csv/covid_confirmed_nyt_state.csv'), index=False)
+    stateData['deaths'].to_csv(os.path.join(repo_root, 'public/csv/covid_deaths_nyt_state.csv'), index=False)

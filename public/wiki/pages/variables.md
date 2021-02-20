@@ -19,9 +19,9 @@
 ### Testing
 <i>Times-series data</i>
 <ul>
-    <li>7 Day Testing Positivity Rate %: The percentage of COVID tests returning positive results, aggregated to a 7-day rolling average</li>
+    <li>7 Day Testing Positivity Rate Percent: The percentage of COVID tests returning positive results, aggregated to a 7-day rolling average</li>
     <li>7 Day Testing Capacity: The number of COVID tests administered in the county or state normalized to tests per 100,000 population</li>
-    <li>7 Day Confirmed Cases per Testing %: The number of positive COVID cases per number of COVID tests as a percentage</li>
+    <li>7 Day Confirmed Cases per Testing Percent: The number of positive COVID cases per number of COVID tests as a percentage</li>
 </ul>
 
 ### Vaccination
@@ -40,7 +40,7 @@
 ### Community Health
 <i>Characteristic data</i>
 <ul>
-    <li>Uninsured % (Community Health Factor): Percentage of the county or state that does not have health insurance</li>
-    <li>Over 65 Years % (Community Health Context): Percentage of the county or state this is over 65 years of age</li>
+    <li>Uninsured Percent (Community Health Factor): Percentage of the county or state that does not have health insurance</li>
+    <li>Over 65 Years Percent (Community Health Context): Percentage of the county or state this is over 65 years of age</li>
     <li>Life expectancy (Length and Quality of Life): Average life expectancy for individuals living in the state or county</li>
 </ul>

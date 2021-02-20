@@ -102,7 +102,7 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 repo_root = os.path.abspath(os.path.join(dir_path, '..', '..'))
 
 def fetch_covid_data():
-    out = open(os.path.join(repo_root, 'docs/last_update.txt'), 'w')
+    out = open(os.path.join(repo_root, 'public/last_update.txt'), 'w')
     now = datetime.now()
     out.write(now.strftime("%d/%m/%Y %H:%M:%S"))
     out.close()

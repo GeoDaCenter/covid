@@ -1,15 +1,21 @@
+// This component has the wiki/manual/info
+
+// Library import
 import React, {useState, useEffect} from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
-import InputLabel from '@material-ui/core/InputLabel';
+// MUI import
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 
+// Config/component import
 import { colors } from '../config';
 import { pages } from '../wiki';
 import { StyledDropDown } from '../styled_components';
 
+//// Component Styling
+// Main container for component
 const InfoContainer = styled.div`
     background: ${colors.gray};
     color: ${colors.white};
@@ -44,6 +50,8 @@ const InfoContainer = styled.div`
     }
 `
 
+// Left hand side list of available pages
+// On mobile, this is replaced by a select drop down
 const Drawer = styled.div`
     position:absolute;
     left:5px;
@@ -54,6 +62,7 @@ const Drawer = styled.div`
     }
 `
 
+// Buttons on left-hand side drawer
 const DrawerButton = styled.button`
     display:block;
     text-align:left;
@@ -73,6 +82,7 @@ const DrawerButton = styled.button`
     }
 `
 
+// Container for main content 
 const BodyContainer = styled.div`
     position:absolute;
     left: 120px;
@@ -120,6 +130,7 @@ const BodyContainer = styled.div`
     }
 `
 
+// Yellow highlighted button to show interface element when going through tutorial
 const TutorialButton = styled.button`
     background:none;
     outline:none;
@@ -145,6 +156,7 @@ const TutorialButton = styled.button`
     }
 `
 
+// Mobile only: drop down to select article instead of list of pages
 const PagesDropDown = styled(StyledDropDown)`
     position:absolute;
     top:0;
@@ -155,7 +167,9 @@ const PagesDropDown = styled(StyledDropDown)`
         visibility:visible;
     }
 `
+// End styles
 
+// Tutorials
 const tutorialInfo = [
     {
         "title":"Choropleth Maps",
@@ -179,17 +193,21 @@ const tutorialInfo = [
     },
 ]
 
-
+// Infobox component
 const InfoBox = () => {
+
+    // Redux -- just panel state open/closed
     const panelOpen = useSelector(state => state.panelState.tutorial)
+
+    // Selected Article (local state)
     const [currArticle, setCurrArticle] = useState("welcome")
     
-    const handleSelect = (e) => {
-        setCurrArticle(e.target.value)
-    }
+    // Handle selection based on article name
+    const handleSelect = (e) => setCurrArticle(e.target.value)
 
     return (
         <InfoContainer active={panelOpen}>
+            {/* List of available articles :: On click sets article */}
             <Drawer>
                 {Object.keys(pages).map(page => 
                     pages[page]["pageName"] !== null ? 
@@ -203,6 +221,7 @@ const InfoBox = () => {
                 )}
             </Drawer>
             <PagesDropDown id="selectPage">
+                {/* Mobile only - select instead of drawer */}
                     <Select 
                         value={currArticle} 
                         id="numerator-select"

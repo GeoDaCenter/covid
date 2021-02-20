@@ -4,8 +4,9 @@
 
 The U.S. COVID-19 Atlas provides county-level visualizations and analytics to reveal a more detailed pandemic landscape with local hotspots of surging COVID cases that are missed by state-level data. 
 
-The current Atlas is available here: [https://USCovidAtlas.org](https://USCovidAtlas.org). The Atlas is being updated everyday before 12pm, CT. We are working on releasing regular updates with more data, functions, and analysis.
-![screenshot](https://github.com/GeoDaCenter/covid/blob/master/data/screenshot.PNG)
+The current Atlas is available here: [https://USCovidAtlas.org](https://USCovidAtlas.org). The Atlas is being updated everyday by midnight EST. We are working on releasing regular updates with more data, functions, and analysis.
+
+![screenshot](https://github.com/GeoDaCenter/covid/blob/master/data/screenshot2.png)
 
 ## DATA
 
@@ -28,14 +29,19 @@ We also include information from the following datasets:
 
 ### Future Release
 We have multiple datasets planned for future inclusion in the atlas, including:
+<!-- ADDED >
 <!-- + [Bin Yu Group](https://github.com/Yu-Group/covid19-severity-prediction): Hospital Severity Index forecasting by hospital location -->
 <!-- + [Data.gov](http://data.gov): Indian Reservation Boundaries -->
-+ [DesCartes Lab](https://github.com/descarteslabs/DL-COVID-19): Mobility index by County
 <!-- + [NYTimes](https://github.com/nytimes/covid-19-data): Confirmed Cases and Deaths by County & State -->
++ [DesCartes Lab](https://github.com/descarteslabs/DL-COVID-19): Mobility index by County
 + [PlaceIQ, Couture et al](https://github.com/COVIDExposureIndices/COVIDExposureIndices): Limited Exposure Index by County 
++ [Safegraph](https://docs.safegraph.com/docs/social-distancing-metrics): Data on mobility behavior over the course of the pandemic
++ [HHS Hospital Data](https://healthdata.gov/dataset/covid-19-reported-patient-impact-and-hospital-capacity-facility): Facility Level data on hospital occupancy.
 
 ### Data Details
 #### USAFacts
+You can access USAFacts data via our API <a href="https://theuscovidatlas.org/api.html" target="_blank">here</a>.
+<!-- DEPRICATED >
 <!-- You can download the most updated county level data merged with USAFacts [here](https://github.com/GeoDaCenter/covid/tree/master/): 
 + usafacts_confirmed_*date*.geojson: the county level data (confirmed cases) using [*USAFacts*](https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/?utm_source=MailChimp&utm_campaign=census-covid2), together with population and number of hospital beds. 
 + usafacts_deaths_*date*.geojson: the county level data (death counts) using [*USAFacts*](https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/?utm_source=MailChimp&utm_campaign=census-covid2), together with population and number of hospital beds. 
@@ -102,6 +108,10 @@ Xun Li, Qinyun Lin, Marynia Kolak, Robert Martin, Stephanie Yang, Moksha Menghan
 ## Running the React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<!-- 
+## Data Updates
+
+Data are updated in the `Docs` folder. If you are running the Atlas locally and seeing older data, please copy the contents of `Docs` to `Public`. -->
 
 ## Available Scripts
 

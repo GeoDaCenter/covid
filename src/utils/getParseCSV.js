@@ -22,9 +22,9 @@ async function getParseCSV(url, joinCol, accumulate, dateList){
         while (n>0){
           n--;
           let i = 0;
-          let tempArr = new Array(dateList.length);
+          let tempArr = new Array(dateList.length)
           while (i < dateList.length){
-            tempArr[i] = (data[n][dateList[i]]||0)+(tempArr[i-1]||0);
+            tempArr[i] = ((data[n][dateList[i]]||0)+(tempArr[i-1]||0))||null
             i++;
           }
           rtn[data[n][selectedJoinColumn]] = tempArr
@@ -33,9 +33,9 @@ async function getParseCSV(url, joinCol, accumulate, dateList){
         while (n>0){
           n--;
           let i = 0;
-          let tempArr = new Array(dateList.length);
+          let tempArr = new Array(dateList.length)
           while (i < dateList.length){
-            tempArr[i] = (data[n][dateList[i]]||tempArr[i-1])
+            tempArr[i] = (data[n][dateList[i]]||tempArr[i-1])||null
             i++;
           }
           rtn[data[n][selectedJoinColumn]] = tempArr
