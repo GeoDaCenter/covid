@@ -13,7 +13,7 @@ import util_usafacts as util
 
 
 def calculate_seven_day_lisa():
-	df = pd.read_csv("../docs/csv/covid_confirmed_usafacts.csv")
+	df = pd.read_csv("../public/csv/covid_confirmed_usafacts.csv")
 	df = df.rename(columns={"countyFIPS": "GEOID"})
 	df["GEOID"] = df["GEOID"].astype('str').str.zfill(5)
 	gdf = geopandas.read_file("../data/county_usfacts.geojson")

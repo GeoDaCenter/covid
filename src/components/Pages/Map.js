@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import * as jsgeoda from 'jsgeoda';
 
 // Helper and Utility functions //
 // first row: data loading
@@ -259,12 +258,15 @@ function App() {
       }))
     }
 
-    const newGeoda = async () => {
-      let geoda = await jsgeoda.New();
-      set_gda_proxy(geoda);
-    }
+    import('jsgeoda').then(jsgeoda => {
+      const newGeoda = async () => {
+        let geoda = await jsgeoda.New();
+        set_gda_proxy(geoda);
+      }
 
-    newGeoda()
+      newGeoda()
+    
+    })
     dispatch(setDates(dateLists.isoDateList))
   },[])
 

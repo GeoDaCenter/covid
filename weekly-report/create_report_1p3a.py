@@ -16,7 +16,7 @@ def calculate_seven_day_lisa():
 
 	gdf = geopandas.read_file("../data/counties_update.geojson")
 	gdf["GEOID"] = gdf["GEOID"].astype('str')
-	population = geopandas.read_file("../docs/geojson/county_usfacts.geojson")
+	population = geopandas.read_file("../public/geojson/county_usfacts.geojson")
 	population["GEOID"] = population["GEOID"].astype('str').apply(lambda x: x.zfill(5))
 
 	thirteen_dates = util.get_date(ndays = 13)

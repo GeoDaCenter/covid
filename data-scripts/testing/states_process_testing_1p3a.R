@@ -46,7 +46,7 @@ new_num$"t2020-01-31" <- -1
 
 
 # Take population info
-states_update <- as.data.frame(st_read("/tmp/covid/public/state_1p3a.geojson")) %>% select(-geometry)
+states_update <- as.data.frame(st_read("/tmp/covid/public/geojson/state_1p3a.geojson")) %>% select(-geometry)
 states_cases <- read.csv("/tmp/covid/public/csv/covid_confirmed_1p3a_state.csv") %>% select(-GEOID)
 states_update <- left_join(states_update, states_cases, by = "NAME")
 

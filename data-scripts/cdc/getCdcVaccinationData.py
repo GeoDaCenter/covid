@@ -120,9 +120,9 @@ if __name__ == "__main__":
     fileList = downloadCDCVaccinationData()
     parsedData = parseVaccinationData(fileList)
 
-    parsedData['vaccineDistributed'].to_csv(os.path.join(repo_root, 'docs/csv/vaccine_dist_cdc.csv'), index=False)
-    parsedData['vaccineAdministered1'].to_csv(os.path.join(repo_root, 'docs/csv/vaccine_admin1_cdc.csv'), index=False)
-    parsedData['vaccineAdministered2'].to_csv(os.path.join(repo_root, 'docs/csv/vaccine_admin2_cdc.csv'), index=False)
+    parsedData['vaccineDistributed'].to_csv(os.path.join(repo_root, 'public/csv/vaccine_dist_cdc.csv'), index=False)
+    parsedData['vaccineAdministered1'].to_csv(os.path.join(repo_root, 'public/csv/vaccine_admin1_cdc.csv'), index=False)
+    parsedData['vaccineAdministered2'].to_csv(os.path.join(repo_root, 'public/csv/vaccine_admin2_cdc.csv'), index=False)
 
     ## State Testing Data
     currentData = getCdcData()
@@ -136,7 +136,7 @@ if __name__ == "__main__":
     testingPositivityRolling = positiveTestsRolling.div(testingRolling, axis='columns').round(2).replace([np.inf, -np.inf], np.nan)
     testingPositivityRolling['state_fips'] = positiveTestsRolling['state_fips']
    
-    casesRolling = parse7dayRolling(pd.read_csv(os.path.join(repo_root, 'docs/csv/covid_confirmed_1p3a_state.csv'))\
+    casesRolling = parse7dayRolling(pd.read_csv(os.path.join(repo_root, 'public/csv/covid_confirmed_1p3a_state.csv'))\
                                 .rename(columns={"GEOID":"state_fips"})\
                                 [testingRolling.columns], '', preLoaded=True)\
                                 .sort_values('state_fips')
@@ -147,7 +147,7 @@ if __name__ == "__main__":
     ccptRolling['state_fips'] = casesRolling['state_fips']
 
     
-    totalTesting.to_csv(os.path.join(repo_root, 'docs/csv/covid_testing_cdc_state.csv'), index=False)
-    testingPer100Rolling.to_csv(os.path.join(repo_root, 'docs/csv/covid_tcap_cdc_state.csv'), index=False)
-    ccptRolling.to_csv(os.path.join(repo_root, 'docs/csv/covid_ccpt_cdc_state.csv'), index=False)
-    testingPositivityRolling.to_csv(os.path.join(repo_root, 'docs/csv/covid_wk_pos_cdc_state.csv'), index=False)
+    totalTesting.to_csv(os.path.join(repo_root, 'public/csv/covid_testing_cdc_state.csv'), index=False)
+    testingPer100Rolling.to_csv(os.path.join(repo_root, 'public/csv/covid_tcap_cdc_state.csv'), index=False)
+    ccptRolling.to_csv(os.path.join(repo_root, 'public/csv/covid_ccpt_cdc_state.csv'), index=False)
+    testingPositivityRolling.to_csv(os.path.join(repo_root, 'public/csv/covid_wk_pos_cdc_state.csv'), index=False)

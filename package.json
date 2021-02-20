@@ -12,7 +12,7 @@
   "bugs": {
     "url": "https://github.com/GeoDaCenter/covid/issues"
   },
-  "homepage": ".",
+  "homepage": "https://theuscovidatlas.org",
   "dependencies": {
     "@deck.gl/core": "^8.3.11",
     "@deck.gl/geo-layers": "^8.3.12",
@@ -38,13 +38,16 @@
     "recharts": "^1.8.5",
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
+    "source-map-explorer": "^2.5.2",
     "styled-components": "^5.2.1",
     "web-vitals": "^0.2.4",
     "webfontloader": "^1.6.28"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && echo '/* /index.html 200' | cat >build/_redirects",
+    "build": "react-scripts build",
+    "netlify-build": "react-scripts build && echo '/* /index.html 200' | cat >build/_redirects",
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

@@ -177,13 +177,13 @@ if __name__ == "__main__":
     # output CSV to this folder and docs
     for entry in colsToParse:
         tempDf = parseCsvOutput(raw, entry['column'], entry['operation']).replace([np.inf, -np.inf], np.nan).round(entry['roundTo'])
-        tempDf.to_csv(os.path.join(repo_root, f'docs/csv/{entry["csv"]}.csv'), index=False)
+        tempDf.to_csv(os.path.join(repo_root, f'public/csv/{entry["csv"]}.csv'), index=False)
 
     for entry in colsToCalculate:
         tempDf = parseNewMeasure(raw, entry['numerator'], entry['denominator'], 1).replace([np.inf, -np.inf], np.nan).round(entry['roundTo'])
-        tempDf.to_csv(os.path.join(repo_root, f'docs/csv/{entry["csv"]}.csv'), index=False)
+        tempDf.to_csv(os.path.join(repo_root, f'public/csv/{entry["csv"]}.csv'), index=False)
 
 
     for entry in colsToNormalize:
         tempDf = parsePopulationNormalized(raw, entry['column']).replace([np.inf, -np.inf], np.nan).round(entry['roundTo'])
-        tempDf.to_csv(os.path.join(repo_root, f'docs/csv/{entry["csv"]}.csv'), index=False)
+        tempDf.to_csv(os.path.join(repo_root, f'public/csv/{entry["csv"]}.csv'), index=False)
