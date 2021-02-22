@@ -417,7 +417,7 @@ function App() {
       <Preloader loaded={mapLoaded} />
       <NavBar />
       <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
-        {/* <button onClick={() => console.log(getDataForBins( storedData[currentData], {...dataParams, nIndex: null} ))}>data for bins</button> */}
+        <button onClick={() => console.log(storedLisaData)}>lisa data</button>
         {/* <button onClick={() => console.log(dataParams)}>data params</button>
         <button onClick={() => console.log(mapParams)}>map params</button> */}
       </header>

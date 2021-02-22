@@ -90,6 +90,10 @@ const BinLabels = styled.div`
     .bin:nth-of-type(1) {
         transform: ${props => props.firstBinZero ? 'translateX(-45%)' : 'none'};
     }
+    .tooltipText {
+        margin-top:-5px;
+        padding-bottom:25px;
+    }
 `
 const BinBars = styled.div`
     width:100%;

@@ -27,6 +27,7 @@ import Geocoder from './geocoder';
 // pages
 import About from './Pages/About';
 import Api from './Pages/Api';
+import CodeOfConduct from './Pages/CodeOfConduct';
 import Contact from './Pages/Contact';
 import Choropleth from './Pages/Choropleth';
 import Data from './Pages/Data';
@@ -68,6 +69,7 @@ export {
 
     About,
     Api,
+    CodeOfConduct,
     Contact,
     Choropleth,
     Data,
