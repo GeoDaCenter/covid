@@ -6,6 +6,7 @@ import DateSlider from './slider';
 import Dock from './dock';
 import Draggable from './draggable';
 import Footer from './Footer';
+import HeroMap from './heroMap';
 import InfoBox from './infoBox';
 import Legend from './legend';
 import MainLineChart from './mainLineChart';
@@ -22,6 +23,8 @@ import Tooltip from './tooltip';
 import TopPanel from './topPanel';
 import Geocoder from './geocoder';
 
+
+// pages
 import About from './Pages/About';
 import Api from './Pages/Api';
 import Contact from './Pages/Contact';
@@ -47,6 +50,7 @@ export {
     Draggable,
     Geocoder,
     Footer,
+    HeroMap,
     InfoBox,
     Legend,
     MainLineChart,

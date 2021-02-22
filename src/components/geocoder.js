@@ -7,13 +7,15 @@ import styled from 'styled-components';
 import { colors } from '../config';
 
 const Container = styled.div`
+    flex:auto;
+    width:100%;
     .MuiFormControl-root {
         margin:0;
     }
     .MuiAutocomplete-inputRoot {
         background:white;
         height:36px;
-        border-radius:4px;
+        border-radius:0px;
         padding:0 35px;
     }
     .MuiAutocomplete-inputRoot[class*="MuiInput-root"] .MuiAutocomplete-input:first-child {
@@ -138,7 +140,7 @@ const Geocoder = ( props ) => {
                     <TextField
                     {...params}
                     margin="normal"
-                    placeholder="Search by Location"
+                    placeholder={props.placeholder}
                     InputProps={{ ...params.InputProps, type: 'search' }}
                     onChange={(e) => {               
                         setSearchState(prev => ({
@@ -149,6 +151,7 @@ const Geocoder = ( props ) => {
                     }
                     />
                 )}
+                style={props.style}
             />
         </Container>
     )

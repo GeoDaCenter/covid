@@ -4,8 +4,8 @@ import styled from 'styled-components';
 
 import Grid from '@material-ui/core/Grid';
 
-import { StaticNavbar, Footer } from '../../components';
-import { colors } from '../../config';
+import { StaticNavbar, Geocoder, HeroMap, Footer } from '../../components';
+import { colors, MAPBOX_ACCESS_TOKEN } from '../../config';
 import { Gutter } from '../../styled_components';
 
 const HomePage = styled.div`
@@ -13,12 +13,13 @@ const HomePage = styled.div`
         font-family: 'Playfair Display', serif;
         font-size: 49px;
         font-weight: 300;
-        text-align: center;
+        text-align: left;
         font-style: italic;
         color: #d8d8d8;
         width: 80vw;
         max-width: 940px;
-        margin: 0 auto 40px auto;
+        margin: 0;
+        font-size:4rem;
     }
     .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
         margin-bottom: .5rem;
@@ -51,6 +52,7 @@ const Hero = styled.div`
     color: ${colors.lightgray};
     margin:0 auto;
     padding:50px 10px 0 10px;
+    z-index:1;
     p {
         
         font-family: 'Lato', sans-serif;
@@ -58,23 +60,35 @@ const Hero = styled.div`
         font-weight: 300;
         font-stretch: normal;
         font-style: normal;
-        line-height: 1.6;
+        line-height: 1.4;
+        font-size:1.2rem;
         letter-spacing: normal;
         color: #ededed;
+        text-align:left;
+        &.orText {
+            padding:0;
+            margin:0;
+            width:100%;
+            height:50px;
+            text-align:center;
+            line-height:2.5;
+        }
     }
     #button-cta {
+        flex:auto;
         font-size: 16px;
         font-weight: 700;
         letter-spacing: 1.75px;
-        line-height:5;
+        line-height:3;
         text-align: center;
         text-transform:uppercase;
         background-color: ${colors.orange};
         color: #0d0d0d;
-        padding: 1rem 1.5rem;
-        margin:1rem;
+        padding: 0 1.5rem;
+        margin:0;
         border-radius: .3rem;
         text-decoration:none;
+        height:50px;
     }
     .small-text {
         font-size:0.75rem;
@@ -222,35 +236,81 @@ const Usage = styled.span`
     font-size:1rem;
     transform:translateY(-100%);
 `
-const home = () => {
+
+const CenteredGrid = styled(Grid)`
+    display:flex;
+    align-centers:center;
+`
+
+const MapWrapper = styled.div`
+    position:absolute;
+    top:175px;
+    left:50%;
+    z-index:0;
+`
+
+function Home(){
+
+    const handleGeocoder = (e) => {
+        let url = '';
+        
+        if ((`${window.location.href}`).includes('index')) {
+            url += (`${window.location.href}`).split('index')[0]
+        } else {
+            url += window.location.href
+        }
+        url += `map?lat=${e.center[1]}&lon=${e.center[0]}&z=6.5&v=2`
+        window.location.href = url        
+    }
+
     return (
        <HomePage>
            <StaticNavbar/>
            <HomePageContent>
                 <Hero>
-                    <h1>Near Real-Time Exploration of the <NoBreak>COVID-19</NoBreak> Pandemic</h1>
-                    <p>
-                        The US COVID Atlas is a visualization tool led by a University of Chicago research coalition.
-                        In a quickly changing pandemic landscape, our tool connects COVID case data and community indicators 
-                        across the United States from its beginning to today. The Atlas helps you access current, 
-                        validated county-level data and spatial analysis to better understand the spread in communities 
-                        and to bolster planning efforts.
-                        <br/><br/>
+                    <Grid container spacing={1}>
+                        <Grid item xs={12}>
+                            <h1>Near Real-Time Exploration of the <NoBreak>COVID-19</NoBreak> Pandemic</h1>
+                        </Grid>
+                        <Grid item xs={12} md={5}> 
+                            <p>
+                                The US COVID Atlas is a visualization tool led by a <b>University of Chicago research coalition.</b>
+                                <br/><br/>
+                                In a quickly changing pandemic landscape, our tool connects COVID case data and community indicators 
+                                across the United States from its beginning to today. The Atlas helps you access current, 
+                                validated county-level data and spatial analysis to better understand the spread in communities 
+                                and to bolster planning efforts.
+                            </p>
+                        </Grid>
+                        <Grid item xs={12} md={7}></Grid>
+                        
+                        <Gutter h={20}/>
 
-                        Version 2 brings new data, visualization modes, and tools to find insights about the pandemic.
-                    </p>
-                    <NavLink to="/map" id="button-cta">Explore the Atlas V2</NavLink>
-                    <p className="small-text">
-                        Not ready to make the switch? <a href="./vintage/map.html">Explore the original US Covid Atlas</a>
-                    </p>
-                    <video autoPlay={true} muted={true} loop={true}> 
-                        <source src={`${process.env.PUBLIC_URL}/img/cover.mp4`} type="video/mp4"/>
-                        Your browser does not support the video tag.
-                    </video>
-                    <p className="map-caption">
-                        Choropleth map showing COVID-19 spreading from July 1st to the end of December 2020, based on confirmed case per 100,000 persons at the county level. The Atlas is updated by 3pm each afternoon with the latest available data.                
-                    </p>
+                        <CenteredGrid item xs={12} md={5}>
+                            <Geocoder 
+                                id="HomeGeocoder"
+                                placeholder={"Find your county..."}
+                                API_KEY={MAPBOX_ACCESS_TOKEN}
+                                onChange={handleGeocoder}
+                                style={{
+                                    border: '6px solid white', 
+                                    boxSizing:'content-box',
+                                    borderRadius:0
+                                }}
+                            />
+                        </CenteredGrid>
+                        <CenteredGrid item xs={12} md={2}>
+                            <p className="orText">or</p>
+                        </CenteredGrid>
+                        <CenteredGrid item xs={12} md={5}>
+                            <NavLink to="/map" id="button-cta">Start Exploring the Atlas</NavLink>
+                        </CenteredGrid>
+                    </Grid>
+                    
                 </Hero>
+                <MapWrapper>
+                    <HeroMap/>
+                </MapWrapper>
                 <hr/>
                 <Features>
                     <Grid container spacing={1}>
@@ -258,7 +318,7 @@ const home = () => {
                             <h2>Atlas Features</h2>
                         </Grid>
                         <Feature item xs={12} md={3}>
-                            <img src={`${process.env.PUBLIC_URL}/icons/regional-hot-spots.png`}/>
+                            <img src={`${process.env.PUBLIC_URL}/icons/regional-hot-spots.png`} alt="Regional Hotspots" loading="lazy"/>
                             <h5>Track regional hotspots <NoBreak>in real-time</NoBreak></h5>
                             <p>
                                 Statistical clusters of both confirmed and daily new COVID cases &amp; deaths, 
@@ -266,21 +326,21 @@ const home = () => {
                             </p>
                         </Feature>
                         <Feature item xs={12} md={3}>
-                            <img src={`${process.env.PUBLIC_URL}/icons/spread-over-time-2@2x.png`}/>
+                            <img src={`${process.env.PUBLIC_URL}/icons/spread-over-time-2@2x.png`} alt="COVID Spread" loading="lazy" />
                             <h5>Watch COVID-19 spread across the country</h5>
                             <p>
                                 Watch the spread of accumulated or daily new COVID cases using a time slider and live time-animation.
                             </p>
                         </Feature>
                         <Feature item xs={12} md={3}>
-                            <img src={`${process.env.PUBLIC_URL}/icons/county-level-data@2x.png`}/>
+                            <img src={`${process.env.PUBLIC_URL}/icons/county-level-data@2x.png`} alt="County COVID Map" loading="lazy"/>
                             <h5>Zoom in to focus down to the county level</h5>
                             <p>
                                 Uncover trends of the pandemic by comparing different data sources, variables, and spatial analytic insights.
                             </p>
                         </Feature>
                         <Feature item xs={12} md={3}>
-                            <img src={`${process.env.PUBLIC_URL}/icons/comm-health-context@2x.png`}/>
+                            <img src={`${process.env.PUBLIC_URL}/icons/comm-health-context@2x.png`} alt="Community Health Contexts" loading="lazy"/>
                             <h5>Tap into community and health contexts</h5>
                             <p>
                                 Connect to relevant social, economic, and health indicators to provide meaningful community context.
@@ -325,11 +385,11 @@ const home = () => {
                                 </p>
                             </Grid>
                             <Grid item xs={12} md={6}>
-                                <img src={`${process.env.PUBLIC_URL}/img/Landingpage_usage2.gif`} alt="Use Case 2: Tracking COVID Patterns over time" />
+                                <img src={`${process.env.PUBLIC_URL}/img/Landingpage_usage2.gif`} alt="Use Case 2: Tracking COVID Patterns over time" loading="lazy"/>
                             </Grid>
                             <Gutter h={80}/>
                             <Grid item xs={12} md={6}>
-                                <img src={`${process.env.PUBLIC_URL}/img/Landingpage_usage3.gif`} alt="Use Case 3: Forecasting viral spreads" />
+                                <img src={`${process.env.PUBLIC_URL}/img/Landingpage_usage3.gif`} alt="Use Case 3: Forecasting viral spreads" loading="lazy"/>
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <Usage color="yellow">Usage #3</Usage>
@@ -351,11 +411,11 @@ const home = () => {
                                 </p>
                             </Grid>
                             <Grid item xs={12} md={6}>
-                                <img src={`${process.env.PUBLIC_URL}/img/Landingpage_usage4.gif`} alt="Use Case 4: Make visible vulnerable communities" />
+                                <img src={`${process.env.PUBLIC_URL}/img/Landingpage_usage4.gif`} alt="Use Case 4: Make visible vulnerable communities" loading="lazy"/>
                             </Grid>
                             <Gutter h={80}/>
                             <Grid item xs={12} md={6}>
-                                <img src={`${process.env.PUBLIC_URL}/img/Landingpage_usage5.gif`} alt="Use Case 5: Forecasting viral spreads" />
+                                <img src={`${process.env.PUBLIC_URL}/img/Landingpage_usage5.gif`} alt="Use Case 5: Forecasting viral spreads" loading="lazy"/>
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <Usage color="yellow">Usage #5</Usage>
@@ -376,4 +436,4 @@ const home = () => {
     );
 }
  
-export default home;
+export default Home;

@@ -16,7 +16,7 @@ import MapboxGLMap from 'react-map-gl';
 import { MapTooltipContent, Geocoder } from '../components';
 import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData, openContextMenu } from '../actions';
 import { mapFn, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, getURLParams } from '../utils';
-import { colors, colorScales } from '../config';
+import { colors, colorScales, MAPBOX_ACCESS_TOKEN } from '../config';
 import MAP_STYLE from '../config/style.json';
 import * as SVG from '../config/svg'; 
 
@@ -45,9 +45,6 @@ const ICON_MAPPING = {
     hospital: {x: 0, y: 0, width: 128, height: 128},
     clinic: {x: 128, y: 0, width: 128, height: 128},
   };
-
-// mapbox API token
-const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg';
 
 // mapbox default style from Json
 const defaultMapStyle = fromJS(MAP_STYLE);
@@ -157,8 +154,6 @@ const GeocoderContainer = styled.div`
         display:none;
     }
 `
-
-const Map = (props) => { 
 function MapSection(props){ 
     // fetch pieces of state from store    
     const { storedData, storedGeojson, currentData, storedLisaData, dateIndices,
@@ -166,7 +161,7 @@ function MapSection(props){
         currentVariable, urlParams, mapLoaded, selectMode } = useSelector(state => state);
 
     // component state elements
-    // hover and highlight geographies
+    // hover and highlight geographibes
     const [hoverInfo, setHoverInfo] = useState({x:null, y:null, object:null});
     const [highlightGeog, setHighlightGeog] = useState([]);
 
@@ -1050,6 +1045,7 @@ function MapSection(props){
             <GeocoderContainer>
                 <Geocoder 
                     id="Geocoder"
+                    placeholder={"Search by location"}
                     API_KEY={MAPBOX_ACCESS_TOKEN}
                     onChange={handleGeocoder}
                 />
