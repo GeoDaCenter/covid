@@ -71,6 +71,8 @@ export const INITIAL_STATE = {
     info:false,
     tutorial:false,
     lineChart:true,
+    context: false,
+    contextPos: {x:null,y:null}
   },
   storedRange: null,
   currentGeoid: '',

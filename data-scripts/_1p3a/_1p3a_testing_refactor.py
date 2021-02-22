@@ -26,8 +26,8 @@ def fetch_testing_data_state(): #for state leve, do not need to write any code, 
     update_state_geojson()
 
 def update_state_geojson():
-    #check if state_positivity output is currently in /docs
-    #if not, move to /docs
+    #check if state_positivity output is currently in /public
+    #if not, move to /public
     pass
 
 
@@ -36,7 +36,7 @@ def fetch_testing_data_county():
     working_dir = os.path.join(dir_path, '_working')
     os.makedirs(working_dir, exist_ok=True)
     
-    merge <- pd.read_csv(os.path.join(repo_root,"docs/testing_1p3a.csv")
+    merge <- pd.read_csv(os.path.join(repo_root,"public/testing_1p3a.csv")
     delete_index_column()
     #here we should use pandas to change the names of the columns(if any, and .
     #This csv file should contain metadata, confirmed cases for each day(formated %YYYY-%MM-%DD), confirmed deaths for each day (d%YYYY-%MM-%DD), testing numbers for each day(t%YYYY-%%MM-%DD), and positivity rate for each day (tpos%YYYY-%MM-%DD).
@@ -51,7 +51,7 @@ def delete_index_column():
     pass
 
 def update_county_geojson():
-    #save geojson to /docs
+    #save geojson to /public
     pass
 
 

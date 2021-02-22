@@ -30,6 +30,6 @@ yarn-error.log*
 
 .vscode/
 *.swp
-docs/.Rhistory
-docs/map/build
+public/.Rhistory
+public/map/build
 *.pyc

@@ -93,7 +93,7 @@ if __name__ == "__main__":
     dex_state = state['dex']
     dex_a_state = state['dex_a']
 
-    fileList = glob('../../docs/csv/*confirmed*.csv')
+    fileList = glob('../../public/csv/*confirmed*.csv')
 
     for file in fileList:
         if 'state' in file:
@@ -108,7 +108,7 @@ if __name__ == "__main__":
         parsed1 = parseDex(file, dataFrame1, dexJoinColumn)
         parsed2 = parseDex(file, dataFrame2, dexJoinColumn)
         
-        parsed1['df'].to_csv(f'../../docs/csv/covid_county_dex_{parsed1["fileName"]}.csv',index=False)
-        parsed2['df'].to_csv(f'../../docs/csv/covid_county_dex_a_{parsed2["fileName"]}.csv',index=False)
+        parsed1['df'].to_csv(f'../../public/csv/covid_county_dex_{parsed1["fileName"]}.csv',index=False)
+        parsed2['df'].to_csv(f'../../public/csv/covid_county_dex_a_{parsed2["fileName"]}.csv',index=False)
         parsed1['df'].to_csv(f'./csv/covid_county_dex_{parsed1["fileName"]}.csv',index=False)
         parsed2['df'].to_csv(f'./csv/covid_county_dex_a_{parsed2["fileName"]}.csv',index=False)

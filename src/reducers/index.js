@@ -114,14 +114,22 @@ var reducer = (state = INITIAL_STATE, action) => {
                 storedGeojson: geojsonObj
             };
         case 'SET_STORED_LISA_DATA':
+            let lisaObj = {
+                ...state.storedLisaData,
+            }
+            lisaObj[action.payload.name] = action.payload.data
             return {
                 ...state,
-                storedLisaData: action.payload.data
+                storedLisaData: lisaObj
             };
         case 'SET_STORED_CARTOGRAM_DATA':
+            let cartoObj = {
+                ...state.storedCartogramData,
+            }
+            cartoObj[action.payload.name] = action.payload.data
             return {
                 ...state,
-                storedCartogramData: action.payload.data
+                storedCartogramData: cartoObj
             };
         case 'SET_STORED_MOBILITY_DATA':
             return {
@@ -397,7 +405,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                 ...preset,
                 nIndex: urlParams.date || state.dataParams.nIndex,
                 nRange: urlParams.hasOwnProperty('range') ? urlParams.range === 'null' ? null : urlParams.range : state.dataParams.nRange,
-                nProperty: urlParams.propCol || state.dataParams.nProperty
+                nProperty: urlParams.prop || state.dataParams.nProperty
             };
             
             let urlCoordObj = {
@@ -416,6 +424,19 @@ var reducer = (state = INITIAL_STATE, action) => {
                 urlParams: urlCoordObj,
                 mapParams: urlMapParamsObj,
                 dataParams: urlDataParamsObj
+            }
+        case "OPEN_CONTEXT_MENU":
+            let contextPanelsObj = {
+                ...state.panelState,
+                context: true,
+                contextPos: {
+                    x: action.payload.params.x,
+                    y: action.payload.params.y
+                }
+            }
+            return {
+                ...state,
+                panelState: contextPanelsObj
             }
         default:
             return state;

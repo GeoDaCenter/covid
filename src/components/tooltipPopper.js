@@ -16,7 +16,7 @@ const TooltipContentDiv = styled(Popper)`
     pointer-events: none;
     div.tooltipContentContainer {
         background:black;
-        padding:1px 10px;
+        padding:10px;
         margin:0;
         borderRadius: 4px;
         color:white;

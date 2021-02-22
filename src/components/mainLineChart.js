@@ -163,14 +163,14 @@ const CustomTooltip = props => {
                 <div 
                     style={{
                         background:colors.darkgray,
-                        padding:'1px 10px',
+                        padding:'10px',
                         borderRadius:'4px',
                         boxShadow: '0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12)'
                 
                 }}> 
-                <p style={{color:'white', padding:0,}}>{data[0].payload.date}</p>
+                <p style={{color:'white', padding:'5px 0 0 0',}}>{data[0].payload.date}</p>
                     {data.map(data => 
-                        <p style={{color: data.color, textShadow: `2px 2px 4px ${colors.black}`, fontWeight:600}}>{data.name}: {Number.isInteger(Math.floor(data.payload[data.dataKey])) ? 
+                        <p style={{color: data.color, padding:'5px 0 0 0', textShadow: `2px 2px 4px ${colors.black}`, fontWeight:600}}>{data.name}: {Number.isInteger(Math.floor(data.payload[data.dataKey])) ? 
                             Math.floor(data.payload[data.dataKey]).toLocaleString('en') 
                             : data.payload[data.dataKey]}
                         </p>

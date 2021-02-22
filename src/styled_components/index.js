@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import { colors } from '../config';
 
 export const StyledDropDown = styled(FormControl)`
-  margin:0 10px ${props => props.component === 'radios' ? '20' : '40'}px 0!important;
+  margin:0 10px 0 0;
   color:white;
   padding:0;
   .MuiInputBase-root {
@@ -114,4 +114,66 @@ export const BinsContainer = styled.div`
   .MuiSwitch-colorSecondary:hover {
       background-color:${colors.lightblue}55;
   }
+`
+
+export const ContentContainer = styled.div`
+  width:100%;
+  max-width:1140px;
+  padding:20px;
+  margin:0 auto;
+  h1, h2, h3, h4, h5, h6, p {
+    color: #0d0d0d;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 49px;
+    font-weight: 300;
+    font-style: italic;
+  }
+  h2 { 
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: 1.75px;
+    font-weight: 700;
+    font-stretch: normal;
+    margin-bottom:20px;
+  }
+  h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 300;
+    font-style: italic;
+  }
+  p, a, ul li, ol li {
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.63;
+    letter-spacing: normal;
+  }
+  ul, ol {
+    padding-left:20px;
+  }
+  a {
+    font-weight:bold;
+    text-decoration:none;
+    color: ${colors.blue};
+  }
+  hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #c1ebeb;
+    margin: 1em 0;
+    padding: 0;
+  }
+`
+
+export const Gutter = styled.div`
+    width:100%;
+    display:block;
+    height: ${props => props.h}px;
 `

@@ -144,7 +144,7 @@ const DateTitle = styled.h3`
 const InitialDate = styled.p`
     position:absolute;
     left:10%;
-    bottom:8px;
+    bottom:18px;
     font-size:75%;
     @media (max-width: 600px) {
         bottom:15px;

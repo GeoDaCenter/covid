@@ -12,8 +12,8 @@ const TooltipContainer = styled.button`
     outline:none;
     border:none;
     padding:0;
-    margin:0 4px;
-    transform:translateY(2px);
+    margin:4px;
+    transform:translateY(4px);
     display:inline-grid;
 `
 

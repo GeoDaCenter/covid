@@ -16,7 +16,7 @@ import styled from 'styled-components';
 
 import { colLookup } from '../utils'; //getGzipData, getArrayCSV
 import Tooltip from './tooltip';
-import { StyledDropDown, BinsContainer } from '../styled_components';
+import { StyledDropDown, BinsContainer, Gutter } from '../styled_components';
 import { setVariableParams, setMapParams, setCurrentData, setPanelState, setParametersAndData } from '../actions'; //variableChangeZ, setNotification, storeMobilityData
 import { fixedScales, colorScales, colors } from '../config';
 import { settings } from '../config/svg';
@@ -39,6 +39,12 @@ const VariablePanelContainer = styled.div`
   z-index:50;
   &.hidden {
     transform: translateX(-100%);
+  }
+  h1,h2,h3,h4 {
+    margin: 0 0 10px 0;
+  }
+  p {
+    margin: 10px 0;
   }
   @media (max-width:1024px) {
     min-width:50vw;
@@ -156,7 +162,6 @@ const VariablePanelContainer = styled.div`
 `
 const StyledButtonGroup = styled(ButtonGroup)`
   color:white;
-  padding-bottom:20px;
   .MuiButtonGroup-grouped {
     color:white;
     border-color:${colors.white}77;
@@ -185,14 +190,13 @@ const TwoUp = styled.div`
 `
 
 const ControlsContainer = styled.div`
-  max-height:74vh;
+  max-height:78vh;
   overflow-y:visible;
-  box-sizing:border-box;
   padding:20px;
 
-  @media (max-height:1079px){
+  @media (max-height:899px){
     overflow-y:scroll;
-    padding:20px 20px 25vh 20px;
+    padding:20px 20px 10vh 20px;
   }
   
   @media (max-width:600px) {
@@ -857,11 +861,13 @@ const VariablePanel = (props) => {
     <VariablePanelContainer className={panelState.variables ? '' : 'hidden'} otherPanels={panelState.info} id="variablePanel">
       <ControlsContainer>
         <h2>Data Sources &amp;<br/> Map Variables</h2>
+        <Gutter h={20}/>
         <StyledDropDown id="newVariableSelect">
           <InputLabel htmlFor="newVariableSelect">Variable</InputLabel>
           <Select
             value={newVariable}
             onChange={handleNewVariable}
+            MenuProps={{id:'variableMenu'}}
             >
             {Object.keys(variableTree).map(variable => {
               if (variable.split(':')[0]==="HEADER") {
@@ -873,7 +879,7 @@ const VariablePanel = (props) => {
           }
           </Select>
         </StyledDropDown>
-        <br/>
+        <Gutter h={35}/>
         <DateSelectorContainer disabled={dataParams.nType === "characteristic"}>
           <StyledDropDown id="dateSelector">
               <InputLabel htmlFor="date-select">Date Range</InputLabel>
@@ -904,9 +910,9 @@ const VariablePanel = (props) => {
             <p>{mapParams.binMode === 'dynamic' ? 'Dynamic' : 'Fixed Bins'}<Tooltip id="BinModes"/></p>
           </BinsContainer> 
         </DateSelectorContainer> 
-        <br/>
+        <Gutter h={35}/>
         
-        <StyledDropDown id="geographySelect">
+        <StyledDropDown id="geographySelect" style={{marginRight:'20px'}}>
           <InputLabel htmlFor="geographySelect">Geography</InputLabel>
           <Select
             value={currentGeography}
@@ -940,7 +946,7 @@ const VariablePanel = (props) => {
             )}
           </Select>
         </StyledDropDown>
-        <br/>
+        <Gutter h={35}/>
         {/* <StyledDropDown id="dataSource">
           <InputLabel htmlFor="data-select">Data Source</InputLabel>
           <Select  
@@ -1047,14 +1053,14 @@ const VariablePanel = (props) => {
             <br/>
           </RadioGroup>
         </StyledDropDown>
+        <Gutter h={15}/>
         <p>Visualization Type</p>
         <StyledButtonGroup color="primary" aria-label="text button group" id="visualizationType">
           <Button className={mapParams.vizType === '2D' ? 'active' : ''} data-val="2D" key="2D-btn" onClick={() => handleVizTypeButton('2D')}>2D</Button>
           <Button className={mapParams.vizType === '3D' ? 'active' : ''} data-val="3D" key="3D-btn" onClick={() => handleVizTypeButton('3D')}>3D</Button>
           <Button className={mapParams.vizType === 'cartogram' ? 'active' : ''} data-val="cartogram" key="cartogram-btn" onClick={() => handleVizTypeButton('cartogram')}>Cartogram</Button>
         </StyledButtonGroup>
-        <br/>
-        <br />
+        <Gutter h={12}/>
         {/* {
           mapParams.vizType === '3D' && 
             <BinsContainer item xs={12} >
@@ -1125,7 +1131,6 @@ const VariablePanel = (props) => {
               </Select>
             </StyledDropDown>
         } */}
-        <br/>
         <TwoUp id="overlaysResources">
           <StyledDropDown>
             <InputLabel htmlFor="overlay-select">Overlay</InputLabel>
@@ -1158,12 +1163,12 @@ const VariablePanel = (props) => {
         </TwoUp>        
       </ControlsContainer>
       <div className="noteContainer">
-        <h3>Help us improve the Atlas!</h3>
+        {/* <h3>Help us improve the Atlas!</h3>
         <p>
           <a href="https://docs.google.com/forms/d/e/1FAIpQLSf0KdYeVyvwnz0RLnZijY3kdyFe1SwXukPc--a1HFPE1NRxyw/viewform?usp=sf_link" target="_blank" rel="noopener noreferrer">Take the Atlas v2 survey here </a>
           or share your thoughts at <a href="mailto:contact@theuscovidatlas.org" target="_blank" rel="noopener noreferrer">contact@theuscovidatlas.org.</a>
         </p>
-        <hr></hr>
+        <hr></hr> */}
         <p className="note">
           Data is updated with freshest available data at 3pm CST daily, at minimum. 
           In case of data discrepancy, local health departments are considered most accurate as per CDC recommendations. 

@@ -21,7 +21,7 @@ def usafacts_testing():
     
     #testing_url = "https://raw.githubusercontent.com/GeoDaCenter/covid-atlas-research/master/Testing_Data/python/county_hist.csv?token=AL7MVTCZMWHNIY5TVWYNGWK7QCJU4"
     #download_data(testing_url, working_dir, 'testing_raw.csv')
-    #positivity_url = "https://raw.githubusercontent.com/linqinyu/covid/master/docs/testingpos_usafacts.csv"
+    #positivity_url = "https://raw.githubusercontent.com/linqinyu/covid/master/public/testingpos_usafacts.csv"
     #download_data(positivity_url, working_dir, 'positivity_raw.csv')
 
     #dateparse = lambda dates: [pd.datetime.strptime(d, '%m/%d/%Y') for d in dates
@@ -39,8 +39,8 @@ def usafacts_testing():
     try:
         print('Writing to S3...')
         s3 = boto3.resource('s3')
-        s3.Object('geoda-covid-atlas', 'testing_usafacts.csv').put(Body=open(os.path.join(repo_root, 'docs/covid_testing_usafacts.csv'), 'rb'))
-        s3.Object('geoda-covid-atlas', 'testingpos_usafacts.csv').put(Body=open(os.path.join(repo_root, 'docs/covid_positivity_usafacts.csv'), 'rb'))
+        s3.Object('geoda-covid-atlas', 'testing_usafacts.csv').put(Body=open(os.path.join(repo_root, 'public/covid_testing_usafacts.csv'), 'rb'))
+        s3.Object('geoda-covid-atlas', 'testingpos_usafacts.csv').put(Body=open(os.path.join(repo_root, 'public/covid_positivity_usafacts.csv'), 'rb'))
         print('Write to S3 complete.')
 
     except Exception as e:
@@ -58,7 +58,7 @@ def validate_and_process():
     # note: we need to open the files with encoding `utf-8-sig` to correctly parse
     # the byte-order mark (bom) of the sources files
     # https://stackoverflow.com/a/49150749
-    with open(os.path.join(dir_path, '_working/testing_usafacts.csv'), encoding='utf-8-sig') as testing_in_file, open(os.path.join(dir_path, '_working/positivity_raw.csv'), encoding='utf-8-sig') as positivity_in_file, open(os.path.join(repo_root, 'docs/testing_usafacts.csv'), 'w+') as testing_out_file, open(os.path.join(repo_root, 'docs/testingpos_usafacts.csv'), 'w+') as positivity_out_file:
+    with open(os.path.join(dir_path, '_working/testing_usafacts.csv'), encoding='utf-8-sig') as testing_in_file, open(os.path.join(dir_path, '_working/positivity_raw.csv'), encoding='utf-8-sig') as positivity_in_file, open(os.path.join(repo_root, 'public/testing_usafacts.csv'), 'w+') as testing_out_file, open(os.path.join(repo_root, 'public/testingpos_usafacts.csv'), 'w+') as positivity_out_file:
       testing_csv_reader =  csv.DictReader(testing_in_file)
       testing_source_field_names = testing_csv_reader.fieldnames
       
@@ -128,10 +128,10 @@ def validate_and_process():
     
     
 def create_geojson_files(month_day):
-    county_geom = gpd.read_file(os.path.join(repo_root, 'docs/county_usfacts.geojson'))
+    county_geom = gpd.read_file(os.path.join(repo_root, 'public/county_usfacts.geojson'))
 
     for dataset in ['testing', 'positivity']:
-        data  = pd.read_csv(os.path.join(repo_root, 'docs/{}_usafacts.csv'.format(dataset)))
+        data  = pd.read_csv(os.path.join(repo_root, 'public/{}_usafacts.csv'.format(dataset)))
         county_geom['GEOID']  = county_geom['GEOID'].apply(lambda x: str(x).zfill(5))
         county_geom['GEOID'] = county_geom['GEOID'].astype(str)
         data['countyFIPS']  = data.countyFIPS.apply(lambda x: str(x).zfill(5))

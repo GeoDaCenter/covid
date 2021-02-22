@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 const ResizeButton = styled.button`
     position:absolute;
-    right:5px;
+    right:10px;
     bottom:10px;
     background:none;
     outline:none;

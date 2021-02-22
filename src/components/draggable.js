@@ -26,7 +26,7 @@ const DragContainer = styled.div`
 // Drag button (crosshair)
 const DragButton = styled.button`
     position:absolute;
-    left:0;
+    left:5px;
     top:5px;
     background:none;
     outline:none;

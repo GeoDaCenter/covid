@@ -108,10 +108,10 @@ Xun Li, Qinyun Lin, Marynia Kolak, Robert Martin, Stephanie Yang, Moksha Menghan
 ## Running the React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
+<!-- 
 ## Data Updates
 
-Data are updated in the `Docs` folder. If you are running the Atlas locally and seeing older data, please copy the contents of `Docs` to `Public`.
+Data are updated in the `Docs` folder. If you are running the Atlas locally and seeing older data, please copy the contents of `Docs` to `Public`. -->
 
 ## Available Scripts
 

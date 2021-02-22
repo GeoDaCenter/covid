@@ -30,9 +30,9 @@ const InfoContainer = styled.div`
     -ms-user-select: none;
     user-select: none;
     svg {
-        width: 10px;
-        height: 10px;
-        padding: 5px;
+        width: 25px;
+        height: 25px;
+        padding: 0;
         fill: ${colors.white};
         display: inline;
         transition: 250ms all;
@@ -48,13 +48,16 @@ const InfoContainer = styled.div`
         transform: translate(50%, 50%);
         overflow:hidden;
     }
+    hr {
+        margin: 5px 0;
+    }
 `
 
 // Left hand side list of available pages
 // On mobile, this is replaced by a select drop down
 const Drawer = styled.div`
     position:absolute;
-    left:5px;
+    left:10px;
     top:25px;
     max-width:120px;
     @media(max-width:1024px) {

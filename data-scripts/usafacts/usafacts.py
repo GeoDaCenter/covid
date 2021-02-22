@@ -33,10 +33,10 @@ def usafacts():
     try:
         print('Writing to S3...')
         s3 = boto3.resource('s3')
-        s3.Object('geoda-covid-atlas', 'covid_confirmed_usafacts.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_confirmed_usafacts.csv'), 'rb'))
-        s3.Object('geoda-covid-atlas', 'covid_deaths_usafacts.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_deaths_usafacts.csv'), 'rb'))
-        s3.Object('geoda-covid-atlas', 'covid_confirmed_usafacts_state.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_confirmed_usafacts_state.csv'), 'rb'))
-        s3.Object('geoda-covid-atlas', 'covid_deaths_usafacts_state.csv').put(Body=open(os.path.join(repo_root, 'docs/csv/covid_deaths_usafacts_state.csv'), 'rb'))
+        s3.Object('geoda-covid-atlas', 'covid_confirmed_usafacts.csv').put(Body=open(os.path.join(repo_root, 'public/csv/covid_confirmed_usafacts.csv'), 'rb'))
+        s3.Object('geoda-covid-atlas', 'covid_deaths_usafacts.csv').put(Body=open(os.path.join(repo_root, 'public/csv/covid_deaths_usafacts.csv'), 'rb'))
+        s3.Object('geoda-covid-atlas', 'covid_confirmed_usafacts_state.csv').put(Body=open(os.path.join(repo_root, 'public/csv/covid_confirmed_usafacts_state.csv'), 'rb'))
+        s3.Object('geoda-covid-atlas', 'covid_deaths_usafacts_state.csv').put(Body=open(os.path.join(repo_root, 'public/csv/covid_deaths_usafacts_state.csv'), 'rb'))
 
         s3.Object('geoda-covid-atlas', 'covid_confirmed_usafacts.geojson').put(Body=open(os.path.join(repo_root, 'download/usafacts_confirmed.geojson'), 'rb'))
         s3.Object('geoda-covid-atlas', 'covid_deaths_usafacts.geojson').put(Body=open(os.path.join(repo_root, 'download/usafacts_deaths.geojson'), 'rb'))
@@ -58,7 +58,7 @@ def validate_and_process():
     # note: we need to open the files with encoding `utf-8-sig` to correctly parse
     # the byte-order mark (bom) of the sources files
     # https://stackoverflow.com/a/49150749
-    with open(os.path.join(dir_path, '_working/cases_raw.csv'), encoding='utf-8-sig') as cases_in_file, open(os.path.join(dir_path, '_working/deaths_raw.csv'), encoding='utf-8-sig') as deaths_in_file, open(os.path.join(repo_root, 'docs/csv/covid_confirmed_usafacts.csv'), 'w+') as cases_out_file, open(os.path.join(repo_root, 'docs/csv/covid_deaths_usafacts.csv'), 'w+') as deaths_out_file:
+    with open(os.path.join(dir_path, '_working/cases_raw.csv'), encoding='utf-8-sig') as cases_in_file, open(os.path.join(dir_path, '_working/deaths_raw.csv'), encoding='utf-8-sig') as deaths_in_file, open(os.path.join(repo_root, 'public/csv/covid_confirmed_usafacts.csv'), 'w+') as cases_out_file, open(os.path.join(repo_root, 'public/csv/covid_deaths_usafacts.csv'), 'w+') as deaths_out_file:
       cases_csv_reader =  csv.DictReader(cases_in_file)
       cases_source_field_names = cases_csv_reader.fieldnames
 
@@ -133,7 +133,7 @@ def create_geojson_files(month_day): #could probably deprecate this
     county_geom = gpd.read_file(os.path.join(repo_root, 'data/county_usfacts.geojson'))
 
     for dataset in ['confirmed', 'deaths']:
-        data  = pd.read_csv(os.path.join(repo_root, 'docs/csv/covid_{}_usafacts.csv'.format(dataset)))
+        data  = pd.read_csv(os.path.join(repo_root, 'public/csv/covid_{}_usafacts.csv'.format(dataset)))
         county_geom['GEOID']  = county_geom['GEOID'].apply(lambda x: str(x).zfill(5))
         county_geom['GEOID'] = county_geom['GEOID'].astype(str)
         data['countyFIPS']  = data.countyFIPS.apply(lambda x: str(x).zfill(5))
@@ -169,7 +169,7 @@ def create_state_files():
         final = pd.merge(base_cols, agg, how='inner', on = 'State')
         if type_ == 'cases':
             type_ = 'confirmed'
-        final.to_csv(os.path.join(repo_root, 'docs/csv/covid_{}_usafacts_state.csv'.format(type_)), index=False)
+        final.to_csv(os.path.join(repo_root, 'public/csv/covid_{}_usafacts_state.csv'.format(type_)), index=False)
 
 if __name__ == '__main__':
     usafacts()

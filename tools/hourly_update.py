@@ -101,7 +101,7 @@ county_fix_code = {
 # internationalco new entry as of 0801, data will not be shown on the atlas
 
 def fetch_covid_data():
-    out = open('../docs/last_update.txt', 'w') 
+    out = open('../public/last_update.txt', 'w') 
     now = datetime.now()
     out.write(now.strftime("%d/%m/%Y %H:%M:%S"))
     out.close()

@@ -40,6 +40,9 @@ const DataPanelContainer = styled.div`
   padding:0;
   z-index:5;
   transform: translateX(100%);
+  h4 {
+    margin:10px 0;
+  }
   &.open {
     transform:none;
   }
@@ -551,7 +554,7 @@ const DataPanel = () => {
               <p>Preventable hospital stays</p><Tooltip id="PrevHospRt"/>
               <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'PrevHospRt'), 'sum')}</h3>
 
-              <p>Residential segregation black/white</p>
+              <p>Residential segregation <br/>black / white</p>
               <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'RsiSgrBlckRt'), 'weighted_average')}</h3>
 
               <p>Severe housing problems</p><Tooltip id="SvrHsngPrbRt"/>
