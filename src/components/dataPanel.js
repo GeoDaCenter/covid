@@ -40,6 +40,9 @@ const DataPanelContainer = styled.div`
   padding:0;
   z-index:5;
   transform: translateX(100%);
+  h4 {
+    margin:10px 0;
+  }
   &.open {
     transform:none;
   }
