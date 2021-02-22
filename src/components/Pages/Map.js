@@ -10,6 +10,8 @@ import {
   getDataForBins, getDataForCharts, getDataForLisa, getDateLists,
   getLisaValues, getVarId, getCartogramValues, getDateIndices, parseBinPairs } from '../../utils';
 
+import { INITIAL_STATE } from '../../constants/defaults';
+
 // Actions -- Redux state manipulation following Flux architecture //
 // first row: data storage
 // second row: data and metadata handling 
@@ -88,13 +90,12 @@ function App() {
   // are OK to trigger. Issues arise with missing data, columns, etc.
   const {storedData, storedGeojson, storedLisaData, storedCartogramData,
     currentData, mapParams, dataParams, dateIndices, mapLoaded } = useSelector(state => state);
-  
+  const fullState = useSelector(state => state)
   // gda_proxy is the WebGeoda proxy class. Generally, having a non-serializable
   // data in the state is poor for performance, but the App component state only
   // contains gda_proxy.
   const [gda_proxy, set_gda_proxy] = useState(null);
   const dispatch = useDispatch();  
-  
   // // Dispatch helper functions for side effects and data handling
   // Get centroid data for cartogram
   // const getCentroids = (geojson, gda_proxy) =>  dispatch(setCentroids(gda_proxy.GetCentroids(geojson), geojson))
@@ -222,7 +223,6 @@ function App() {
   // After runtime is initialized, this loads in gda_proxy to the state
   // TODO: Recompile WebGeoda and load it into a worker
   useEffect(() => {
-    
     let paramsDict = {}; 
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -262,9 +262,14 @@ function App() {
       const newGeoda = async () => {
         let geoda = await jsgeoda.New();
         set_gda_proxy(geoda);
+        window.gda_proxy = geoda
       }
 
-      newGeoda()
+      if (window.gda_proxy === undefined) {
+        newGeoda()
+      } else {
+        set_gda_proxy(window.gda_proxy)
+      }
     
     })
     dispatch(setDates(dateLists.isoDateList))
@@ -317,22 +322,22 @@ function App() {
   // This listens for gda_proxy events for LISA and Cartogram calculations
   // Both of these are computationally heavy.
   useEffect(() => {
-    if (gda_proxy !== null && mapParams.mapType === "lisa"){
-        dispatch(
-          storeLisaValues(
-            getLisaValues(
-              gda_proxy, 
-              currentData, 
-              getDataForLisa(
-                storedData[currentData], 
-                dataParams,
-                storedGeojson[currentData].indexOrder
-              )
+    if (gda_proxy !== null && mapParams.mapType === "lisa" && storedGeojson[currentData] !== undefined){
+      dispatch(
+        storeLisaValues(
+          getLisaValues(
+            gda_proxy, 
+            currentData, 
+            getDataForLisa(
+              storedData[currentData], 
+              dataParams,
+              storedGeojson[currentData].indexOrder
             )
           )
         )
+      )
     }
-    if (gda_proxy !== null && mapParams.vizType === 'cartogram'){
+    if (gda_proxy !== null && mapParams.vizType === 'cartogram' && storedGeojson[currentData] !== undefined){
       let tempId = getVarId(currentData, dataParams)
       if (storedGeojson[currentData] !== undefined) {
         dispatch(
@@ -417,7 +422,7 @@ function App() {
       <Preloader loaded={mapLoaded} />
       <NavBar />
       <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
-        {/* <button onClick={() => console.log(getDataForBins( storedData[currentData], {...dataParams, nIndex: null} ))}>data for bins</button> */}
+        {/* <button onClick={() => console.log(fullState)}>lisa data</button> */}
         {/* <button onClick={() => console.log(dataParams)}>data params</button>
         <button onClick={() => console.log(mapParams)}>map params</button> */}
       </header>

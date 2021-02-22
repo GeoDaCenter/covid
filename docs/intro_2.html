@@ -1,194 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <title>The U.S. COVID-19 Atlas</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-</head>
+  <head>
+    <!-- google analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-72724100-4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
 
+      gtag('config', 'UA-72724100-4');
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-72724100-5"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
 
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar"></span>                        
-      </button>
-      <a class="navbar-brand" href="atlas.html">U.S. COVID-19 Atlas</a>
-    </div>
-    <div class="collapse navbar-collapse" id="myNavbar">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="intro.html">Home</a></li>
-        <li><a href="methods.html">Methods</a></li>
-        <li><a href="about.html">About</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-<body>
-
-  <!-- If Needed Left and Right Padding in 'md' and 'lg' screen means use
-            <div class="row">
-                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                    <a href="#">About</a>
-                </div>
-                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                    Test
-                </div>
-                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                    <a href="#myModal1" data-toggle="modal">SHARE</a>
-                </div>
-            </div>
-        </div> -->
-
-<div class="container-fluid">
-<div class="container-fluid">  
-
-    <div class="row">
-    <div class="jumbotron jumbotron-fluid col-lg-12">
-        <h1 class="display-3">The U.S. COVID-19 Atlas</h1>
-
-        <p>In a quickly changing pandemic landscape, access to state and county-level data with rapid regional analysis is crucial to understanding needs and supporting planning efforts. County-level visualizations show a dramatically more detailed pandemic landscape, as using aggregate data alone can miss local hotspots of surging COVID cases. </p>
-
-        <hr class="my-5">
-        
-       This atlas is in constant development by <a href="https://spatial.uchicago.edu">the Center for Spatial Data Science</a> at the  University of Chicago, with collaboration from the <a href="https://datascience.wisc.edu/institute">UW-Madison Data Science Institute.</a>  County-level data sources include 1P3A but will soon be updated with Covidtracker, USAFacts, and health department validations (<a href="methods.html">see more</a>). <br>
-       </div>
-     </div>
-
-     <div class "row">
-      <div class="col-lg-12">
-        <video width=100% autoplay="autoplay" muted loop>
-          <source src="lisa.mp4" type="video/mp4">
-        </video>
-        <br>
-     </div>
-   </div>
- </div>
-
-
-<hr> 
-    <div class="row">
-
-        <h1 class="text-center"><b> Atlas Features </h1></b>
-        <br><br>
-    </div>
-
-    <div class="row">
-            <div class="col-sm-1">
-            </div>
-            <div class="col-sm-5 text-justify"">
-              <h3 class="text-center"> <b> Interactive Exploration </h3></b><br>
-              <p> Our COVID-19 choropleth and local clustering map of the US allows for spatiotemporal visualization of the spread of COVID across the country by the state or county level. Explore total counts or rates for both prevalence and deaths due to COVID. <i><a href="methods.html"> More Details </a></i></p>
-            </div>
-            <div class="col-sm-1">
-            </div>
-            <div class="col-sm-4 text-center">
-              <p class="lead">On the Map:</p> 
-              <ul class="text-justify"> 
-                <li>Click on the <b>Data</b> you're interested in exploring with the data dropdown menu (eg. confirmed cases per 1 million persons), and then click on the map type, either <b>Choropleth or Local Clustering</b>.</li> 
-                <li> Higher counts or rates appear dark red, and lower counts or rates appear orange or yellow (or gray if there is no prevalence). Hot spots appear red, and cold spots appear blue.</li>
-              </ul>
-            </div>
-            <div class="col-sm-1">
-            </div>
-        </div>
-
-    <div class="row">
-      <br><br>
-            <div class="col-sm-1">
-            </div>
-            <div class="col-sm-5 text-justify">
-              <h3 class="text-center"><b> Change Over Time </h3></b>
-              <p>  In order to understand the distribution and spread of COVID in the US throughout the pandemic, visualizing temporal changes is beneficial. Witnessing COVID around the US as the pandemic progresses is especially useful to analyze patterns of the spread for resource distribution. <i><a href="methods.html"> More Details </a></i></p>  
-            </div>
-            <div class="col-sm-1">
-            </div>
-            <div class="col-sm-4 text-center">
-              <p class="lead">On the Map:</p> 
-              <ul class="text-justify"> 
-                <li>Click on the <b>Data</b> you're interested in exploring, and then use the <b>All Cases Slider</b> to select a date of interest.</li> 
-                <li> Move the slider from left to right to visualize day to day changes.</li>
-              </ul>
-            </div>
-            <div class="col-sm-1">
-            </div>
-        </div>
-
-    <div class="row">
-      <br><br>
-        <div class="col-sm-1">
-            </div>
-            <div class="col-sm-5">
-              <h3 class="text-center"> <b> COVID Clusters </h3></b><br>
-              <p> We show COVID-19 hot spots two ways: 1) using the total number of confirmed cases, and 2) adjusting for population. Because of the infectious nature of COVID, high numbers of cases anywhere will be of concern. At the same time, identifying areas that have a disproportionately high number of cases within the population is necessary to locate areas hit hardest by the pandemic.<i><a href="methods.html"> More Details </a></i></p>
-              </div>
-            <div class="col-sm-1">
-            </div>
-            <div class="col-sm-4 text-center">
-              <p class="lead">On the Map:</p> 
-              <ul class="text-justify"> 
-                <li>Click on the <b>Data</b> you're interested in exploring, and then click on <b>Local Clustering</b>.</li> 
-                <li> Hot spot clusters appear red.</li>
-            </div>
-            <div class="col-sm-1">
-            </div>
+    gtag('config', 'UA-72724100-5');
+    </script>
+    <script>
+      // I'm so sorry there is a bug in jsgeoda where this function isn't defined and its web assembly -_-
+      function isInt(n) {
+        return Number(n) === n && n % 1 === 0;
+      }
+    </script>
+    <meta charset="utf-8">
+    <title>US Covid Atlas</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta property="og:title" content="US Covid Atlas">  
+    <meta property="og:description" content="Near Real-Time Exploration of the COVID-19 Pandemic. The US COVID Atlas is a visualization tool led by a University of Chicago research coalition.
+    In a quickly changing pandemic landscape, our tool connects COVID case data and community indicators across the United States from its beginning to today. ">
+    <meta property="og:image" content="http://theuscovidatlas.org/img/thumbnail.jpg">
+    <meta property="og:url" content="https://theuscovidatlas.org/map.html">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="57x57" href="./favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="./favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="./favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="./favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="./favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="./favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="./favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="./favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="./favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="./favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="msapplication-TileColor" content="#ec1e24">
+    <meta name="msapplication-TileImage" content="./favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ec1e24">
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root">
+      <script>
+        window.onload = function(){
+          let link = window.location.href.split('io/covid/')[1]?.split('.html')[0] ?? ''
+          document.querySelector('#targetLink').href = `https://theuscovidatlas.org/${link}`
+          setTimeout(function(){
+            window.location.replace(`https://theuscovidatlas.org/${link}`);
+          }, 5000)
+        }
+      </script>
+        <div style="background:#2b2b2b;position:fixed;left:0;top:0;width:100%;height:100%;">
+          <div style="color:white;text-align:center;position:fixed;left:50%;top:50%;transform:translate(-50%, -50%);font-family:Arial, Helvetica, sans-serif;padding:0;margin:0;width:100%;">
+            <img src="./assets/img/preloader.gif" style="display:block;margin:40px auto;width:100px; max-width:100%;"/>
+            <h1>You are being redirected to the US Covid Atlas</h1>
+            <p>If you are not redirected in 5 seconds, <a href="#" id="targetLink" style="color:aquamarine;text-decoration: none;">click here.</a></p>
           </div>
-
-    <div class="row">
-      <br><br>
-       <div class="col-sm-1">
-            </div>
-            <div class="col-sm-5">
-              <h3 class="text-center"><b> Emerging Risk </h3></b>
-              <p> While clusters are groups of counties that have a high number of cases that are neighbored by counties with a high number of cases, outliers are areas that have a high number of cases within the county and fewer cases in neighboring counties. Counties that are outliers highlight an emerging risk, indicating potential priorities for containment.<i><a href="methods.html"> More Details </a></i></p>
-              </div>
-            <div class="col-sm-1">
-            </div>
-            <div class="col-sm-4 text-center">
-              <p class="lead">On the Map:</p> 
-              <ul class="text-justify"> 
-                <li>Click on the <b>Data</b> you're interested in exploring, and then click on <b>Local Clustering</b>.</li> 
-                <li>  Spatial outliers appear pink.</li>
-            </div>
-            <div class="col-sm-1">
-            </div>
-          </div>
-          <br><br>
-    <hr>
-
-<!--   <div class="row text-center">
-      
-      <div class="col-sm-1">
-      </div>
-
-      <div class="col-md-6">
-        <h2> <b> Explore </b> different dimensions of the COVID-19 pandemic at state and county scale across the United States. </h2>
-      </div>
-      <div class="col-sm-4 text-left">
-        <h4> Tips: </h4>
-        <li >Zoom to your area of interest.</li>
-        <li>Click layers on and off. </li>
-        <li>Click on the map to get more information. </li>
-        <li>Toggle the filters for each index on the right to view customized maps.</li>
-        <br><br><br>
-      </div> 
-      <div class="col-sm-1">
-      </div> -->
-
-
-    <div class="container-fluid text-center">
-          <iframe width="100%" height="900" frameborder="0" src="atlas.html" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
+        </div>
     </div>
-
-</div>
-
-<footer class="container-fluid text-center">
-  <p>Brought to you by the <a>Center for Spatial Data Science <a href="https://spatial.uchicago.edu"> @UChicago</a>. Powered by <a href="https://geodacenter.github.io/">GeoDa</a>.</p>
-</footer>
-
-</body>
+  </body>
 </html>

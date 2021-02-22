@@ -3,18 +3,19 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
  
 import {Home, LoadingMessage, ErrorPage} from './components/';
  
-const Map = React.lazy(() => import('./components/Pages/Map'));
 const About = React.lazy(() => import('./components/Pages/About'));
 const Api = React.lazy(() => import('./components/Pages/Api'));
-const Data = React.lazy(() => import('./components/Pages/Data'));
+const Choropleth = React.lazy(() => import('./components/Pages/Choropleth'));
+const CodeOfConduct = React.lazy(() => import('./components/Pages/CodeOfConduct'));
 const Contact = React.lazy(() => import('./components/Pages/Contact'));
+const Data = React.lazy(() => import('./components/Pages/Data'));
+const Faq = React.lazy(() => import('./components/Pages/Faq'));
+const Hotspots = React.lazy(() => import('./components/Pages/Hotspots'));
 const Insights = React.lazy(() => import('./components/Pages/Insights'));
+const Map = React.lazy(() => import('./components/Pages/Map'));
 const Methodology = React.lazy(() => import('./components/Pages/Methodology'));
 const Time = React.lazy(() => import('./components/Pages/Time'));
-const Choropleth = React.lazy(() => import('./components/Pages/Choropleth'));
-const Hotspots = React.lazy(() => import('./components/Pages/Hotspots'));
 const Trends = React.lazy(() => import('./components/Pages/Trends'));
-const Faq = React.lazy(() => import('./components/Pages/Faq'));
 
 class App extends Component {
 
@@ -48,6 +49,8 @@ class App extends Component {
                 <Route path="/trends.html" component={Trends}/>
                 <Route path="/faq" component={Faq}/>
                 <Route path="/faq.html" component={Faq}/>
+                <Route path="/conduct" component={CodeOfConduct}/>
+                <Route path="/conduct.html" component={CodeOfConduct}/>
                 <Route component={ErrorPage} />
                 <Route />
             </Switch>

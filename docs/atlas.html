@@ -1,91 +1,80 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <title>COVID19 USA States</title>
+    <!-- google analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-72724100-4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
 
-    <link rel="stylesheet" href="index.css"></link>
+      gtag('config', 'UA-72724100-4');
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-72724100-5"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
 
-    <script src="https://unpkg.com/deck.gl@^7.0.0/dist.min.js"></script>
-    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-
-    <style type="text/css">
-
-    </style>
+    gtag('config', 'UA-72724100-5');
+    </script>
+    <script>
+      // I'm so sorry there is a bug in jsgeoda where this function isn't defined and its web assembly -_-
+      function isInt(n) {
+        return Number(n) === n && n % 1 === 0;
+      }
+    </script>
+    <meta charset="utf-8">
+    <title>US Covid Atlas</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta property="og:title" content="US Covid Atlas">  
+    <meta property="og:description" content="Near Real-Time Exploration of the COVID-19 Pandemic. The US COVID Atlas is a visualization tool led by a University of Chicago research coalition.
+    In a quickly changing pandemic landscape, our tool connects COVID case data and community indicators across the United States from its beginning to today. ">
+    <meta property="og:image" content="http://theuscovidatlas.org/img/thumbnail.jpg">
+    <meta property="og:url" content="https://theuscovidatlas.org/map.html">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="57x57" href="./favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="./favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="./favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="./favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="./favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="./favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="./favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="./favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="./favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="./favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="msapplication-TileColor" content="#ec1e24">
+    <meta name="msapplication-TileImage" content="./favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ec1e24">
   </head>
-
   <body>
-    <div id="tooltip"></div>
-    <div class="options-panel top-right " tabindex="0">
-        <div>
-            <h3>COVID19 Map</h3>
-            <p>The covid19 confirmed cases in the United States of America</p>
-            <div class="layout">
-                <button class="stat col-1-2 checked" id="btn-state" onclick="OnStateClick(this)">By State</button>
-                <button class="stat col-1-2" id="btn-county" onclick="OnCountyClick(this)">By County</button>
-            </div>
-            <p>Data:</p>
-            <div class="layout">
-                <div class="dropdown">
-                    <button class="dropbtn" id="select-data">Confirmed Count</button>
-                    <div class="dropdown-content">
-                      <a href="#" onclick="OnDataClick(this)">Confirmed Count</a>
-                      <a href="#" onclick="OnDataClick(this)">Confirmed Count per 1M Population</a>
-                      <a href="#" onclick="OnDataClick(this)">Death Count</a>
-                      <a href="#" onclick="OnDataClick(this)">Death Count per 1M Population</a>
-                      <a href="#" onclick="OnDataClick(this)">Fatality Rate</a>
-                    </div>
-                  </div>
-            </div>
-            <p>Map type:</p>
-            <div class="layout">
-                <button class="stat col-1-2 checked" id="btn-nb" onclick="OnChoroplethClick(this)">Choropleth</button>
-                <button class="stat col-1-2" id="btn-lisa" onclick="OnLISAClick(this)">Local Clustering</button>
-            </div>
-            <p></p>
-            <div class="layout" id="legend">
-                <div class="legend" style="background: rgb(240, 240, 240); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(255, 237, 160); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(254, 217, 118); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(254, 178, 76); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(253, 141, 60); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(252, 78, 42); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(227, 26, 28); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(189, 0, 38); width: 7.69231%;"></div>
-                <div class="legend" style="background: rgb(128, 0, 38); width: 7.69231%;"></div>
-            </div>
-            <div class="layout" id="legend-labels">
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-                <div style="width: 7.69231%;"></div>
-            </div>
-            <p>New cases:</p>
-            <div class="layout" id="linechart"></div>
-            <p>All cases:</p>
-            <div class="layout" id="slider-svg"></div>
-            <div class="layout" id="sliderdiv"><input id="slider" type="range" min="1" max="100" step="1" value="20"/></div>
-            <p><n><b>Data</b>:&nbsp;<a href="https://covidvirus.1point3acres.com/">1point3acres.com</a> with more sources coming soon.</p>
-            <p>
-              <input type="checkbox" onchange="OnShowLabels(this)">Show Hotspot Label
-              <input type="checkbox" onchange="OnShowTime(this)">Show Time Label
-            </p>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root">
+      <script>
+        window.onload = function(){
+          let link = window.location.href.split('io/covid/')[1]?.split('.html')[0] ?? ''
+          document.querySelector('#targetLink').href = `https://theuscovidatlas.org/${link}`
+          setTimeout(function(){
+            window.location.replace(`https://theuscovidatlas.org/${link}`);
+          }, 5000)
+        }
+      </script>
+        <div style="background:#2b2b2b;position:fixed;left:0;top:0;width:100%;height:100%;">
+          <div style="color:white;text-align:center;position:fixed;left:50%;top:50%;transform:translate(-50%, -50%);font-family:Arial, Helvetica, sans-serif;padding:0;margin:0;width:100%;">
+            <img src="./assets/img/preloader.gif" style="display:block;margin:40px auto;width:100px; max-width:100%;"/>
+            <h1>You are being redirected to the US Covid Atlas</h1>
+            <p>If you are not redirected in 5 seconds, <a href="#" id="targetLink" style="color:aquamarine;text-decoration: none;">click here.</a></p>
+          </div>
         </div>
-        <div class="source-link" align="center">
-			<a href="https://spatial.uchicago.edu" target="_new"><img align="center" src="logo_gray.png"  width=200px alt="Center for Spatial Data Science logo"/></a><br>
-            
-            <button onclick="OnSave(this)" style="display:none">save</button>
-        </div>
-    </div> 
-    <div class="time-panel bottom-left" id="time-container">2020-03-23
     </div>
   </body>
-  <script async type="text/javascript" src="./gen/jsgeoda.js"></script>
-  <script src="index.js"></script>
-
-  
 </html>

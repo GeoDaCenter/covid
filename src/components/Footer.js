@@ -157,13 +157,18 @@ const Footer = ( props ) => {
                                 <li><NavLink to="/contact">Contact Us</NavLink></li>
                                 <li><a href="https://geodacenter.github.io/" target="_blank" rel="noopener noreferrer">GeoDa Open Software</a></li>
                                 <li><a href="https://covidatlas.healthcarecommunities.org" target="_blank" rel="noopener noreferrer">Learning Community</a></li>
+                                <li><NavLink to="/conduct">Code of Conduct</NavLink></li>
                             </ul>
                         </p>
                     </Grid>
                     <Grid item xs={12} md={5}>
                         <img src={`${process.env.PUBLIC_URL}/img/csds-university-wordmark-white.png`} width="100%;" alt="Center for Spatial Data Science logo" />
-                        <p class="copyright">
+                        <p className="copyright">
                             Brought to you by the Center for Spatial Data Science <a href="https://spatial.uchicago.edu/" target="_blank" rel="noopener noreferrer">@UChicago</a>. Powered by <a href="https://geodacenter.github.io/" target="_blank" rel="noopener noreferrer">GeoDa</a>. Funded in part by the <a href="https://www.rwjf.org/" target="_blank" rel="noopener noreferrer">Robert Wood Johnson Foundation</a>.
+                        </p>
+                        <br/>
+                        <p className="copyright">
+                            <a href="http://netlify.com/" target="_blank" rel="noopener noreferrer">Powered by Netlify</a>
                         </p>
                     </Grid>
                 </LinkLists>

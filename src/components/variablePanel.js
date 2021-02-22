@@ -744,13 +744,23 @@ const VariablePanel = (props) => {
 
   const [newVariable, setNewVariable] = useState("Confirmed Count per 100K Population");
   const [currentGeography, setCurrentGeography] = useState('County');
-  const [currentDataset, setCurrentDataset] = useState('1point3acres');
+  const [currentDataset, setCurrentDataset] = useState(urlParamsTree[currentData].name);
 
+
+  useEffect(() => {
+    // console.log(urlParamsTree[currentData].name)
+    console.log(dataParams.variableName)
+    if (dataParams.variableName.indexOf('Dose') !== -1 || (dataParams.variableName.indexOf('Test') !== -1 && currentData.indexOf('state') === -1)) {
+      console.log('CDC')
+    } else {
+      console.log(currentDataset)
+    }
+  },[])
   useEffect(() => {
     if (newVariable !== dataParams.variableName) {
       setNewVariable(dataParams.variableName)
       setCurrentGeography(urlParamsTree[currentData]['geography'])
-      if (dataParams.variableName.indexOf('Vaccin') !== -1 || (dataParams.variableName.indexOf('Test') !== -1 && currentData.indexOf('state') === -1)) {
+      if (dataParams.variableName.indexOf('Dose') !== -1 || (dataParams.variableName.indexOf('Test') !== -1 && currentData.indexOf('state') === -1)) {
         setCurrentDataset('CDC')
       } else {
         setCurrentDataset(urlParamsTree[currentData]['name'])
