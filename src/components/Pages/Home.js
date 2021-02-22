@@ -20,6 +20,10 @@ const HomePage = styled.div`
         max-width: 940px;
         margin: 0;
         font-size:4rem;
+        @media (max-width:960px){
+            font-size:2rem;
+            width:100%;
+        }
     }
     .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
         margin-bottom: .5rem;
@@ -56,12 +60,11 @@ const Hero = styled.div`
     p {
         
         font-family: 'Lato', sans-serif;
-        font-size: 20px;
+        font-size: 1.1rem;
         font-weight: 300;
         font-stretch: normal;
         font-style: normal;
         line-height: 1.4;
-        font-size:1.2rem;
         letter-spacing: normal;
         color: #ededed;
         text-align:left;
@@ -89,6 +92,24 @@ const Hero = styled.div`
         border-radius: .3rem;
         text-decoration:none;
         height:50px;
+        @media (max-width:960px){
+            max-width:50%;
+            margin:0 auto;
+        }
+        @media (max-width:600px){
+            max-width:75%;
+            margin:0 auto;
+        }
+    }
+    #HomeGeocoder{
+        @media (max-width:960px){
+            max-width:56%;
+            margin:0 auto;
+        }
+        @media (max-width:600px){
+            max-width:85%;
+            margin:0 auto;
+        }
     }
     .small-text {
         font-size:0.75rem;
@@ -272,9 +293,12 @@ function Home(){
                         <Grid item xs={12}>
                             <h1>Near Real-Time Exploration of the <NoBreak>COVID-19</NoBreak> Pandemic</h1>
                         </Grid>
+                        
+                        <Gutter h={20}/>
+
                         <Grid item xs={12} md={5}> 
                             <p>
-                                The US COVID Atlas is a visualization tool led by a <b>University of Chicago research coalition.</b>
+                                The US COVID Atlas is a visualization tool led by a <br/><b>University of Chicago research coalition.</b>
                                 <br/><br/>
                                 In a quickly changing pandemic landscape, our tool connects COVID case data and community indicators 
                                 across the United States from its beginning to today. The Atlas helps you access current, 
@@ -284,11 +308,11 @@ function Home(){
                         </Grid>
                         <Grid item xs={12} md={7}></Grid>
                         
-                        <Gutter h={20}/>
+                        <Gutter h={40}/>
 
-                        <CenteredGrid item xs={12} md={5}>
+                        <CenteredGrid item xs={12} md={5} id="HomeGeocoder">
                             <Geocoder 
-                                id="HomeGeocoder"
+                                // id="HomeGeocoder"
                                 placeholder={"Find your county..."}
                                 API_KEY={MAPBOX_ACCESS_TOKEN}
                                 onChange={handleGeocoder}

@@ -13,16 +13,21 @@ const MapContainer = styled.div`
     width:600px;
     height:400px;
     position:relative;
+    pointer-events:none;
+    cursor:default;
     p.caption {
         position:absolute;
         bottom:0;
         right:0;
         color:white;
         text-align:right;
+        font-size:0.8rem;
         span {
-            font-size:1.5rem;
             font-weight:bold;
         }
+    }
+    @media (max-width:960px){
+        display:none;
     }
 
 `
