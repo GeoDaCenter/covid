@@ -67,7 +67,7 @@ def validate_and_process():
 
       # VALIDATE: make sure cases contain yesterday's data
       yesterday = datetime.now(pytz.timezone('US/Central')) - timedelta(days=1)
-      yesterday_source_field = yesterday.strftime('%-m/%-d/%y')
+      yesterday_source_field = yesterday.strftime('%Y-%m-%d')
       print(yesterday)
       print(yesterday_source_field)
       cases_last_date = cases_source_field_names[-1]
@@ -164,8 +164,8 @@ def get_month_day():
 def create_state_files():
     for type_ in ['cases', 'deaths']:
         data = pd.read_csv(os.path.join(dir_path, '_working/{}_raw.csv'.format(type_)))
-        base_cols = data.copy()[['State', 'stateFIPS']].drop_duplicates()
-        agg = data.groupby('State').sum().reset_index().drop(columns=['countyFIPS','stateFIPS'])
+        base_cols = data.copy()[['State', 'StateFIPS']].drop_duplicates()
+        agg = data.groupby('State').sum().reset_index().drop(columns=['countyFIPS','StateFIPS'])
         final = pd.merge(base_cols, agg, how='inner', on = 'State')
         if type_ == 'cases':
             type_ = 'confirmed'
