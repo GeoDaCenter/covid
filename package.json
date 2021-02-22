@@ -48,7 +48,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "netlify-build": "react-scripts build && echo '/* /index.html 200' | cat >build/_redirects",
+    "netlify-build": "react-scripts build && cd build && cat _redirects",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

@@ -123,13 +123,13 @@ var reducer = (state = INITIAL_STATE, action) => {
                 storedLisaData: action.payload.data
             };
         case 'SET_STORED_CARTOGRAM_DATA':
-            let cartoObj = {
-                ...state.storedCartogramData,
-            }
-            cartoObj[action.payload.name] = action.payload.data
+            // let cartoObj = {
+            //     ...state.storedCartogramData,
+            // }
+            // cartoObj[action.payload.name] = action.payload.data
             return {
                 ...state,
-                storedCartogramData: cartoObj
+                storedCartogramData: action.payload.data
             };
         case 'SET_STORED_MOBILITY_DATA':
             return {
