@@ -16,7 +16,7 @@ import styled from 'styled-components';
 
 import { colLookup } from '../utils'; //getGzipData, getArrayCSV
 import Tooltip from './tooltip';
-import { StyledDropDown, BinsContainer } from '../styled_components';
+import { StyledDropDown, BinsContainer, Gutter } from '../styled_components';
 import { setVariableParams, setMapParams, setCurrentData, setPanelState, setParametersAndData } from '../actions'; //variableChangeZ, setNotification, storeMobilityData
 import { fixedScales, colorScales, colors } from '../config';
 import { settings } from '../config/svg';
@@ -39,6 +39,12 @@ const VariablePanelContainer = styled.div`
   z-index:50;
   &.hidden {
     transform: translateX(-100%);
+  }
+  h1,h2,h3,h4 {
+    margin: 0 0 10px 0;
+  }
+  p {
+    margin: 10px 0;
   }
   @media (max-width:1024px) {
     min-width:50vw;
@@ -156,7 +162,6 @@ const VariablePanelContainer = styled.div`
 `
 const StyledButtonGroup = styled(ButtonGroup)`
   color:white;
-  padding-bottom:20px;
   .MuiButtonGroup-grouped {
     color:white;
     border-color:${colors.white}77;
@@ -857,6 +862,7 @@ const VariablePanel = (props) => {
     <VariablePanelContainer className={panelState.variables ? '' : 'hidden'} otherPanels={panelState.info} id="variablePanel">
       <ControlsContainer>
         <h2>Data Sources &amp;<br/> Map Variables</h2>
+        <Gutter h={20}/>
         <StyledDropDown id="newVariableSelect">
           <InputLabel htmlFor="newVariableSelect">Variable</InputLabel>
           <Select
@@ -874,7 +880,7 @@ const VariablePanel = (props) => {
           }
           </Select>
         </StyledDropDown>
-        <br/>
+        <Gutter h={35}/>
         <DateSelectorContainer disabled={dataParams.nType === "characteristic"}>
           <StyledDropDown id="dateSelector">
               <InputLabel htmlFor="date-select">Date Range</InputLabel>
@@ -905,9 +911,9 @@ const VariablePanel = (props) => {
             <p>{mapParams.binMode === 'dynamic' ? 'Dynamic' : 'Fixed Bins'}<Tooltip id="BinModes"/></p>
           </BinsContainer> 
         </DateSelectorContainer> 
-        <br/>
+        <Gutter h={35}/>
         
-        <StyledDropDown id="geographySelect">
+        <StyledDropDown id="geographySelect" style={{marginRight:'20px'}}>
           <InputLabel htmlFor="geographySelect">Geography</InputLabel>
           <Select
             value={currentGeography}
@@ -941,7 +947,7 @@ const VariablePanel = (props) => {
             )}
           </Select>
         </StyledDropDown>
-        <br/>
+        <Gutter h={35}/>
         {/* <StyledDropDown id="dataSource">
           <InputLabel htmlFor="data-select">Data Source</InputLabel>
           <Select  
@@ -1048,14 +1054,14 @@ const VariablePanel = (props) => {
             <br/>
           </RadioGroup>
         </StyledDropDown>
+        <Gutter h={15}/>
         <p>Visualization Type</p>
         <StyledButtonGroup color="primary" aria-label="text button group" id="visualizationType">
           <Button className={mapParams.vizType === '2D' ? 'active' : ''} data-val="2D" key="2D-btn" onClick={() => handleVizTypeButton('2D')}>2D</Button>
           <Button className={mapParams.vizType === '3D' ? 'active' : ''} data-val="3D" key="3D-btn" onClick={() => handleVizTypeButton('3D')}>3D</Button>
           <Button className={mapParams.vizType === 'cartogram' ? 'active' : ''} data-val="cartogram" key="cartogram-btn" onClick={() => handleVizTypeButton('cartogram')}>Cartogram</Button>
         </StyledButtonGroup>
-        <br/>
-        <br />
+        <Gutter h={12}/>
         {/* {
           mapParams.vizType === '3D' && 
             <BinsContainer item xs={12} >
@@ -1126,7 +1132,6 @@ const VariablePanel = (props) => {
               </Select>
             </StyledDropDown>
         } */}
-        <br/>
         <TwoUp id="overlaysResources">
           <StyledDropDown>
             <InputLabel htmlFor="overlay-select">Overlay</InputLabel>

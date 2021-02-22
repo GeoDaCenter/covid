@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import { colors } from '../config';
 
 export const StyledDropDown = styled(FormControl)`
-  margin:0 10px ${props => props.component === 'radios' ? '20' : '40'}px 0!important;
+  margin:0 10px 0 0;
   color:white;
   padding:0;
   .MuiInputBase-root {
@@ -174,5 +174,6 @@ export const ContentContainer = styled.div`
 
 export const Gutter = styled.div`
     width:100%;
+    display:block;
     height: ${props => props.h}px;
 `
