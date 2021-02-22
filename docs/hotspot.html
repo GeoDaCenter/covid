@@ -62,9 +62,9 @@
       <script>
         window.onload = function(){
           let link = window.location.href.split('io/covid/')[1]?.split('.html')[0] ?? ''
-          document.querySelector('#targetLink').href = `https://theuscovidatlas.org//${link}`
+          document.querySelector('#targetLink').href = `https://theuscovidatlas.org/${link}`
           setTimeout(function(){
-            window.location.replace(`https://theuscovidatlas.org//${link}`);
+            window.location.replace(`https://theuscovidatlas.org/${link}`);
           }, 5000)
         }
       </script>
