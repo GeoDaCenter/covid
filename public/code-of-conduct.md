@@ -37,6 +37,21 @@ Examples of unacceptable behavior include:
   address, without their explicit permission
 * Other conduct which could reasonably be considered inappropriate in a
   professional setting
+  
+## Best Usage & Best Practices
+
+COVID-19 data should not be used to determine risk. It should not be used to surveil, criminalize, cage, and/or deny critical benefits.
+
+COVID-19 data should not be used to inform any of the following automated decision making systems, for example:
+* Predictive policing and enforcement of social distancing orders (i.e., COVID-19 hot spots should not be assigned greater police presence and prioritized enforcement of social distancing measures)
+* Public safety assessments to determine whether a person can be released from jail or prison
+* Forced testing (general and antibodies testing) that would disproportionately target Black, Latinx, and/or poor communities
+* Denying a person credit
+* Reinforcing historical practices of redlining in the form of denying loans, lowering property values, and reducing public and private investments
+* Denying a person a job
+* Denying a person housing
+* Denying a person access to health care, treatment, or services (i.e., ventilators)
+* Denying a person access to public services and benefits (i.e., public transportation)
 
 ## Enforcement Responsibilities
 
@@ -119,6 +134,9 @@ the community.
 This Code of Conduct is adapted from the Contributor Covenant,
 version 2.0, available [here](https://www.contributor-covenant.org/version/2/0/code_of_conduct.html).
 
+This Code of Conduct also gives credit to the [Data 4 Black Lives COVID-19](https://d4bl.org/covid19-data.html) project for its best usage
+and best practices section.
+
 ___
 
-Contributors to this document include: Dylan Halpern
+Contributors to this document include: Dylan Halpern, Andres Crucetta Nieto
