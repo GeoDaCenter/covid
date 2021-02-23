@@ -9,31 +9,25 @@
 
 * Cases
     * County Cases: [covid_confirmed_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/covid_confirmed_cdc.csv)
-    * State Cases: [covid_confirmed_cdc_state.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/covid_confirmed_cdc_state.csv)
 * Deaths
     * County Deaths: [covid_deaths_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/covid_deaths_cdc.csv)
-    * State Deaths: [covid_deaths_state.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/covid_deaths_state.csv)
 * Testing
     * County Testing: [covid_testing_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/covid_testing_cdc.csv)
-    * State Testing: [covid_testing_cdc_state.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/covid_testing_cdc_state.csv)
     * County Testing Capacity: [covid_tcap_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/covid_tcap_cdc.csv)
-    * State Testing Capacity: [covid_tcap_cdc_state.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/covid_tcap_cdc_state.csv)
     * County Weekly Positivity: [covid_wk_pos_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/covid_wk_pos_cdc.csv)
-    * State Weekly Positivity: [covid_wk_pos_cdc_state.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/covid_wk_pos_cdc_state.csv)
     * County Confirmed Cases Per Testing: [covid_ccpt_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/covid_ccpt_cdc.csv)
-    * State Confirmed Cases Per Testing: [covic_ccpt_cdc_state.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/covic_ccpt_cdc_state.csv)
-* Vaccination
+* Vaccination (State-level)
     * First Dose Administered: [vaccine_admin1_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/vaccine_admin1_cdc.csv)
     * Second Dose Administered: [vaccine_admin2_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/vaccine_admin2_cdc.csv)
     * Doses Distributed but not administered: [vaccine_dist_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/vaccine_dist_cdc.csv)
 
 ### Data Source(s) Description:  
-Source is [here](https://bphc.hrsa.gov...) via middle-person. 
+All county level data is sourced from the CDC's [Covid Data Tracker](https://covid.cdc.gov/covid-data-tracker/) on the [County](https://covid.cdc.gov/covid-data-tracker/#county-view) and [Vaccination](https://covid.cdc.gov/covid-data-tracker/#vaccinations) views. The CDC publishes 7-day rolling average aggregations of testing, case, and death data and daily snapshots of vaccination data.
 
-Geography source. 
+Both state and county datasets can be joined to Census [Cartographic Boundary Files](https://www.census.gov/geographies/mapping-files/time-series/geo/carto-boundary-file.html). The Atlas uses a resolution of 20M.
 
 ### Description of Data Source Tables: 
-n/a
+
 
 ### Description of Data Processing: 
 
