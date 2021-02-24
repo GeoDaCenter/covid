@@ -47,11 +47,92 @@ n/a
 
 ### Key Variable and Definitions:
 
-FileName1
+daily_pct_delivery_weekday.csv
 
 | Variable | Variable ID in .csv | Description |
 |:---------|:--------------------|:------------|
-| Readable Name | Column Name | Description |
+| FIPS Code (Join Column) | `fips_code` | County level fips code to join to county geospatial data |
+| Week Day | YYYY-MM-DD | Percentage of delivery workers for that day |
+
+daily_pct_fulltime_raw
+
+| Variable | Variable ID in .csv | Description |
+|:---------|:--------------------|:------------|
+| FIPS Code (Join Column) | `fips_code` | County level fips code to join to county geospatial data |
+| Day | YYYY-MM-DD | Percentage of full-time workers for that day |
+
+daily_pct_fulltime_weekday
+
+| Variable | Variable ID in .csv | Description |
+|:---------|:--------------------|:------------|
+| FIPS Code (Join Column) | `fips_code` | County level fips code to join to county geospatial data |
+| Week Day | YYYY-MM-DD | Percentage of full-time workers for that weekday |
+
+daily_pct_home_raw
+
+| Variable | Variable ID in .csv | Description |
+|:---------|:--------------------|:------------|
+| FIPS Code (Join Column) | `fips_code` | County level fips code to join to county geospatial data |
+| Day | YYYY-MM-DD | Percentage of home dwellers for that day |
+
+daily_pct_parttime_raw
+
+| Variable | Variable ID in .csv | Description |
+|:---------|:--------------------|:------------|
+| FIPS Code (Join Column) | `fips_code` | County level fips code to join to county geospatial data |
+| Day | YYYY-MM-DD | Percentage of part-time workers for that day |
+
+daily_pct_parttime_weekday
+
+| Variable | Variable ID in .csv | Description |
+|:---------|:--------------------|:------------|
+| FIPS Code (Join Column) | `fips_code` | County level fips code to join to county geospatial data |
+| Week Day | YYYY-MM-DD | Percentage of part-time workers for that weekday |
+
+change_from_2019_FULLTIME
+
+| Variable | Variable ID in .csv | Description |
+|:---------|:--------------------|:------------|
+| FIPS Code (Join Column) | `fips_code` | County level fips code to join to county geospatial data |
+| Week | YYYY-MM-DD | Percentage change of full-time workers from 2019 for that week |
+
+change_from_2019_HOME
+
+| Variable | Variable ID in .csv | Description |
+|:---------|:--------------------|:------------|
+| FIPS Code (Join Column) | `fips_code` | County level fips code to join to county geospatial data |
+| Week | YYYY-MM-DD | Percentage change of home dwellers from 2019 for that week |
+
+change_from_2019_PARTTIME
+
+| Variable | Variable ID in .csv | Description |
+|:---------|:--------------------|:------------|
+| FIPS Code (Join Column) | `fips_code` | County level fips code to join to county geospatial data |
+| Week | YYYY-MM-DD | Percentage change of part-time workers from 2019 for that week |
+
+pct_home
+
+| Variable | Variable ID in .csv | Description |
+|:---------|:--------------------|:------------|
+| Week | YYYY-MM-DD | Percentage of part-time workers for that week |
+| FIPS Code (Join Column) | `fips_code` | County level fips code to join to county geospatial data |
+| Percent of people home | pct_home | Percentage of people home for that week |
+
+pct_fulltime
+
+| Variable | Variable ID in .csv | Description |
+|:---------|:--------------------|:------------|
+| Week | YYYY-MM-DD | Percentage of full-time workers for that week |
+| FIPS Code (Join Column) | `fips_code` | County level fips code to join to county geospatial data |
+| Percent of people full-time | pct_fulltime | Percentage of people working full-time for that week |
+
+pct_parttime
+
+| Variable | Variable ID in .csv | Description |
+|:---------|:--------------------|:------------|
+| Week | YYYY-MM-DD | Percentage of full-time workers for that week |
+| FIPS Code (Join Column) | `fips_code` | County level fips code to join to county geospatial data |
+| Percent of people part-time | pct_parttime | Percentage of people working part-time for that week |
 
 ### Data Limitations:
 The data has these issues. 
