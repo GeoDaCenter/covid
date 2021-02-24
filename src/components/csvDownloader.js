@@ -40,6 +40,16 @@ const CsvDownloaderContainer = styled.div`
     *.MuiIconButton-colorSecondary.Mui-checked {
         color:${colors.blue};
     }
+    &.passive {
+        background:${colors.gray} url('${process.env.PUBLIC_URL}/assets/img/preloader.gif') ;
+        background-repeat:no-repeat;
+        background-position:center center;
+        opacity:0.5;
+        pointer-events:none;
+        button, *.MuiIconButton-colorSecondary.Mui-checked {
+            opacity:0.2;
+        }
+    }
 `
 
 const checkboxSets = [
@@ -254,7 +264,7 @@ const CsvDownloader = () => {
             health_centers: false,
             hospitals: false,
       });
-
+    const [isDownloading, setIsDownloading] = useState(false)
     const handleChange = (event) => {
         setCheckboxes(prev => ({ ...prev, [event.target.name]: event.target.checked }));
     };
@@ -274,6 +284,7 @@ const CsvDownloader = () => {
     }
     
     async function GetFiles(fileList){
+        setIsDownloading(true)
         // init zip and folders
         // get links from github
         const dataLinks = await fetch('https://api.github.com/repos/geodacenter/covid/contents/public/csv')
@@ -304,10 +315,11 @@ const CsvDownloader = () => {
                 fileSaver.saveAs(content, "example.zip");
             });
         })
+        setIsDownloading(false)
     }
 
     return (
-        <CsvDownloaderContainer>
+        <CsvDownloaderContainer className={isDownloading ? 'passive' : ''}>
             <h3>Bulk Data Download</h3>
             <Gutter h={20}/>
             <Grid container spacing={2}>
