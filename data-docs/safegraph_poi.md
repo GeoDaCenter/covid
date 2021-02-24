@@ -5,9 +5,8 @@
 **Author**: Andres Crucetta Nieto
 
 ### Data Location: 
-[link](https://github.com/...).
-* FileName1
-* FileName2  
+
+Safegraph Point of Interest Data can be accessed via their [COVID-19 data consortium signup](https://www.safegraph.com/covid-19-data-consortium). 
 
 ### Data Source(s) Description:  
 Source is [here](https://bphc.hrsa.gov...) via middle-person. 
