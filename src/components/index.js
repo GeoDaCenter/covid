@@ -35,7 +35,7 @@ import Choropleth from './Pages/Choropleth';
 import Data from './Pages/Data';
 import ErrorPage from './Pages/Error';
 import Faq from './Pages/Faq';
-import Home from './Pages/Home';
+import Home from './Pages/HomeNew';
 import Hotspots from './Pages/Hotspots';
 import Insights from './Pages/Insights';
 import LoadingMessage from './Pages/LoadingMessage';
