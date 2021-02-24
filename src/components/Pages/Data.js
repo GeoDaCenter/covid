@@ -1,15 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ContentContainer, Gutter, BlankLink } from '../../styled_components';
-import { StaticNavbar, Footer } from '../';
+import { StaticNavbar, Footer, CsvDownloader, DataDetails } from '../';
 import { colors } from '../../config';
 
 const DataPage = styled.div`
     background:white;
 `
-
-const Data = () => {
-
+ 
+function Data(){
     return (
        <DataPage>
            <StaticNavbar/>
@@ -78,26 +77,12 @@ const Data = () => {
                     We are using the predictions and hospital data to arrive at a covid Pandemic Severity Index (c-PSI) for each hospital. This project is in partnership with <a href="https://response4life.org/" target="_blank" rel="noopener noreferrer">Response4Life.</a>
                     A paper on the current approaches can be found <a href="https://arxiv.org/abs/2005.07882" target="_blank" rel="noopener noreferrer">at this link.</a> The more detailed information with data source descriptions is provided <a href="https://github.com/Yu-Group/covid19-severity-prediction" target="_blank" rel="noopener noreferrer">on the github.</a>
                 </p>
+                <Gutter h={40}/>
+                <CsvDownloader/>
+                <Gutter h={40}/>
                 <h2>DATA DETAILS</h2>
                 <hr />
-                <h3>USAFacts</h3>
-                <p>You can download the most updated county level data <a href="https://usafacts.org/visualizations/coronavirus-covid-19-spread-map" target="_blank" rel="noopener noreferrer">here</a>.</p>
-                <br/>
-                <h3>1P3A</h3>
-                <br/>
-                <p>
-                    To access raw 1P3A data, you must contact the 1P3A for a token directly. Not all cases from 1P3A data can be assigned to a particular county, see following. 
-                    The list is being updated as new data comes in everyday.
-                </p>
-                <br/>
-                <ul>
-                    <li>1P3A does NOT assign cases in New York to specific counties, which includes New York City, Kings, Bronx, and Richmond.</li>
-                    <li>Cases reported for US Virgin Islands, Guam are NOT included.</li>
-                    <li>Cases in the following areas can NOT be assigned and hence are NOT included: Southwest Utah; Southeast Utah; Central Utah; Tri County, Utah; Kansas City, MO; Benton and Franklin, WA.</li>
-                    <li>Other unassigned cases (or “cases to be assigned”) are NOT included.</li>
-                    <li>Cases reported in the Military and some Correctional Centers are NOT included.</li>
-                </ul>
-                <Gutter h={40}/>
+                <DataDetails />
                
             </ContentContainer>
             <Footer/>

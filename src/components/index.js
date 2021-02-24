@@ -1,6 +1,8 @@
 
 import BottomPanel from './bottomPanel';
 import ContextMenu from './contextMenu';
+import CsvDownloader from './csvDownloader';
+import DataDetails from './dataDetails';
 import DataPanel from './dataPanel';
 import DateSlider from './slider';
 import Dock from './dock';
@@ -45,6 +47,8 @@ import Trends from './Pages/Trends';
 export {
     BottomPanel,
     ContextMenu,
+    CsvDownloader,
+    DataDetails,
     DataPanel,
     DateSlider,
     Dock,
