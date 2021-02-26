@@ -1,6 +1,8 @@
 
 import BottomPanel from './bottomPanel';
 import ContextMenu from './contextMenu';
+import CsvDownloader from './csvDownloader';
+import DataDetails from './dataDetails';
 import DataPanel from './dataPanel';
 import DateSlider from './slider';
 import Dock from './dock';
@@ -33,7 +35,7 @@ import Choropleth from './Pages/Choropleth';
 import Data from './Pages/Data';
 import ErrorPage from './Pages/Error';
 import Faq from './Pages/Faq';
-import Home from './Pages/Home';
+import Home from './Pages/HomeNew';
 import Hotspots from './Pages/Hotspots';
 import Insights from './Pages/Insights';
 import LoadingMessage from './Pages/LoadingMessage';
@@ -45,6 +47,8 @@ import Trends from './Pages/Trends';
 export {
     BottomPanel,
     ContextMenu,
+    CsvDownloader,
+    DataDetails,
     DataPanel,
     DateSlider,
     Dock,

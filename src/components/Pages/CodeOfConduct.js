@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import ReactMarkdown from 'react-markdown'
+import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
 import { ContentContainer, Gutter } from '../../styled_components';
 import { StaticNavbar, Footer } from '../';
@@ -32,6 +32,7 @@ const CodeOfConduct = () => {
 
     useEffect(() => {
         fetch(`${process.env.PUBLIC_URL}/code-of-conduct.md`).then(r => r.text()).then(text => {
+            console.log(text)
             setCodeText(text)
         })
     }, [])
