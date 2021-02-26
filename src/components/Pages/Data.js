@@ -50,7 +50,7 @@ function Data(){
                 <h3>Community Characteristics, Health Context, and Health Factors</h3>
                 <br/>
                 <p>
-                    <a href="https://www.census.gov/programs-surveys/acs" target="_blank" rel="noopener noreferrer">American Community Survey.</a> We incorporate population data used to generate rates, and will add more information as needed in future iterations.
+                    <a href="https://www.census.gov/programs-surveys/acs" target="_blank" rel="noopener noreferrer">American Community Survey.</a> We incorporate population data used to generate rates and occupation estimates for essential worker percentages. We will add more information as needed in future iterations.
                     <br/><br/>
                     <a href="https://www.countyhealthrankings.org/explore-health-rankings/rankings-data-documentation" target="_blank" rel="noopener noreferrer">County Health Rankings &amp; Roadmaps (CHR&amp;R).</a> The CHR&amp;R is a 
                     collaboration between the Robert Wood Johnson Foundation and the University of Wisconsin Population Health Institute. 
@@ -76,6 +76,14 @@ function Data(){
                     We prepared this data to support healthcare supply distribution efforts through short-term (days) prediction of COVID-19 deaths (and cases) at the county level. 
                     We are using the predictions and hospital data to arrive at a covid Pandemic Severity Index (c-PSI) for each hospital. This project is in partnership with <a href="https://response4life.org/" target="_blank" rel="noopener noreferrer">Response4Life.</a>
                     A paper on the current approaches can be found <a href="https://arxiv.org/abs/2005.07882" target="_blank" rel="noopener noreferrer">at this link.</a> The more detailed information with data source descriptions is provided <a href="https://github.com/Yu-Group/covid19-severity-prediction" target="_blank" rel="noopener noreferrer">on the github.</a>
+                </p>
+                <Gutter h={40}/>                
+                <h3>Mobility Data</h3>
+                <br/>
+                <p>
+                    <a href="https://docs.safegraph.com/docs/neighborhood-patterns-2020" target="_blank" rel="noopener noreferrer">Safegraph Social Distancing.</a> Safegraph has provided Census Block Group level data that reports mobile phone device activity 
+                    reported from apps that collect locations data. This data has been made available to for COVID-19 related research projects. The data is generated from a series of location pings throughout the day, which determine various behaviors, such as 
+                    staying completely home, full time work (at a workplace outside of home for 6-8 hours), part time work (at a workplace outside of home for 3-6 hours), and delivery (multiple, short visits). Access to the data consortium is available <a href="https://www.safegraph.com/covid-19-data-consortium" target="_blank" rel="noopener noreferrer">here</a>.
                 </p>
                 {/* <Gutter h={40}/>
                 <CsvDownloader/> */}
