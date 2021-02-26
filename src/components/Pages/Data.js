@@ -47,7 +47,7 @@ function Data(){
                     The data is from 2018 facility reports with additions/edits allowed in real-time.
                 </p>
                 <Gutter h={40}/>
-                <h3>Confirmed COVID Cases, Death</h3>
+                <h3>Community Characteristics, Health Context, and Health Factors</h3>
                 <br/>
                 <p>
                     <a href="https://www.census.gov/programs-surveys/acs" target="_blank" rel="noopener noreferrer">American Community Survey.</a> We incorporate population data used to generate rates, and will add more information as needed in future iterations.
@@ -77,8 +77,8 @@ function Data(){
                     We are using the predictions and hospital data to arrive at a covid Pandemic Severity Index (c-PSI) for each hospital. This project is in partnership with <a href="https://response4life.org/" target="_blank" rel="noopener noreferrer">Response4Life.</a>
                     A paper on the current approaches can be found <a href="https://arxiv.org/abs/2005.07882" target="_blank" rel="noopener noreferrer">at this link.</a> The more detailed information with data source descriptions is provided <a href="https://github.com/Yu-Group/covid19-severity-prediction" target="_blank" rel="noopener noreferrer">on the github.</a>
                 </p>
-                <Gutter h={40}/>
-                <CsvDownloader/>
+                {/* <Gutter h={40}/>
+                <CsvDownloader/> */}
                 <Gutter h={40}/>
                 <h2>DATA DETAILS</h2>
                 <hr />

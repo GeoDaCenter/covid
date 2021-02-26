@@ -83,7 +83,7 @@ const dataList = [
 ]  
 
 const DataDetails = () => {
-    const [expanded, setExpanded] = useState('panel0');
+    const [expanded, setExpanded] = useState('');
     const [dataDescriptions, setDataDescriptions] = useState([])
 
     const handleChange = (panel) => (event, newExpanded) => {
