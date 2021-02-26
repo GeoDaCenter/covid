@@ -141,6 +141,28 @@ const contact = () => {
                     Contact US COVID Atlas co-leads directly if you have any questions about the Atlas or have media inquiries:<br/>
                     Marynia Kolak (mkolak at uchicago.edu) or Qinyun Lin (qinyunlin at uchicago.edu)
                 </p>
+                
+                <form name="contact" method="POST" data-netlify="true">
+                    <p>
+                        <label>Your Name: <input type="text" name="name" /></label>   
+                    </p>
+                    <p>
+                        <label>Your Email: <input type="email" name="email" /></label>
+                    </p>
+                    <p>
+                        <label>Your Role: <select name="role[]" multiple>
+                        <option value="leader">Leader</option>
+                        <option value="follower">Follower</option>
+                        </select></label>
+                    </p>
+                    <p>
+                        <label>Message: <textarea name="message"></textarea></label>
+                    </p>
+                    <p>
+                        <button type="submit">Send</button>
+                    </p>
+                </form>
+
                 <Gutter h={40}/>
                 <h2>CITATION</h2>
                 <hr/>
