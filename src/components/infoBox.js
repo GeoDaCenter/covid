@@ -101,8 +101,8 @@ const BodyContainer = styled.div`
     .social-container {
         a {
             img {
-                width: 25px;
-                height: 25px;
+                width: 30px;
+                height: 22.5px;
                 padding: 5px 10px 0px 0px;
                 transition: all 250ms ease 0s;
                 opacity: 0.7;
@@ -130,6 +130,10 @@ const BodyContainer = styled.div`
         height:calc(100% - 75);
         top:75px;
         font-size:100% !important;
+    }
+    ul, ul li{
+        margin:revert;
+        padding:revert;
     }
 `
 

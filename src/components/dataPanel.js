@@ -263,13 +263,14 @@ const DataPanel = () => {
   // List of all current datasets joined
   const datasetList = ['properties', 'cases', 'deaths', 'predictions',
     'chr_health_factors', 'chr_life', 'chr_health_context',
-    'testing', 'vaccinesAdmin1', 'vaccinesAdmin2', 'vaccinesDist']
+    'testing', 'vaccinesAdmin1', 'vaccinesAdmin2', 'vaccinesDist', 'essential_workers', 'pct_home']
 
   // Map datasetList to check if each key is present in the current data
   // Output variables are checked below for conditional rendering
   const [ properties, cases, deaths, predictions,
     chr_health_factors, chr_life, chr_health_context,
-    testing, vaccinesAdmin1, vaccinesAdmin2, vaccinesDist
+    testing, vaccinesAdmin1, vaccinesAdmin2, vaccinesDist, essential_workers,
+    pct_home
   ] = datasetList.map(dataset => {
     if (storedData[currentData] === undefined) {
       return false 
@@ -561,6 +562,13 @@ const DataPanel = () => {
               <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'SvrHsngPrbRt'), 'weighted_average')}%</h3>
             </ReportSection>
           }
+          {(essential_workers && selectionIndex.length) &&               
+            <ReportSection>
+              <h2>Essential Workers<Tooltip id="essentialWorkers"/></h2>
+              <h6>Source: <a href="https://www.census.gov/programs-surveys/acs" target="_blank" rel="noopener noreferrer">American Community Survey</a></h6>
+              <h3>{Math.round(aggregateProperty('essential_workers', 1, 'weighted_average')*100)}%</h3>
+            </ReportSection>
+          }
           {(chr_health_context && selectionIndex.length) && 
               <ReportSection>
                 <h2>Community Health Context<Tooltip id="healthcontext"/></h2>
@@ -630,6 +638,23 @@ const DataPanel = () => {
               
               </ReportSection>
             }
+            {(pct_home && selectionIndex.length) && 
+                <ReportSection>
+                  <h2>Mobility</h2><br/>     
+                  <p>Percent Completely At Home</p>
+                  <div className="numberChartContainer">
+                    <h3>{aggregateTimeseries('pct_home', currDateIndex, 'weighted_average')}%</h3>
+                  </div>
+                  <p>Percent Full Time Behavior</p>
+                  <div className="numberChartContainer">
+                    <h3>{aggregateTimeseries('pct_fulltime', currDateIndex, 'weighted_average')}%</h3>
+                  </div>
+                  <p>Percent Part Time Behavior</p>
+                  <div className="numberChartContainer">
+                    <h3>{aggregateTimeseries('pct_parttime', currDateIndex, 'weighted_average')}%</h3>
+                  </div>
+                </ReportSection>
+              }
           
           <div className="extraPadding"></div>
           

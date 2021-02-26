@@ -191,7 +191,6 @@ const DateSlider = () => {
     const dataParams = useSelector(state => state.dataParams);
     const dateIndices = useSelector(state => state.dateIndices);
     const dates = useSelector(state => state.dates);
-    const currentVariable = useSelector(state => state.currentVariable);
     
     const [timerId, setTimerId] = useState(null);
     
@@ -203,7 +202,7 @@ const DateSlider = () => {
             dispatch(setVariableParams({nIndex: newValue}))
         } else if (dataParams.dType === "time-series") {
             dispatch(setVariableParams({dIndex: newValue}))
-        } else if (currentVariable.includes('Testing')){
+        } else if (dataParams.variableName.includes('Testing')||dataParams.variableName.includes('Workdays')){
             dispatch(setVariableParams({nIndex: newValue}))
         }
     };
