@@ -18,9 +18,8 @@ import { colLookup } from '../utils'; //getGzipData, getArrayCSV
 import Tooltip from './tooltip';
 import { StyledDropDown, BinsContainer, Gutter } from '../styled_components';
 import { setVariableParams, setMapParams, setCurrentData, setPanelState, setParametersAndData } from '../actions'; //variableChangeZ, setNotification, storeMobilityData
-import { fixedScales, colorScales, colors } from '../config';
-import { settings } from '../config/svg';
-import { variableTree } from '../config/variableTree'
+import { fixedScales, colorScales, colors, variableTree, variablePresets, urlParamsTree, datasetTree, allGeographies, allDatasets } from '../config';
+import * as SVG from '../config/svg';
 
 const VariablePanelContainer = styled.div`
   position:fixed;
@@ -226,263 +225,6 @@ const VariablePanel = (props) => {
   const { cols, currentData,  dataParams, mapParams, panelState, urlParams } = useSelector(state => state); 
   // currentVariable, currentZVariable, storedMobilityData
   const [bivariateZ, setBivariateZ] = useState(false);
-
-  const VariablePresets = {
-    "HEADER:cases":{},
-    "Confirmed Count": {
-        variableName:"Confirmed Count",
-        numerator: 'cases',
-        nType: 'time-series',
-        nProperty: null,
-        denominator: 'properties',
-        dType: null,
-        dProperty: null,
-        dRange:null,
-        dIndex:null,
-        scale:1,
-        scale3D: 100,
-        fixedScale: null,
-        colorScale: null,
-    },
-    "Confirmed Count per 100K Population": {
-        variableName:"Confirmed Count per 100K Population",
-        numerator: 'cases',
-        nType: 'time-series',
-        nProperty: null,
-        denominator: 'properties',
-        dType: 'characteristic',
-        dProperty: 'population',
-        dRange:null,
-        dIndex:null,
-        scale:100000,
-        scale3D: 1000,
-        fixedScale: null,
-        colorScale: null,
-    },
-    "Confirmed Count per Licensed Bed": {
-        variableName:"Confirmed Count per Licensed Bed",
-        numerator: 'cases',
-        nType: 'time-series',
-        nProperty: null,
-        denominator: 'properties',
-        dType: 'characteristic',
-        dProperty: 'beds',
-        dRange:null,
-        dIndex:null,
-        scale:1,
-        scale3D: 100000,
-        fixedScale: null,
-        colorScale: null,
-    },
-    "HEADER:deaths":{},
-    "Death Count":{
-      variableName:"Death Count",
-      numerator: 'deaths',
-      nType: 'time-series',
-      nProperty: null,
-      denominator: 'properties',
-      dType: null,
-      dProperty: null,
-      dRange:null,
-      dIndex:null,
-      scale:1,
-      scale3D: 10000,
-      fixedScale: null,
-      colorScale: null,        
-    }, 
-    "Death Count per 100K Population":{
-      variableName:"Death Count per 100K Population",
-      numerator: 'deaths',
-      nType: 'time-series',
-      nProperty: null,
-      denominator: 'properties',
-      dType: 'characteristic',
-      dProperty: 'population',
-      dRange:null,
-      dIndex:null,
-      scale:100000,
-      scale3D: 15000,
-      fixedScale: null,
-      colorScale: null,
-    },
-    "Death Count / Confirmed Count":{
-      variableName:"Death Count / Confirmed Count",
-      numerator: 'deaths',
-      nType: 'time-series',
-      nProperty: null,
-      denominator: 'cases',
-      dType: 'time-series',
-      dProperty: null,
-      scale:1,
-      fixedScale: null,
-      colorScale: null,
-    },
-    "HEADER:community health":{},
-    "Uninsured Percent":{
-      variableName:"Uninsured Percent",
-      numerator: 'chr_health_factors',
-      nType: 'characteristic',
-      nProperty: colLookup(cols, currentData, 'chr_health_factors', 'UnInPrc'),
-      nRange: null,
-      denominator: 'properties',
-      dType: null,
-      dProperty: null,
-      dRange:null,
-      dIndex:null,
-      scale:1,
-      fixedScale: null,
-      colorScale: 'uninsured',
-      scale3D: 15000,
-    },
-    "Over 65 Years Percent":{
-      variableName:"Over 65 Years Percent",
-      numerator: 'chr_health_context',
-      nType: 'characteristic',
-      nProperty: colLookup(cols, currentData, 'chr_health_context', 'Over65YearsPrc'),
-      nRange: null,
-      denominator: 'properties',
-      dType: null,
-      dProperty: null,
-      dRange:null,
-      dIndex:null,
-      scale:1,
-      fixedScale: null,
-      colorScale: 'over65',
-      scale3D: 15000,
-    },
-    "Life Expectancy":{
-      variableName:"Life Expectancy",
-      numerator: 'chr_life',
-      nType: 'characteristic',
-      nProperty: colLookup(cols, currentData, 'chr_life', 'LfExpRt'),
-      nRange: null,
-      denominator: 'properties',
-      dType: null,
-      dProperty: null,
-      dRange:null,
-      dIndex:null,
-      scale:1,
-      colorScale: 'lifeExp',
-      fixedScale: null,
-      scale3D: 1000
-    },
-    
-    "HEADER:testing":{},
-    "7 Day Testing Positivity Rate Percent": {
-      variableName:"7 Day Testing Positivity Rate Percent",
-      numerator: 'testing_wk_pos',
-      nType: 'time-series',
-      nProperty: null,
-      nRange: null,
-      denominator: 'properties',
-      dType: null,
-      dProperty: null,
-      dRange:null,
-      dIndex:null,
-      scale:1,
-      fixedScale: 'testing',
-      colorScale: 'testing',
-      scale3D: 10000000
-    },
-    "7 Day Testing Capacity per 100K Population": {
-      variableName:"7 Day Testing Capacity per 100K Population",
-      numerator: 'testing_tcap',
-      nType: 'time-series',
-      nProperty: null,
-      nRange: null,
-      denominator: 'properties',
-      dType: null,
-      dProperty: null,
-      dRange:null,
-      dIndex:null,
-      scale:1,
-      fixedScale: 'testingCap',
-      colorScale: 'testingCap',
-      scale3D: 3000
-    }, 
-    // "7 Day Confirmed Cases per Testing %":{
-    //   variableName:"7 Day Confirmed Cases per Testing %",
-    //   numerator: 'testing_ccpt',
-    //   nType: 'time-series',
-    //   nProperty: null,
-    //   nRange: null,
-    //   denominator: 'properties',
-    //   dType: null,
-    //   dProperty: null,
-    //   dRange:null,
-    //   dIndex:null,
-    //   scale:1,
-    //   fixedScale: 'testing',
-    //   colorScale: 'testing',
-    //   scale3D: 10000000
-    // },
-    "HEADER:cdc vaccination":{},
-    "Percent Received First Dose": {
-        variableName:"Percent Received First Dose",
-        numerator: 'vaccinesAdmin1',
-        nType: 'time-series',
-        nProperty: null,
-        nRange: null,
-        denominator: 'properties',
-        dType: 'characteristic',
-        dProperty: 'population',
-        dRange:null,
-        dIndex:null,
-        scale:100,
-        scale3D: 1000,
-        colorScale: 'purpleSingleHue8',
-        fixedScale: null,
-    },
-    "Percent Received Second Dose": {
-        variableName:"Percent Received Second Dose",
-        numerator: 'vaccinesAdmin2',
-        nType: 'time-series',
-        nProperty: null,
-        nRange: null,
-        denominator: 'properties',
-        dType: 'characteristic',
-        dProperty: 'population',
-        dRange:null,
-        dIndex:null,
-        scale:100,
-        scale3D: 1000,
-        colorScale: 'greenSingleHue8',
-        fixedScale: null,
-    },
-    "Doses to be Administered per 100K Population": {
-        variableName:"Doses to be Administered per 100K Population",
-        numerator: 'vaccinesDist',
-        nType: 'time-series',
-        nProperty: null,
-        nRange: null,
-        denominator: 'properties',
-        dType: 'characteristic',
-        dProperty: 'population',
-        dRange:null,
-        dIndex:null,
-        scale:100000,
-        scale3D: 1000,
-        colorScale: 'BuPu8',
-        fixedScale: null,
-    },
-    "HEADER:forecasting":{},
-    "Forecasting (5-Day Severity Index)": {
-      variableName:"Forecasting (5-Day Severity Index)",
-      numerator: 'predictions',
-      nType: 'characteristic',
-      nProperty: colLookup(cols, currentData, 'predictions', 'severity_index'),
-      nRange: null,
-      denominator: 'properties',
-      dType: null,
-      dProperty: null,
-      dRange:null,
-      dIndex:null,
-      scale:1,
-      colorScale: 'forecasting',
-      fixedScale: 'forecasting',
-      scale3D: 50000
-    },
-  }
 
   // mobility variable overlays
 
@@ -690,58 +432,6 @@ const VariablePanel = (props) => {
   //   setBivariateZ(prev => !prev )
   // }
   
-  const datasetTree = {
-    'County': {
-      '1point3acres':'county_1p3a.geojson',
-      'New York Times':'county_nyt.geojson',
-      'USA Facts':'county_usfacts.geojson',
-      'CDC':'cdc.geojson',
-      'Yu Group at Berkeley':'county_usfacts.geojson',
-      'County Health Rankings':'county_usfacts.geojson',
-    }, 
-    'State': {
-      '1point3acres':'state_1p3a.geojson',
-      'New York Times':'state_nyt.geojson',
-      'CDC':'state_1p3a.geojson',
-      'County Health Rankings':'state_1p3a.geojson',
-    }
-  }
-
-  const urlParamsTree = {
-    'county_usfacts.geojson': {
-      name: 'USA Facts',
-      geography: 'County'
-    },
-    'county_1p3a.geojson': {
-      name: '1point3acres',
-      geography: 'County'
-    },
-    'county_nyt.geojson': {
-      name: 'New York Times',
-      geography: 'County'
-    },
-    'state_1p3a.geojson': {
-      name: '1point3acres',
-      geography: 'State'
-    },
-    'state_usafacts.geojson': {
-      name: 'USA Facts',
-      geography: 'State'
-    }, 
-    'state_nyt.geojson': {
-      name: 'New York Times',
-      geography: 'State'
-    },
-    'global_jhu.geojson': {
-      name: 'John Hopkins University',
-      geography: 'Global'
-    },
-    'cdc.geojson': {
-      name: 'CDC',
-      geography: 'County'
-    }
-  }
-
   const [newVariable, setNewVariable] = useState("Confirmed Count per 100K Population");
   const [currentGeography, setCurrentGeography] = useState('County');
   const [currentDataset, setCurrentDataset] = useState(urlParamsTree[currentData].name);
@@ -772,17 +462,17 @@ const VariablePanel = (props) => {
   const handleNewVariable = (e) => {
     let tempGeography = currentGeography;
     let tempDataset = currentDataset;
-
+    
     let resetDateRange = 
-    VariablePresets[e.target.value].nType === 'time-series' && 
-    (dataParams.nType === 'characteristic' || dataParams.variableName.indexOf("Testing") !== -1) && 
-    dataParams.nRange === null &&
-    VariablePresets[e.target.value].variableName.indexOf("Testing") === -1 && VariablePresets[e.target.value].nType !== 'characteristic';
+      variablePresets[e.target.value].nType === 'time-series' && 
+      (dataParams.nType === 'characteristic' || dataParams.variableName.indexOf("Testing") !== -1) && 
+      dataParams.nRange === null &&
+      variablePresets[e.target.value].variableName.indexOf("Testing") === -1 && variablePresets[e.target.value].nType !== 'characteristic';
 
     let nIndex = resetDateRange ? 'nRange' : null;
     
-    let dIndex = (VariablePresets[e.target.value].dType === 'time-series') ? 'dIndex' : null;
-    let dRange = (VariablePresets[e.target.value].dType === 'time-series') ? 'dRange' : null;
+    let dIndex = (variablePresets[e.target.value].dType === 'time-series') ? 'dIndex' : null;
+    let dRange = (variablePresets[e.target.value].dType === 'time-series') ? 'dRange' : null;
     // check if valid combination based on variable tree
     if (!variableTree[e.target.value].hasOwnProperty(tempGeography) || !variableTree[e.target.value][tempGeography].hasOwnProperty(tempDataset)) {
       tempGeography = Object.keys(variableTree[e.target.value])[0]
@@ -791,21 +481,21 @@ const VariablePanel = (props) => {
       
       dispatch(setParametersAndData({
         params: {
-          ...VariablePresets[e.target.value],
+          ...variablePresets[e.target.value],
           [nIndex]: 7,
           [dIndex]: dataParams.nIndex,
           [dRange]: dataParams.nRange,
         },
         dataset: datasetTree[tempGeography][tempDataset],
         mapParams: {
-          customScale: VariablePresets[e.target.value].colorScale || null
+          customScale: variablePresets[e.target.value].colorScale || null
         }
       }))
       setCurrentGeography(tempGeography)
       setCurrentDataset(tempDataset)
     } else {
       dispatch(setVariableParams({
-        ...VariablePresets[e.target.value],
+        ...variablePresets[e.target.value],
         [nIndex]: 7,
         [dIndex]: dataParams.nIndex,
         [dRange]: dataParams.nRange,
@@ -864,9 +554,6 @@ const VariablePanel = (props) => {
     }
   }
 
-  const allGeographies = ['County', 'State']
-  const allDatasets = ['1point3acres', 'USA Facts', 'New York Times', 'CDC', 'County Health Rankings', 'Yu Group at Berkeley'] //
-
   return (
     <VariablePanelContainer className={panelState.variables ? '' : 'hidden'} otherPanels={panelState.info} id="variablePanel">
       <ControlsContainer>
@@ -895,20 +582,26 @@ const VariablePanel = (props) => {
               <InputLabel htmlFor="date-select">Date Range</InputLabel>
               <Select  
                   id="date-select"
-                  value={(dataParams.nRange === null || dataParams.rangeType === 'custom' || dataParams.variableName.indexOf('Testing') !== -1) ? 'x' : dataParams.nRange}
+                  value={
+                    (dataParams.nRange === null 
+                      || dataParams.rangeType === 'custom' 
+                      || dataParams.variableName.indexOf('Testing') !== -1
+                      || dataParams.variableName.indexOf('Workdays') !== -1
+                    ) ? 'x' : dataParams.nRange}
                   onChange={handleRangeButton}
                   displayEmpty
                   inputProps={{ 'aria-label': 'Without label' }}
               >
                   <MenuItem value="x" disabled style={{display:'none'}}>
                       {dataParams.rangeType === 'custom' && <span>Custom Range</span>}
-                      {(dataParams.nRange === null && dataParams.variableName.indexOf('Testing') === -1) && <span>Cumulative</span>}
+                      {(dataParams.nRange === null && dataParams.variableName.indexOf('Testing') === -1 && dataParams.variableName.indexOf('Workdays') === -1) && <span>Cumulative</span>}
                       {dataParams.variableName.indexOf('Testing') !== -1 && <span>7-Day Average</span>}
+                      {dataParams.variableName.indexOf('Workdays') !== -1 && <span>Daily Average</span>}
                   </MenuItem>
-                  <MenuItem value={null} key={'cumulative'} disabled={dataParams.variableName.indexOf('Testing') !== -1}>Cumulative</MenuItem>
-                  <MenuItem value={1} key={'daily'} disabled={dataParams.variableName.indexOf('Testing') !== -1}>Daily New</MenuItem>
-                  <MenuItem value={7} key={'7-day-ave'} disabled={dataParams.variableName.indexOf('Testing') !== -1}>7-Day Average</MenuItem>
-                  <MenuItem value={'custom'} key={'customRange'} disabled={dataParams.variableName.indexOf('Testing') !== -1}>Custom Range</MenuItem>
+                  <MenuItem value={null} key={'cumulative'} disabled={dataParams.variableName.indexOf('Testing') !== -1 || dataParams.variableName.indexOf('Workdays') !== -1}>Cumulative</MenuItem>
+                  <MenuItem value={1} key={'daily'} disabled={dataParams.variableName.indexOf('Testing') !== -1 || dataParams.variableName.indexOf('Workdays') !== -1}>Daily New</MenuItem>
+                  <MenuItem value={7} key={'7-day-ave'} disabled={dataParams.variableName.indexOf('Testing') !== -1 || dataParams.variableName.indexOf('Workdays') !== -1}>7-Day Average</MenuItem>
+                  <MenuItem value={'custom'} key={'customRange'} disabled={dataParams.variableName.indexOf('Testing') !== -1 || dataParams.variableName.indexOf('Workdays') !== -1}>Custom Range</MenuItem>
               </Select>
           </StyledDropDown>
           <BinsContainer id="binModeSwitch" disabled={dataParams.variableName.indexOf('Testing') !== -1 || dataParams.nType === "characteristic"}>
@@ -957,80 +650,6 @@ const VariablePanel = (props) => {
           </Select>
         </StyledDropDown>
         <Gutter h={35}/>
-        {/* <StyledDropDown id="dataSource">
-          <InputLabel htmlFor="data-select">Data Source</InputLabel>
-          <Select  
-            value={currentData}
-            onChange={handleDataSource}
-          >
-            
-          <ListSubheader disabled>county data</ListSubheader>
-            <MenuItem value={'county_1p3a.geojson'} key={'county_1p3a.geojson'}>1point3acres (County)</MenuItem>
-            <MenuItem value={'county_nyt.geojson'} key={'county_nyt.geojson'}>New York Times (County)</MenuItem>
-            <MenuItem value={'county_usfacts.geojson'} key={'county_usfacts.geojson'}>USA Facts (County)</MenuItem>
-            <MenuItem value={'cdc.geojson'} key={'cdc.geojson'}>CDC (County)</MenuItem>
-          <ListSubheader disabled>state data</ListSubheader>
-            <MenuItem value={'state_1p3a.geojson'} key={'state_1p3a.geojson'}>1point3acres (State)</MenuItem>
-            <MenuItem value={'state_nyt.geojson'} key={'state_nyt.geojson'}>New York Times (State)</MenuItem>
-          </Select>
-        </StyledDropDown>
-        <br />
-        <StyledDropDown id="variableSelect">
-          <InputLabel htmlFor="numerator-select">Select Variable</InputLabel>
-          <Select 
-            value={currentVariable} 
-            id="numerator-select"
-            onChange={handleVariable}
-          >
-            {
-              !currentData.includes('cdc') && Object.keys(PresetVariables).map((variable) => {
-                if (variable.split(':')[0]==="HEADER") {
-                  return <ListSubheader key={variable.split(':')[1]} disabled>{variable.split(':')[1]}</ListSubheader>
-                } else {
-                  return <MenuItem value={variable} key={variable}>{variable}</MenuItem> 
-                }
-              })
-            }
-            
-            {
-              currentData.includes('county') && Object.keys(CountyVariables).map((variable) => {
-                if (variable.split(':')[0]==="HEADER") {
-                  return <ListSubheader key={variable.split(':')[1]} disabled>{variable.split(':')[1]}</ListSubheader>
-                } else {
-                  return <MenuItem value={variable} key={variable}>{variable}</MenuItem> 
-                }
-              })
-            }
-            
-            {
-              (currentData.includes("state")) && Object.keys(StateVariables).map((variable) => {
-                if (variable.split(':')[0]==="HEADER") {
-                  return <ListSubheader key={variable.split(':')[1]} disabled>{variable.split(':')[1]}</ListSubheader>
-                } else {
-                  return <MenuItem value={variable} key={variable}>{variable}</MenuItem> 
-                }
-              })
-            }
-            {
-              currentData.includes("1p3a") && Object.keys(OneP3AVariables).map((variable) => {
-                if (variable.split(':')[0]==="HEADER") {
-                  return <ListSubheader key={variable.split(':')[1]} disabled>{variable.split(':')[1]}</ListSubheader>
-                } else {
-                  return <MenuItem value={variable} key={variable}>{variable}</MenuItem> 
-                }
-              })
-            }
-            {
-              currentData.includes("cdc") && Object.keys(CDCVariables).map((variable) => {
-                if (variable.split(':')[0]==="HEADER") {
-                  return <ListSubheader key={variable.split(':')[1]} disabled>{variable.split(':')[1]}</ListSubheader>
-                } else {
-                  return <MenuItem value={variable} key={variable}>{variable}</MenuItem> 
-                }
-              })
-            }
-          </Select>
-        </StyledDropDown> */}
         <StyledDropDown component="Radio" id="mapType">
           <FormLabel component="legend">Map Type</FormLabel>
           <RadioGroup 
@@ -1192,7 +811,7 @@ const VariablePanel = (props) => {
             </a>
         </div> 
       </div>
-      <button onClick={handleOpenClose} id="showHideLeft" className={panelState.variables ? 'active' : 'hidden'}>{settings}</button>
+      <button onClick={handleOpenClose} id="showHideLeft" className={panelState.variables ? 'active' : 'hidden'}>{SVG.settings}</button>
 
     </VariablePanelContainer>
   );

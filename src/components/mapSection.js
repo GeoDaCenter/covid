@@ -157,6 +157,13 @@ const GeocoderContainer = styled.div`
         display:none;
     }
 `
+
+//create your forceUpdate hook
+function useForceUpdate(){
+    const [value, setValue] = useState(0); // integer state
+    return () => setValue(value => value + 1); // update the state to force render
+}
+
 function MapSection(props){ 
     // fetch pieces of state from store    
     const { storedData, storedGeojson, currentData, storedLisaData, dateIndices,
@@ -198,6 +205,7 @@ function MapSection(props){
     const [choroplethInteractive, setChoroplethInteractive] = useState(true);
     const [boxSelect, setBoxSelect] = useState(false);
     const [boxSelectDims, setBoxSelectDims] = useState({});
+    const forceUpdate = useForceUpdate();
     // const [resetSelect, setResetSelect] = useState(null);
     // const [mobilityData, setMobilityData] = useState([]);
 
@@ -356,12 +364,14 @@ function MapSection(props){
         }));
     }, [urlParams])
 
+    // clean and set map data after parameter change
+    // TODO: swap
     useEffect(() => {
         switch(mapParams.vizType) {
             case 'cartogram':
                 if (storedCartogramData !== undefined) {
                     setCurrentMapData(prev => ({
-                        params: prev.params,
+                        params: getVarId(currentData, dataParams),
                         data: cleanData({
                             data: storedCartogramData,
                             bins: {bins: mapParams.bins.bins, breaks:mapParams.bins.breaks}, 
@@ -374,7 +384,7 @@ function MapSection(props){
             default:
                 if (storedData[currentData] !== undefined) {
                     setCurrentMapData(prev => ({
-                        params: prev.params,
+                        params: getVarId(currentData, dataParams),
                         data: cleanData({
                             data: storedData[currentData],
                             bins: {bins: mapParams.bins.bins, breaks:mapParams.bins.breaks}, 
@@ -386,6 +396,9 @@ function MapSection(props){
         }
     },[mapParams.mapType, mapParams.vizType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, storedGeojson[currentData], storedCartogramData, currentData])
     
+    useEffect(() => {
+        forceUpdate()
+    }, [currentMapData.params])
     const GetFillColor = (f, bins, mapType, varID) => {
         if ((!bins.hasOwnProperty("bins")) || (!f.hasOwnProperty(dataParams.numerator))) {
             return [240,240,240,120]
@@ -653,9 +666,9 @@ function MapSection(props){
             onHover: handleMapHover,
             onClick: handleMapClick,            
             updateTriggers: {
-                getPolygon: [dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
-                getElevation: [dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
-                getFillColor: [dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
+                getPolygon: [currentMapData.params, dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
+                getElevation: [currentMapData.params, dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
+                getFillColor: [currentMapData.params, dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
             }
         }),
         choroplethHighlight:  new PolygonLayer({
@@ -695,7 +708,7 @@ function MapSection(props){
             updateTriggers: {
                 getPolygon: currentData,
                 getLineColor: hoverInfo.object,
-                getElevation: [mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
+                getElevation: [currentMapData.data, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
                 extruded: mapParams.vizType
             }
         }),
@@ -854,6 +867,15 @@ function MapSection(props){
         window.removeEventListener('touchend', removeListeners)
         window.removeEventListener('mousemove', listener)
         window.removeEventListener('mouseup', removeListeners)
+        setBoxSelectDims({
+            x:-50,
+            y:-50,
+            ox:0,
+            oy:0,
+            width:0,
+            height:0
+        })
+        setBoxSelect(false)
     }
 
     const handleBoxSelect = (e) => {
@@ -962,7 +984,8 @@ function MapSection(props){
                         touchZoom: !boxSelect, 
                         touchRotate: !boxSelect, 
                         keyboard: true, 
-                        scrollZoom: true
+                        scrollZoom: true,
+                        // inertia: 50
                     }
                 }
                 views={view}

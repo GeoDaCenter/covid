@@ -81,11 +81,31 @@ export const pages = {
         "icon": "info",
         "content": 
             <div>
+                <h3>Changelog 2/26</h3>
+                <p>Mobility and Essential Workers</p>
+                <ul>
+                    <li>The US Covid Atlas now has mobility and essential worker data.</li>
+                    <li>Major feature updates</li>
+                        <ul>
+                            <li>
+                                Three new mobility layers have been added: Percent Home on Workdays, Percent Full Time on Workdays, and Percent Part Time on Workdays.
+                                These metrics reflect the percent of devices observed as completely at home, at a workplace for 6-8 hours (full time), 
+                                or 3-6 hours (part time) for each day included.
+                            </li>
+                            <li>
+                                To better contextualize this data, we have added a county level essential workers layer. This estimates the percentage of adult workers in 
+                                essential occupations based on 2019 ACS county-level estimates.
+                            </li>
+                            <li>Added code of conduct</li>
+                            <li>Bug fixes</li>
+                        </ul>
+                </ul>
+                <hr/>
                 <h3>Changelog 1/12</h3>
                 <p>Refactor Update</p>
                 <ul>
                     <li>The US Covid Atlas has been refactored into the React javascript framework with Redux used for state management</li>
-                    <li>Major features updates:
+                    <li>Major feature updates:
                         <ul>
                             <li>Improved temporal controls including custom date range and date selection</li>
                             <li>Multiple geography selection and aggregation tools</li>
@@ -173,6 +193,7 @@ export const pages = {
             <div>
                 <h1 id="data-sources">Data Sources</h1>
                 <p><i>Read more detailed information <a href="https://theuscovidatlas.org/data.html">here</a></i></p>
+                <br/>
                 <h2 id="covid-data">COVID Data</h2>
                 <h3 id="-usa-facts-https-usafacts-org-visualizations-coronavirus-covid-19-spread-map-"><a href="https://usafacts.org/visualizations/coronavirus-covid-19-spread-map">USA Facts</a></h3>
                 <p>Available at the county level this data aggregates from CDC, state- and local-level public health agencies. </p>
@@ -184,13 +205,19 @@ export const pages = {
                 <p>CDC data includes detailed historic testing data and case data aggregated to rolling 7-day averages.</p>
                 {/* <h3 id="-forecasting-statistics-https-github-com-yu-group-covid19-severity-prediction-"><a href="https://github.com/Yu-Group/covid19-severity-prediction">Forecasting Statistics</a></h3>
                 <p>The Yu Group at UC Berkeley Statistics and EECS has compiled, cleaned and continues to update a large corpus of hospital- and county-level data from a variety of public sources to aid data science efforts to combat COVID-19 (see covidseverity.com).</p> */}
+                <br/>
                 <h2 id="county-and-state-data">County and State Data</h2>
                 <h3 id="-covidcaremap-https-github-com-covidcaremap-covid19-healthsystemcapacity-tree-v0-2-data-"><a href="https://github.com/covidcaremap/covid19-healthsystemcapacity/tree/v0.2/data">COVIDCareMap</a></h3>
                 <p>Healthcare System Capacity includes Staffed beds, Staffed ICU beds, Licensed Beds by County. The data is from 2018 facility reports with additions/edits allowed in real-time.</p>
                 <h3 id="-american-community-survey-https-www-census-gov-programs-surveys-acs-"><a href="https://www.census.gov/programs-surveys/acs">American Community Survey</a></h3>
-                <p>The American Community Survey data contains demographic information about states, counties, and other geographic units. We use ACS population counts to generate normalized rates for COVID cases and deaths.</p>
+                <p>The American Community Survey data contains demographic information about states, counties, and other geographic units. We use ACS population counts to generate normalized rates for COVID cases and deaths. Additionally, we use ACS occupation figures to estimate essential worker percentages.</p>
                 <h3 id="-county-health-rankings-roadmaps-chr-r-https-www-countyhealthrankings-org-explore-health-rankings-rankings-data-documentation-"><a href="https://www.countyhealthrankings.org/explore-health-rankings/rankings-data-documentation">County Health Rankings &amp; Roadmaps (CHR&amp;R)</a></h3>
                 <p>CHR&amp;R includes socioeconomic data, health access and care metrics, and demographic information about counties and states. CHR&amp;R is a collaboration between the Robert Wood Johnson Foundation and the University of Wisconsin Population Health Institute.</p>
+                <br/>
+                <h2 id="mobility-data">Mobility Data</h2>
+                <h3 id="sgsd"><a href="https://docs.safegraph.com/docs/social-distancing-metrics">Safegraph Social Distancing</a></h3>
+                <p>Safegraph's Social Distancing metrics measure different mobility behaviors such as completely at home devices, full time, and part time work behaviors. We use this data to approximate the percentage of devices exhibiting each of these mobility behaviors.</p>
+                
             </div>
     },
     "variables":{
@@ -200,7 +227,7 @@ export const pages = {
             <div>
                 <h1>Variables</h1>
                 <h3>Cases</h3>
-                <i>Times-series data</i>
+                <i>Time series data</i>
                 <ul>
                     <li>Confirmed Count: Number of cases reported in selected time scale</li>
                     <li>Confirmed Count per 100K Population: Number of cases normalized to population and scaled to number of cases per 100,000 residents of the county or state</li>
@@ -208,7 +235,7 @@ export const pages = {
                 </ul>
 
                 <h3>Deaths</h3>
-                <i>Times-series data</i>
+                <i>Time series data</i>
                 <ul>
                     <li>Death Count: Number of deaths reported in selected time scale</li>
                     <li>Death Count per 100K Population: Number of deaths normalized to population and scaled to number of deaths per 100,000 residents of the county or state</li>
@@ -216,18 +243,19 @@ export const pages = {
                 </ul>
 
                 <h3> Testing</h3>
-                <i>Times-series data</i>
+                <i>Time series data</i>
                 <ul>
-                    <li>7 Day Testing Positivity Rate %: The percentage of COVID tests returning positive results, aggregated to a 7-day rolling average</li>
+                    <li>7 Day Testing Positivity Rate Percent: The percentage of COVID tests returning positive results, aggregated to a 7-day rolling average</li>
                     <li>7 Day Testing Capacity: The number of COVID tests administered in the county or state normalized to tests per 100,000 population</li>
-                    <li>7 Day Confirmed Cases per Testing %: The number of positive COVID cases per number of COVID tests as a percentage</li>
+                    {/* <li>7 Day Confirmed Cases per Testing %: The number of positive COVID cases per number of COVID tests as a percentage</li> */}
                 </ul>
 
                 <h3>Vaccination</h3>
-                <i>Times-series data</i>
+                <i>Time series data</i>
                 <ul>
-                    <li>Vaccinations Administered per 100K Population: The number of vaccination doses that have been administered in the state, normalized to number of doses administered per 100K population.</li>
-                    <li>Vaccinations Distributed per 100K Population: The total number of vaccination doses that have been distributed in the state, normalized to number of doses distributed per 100K population. </li>
+                    <li>Percent Received First Dose: Share of the population in each state that has received a first vaccination dose.</li>
+                    <li>Percent Received Second Dose: Share of the population in each state that has received a both vaccination doses.</li>
+                    <li>Doses to be Administed per 100k Population: The number of doses distributed to a state, but not yet administered. Figure normalized to 100k population. </li>
                 </ul>
                 
                 {/* <h3>Forecasting</h3>
@@ -239,9 +267,18 @@ export const pages = {
                 <h3>Community Health</h3>
                 <i>Characteristic data</i>
                 <ul>
-                    <li>Uninsured % (Community Health Factor): Percentage of the county or state that does not have health insurance</li>
-                    <li>Over 65 Years % (Community Health Context): Percentage of the county or state this is over 65 years of age</li>
+                    <li>Uninsured Percent (Community Health Factor): Percentage of the county or state that does not have health insurance</li>
+                    <li>Over 65 Years Percent (Community Health Context): Percentage of the county or state this is over 65 years of age</li>
                     <li>Life expectancy (Length and Quality of Life): Average life expectancy for individuals living in the state or county</li>
+                    <li>Percent Essential Workers (Occupations): Percent of adult workers in each county in an essential occupation. Category selection based on Chicago Metropolitan Agency for Planning (CMAP) methodology.</li>
+                </ul>
+
+                <h3>Mobility</h3>
+                <i>Time series data</i>
+                <ul>
+                    <li>Percent Home on Workdays: Percent of devices observed completely at home on the day measured.</li>
+                    <li>Percent Part Time on Workdays: Percent of devices observed at a workplace outside of the home for 3-6 hours on the day measured.</li>
+                    <li>Percent Full Time on Workdays: Percent of devices observed at a workplace outside of the home for 6-8 hours on the day measured.</li>
                 </ul>
             </div>
     },

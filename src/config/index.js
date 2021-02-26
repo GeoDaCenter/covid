@@ -122,6 +122,50 @@ export const colorScales = {
         [65,171,93],
         [35,139,69],
         [0,90,50],
+      ],
+      'mobilityDivergingWork':[
+        [240,240,240],
+        [50,136,189],
+        [102,194,165],
+        [171,221,164],
+        [230,245,152],
+        [254,224,139],
+        [253,174,97],
+        [244,109,67],
+        [213,62,79],
+      ],
+      'mobilityDivergingHome':[
+        [240,240,240],
+        [118,42,131],
+        [153,112,171],
+        [194,165,207],
+        [231,212,232],
+        [217,240,211],
+        [166,219,160],
+        [90,174,97],
+        [27,120,55],
+      ],
+      'mobilityHome':[
+        [240,240,240],
+        [252,251,253],
+        [239,237,245],
+        [218,218,235],
+        [188,189,220],
+        [158,154,200],
+        [128,125,186],
+        [106,81,163],
+        [74,20,134]
+      ],
+      'mobilityWork':[
+        [240,240,240],
+        [255,245,235],
+        [254,230,206],
+        [253,208,162],
+        [253,174,107],
+        [253,141,60],
+        [241,105,19],
+        [217,72,1],
+        [140,45,4],
       ]
 }
 
@@ -210,7 +254,11 @@ export const dataPresets = {
             'berkeley_predictions',
             'chr_health_context',
             'chr_life',
-            'chr_health_factors'
+            'chr_health_factors',
+            'mobility_home_workdays_safegraph',
+            'mobility_parttime_workdays_safegraph',
+            'mobility_fulltime_workdays_safegraph',
+            'essential_workers'
         ], 
         tableNames: [ // table names in order of CSVs
             'cases',
@@ -218,13 +266,20 @@ export const dataPresets = {
             'predictions',
             'chr_health_context',
             'chr_life',
-            'chr_health_factors'
+            'chr_health_factors',
+            'pct_home',
+            'pct_parttime',
+            'pct_fulltime',
+            'essential_workers'
         ],
-        joinCols: ['GEOID', ['FIPS','fips','countyFIPS']], // geospatial data join column and then list of valid table join columns
+        joinCols: ['GEOID', ['FIPS','fips','countyFIPS', 'county']], // geospatial data join column and then list of valid table join columns
         accumulate: [], // CSV names to accumulate over time
         dateList: { // date lists to parse: isoDateList (eg. '2020-01-01') or usDateList (eg. '01/01/20')
             'covid_confirmed_usafacts': 'isoDateList', 
-            'covid_deaths_usafacts': 'isoDateList'
+            'covid_deaths_usafacts': 'isoDateList',
+            'mobility_home_workdays_safegraph': 'isoDateList',
+            'mobility_parttime_workdays_safegraph': 'isoDateList',
+            'mobility_fulltime_workdays_safegraph': 'isoDateList',
         }
     },
     'county_1p3a.geojson': {
@@ -236,7 +291,7 @@ export const dataPresets = {
             'berkeley_predictions',
             'chr_health_context',
             'chr_life',
-            'chr_health_factors'
+            'chr_health_factors',
         ], 
         tableNames: [
             'cases',
@@ -244,7 +299,7 @@ export const dataPresets = {
             'predictions', 
             'chr_health_context', 
             'chr_life', 
-            'chr_health_factors'
+            'chr_health_factors',
         ],
         joinCols: ['GEOID', ['FIPS','fips','countyFIPS', 'GEOID']], 
         accumulate: ['covid_confirmed_1p3a','covid_deaths_1p3a'],
@@ -262,7 +317,8 @@ export const dataPresets = {
             'berkeley_predictions', 
             'chr_health_context', 
             'chr_life', 
-            'chr_health_factors'
+            'chr_health_factors',
+            'essential_workers'
         ],  
         tableNames: [
             'cases', 
@@ -270,7 +326,8 @@ export const dataPresets = {
             'predictions', 
             'chr_health_context', 
             'chr_life', 
-            'chr_health_factors'
+            'chr_health_factors',
+            'essential_workers'
         ],
         joinCols: ['GEOID', ['FIPS','fips','countyFIPS']],
         accumulate: [],
@@ -433,7 +490,8 @@ export const dataPresets = {
             'covid_testing_cdc',
             'covid_wk_pos_cdc', 
             'covid_tcap_cdc', 
-            'covid_ccpt_cdc'
+            'covid_ccpt_cdc',
+            'essential_workers'
         ],  
         tableNames: [
             'cases',
@@ -445,7 +503,8 @@ export const dataPresets = {
             'testing', 
             'testing_wk_pos', 
             'testing_tcap', 
-            'testing_ccpt'
+            'testing_ccpt',
+            'essential_workers'
         ],
         joinCols: ['GEOID', ['fips_code', 'fips', 'FIPS', 'countyFIPS']],
         accumulate: [],
@@ -457,7 +516,7 @@ export const dataPresets = {
             'covid_tcap_cdc': 'isoDateList', 
             'covid_ccpt_cdc': 'isoDateList'
         }
-    }
+    },
 }
 
 export const tooltipInfo = {
@@ -504,10 +563,10 @@ export const tooltipInfo = {
     Clinics: <p>FQHC or <a href="https://www.hrsa.gov/opa/eligibility-and-registration/health-centers/fqhc/index.html" target="_blank" rel="noopener noreferrer">Federal Qualified Health Centers</a> are community based health providers receiving funds and certification from <a href="https://www.hrsa.gov/" target="_blank" rel="noopener noreferrer">HRSA</a>.</p>,
     Hospitals: <p>Hospital location data from <a href="https://github.com/covidcaremap/covid19-healthsystemcapacity" target="_blank" rel="noopener noreferrer">CovidCareMap.</a></p>,
     ClinicsAndHospitals: <p>Hospital location data from <a href="https://github.com/covidcaremap/covid19-healthsystemcapacity" target="_blank" rel="noopener noreferrer">CovidCareMap</a> and HRSA data on <a href="https://www.hrsa.gov/opa/eligibility-and-registration/health-centers/fqhc/index.html" target="_blank" rel="noopener noreferrer">Federal Qualified Health Centers.</a></p>,
+    essentialWorkers: <p>Percent of adult workers in essential industries based on ACS occupation categories (eg. Food service, Fire and Safety, Construction).</p>
 };
 
 export const variablePresets = {
-    "HEADER:cases":{},
     "Confirmed Count": {
         variableName:"Confirmed Count",
         numerator: 'cases',
@@ -553,7 +612,6 @@ export const variablePresets = {
         fixedScale: null,
         colorScale: null,
     },
-    "HEADER:deaths":{},
     "Death Count":{
       variableName:"Death Count",
       numerator: 'deaths',
@@ -596,12 +654,11 @@ export const variablePresets = {
       fixedScale: null,
       colorScale: null,
     },
-    "HEADER:community health":{},
     "Uninsured Percent":{
       variableName:"Uninsured Percent",
       numerator: 'chr_health_factors',
       nType: 'characteristic',
-      nProperty: null,
+      nProperty: 9,
       nRange: null,
       denominator: 'properties',
       dType: null,
@@ -617,7 +674,7 @@ export const variablePresets = {
       variableName:"Over 65 Years Percent",
       numerator: 'chr_health_context',
       nType: 'characteristic',
-      nProperty: null,
+      nProperty: 3,
       nRange: null,
       denominator: 'properties',
       dType: null,
@@ -633,7 +690,7 @@ export const variablePresets = {
       variableName:"Life Expectancy",
       numerator: 'chr_life',
       nType: 'characteristic',
-      nProperty: null,
+      nProperty: 3,
       nRange: null,
       denominator: 'properties',
       dType: null,
@@ -645,8 +702,6 @@ export const variablePresets = {
       fixedScale: null,
       scale3D: 1000
     },
-    
-    "HEADER:testing":{},
     "7 Day Testing Positivity Rate Percent": {
       variableName:"7 Day Testing Positivity Rate Percent",
       numerator: 'testing_wk_pos',
@@ -727,7 +782,6 @@ export const variablePresets = {
       colorScale: 'testing',
       scale3D: 10000000
     },
-    "HEADER:cdc vaccination":{},
     "Vaccinations Administered per 100K Population": {
         variableName:"Vaccinations Administered per 100K Population",
         numerator: 'vaccinesAdmin',
@@ -758,7 +812,6 @@ export const variablePresets = {
         colorScale: 'vaccination',
         fixedScale: null,
     },    
-    "HEADER:cdc vaccination":{},
     "Percent Received First Dose": {
         variableName:"Percent Received First Dose",
         numerator: 'vaccinesAdmin1',
@@ -823,12 +876,11 @@ export const variablePresets = {
         colorScale: 'vaccination',
         fixedScale: null,
     },
-    "HEADER:forecasting":{},
     "Forecasting (5-Day Severity Index)": {
       variableName:"Forecasting (5-Day Severity Index)",
       numerator: 'predictions',
       nType: 'characteristic',
-      nProperty: null,
+      nProperty: 1,
       nRange: null,
       denominator: 'properties',
       dType: null,
@@ -840,5 +892,413 @@ export const variablePresets = {
       fixedScale: 'forecasting',
       scale3D: 50000
     },
+    "Percent Essential Workers":{
+      variableName:"Percent Essential Workers",
+      numerator: 'essential_workers',
+      nType: 'characteristic',
+      nProperty: 1,
+      nRange: null,
+      denominator: 'properties',
+      dType: null,
+      dProperty: null,
+      dRange:null,
+      dIndex:null,
+      scale:100,
+      colorScale: 'lifeExp',
+      fixedScale: null,
+      scale3D: 1000
+    },  
+    "Percent Part Time on Workdays": {
+      variableName:"Percent Part Time on Workdays",
+      numerator: 'pct_parttime',
+      nType: 'time-series',
+      nProperty: null,
+      nRange: null,
+      denominator: 'properties',
+      dType: null,
+      dProperty: null,
+      dRange:null,
+      dIndex:null,
+      scale:1,
+      scale3D: 10000,
+      colorScale: 'mobilityWork',
+      fixedScale: null,
+    },
+    "Percent Full Time on Workdays": {
+      variableName:"Percent Full Time on Workdays",
+      numerator: 'pct_fulltime',
+      nType: 'time-series',
+      nProperty: null,
+      nRange: null,
+      denominator: 'properties',
+      dType: null,
+      dProperty: null,
+      dRange:null,
+      dIndex:null,
+      scale:1,
+      scale3D: 10000,
+      colorScale: 'mobilityWork',
+      fixedScale: null,
+    },
+    "Percent Home on Workdays": {
+      variableName:"Percent Home on Workdays",
+      numerator: 'pct_home',
+      nType: 'time-series',
+      nProperty: null,
+      nRange: null,
+      denominator: 'properties',
+      dType: null,
+      dProperty: null,
+      dRange:null,
+      dIndex:null,
+      scale:1,
+      scale3D: 500000,
+      colorScale: 'mobilityHome',
+      fixedScale: null,
+    },
 }
-  
+
+export const allGeographies = ['County', 'State']
+export const allDatasets = ['1point3acres', 'USA Facts', 'New York Times', 'CDC', 'County Health Rankings', 'Yu Group at Berkeley', 'ACS', 'Safegraph'] 
+export const variableTree = {
+    "HEADER:cases":{},
+    "Confirmed Count": {
+        "County": {
+            "1point3acres": {
+                "geojson":'county_1p3a.geojson',
+                "csv":['covid_confirmed_1p3a']
+            },
+            "USA Facts": {
+                "geojson":'county_usfacts.geojson',
+                "csv":['covid_confirmed_usafacts'] 
+            },
+            "New York Times": {
+                "geojson":'county_nyt.geojson',
+                "csv":['covid_confirmed_nyt']  
+            }
+        },
+        "State": {
+            "1point3acres": {
+                "geojson":'state_1p3a.geojson',
+                "csv":['covid_confirmed_1p3a_state']
+            },
+            "New York Times": {
+                "geojson":'state_nyt.geojson',
+                "csv":['covid_confirmed_nyt_state']
+            }, 
+        }
+    },
+    "Confirmed Count per 100K Population":{
+        "County": {
+            "1point3acres": {
+                "geojson":'county_1p3a.geojson',
+                "csv":['covid_confirmed_1p3a']
+            },
+            "USA Facts": {
+                "geojson":'county_usfacts.geojson',
+                "csv":['covid_confirmed_usafacts'] 
+            },
+            "New York Times": {
+                "geojson":'county_nyt.geojson',
+                "csv":['covid_confirmed_nyt']  
+            }
+        },
+        "State": {
+            "1point3acres": {
+                "geojson":'state_1p3a.geojson',
+                "csv":['covid_confirmed_1p3a_state']
+            },
+            "New York Times": {
+                "geojson":'state_nyt.geojson',
+                "csv":['covid_confirmed_nyt_state']
+            }, 
+        }
+    },
+    "Confirmed Count per Licensed Bed":{
+        "County": {
+            "1point3acres": {
+                "geojson":'county_1p3a.geojson',
+                "csv":['covid_confirmed_1p3a']
+            },
+            "USA Facts": {
+                "geojson":'county_usfacts.geojson',
+                "csv":['covid_confirmed_usafacts'] 
+            },
+            "New York Times": {
+                "geojson":'county_nyt.geojson',
+                "csv":['covid_confirmed_nyt']  
+            }
+        },
+        "State": {
+            "1point3acres": {
+                "geojson":'state_1p3a.geojson',
+                "csv":['covid_confirmed_1p3a_state']
+            },
+            "New York Times": {
+                "geojson":'state_nyt.geojson',
+                "csv":['covid_confirmed_nyt_state']
+            }, 
+        }
+    },
+    "HEADER:deaths":{},
+    "Death Count":{
+        "County": {
+            "1point3acres": {
+                "geojson":'county_1p3a.geojson',
+                "csv":['covid_deaths_1p3a']
+            },
+            "USA Facts": {
+                "geojson":'county_usfacts.geojson',
+                "csv":['covid_deaths_usafacts'] 
+            },
+            "New York Times": {
+                "geojson":'county_nyt.geojson',
+                "csv":['covid_deaths_nyt']  
+            }
+        },
+        "State": {
+            "1point3acres": {
+                "geojson":'state_1p3a.geojson',
+                "csv":['covid_deaths_1p3a_state']
+            },
+            "New York Times": {
+                "geojson":'state_nyt.geojson',
+                "csv":['covid_deaths_nyt_state']
+            }, 
+        }
+    },
+    "Death Count per 100K Population": {
+        "County": {
+            "1point3acres": {
+                "geojson":'county_1p3a.geojson',
+                "csv":['covid_deaths_1p3a']
+            },
+            "USA Facts": {
+                "geojson":'county_usfacts.geojson',
+                "csv":['covid_deaths_usafacts'] 
+            },
+            "New York Times": {
+                "geojson":'county_nyt.geojson',
+                "csv":['covid_deaths_nyt']  
+            }
+        },
+        "State": {
+            "1point3acres": {
+                "geojson":'state_1p3a.geojson',
+                "csv":['covid_deaths_1p3a_state']
+            },
+            "New York Times": {
+                "geojson":'state_nyt.geojson',
+                "csv":['covid_deaths_nyt_state']
+            }, 
+        }
+    },
+    "Death Count / Confirmed Count": {
+        "County": {
+            "1point3acres": {
+                "geojson":'county_1p3a.geojson'
+            },
+            "USA Facts": {
+                "geojson":'county_usfacts.geojson'
+            },
+            "New York Times": {
+                "geojson":'county_nyt.geojson'
+            }
+        },
+        "State": {
+            "1point3acres": {
+                "geojson":'state_1p3a.geojson'
+            },
+            "New York Times": {
+                "geojson":'state_nyt.geojson'
+            }, 
+        }
+    },
+    "HEADER:testing":{},
+    "7 Day Testing Positivity Rate Percent":{
+        "County": {
+            "CDC": {
+                "geojson": "cdc.geojson"
+            }
+        },
+        "State": {
+            "CDC": {
+                "geojson":'state_1p3a.geojson'
+            },
+        }
+    },
+    "7 Day Testing Capacity per 100K Population":{
+        "County": {
+            "CDC": {
+                "geojson": "cdc.geojson"
+            }
+        },
+        "State": {
+            "CDC": {
+                "geojson":'state_1p3a.geojson'
+            },
+        }
+    },
+    "HEADER:vaccination":{},
+    "Percent Received First Dose":{
+        "State": {
+            "CDC": {
+                "geojson": "state_1p3a.geojson"
+            }
+        },
+    },
+    "Percent Received Second Dose":{
+        "State": {
+            "CDC": {
+                "geojson": "state_1p3a.geojson",
+                "csv": ["vaccine_admin_cdc_1p3a_state"],
+            }
+        },
+    },
+    "Doses to be Administered per 100K Population":{
+        "State": {
+            "CDC": {
+                "geojson": "state_1p3a.geojson"
+            }
+        },
+    },
+    "HEADER:forecasting":{},
+    "Forecasting (5-Day Severity Index)":{
+        "County": {
+            "Yu Group at Berkeley": {
+                "geojson":'county_usfacts.geojson'
+            }
+        }
+    },
+    "HEADER:community health information":{},
+    "Uninsured Percent": {
+        "County": {
+            "County Health Rankings": {
+                "geojson":'county_usfacts.geojson',
+                "csv":['chr_health_factors']
+            }
+        },
+        "State": {
+            "County Health Rankings": {
+                "geojson":'state_1p3a.geojson'
+            }
+        }
+    },
+    "Over 65 Years Percent": {
+        "County": {
+            "County Health Rankings": {
+                "geojson":'county_usfacts.geojson'
+            }
+        },
+        "State": {
+            "County Health Rankings": {
+                "geojson":'state_1p3a.geojson'
+            }
+        }
+    },
+    "Life Expectancy": {
+        "County": {
+            "County Health Rankings": {
+                "geojson":'county_usfacts.geojson'
+            }
+        },
+        "State": {
+            "County Health Rankings": {
+                "geojson":'state_1p3a.geojson'
+            }
+        }
+    },
+    "Percent Essential Workers": {
+        "County": {
+            "ACS": {
+                "geojson":'county_usfacts.geojson'
+            }
+        },
+        // "State": {
+        //     "ACS": {
+        //         "geojson":'state_1p3a.geojson'
+        //     }
+        // }
+    },
+    "HEADER:mobility":{},
+    "Percent Home on Workdays": {
+        "County": {
+            "Safegraph": {
+                "geojson":'county_usfacts.geojson'
+            }
+        }
+    },
+    "Percent Part Time on Workdays": {
+        "County": {
+            "Safegraph": {
+                "geojson":'safegraph.geojson'
+            }
+        }
+    },
+    "Percent Full Time on Workdays": {
+        "County": {
+            "Safegraph": {
+                "geojson":'safegraph.geojson'
+            }
+        }
+    }
+}
+
+
+export const datasetTree = {
+    'County': {
+      '1point3acres':'county_1p3a.geojson',
+      'New York Times':'county_nyt.geojson',
+      'USA Facts':'county_usfacts.geojson',
+      'CDC':'cdc.geojson',
+      'Yu Group at Berkeley':'county_usfacts.geojson',
+      'County Health Rankings':'county_usfacts.geojson',
+      'ACS':'county_usfacts.geojson',   
+      'Safegraph':'county_usfacts.geojson'
+    }, 
+    'State': {
+      '1point3acres':'state_1p3a.geojson',
+      'New York Times':'state_nyt.geojson',
+      'CDC':'state_1p3a.geojson',
+      'County Health Rankings':'state_1p3a.geojson'
+    }
+  }
+
+export const urlParamsTree = {
+    'county_usfacts.geojson': {
+      name: 'USA Facts',
+      geography: 'County'
+    },
+    'county_1p3a.geojson': {
+      name: '1point3acres',
+      geography: 'County'
+    },
+    'county_nyt.geojson': {
+      name: 'New York Times',
+      geography: 'County'
+    },
+    'state_1p3a.geojson': {
+      name: '1point3acres',
+      geography: 'State'
+    },
+    'state_usafacts.geojson': {
+      name: 'USA Facts',
+      geography: 'State'
+    }, 
+    'state_nyt.geojson': {
+      name: 'New York Times',
+      geography: 'State'
+    },
+    'global_jhu.geojson': {
+      name: 'John Hopkins University',
+      geography: 'Global'
+    },
+    'cdc.geojson': {
+      name: 'CDC',
+      geography: 'County'
+    },
+    'safegraph.geojson': {
+      name: 'Safegraph',
+      geography: 'County'
+    }
+  }

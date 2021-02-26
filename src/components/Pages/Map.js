@@ -422,9 +422,7 @@ function App() {
       <Preloader loaded={mapLoaded} />
       <NavBar />
       <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
-        {/* <button onClick={() => console.log(fullState)}>lisa data</button> */}
-        {/* <button onClick={() => console.log(dataParams)}>data params</button>
-        <button onClick={() => console.log(mapParams)}>map params</button> */}
+        {/* <button onClick={() => console.log(fullState)}>Log state</button> */}
       </header>
       <div id="mainContainer">
         <MapSection />
