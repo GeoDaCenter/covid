@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ContentContainer, Gutter, BlankLink } from '../../styled_components';
-import { StaticNavbar, Footer, CsvDownloader, DataDetails } from '../';
-import { colors } from '../../config';
+import { ContentContainer, Gutter } from '../../styled_components';
+import { StaticNavbar, Footer, DataDetails } from '../'; //CsvDownloader
 
 const DataPage = styled.div`
     background:white;

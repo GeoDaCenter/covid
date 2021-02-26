@@ -1,9 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
-import { ContentContainer, Gutter } from '../../styled_components';
+import { ContentContainer } from '../../styled_components';
 import { StaticNavbar, Footer } from '../';
-import { colors } from '../../config';
 
 const ConductPage = styled.div`
     background:white;

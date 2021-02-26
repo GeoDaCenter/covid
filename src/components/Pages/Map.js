@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 // Helper and Utility functions //
@@ -8,9 +8,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { 
   getParseCSV, mergeData, getColumns, loadJson,
   getDataForBins, getDataForCharts, getDataForLisa, getDateLists,
-  getLisaValues, getVarId, getCartogramValues, getDateIndices, parseBinPairs } from '../../utils';
-
-import { INITIAL_STATE } from '../../constants/defaults';
+  getLisaValues, getCartogramValues, getDateIndices } from '../../utils'; //getVarId
 
 // Actions -- Redux state manipulation following Flux architecture //
 // first row: data storage
@@ -39,7 +37,7 @@ import { colorScales, fixedScales, dataPresets, variablePresets, colors } from '
 
 function App() {
 
-  const dateLists = useMemo(() => getDateLists())
+  const dateLists = getDateLists()
   // static variables for floating panel sizing
   let [ 
     defaultX, 
@@ -88,9 +86,9 @@ function App() {
   // These selectors access different pieces of the store. While App mainly
   // dispatches to the store, we need checks to make sure side effects
   // are OK to trigger. Issues arise with missing data, columns, etc.
-  const {storedData, storedGeojson, storedLisaData, storedCartogramData,
-    currentData, mapParams, dataParams, dateIndices, mapLoaded } = useSelector(state => state);
-  const fullState = useSelector(state => state)
+  const {storedData, storedGeojson, currentData, mapParams, dataParams, dateIndices, mapLoaded } = useSelector(state => state);
+  // const fullState = useSelector(state => state)
+
   // gda_proxy is the WebGeoda proxy class. Generally, having a non-serializable
   // data in the state is poor for performance, but the App component state only
   // contains gda_proxy.
@@ -218,7 +216,7 @@ function App() {
         )
       }
     }
-  });
+  },[]);
 
   // After runtime is initialized, this loads in gda_proxy to the state
   // TODO: Recompile WebGeoda and load it into a worker
@@ -338,7 +336,7 @@ function App() {
       )
     }
     if (gda_proxy !== null && mapParams.vizType === 'cartogram' && storedGeojson[currentData] !== undefined){
-      let tempId = getVarId(currentData, dataParams)
+      // let tempId = getVarId(currentData, dataParams)
       if (storedGeojson[currentData] !== undefined) {
         dispatch(
           storeCartogramData(
@@ -372,7 +370,7 @@ function App() {
   useEffect(() => {
   // static variables for floating panel sizing
   [ 
-    defaultX, 
+    // defaultX, 
     defaultXLong, 
     defaultY, 
     defaultWidth, 
@@ -386,7 +384,7 @@ function App() {
     minWidth
   ] = window.innerWidth <= 1024 ? 
     [
-      window.innerWidth*.1, // defaultX
+      // window.innerWidth*.1, // defaultX
       window.innerWidth*.1, // defaultXLong
       window.innerHeight*.25, // defaultY
       window.innerWidth*.8, // defaultWidth
@@ -400,7 +398,7 @@ function App() {
       window.innerWidth*.5 // min width
     ] : 
     [
-      window.innerWidth-400, 
+      // window.innerWidth-400, 
       window.innerWidth-575, 
       75, 
       300, 

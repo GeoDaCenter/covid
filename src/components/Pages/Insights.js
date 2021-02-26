@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import Grid from '@material-ui/core/Grid';
 
@@ -11,7 +10,6 @@ const InsightsPage = styled.div`
     background:white;
     min-height:100vh;
     footer {
-        position:${props => props.fixedFooter ? 'absolute' : 'initial'};
         bottom:0;
     }
 `
@@ -66,7 +64,6 @@ const Insights = () => {
         items: []
     })
 
-    const [fixedFooter, setFixedFooter] = useState(false)
 
     useEffect(() => {
         fetch('https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/covidatlas')
@@ -74,16 +71,10 @@ const Insights = () => {
             .then(r => {
                 setRssFeed(r)
             })
-        
-        // if (document.getElementsByTagName('footer')[0].getBoundingClientRect().y < window.innerHeight) setFixedFooter(true)
     }, [])
 
-    // useEffect(() => {
-    //     if (document.getElementsByTagName('footer')[0].getBoundingClientRect().y < window.innerHeight) setFixedFooter(true)
-    // }, [window.innerWidth, window.innerHeight])
-    
     return (
-       <InsightsPage fixedFooter={fixedFooter}>
+       <InsightsPage>
            <StaticNavbar/>
            <ContentContainer>
                 <h1>Insights Blog</h1>

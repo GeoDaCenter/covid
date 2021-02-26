@@ -1,5 +1,4 @@
 import React, { useState, useEffect} from 'react';
-import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import * as gfm from 'remark-gfm';
 

@@ -1,19 +1,16 @@
 import React from 'react';
-
-
 // This component handles and formats the map tooltip info. 
 // The props passed to this component should contain an object of the hovered object (from deck, info.object by default)
 const MapTooltipContent = (props) => {
     // destructure the object for cleaner formatting
 
     const { properties, cases, deaths, // county data
-        testing_ccpt, testing_tcap, testing_wk_pos, testing, vaccinesAdmin1, vaccinesAdmin2, vaccinesDist // state data
+        testing_tcap, testing_wk_pos, testing, vaccinesAdmin1, vaccinesAdmin2, vaccinesDist // state data
     } = props.content;
     // get lengths of time series data for reference below
     let caseN = cases && props.index;
     let deathN = deaths && props.index;
     let testingN = testing && props.index;
-    let vaccineN = vaccinesAdmin1 && props.index
     // conditional returns for combination of information
     // this is not elegant but a bit more reliable than JSX conditional rendering
     if (properties && cases && deaths && testing && vaccinesAdmin1) { // State Feature

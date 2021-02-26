@@ -14,7 +14,6 @@ import Switch from '@material-ui/core/Switch';
 
 import styled from 'styled-components';
 
-import { colLookup } from '../utils'; //getGzipData, getArrayCSV
 import Tooltip from './tooltip';
 import { StyledDropDown, BinsContainer, Gutter } from '../styled_components';
 import { setVariableParams, setMapParams, setCurrentData, setPanelState, setParametersAndData } from '../actions'; //variableChangeZ, setNotification, storeMobilityData
@@ -222,9 +221,9 @@ const VariablePanel = (props) => {
 
   const dispatch = useDispatch();    
 
-  const { cols, currentData,  dataParams, mapParams, panelState, urlParams } = useSelector(state => state); 
+  const { currentData,  dataParams, mapParams, panelState, urlParams } = useSelector(state => state); 
   // currentVariable, currentZVariable, storedMobilityData
-  const [bivariateZ, setBivariateZ] = useState(false);
+  // const [bivariateZ, setBivariateZ] = useState(false);
 
   // mobility variable overlays
 
@@ -422,7 +421,7 @@ const VariablePanel = (props) => {
   }
 
   const handleVizTypeButton = (vizType) => {
-    setBivariateZ(false)
+    // setBivariateZ(false)
     if (mapParams.vizType !== vizType) {
       dispatch(setMapParams({vizType}))
     }
@@ -436,16 +435,6 @@ const VariablePanel = (props) => {
   const [currentGeography, setCurrentGeography] = useState('County');
   const [currentDataset, setCurrentDataset] = useState(urlParamsTree[currentData].name);
 
-
-  useEffect(() => {
-    // console.log(urlParamsTree[currentData].name)
-    console.log(dataParams.variableName)
-    if (dataParams.variableName.indexOf('Dose') !== -1 || (dataParams.variableName.indexOf('Test') !== -1 && currentData.indexOf('state') === -1)) {
-      console.log('CDC')
-    } else {
-      console.log(currentDataset)
-    }
-  },[])
   useEffect(() => {
     if (newVariable !== dataParams.variableName) {
       setNewVariable(dataParams.variableName)
@@ -465,11 +454,12 @@ const VariablePanel = (props) => {
     
     let resetDateRange = 
       variablePresets[e.target.value].nType === 'time-series' && 
-      (dataParams.nType === 'characteristic' || dataParams.variableName.indexOf("Testing") !== -1) && 
+      (dataParams.nType === 'characteristic' || dataParams.variableName.indexOf("Testing") !== -1 || dataParams.variableName.indexOf("Workday") !== -1) && 
       dataParams.nRange === null &&
-      variablePresets[e.target.value].variableName.indexOf("Testing") === -1 && variablePresets[e.target.value].nType !== 'characteristic';
+      (variablePresets[e.target.value].variableName.indexOf("Testing") === -1 || variablePresets[e.target.value].variableName.indexOf("Workday") === -1) && variablePresets[e.target.value].nType !== 'characteristic';
 
-    let nIndex = resetDateRange ? 'nRange' : null;
+    let nRange = resetDateRange ? {'nRange':7} : {};
+    if (variablePresets[e.target.value].variableName.indexOf("Workday") !== -1) nRange = {'nRange':null}
     
     let dIndex = (variablePresets[e.target.value].dType === 'time-series') ? 'dIndex' : null;
     let dRange = (variablePresets[e.target.value].dType === 'time-series') ? 'dRange' : null;
@@ -482,7 +472,7 @@ const VariablePanel = (props) => {
       dispatch(setParametersAndData({
         params: {
           ...variablePresets[e.target.value],
-          [nIndex]: 7,
+          ...nRange,
           [dIndex]: dataParams.nIndex,
           [dRange]: dataParams.nRange,
         },
@@ -496,7 +486,7 @@ const VariablePanel = (props) => {
     } else {
       dispatch(setVariableParams({
         ...variablePresets[e.target.value],
-        [nIndex]: 7,
+        ...nRange,
         [dIndex]: dataParams.nIndex,
         [dRange]: dataParams.nRange,
       }))

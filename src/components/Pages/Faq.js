@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
 
 import Grid from '@material-ui/core/Grid';
 import MuiAccordion from '@material-ui/core/Accordion';
@@ -35,18 +34,6 @@ const TutorialButton = styled.button`
     }
     p {
         padding:10px 0;
-    }
-`
-
-const TutorialBox = styled.div`
-    border:1px solid ${colors.lightgray};
-    padding:20px;
-
-    ol {
-        padding-left:40px;
-    }
-    ol li {
-        line-height:2.5;
     }
 `
 

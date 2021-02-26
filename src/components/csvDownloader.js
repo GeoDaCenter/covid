@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FormControl, FormLabel, FormGroup, FormControlLabel, Checkbox, Grid} from '@material-ui/core';
+import { FormControl, FormGroup, FormControlLabel, Checkbox, Grid} from '@material-ui/core';
 import { colors } from '../config';
 import { Gutter } from '../styled_components';
 import * as JSZip from 'jszip'
@@ -290,9 +290,9 @@ const CsvDownloader = () => {
         const dataLinks = await fetch('https://api.github.com/repos/geodacenter/covid/contents/public/csv')
             .then(r=>r.json())
             .then(items => 
-                items.map(d => {
-                    if (fileList[d.name.split('.csv')[0]]) return {'name':d.name, 'url': d.download_url} 
-                }).filter(x => x !== undefined)
+                items.filter(d => fileList[d.name.split('.csv')[0]])
+                    .map(d => ({'name':d.name, 'url': d.download_url}))
+                    .filter(x => x !== undefined)
             )
         const docsLinks = await fetch('https://api.github.com/repos/geodacenter/covid/contents/data-docs').then(r=>r.json()).then(items => items.map(d => ({'name':d.name, 'url': d.download_url})))
         

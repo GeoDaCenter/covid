@@ -258,7 +258,7 @@ const home = () => {
                             <h2>Atlas Features</h2>
                         </Grid>
                         <Feature item xs={12} md={3}>
-                            <img src={`${process.env.PUBLIC_URL}/icons/regional-hot-spots.png`}/>
+                            <img src={`${process.env.PUBLIC_URL}/icons/regional-hot-spots.png`} alt="Regional hotspots of COVID cases" />
                             <h5>Track regional hotspots <NoBreak>in real-time</NoBreak></h5>
                             <p>
                                 Statistical clusters of both confirmed and daily new COVID cases &amp; deaths, 
@@ -266,21 +266,21 @@ const home = () => {
                             </p>
                         </Feature>
                         <Feature item xs={12} md={3}>
-                            <img src={`${process.env.PUBLIC_URL}/icons/spread-over-time-2@2x.png`}/>
+                            <img src={`${process.env.PUBLIC_URL}/icons/spread-over-time-2@2x.png`} alt="COVID spread across the continental US" />
                             <h5>Watch COVID-19 spread across the country</h5>
                             <p>
                                 Watch the spread of accumulated or daily new COVID cases using a time slider and live time-animation.
                             </p>
                         </Feature>
                         <Feature item xs={12} md={3}>
-                            <img src={`${process.env.PUBLIC_URL}/icons/county-level-data@2x.png`}/>
+                            <img src={`${process.env.PUBLIC_URL}/icons/county-level-data@2x.png`} alt="County level COVID Map" />
                             <h5>Zoom in to focus down to the county level</h5>
                             <p>
                                 Uncover trends of the pandemic by comparing different data sources, variables, and spatial analytic insights.
                             </p>
                         </Feature>
                         <Feature item xs={12} md={3}>
-                            <img src={`${process.env.PUBLIC_URL}/icons/comm-health-context@2x.png`}/>
+                            <img src={`${process.env.PUBLIC_URL}/icons/comm-health-context@2x.png`} alt="Community Health Context Map" />
                             <h5>Tap into community and health contexts</h5>
                             <p>
                                 Connect to relevant social, economic, and health indicators to provide meaningful community context.

@@ -263,13 +263,13 @@ const DataPanel = () => {
   // List of all current datasets joined
   const datasetList = ['properties', 'cases', 'deaths', 'predictions',
     'chr_health_factors', 'chr_life', 'chr_health_context',
-    'testing', 'vaccinesAdmin1', 'vaccinesAdmin2', 'vaccinesDist', 'essential_workers', 'pct_home']
+    'testing', 'vaccinesAdmin1', 'essential_workers', 'pct_home']
 
   // Map datasetList to check if each key is present in the current data
   // Output variables are checked below for conditional rendering
   const [ properties, cases, deaths, predictions,
     chr_health_factors, chr_life, chr_health_context,
-    testing, vaccinesAdmin1, vaccinesAdmin2, vaccinesDist, essential_workers,
+    testing, vaccinesAdmin1, essential_workers,
     pct_home
   ] = datasetList.map(dataset => {
     if (storedData[currentData] === undefined) {
@@ -396,28 +396,28 @@ const DataPanel = () => {
   // Set expanded or contracted view
   const handleExpandContract = (event) => setExpanded(event.target.value)
 
-  // Not currently used, aggregate qualitative data (like testing criteria)
-  const aggregateQualitative = (dataset, property) => {
-    let dataObj = {};
-    let returnStr = [];
-    try {
-      let dataArray = selectionIndex.map(selection => storedData[currentData][selection][dataset][property]);
+  // // Not currently used, aggregate qualitative data (like testing criteria)
+  // const aggregateQualitative = (dataset, property) => {
+  //   let dataObj = {};
+  //   let returnStr = [];
+  //   try {
+  //     let dataArray = selectionIndex.map(selection => storedData[currentData][selection][dataset][property]);
     
-      for (let i=0; i<dataArray.length; i++){
-        if (dataObj[dataArray[i]] === undefined) {
-          dataObj[dataArray[i]] = 1
-        } else {
-          dataObj[dataArray[i]] += 1
-        }
-      }  
-      for (let i=0; i<Object.keys(dataObj).length; i++){
-        returnStr.push(`${[Object.keys(dataObj)[i]]}: ${Math.round(dataObj[Object.keys(dataObj)[i]]/dataArray.length*10000)/100}%`)
-      }
-    } catch {
-      return 0
-    }
-    return returnStr;
-  }
+  //     for (let i=0; i<dataArray.length; i++){
+  //       if (dataObj[dataArray[i]] === undefined) {
+  //         dataObj[dataArray[i]] = 1
+  //       } else {
+  //         dataObj[dataArray[i]] += 1
+  //       }
+  //     }  
+  //     for (let i=0; i<Object.keys(dataObj).length; i++){
+  //       returnStr.push(`${[Object.keys(dataObj)[i]]}: ${Math.round(dataObj[Object.keys(dataObj)[i]]/dataArray.length*10000)/100}%`)
+  //     }
+  //   } catch {
+  //     return 0
+  //   }
+  //   return returnStr;
+  // }
 
   
   return (

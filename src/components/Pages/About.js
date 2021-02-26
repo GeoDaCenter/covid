@@ -1,14 +1,8 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-
-
 import { ContentContainer, Gutter } from '../../styled_components';
-
 import Grid from '@material-ui/core/Grid';
-
 import { StaticNavbar, Footer } from '../../components';
-import { colors } from '../../config';
 
 const AboutPage = styled.div`
     background:white;
@@ -282,7 +276,7 @@ const contributorsInfo = [
 
 const formatBio = (person) => 
     <Grid item xs={12} md={4}>
-        <img src={person.img} alt={`${person.name} photo`} />
+        <img src={person.img} alt={`${person.name}`} />
         <p>
             {person.link ? 
                 <a href={person.link} target="noopener noreferrer">{person.name}</a>

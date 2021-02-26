@@ -160,7 +160,7 @@ const GeocoderContainer = styled.div`
 
 //create your forceUpdate hook
 function useForceUpdate(){
-    const [value, setValue] = useState(0); // integer state
+    const [, setValue] = useState(0); // integer state
     return () => setValue(value => value + 1); // update the state to force render
 }
 
@@ -168,7 +168,7 @@ function MapSection(props){
     // fetch pieces of state from store    
     const { storedData, storedGeojson, currentData, storedLisaData, dateIndices,
         storedCartogramData, panelState, dates, dataParams, mapParams,
-        currentVariable, urlParams, mapLoaded, selectMode } = useSelector(state => state);
+        urlParams, } = useSelector(state => state);
 
     // component state elements
     // hover and highlight geographibes
@@ -202,7 +202,6 @@ function MapSection(props){
     
     // interaction states
     const [multipleSelect, setMultipleSelect] = useState(false);
-    const [choroplethInteractive, setChoroplethInteractive] = useState(true);
     const [boxSelect, setBoxSelect] = useState(false);
     const [boxSelectDims, setBoxSelectDims] = useState({});
     const forceUpdate = useForceUpdate();
@@ -419,16 +418,16 @@ function MapSection(props){
         }
     }
     
-    const GetFillColors = (data, bins, mapType, varID) => {
-        let tempObj = {}
-        for (let i=0; i < data.length; i++) {
-            tempObj[data[i].properties.GEOID] = GetFillColor(data[i], bins, mapType, varID)
-        }
-        return tempObj
-    };
+    // const GetFillColors = (data, bins, mapType, varID) => {
+    //     let tempObj = {}
+    //     for (let i=0; i < data.length; i++) {
+    //         tempObj[data[i].properties.GEOID] = GetFillColor(data[i], bins, mapType, varID)
+    //     }
+    //     return tempObj
+    // };
 
     const cleanData = ( parameters ) => {
-        const {data, dataName, dataType, params, bins, mapType, varID, vizType, colorScale} = parameters;
+        const {data, bins, mapType, varID, vizType} = parameters; //dataName, dataType, params, colorScale
         if ((data === undefined) || (mapType !== 'lisa' && bins.breaks === undefined)) return [];
         var returnArray = [];
         let i = 0;
@@ -656,7 +655,7 @@ function MapSection(props){
             getFillColor: d => d.color,
             getPolygon: d => d.geom,
             getElevation: d => d.height,
-            pickable: choroplethInteractive,
+            pickable: true,
             stroked: false,
             filled: true,
             wireframe: mapParams.vizType === '3D',
@@ -778,7 +777,6 @@ function MapSection(props){
             data: currentMapData.data,
             getPosition: f => f.position,
             getSize: f => f.radius,
-            getText: d => 'test',
             sizeScale: 4,
             backgroundColor: [240,240,240],
             pickable:false,

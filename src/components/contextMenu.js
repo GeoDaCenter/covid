@@ -1,9 +1,9 @@
 // general imports, state
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
+// import Grid from '@material-ui/core/Grid';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
 import Switch from '@material-ui/core/Switch';
@@ -74,11 +74,13 @@ const ContextMenu = () => {
     const panelState = useSelector(state => state.panelState);
     const {x, y} = useSelector(state => state.panelState.contextPos);
 
+    const closePanel = () => dispatch(setPanelState({context:false}));
+    
     useEffect(() => {
         if (panelState.context) {
             const listener = (e) => {
                 if (recurseParentNode(e.target) !== "contextMenu") {
-                    dispatch(setPanelState({context:false}))                    
+                    closePanel()                  
                 }
             }
             const removeListener = (e) => {
