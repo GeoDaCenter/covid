@@ -1,0 +1,49 @@
+Meta Data Name: (data name)
+
+Last Modified: February 28, 2021
+
+Author: Laura Chen
+
+Data Location:
+https://github.com/Yu-Group/covid19-severity-prediction/blob/master/data/readme.md
+
+*Data Source(s) Description:*
+The Yu group at UC Berkeley Statistics and EECS has compiled, 
+cleaned and documented a large corpus of hospital- and county-level 
+data from a variety of public sources to aid data science efforts to 
+combat COVID-19. At the hospital level, our data include the location 
+of the hospital, the number of ICU beds, the total number of employees, 
+and the hospital type. At the county level, our data include COVID-19 
+cases/deaths from USA Facts and NYT, automatically updated every day, 
+along with demographic information, health resource availability, 
+COVID-19 health risk factors, and social mobility information. 
+An overview of each data set in this corpus is provided in this file.
+
+*Data Overview*
+
+Hospital Level Data
+cms_cmi (https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/FY2020-IPPS-Final-Rule-Home-Page-Items/FY2020-IPPS-Final-Rule-Data-Files): Case Mix Index for hospitals from CMS
+cms_hospitalpayment: Teaching Hospital info from CMS
+DH_hospital: US Hospital info from Definitive Healthcare
+dhhs_hospitalcapacity: US hopsital capcity data, updated weekly, 
+from US DHHS
+hifld_hospital: Hospital info from homeland infrastructue foundation 
+level data
+
+n/a
+
+Description of Data Processing:
+
+Key Variable and Definitions:
+
+FileName1
+
+Variable	Variable ID in .csv	Description
+Readable Name	Column Name	Description
+Data Limitations:
+
+The data has these issues.
+
+Comments/Notes:
+
+n/a
