@@ -70,7 +70,7 @@ COVID-19 health risk factors, and social mobility information.
 county_data_abridged.csv
 | Variable | Variable ID in .csv | Description |
 |:---------|:--------------------|:------------|
-| County Data Abridged | county_data_abridged.csv| abrdiged data set |
+| County Data Abridged | county_data_abridged.csv| abridged data set |
 	
 
 ### Description of Data Source Tables:
