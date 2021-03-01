@@ -230,16 +230,13 @@ function MapSection(props){
             const SHARED_VIEW =  JSON.parse(localStorage.getItem('SHARED_VIEW'));
             
             if (SHARED_VIEW !== null && SHARED_VIEW.hasOwnProperty('latitude')) {
-                setViewState(
-                    prevView => ({
-                        ...prevView,
+                setViewState({
                         longitude: SHARED_VIEW.longitude,
                         latitude: SHARED_VIEW.latitude,
                         zoom: SHARED_VIEW.zoom,
                         transitionDuration: 1000,
                         transitionInterpolator: new FlyToInterpolator()
                     })
-                )   
             }
         });
 
@@ -259,27 +256,28 @@ function MapSection(props){
 
     // change map center on viztype change
     useEffect(() => {
+        const currMapView = GetMapView();
         switch(mapParams.vizType) {
             case '2D': 
-                setViewState(view => ({
-                    ...view,
+                setViewState({
+                    ...currMapView,
                     latitude: +urlParams.lat || bounds.latitude,
                     longitude: +urlParams.lon || bounds.longitude,
                     zoom: +urlParams.z || bounds.zoom,
                     bearing:0,
                     pitch:0
-                }));
+                });
                 setStoredCenter(null)
                 break
             case '3D':
-                setViewState(view => ({
-                    ...view,
+                setViewState({
+                    ...currMapView,
                     latitude: +urlParams.lat || bounds.latitude,
                     longitude: +urlParams.lon || bounds.longitude,
                     zoom: +urlParams.z || bounds.zoom,
                     bearing:-30,
                     pitch:30
-                }));
+                });
                 setStoredCenter(null)
                 break
             default:
@@ -294,17 +292,18 @@ function MapSection(props){
         if (mapParams.vizType !== 'cartogram') return;
         
         if (storedCartogramData){
-            let center = getCartogramCenter(storedCartogramData)
-            let roundedCenter = [Math.floor(center[0]),Math.floor(center[1])]
+            const currMapView = GetMapView();
+            let center = getCartogramCenter(storedCartogramData);
+            let roundedCenter = [Math.floor(center[0]),Math.floor(center[1])];
             if (storedCenter === null || roundedCenter[0] !== storedCenter[0]) {
-                setViewState(view => ({
-                    ...view,
+                setViewState({
+                    ...currMapView,
                     latitude: center[1],
                     longitude: center[0],
                     zoom: 5,
                     bearing:0,
                     pitch:0
-                }));
+                });
                 setStoredCenter(roundedCenter)
             }
         }
@@ -466,8 +465,25 @@ function MapSection(props){
 
     const GetHeight = (f) => dataFn(f[dataParams.numerator], f[dataParams.denominator], dataParams)*(dataParams.scale3D/((dataParams.nType === "time-series" && dataParams.nRange === null) ? (dataParams.nIndex)/10 : 1))
 
+    const GetMapView = () => {
+        try {
+            const currView = deckRef.current.deck.viewState.MapView
+            return currView || {...viewState}
+        } catch {
+            return {...viewState}
+        }
+    }
+    
     const mapRef = useRef();
-    const deckRef = useRef();
+    const deckRef = useRef({
+        deck: {
+            viewState: {
+                MapView: {
+                    ...viewState
+                }
+            }
+        }
+    });
 
     const handleShare = async (params) => {
         const shareData = {
@@ -539,7 +555,7 @@ function MapSection(props){
                         })
                     );
                     window.localStorage.setItem('SHARED_GEOID', GeoidList);
-                    window.localStorage.setItem('SHARED_VIEW', JSON.stringify(mapRef.current.props.viewState));
+                    window.localStorage.setItem('SHARED_VIEW', JSON.stringify(GetMapView()));
                 } else {
                     if (highlightGeog.length > 1) {
                         let tempArray = [...highlightGeog];
@@ -553,7 +569,7 @@ function MapSection(props){
                             })
                         )
                         window.localStorage.setItem('SHARED_GEOID', tempArray);
-                        window.localStorage.setItem('SHARED_VIEW', JSON.stringify(mapRef.current.props.viewState));
+                        window.localStorage.setItem('SHARED_VIEW', JSON.stringify(GetMapView()));
                     }
                 }
             } catch {}
@@ -574,51 +590,45 @@ function MapSection(props){
                     })
                 );
                 window.localStorage.setItem('SHARED_GEOID', info.object?.GEOID);
-                window.localStorage.setItem('SHARED_VIEW', JSON.stringify(mapRef.current.props.viewState));
+                window.localStorage.setItem('SHARED_VIEW', JSON.stringify(GetMapView()));
             } catch {}
         }
     }
 
     const handleGeolocate = async () => {
         navigator.geolocation.getCurrentPosition( position => {
-            setViewState(
-                prevView => ({
-                    ...prevView,
+            setViewState({
                     longitude: position.coords.longitude,
                     latitude: position.coords.latitude,
                     zoom:7,
                     transitionDuration: 1000,
                     transitionInterpolator: new FlyToInterpolator()
                 })
-            )  
         }) 
     }
 
     const handleZoom = (zoom) => {
-        setViewState(
-            prevView => ({
-                ...prevView,
-                ...mapRef.current.props.viewState,
-                zoom: prevView.zoom + zoom,
+        const currMapView = GetMapView()
+        setViewState({
+                ...currMapView,
+                zoom: currMapView.zoom + zoom,
                 transitionDuration: 250,
                 transitionInterpolator: new FlyToInterpolator()
             })
-        )  
     }
     
     const resetTilt = () => {
-        setViewState(
-            prevView => ({
-                ...prevView,
-                ...mapRef.current.props.viewState,
+        const currMapView = GetMapView()
+        setViewState({
+                ...currMapView,
                 bearing:0,
                 pitch:0,
                 transitionDuration: 250,
                 transitionInterpolator: new FlyToInterpolator()
             })
-        )  
     }
     const handleGeocoder = useCallback(location => {
+        console.log(location)
         if (location.center !== undefined) {
             let center = location.center;
             let zoom = 6;
@@ -633,18 +643,15 @@ function MapSection(props){
                 zoom = bounds.zoom*.9;
             };
 
-            setViewState(
-                prevView => ({
-                    ...prevView,
-                    longitude: center[0],
-                    latitude: center[1],
-                    zoom: zoom,
-                    bearing:0,
-                    pitch:0,
-                    transitionDuration: 'auto',
-                    transitionInterpolator: new FlyToInterpolator()
-                })
-            )
+            setViewState({
+                longitude: center[0],
+                latitude: center[1],
+                zoom: zoom,
+                bearing:0,
+                pitch:0,
+                transitionDuration: 'auto',
+                transitionInterpolator: new FlyToInterpolator()
+            })
         }  
       }, []);
 
@@ -942,7 +949,7 @@ function MapSection(props){
                 }
                 setHighlightGeog(GeoidList); 
                 window.localStorage.setItem('SHARED_GEOID', GeoidList);
-                window.localStorage.setItem('SHARED_VIEW', JSON.stringify(mapRef.current.props.viewState));
+                window.localStorage.setItem('SHARED_VIEW', JSON.stringify(GetMapView()));
                 setBoxSelectDims({});
                 removeListeners();
                 setBoxSelect(false)
@@ -951,7 +958,7 @@ function MapSection(props){
             console.log('bad selection')
         }
     }
-
+    
     return (
         <MapContainer
             onKeyDown={handleKeyDown}
@@ -1048,7 +1055,7 @@ function MapSection(props){
                     <NavInlineButton
                         title="Reset Tilt"
                         id="resetTilt"
-                        tilted={mapRef?.current?.props?.viewState.bearing !== 0 || mapRef?.current?.props?.viewState.pitch !== 0}
+                        tilted={deckRef.current?.deck.viewState?.MapView?.bearing !== 0 || deckRef.current?.deck.viewState?.MapView?.pitch !== 0}
                         onClick={() => resetTilt()}
                     >
                         {SVG.compass}
@@ -1059,7 +1066,7 @@ function MapSection(props){
                         title="Share this Map"
                         id="shareButton"
                         shareNotification={shared}
-                        onClick={() => handleShare({mapParams, dataParams, currentData, coords: mapRef.current.props.viewState, lastDateIndex: dateIndices[currentData][dataParams.numerator]})}
+                        onClick={() => handleShare({mapParams, dataParams, currentData, coords: GetMapView(), lastDateIndex: dateIndices[currentData][dataParams.numerator]})}
                     >
                         {SVG.share}
                     </NavInlineButton>
