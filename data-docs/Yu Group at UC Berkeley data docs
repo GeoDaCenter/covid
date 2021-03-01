@@ -14,9 +14,9 @@ data from a variety of public sources to aid data science efforts to
 combat COVID-19. 
 
 ### Description of Data Processing:
-At the hospital level, our data include the location 
+At the hospital level, the data includes the location 
 of the hospital, the number of ICU beds, the total number of employees, 
-and the hospital type. At the county level, our data include COVID-19 
+and the hospital type. At the county level, the data includes COVID-19 
 cases/deaths from USA Facts and NYT, automatically updated every day, 
 along with demographic information, health resource availability, 
 COVID-19 health risk factors, and social mobility information. 
@@ -40,7 +40,6 @@ level data
   database of nursing homes/assisted living facilities, populated via open source authoritative sources
 
 * County Level Data
-
   * COVID-19 Cases/Deaths Data
     * nytimes_infections: COVID-19-related death/case counts per day per county from NYT
     * usafacts_infections: COVID-19-related death/case counts per day per county from USA Facts
@@ -55,8 +54,7 @@ level data
     Kaiser Health News
     * usda_poverty: county-level poverty estimates from the United States 
     Department of Agriculture, Economic Research Service
-    
- * Health Risk Factors
+  * Health Risk Factors
     * chrr_health (https://www.countyhealthrankings.org): contains estimates of various health outcomes and health behaviors (e.g., percentage of adult smokers) 
     for each county from County Health Rankings & Roadmaps
     * dhdsp_heart (https://www.cdc.gov/dhdsp/maps/atlas/index.htm): cardiovascular disease mortality rates from CDC DHDSP
@@ -71,8 +69,15 @@ level data
     * cmu_covidcast (https://cmu-delphi.github.io/delphi-epidata/api/covidcast.html): 
     epidemiological data from the CMU Delphi COVIDcast, which includes data on COVID-like symptoms from Facebook surveys, estimated COVID-related doctor visits and hospital admissions, 
     and other indicators
- * Social Distancing and Mobility/Miscellaneous
+  * Social Distancing and Mobility/Miscellaneous
     * 
+* Miscellaneous Data
+ * bts_airtravel (): survey data including origin, destination, and itinerary 
+ details from a 10% sample of airline tickets from the Bureau of Transportation
+ Statistics
+ * fb_socialconnectedness (): an anonymized snapshot of all active Facebook 
+ users and their friendship networks as a measure of social connectedness 
+ between two different places
 
 ### Key Variable and Definitions:
 county_data_abridged.csv
