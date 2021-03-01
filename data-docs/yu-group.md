@@ -68,16 +68,17 @@ COVID-19 health risk factors, and social mobility information.
     
 ### Key Variable and Definitions:
 county_data_abridged.csv
-
-Variable	Variable ID in .csv	Description
-Readable Name	Column Name	Description
+| Variable | Variable ID in .csv | Description |
+|:---------|:--------------------|:------------|
+| County Data Abridged | county_data_abridged.csv| abrdiged data set |
+	
 
 ### Description of Data Source Tables:
 See the Yu Group Repo (https://github.com/Yu-Group/covid19-severity-prediction/tree/master/data#data-overview) 
 for more information
 
 ### Data Limitations:
-No limitations to report.
+
 
 ### Comments/Notes:
 n/a
