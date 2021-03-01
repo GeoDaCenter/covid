@@ -1,10 +1,10 @@
-Meta Data Name: (data name)
+*Meta Data Name*: Yu Group at UC Berkeley
 
-Last Modified: February 28, 2021
+*Last Modified*: February 28, 2021
 
-Author: Laura Chen
+*Author*: Laura Chen
 
-Data Location:
+*Data Location*:
 https://github.com/Yu-Group/covid19-severity-prediction/blob/master/data/readme.md
 
 *Data Source(s) Description:*
@@ -19,16 +19,18 @@ along with demographic information, health resource availability,
 COVID-19 health risk factors, and social mobility information. 
 An overview of each data set in this corpus is provided in this file.
 
-*Data Overview*
+* Data Overview*
 
-Hospital Level Data
-cms_cmi (https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/FY2020-IPPS-Final-Rule-Home-Page-Items/FY2020-IPPS-Final-Rule-Data-Files): Case Mix Index for hospitals from CMS
-cms_hospitalpayment: Teaching Hospital info from CMS
-DH_hospital: US Hospital info from Definitive Healthcare
-dhhs_hospitalcapacity: US hopsital capcity data, updated weekly, 
+* Hospital Level Data:
+  * cms_cmi (https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/FY2020-IPPS-Final-Rule-Home-Page-Items/FY2020-IPPS-Final-Rule-Data-Files): Case Mix Index for hospitals from CMS
+  * cms_hospitalpayment (https://www.cms.gov/OpenPayments/About/Resources): Teaching Hospital info from CMS
+  * DH_hospital (https://coronavirus-resources.esri.com/datasets/definitivehc::definitive-healthcare-usa-hospital-beds): US Hospital info from Definitive Healthcare
+dhhs_hospitalcapacity (https://healthdata.gov/dataset/covid-19-reported-patient-impact-and-hospital-capacity-facility): US hopsital capcity data, updated weekly, 
 from US DHHS
-hifld_hospital: Hospital info from homeland infrastructue foundation 
+  * hifld_hospital (https://hifld-geoplatform.opendata.arcgis.com/datasets/6ac5e325468c4cb9b905f1728d6fbf0f_0): Hospital info from homeland infrastructue foundation 
 level data
+
+Nursing Homes Level Data
 
 n/a
 
