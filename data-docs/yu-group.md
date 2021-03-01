@@ -69,15 +69,19 @@ level data
     * cmu_covidcast (https://cmu-delphi.github.io/delphi-epidata/api/covidcast.html): 
     epidemiological data from the CMU Delphi COVIDcast, which includes data on COVID-like symptoms from Facebook surveys, estimated COVID-related doctor visits and hospital admissions, 
     and other indicators
-  * Social Distancing and Mobility/Miscellaneous
-    * 
-* Miscellaneous Data
- * bts_airtravel (): survey data including origin, destination, and itinerary 
- details from a 10% sample of airline tickets from the Bureau of Transportation
- Statistics
- * fb_socialconnectedness (): an anonymized snapshot of all active Facebook 
- users and their friendship networks as a measure of social connectedness 
- between two different places
+   - **Social Distancing and Mobility/Miscellaneous**
+    	- [nytimes_masks](https://github.com/nytimes/covid-19-data/tree/master/mask-use): mask-wearing survey data from NYT and Dynata
+        - [google_mobility](https://www.google.com/covid19/mobility/): community mobility reports from Google
+    	- [apple_mobility](https://www.apple.com/covid19/mobility): mobility trends from Apple maps direction requests
+        - [unacast_mobility](https://www.unacast.com/covid19/social-distancing-scoreboard): county-level estimates of the change in mobility from pre-COVID-19 baseline from Unacast (private data)
+        - [streetlight_vmt](https://www.streetlightdata.com/VMT-monitor-by-county/): estimates of total vehicle miles travelled (VMT) by residents of each county, each day; provided by Streetlight Data (private data)
+        - [safegraph_socialdistancing](https://www.safegraph.com/covid-19-data-consortium): aggregated daily views of USA foot-traffic summarizing movement between counties from SafeGraph (private data)
+        - [safegraph_weeklypatterns](https://www.safegraph.com/covid-19-data-consortium): place foot-traffic and demographic aggregations that answer: how often people visit, where they came from, where else they go, and more; from SafeGraph (private data)
+        - [jhu_interventions](https://github.com/JieYingWu/COVID-19_US_County-level_Summaries): contains the dates that counties (or states governing them) took measures to mitigate the spread by restricting gatherings (e.g., travel bans, stay at home orders)
+        - [mit_voting](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/VOQCHQ): county-level returns for presidential elections from 2000 to 2016 according to official state election data records
+- **Miscellaneous Data**
+	- [bts_airtravel](https://transtats.bts.gov/Databases.asp?Mode_ID=1&Mode_Desc=Aviation&Subject_ID2=0): survey data including origin, destination, and itinerary details from a 10% sample of airline tickets from the Bureau of Transportation Statistics
+    - [fb_socialconnectedness](https://data.humdata.org/dataset/social-connectedness-index): an anonymized snapshot of all active Facebook users and their friendship networks as a measure of social connectedness between two different places
 
 ### Key Variable and Definitions:
 county_data_abridged.csv
