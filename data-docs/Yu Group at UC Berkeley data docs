@@ -1,6 +1,6 @@
 *Meta Data Name*: Yu Group at UC Berkeley
 
-*Last Modified*: February 28, 2021
+*Last Modified*: 02/28/2021
 
 *Author*: Laura Chen
 
@@ -40,6 +40,7 @@ level data
   database of nursing homes/assisted living facilities, populated via open source authoritative sources
 
 * County Level Data
+
   * COVID-19 Cases/Deaths Data
     * nytimes_infections: COVID-19-related death/case counts per day per county from NYT
     * usafacts_infections: COVID-19-related death/case counts per day per county from USA Facts
@@ -56,28 +57,35 @@ level data
     Department of Agriculture, Economic Research Service
     
  * Health Risk Factors
-    * chrr_health: contains estimates of various health outcomes and health behaviors (e.g., percentage of adult smokers) for each county from County Health Rankings & Roadmaps
-    * dhdsp_heart: cardiovascular disease mortality rates from CDC DHDSP
-    * dhdsp_stroke: stroke mortality rates from CDC DHDSP
-    * ihme_respiratory: chronic respiratory disease mortality rates from IHME
-    * medicare_chronic: Medicare claims data for 21 chronic conditions
-    * nchs_mortality: overall mortality rates for each county from National Center for Health Statistics
-    * usdss_diabetes: diagnosed diabetes in each county from CDC USDSS
-    * kinsa_ili: measures of anomalous influenza-like illness incidence (ILI) outbreaks in real-time using Kinsa’s county-level illness signals, developed from real-time geospatial thermometer data (private data)
-    * cmu_covidcast: epidemiological data from the CMU Delphi COVIDcast, which includes data on COVID-like symptoms from Facebook surveys, estimated COVID-related doctor visits and hospital admissions, and other indicators
+    * chrr_health (https://www.countyhealthrankings.org): contains estimates of various health outcomes and health behaviors (e.g., percentage of adult smokers) 
+    for each county from County Health Rankings & Roadmaps
+    * dhdsp_heart (https://www.cdc.gov/dhdsp/maps/atlas/index.htm): cardiovascular disease mortality rates from CDC DHDSP
+    * dhdsp_stroke (https://www.cdc.gov/dhdsp/maps/atlas/index.htm): stroke mortality rates from CDC DHDSP
+    * ihme_respiratory (http://ghdx.healthdata.org/record/ihme-data/united-states-chronic-respiratory-disease-mortality-rates-county-1980-2014): chronic respiratory disease mortality rates from IHME
+    * medicare_chronic (https://www.cms.gov/Research-Statistics-Data-and-Systems/Statistics-Trends-and-Reports/Chronic-Conditions/CC_Main): 
+    Medicare claims data for 21 chronic conditions
+    * nchs_mortality (https://wonder.cdc.gov/cmf-icd10.html): overall mortality rates for each county from National Center for Health Statistics
+    * usdss_diabetes (https://gis.cdc.gov/grasp/diabetes/DiabetesAtlas.html#): diagnosed diabetes in each county from CDC USDSS
+    * kinsa_ili (https://www.kinsahealth.co): measures of anomalous influenza-like illness incidence (ILI) outbreaks in real-time using Kinsa’s county-level illness signals, 
+    developed from real-time geospatial thermometer data (private data)
+    * cmu_covidcast (https://cmu-delphi.github.io/delphi-epidata/api/covidcast.html): 
+    epidemiological data from the CMU Delphi COVIDcast, which includes data on COVID-like symptoms from Facebook surveys, estimated COVID-related doctor visits and hospital admissions, 
+    and other indicators
+ * Social Distancing and Mobility/Miscellaneous
+    * 
 
-Description of Data Processing:
-
-Key Variable and Definitions:
-
-FileName1
+### Key Variable and Definitions:
+county_data_abridged.csv
 
 Variable	Variable ID in .csv	Description
 Readable Name	Column Name	Description
-Data Limitations:
 
-The data has these issues.
+Description of Data Source Tables:
+See the Yu Group Repo (https://github.com/Yu-Group/covid19-severity-prediction/tree/master/data#data-overview) 
+for more information
+
+Data Limitations:
+No limitations to report.
 
 Comments/Notes:
-
 n/a
