@@ -85,12 +85,12 @@ county_data_abridged.csv
 Variable	Variable ID in .csv	Description
 Readable Name	Column Name	Description
 
-Description of Data Source Tables:
+### Description of Data Source Tables:
 See the Yu Group Repo (https://github.com/Yu-Group/covid19-severity-prediction/tree/master/data#data-overview) 
 for more information
 
-Data Limitations:
+### Data Limitations:
 No limitations to report.
 
-Comments/Notes:
+### Comments/Notes:
 n/a
