@@ -60,23 +60,31 @@ const AccordionDetails = styled(MuiAccordionDetails)`
 const dataList = [
     {
         'header': 'New York Times',
-        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/nyt.md'
+        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/new-york-times.md'
     },
     {
         'header': 'Center for Disease Control',
-        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/cdc.md'
+        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/center-for-disease-control.md'
     },
     {
         'header': 'Health and Human Services',
-        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/hhs.md'
+        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/health-and-human-services.md'
     },
     {
         'header': 'County Health Rankings and Roadmaps',
         'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/county-health-rankings.md'
     },
     {
+        'header': 'Yu Group at UC Berkeley',
+        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/yugroup.md'
+    },
+    {
         'header': 'Safegraph Social Distancing',
         'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/safegraph_sd.md'
+    },
+    {
+        'header': 'American Community Survey',
+        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/american-community-survey.md'
     }
 
 ]  
