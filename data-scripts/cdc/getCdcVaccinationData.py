@@ -12,13 +12,13 @@ def downloadCDCVaccinationData():
     loadedJson = raw.json()['vaccination_data']
     vaccinationData = pd.DataFrame(loadedJson)
     outputDate = loadedJson[0]["Date"].replace('/','-')
-    with open(os.path.join(dir_path, f'json/cdc_vaccine_data_{outputDate}.json'), 'w') as outfile:
+    with open(os.path.join(repo_root, f'data-scripts/cdc/json/cdc_vaccine_data_{outputDate}.json'), 'w') as outfile:
         json.dump(loadedJson, outfile)
 
-    return glob(os.path.join(dir_path, 'json/*.json'))
+    return glob(os.path.join(repo_root, 'data-scripts/cdc/json/*.json'))
 
 def parseVaccinationData(vaccinationDataList):
-    geoidTable = pd.read_csv(os.path.join(dir_path,'statename_geoid.csv'))
+    geoidTable = pd.read_csv(os.path.join(repo_root,'data-scripts/cdc/statename_geoid.csv'))
     vaccineAdministered1 = ''
 
     for idx, file in enumerate(vaccinationDataList):
@@ -106,7 +106,7 @@ def parse7dayRolling(df, colName, preLoaded=False, normalize=False):
         tempDf.loc[:,colList[i-1]] = round(tempDf[colList[n:i]].sum(axis=1)/length,2)
     
     if normalize: 
-        popDf = pd.read_csv(os.path.join(dir_path, 'state_populations.csv'))[["FIPS","population"]]
+        popDf = pd.read_csv(os.path.join(repo_root, 'data-scripts/cdc/state_populations.csv'))[["FIPS","population"]]
         tempDf = tempDf.merge(popDf, left_on="state_fips", right_on="FIPS", how="left")
     
         for column in colList:
@@ -118,7 +118,6 @@ if __name__ == "__main__":
 
     ## Vaccination Data
     fileList = downloadCDCVaccinationData()
-    print(fileList)
     parsedData = parseVaccinationData(fileList)
 
     parsedData['vaccineDistributed'].to_csv(os.path.join(repo_root, 'public/csv/vaccine_dist_cdc.csv'), index=False)
