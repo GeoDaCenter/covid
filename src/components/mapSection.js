@@ -628,7 +628,6 @@ function MapSection(props){
             })
     }
     const handleGeocoder = useCallback(location => {
-        console.log(location)
         if (location.center !== undefined) {
             let center = location.center;
             let zoom = 6;
@@ -909,9 +908,9 @@ function MapSection(props){
                             x, y: y-50, width, height, layerIds
                         }
                     )
-    
                 let GeoidList = [];
                 for (let i=0; i<features.length; i++) {
+                    if (GeoidList.indexOf(features[i].object?.GEOID) !== -1) continue
                     const tempGEOID = features[i].object?.GEOID
                     const tempData = storedData[currentData][storedData[currentData].findIndex(o => o.properties.GEOID === tempGEOID)]        
                     const dataName = tempData.properties.hasOwnProperty('state_abbr') ? `${tempData.properties.NAME}, ${tempData.properties.state_abbr}` : `${tempData.properties.NAME}`
