@@ -5,21 +5,21 @@
 **Author**: Dylan Halpern
 
 ### Data Location: 
-[GeoDaCenter/covid/docs/csv](https://github.com/GeoDaCenter/covid/tree/master/docs/csv)
+[GeoDaCenter/covid/public/csv](https://github.com/GeoDaCenter/covid/tree/master/public/csv)
 
 * Cases
-    * County Cases: [covid_confirmed_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/covid_confirmed_cdc.csv)
+    * County Cases: [covid_confirmed_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/public/csv/covid_confirmed_cdc.csv)
 * Deaths
-    * County Deaths: [covid_deaths_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/covid_deaths_cdc.csv)
+    * County Deaths: [covid_deaths_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/public/csv/covid_deaths_cdc.csv)
 * Testing
-    * County Testing Count: [covid_testing_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/covid_testing_cdc.csv)
-    * County Testing Capacity Per 100k Population: [covid_tcap_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/covid_tcap_cdc.csv)
-    * County Weekly Positivity: [covid_wk_pos_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/covid_wk_pos_cdc.csv)
-    * County Confirmed Cases Per Testing: [covid_ccpt_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/covid_ccpt_cdc.csv)
+    * County Testing Count: [covid_testing_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/public/csv/covid_testing_cdc.csv)
+    * County Testing Capacity Per 100k Population: [covid_tcap_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/public/csv/covid_tcap_cdc.csv)
+    * County Weekly Positivity: [covid_wk_pos_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/public/csv/covid_wk_pos_cdc.csv)
+    * County Confirmed Cases Per Testing: [covid_ccpt_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/public/csv/covid_ccpt_cdc.csv)
 * Vaccination (State-level)
-    * First Dose Administered: [vaccine_admin1_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/vaccine_admin1_cdc.csv)
-    * Second Dose Administered: [vaccine_admin2_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/vaccine_admin2_cdc.csv)
-    * Doses Distributed but not administered: [vaccine_dist_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/vaccine_dist_cdc.csv)
+    * First Dose Administered: [vaccine_admin1_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/public/csv/vaccine_admin1_cdc.csv)
+    * Second Dose Administered: [vaccine_admin2_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/public/csv/vaccine_admin2_cdc.csv)
+    * Doses Distributed but not administered: [vaccine_dist_cdc.csv](https://github.com/GeoDaCenter/covid/blob/master/public/csv/vaccine_dist_cdc.csv)
 
 ### Data Source(s) Description:  
 This data is sourced from the CDC's [Covid Data Tracker](https://covid.cdc.gov/covid-data-tracker/) on the [County](https://covid.cdc.gov/covid-data-tracker/#county-view) and [Vaccination](https://covid.cdc.gov/covid-data-tracker/#vaccinations) views. The CDC publishes **7-day rolling average** aggregations of testing, case, and death data and **daily snapshots** of vaccination data.

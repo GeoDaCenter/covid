@@ -5,7 +5,7 @@
 **Author**: Dylan Halpern
 
 ### Data Location: 
-[GeoDaCenter/covid/docs/csv](https://github.com/GeoDaCenter/covid/tree/master/docs/csv)
+[GeoDaCenter/covid/public/csv](https://github.com/GeoDaCenter/covid/tree/master/public/csv)
 
 * County:
     * Health Context: [chr_health_context.csv](https://raw.githubusercontent.com/GeoDaCenter/covid/master/public/csv/chr_health_context.csv)

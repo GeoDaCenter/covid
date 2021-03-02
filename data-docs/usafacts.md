@@ -5,7 +5,7 @@
 **Author**: Stephanie Yang
 
 ### Data Location: 
-[GeoDaCenter/covid/docs/csv](https://github.com/GeoDaCenter/covid/tree/master/docs/csv)
+[GeoDaCenter/covid/public/csv](https://github.com/GeoDaCenter/covid/tree/master/public/csv)
 
 * County
     * Cases: [covid_confirmed_usafacts.csv](https://github.com/GeoDaCenter/covid/blob/master/public/csv/covid_confirmed_usafacts.csv)
