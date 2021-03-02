@@ -186,6 +186,10 @@ export const colorScales = {
         [241,105,19],
         [217,72,1],
         [140,45,4],
+      ],
+      'binarySchemePositive':[
+        [224,236,244],
+        [136,86,167]
       ]
 }
 
@@ -204,7 +208,10 @@ export const fixedScales = {
     'forecasting': {
         bins: ['N/A','Low', 'Medium', 'High'],
         breaks:[1,2,3,4]
-
+    },
+    'maskBinary': {
+        bins:['No Mask Mandate','Active Mask Mandate'],
+        breaks:[0,2]
     }
 }
 
@@ -511,6 +518,7 @@ export const dataPresets = {
             'covid_wk_pos_cdc', 
             'covid_tcap_cdc', 
             'covid_ccpt_cdc',
+            'policy_mask_mandates_cdc',
             'essential_workers'
         ],  
         tableNames: [
@@ -524,6 +532,7 @@ export const dataPresets = {
             'testing_wk_pos', 
             'testing_tcap', 
             'testing_ccpt',
+            'mask_mandates',
             'essential_workers'
         ],
         joinCols: ['GEOID', ['fips_code', 'fips', 'FIPS', 'countyFIPS']],
@@ -534,7 +543,8 @@ export const dataPresets = {
             'covid_testing_cdc': 'isoDateList', 
             'covid_wk_pos_cdc': 'isoDateList', 
             'covid_tcap_cdc': 'isoDateList', 
-            'covid_ccpt_cdc': 'isoDateList'
+            'covid_ccpt_cdc': 'isoDateList',
+            'policy_mask_mandates_cdc': 'isoDateList'
         }
     },
 }
@@ -976,6 +986,22 @@ export const variablePresets = {
       colorScale: 'mobilityHome',
       fixedScale: null,
     },
+    "Mask Mandates": {
+      variableName:"Mask Mandates",
+      numerator: 'mask_mandates',
+      nType: 'time-series',
+      nProperty: null,
+      nRange: null,
+      denominator: 'properties',
+      dType: null,
+      dProperty: null,
+      dRange:null,
+      dIndex:null,
+      scale:1,
+      scale3D: 500000,
+      colorScale: 'binarySchemePositive',
+      fixedScale: 'maskBinary',
+    },
 }
 
 export const allGeographies = ['County', 'State']
@@ -1261,7 +1287,15 @@ export const variableTree = {
                 "geojson":'safegraph.geojson'
             }
         }
-    }
+    },
+    "HEADER:policy":{},
+    "Mask Mandates": {
+        "County": {
+            "CDC": {
+                "geojson":'cdc.geojson'
+            }
+        }
+    },
 }
 
 
