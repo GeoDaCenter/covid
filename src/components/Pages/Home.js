@@ -232,8 +232,8 @@ const home = () => {
                     <p>
                         The US COVID Atlas is a visualization tool led by a University of Chicago research coalition.
                         In a quickly changing pandemic landscape, our tool connects COVID case data and community indicators 
-                        across the United States from its beginning to today. The Atlas helps you access current, 
-                        validated county-level data and spatial analysis to better understand the spread in communities 
+                        across the United States from its beginning to today. The Atlas helps you access current 
+                        county-level data and spatial analysis to better understand the spread in communities 
                         and to bolster planning efforts.
                         <br/><br/>
 

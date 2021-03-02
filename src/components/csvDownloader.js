@@ -301,7 +301,7 @@ const CsvDownloader = () => {
         const docsPromises = await docsLinks.map(link => fetch(link.url).then(r=>r.blob()))
         
         // fetch data and docs
-        const data = await Promise.all(dataPromises).then(values => values.map((v,i) => ({'name':dataLinks[i].name, 'data':v})))
+        const data = await Promise.all(dataPromises).then(values => values.map((v,i) => ({'name':`${dataLinks[i].name.slice(0,-4)}-${new Date().toISOString().slice(0,10)}.csv`, 'data':v})))
         const docs = await Promise.all(docsPromises).then(values => values.map((v,i) => ({'name':docsLinks[i].name, 'data':v})))
 
         var zip = new JSZip();
@@ -312,7 +312,7 @@ const CsvDownloader = () => {
         import('file-saver').then(fileSaver  => {
             zip.generateAsync({type:"blob"}).then(function(content) {
                 // see FileSaver.js
-                fileSaver.saveAs(content, "example.zip");
+                fileSaver.saveAs(content, `us_covid_atlas_data_${new Date().toISOString().slice(0,10)}.zip`);
             });
         })
         setIsDownloading(false)

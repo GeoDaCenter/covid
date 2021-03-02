@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ContentContainer, Gutter } from '../../styled_components';
-import { StaticNavbar, Footer, DataDetails } from '../'; //CsvDownloader
+import { StaticNavbar, Footer, DataDetails, CsvDownloader } from '../'; 
 
 const DataPage = styled.div`
     background:white;
@@ -84,12 +84,12 @@ function Data(){
                     reported from apps that collect locations data. This data has been made available to for COVID-19 related research projects. The data is generated from a series of location pings throughout the day, which determine various behaviors, such as 
                     staying completely home, full time work (at a workplace outside of home for 6-8 hours), part time work (at a workplace outside of home for 3-6 hours), and delivery (multiple, short visits). Access to the data consortium is available <a href="https://www.safegraph.com/covid-19-data-consortium" target="_blank" rel="noopener noreferrer">here</a>.
                 </p>
-                {/* <Gutter h={40}/>
-                <CsvDownloader/> */}
                 <Gutter h={40}/>
-                <h2>DATA DETAILS</h2>
+                <CsvDownloader/>
+                <Gutter h={40}/>
+                {/* <h2>DATA DETAILS</h2>
                 <hr />
-                <DataDetails />
+                <DataDetails /> */}
                
             </ContentContainer>
             <Footer/>

@@ -76,7 +76,7 @@ const dataList = [
     },
     {
         'header': 'Yu Group at UC Berkeley',
-        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/yugroup.md'
+        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/yu-group.md'
     },
     {
         'header': 'Safegraph Social Distancing',
