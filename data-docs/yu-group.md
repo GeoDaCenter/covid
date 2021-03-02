@@ -21,7 +21,18 @@ cases/deaths from USA Facts and NYT, automatically updated every day,
 along with demographic information, health resource availability, 
 COVID-19 health risk factors, and social mobility information. 
 
-### Data Overview:
+    
+### Key Variable and Definitions:
+berkeley_predictions.csv
+
+| Variable | Variable ID in .csv | Description|
+|:---------|:--------------------|:------------|
+| fips | severity_index | deaths_YYYY_MM_DD (time-series)|
+
+
+### Description of Data Source Tables:
+See the [Berkeley predictions csv](public/csv/berkeley_predictions.csv) for more information.
+
 - **Hospital Level Data**
     - [cms_cmi](https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/FY2020-IPPS-Final-Rule-Home-Page-Items/FY2020-IPPS-Final-Rule-Data-Files): Case Mix Index for hospitals from CMS 
     - [cms_hospitalpayment](https://www.cms.gov/OpenPayments/About/Resources): Teaching Hospital info from CMS
@@ -65,20 +76,9 @@ COVID-19 health risk factors, and social mobility information.
 - **Miscellaneous Data**
 	- [bts_airtravel](https://transtats.bts.gov/Databases.asp?Mode_ID=1&Mode_Desc=Aviation&Subject_ID2=0): survey data including origin, destination, and itinerary details from a 10% sample of airline tickets from the Bureau of Transportation Statistics
     - [fb_socialconnectedness](https://data.humdata.org/dataset/social-connectedness-index): an anonymized snapshot of all active Facebook users and their friendship networks as a measure of social connectedness between two different places
-    
-### Key Variable and Definitions:
-berkeley_predictions.csv
-
-| Variable | Variable ID in .csv | Description|
-|:---------|:--------------------|:------------|
-| fips |severity_index| deaths_YYYY_MM_DD|
-
-### Description of Data Source Tables:
-See the [Berkeley predictions csv](public/csv/berkeley_predictions.csv) 
-for more information
 
 ### Data Limitations:
-
+No limitations to report.
 
 ### Comments/Notes:
 n/a
