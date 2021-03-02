@@ -67,14 +67,14 @@ COVID-19 health risk factors, and social mobility information.
     - [fb_socialconnectedness](https://data.humdata.org/dataset/social-connectedness-index): an anonymized snapshot of all active Facebook users and their friendship networks as a measure of social connectedness between two different places
     
 ### Key Variable and Definitions:
-county_data_abridged.csv
-| Variable | Variable ID in .csv | Description |
+berkeley_predictions.csv
+
+| Variable | Variable ID in .csv | Description|
 |:---------|:--------------------|:------------|
-| County Data Abridged | county_data_abridged.csv| abridged data set |
-	
+| fips |severity_index| deaths_YYYY_MM_DD|
 
 ### Description of Data Source Tables:
-See the Yu Group Repo (https://github.com/Yu-Group/covid19-severity-prediction/tree/master/data#data-overview) 
+See the [Berkeley predictions csv](public/csv/berkeley_predictions.csv) 
 for more information
 
 ### Data Limitations:
