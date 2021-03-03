@@ -34,54 +34,24 @@ import { colorScales, fixedScales, dataPresets, variablePresets, colors } from '
 // 2: App assembles all of the components together and sends Props down
 //    (as of 12/1 only Preloader uses props and is a higher order component)
 
+const getDefaultDimensions = () => ({
+  defaultX: window.innerWidth <= 1024 ? window.innerWidth*.1 : window.innerWidth-400, 
+  defaultXLong: window.innerWidth <= 1024 ? window.innerWidth*.1 :window.innerWidth-575,
+  defaultY: window.innerWidth <= 1024 ? window.innerHeight*.25 : 75,
+  defaultWidth: window.innerWidth <= 1024 ? window.innerWidth*.8 : 300,
+  defaultWidthLong: window.innerWidth <= 1024 ? window.innerWidth*.8 : 450,
+  defaultHeight: window.innerWidth <= 1024 ? window.innerHeight*.4 : 300,
+  defaultHeightManual: window.innerWidth <= 1024 ? window.innerHeight*.7 : window.innerHeight*.5,
+  defaultWidthManual: window.innerWidth <= 1024 ? window.innerWidth*.5 : window.innerWidth*.35,
+  defaultXManual: window.innerWidth <= 1024 ? window.innerWidth*.25 : window.innerWidth*.25,
+  defaultYManual: window.innerWidth <= 1024 ? window.innerHeight*.15 : window.innerHeight*.325,
+  minHeight: window.innerWidth <= 1024 ? window.innerHeight*.5 : 200,
+  minWidth: window.innerWidth <= 1024 ? window.innerWidth*.5 : 200,
+})
 
 function App() {
 
   const dateLists = getDateLists()
-  // static variables for floating panel sizing
-  let [ 
-    defaultX, 
-    defaultXLong, 
-    defaultY, 
-    defaultWidth, 
-    defaultWidthLong, 
-    defaultHeight,
-    defaultHeightManual,
-    defaultWidthManual,
-    defaultXManual,
-    defaultYManual,
-    minHeight, 
-    minWidth
-  ] = window.innerWidth <= 1024 ? 
-    [
-      window.innerWidth*.1, // defaultX
-      window.innerWidth*.1, // defaultXLong
-      window.innerHeight*.25, // defaultY
-      window.innerWidth*.8, // defaultWidth
-      window.innerWidth*.8,  // defaultWidthLong
-      window.innerHeight*.4, // height
-      window.innerHeight*.7, // heightManual
-      window.innerWidth*.5,  // width manual
-      window.innerWidth*.25, // x manual
-      window.innerHeight*.15, // y manual
-      window.innerHeight*.5, // min height
-      window.innerWidth*.5 // min width
-    ] : 
-    [
-      window.innerWidth-400, 
-      window.innerWidth-575, 
-      75, 
-      300, 
-      450, 
-      300, 
-      window.innerHeight*.5, 
-      window.innerWidth*.35, 
-      window.innerWidth*.25, // x manual
-      window.innerHeight*.325, // y manual
-      200, 
-      200
-  ]
-
 
   // These selectors access different pieces of the store. While App mainly
   // dispatches to the store, we need checks to make sure side effects
@@ -93,6 +63,8 @@ function App() {
   // data in the state is poor for performance, but the App component state only
   // contains gda_proxy.
   const [gda_proxy, set_gda_proxy] = useState(null);
+  const [defaultDimensions, setDefaultDimensions] = useState({...getDefaultDimensions()})
+  
   const dispatch = useDispatch();  
   // // Dispatch helper functions for side effects and data handling
   // Get centroid data for cartogram
@@ -368,49 +340,7 @@ function App() {
 
   // default width handlers on resize
   useEffect(() => {
-  // static variables for floating panel sizing
-  [ 
-    // defaultX, 
-    defaultXLong, 
-    defaultY, 
-    defaultWidth, 
-    defaultWidthLong, 
-    defaultHeight,
-    defaultHeightManual,
-    defaultWidthManual,
-    defaultXManual,
-    defaultYManual,
-    minHeight, 
-    minWidth
-  ] = window.innerWidth <= 1024 ? 
-    [
-      // window.innerWidth*.1, // defaultX
-      window.innerWidth*.1, // defaultXLong
-      window.innerHeight*.25, // defaultY
-      window.innerWidth*.8, // defaultWidth
-      window.innerWidth*.8,  // defaultWidthLong
-      window.innerHeight*.4, // height
-      window.innerHeight*.7, // heightManual
-      window.innerWidth*.5,  // width manual
-      window.innerWidth*.25, // x manual
-      window.innerHeight*.15, // y manual
-      window.innerHeight*.5, // min height
-      window.innerWidth*.5 // min width
-    ] : 
-    [
-      // window.innerWidth-400, 
-      window.innerWidth-575, 
-      75, 
-      300, 
-      450, 
-      300, 
-      window.innerHeight*.5, 
-      window.innerWidth*.35, 
-      window.innerWidth*.25, // x manual
-      window.innerHeight*.325, // y manual
-      200, 
-      200
-  ]
+    setDefaultDimensions({...getDefaultDimensions()})
   }, [window.innerHeight, window.innerWidth])
   // const dragHandlers = {onStart: this.onStart, onStop: this.onStop};
 
@@ -437,8 +367,8 @@ function App() {
         <NotificationBox />  
         <Draggable 
           z={9}
-          defaultX={defaultXLong}
-          defaultY={defaultY}
+          defaultX={defaultDimensions.defaultXLong}
+          defaultY={defaultDimensions.defaultY}
           title="lineChart"
           content={
           <Scaleable 
@@ -446,15 +376,15 @@ function App() {
               <MainLineChart />
             } 
             title="lineChart"
-            defaultWidth={defaultWidthLong}
-            defaultHeight={defaultHeight}
-            minHeight={minHeight}
-            minWidth={minWidth} />
+            defaultWidth={defaultDimensions.defaultWidthLong}
+            defaultHeight={defaultDimensions.defaultHeight}
+            minHeight={defaultDimensions.minHeight}
+            minWidth={defaultDimensions.minWidth} />
         }/>      
         <Draggable 
           z={10}
-          defaultX={defaultXManual}
-          defaultY={defaultYManual}
+          defaultX={defaultDimensions.defaultXManual}
+          defaultY={defaultDimensions.defaultYManual}
           title="tutorial"
           content={
           <Scaleable 
@@ -462,10 +392,10 @@ function App() {
               <InfoBox />
             } 
             title="tutorial"
-            defaultWidth={defaultWidthManual}
-            defaultHeight={defaultHeightManual}
-            minHeight={minHeight}
-            minWidth={minWidth} />
+            defaultWidth={defaultDimensions.defaultWidthManual}
+            defaultHeight={defaultDimensions.defaultHeightManual}
+            minHeight={defaultDimensions.minHeight}
+            minWidth={defaultDimensions.minWidth} />
         }/>
 
       </div>
