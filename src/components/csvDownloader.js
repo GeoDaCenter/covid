@@ -231,9 +231,9 @@ const readme = `# readme
 
     This archive contains folders for data CSVs (data) and detailed documentation (docs). The US Covid Atlas is an open source project licensed under GPL 3. 
 
-    The data sources included are licensed for open source, non-profit projects, ***but may have restrictions for commercial uses.*** 
+    The data sources included are licensed for open source, non-commercial projects, ***but may have restrictions for commercial uses.*** 
 
-    Please consult the data sources listed in the data documentation before using this data in for-profit publications.
+    Please consult the data sources listed in the data documentation before using this data in commercial publications.
 `
 
 

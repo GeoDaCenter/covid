@@ -64,7 +64,7 @@ function App() {
   // contains gda_proxy.
   const [gda_proxy, set_gda_proxy] = useState(null);
   const [defaultDimensions, setDefaultDimensions] = useState({...getDefaultDimensions()})
-  
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();  
   // // Dispatch helper functions for side effects and data handling
   // Get centroid data for cartogram
@@ -74,6 +74,7 @@ function App() {
   // This functions asynchronously accesses the Geojson data and CSVs
   //   then performs a join and loads the data into the store
   const loadData = async (params, gda_proxy) => {
+    setIsLoading(true)
     // destructure parameters
     const { geojson, csvs, joinCols, tableNames, accumulate, dateList } = params
     // promise all data fetching - CSV and Json
@@ -149,6 +150,7 @@ function App() {
           },
         })
       )
+      setIsLoading(false)
     })
   }
 
@@ -349,10 +351,11 @@ function App() {
     <div className="Map-App">
       <Preloader loaded={mapLoaded} />
       <NavBar />
+      {isLoading && <div id="loadingIcon" style={{backgroundImage: `url('${process.env.PUBLIC_URL}assets/img/bw_preloader.gif')`}}></div>}
       <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
         {/* <button onClick={() => console.log(fullState)}>Log state</button> */}
       </header>
-      <div id="mainContainer">
+      <div id="mainContainer" className={isLoading ? 'loading' : ''}>
         <MapSection />
         <TopPanel />
         <Legend 
