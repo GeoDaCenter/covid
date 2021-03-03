@@ -30,7 +30,7 @@ function Data(){
                 <h1>Data</h1>
                 <Gutter h={10}/>
                 <p>
-                    Below is a high-level description of the currently available datasets in the US Covid Atlas. For further documentation, please see the detailed data descriptions menu below. For data access, see our <NavLink to="/api">API.</NavLink>
+                    Below is a high-level description of the currently available datasets in the US Covid Atlas. For further documentation, please see the detailed data descriptions menu below. For data access, see our <NavLink to="/api">API</NavLink> or use the bulk CSV downloader at the bottom of this page.
                 </p>
                 <Gutter h={10}/>
                 
@@ -112,8 +112,8 @@ function Data(){
                 <SectionTitle>Detailed Data Descriptions</SectionTitle>
                 <hr />
                 <DataDetails />
-                {/* <Gutter h={40}/>
-                <CsvDownloader/> */}
+                <Gutter h={40}/>
+                <CsvDownloader/>
                
             </ContentContainer>
             <Footer/>

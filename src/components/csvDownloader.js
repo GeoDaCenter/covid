@@ -227,6 +227,15 @@ const checkboxSets = [
 
 ]   
 
+const readme = `# readme
+
+    This archive contains folders for data CSVs (data) and detailed documentation (docs). The US Covid Atlas is an open source project licensed under GPL 3. 
+
+    The data sources included are licensed for open source, non-profit projects, ***but may have restrictions for commercial uses.*** 
+
+    Please consult the data sources listed in the data documentation before using this data in for-profit publications.
+`
+
 
 const CsvDownloader = () => {
     const [checkboxes, setCheckboxes] = useState({
@@ -271,7 +280,7 @@ const CsvDownloader = () => {
             vaccine_dist_cdc: false,
         hospitals_clinics:false,
             context_fqhc_clinics_hrsa: false,
-            context_fqhc_clinics_hrsa: false,
+            context_hospitals_covidcaremap: false,
         essential_workers_parent:false,
             context_essential_workers_acs: false,
       });
@@ -315,8 +324,11 @@ const CsvDownloader = () => {
         // fetch data and docs
         const data = await Promise.all(dataPromises).then(values => values.map((v,i) => ({'name':`${dataLinks[i].name.slice(0,-4)}-${new Date().toISOString().slice(0,10)}.csv`, 'data':v})))
         const docs = await Promise.all(docsPromises).then(values => values.map((v,i) => ({'name':docsLinks[i].name, 'data':v})))
-
+        const license = await fetch('https://raw.githubusercontent.com/GeoDaCenter/covid/master/LICENSE').then(r => r.blob())
+        
         var zip = new JSZip();
+        zip.file('LICENSE.txt', license)
+        zip.file('readme.md', readme)
         var dataFolder = zip.folder("data");
         var docsFolder = zip.folder("docs");
         data.forEach(d => dataFolder.file(d.name, d.data))
