@@ -66,7 +66,7 @@ const checkboxSets = [
                 name: 'covid_confirmed_cdc'
             },
             {
-                label: 'County - NYT',
+                label: 'County - New York Times',
                 name: 'covid_confirmed_nyt'
             },
             {
@@ -157,19 +157,19 @@ const checkboxSets = [
                 name: 'covid_ccpt_cdc'
             },
             {
-                label: 'State - Testing Counts - CDC',
+                label: 'State - Testing Counts - HHS',
                 name: 'covid_testing_cdc_state'
             },
             {
-                label: 'State - Testing Capacity Per 100k - CDC',
+                label: 'State - Testing Capacity Per 100k - HHS',
                 name: 'covid_tcap_cdc_state'
             },
             {
-                label: 'State - Testing Positivity - CDC',
+                label: 'State - Testing Positivity - HHS',
                 name: 'covid_wk_pos_cdc_state'
             },
             {
-                label: 'State - Confirmed Cases per Testing - CDC',
+                label: 'State - Confirmed Cases per Testing - HHS',
                 name: 'covid_ccpt_cdc_state'
         }]
     },
@@ -179,11 +179,20 @@ const checkboxSets = [
         subset: [
             {
                 label: 'Federally Qualified Health Clinics - HRSA',
-                name: 'health_centers'
+                name: 'context_fqhc_clinics_hrsa'
             },
             {
                 label: 'Hospital Locations - CovidCareMap',
-                name: 'hospitals'
+                name: 'context_hospitals_covidcaremap'
+            }]
+    },
+    {
+        label: 'Essential Workers',
+        name: 'essential_workers_parent',
+        subset: [
+            {
+                label: 'Essential Workers - ACS',
+                name: 'context_essential_workers_acs'
             }]
     },
     // {
@@ -261,9 +270,12 @@ const CsvDownloader = () => {
             vaccine_admin2_cdc: false,
             vaccine_dist_cdc: false,
         hospitals_clinics:false,
-            health_centers: false,
-            hospitals: false,
+            context_fqhc_clinics_hrsa: false,
+            context_fqhc_clinics_hrsa: false,
+        essential_workers_parent:false,
+            context_essential_workers_acs: false,
       });
+
     const [isDownloading, setIsDownloading] = useState(false)
     const handleChange = (event) => {
         setCheckboxes(prev => ({ ...prev, [event.target.name]: event.target.checked }));
@@ -326,7 +338,7 @@ const CsvDownloader = () => {
                 <Grid item xs={12} md={8}>
                     <p>This menu allows you to download bulk CSVs of the data available on the Atlas. Select your datasets of interest with the checkboxes below and
                         then click download data to receive a ZIP archive with your CSV files and data documentation. Please note that the full dataset is currently
-                        over 70MB, so may be slow to load.     
+                        over 70MB, and may be slow to load.     
                     </p>
                 </Grid>
                 <Grid item xs={12} md={4}>

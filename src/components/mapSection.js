@@ -339,12 +339,12 @@ function MapSection(props){
     useEffect(() => {
         if (mapParams.resource.includes('hospital') || mapParams.resource.includes('clinic')) {
             if (hospitalData === null) {
-                getCSV(`${process.env.PUBLIC_URL}/csv/us_healthcare_capacity-facility-CovidCareMap.csv`)
+                getCSV(`${process.env.PUBLIC_URL}/csv/context_hospitals_covidcaremap.csv`)
                 .then(values => setHospitalData(values))
             }
 
             if (clinicData === null) {
-                getCSV(`${process.env.PUBLIC_URL}/csv/health_centers.csv`)
+                getCSV(`${process.env.PUBLIC_URL}/csv/context_fqhc_clinics_hrsa.csv`)
                 .then(values => setClinicData(values))
             }
         }

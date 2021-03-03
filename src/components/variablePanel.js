@@ -447,22 +447,28 @@ const VariablePanel = (props) => {
     }
   }, [urlParams])
   
-
   const handleNewVariable = (e) => {
-    let tempGeography = currentGeography;
-    let tempDataset = currentDataset;
-    
-    let resetDateRange = 
-      variablePresets[e.target.value].nType === 'time-series' && 
-      (dataParams.nType === 'characteristic' || dataParams.variableName.indexOf("Testing") !== -1 || dataParams.variableName.indexOf("Workday") !== -1) && 
-      dataParams.nRange === null &&
-      (variablePresets[e.target.value].variableName.indexOf("Testing") === -1 || variablePresets[e.target.value].variableName.indexOf("Workday") === -1) && variablePresets[e.target.value].nType !== 'characteristic';
+    let tempGeography = currentGeography + '';
+    let tempDataset = currentDataset + '';
+    let conditionalParameters = {};
 
-    let nRange = resetDateRange ? {'nRange':7} : {};
-    if (variablePresets[e.target.value].variableName.indexOf("Workday") !== -1) nRange = {'nRange':null}
+    if (variablePresets[e.target.value].nType === 'time-series' && dataParams.nType === 'time-series'){
+      conditionalParameters['nRange'] = variablePresets[e.target.value].nRange !== null && dataParams.nRange !== null ? dataParams.nRange : variablePresets[e.target.value].nRange;
+    } else if ((variablePresets[e.target.value].nType === 'time-series' && dataParams.nType !== 'time-series')||(variablePresets[e.target.value].nType !== 'time-series' && dataParams.nType === 'time-series')) {
+      conditionalParameters['nRange'] =  variablePresets[e.target.value].nRange;
+    }
+
+    if (variablePresets[e.target.value].dType === 'time-series' && dataParams.dType === 'time-series'){
+      conditionalParameters['dRange'] = variablePresets[e.target.value].dRange !== null && dataParams.dRange !== null ? dataParams.dRange : variablePresets[e.target.value].dRange;
+    } else if ((variablePresets[e.target.value].dType === 'time-series' && dataParams.dType !== 'time-series')||(variablePresets[e.target.value].dType !== 'time-series' && dataParams.dType === 'time-series')) {
+      conditionalParameters['dRange'] =  variablePresets[e.target.value].dRange;
+    }
+
+    if (variablePresets[e.target.value].dType === 'time-series') {
+      conditionalParameters['dIndex'] = dataParams.nIndex;
+      conditionalParameters['nIndex'] = dataParams.nIndex;
+    }
     
-    let dIndex = (variablePresets[e.target.value].dType === 'time-series') ? 'dIndex' : null;
-    let dRange = (variablePresets[e.target.value].dType === 'time-series') ? 'dRange' : null;
     // check if valid combination based on variable tree
     if (!variableTree[e.target.value].hasOwnProperty(tempGeography) || !variableTree[e.target.value][tempGeography].hasOwnProperty(tempDataset)) {
       tempGeography = Object.keys(variableTree[e.target.value])[0]
@@ -472,9 +478,7 @@ const VariablePanel = (props) => {
       dispatch(setParametersAndData({
         params: {
           ...variablePresets[e.target.value],
-          ...nRange,
-          [dIndex]: dataParams.nIndex,
-          [dRange]: dataParams.nRange,
+          ...conditionalParameters,
         },
         dataset: datasetTree[tempGeography][tempDataset],
         mapParams: {
@@ -486,9 +490,7 @@ const VariablePanel = (props) => {
     } else {
       dispatch(setVariableParams({
         ...variablePresets[e.target.value],
-        ...nRange,
-        [dIndex]: dataParams.nIndex,
-        [dRange]: dataParams.nRange,
+        ...conditionalParameters,
       }))
 
     }
