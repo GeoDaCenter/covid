@@ -112,8 +112,18 @@ const dataList = [
     },
     {
         'header': 'American Community Survey',
-        'tags':['Context'],
+        'tags':['Context', 'Essential Workers', 'Population'],
         'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/american-community-survey.md'
+    },
+    {
+        'header': 'Hospitals and Clinics',
+        'tags':['Context', 'Point Data'],
+        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/hospitals-and-clinics.md'
+    },
+    {
+        'header': 'Geographies',
+        'tags':['Boundaries', 'Geometry', 'County', 'State'],
+        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/geographies.md'
     }
 
 ]  

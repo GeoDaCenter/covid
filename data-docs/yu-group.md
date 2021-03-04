@@ -1,11 +1,11 @@
-*Meta Data Name*: Yu Group at UC Berkeley
+**Meta Data Name**: Yu Group at UC Berkeley
 
-*Last Modified*: 02/28/2021
+**Last Modified**: 02/28/2021
 
-*Author*: Laura Chen
+**Author**: Laura Chen
 
 ### Data Location:
-https://github.com/Yu-Group/covid19-severity-prediction/blob/master/data/readme.md
+* Berkeley Severity Forecasting [berkeley_predictions.csv](https://raw.githubusercontent.com/GeoDaCenter/covid/master/public/csv/berkeley_predictions.csv)
 
 ### Data Source(s) Description:
 The Yu group at UC Berkeley Statistics and EECS has compiled, 
@@ -14,6 +14,19 @@ data from a variety of public sources to aid data science efforts to
 combat COVID-19. 
 
 ### Description of Data Processing:
+Data are taken directly from the output of the Yu Group at UC Berkeley's model.
+    
+### Key Variable and Definitions:
+berkeley_predictions.csv
+
+| Variable | Variable ID in .csv | Description|
+|:---------|:--------------------|:------------|
+| FIPS (Join Column | fips | County geophraphic identifier to join to geospatial data |
+| COVID Hospital Severity Index | severity_index | A scale of 1-3 indiciating the severity of COVID currently in each county. |
+| Projected Deaths (5 day forecast) | deaths_YYYY_MM_DD (time-series)| The number of deaths estimated to occur in the next five days. |
+
+
+### Description of Data Source Tables:
 At the hospital level, the data includes the location 
 of the hospital, the number of ICU beds, the total number of employees, 
 and the hospital type. At the county level, the data includes COVID-19 
@@ -21,17 +34,7 @@ cases/deaths from USA Facts and NYT, automatically updated every day,
 along with demographic information, health resource availability, 
 COVID-19 health risk factors, and social mobility information. 
 
-    
-### Key Variable and Definitions:
-berkeley_predictions.csv
-
-| Variable | Variable ID in .csv | Description|
-|:---------|:--------------------|:------------|
-| fips | severity_index | deaths_YYYY_MM_DD (time-series)|
-
-
-### Description of Data Source Tables:
-See the [Berkeley predictions csv](public/csv/berkeley_predictions.csv) for more information.
+See the [Yu-Group/covid19-severity-prediction](https://github.com/Yu-Group/covid19-severity-prediction) for more information.
 
 - **Hospital Level Data**
     - [cms_cmi](https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/FY2020-IPPS-Final-Rule-Home-Page-Items/FY2020-IPPS-Final-Rule-Data-Files): Case Mix Index for hospitals from CMS 
