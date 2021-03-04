@@ -344,7 +344,7 @@ const CsvDownloader = () => {
 
     return (
         <CsvDownloaderContainer className={isDownloading ? 'passive' : ''}>
-            <h3>Bulk Data Download</h3>
+            <h2>Bulk Data Download</h2>
             <Gutter h={20}/>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={8}>

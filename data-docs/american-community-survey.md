@@ -19,8 +19,9 @@ Population counts are taken directly from 2019 ACS 5-year estimates and joined t
 ### Key Variable and Definitions:
 context_essential_workers_acs
 | Variable | Variable ID in .csv | Description | 
-| FIPS (Join Column | fips | County geophraphic identifier to join to geospatial data |
-| Percent of essential workers | pct_essential | Share of workers in essential occupations on a scale of 0-1. |
+|:---------|:--------------------|:------------|
+| FIPS (Join Column | `fips` | County geophraphic identifier to join to geospatial data |
+| Percent of essential workers | `pct_essential` | Share of workers in essential occupations on a scale of 0-1. |
 
 county_pop.csv
 

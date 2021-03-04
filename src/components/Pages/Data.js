@@ -109,7 +109,7 @@ function Data(){
                     staying completely home, full time work (at a workplace outside of home for 6-8 hours), part time work (at a workplace outside of home for 3-6 hours), and delivery (multiple, short visits). Access to the data consortium is available <a href="https://www.safegraph.com/covid-19-data-consortium" target="_blank" rel="noopener noreferrer">here</a>.
                 </BlockIndent>
                 
-                <SectionTitle>Detailed Data Descriptions</SectionTitle>
+                <h2>Detailed Data Descriptions</h2>
                 <hr />
                 <DataDetails />
                 <Gutter h={40}/>
