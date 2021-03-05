@@ -58,22 +58,6 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root">
-      <script>
-        window.onload = function(){
-          let link = window.location.href.split('io/covid/')[1]?.split('.html')[0] ?? ''
-          document.querySelector('#targetLink').href = `https://docs.google.com/presentation/d/1M8ZyYPAuw3TbghIu_pFnk_OcXpLmBf2qPaAGtbFzi9Y/edit?usp=sharing`
-          setTimeout(function(){
-            window.location.replace(`https://docs.google.com/presentation/d/1M8ZyYPAuw3TbghIu_pFnk_OcXpLmBf2qPaAGtbFzi9Y/edit?usp=sharing`);
-          }, 5000)
-        }
-      </script>
-        <div style="background:#2b2b2b;position:fixed;left:0;top:0;width:100%;height:100%;">
-          <div style="color:white;text-align:center;position:fixed;left:50%;top:50%;transform:translate(-50%, -50%);font-family:Arial, Helvetica, sans-serif;padding:0;margin:0;width:100%;">
-            <img src="./assets/img/preloader.gif" style="display:block;margin:40px auto;width:100px; max-width:100%;"/>
-            <h1>You are being redirected to the Slide Deck</h1>
-            <p>If you are not redirected in 5 seconds, <a href="#" id="targetLink" style="color:aquamarine;text-decoration: none;">click here.</a></p>
-          </div>
-        </div>
     </div>
   </body>
 </html>
