@@ -292,15 +292,14 @@ function MapSection(props){
         if (mapParams.vizType !== 'cartogram') return;
         
         if (storedCartogramData){
-            const currMapView = GetMapView();
             let center = getCartogramCenter(storedCartogramData);
+            console.log(center)
             let roundedCenter = [Math.floor(center[0]),Math.floor(center[1])];
             if (storedCenter === null || roundedCenter[0] !== storedCenter[0]) {
                 setViewState({
-                    ...currMapView,
                     latitude: center[1],
                     longitude: center[0],
-                    zoom: 5,
+                    zoom: currentData.includes('state') ? 6 : 5,
                     bearing:0,
                     pitch:0
                 });

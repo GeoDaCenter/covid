@@ -317,7 +317,7 @@ const DateSlider = () => {
                             valueLabelFormat={valuetext}
                             aria-labelledby="aria-valuetext"
                             min={1}
-                            max={350}
+                            max={dates.length}
                             marks={(dateIndices.hasOwnProperty(currentData) && dateIndices[currentData].hasOwnProperty(dataParams.numerator)) && dateIndices[currentData][dataParams.numerator].map(date => { return { value: date }})}
                             step={null}
                         />}
