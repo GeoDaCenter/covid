@@ -38,6 +38,7 @@ import { colorScales, fixedScales, dataPresets, variablePresets, colors } from '
 function App() {
 
   const dateLists = getDateLists()
+  
   // static variables for floating panel sizing
   let [ 
     defaultX, 

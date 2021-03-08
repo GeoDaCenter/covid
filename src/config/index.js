@@ -190,6 +190,30 @@ export const colorScales = {
       'binarySchemePositive':[
         [224,236,244],
         [136,86,167]
+      ],
+      'sahScheme':[
+        [153,52,4],
+        [217,95,14],
+        [254,153,41],
+        [254,217,142],
+        [255,255,212],
+        [239,239,239]
+      ],
+      'gatheringsScheme':[
+        [239,239,239],
+        [255,255,212],
+        [254,227,145],
+        [254,196,79],
+        [254,153,41],
+        [217,95,14],
+        [153,52,4],
+      ],
+      'barsScheme':[
+        [239,239,239],
+        [255,255,212],
+        [254,217,142],
+        [254,153,41],
+        [204,76,2],
       ]
 }
 
@@ -212,8 +236,21 @@ export const fixedScales = {
     'maskBinary': {
         bins:['No Mask Mandate','Active Mask Mandate'],
         breaks:[0,2]
+    },
+    'sahScheme' :{
+        breaks:[1,2,3,5,6,7],
+        bins:['Mandatory - all people', 'Mandatory - all people in certain areas of state', 'Mandatory - at-risk people only', 'Mandatory - at-risk in certain areas of state', 'Advisory/Recommendation','No order found']
+    },
+    'gatheringsScheme':{
+        breaks:[1, 2, 3, 4, 5, 6, 7],
+        bins:['No order found', 'Ban: 101+ People', '51-100 People', '26-50 People', '11-25 People', '1-10 People', 'Any Size']
+    },
+    'barsScheme': {
+        breaks:[1, 2, 3, 4, 5],
+        bins:['No restriction found', 'Authorized to fully reopen', 'Open with limitations', 'Curbside/delivery only', 'Closed']
     }
 }
+
 
 // mapbox API token
 export const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg';
@@ -519,6 +556,9 @@ export const dataPresets = {
             'covid_tcap_cdc', 
             'covid_ccpt_cdc',
             'policy_mask_mandates_cdc',
+            'policy_bars_cdc',
+            'policy_stay_at_home_cdc',
+            'policy_gatherings_cdc',
             'essential_workers'
         ],  
         tableNames: [
@@ -533,6 +573,9 @@ export const dataPresets = {
             'testing_tcap', 
             'testing_ccpt',
             'mask_mandates',
+            'bars',
+            'stay_at_home',
+            'gatherings',
             'essential_workers'
         ],
         joinCols: ['GEOID', ['fips_code', 'fips', 'FIPS', 'countyFIPS']],
@@ -544,7 +587,10 @@ export const dataPresets = {
             'covid_wk_pos_cdc': 'isoDateList', 
             'covid_tcap_cdc': 'isoDateList', 
             'covid_ccpt_cdc': 'isoDateList',
-            'policy_mask_mandates_cdc': 'isoDateList'
+            'policy_mask_mandates_cdc': 'isoDateList',
+            'policy_bars_cdc': 'isoDateList',
+            'policy_stay_at_home_cdc': 'isoDateList',
+            'policy_gatherings_cdc': 'isoDateList'
         }
     },
 }
@@ -1002,6 +1048,54 @@ export const variablePresets = {
       colorScale: 'binarySchemePositive',
       fixedScale: 'maskBinary',
     },
+    "Stay At Home Order": {
+      variableName:"Stay At Home Order",
+      numerator: 'stay_at_home',
+      nType: 'time-series',
+      nProperty: null,
+      nRange: null,
+      denominator: 'properties',
+      dType: null,
+      dProperty: null,
+      dRange:null,
+      dIndex:null,
+      scale:1,
+      scale3D: 500000,
+      colorScale: 'sahScheme',
+      fixedScale: 'sahScheme',
+    },
+    "Gathering Advisories": {
+      variableName:"Gathering Advisories",
+      numerator: 'gatherings',
+      nType: 'time-series',
+      nProperty: null,
+      nRange: null,
+      denominator: 'properties',
+      dType: null,
+      dProperty: null,
+      dRange:null,
+      dIndex:null,
+      scale:1,
+      scale3D: 500000,
+      colorScale: 'gatheringsScheme',
+      fixedScale: 'gatheringsScheme',
+    },
+    "Bars Openings": {
+      variableName:"Bars Openings",
+      numerator: 'bars',
+      nType: 'time-series',
+      nProperty: null,
+      nRange: null,
+      denominator: 'properties',
+      dType: null,
+      dProperty: null,
+      dRange:null,
+      dIndex:null,
+      scale:1,
+      scale3D: 500000,
+      colorScale: 'barsScheme',
+      fixedScale: 'barsScheme',
+    },
 }
 
 export const allGeographies = ['County', 'State']
@@ -1296,8 +1390,28 @@ export const variableTree = {
             }
         }
     },
+    "Stay At Home Order": {
+        "County": {
+            "CDC": {
+                "geojson":'cdc.geojson'
+            }
+        }
+    },
+    "Gathering Advisories": {
+        "County": {
+            "CDC": {
+                "geojson":'cdc.geojson'
+            }
+        }
+    },
+    "Bars Openings": {
+        "County": {
+            "CDC": {
+                "geojson":'cdc.geojson'
+            }
+        }
+    },
 }
-
 
 export const datasetTree = {
     'County': {
