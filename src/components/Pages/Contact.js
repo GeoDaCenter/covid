@@ -132,7 +132,7 @@ const pressInfo = [
 
 
 export default function Contact(){
-    const url = `${process.env.EMAIL_FORM_URL}`
+    const url = `${process.env.REACT_APP_EMAIL_FORM_URL}`
     console.log(url)
     const [formData, setFormData] = useState({
         'form_field1': '',
