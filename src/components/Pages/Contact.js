@@ -135,27 +135,30 @@ export default function Contact(){
     const url = `${process.env.EMAIL_FORM_URL}`
     console.log(url)
     const [formData, setFormData] = useState({
-        form_field1: '',
-        form_field2: '',
-        form_field3: '',
-        form_field4: ''
+        'form_field1': '',
+        'form_field2': '',
+        'form_field3': '',
+        'form_field4': ''
     })
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        console.log(formData)
         // Default options are marked with *
         const response = await fetch(url, {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
-            datatype: 'jsonp', // no-cors, *cors, same-origin
-            data: JSON.stringify(formData)
+            mode:'cors',
+            dataType:'json',
+            data: formData
         });
+        console.log(response)
+        console.log(response.json())
         console.log('form submitted')
     }
 
     const handleChange = (e) => setFormData(prev => ({...prev, [e.target.name]: e.target.value}))
 
-
+    console.log(process.env)
     return (
        <ContactPage>
            <StaticNavbar/>
@@ -163,6 +166,7 @@ export default function Contact(){
                 <h1>Contact Us</h1>
                 <hr/>
                 <p>
+                    
                     Contact US COVID Atlas co-leads directly if you have any questions about the Atlas or have media inquiries:<br/>
                     Marynia Kolak (mkolak at uchicago.edu) or Qinyun Lin (qinyunlin at uchicago.edu)
                 </p>
