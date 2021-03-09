@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { ContentContainer, Gutter } from '../../styled_components';
 import { StaticNavbar, Footer } from '../';
@@ -130,7 +130,32 @@ const pressInfo = [
     }
 ]
 
-const contact = () => {
+
+export default function Contact(){
+    const url = `${process.env.EMAIL_FORM_URL}`
+    console.log(url)
+    const [formData, setFormData] = useState({
+        form_field1: '',
+        form_field2: '',
+        form_field3: '',
+        form_field4: ''
+    })
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        // Default options are marked with *
+        const response = await fetch(url, {
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            datatype: 'jsonp', // no-cors, *cors, same-origin
+            data: JSON.stringify(formData)
+        });
+        console.log('form submitted')
+    }
+
+    const handleChange = (e) => setFormData(prev => ({...prev, [e.target.name]: e.target.value}))
+
+
     return (
        <ContactPage>
            <StaticNavbar/>
@@ -142,25 +167,32 @@ const contact = () => {
                     Marynia Kolak (mkolak at uchicago.edu) or Qinyun Lin (qinyunlin at uchicago.edu)
                 </p>
                 
-                <form name="contact" method="POST" data-netlify="true">
-                    <p>
-                        <label>Your Name: <input type="text" name="name" /></label>   
-                    </p>
-                    <p>
-                        <label>Your Email: <input type="email" name="email" /></label>
-                    </p>
-                    <p>
-                        <label>Your Role: <select name="role[]" multiple>
-                        <option value="leader">Leader</option>
-                        <option value="follower">Follower</option>
-                        </select></label>
-                    </p>
-                    <p>
-                        <label>Message: <textarea name="message"></textarea></label>
-                    </p>
-                    <p>
-                        <button type="submit">Send</button>
-                    </p>
+                <form id="test-form"  onSubmit={handleSubmit}>
+  
+                    <div>
+                        <label>Field 1</label>
+                        <input type="text" name="form_field1" placeholder="Field 1" onChange={handleChange} />
+                    </div>
+
+                    <div>
+                        <label>Field 2</label>
+                        <input type="text" name="form_field2" placeholder="Field 2" onChange={handleChange} />
+                    </div>
+                    
+                    <div>
+                        <label>Field 3</label>
+                        <input type="text" name="form_field3" placeholder="Field 3" onChange={handleChange} />
+                    </div>
+                    
+                    <div>
+                        <label>Field 4</label>
+                        <input type="text" name="form_field4" placeholder="Field 4" onChange={handleChange} />
+                    </div>
+
+                    <div>
+                        <button type="submit" id="submit-form">Submit</button>
+                    </div>
+
                 </form>
 
                 <Gutter h={40}/>
@@ -194,5 +226,3 @@ const contact = () => {
        </ContactPage>
     );
 }
- 
-export default contact;
