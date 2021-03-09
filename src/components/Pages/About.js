@@ -81,11 +81,11 @@ const coreTeamInfo = [
         'title': 'Spatial Data Science Fellow Data Engineer'
     },
     {
-        'name': 'Ryan Wang',
-        'link': 'https://spatial.uchicago.edu/directories/full/Research-Assistants',
-        'img': `${process.env.PUBLIC_URL}/img/ryan.jpeg`,
+        'name': 'Andrés Crucetta',
+        'link': 'https://spatial.uchicago.edu/directory/andr%C3%A9s-crucetta',
+        'img': `${process.env.PUBLIC_URL}/img/andres.png`,
         'affiliation': '(CSDS)',
-        'title': 'Spatial Data Science Fellow Data Analyst'
+        'title': 'Research Assistant Data Science Specialist'
     },
     {
         'name': 'Kenna Camper',
@@ -264,12 +264,19 @@ const contributorsInfo = [
         'title': 'Software Engineer'
     },
     {
-    'name': 'Moksha Menghaney',
-    'link': '',
-    'img': `${process.env.PUBLIC_URL}/img/Moksha.jpeg`,
-    'affiliation': '(CSDS)',
-    'title': 'Community Mapping Analyst'
-    }
+        'name': 'Moksha Menghaney',
+        'link': '',
+        'img': `${process.env.PUBLIC_URL}/img/Moksha.jpeg`,
+        'affiliation': '(CSDS)',
+        'title': 'Community Mapping Analyst'
+    },
+    {
+        'name': 'Ryan Wang',
+        'link': 'https://spatial.uchicago.edu/directories/full/Research-Assistants',
+        'img': `${process.env.PUBLIC_URL}/img/ryan.jpeg`,
+        'affiliation': '(CSDS)',
+        'title': 'Spatial Data Science Fellow Data Analyst'
+    },
 ]
 
 

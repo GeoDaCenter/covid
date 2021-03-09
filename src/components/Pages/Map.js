@@ -363,6 +363,7 @@ function App() {
           colorScale={mapParams.colorScale}
           bins={mapParams.bins.bins}
           fixedScale={dataParams.fixedScale}
+          resource={mapParams.resource}
           />
         <VariablePanel />
         <DataPanel />

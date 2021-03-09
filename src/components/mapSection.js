@@ -44,6 +44,9 @@ const bounds = fitBounds({
 const ICON_MAPPING = {
     hospital: {x: 0, y: 0, width: 128, height: 128},
     clinic: {x: 128, y: 0, width: 128, height: 128},
+    invitedVaccineSite: {x: 0, y: 128, width: 128, height: 128},
+    participatingVaccineSite: {x: 128, y: 128, width: 128, height: 128},
+    megaSite: {x: 256, y: 128, width: 128, height: 128},
   };
 
 // mapbox default style from Json
@@ -77,6 +80,8 @@ const HoverDiv = styled.div`
     hr {
         margin: 5px 0;
     }
+    max-width:50ch;
+    line-height:1.25;
 `
 
 const MapButtonContainer = styled.div`
@@ -193,10 +198,12 @@ function MapSection(props){
     // const [currVarId, setCurrVarId] = useState(null);
     
     // async fetched data and cartogram center
-    const [hospitalData, setHospitalData] = useState(null);
-    const [clinicData, setClinicData] = useState(null);
+    const [resourceLayerData, setResourceLayerData] = useState({
+        clinics: [],
+        hospitals: [],
+        vaccineSites: []
+    });
     const [storedCenter, setStoredCenter] = useState(null);
-    
     // share button notification
     const [shared, setShared] = useState(false);
     
@@ -293,7 +300,7 @@ function MapSection(props){
         
         if (storedCartogramData){
             let center = getCartogramCenter(storedCartogramData);
-            console.log(center)
+
             let roundedCenter = [Math.floor(center[0]),Math.floor(center[1])];
             if (storedCenter === null || roundedCenter[0] !== storedCenter[0]) {
                 setViewState({
@@ -333,22 +340,29 @@ function MapSection(props){
         setMapStyle(defaultMapStyle.set('layers', tempLayers));
 
     }, [mapParams.overlay, mapParams.mapType, mapParams.vizType])
-
+    
     // load in Hospital and clinic data when called
     useEffect(() => {
         if (mapParams.resource.includes('hospital') || mapParams.resource.includes('clinic')) {
-            if (hospitalData === null) {
+            if (!resourceLayerData.hospitals.length) {
                 getCSV(`${process.env.PUBLIC_URL}/csv/context_hospitals_covidcaremap.csv`)
-                .then(values => setHospitalData(values))
+                .then(values => setResourceLayerData(prev => ({...prev, hospitals: values})))
             }
 
-            if (clinicData === null) {
+            if (!resourceLayerData.clinics.length) {
                 getCSV(`${process.env.PUBLIC_URL}/csv/context_fqhc_clinics_hrsa.csv`)
-                .then(values => setClinicData(values))
+                .then(values => setResourceLayerData(prev => ({...prev, clinics: values})))
             }
         }
-    },[mapParams.resource, hospitalData, clinicData])
 
+        if (mapParams.resource.includes('vaccination')) {
+            if (!resourceLayerData.vaccineSites.length) {
+                getCSV(`${process.env.PUBLIC_URL}/csv/context_vaccination_sites_hrsa_wh.csv`)
+                .then(values => setResourceLayerData(prev => ({...prev, vaccineSites: values})))
+            }
+        }
+        
+    },[mapParams.resource, resourceLayerData.clinics[0], resourceLayerData.hospitals[0], resourceLayerData.vaccineSites[0]])
 
     useEffect(() => {
         setViewState(view => ({
@@ -718,7 +732,7 @@ function MapSection(props){
         }),
         hospitals: new IconLayer({
             id: 'hospital-layer',
-            data: hospitalData,
+            data: resourceLayerData.hospitals,
             pickable:true,
             iconAtlas: `${process.env.PUBLIC_URL}/assets/img/icon_atlas.png`,
             iconMapping: ICON_MAPPING,
@@ -729,24 +743,41 @@ function MapSection(props){
             sizeMinPixels:12,
             sizeMaxPixels:24,
             updateTriggers: {
-                data: hospitalData,
+                data: [mapParams.resource, resourceLayerData]
             },
             onHover: handleMapHover,
         }),
         clinic: new IconLayer({
             id: 'clinics-layer',
-            data: clinicData,
+            data: resourceLayerData.clinics,
             pickable:true,
             iconAtlas: `${process.env.PUBLIC_URL}/assets/img/icon_atlas.png`,
             iconMapping: ICON_MAPPING,
-            getIcon: d => 'clinic',
+            getIcon:  d => 'clinic',
             getSize: 20000,
             getPosition: d => [d.lon, d.lat],
             sizeUnits: 'meters',
             sizeMinPixels:7,
             sizeMaxPixels:20,
             updateTriggers: {
-                data: clinicData
+                data: [mapParams.resource, resourceLayerData.clinics]
+            },
+            onHover: handleMapHover,
+        }),
+        vaccinationSites: new IconLayer({
+            id: 'vaccine-sites-layer',
+            data: resourceLayerData.vaccineSites,
+            pickable:true,
+            iconAtlas: `${process.env.PUBLIC_URL}/assets/img/icon_atlas.png`,
+            iconMapping: ICON_MAPPING,
+            getIcon: d => d.type === 0 ? 'invitedVaccineSite' : d.type === 1 ? 'participatingVaccineSite' : d.type === 3 ? 'megaSite' : '',
+            getSize: d => d.type === 3 ? 200000 : 1000,
+            getPosition: d => [d.lon, d.lat],
+            sizeUnits: 'meters',
+            sizeMinPixels:20,
+            sizeMaxPixels:60,
+            updateTriggers: {
+                data: resourceLayerData.vaccineSites
             },
             onHover: handleMapHover,
         }),
@@ -821,6 +852,7 @@ function MapSection(props){
 
         if (resources && resources.includes('hospital')) LayerArray.push(layers['hospitals'])
         if (resources && resources.includes('clinic')) LayerArray.push(layers['clinic'])
+        if (resources && resources.includes('vaccinationSites')) LayerArray.push(layers['vaccinationSites'])
         
         return LayerArray
 
@@ -992,6 +1024,7 @@ function MapSection(props){
                     }
                 }
                 views={view}
+                pickingRadius={20}
 
                 // onViewStateChange={onViewStateChange}
                 // viewState={viewStates}

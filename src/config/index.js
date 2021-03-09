@@ -586,7 +586,11 @@ export const tooltipInfo = {
     Clinics: <p>FQHC or <a href="https://www.hrsa.gov/opa/eligibility-and-registration/health-centers/fqhc/index.html" target="_blank" rel="noopener noreferrer">Federal Qualified Health Centers</a> are community based health providers receiving funds and certification from <a href="https://www.hrsa.gov/" target="_blank" rel="noopener noreferrer">HRSA</a>.</p>,
     Hospitals: <p>Hospital location data from <a href="https://github.com/covidcaremap/covid19-healthsystemcapacity" target="_blank" rel="noopener noreferrer">CovidCareMap.</a></p>,
     ClinicsAndHospitals: <p>Hospital location data from <a href="https://github.com/covidcaremap/covid19-healthsystemcapacity" target="_blank" rel="noopener noreferrer">CovidCareMap</a> and HRSA data on <a href="https://www.hrsa.gov/opa/eligibility-and-registration/health-centers/fqhc/index.html" target="_blank" rel="noopener noreferrer">Federal Qualified Health Centers.</a></p>,
-    essentialWorkers: <p>Percent of adult workers in essential industries based on ACS occupation categories (eg. Food service, Fire and Safety, Construction).</p>
+    essentialWorkers: <p>Percent of adult workers in essential industries based on ACS occupation categories (eg. Food service, Fire and Safety, Construction).</p>,
+    vaccinationSites: <p>The White House are supporting large vaccine centers to conduct high-volume vaccinations, and HRSA is partnering with Federally Qualified Health Clinics (FQHCs) to reach disproportionately impacted communities or hard to reach communities.</p>,
+    vaccineCenter: <p>High-volume federally-supported vaccination site.</p>,
+    vaccineClinic: <p>Vaccine clinic to assist disproportionately impact or hard to reach communities.</p>,
+    vaccineClinicInvited: <p>Invited, but not yet active vaccine clinic to assist disproportionately impact or hard to reach communities.</p>
 };
 
 export const variablePresets = {

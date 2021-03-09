@@ -157,6 +157,7 @@ const VariablePanelContainer = styled.div`
       opacity:1;
     }
   }
+  user-select:none;
 `
 const StyledButtonGroup = styled(ButtonGroup)`
   color:white;
@@ -181,8 +182,8 @@ const DateSelectorContainer = styled.div`
 const TwoUp = styled.div`
   width:100%;
   .MuiFormControl-root {
-    width:45%;
-    min-width:60px;
+    width:auto;
+    min-width:8rem;
     margin-right:5px;
   }
 `
@@ -768,6 +769,7 @@ const VariablePanel = (props) => {
               {/* <MenuItem value={'mobility-county'} key={'mobility-county'}>Mobility Flows (County) WARNING BIG DATA</MenuItem> */}
             </Select>
           </StyledDropDown>
+          <Gutter h={20}/>
           <StyledDropDown>
             <InputLabel htmlFor="resource-select">Resource</InputLabel>
             <Select  
@@ -779,6 +781,9 @@ const VariablePanel = (props) => {
               <MenuItem value={'clinics_hospitals'} key={'variable1'}>Clinics and Hospitals<Tooltip id="ClinicsAndHospitals"/></MenuItem>
               <MenuItem value={'clinics'} key={'variable2'}>Clinics<Tooltip id="Clinics"/></MenuItem>
               <MenuItem value={'hospitals'} key={'variable3'}>Hospitals<Tooltip id="Hospitals"/></MenuItem>
+              <MenuItem value={'vaccinationSites'} key={'variable4'}>Vaccination Sites<Tooltip id="vaccinationSites"/></MenuItem>
+
+              
             </Select>
           </StyledDropDown>
         </TwoUp>        

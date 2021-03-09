@@ -3,6 +3,8 @@ import Grid from '@material-ui/core/Grid';
 import styled from 'styled-components';
 import BinsList from './binsList';
 import { colors } from '../config';
+import { Gutter } from '../styled_components';
+import Tooltip from './tooltip';
 
 const BottomPanel = styled.div`
     position: fixed;
@@ -18,6 +20,7 @@ const BottomPanel = styled.div`
     box-shadow: 0px 0px 5px rgba(0,0,0,0.7);
     border-radius:0.5vh 0.5vh 0 0;
     transition:250ms all;
+    color:white;
     hr {
         opacity:0.5;
     }
@@ -50,6 +53,7 @@ const BottomPanel = styled.div`
     @media (max-width:750px) and (orientation: landscape) {
         // bottom all the way down for landscape phone
     }
+    user-select:none;
 `
 
 const LegendContainer = styled.div`
@@ -62,13 +66,29 @@ const LegendContainer = styled.div`
     }
 `
 
+const IconContainer = styled.div`
+    padding: 5px 10px;
+    span.icons-title {
+        margin-right:10px;
+        font-weight:bold;
+    }
+    img {
+        width:20px;
+        height:20px;
+        transform:translateY(4px);
+        padding:2px;
+    }
+    span.icons-text {
+        margin:0 25px 0 5px;
+    }
+`
+
 const LegendTitle = styled.h3`
     text-align: center;
     font-family:'Playfair Display', serif;
     padding:0;
     font-weight:normal;
     margin:0;
-    color:white;
 `
 
 const BinLabels = styled.div`
@@ -83,7 +103,6 @@ const BinLabels = styled.div`
         border:0;
         margin:0;
         flex:2;
-        color:white;
         font-size:10px;
         text-align: center;
     }
@@ -143,6 +162,18 @@ const Legend =  (props) => {
                         }
                     </Grid>
                 </Grid>
+            {props.resource && <Gutter h={20}/>}
+            {props.resource && 
+                <IconContainer>
+                    <span className="icons-title">Icons:</span>
+
+                    {props.resource.includes('clinics') && <><img src={`${process.env.PUBLIC_URL}/assets/img/clinic_icon.png`} alt=""/><span className="icons-text">Clinics</span></>}
+                    {props.resource.includes('hospitals') && <><img src={`${process.env.PUBLIC_URL}/assets/img/hospital_icon.png`} alt=""/><span className="icons-text">Hospital</span></>}
+                    {props.resource.includes('vaccination') && <><img src={`${process.env.PUBLIC_URL}/assets/img/federal_site.png`} alt=""/><span className="icons-text">Vaccine Center<Tooltip id="vaccineCenter"/></span></>}
+                    {props.resource.includes('vaccination') && <><img src={`${process.env.PUBLIC_URL}/assets/img/participating_clinic.png`} alt=""/><span className="icons-text">Clinic<Tooltip id="vaccineClinic"/></span></>}
+                    {props.resource.includes('vaccination') && <><img src={`${process.env.PUBLIC_URL}/assets/img/invited_clinic.png`} alt=""/><span className="icons-text">Invited Clinic<Tooltip id="vaccineClinicInvited"/></span></>}
+                </IconContainer>
+            }
             </LegendContainer>
         </BottomPanel>
     )
