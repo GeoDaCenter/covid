@@ -157,6 +157,7 @@ const VariablePanelContainer = styled.div`
       opacity:1;
     }
   }
+  user-select:none;
 `
 const StyledButtonGroup = styled(ButtonGroup)`
   color:white;
@@ -181,8 +182,8 @@ const DateSelectorContainer = styled.div`
 const TwoUp = styled.div`
   width:100%;
   .MuiFormControl-root {
-    width:45%;
-    min-width:60px;
+    width:auto;
+    min-width:8rem;
     margin-right:5px;
   }
 `
@@ -447,22 +448,28 @@ const VariablePanel = (props) => {
     }
   }, [urlParams])
   
-
   const handleNewVariable = (e) => {
-    let tempGeography = currentGeography;
-    let tempDataset = currentDataset;
-    
-    let resetDateRange = 
-      variablePresets[e.target.value].nType === 'time-series' && 
-      (dataParams.nType === 'characteristic' || dataParams.variableName.indexOf("Testing") !== -1 || dataParams.variableName.indexOf("Workday") !== -1) && 
-      dataParams.nRange === null &&
-      (variablePresets[e.target.value].variableName.indexOf("Testing") === -1 || variablePresets[e.target.value].variableName.indexOf("Workday") === -1) && variablePresets[e.target.value].nType !== 'characteristic';
+    let tempGeography = currentGeography + '';
+    let tempDataset = currentDataset + '';
+    let conditionalParameters = {};
 
-    let nRange = resetDateRange ? {'nRange':7} : {};
-    if (variablePresets[e.target.value].variableName.indexOf("Workday") !== -1) nRange = {'nRange':null}
+    if (variablePresets[e.target.value].nType === 'time-series' && dataParams.nType === 'time-series'){
+      conditionalParameters['nRange'] = variablePresets[e.target.value].nRange !== null && dataParams.nRange !== null ? dataParams.nRange : variablePresets[e.target.value].nRange;
+    } else if ((variablePresets[e.target.value].nType === 'time-series' && dataParams.nType !== 'time-series')||(variablePresets[e.target.value].nType !== 'time-series' && dataParams.nType === 'time-series')) {
+      conditionalParameters['nRange'] =  variablePresets[e.target.value].nRange;
+    }
+
+    if (variablePresets[e.target.value].dType === 'time-series' && dataParams.dType === 'time-series'){
+      conditionalParameters['dRange'] = variablePresets[e.target.value].dRange !== null && dataParams.dRange !== null ? dataParams.dRange : variablePresets[e.target.value].dRange;
+    } else if ((variablePresets[e.target.value].dType === 'time-series' && dataParams.dType !== 'time-series')||(variablePresets[e.target.value].dType !== 'time-series' && dataParams.dType === 'time-series')) {
+      conditionalParameters['dRange'] =  variablePresets[e.target.value].dRange;
+    }
+
+    if (variablePresets[e.target.value].dType === 'time-series') {
+      conditionalParameters['dIndex'] = dataParams.nIndex;
+      conditionalParameters['nIndex'] = dataParams.nIndex;
+    }
     
-    let dIndex = (variablePresets[e.target.value].dType === 'time-series') ? 'dIndex' : null;
-    let dRange = (variablePresets[e.target.value].dType === 'time-series') ? 'dRange' : null;
     // check if valid combination based on variable tree
     if (!variableTree[e.target.value].hasOwnProperty(tempGeography) || !variableTree[e.target.value][tempGeography].hasOwnProperty(tempDataset)) {
       tempGeography = Object.keys(variableTree[e.target.value])[0]
@@ -472,9 +479,7 @@ const VariablePanel = (props) => {
       dispatch(setParametersAndData({
         params: {
           ...variablePresets[e.target.value],
-          ...nRange,
-          [dIndex]: dataParams.nIndex,
-          [dRange]: dataParams.nRange,
+          ...conditionalParameters,
         },
         dataset: datasetTree[tempGeography][tempDataset],
         mapParams: {
@@ -486,9 +491,7 @@ const VariablePanel = (props) => {
     } else {
       dispatch(setVariableParams({
         ...variablePresets[e.target.value],
-        ...nRange,
-        [dIndex]: dataParams.nIndex,
-        [dRange]: dataParams.nRange,
+        ...conditionalParameters,
       }))
 
     }
@@ -766,6 +769,7 @@ const VariablePanel = (props) => {
               {/* <MenuItem value={'mobility-county'} key={'mobility-county'}>Mobility Flows (County) WARNING BIG DATA</MenuItem> */}
             </Select>
           </StyledDropDown>
+          <Gutter h={20}/>
           <StyledDropDown>
             <InputLabel htmlFor="resource-select">Resource</InputLabel>
             <Select  
@@ -777,6 +781,9 @@ const VariablePanel = (props) => {
               <MenuItem value={'clinics_hospitals'} key={'variable1'}>Clinics and Hospitals<Tooltip id="ClinicsAndHospitals"/></MenuItem>
               <MenuItem value={'clinics'} key={'variable2'}>Clinics<Tooltip id="Clinics"/></MenuItem>
               <MenuItem value={'hospitals'} key={'variable3'}>Hospitals<Tooltip id="Hospitals"/></MenuItem>
+              <MenuItem value={'vaccinationSites'} key={'variable4'}>Vaccination Sites<Tooltip id="vaccinationSites"/></MenuItem>
+
+              
             </Select>
           </StyledDropDown>
         </TwoUp>        

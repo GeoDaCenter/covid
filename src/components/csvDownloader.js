@@ -15,7 +15,7 @@ const CsvDownloaderContainer = styled.div`
     .inset {
         margin: 0 0 20px 20px;
     }
-    button {
+    a {
         font-size: 16px;
         font-weight: 700;
         letter-spacing: 1.75px;
@@ -66,7 +66,7 @@ const checkboxSets = [
                 name: 'covid_confirmed_cdc'
             },
             {
-                label: 'County - NYT',
+                label: 'County - New York Times',
                 name: 'covid_confirmed_nyt'
             },
             {
@@ -157,19 +157,19 @@ const checkboxSets = [
                 name: 'covid_ccpt_cdc'
             },
             {
-                label: 'State - Testing Counts - CDC',
+                label: 'State - Testing Counts - HHS',
                 name: 'covid_testing_cdc_state'
             },
             {
-                label: 'State - Testing Capacity Per 100k - CDC',
+                label: 'State - Testing Capacity Per 100k - HHS',
                 name: 'covid_tcap_cdc_state'
             },
             {
-                label: 'State - Testing Positivity - CDC',
+                label: 'State - Testing Positivity - HHS',
                 name: 'covid_wk_pos_cdc_state'
             },
             {
-                label: 'State - Confirmed Cases per Testing - CDC',
+                label: 'State - Confirmed Cases per Testing - HHS',
                 name: 'covid_ccpt_cdc_state'
         }]
     },
@@ -179,11 +179,20 @@ const checkboxSets = [
         subset: [
             {
                 label: 'Federally Qualified Health Clinics - HRSA',
-                name: 'health_centers'
+                name: 'context_fqhc_clinics_hrsa'
             },
             {
                 label: 'Hospital Locations - CovidCareMap',
-                name: 'hospitals'
+                name: 'context_hospitals_covidcaremap'
+            }]
+    },
+    {
+        label: 'Essential Workers',
+        name: 'essential_workers_parent',
+        subset: [
+            {
+                label: 'Essential Workers - ACS',
+                name: 'context_essential_workers_acs'
             }]
     },
     // {
@@ -217,6 +226,15 @@ const checkboxSets = [
     // },
 
 ]   
+
+const readme = `# readme
+
+    This archive contains folders for data CSVs (data) and detailed documentation (docs). The US Covid Atlas is an open source project licensed under GPL 3. 
+
+    The data sources included are licensed for open source, non-commercial projects, ***but may have restrictions for commercial uses.*** 
+
+    Please consult the data sources listed in the data documentation before using this data in commercial publications.
+`
 
 
 const CsvDownloader = () => {
@@ -261,9 +279,12 @@ const CsvDownloader = () => {
             vaccine_admin2_cdc: false,
             vaccine_dist_cdc: false,
         hospitals_clinics:false,
-            health_centers: false,
-            hospitals: false,
+            context_fqhc_clinics_hrsa: false,
+            context_hospitals_covidcaremap: false,
+        essential_workers_parent:false,
+            context_essential_workers_acs: false,
       });
+
     const [isDownloading, setIsDownloading] = useState(false)
     const handleChange = (event) => {
         setCheckboxes(prev => ({ ...prev, [event.target.name]: event.target.checked }));
@@ -301,10 +322,13 @@ const CsvDownloader = () => {
         const docsPromises = await docsLinks.map(link => fetch(link.url).then(r=>r.blob()))
         
         // fetch data and docs
-        const data = await Promise.all(dataPromises).then(values => values.map((v,i) => ({'name':dataLinks[i].name, 'data':v})))
+        const data = await Promise.all(dataPromises).then(values => values.map((v,i) => ({'name':`${dataLinks[i].name.slice(0,-4)}-${new Date().toISOString().slice(0,10)}.csv`, 'data':v})))
         const docs = await Promise.all(docsPromises).then(values => values.map((v,i) => ({'name':docsLinks[i].name, 'data':v})))
-
+        const license = await fetch('https://raw.githubusercontent.com/GeoDaCenter/covid/master/LICENSE').then(r => r.blob())
+        
         var zip = new JSZip();
+        zip.file('LICENSE.txt', license)
+        zip.file('readme.md', readme)
         var dataFolder = zip.folder("data");
         var docsFolder = zip.folder("docs");
         data.forEach(d => dataFolder.file(d.name, d.data))
@@ -312,7 +336,7 @@ const CsvDownloader = () => {
         import('file-saver').then(fileSaver  => {
             zip.generateAsync({type:"blob"}).then(function(content) {
                 // see FileSaver.js
-                fileSaver.saveAs(content, "example.zip");
+                fileSaver.saveAs(content, `us_covid_atlas_data_${new Date().toISOString().slice(0,10)}.zip`);
             });
         })
         setIsDownloading(false)
@@ -320,17 +344,17 @@ const CsvDownloader = () => {
 
     return (
         <CsvDownloaderContainer className={isDownloading ? 'passive' : ''}>
-            <h3>Bulk Data Download</h3>
+            <h2>Bulk Data Download</h2>
             <Gutter h={20}/>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={8}>
                     <p>This menu allows you to download bulk CSVs of the data available on the Atlas. Select your datasets of interest with the checkboxes below and
                         then click download data to receive a ZIP archive with your CSV files and data documentation. Please note that the full dataset is currently
-                        over 70MB, so may be slow to load.     
+                        over 70MB, and may be slow to load.     
                     </p>
                 </Grid>
                 <Grid item xs={12} md={4}>
-                    <button onClick={() => GetFiles(checkboxes)}>Download Data</button>
+                    <a onClick={() => GetFiles(checkboxes)} ping="https://theuscovidatlas.org/trackdownloads.html">Download Data</a>
                 </Grid>
             </Grid>
             <Gutter h={20}/>

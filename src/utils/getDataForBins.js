@@ -1,7 +1,7 @@
 import dataFn from './dataFunction';
 // this function loops through the current data set and provides data for GeodaJS to create custom breaks 
 const getDataForBins = (tableData, dataParams) => {
-
+    
     const { numerator, nProperty, nIndex, denominator, dType, dIndex} = dataParams;
     if (tableData[0][denominator] === undefined) return;
     // declare empty array for return variables
@@ -30,6 +30,10 @@ const getDataForBins = (tableData, dataParams) => {
             // rtnIndex[tableData[n].properties.GEOID] = n 
         }
     }
+    for (let i=0; i<rtn.length;i++){
+        if (rtn[i] < 0) rtn[i] = 0
+    }
+
     return rtn;   
 }
 export default getDataForBins

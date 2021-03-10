@@ -115,6 +115,23 @@ const MapTooltipContent = (props) => {
             </div>
         )
     
+    } else if (props.content.hasOwnProperty('volume')) { // vaccination feature
+        return (
+            <div>
+                <h3>{props.content.name}</h3>
+                <div>
+                    {props.content.type === 0 && <><b>Invited</b> vaccination clinic</>}
+                    {props.content.type === 1 && <>Participating vaccination clinic</>}
+                    {props.content.type === 3 && <>Large scale vaccination site</>}
+                    <hr />
+                    {props.content.address}<br/>
+                    {props.content.phone && <><br/>{props.content.phone}<br/></>}
+                    {props.content.volumne && <><br/><br/>Expected Vaccination Volume: {props.content.volume}/day<br/><br/></>}
+                    {props.content.description && <><br/>{props.content.description}<br/><br/></>}
+                </div>
+            </div>
+        )
+    
     } else if (properties){ // County Feature PR NYT
         return (
             <div>

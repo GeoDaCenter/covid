@@ -92,6 +92,7 @@ export const colorScales = {
         [8,48,107],
       ],
       'BuPu8':[
+        [240,240,240],
         [247,252,253],
         [224,236,244],
         [191,211,230],
@@ -121,6 +122,28 @@ export const colorScales = {
         [116,196,118],
         [65,171,93],
         [35,139,69],
+        [0,90,50],
+      ],
+      'YlGnBu8':[
+        [240,240,240],
+        [255,255,217],
+        [237,248,177],
+        [199,233,180],
+        [127,205,187],
+        [65,182,196],
+        [29,145,192],
+        [34,94,168],
+        [12,44,132],
+      ],
+      'YlGn8': [
+        [240,240,240],
+        [255,255,229],
+        [247,252,185],
+        [217,240,163],
+        [173,221,142],
+        [120,198,121],
+        [65,171,93],
+        [35,132,67],
         [0,90,50],
       ],
       'mobilityDivergingWork':[
@@ -258,7 +281,7 @@ export const dataPresets = {
             'mobility_home_workdays_safegraph',
             'mobility_parttime_workdays_safegraph',
             'mobility_fulltime_workdays_safegraph',
-            'essential_workers'
+            'context_essential_workers_acs'
         ], 
         tableNames: [ // table names in order of CSVs
             'cases',
@@ -318,7 +341,7 @@ export const dataPresets = {
             'chr_health_context', 
             'chr_life', 
             'chr_health_factors',
-            'essential_workers'
+            'context_essential_workers_acs'
         ],  
         tableNames: [
             'cases', 
@@ -491,7 +514,7 @@ export const dataPresets = {
             'covid_wk_pos_cdc', 
             'covid_tcap_cdc', 
             'covid_ccpt_cdc',
-            'essential_workers'
+            'context_essential_workers_acs'
         ],  
         tableNames: [
             'cases',
@@ -557,13 +580,17 @@ export const tooltipInfo = {
     healthlife:<p>Length and Quality of Life reflects the physical and mental well-being of residents within a community through measures representing how long and how well residents live</p>,
     Hypersegregated: <p>American metropolitan areas where black residents experience hypersegregation, see <a href="https://www.princeton.edu/news/2015/05/18/hypersegregated-cities-face-tough-road-change" target="_blank" rel="noopener noreferrer">here</a></p>,
     BlackBelt: <p>Southern US counties that were at least 40% Black or African American in the 2000 Census, see <a href="https://en.wikipedia.org/wiki/Black_Belt_in_the_American_South" target="_blank" rel="noopener noreferrer">here</a></p>,
-    TestingCapacity: <p>New screening (e.g., antigen) and diagnostic (e.g., PCR) testing per capita rates by date. The suggested threshold is >150 daily tests per 100k people.</p>,
+    TestingCapacity: <p>New screening (e.g., antigen) and diagnostic (e.g., PCR) testing per capita rates by date. The suggested threshold is {'>'}150 daily tests per 100k people.</p>,
     USCongress: <p>Find your representative <a href="https://www.govtrack.us/" target="_blank" rel="noopener noreferrer">here</a></p>,
     BinModes: <p>Fixed bins represent data relative to the most recent date and show a consistent color scale.<br/> Dynamic bins change over time and generate new color scales based on the selected date.</p>,
     Clinics: <p>FQHC or <a href="https://www.hrsa.gov/opa/eligibility-and-registration/health-centers/fqhc/index.html" target="_blank" rel="noopener noreferrer">Federal Qualified Health Centers</a> are community based health providers receiving funds and certification from <a href="https://www.hrsa.gov/" target="_blank" rel="noopener noreferrer">HRSA</a>.</p>,
     Hospitals: <p>Hospital location data from <a href="https://github.com/covidcaremap/covid19-healthsystemcapacity" target="_blank" rel="noopener noreferrer">CovidCareMap.</a></p>,
     ClinicsAndHospitals: <p>Hospital location data from <a href="https://github.com/covidcaremap/covid19-healthsystemcapacity" target="_blank" rel="noopener noreferrer">CovidCareMap</a> and HRSA data on <a href="https://www.hrsa.gov/opa/eligibility-and-registration/health-centers/fqhc/index.html" target="_blank" rel="noopener noreferrer">Federal Qualified Health Centers.</a></p>,
-    essentialWorkers: <p>Percent of adult workers in essential industries based on ACS occupation categories (eg. Food service, Fire and Safety, Construction).</p>
+    essentialWorkers: <p>Percent of adult workers in essential industries based on ACS occupation categories (eg. Food service, Fire and Safety, Construction).</p>,
+    vaccinationSites: <p>The White House is supporting large vaccine centers to conduct high-volume vaccinations, and HRSA is partnering with Federally Qualified Health Clinics (FQHCs) to reach disproportionately impacted or hard to reach communities.</p>,
+    vaccineCenter: <p>High-volume federally-supported vaccination site.</p>,
+    vaccineClinic: <p>Vaccine clinic to assist disproportionately impact or hard to reach communities.</p>,
+    vaccineClinicInvited: <p>Invited, but not yet active vaccine clinic to assist disproportionately impact or hard to reach communities.</p>
 };
 
 export const variablePresets = {
@@ -571,6 +598,7 @@ export const variablePresets = {
         variableName:"Confirmed Count",
         numerator: 'cases',
         nType: 'time-series',
+        nRange: 7,
         nProperty: null,
         denominator: 'properties',
         dType: null,
@@ -586,6 +614,7 @@ export const variablePresets = {
         variableName:"Confirmed Count per 100K Population",
         numerator: 'cases',
         nType: 'time-series',
+        nRange: 7,
         nProperty: null,
         denominator: 'properties',
         dType: 'characteristic',
@@ -601,6 +630,7 @@ export const variablePresets = {
         variableName:"Confirmed Count per Licensed Bed",
         numerator: 'cases',
         nType: 'time-series',
+        nRange: 7,
         nProperty: null,
         denominator: 'properties',
         dType: 'characteristic',
@@ -616,6 +646,7 @@ export const variablePresets = {
       variableName:"Death Count",
       numerator: 'deaths',
       nType: 'time-series',
+      nRange: 7,
       nProperty: null,
       denominator: 'properties',
       dType: null,
@@ -631,6 +662,7 @@ export const variablePresets = {
       variableName:"Death Count per 100K Population",
       numerator: 'deaths',
       nType: 'time-series',
+      nRange: 7,
       nProperty: null,
       denominator: 'properties',
       dType: 'characteristic',
@@ -646,9 +678,11 @@ export const variablePresets = {
       variableName:"Death Count / Confirmed Count",
       numerator: 'deaths',
       nType: 'time-series',
+      nRange: 7,
       nProperty: null,
       denominator: 'cases',
       dType: 'time-series',
+      dRange: 7,
       dProperty: null,
       scale:1,
       fixedScale: null,
@@ -782,36 +816,6 @@ export const variablePresets = {
       colorScale: 'testing',
       scale3D: 10000000
     },
-    "Vaccinations Administered per 100K Population": {
-        variableName:"Vaccinations Administered per 100K Population",
-        numerator: 'vaccinesAdmin',
-        nType: 'time-series',
-        nProperty: null,
-        denominator: 'properties',
-        dType: 'characteristic',
-        dProperty: 'population',
-        dRange:null,
-        dIndex:null,
-        scale:100000,
-        scale3D: 1000,
-        colorScale: 'vaccination',
-        fixedScale: null,
-    },
-    "Vaccinations Distributed per 100K Population": {
-        variableName:"Vaccinations Distributed per 100K Population",
-        numerator: 'vaccinesDist',
-        nType: 'time-series',
-        nProperty: null,
-        denominator: 'properties',
-        dType: 'characteristic',
-        dProperty: 'population',
-        dRange:null,
-        dIndex:null,
-        scale:100000,
-        scale3D: 1000,
-        colorScale: 'vaccination',
-        fixedScale: null,
-    },    
     "Percent Received First Dose": {
         variableName:"Percent Received First Dose",
         numerator: 'vaccinesAdmin1',
@@ -825,7 +829,7 @@ export const variablePresets = {
         dIndex:null,
         scale:100,
         scale3D: 1000,
-        colorScale: 'purpleSingleHue8',
+        colorScale: 'YlGnBu8',
         fixedScale: null,
     },
     "Percent Received Second Dose": {
@@ -841,7 +845,7 @@ export const variablePresets = {
         dIndex:null,
         scale:100,
         scale3D: 1000,
-        colorScale: 'greenSingleHue8',
+        colorScale: 'YlGn8',
         fixedScale: null,
     },
     "Doses to be Administered per 100K Population": {

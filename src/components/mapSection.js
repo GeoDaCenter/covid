@@ -44,6 +44,9 @@ const bounds = fitBounds({
 const ICON_MAPPING = {
     hospital: {x: 0, y: 0, width: 128, height: 128},
     clinic: {x: 128, y: 0, width: 128, height: 128},
+    invitedVaccineSite: {x: 0, y: 128, width: 128, height: 128},
+    participatingVaccineSite: {x: 128, y: 128, width: 128, height: 128},
+    megaSite: {x: 256, y: 128, width: 128, height: 128},
   };
 
 // mapbox default style from Json
@@ -77,6 +80,8 @@ const HoverDiv = styled.div`
     hr {
         margin: 5px 0;
     }
+    max-width:50ch;
+    line-height:1.25;
 `
 
 const MapButtonContainer = styled.div`
@@ -193,10 +198,12 @@ function MapSection(props){
     // const [currVarId, setCurrVarId] = useState(null);
     
     // async fetched data and cartogram center
-    const [hospitalData, setHospitalData] = useState(null);
-    const [clinicData, setClinicData] = useState(null);
+    const [resourceLayerData, setResourceLayerData] = useState({
+        clinics: [],
+        hospitals: [],
+        vaccineSites: []
+    });
     const [storedCenter, setStoredCenter] = useState(null);
-    
     // share button notification
     const [shared, setShared] = useState(false);
     
@@ -230,16 +237,13 @@ function MapSection(props){
             const SHARED_VIEW =  JSON.parse(localStorage.getItem('SHARED_VIEW'));
             
             if (SHARED_VIEW !== null && SHARED_VIEW.hasOwnProperty('latitude')) {
-                setViewState(
-                    prevView => ({
-                        ...prevView,
+                setViewState({
                         longitude: SHARED_VIEW.longitude,
                         latitude: SHARED_VIEW.latitude,
                         zoom: SHARED_VIEW.zoom,
                         transitionDuration: 1000,
                         transitionInterpolator: new FlyToInterpolator()
                     })
-                )   
             }
         });
 
@@ -259,27 +263,28 @@ function MapSection(props){
 
     // change map center on viztype change
     useEffect(() => {
+        const currMapView = GetMapView();
         switch(mapParams.vizType) {
             case '2D': 
-                setViewState(view => ({
-                    ...view,
+                setViewState({
+                    ...currMapView,
                     latitude: +urlParams.lat || bounds.latitude,
                     longitude: +urlParams.lon || bounds.longitude,
                     zoom: +urlParams.z || bounds.zoom,
                     bearing:0,
                     pitch:0
-                }));
+                });
                 setStoredCenter(null)
                 break
             case '3D':
-                setViewState(view => ({
-                    ...view,
+                setViewState({
+                    ...currMapView,
                     latitude: +urlParams.lat || bounds.latitude,
                     longitude: +urlParams.lon || bounds.longitude,
                     zoom: +urlParams.z || bounds.zoom,
                     bearing:-30,
                     pitch:30
-                }));
+                });
                 setStoredCenter(null)
                 break
             default:
@@ -294,17 +299,17 @@ function MapSection(props){
         if (mapParams.vizType !== 'cartogram') return;
         
         if (storedCartogramData){
-            let center = getCartogramCenter(storedCartogramData)
-            let roundedCenter = [Math.floor(center[0]),Math.floor(center[1])]
+            let center = getCartogramCenter(storedCartogramData);
+
+            let roundedCenter = [Math.floor(center[0]),Math.floor(center[1])];
             if (storedCenter === null || roundedCenter[0] !== storedCenter[0]) {
-                setViewState(view => ({
-                    ...view,
+                setViewState({
                     latitude: center[1],
                     longitude: center[0],
-                    zoom: 5,
+                    zoom: currentData.includes('state') ? 6 : 5,
                     bearing:0,
                     pitch:0
-                }));
+                });
                 setStoredCenter(roundedCenter)
             }
         }
@@ -335,22 +340,29 @@ function MapSection(props){
         setMapStyle(defaultMapStyle.set('layers', tempLayers));
 
     }, [mapParams.overlay, mapParams.mapType, mapParams.vizType])
-
+    
     // load in Hospital and clinic data when called
     useEffect(() => {
         if (mapParams.resource.includes('hospital') || mapParams.resource.includes('clinic')) {
-            if (hospitalData === null) {
-                getCSV(`${process.env.PUBLIC_URL}/csv/us_healthcare_capacity-facility-CovidCareMap.csv`)
-                .then(values => setHospitalData(values))
+            if (!resourceLayerData.hospitals.length) {
+                getCSV(`${process.env.PUBLIC_URL}/csv/context_hospitals_covidcaremap.csv`)
+                .then(values => setResourceLayerData(prev => ({...prev, hospitals: values})))
             }
 
-            if (clinicData === null) {
-                getCSV(`${process.env.PUBLIC_URL}/csv/health_centers.csv`)
-                .then(values => setClinicData(values))
+            if (!resourceLayerData.clinics.length) {
+                getCSV(`${process.env.PUBLIC_URL}/csv/context_fqhc_clinics_hrsa.csv`)
+                .then(values => setResourceLayerData(prev => ({...prev, clinics: values})))
             }
         }
-    },[mapParams.resource, hospitalData, clinicData])
 
+        if (mapParams.resource.includes('vaccination')) {
+            if (!resourceLayerData.vaccineSites.length) {
+                getCSV(`${process.env.PUBLIC_URL}/csv/context_vaccination_sites_hrsa_wh.csv`)
+                .then(values => setResourceLayerData(prev => ({...prev, vaccineSites: values})))
+            }
+        }
+        
+    },[mapParams.resource, resourceLayerData.clinics[0], resourceLayerData.hospitals[0], resourceLayerData.vaccineSites[0]])
 
     useEffect(() => {
         setViewState(view => ({
@@ -466,8 +478,25 @@ function MapSection(props){
 
     const GetHeight = (f) => dataFn(f[dataParams.numerator], f[dataParams.denominator], dataParams)*(dataParams.scale3D/((dataParams.nType === "time-series" && dataParams.nRange === null) ? (dataParams.nIndex)/10 : 1))
 
+    const GetMapView = () => {
+        try {
+            const currView = deckRef.current.deck.viewState.MapView
+            return currView || {...viewState}
+        } catch {
+            return {...viewState}
+        }
+    }
+    
     const mapRef = useRef();
-    const deckRef = useRef();
+    const deckRef = useRef({
+        deck: {
+            viewState: {
+                MapView: {
+                    ...viewState
+                }
+            }
+        }
+    });
 
     const handleShare = async (params) => {
         const shareData = {
@@ -539,7 +568,7 @@ function MapSection(props){
                         })
                     );
                     window.localStorage.setItem('SHARED_GEOID', GeoidList);
-                    window.localStorage.setItem('SHARED_VIEW', JSON.stringify(mapRef.current.props.viewState));
+                    window.localStorage.setItem('SHARED_VIEW', JSON.stringify(GetMapView()));
                 } else {
                     if (highlightGeog.length > 1) {
                         let tempArray = [...highlightGeog];
@@ -553,7 +582,7 @@ function MapSection(props){
                             })
                         )
                         window.localStorage.setItem('SHARED_GEOID', tempArray);
-                        window.localStorage.setItem('SHARED_VIEW', JSON.stringify(mapRef.current.props.viewState));
+                        window.localStorage.setItem('SHARED_VIEW', JSON.stringify(GetMapView()));
                     }
                 }
             } catch {}
@@ -574,49 +603,42 @@ function MapSection(props){
                     })
                 );
                 window.localStorage.setItem('SHARED_GEOID', info.object?.GEOID);
-                window.localStorage.setItem('SHARED_VIEW', JSON.stringify(mapRef.current.props.viewState));
+                window.localStorage.setItem('SHARED_VIEW', JSON.stringify(GetMapView()));
             } catch {}
         }
     }
 
     const handleGeolocate = async () => {
         navigator.geolocation.getCurrentPosition( position => {
-            setViewState(
-                prevView => ({
-                    ...prevView,
+            setViewState({
                     longitude: position.coords.longitude,
                     latitude: position.coords.latitude,
                     zoom:7,
                     transitionDuration: 1000,
                     transitionInterpolator: new FlyToInterpolator()
                 })
-            )  
         }) 
     }
 
     const handleZoom = (zoom) => {
-        setViewState(
-            prevView => ({
-                ...prevView,
-                ...mapRef.current.props.viewState,
-                zoom: prevView.zoom + zoom,
+        const currMapView = GetMapView()
+        setViewState({
+                ...currMapView,
+                zoom: currMapView.zoom + zoom,
                 transitionDuration: 250,
                 transitionInterpolator: new FlyToInterpolator()
             })
-        )  
     }
     
     const resetTilt = () => {
-        setViewState(
-            prevView => ({
-                ...prevView,
-                ...mapRef.current.props.viewState,
+        const currMapView = GetMapView()
+        setViewState({
+                ...currMapView,
                 bearing:0,
                 pitch:0,
                 transitionDuration: 250,
                 transitionInterpolator: new FlyToInterpolator()
             })
-        )  
     }
     const handleGeocoder = useCallback(location => {
         if (location.center !== undefined) {
@@ -633,18 +655,15 @@ function MapSection(props){
                 zoom = bounds.zoom*.9;
             };
 
-            setViewState(
-                prevView => ({
-                    ...prevView,
-                    longitude: center[0],
-                    latitude: center[1],
-                    zoom: zoom,
-                    bearing:0,
-                    pitch:0,
-                    transitionDuration: 'auto',
-                    transitionInterpolator: new FlyToInterpolator()
-                })
-            )
+            setViewState({
+                longitude: center[0],
+                latitude: center[1],
+                zoom: zoom,
+                bearing:0,
+                pitch:0,
+                transitionDuration: 'auto',
+                transitionInterpolator: new FlyToInterpolator()
+            })
         }  
       }, []);
 
@@ -713,7 +732,7 @@ function MapSection(props){
         }),
         hospitals: new IconLayer({
             id: 'hospital-layer',
-            data: hospitalData,
+            data: resourceLayerData.hospitals,
             pickable:true,
             iconAtlas: `${process.env.PUBLIC_URL}/assets/img/icon_atlas.png`,
             iconMapping: ICON_MAPPING,
@@ -724,24 +743,41 @@ function MapSection(props){
             sizeMinPixels:12,
             sizeMaxPixels:24,
             updateTriggers: {
-                data: hospitalData,
+                data: [mapParams.resource, resourceLayerData]
             },
             onHover: handleMapHover,
         }),
         clinic: new IconLayer({
             id: 'clinics-layer',
-            data: clinicData,
+            data: resourceLayerData.clinics,
             pickable:true,
             iconAtlas: `${process.env.PUBLIC_URL}/assets/img/icon_atlas.png`,
             iconMapping: ICON_MAPPING,
-            getIcon: d => 'clinic',
+            getIcon:  d => 'clinic',
             getSize: 20000,
             getPosition: d => [d.lon, d.lat],
             sizeUnits: 'meters',
             sizeMinPixels:7,
             sizeMaxPixels:20,
             updateTriggers: {
-                data: clinicData
+                data: [mapParams.resource, resourceLayerData.clinics]
+            },
+            onHover: handleMapHover,
+        }),
+        vaccinationSites: new IconLayer({
+            id: 'vaccine-sites-layer',
+            data: resourceLayerData.vaccineSites,
+            pickable:true,
+            iconAtlas: `${process.env.PUBLIC_URL}/assets/img/icon_atlas.png`,
+            iconMapping: ICON_MAPPING,
+            getIcon: d => d.type === 0 ? 'invitedVaccineSite' : d.type === 1 ? 'participatingVaccineSite' : d.type === 3 ? 'megaSite' : '',
+            getSize: d => d.type === 3 ? 200000 : 1000,
+            getPosition: d => [d.lon, d.lat],
+            sizeUnits: 'meters',
+            sizeMinPixels:20,
+            sizeMaxPixels:60,
+            updateTriggers: {
+                data: resourceLayerData.vaccineSites
             },
             onHover: handleMapHover,
         }),
@@ -816,6 +852,7 @@ function MapSection(props){
 
         if (resources && resources.includes('hospital')) LayerArray.push(layers['hospitals'])
         if (resources && resources.includes('clinic')) LayerArray.push(layers['clinic'])
+        if (resources && resources.includes('vaccinationSites')) LayerArray.push(layers['vaccinationSites'])
         
         return LayerArray
 
@@ -902,9 +939,9 @@ function MapSection(props){
                             x, y: y-50, width, height, layerIds
                         }
                     )
-    
                 let GeoidList = [];
                 for (let i=0; i<features.length; i++) {
+                    if (GeoidList.indexOf(features[i].object?.GEOID) !== -1) continue
                     const tempGEOID = features[i].object?.GEOID
                     const tempData = storedData[currentData][storedData[currentData].findIndex(o => o.properties.GEOID === tempGEOID)]        
                     const dataName = tempData.properties.hasOwnProperty('state_abbr') ? `${tempData.properties.NAME}, ${tempData.properties.state_abbr}` : `${tempData.properties.NAME}`
@@ -942,7 +979,7 @@ function MapSection(props){
                 }
                 setHighlightGeog(GeoidList); 
                 window.localStorage.setItem('SHARED_GEOID', GeoidList);
-                window.localStorage.setItem('SHARED_VIEW', JSON.stringify(mapRef.current.props.viewState));
+                window.localStorage.setItem('SHARED_VIEW', JSON.stringify(GetMapView()));
                 setBoxSelectDims({});
                 removeListeners();
                 setBoxSelect(false)
@@ -951,7 +988,7 @@ function MapSection(props){
             console.log('bad selection')
         }
     }
-
+    
     return (
         <MapContainer
             onKeyDown={handleKeyDown}
@@ -987,6 +1024,7 @@ function MapSection(props){
                     }
                 }
                 views={view}
+                pickingRadius={20}
 
                 // onViewStateChange={onViewStateChange}
                 // viewState={viewStates}
@@ -1048,7 +1086,7 @@ function MapSection(props){
                     <NavInlineButton
                         title="Reset Tilt"
                         id="resetTilt"
-                        tilted={mapRef?.current?.props?.viewState.bearing !== 0 || mapRef?.current?.props?.viewState.pitch !== 0}
+                        tilted={deckRef.current?.deck.viewState?.MapView?.bearing !== 0 || deckRef.current?.deck.viewState?.MapView?.pitch !== 0}
                         onClick={() => resetTilt()}
                     >
                         {SVG.compass}
@@ -1059,7 +1097,7 @@ function MapSection(props){
                         title="Share this Map"
                         id="shareButton"
                         shareNotification={shared}
-                        onClick={() => handleShare({mapParams, dataParams, currentData, coords: mapRef.current.props.viewState, lastDateIndex: dateIndices[currentData][dataParams.numerator]})}
+                        onClick={() => handleShare({mapParams, dataParams, currentData, coords: GetMapView(), lastDateIndex: dateIndices[currentData][dataParams.numerator]})}
                     >
                         {SVG.share}
                     </NavInlineButton>

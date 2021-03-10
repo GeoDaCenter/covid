@@ -5,12 +5,12 @@
 **Author**: Dylan Halpern
 
 ### Data Location: 
-[GeoDaCenter/covid/docs/csv](https://github.com/GeoDaCenter/covid/tree/master/docs/csv)
+[GeoDaCenter/covid/public/csv](https://github.com/GeoDaCenter/covid/tree/master/public/csv)
 
-* Testing: [covid_testing_cdc_state.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/covid_testing_cdc_state.csv)
-* Testing Capacity: [covid_tcap_cdc_state.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/covid_tcap_cdc_state.csv)
-* Testing Positivity: [covid_wk_pos_cdc_state.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/covid_wk_pos_cdc_state.csv)
-* Testing Confirmed Cases Per Testing: [covic_ccpt_cdc_state.csv](https://github.com/GeoDaCenter/covid/blob/master/docs/csv/covic_ccpt_cdc_state.csv)
+* Testing: [covid_testing_cdc_state.csv](https://github.com/GeoDaCenter/covid/blob/master/public/csv/covid_testing_cdc_state.csv)
+* Testing Capacity: [covid_tcap_cdc_state.csv](https://github.com/GeoDaCenter/covid/blob/master/public/csv/covid_tcap_cdc_state.csv)
+* Testing Positivity: [covid_wk_pos_cdc_state.csv](https://github.com/GeoDaCenter/covid/blob/master/public/csv/covid_wk_pos_cdc_state.csv)
+* Testing Confirmed Cases Per Testing: [covic_ccpt_cdc_state.csv](https://github.com/GeoDaCenter/covid/blob/master/public/csv/covic_ccpt_cdc_state.csv)
 
 ### Data Source(s) Description:  
 HHS State Level COVID-19 Diagnostic Laboratory Testing (PCR Testing) Time Series is available [here](https://healthdata.gov/dataset/covid-19-diagnostic-laboratory-testing-pcr-testing-time-series). It is updated daily and sourced from  CDC COVID-19 Electronic Laboratory Reporting (CELR), Commercial Laboratories, State Public Health Labs, In-House Hospital Labs. A full data dictionary is available [here](https://healthdata.gov/covid-19-diagnostic-laboratory-testing-pcr-testing-time-series-data-dictionary).

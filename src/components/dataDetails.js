@@ -57,26 +57,73 @@ const AccordionSummary = styled(MuiAccordionSummary)`
 const AccordionDetails = styled(MuiAccordionDetails)`
 `
 
+const AccordionHeader = styled(Typography)`
+    span.tag {
+        padding:4px 8px;
+        margin:5px;
+        border-radius:12px;
+        font-size:65%;
+        background:${colors.lightgray};
+        text-transform:uppercase;
+        font-weight:bold;
+    }
+`
+
 const dataList = [
     {
+        'header': 'USA Facts',
+        'tags':['Cases','Deaths','County','State'],
+        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/usafacts.md'
+    },
+    {
         'header': 'New York Times',
-        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/nyt.md'
+        'tags':['Cases','Deaths','County','State'],
+        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/new-york-times.md'
+    },
+    {
+        'header': '1 Point 3 Acres',
+        'tags':['Cases','Deaths','County','State'],
+        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/_1p3a.md'
     },
     {
         'header': 'Center for Disease Control',
-        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/cdc.md'
+        'tags':['Testing','Vaccination','County'],
+        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/center-for-disease-control.md'
     },
     {
         'header': 'Health and Human Services',
-        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/hhs.md'
+        'tags':['Testing','State'],
+        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/health-and-human-services.md'
     },
     {
         'header': 'County Health Rankings and Roadmaps',
+        'tags':['Context'],
         'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/county-health-rankings.md'
     },
     {
+        'header': 'Yu Group at UC Berkeley',
+        'tags':['Forecasting'],
+        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/yu-group.md'
+    },
+    {
         'header': 'Safegraph Social Distancing',
+        'tags':['Mobility'],
         'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/safegraph_sd.md'
+    },
+    {
+        'header': 'American Community Survey',
+        'tags':['Context', 'Essential Workers', 'Population'],
+        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/american-community-survey.md'
+    },
+    {
+        'header': 'Hospitals and Clinics',
+        'tags':['Context', 'Point Data'],
+        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/hospitals-and-clinics.md'
+    },
+    {
+        'header': 'Geographies',
+        'tags':['Boundaries', 'Geometry', 'County', 'State'],
+        'content': 'https://raw.githubusercontent.com/GeoDaCenter/covid/master/data-docs/geographies.md'
     }
 
 ]  
@@ -105,7 +152,10 @@ const DataDetails = () => {
             {dataList.map((dataset, index) => 
                     <Accordion square expanded={expanded === `panel${index}`} onChange={handleChange(`panel${index}`)}>
                         <AccordionSummary aria-controls={`panel${index}d-content`} id={`panel${index}d-header`}>
-                        <Typography>{dataset.header}</Typography>
+                        <AccordionHeader>
+                            {dataset.header}
+                            {dataset.tags.map(tag => <span className="tag">{tag}</span>)}
+                        </AccordionHeader>
                         </AccordionSummary>
                         <AccordionDetails>
                             <div>
