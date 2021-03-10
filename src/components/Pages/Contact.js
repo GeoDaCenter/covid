@@ -10,6 +10,22 @@ import Grid from '@material-ui/core/Grid';
 import { colors } from '../../config';
 const ContactPage = styled.div`
     background:white;
+    h1 {
+        display:inline-block;
+        margin-right:20px;
+    }
+    a.social-icon {
+        img {
+            width: 30px;
+        }
+        display:inline-block;
+        margin:5px 10px 0 0;
+        opacity:0.6;
+        transition:250ms all;
+        &:hover {
+            opacity:1;
+        }
+    }
 `
 
 const ContactForm = styled.form`
@@ -272,6 +288,12 @@ export default function Contact(){
            <StaticNavbar/>
            <ContentContainer>
                 <h1>Contact Us</h1>
+                <a href="https://twitter.com/covid_atlas" target="_blank" rel="noopener noreferrer" className="social-icon">
+                    <img src={`${process.env.PUBLIC_URL}/icons/twitter-icon-dark.png`} alt="Twitter Icon" />
+                </a>
+                <a href="https://github.com/GeoDaCenter/covid" target="_blank" rel="noopener noreferrer" className="social-icon">
+                    <img src={`${process.env.PUBLIC_URL}/icons/github-icon-dark.png`} alt="Twitter Icon" />
+                </a>
                 <hr/>
                 <p>
                     
@@ -280,7 +302,7 @@ export default function Contact(){
                 {submitted && 
                     <SuccessMessage>
                         <p>
-                            Thanks for your message! Our team will review your inquiry and get back with you as soon as possible. We appreciate your interest and helping us to improve the US Covid Atlas!
+                            Thanks for your message! Our team will review your message and get back with you as soon as possible. We appreciate your interest and helping us to improve the US Covid Atlas!
                         </p>
                         <button onClick={() => setSubmitted(false)}>×</button>
                     </SuccessMessage>
@@ -298,11 +320,12 @@ export default function Contact(){
                                     onChange={handleSelect}
                                     
                                 >
-                                    <MenuItem value={'General'}>General Inquiry</MenuItem>
+                                    <MenuItem value={'General'}>General</MenuItem>
                                     <MenuItem value={'Bug'}>Bug Report or Error</MenuItem>
                                     <MenuItem value={'DataQuestion'}>Data Question</MenuItem>
                                     <MenuItem value={'FeatureRequest'}>Feature Request</MenuItem>
-                                    <MenuItem value={'Press'}>Press or Media Inquiry</MenuItem>
+                                    <MenuItem value={'TechOpenSource'}>Technical or Open Source Questions</MenuItem>
+                                    <MenuItem value={'Press'}>Press or Media</MenuItem>
                                 </Select>
                             </InputBlock>
 
@@ -358,10 +381,6 @@ export default function Contact(){
                         </Grid>
                     </Grid>
                 </ContactForm>
-
-                <Gutter h={40}/>
-                <h2>EMAIL CONTACT</h2>
-                <hr/>
                 <p>
                     For additional inquiries, contact the US COVID Atlas team: Marynia Kolak (mkolak at uchicago.edu) or Qinyun Lin (qinyunlin at uchicago.edu)
                 </p>
@@ -386,7 +405,7 @@ export default function Contact(){
                 {pressInfo.map(press => 
                     <p>
                         <b>{press.name} </b>
-                        <a href={press.link} target="_blank" rel="noopener noreferrer">{press.text}</a>
+                        <a href={press.link} target="_blank" rel="noopener noreferrer">{press.text} </a>
                         {press.date}
                         <br/><br/>
                     </p>
