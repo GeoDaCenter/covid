@@ -99,7 +99,7 @@ def lambda_handler(event, context):
 		data = json.loads(text)
 		output = search_lisa(data, state_input, start, end, source, _type, level, category)
 
-	else:
+	elif category == "data":
 		if _type == "death":
 			response = s3.Object(bucket_name='geoda-covid-atlas', key="covid_deaths_usafacts.geojson")
 			text = response.get()['Body'].read().decode()
@@ -128,6 +128,16 @@ def lambda_handler(event, context):
 			
 			else:
 				output = "county_testing"
+	
+	# 7-day rolling average
+	else:
+		if _type == "death":
+			response = s3.Object(bucket_name='geoda-covid-atlas', key="seven_day_deaths_usafacts.json")
+		else:
+			response = s3.Object(bucket_name='geoda-covid-atlas', key="seven_day_confirmed_usafacts.json")
+		text = response.get()['Body'].read().decode()
+		data = json.loads(text)	
+		output = search_seven_day_rolling(data, state_input, start, end, source, _type, level, category)
 
 	
 	return {
@@ -245,10 +255,53 @@ def search_state_testing(data, state_input, start, end, source, _type, level, ca
 
 
 	# Check dates are valid
+	date_range = create_date_range(start , end)
 	if not start or not end:
 		return "Invalid Date Input!"
 	if start < "20200122":
 		return "Invalid Date Input! Starts from 20200122"
+	if end > datetime.today().strftime('%Y%m%d'):
+		return "Invalid Date Input! Max end date as today or yesterday"
+
+
+	# Extract data 
+	locations =  data["features"]
+	output = []
+	basic_info = ['County Name', "GEOID"]
+
+	for loc in locations:
+		if state_input.lower()  == loc["State"].lower():
+			cases = {k:v for k,v in loc.items() if k in basic_info or k in date_range}
+			output.append(cases)
+
+	if not output:
+		return "Invalid State Input!"
+	
+	response["data"] = output
+	return response
+
+
+
+# 4. Search Seven Day Rolling Average Data
+
+
+def search_seven_day_rolling(data, state_input, start, end, source, _type, level, category):
+
+	# Set response object
+	response = {}
+	response["state"] = state_input.upper()
+	response["category"] = category
+	response["type"] = _type
+	response["source"] = source
+	response["level"] = level
+
+
+	# Check dates are valid
+	date_range = create_date_range(start , end)
+	if not start or not end:
+		return "Invalid Date Input!"
+	if start < "20200129":
+		return "Invalid Date Input! Starts from 20200129"
 	if end > datetime.today().strftime('%Y%m%d'):
 		return "Invalid Date Input! Max end date as today or yesterday"
 
@@ -262,6 +315,7 @@ def search_state_testing(data, state_input, start, end, source, _type, level, ca
 	
 	response["data"] = output
 	return response
+
 
 
 
