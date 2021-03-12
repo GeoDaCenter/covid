@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import {
@@ -11,7 +11,6 @@ import Switch from '@material-ui/core/Switch';
 import styled from 'styled-components';
 import { colors } from '../config';
 import { setVariableParams } from '../actions';
-import { useEffect } from 'react/cjs/react.development';
 
 const ChartContainer = styled.span`
     span {
@@ -207,40 +206,46 @@ const MainLineChart = () => {
 
     
 
-    const summarizeChartData = (data, keys, populationNormalized) => {
+    const summarizeChartData = (data, keys, populationNormalized, storedData, currentData, selectionIndex) => {
         let summarizedData = [];
+        
         let tempData = [];
-        for (let i=0; i<data.length;i++) tempData.push({})
-        let popObj = {}
+
+        for (let i=0; i<data.length;i++) {
+            tempData.push({})
+        };
+
+        let popObj = {};
         let popSum = 0;
         if (populationNormalized && keys.length > 1) {
             for (let i=0; i<keys.length; i++){
                 popObj[keys[i]] = storedData[currentData][selectionIndex[i]].properties.population;
                 popSum += storedData[currentData][selectionIndex[i]].properties.population;
-            }
-        }
+            };
+        };
         
         for (let i=0;i<data.length;i++) {
             let tempSum = 0;
 
             for (let n=0; n<keys.length;n++ ) {
                 if (populationNormalized && keys.length > 1) {
-                    tempData[i][`${keys[n]} Daily Count`] = (data[i][`${keys[n]} Daily Count`]/popObj[keys[n]])*100_000
-                    tempSum += data[i][`${keys[n]} Daily Count`]
+                    tempData[i][`${keys[n]} Daily Count`] = (data[i][`${keys[n]} Daily Count`]/popObj[keys[n]])*100_000;
+                    tempSum += data[i][`${keys[n]} Daily Count`];
                 } else {
-                    tempSum += data[i][`${keys[n]} Daily Count`]
+                    tempSum += data[i][`${keys[n]} Daily Count`];
                 }
             }
+
             if (populationNormalized && keys.length > 1) tempSum = (tempSum / popSum) * 100000
             summarizedData.push({
                 ...data[i],
                 ...tempData[i],
                 'summarized': tempSum
-            })
-        }
+            });
+        };
 
         return summarizedData
-    }
+    };
     
 
     const [logChart, setLogChart] = useState(false);
@@ -251,9 +256,11 @@ const MainLineChart = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const tempData = summarizeChartData( chartData, selectionKeys, populationNormalized);
-        setParsedData(tempData)
-    },[chartData, selectionIndex, selectionKeys, populationNormalized])
+        if (chartData && storedData[currentData]){
+            const tempData = summarizeChartData(chartData, selectionKeys, populationNormalized, storedData, currentData, selectionIndex)
+            setParsedData(tempData)
+        }
+    },[chartData, selectionIndex, selectionKeys, populationNormalized, storedData, currentData, selectionIndex])
 
     const handleSwitch = () => setLogChart(prev => !prev)
     const handlePopSwitch = () => setPopulationNormalized(prev => !prev)
