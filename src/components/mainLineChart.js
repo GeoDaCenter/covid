@@ -11,6 +11,7 @@ import Switch from '@material-ui/core/Switch';
 import styled from 'styled-components';
 import { colors } from '../config';
 import { setVariableParams } from '../actions';
+import { useEffect } from 'react/cjs/react.development';
 
 const ChartContainer = styled.span`
     span {
@@ -18,11 +19,19 @@ const ChartContainer = styled.span`
     }
 `
 
+const SwitchesContainer = styled.div`
+    display:flex;
+    justify-content:center;
+`
 const StyledSwitch = styled.div`
-    float:left;
+    margin:0 20px;
+    @media (max-width:960px){
+        margin:0;
+    }
     p {
         color:white;
         display:inline;
+        text-align:center;
     }
     span.MuiSwitch-track {
         background-color:${colors.lightgray};
@@ -71,6 +80,7 @@ const monthNames = ["Jan","Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Se
 
 const millionFormatter = val => { return `${val/1000000}M` };
 const thousandFormatter = val => { return `${val/1000}K` };
+const hundredsFormatter = val => { return `${val}` };
 const dateFormatter = val => { 
     let tempDate = (new Date(val).getMonth()+1)%12;
     return `${monthNames[tempDate]}`
@@ -192,17 +202,57 @@ const MainLineChart = () => {
     const currentData = useSelector(state => state.currentData);
     const dateIndices = useSelector(state => state.dateIndices);
     const selectionKeys = useSelector(state => state.selectionKeys);
+    const selectionIndex = useSelector(state => state.selectionIndex);
+    const storedData = useSelector(state => state.storedData);
 
     
-    const [logChart, setLogChart] = useState(false);
-    const [strokeOpacities, setStrokeOpacities] = useState([])
 
+    const summarizeChartData = (data, keys, populationNormalized) => {
+        let summarizedData = [];
+        let tempData = [];
+        for (let i=0; i<data.length;i++) tempData.push({})
+        let popObj = {}
+        if (populationNormalized && keys.length > 1) {
+            for (let i=0; i<keys.length; i++){
+                popObj[keys[i]] = storedData[currentData][selectionIndex[i]].properties.population
+            }
+        }
+        
+        for (let i=0;i<data.length;i++) {
+            let tempSum = 0;
+
+            for (let n=0; n<keys.length;n++ ) {
+                if (populationNormalized && keys.length > 1) tempData[i][`${keys[n]} Daily Count`] = (data[i][`${keys[n]} Daily Count`]/popObj[keys[n]])*100_000
+                tempSum += tempData[i][`${keys[n]} Daily Count`]||data[i][`${keys[n]} Daily Count`]
+            }
+
+            summarizedData.push({
+                ...data[i],
+                ...tempData[i],
+                'summarized': tempSum 
+            })
+        }
+
+        return summarizedData
+    }
+    
+
+    const [logChart, setLogChart] = useState(false);
+    const [populationNormalized, setPopulationNormalized] = useState(false);
+    const [showSummarized, setShowSummarized] = useState(true);
+    const [strokeOpacities, setStrokeOpacities] = useState([])
+    const [parsedData, setParsedData] = useState([])
     const dispatch = useDispatch();
 
-    const handleSwitch = () => {
-        setLogChart(prev => !prev);
-    }
+    useEffect(() => {
+        const tempData = summarizeChartData( chartData, selectionKeys, populationNormalized);
+        setParsedData(tempData)
+    },[chartData, selectionIndex, selectionKeys, populationNormalized])
 
+    const handleSwitch = () => setLogChart(prev => !prev)
+    const handlePopSwitch = () => setPopulationNormalized(prev => !prev)
+    const handleSummarizedSwitch = () => setShowSummarized(prev => !prev)
+    
     const chartSetDate = (e) => {
         if (e?.activeTooltipIndex !== undefined) {
             if (dateIndices[currentData][dataParams.numerator].indexOf(e.activeTooltipIndex) !== -1) {
@@ -250,29 +300,8 @@ const MainLineChart = () => {
         return returnArray;
     }
 
-    const summarizeChartData = ( { chartData, keys }) => {
-        let summarizedData = []
-
-        for (let i=0;i<chartData.length;i++) {
-            let tempSum = 0;
-            
-            for (let n=0; n<keys.length;n++ ) {
-                tempSum += chartData[i][`${keys[n]} Daily Count`]
-            }
-
-            summarizedData.push({
-                ...chartData[i],
-                'summarized': tempSum 
-            })
-        }
-
-        return summarizedData
-    }
-
-    const parsedData = summarizeChartData( { chartData: chartData, keys: selectionKeys })
     const maximums = getMax({array: parsedData, variables: ['count','sum']})
     const dateRange = getDateRange({startDate: new Date('02/01/2020'), endDate: new Date()})
-    
     const handleLegendHover = (o) => {
         setStrokeOpacities(o.dataKey)
     }
@@ -340,7 +369,7 @@ const MainLineChart = () => {
                                     fontFamily: "Lato",
                                     fontWeight: 600,
                                 }}
-                                labelFormatter={thousandFormatter}
+                                labelFormatter={selectionKeys.length ? hundredsFormatter : thousandFormatter}
                             />
                         }
                         >
@@ -378,7 +407,7 @@ const MainLineChart = () => {
                             />}
                         )
                     } */}
-                    {selectionKeys.length > 1 && 
+                    {(selectionKeys.length > 1 && showSummarized) &&
                             <Line 
                                 type='monotone'
                                 yAxisId='right'
@@ -400,8 +429,8 @@ const MainLineChart = () => {
                                 stroke={colors.qualtitiveScale[index]} 
                                 dot={false} 
                                 isAnimationActive={false}  
-                                strokeOpacity={strokeOpacities === key + ' Daily Count' ? 1 : 0.5}
-                                strokeWidth={strokeOpacities === key + ' Daily Count' ? 2 : 1}
+                                strokeOpacity={strokeOpacities === key + ' Daily Count' ? 1 : 0.7}
+                                strokeWidth={strokeOpacities === key + ' Daily Count' ? 3 : 1}
                             />}
                         )
                     }
@@ -412,15 +441,35 @@ const MainLineChart = () => {
                     />
                 </LineChart>
             </ResponsiveContainer>
-            <StyledSwitch>
-                <Switch
-                    checked={logChart}
-                    onChange={handleSwitch}
-                    name='log chart switch'
-                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                />
-                <p>{logChart ? 'Log Scale' : 'Linear Scale'}</p>
-            </StyledSwitch>
+            <SwitchesContainer>
+                <StyledSwitch>
+                    <Switch
+                        checked={logChart}
+                        onChange={handleSwitch}
+                        name='log chart switch'
+                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                    />
+                    <p>{logChart ? 'Log Scale' : 'Linear Scale'}</p>
+                </StyledSwitch>
+                {selectionKeys.length > 1 && <StyledSwitch>
+                    <Switch
+                        checked={populationNormalized}
+                        onChange={handlePopSwitch}
+                        name='population normalized chart switch'
+                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                    />
+                    <p>{populationNormalized ? 'Population Normalized (per 100k)' : 'Total Counts'}</p>
+                </StyledSwitch>}
+                {selectionKeys.length > 1 && <StyledSwitch>
+                    <Switch
+                        checked={showSummarized}
+                        onChange={handleSummarizedSwitch}
+                        name='show summarized chart switch'
+                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                    />
+                    <p>{showSummarized ? 'Show Total For Selection' : 'Show Selected Counties' }</p>
+                </StyledSwitch>}
+            </SwitchesContainer>
         </ChartContainer>
     );
 }
