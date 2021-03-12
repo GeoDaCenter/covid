@@ -35,11 +35,11 @@ import { colorScales, fixedScales, dataPresets, variablePresets, colors } from '
 //    (as of 12/1 only Preloader uses props and is a higher order component)
 
 const getDefaultDimensions = () => ({
-  defaultX: window.innerWidth <= 1024 ? window.innerWidth*.1 : window.innerWidth-400, 
-  defaultXLong: window.innerWidth <= 1024 ? window.innerWidth*.1 :window.innerWidth-575,
+  defaultX: window.innerWidth <= 1024 ? window.innerWidth*.1 : window.innerWidth <= 1400 ? window.innerWidth-400 : window.innerWidth -500, 
+  defaultXLong: window.innerWidth <= 1024 ? window.innerWidth*.1 : window.innerWidth <= 1400 ? window.innerWidth-450 : window.innerWidth -550,
   defaultY: window.innerWidth <= 1024 ? window.innerHeight*.25 : 75,
   defaultWidth: window.innerWidth <= 1024 ? window.innerWidth*.8 : 300,
-  defaultWidthLong: window.innerWidth <= 1024 ? window.innerWidth*.8 : 450,
+  defaultWidthLong: window.innerWidth <= 1024 ? window.innerWidth*.8 : window.innerWidth <= 1400 ? 400 : 500,
   defaultHeight: window.innerWidth <= 1024 ? window.innerHeight*.4 : 300,
   defaultHeightManual: window.innerWidth <= 1024 ? window.innerHeight*.7 : window.innerHeight*.5,
   defaultWidthManual: window.innerWidth <= 1024 ? window.innerWidth*.5 : window.innerWidth*.35,

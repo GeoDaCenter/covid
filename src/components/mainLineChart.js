@@ -24,7 +24,7 @@ const SwitchesContainer = styled.div`
     justify-content:center;
 `
 const StyledSwitch = styled.div`
-    margin:0 20px;
+    margin:0 5px;
     @media (max-width:960px){
         margin:0;
     }
@@ -212,9 +212,11 @@ const MainLineChart = () => {
         let tempData = [];
         for (let i=0; i<data.length;i++) tempData.push({})
         let popObj = {}
+        let popSum = 0;
         if (populationNormalized && keys.length > 1) {
             for (let i=0; i<keys.length; i++){
-                popObj[keys[i]] = storedData[currentData][selectionIndex[i]].properties.population
+                popObj[keys[i]] = storedData[currentData][selectionIndex[i]].properties.population;
+                popSum += storedData[currentData][selectionIndex[i]].properties.population;
             }
         }
         
@@ -222,14 +224,18 @@ const MainLineChart = () => {
             let tempSum = 0;
 
             for (let n=0; n<keys.length;n++ ) {
-                if (populationNormalized && keys.length > 1) tempData[i][`${keys[n]} Daily Count`] = (data[i][`${keys[n]} Daily Count`]/popObj[keys[n]])*100_000
-                tempSum += tempData[i][`${keys[n]} Daily Count`]||data[i][`${keys[n]} Daily Count`]
+                if (populationNormalized && keys.length > 1) {
+                    tempData[i][`${keys[n]} Daily Count`] = (data[i][`${keys[n]} Daily Count`]/popObj[keys[n]])*100_000
+                    tempSum += data[i][`${keys[n]} Daily Count`]
+                } else {
+                    tempSum += data[i][`${keys[n]} Daily Count`]
+                }
             }
-
+            if (populationNormalized && keys.length > 1) tempSum = (tempSum / popSum) * 100000
             summarizedData.push({
                 ...data[i],
                 ...tempData[i],
-                'summarized': tempSum 
+                'summarized': tempSum
             })
         }
 
@@ -458,7 +464,7 @@ const MainLineChart = () => {
                         name='population normalized chart switch'
                         inputProps={{ 'aria-label': 'secondary checkbox' }}
                     />
-                    <p>{populationNormalized ? 'Population Normalized (per 100k)' : 'Total Counts'}</p>
+                    <p>{populationNormalized ? 'Per 100k' : 'Counts'}</p>
                 </StyledSwitch>}
                 {selectionKeys.length > 1 && <StyledSwitch>
                     <Switch
@@ -467,7 +473,7 @@ const MainLineChart = () => {
                         name='show summarized chart switch'
                         inputProps={{ 'aria-label': 'secondary checkbox' }}
                     />
-                    <p>{showSummarized ? 'Show Total For Selection' : 'Show Selected Counties' }</p>
+                    <p>{showSummarized ? `Show ${populationNormalized ? 'Average' : 'Total'} For Selection` : `Show ${currentData.includes('state') ? 'States' : 'Counties'}` }</p>
                 </StyledSwitch>}
             </SwitchesContainer>
         </ChartContainer>
