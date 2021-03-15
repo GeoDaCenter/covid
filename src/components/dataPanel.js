@@ -145,9 +145,10 @@ const DataPanelContainer = styled.div`
     display:inline-block;
     max-width:200px;
   }
-  h6 {
+  h6, p {
     padding:0 0 15px 0;
     margin:0;
+    max-width:30ch;
     a {
       color:${colors.yellow};
       text-decoration:none;
@@ -155,6 +156,9 @@ const DataPanelContainer = styled.div`
   }
   .extraPadding {
     padding-bottom:20vh;
+  }
+  p {
+    padding-right:10px;
   }
 `
 // Scrollable Wrapper for main report information
@@ -419,7 +423,6 @@ const DataPanel = () => {
   //   return returnStr;
   // }
 
-  
   return (
     <DataPanelContainer className={panelState.info ? 'open' : ''} id="data-panel"  otherPanels={panelState.variables} dataLength={selectionKeys.length}>
       {properties &&  
@@ -478,7 +481,22 @@ const DataPanel = () => {
                 <ReportSection>
                   <h2>COVID Vaccination</h2><br/>
                   <h6>Source: <a href="https://covid.cdc.gov/covid-data-tracker/#vaccinations" target="_blank" rel="noopener noreferrer">CDC COVID Data Tracker</a></h6>            
-
+                  {(storedData[currentData][selectionIndex[0]]?.properties?.link_name && selectionIndex.length === 1) 
+                    && 
+                    <><p>For more on the status of vaccinations in {selectionKeys[0]}, visit 
+                      the <a href={`${storedData[currentData][selectionIndex[0]].properties?.link_url}`} target="_blank" rel="noopener noreferrrer">
+                      {storedData[currentData][selectionIndex[0]].properties?.link_name}</a> website.</p><br/><br/></>
+                  }
+                  {(storedData[currentData][selectionIndex[0]]?.properties?.link_name && selectionIndex.length > 1) 
+                    && 
+                    <><p>For more on the status of vaccinations visit the links below:
+                      <ul>
+                        {selectionKeys.map((name, index) => <li><a href={storedData[currentData][selectionIndex[index]].properties?.link_url} target="_blank" rel="noopener noreferrer">{name}</a></li>)}
+                      </ul>
+                      </p>
+                      <br/><br/>
+                    </>
+                  }
                   <p>% of Population<br className="bigOnly"/>  Received First Dose</p>
                   <div className="numberChartContainer">
                     <h3>{aggregateDataFunction('vaccines_one_dose', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: 'population', dIndex: null, dRange: null, scale: 100}, 'weighted_average')?.toFixed(2).toLocaleString('en')}%</h3>
