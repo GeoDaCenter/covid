@@ -255,7 +255,7 @@ def search_state_testing(data, state_input, start, end, source, _type, level, ca
 
 
 	# Check dates are valid
-	date_range = create_date_range(start , end)
+	date_range = check_valid_date_json(start , end)
 	if not start or not end:
 		return "Invalid Date Input!"
 	if start < "20200122":
@@ -329,8 +329,8 @@ def check_valid_date_json(start, end):
 
 	# Use in all search functions
 
-	if not re.match(r'2020[0-1][0-9][0-3][0-9]', start) or \
-		not re.match(r'2020[0-1][0-9][0-3][0-9]', end) or \
+	if not re.match(r'202[0-1][0-1][0-9][0-3][0-9]', start) or \
+		not re.match(r'202[0-1][0-1][0-9][0-3][0-9]', end) or \
 		end < start:
 		return "", ""
 	else:
@@ -361,8 +361,8 @@ def create_date_range(start, end):
 
 	# Use in USAFacts Search
 
-	if not re.match(r'2020[0-1][0-9][0-3][0-9]', start) or \
-		not re.match(r'2020[0-1][0-9][0-3][0-9]', end) or \
+	if not re.match(r'202[0-1][0-1][0-9][0-3][0-9]', start) or \
+		not re.match(r'202[0-1][0-1][0-9][0-3][0-9]', end) or \
 		end < start:
 		return ""
 	else:
