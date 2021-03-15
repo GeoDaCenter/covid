@@ -83,7 +83,7 @@ def parseVaccinationData(vaccinationDataList):
 def getCdcData():    
     # read in data from HealthData.gov API endpoint (god bless them allows CORS)
     raw = pd.read_csv('https://healthdata.gov/resource/j8mb-icvb.csv')[['state_fips','overall_outcome','date','new_results_reported','total_results_reported']]
-    raw['date'] = raw['date'].str.slice(0,10)
+    
     totalNew = raw[['state_fips','date','new_results_reported']].groupby(['state_fips','date']).sum().reset_index().rename(columns={'new_results_reported':'total'})
     positiveNew = raw[raw['overall_outcome']=='Positive'][['state_fips','date','new_results_reported']].rename(columns={'new_results_reported':'positive'})
 
