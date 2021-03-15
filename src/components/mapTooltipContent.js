@@ -5,7 +5,7 @@ const MapTooltipContent = (props) => {
     // destructure the object for cleaner formatting
 
     const { properties, cases, deaths, // county data
-        testing_tcap, testing_wk_pos, testing, vaccinesAdmin1, vaccinesAdmin2, vaccinesDist // state data
+        testing_tcap, testing_wk_pos, testing, vaccines_one_dose, vaccines_fully_vaccinated, vaccines_dist // state data
     } = props.content;
     // get lengths of time series data for reference below
     let caseN = cases && props.index;
@@ -13,7 +13,7 @@ const MapTooltipContent = (props) => {
     let testingN = testing && props.index;
     // conditional returns for combination of information
     // this is not elegant but a bit more reliable than JSX conditional rendering
-    if (properties && cases && deaths && testing && vaccinesAdmin1) { // State Feature
+    if (properties && cases && deaths && testing && vaccines_one_dose) { // State Feature
         return (
             <div>
                 <h3>
@@ -31,9 +31,9 @@ const MapTooltipContent = (props) => {
                     7-Day Positivity Rate: {(testing_wk_pos[testingN]*100)?.toFixed(2)}%<br/>
                     7-Day Testing Capacity per 100K: {(testing_tcap[testingN])?.toFixed(2)}<br/>
                     <br/>
-                    First dose administered: {Math.round((vaccinesAdmin1[testingN]/properties.population)*1000)/10}%<br/>
-                    Second dose administered: {Math.round((vaccinesAdmin2[testingN]/properties.population)*1000)/10}%<br/>
-                    Doses to be administered per 100K: {Math.round((vaccinesDist[testingN]/properties.population)*100000)?.toLocaleString()}<br/>
+                    At Least One Dose: {Math.round((vaccines_one_dose[testingN]/properties.population)*1000)/10}%<br/>
+                    Fully Vaccinated: {Math.round((vaccines_fully_vaccinated[testingN]/properties.population)*1000)/10}%<br/>
+                    Doses to be Administered per 100 People: {(Math.round((vaccines_dist[testingN]/properties.population)*1000)/10)?.toLocaleString()}<br/>
                 </div>
             </div>
         )

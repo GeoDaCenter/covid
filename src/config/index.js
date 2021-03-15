@@ -372,9 +372,9 @@ export const dataPresets = {
 			'covid_wk_pos_cdc_state',
 			'covid_tcap_cdc_state',
 			'covid_ccpt_cdc_state',
-			'vaccine_admin1_cdc',
-			'vaccine_admin2_cdc',
-			'vaccine_dist_cdc'
+			'vaccination_one_or_more_doses_cdc',
+			'vaccination_fully_vaccinated_cdc',
+			'vaccination_to_be_distributed_cdc'
 		], 
         tableNames: [
 	        'cases',
@@ -386,9 +386,9 @@ export const dataPresets = {
 			'testing_wk_pos',
 			'testing_tcap',
 			'testing_ccpt',
-			'vaccinesAdmin1',
-			'vaccinesAdmin2',
-			'vaccinesDist'
+			'vaccines_one_dose',
+			'vaccines_fully_vaccinated',
+			'vaccines_dist'
         ],
         joinCols: ['GEOID', ['FIPS','fips','fips_code','state_fips','countyFIPS','GEOID']], 
         accumulate: ['covid_confirmed_1p3a_state','covid_deaths_1p3a_state','covid_testing_cdc_state'],
@@ -399,9 +399,9 @@ export const dataPresets = {
             'covid_wk_pos_cdc_state': 'isoDateList', 
             'covid_tcap_cdc_state': 'isoDateList', 
             'covid_ccpt_cdc_state': 'isoDateList', 
-            'vaccine_admin1_cdc': 'isoDateList', 
-            'vaccine_admin2_cdc': 'isoDateList', 
-            'vaccine_dist_cdc': 'isoDateList'
+            'vaccination_one_or_more_doses_cdc': 'isoDateList', 
+            'vaccination_fully_vaccinated_cdc': 'isoDateList', 
+            'vaccination_to_be_distributed_cdc': 'isoDateList'
         }
     },
     'state_usafacts.geojson': {
@@ -416,7 +416,10 @@ export const dataPresets = {
             'covid_testing_cdc_state',
             'covid_wk_pos_cdc_state',
             'covid_tcap_cdc_state',
-            'covid_ccpt_cdc_state'
+            'covid_ccpt_cdc_state',
+			'vaccination_one_or_more_doses_cdc',
+			'vaccination_fully_vaccinated_cdc',
+			'vaccination_to_be_distributed_cdc'
         ],  
         tableNames: [
             'cases',
@@ -427,7 +430,10 @@ export const dataPresets = {
             'testing',
             'testing_wk_pos',
             'testing_tcap',
-            'testing_ccpt'
+            'testing_ccpt',
+			'vaccines_one_dose',
+			'vaccines_fully_vaccinated',
+			'vaccines_dist'
         ],
         joinCols: ['GEOID', ['FIPS','fips','fips_code','state_fips','stateFIPS']],
         accumulate: ['covid_testing_cdc_state'],
@@ -438,9 +444,9 @@ export const dataPresets = {
             'covid_wk_pos_cdc_state': 'isoDateList', 
             'covid_tcap_cdc_state': 'isoDateList', 
             'covid_ccpt_cdc_state': 'isoDateList', 
-            'vaccine_admin1_cdc': 'isoDateList', 
-            'vaccine_admin2_cdc': 'isoDateList', 
-            'vaccine_dist_cdc': 'isoDateList'
+            'vaccination_one_or_more_doses_cdc': 'isoDateList', 
+            'vaccination_fully_vaccinated_cdc': 'isoDateList', 
+            'vaccination_to_be_distributed_cdc': 'isoDateList'
         }
     },
     'state_nyt.geojson': {
@@ -456,8 +462,9 @@ export const dataPresets = {
             'covid_wk_pos_1p3a_state',
             'covid_tcap_1p3a_state',
             'covid_ccpt_1p3a_state',
-            'vaccine_admin_cdc',
-            'vaccine_dist_cdc'
+			'vaccination_one_or_more_doses_cdc',
+			'vaccination_fully_vaccinated_cdc',
+			'vaccination_to_be_distributed_cdc'
         ], 
         joinCols: ['GEOID', ['FIPS','fips','countyFIPS']], 
         tableNames: [
@@ -470,8 +477,9 @@ export const dataPresets = {
             'testing_wk_pos', 
             'testing_tcap', 
             'testing_ccpt',
-            'vaccinesAdmin', 
-            'vaccinesDist'
+			'vaccines_one_dose',
+			'vaccines_fully_vaccinated',
+			'vaccines_dist'
         ],
         accumulate: ['covid_testing_cdc_state'],
         dateList: {
@@ -481,9 +489,9 @@ export const dataPresets = {
             'covid_wk_pos_cdc_state': 'isoDateList', 
             'covid_tcap_cdc_state': 'isoDateList', 
             'covid_ccpt_cdc_state': 'isoDateList', 
-            'vaccine_admin1_cdc': 'isoDateList', 
-            'vaccine_admin2_cdc': 'isoDateList', 
-            'vaccine_dist_cdc': 'isoDateList'
+            'vaccination_one_or_more_doses_cdc': 'isoDateList', 
+            'vaccination_fully_vaccinated_cdc': 'isoDateList', 
+            'vaccination_to_be_distributed_cdc': 'isoDateList'
         }
     },
     'global_jhu.geojson': {
@@ -818,7 +826,7 @@ export const variablePresets = {
     },
     "Percent Received First Dose": {
         variableName:"Percent Received First Dose",
-        numerator: 'vaccinesAdmin1',
+        numerator: 'vaccines_one_dose',
         nType: 'time-series',
         nProperty: null,
         nRange: null,
@@ -834,7 +842,7 @@ export const variablePresets = {
     },
     "Percent Received Second Dose": {
         variableName:"Percent Received Second Dose",
-        numerator: 'vaccinesAdmin2',
+        numerator: 'vaccines_fully_vaccinated',
         nType: 'time-series',
         nProperty: null,
         nRange: null,
@@ -850,7 +858,7 @@ export const variablePresets = {
     },
     "Doses to be Administered per 100K Population": {
         variableName:"Doses to be Administered per 100K Population",
-        numerator: 'vaccinesDist',
+        numerator: 'vaccines_dist',
         nType: 'time-series',
         nProperty: null,
         nRange: null,
@@ -866,7 +874,7 @@ export const variablePresets = {
     },
     "Doses Available per 100K Population": {
         variableName:"Doses Available per 100K Population",
-        numerator: 'vaccinesDist',
+        numerator: 'vaccines_dist',
         nType: 'time-series',
         nProperty: null,
         nRange: null,
@@ -880,6 +888,56 @@ export const variablePresets = {
         colorScale: 'vaccination',
         fixedScale: null,
     },
+    
+    "Percent Received At Least One Dose": {
+        variableName:"Percent Received At Least One Dose",
+        numerator: 'vaccines_one_dose',
+        nType: 'time-series',
+        nProperty: null,
+        nRange: null,
+        denominator: 'properties',
+        dType: 'characteristic',
+        dProperty: 'population',
+        dRange:null,
+        dIndex:null,
+        scale:100,
+        scale3D: 1000,
+        colorScale: 'YlGnBu8',
+        fixedScale: null,
+    },
+    "Percent Fully Vaccinated": {
+        variableName:"Percent Fully Vaccinated",
+        numerator: 'vaccines_fully_vaccinated',
+        nType: 'time-series',
+        nProperty: null,
+        nRange: null,
+        denominator: 'properties',
+        dType: 'characteristic',
+        dProperty: 'population',
+        dRange:null,
+        dIndex:null,
+        scale:100,
+        scale3D: 1000,
+        colorScale: 'YlGn8',
+        fixedScale: null,
+    },
+    "Doses to be Administered per 100 People": {
+        variableName:"Doses to be Administered per 100 People",
+        numerator: 'vaccines_dist',
+        nType: 'time-series',
+        nProperty: null,
+        nRange: null,
+        denominator: 'properties',
+        dType: 'characteristic',
+        dProperty: 'population',
+        dRange:null,
+        dIndex:null,
+        scale:100,
+        scale3D: 10,
+        colorScale: 'BuPu8',
+        fixedScale: null,
+    },
+
     "Forecasting (5-Day Severity Index)": {
       variableName:"Forecasting (5-Day Severity Index)",
       numerator: 'predictions',
@@ -1144,14 +1202,14 @@ export const variableTree = {
         }
     },
     "HEADER:vaccination":{},
-    "Percent Received First Dose":{
+    "Percent Received At Least One Dose":{
         "State": {
             "CDC": {
                 "geojson": "state_1p3a.geojson"
             }
         },
     },
-    "Percent Received Second Dose":{
+    "Percent Fully Vaccinated":{
         "State": {
             "CDC": {
                 "geojson": "state_1p3a.geojson",
@@ -1159,7 +1217,7 @@ export const variableTree = {
             }
         },
     },
-    "Doses to be Administered per 100K Population":{
+    "Doses to be Administered per 100 People":{
         "State": {
             "CDC": {
                 "geojson": "state_1p3a.geojson"

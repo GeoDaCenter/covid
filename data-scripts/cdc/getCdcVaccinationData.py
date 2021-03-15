@@ -26,52 +26,63 @@ def parseVaccinationData(vaccinationDataList):
             data = json.load(f)
             if (type(data)==dict):
                 data = data['vaccination_data']
-        currDate = data[0]['Date']
 
+        # Pull report date from first row of data
+        currDate = data[0]['Date']
+        # Try to load in JSON to dataframe, pass iteration if fail
         try:
             vaccinationDf = pd.DataFrame(data) \
-                .merge(geoidTable, left_on="Location", right_on="STUSPS", how="inner")[['GEOID','NAME','Doses_Distributed', 'Doses_Administered','Administered_Dose1','Administered_Dose2']]
+                .merge(geoidTable, left_on="Location", right_on="STUSPS", how="inner")
         except:
             continue
 
+        # Older data has only the number of second doses administered (before J+J vaccine)
+        # Series_Complete_Yes is a more robust measure of the total vaccine series completed
+        if 'Series_Complete_Yes' in vaccinationDf.columns:
+            fullyVaccinatedColumn = 'Series_Complete_Yes'
+        else:
+            fullyVaccinatedColumn = 'Administered_Dose2_Recip'
+
+        # Defensive: skip if missing dose1 recip column
+        # This column is defined as number of individuals residing in a state, not crossing over the get doses
+        if 'Administered_Dose1_Recip' not in vaccinationDf.columns:
+            continue
+        # on first iteration, define new data frames
+        # After that, define temporary dataframe sna dmerge below
         if len(vaccineAdministered1) == 0:
-            vaccineAdministered1 = vaccinationDf[['GEOID','Administered_Dose1']]
-            vaccineAdministered2 = vaccinationDf[['GEOID','Administered_Dose2']]
+            vaccineAdministered1 = vaccinationDf[['GEOID','Administered_Dose1_Recip']]
+            vaccineAdministered1.columns = ['fips',currDate]
+
+            vaccineAdministered2 = vaccinationDf[['GEOID',fullyVaccinatedColumn]]
+            vaccineAdministered2.columns = ['fips',currDate]
+
             vaccineDistributed = vaccinationDf[['GEOID','Doses_Administered','Doses_Distributed']].reset_index(drop=True)
             vaccineDistributed.loc[:,'remaining'] = vaccineDistributed['Doses_Distributed'] - vaccineDistributed['Doses_Administered']
-            vaccineDistributed = vaccineDistributed[['GEOID','remaining']]
-            vaccineAdministered1.columns = ['fips',currDate]
-            vaccineAdministered2.columns = ['fips',currDate]
+            vaccineDistributed = vaccineDistributed[['GEOID','remaining']]            
             vaccineDistributed.columns = ['fips',currDate]
+
         else:
-            dailyVaccineAdministered1 = vaccinationDf[['GEOID','Administered_Dose1']]
-            dailyVaccineAdministered2 = vaccinationDf[['GEOID','Administered_Dose2']]
+            dailyVaccineAdministered1 = vaccinationDf[['GEOID','Administered_Dose1_Recip']]
+            dailyVaccineAdministered1.columns = ['fips',currDate]
+            
+            dailyVaccineAdministered2 = vaccinationDf[['GEOID',fullyVaccinatedColumn]]
+            dailyVaccineAdministered2.columns = ['fips',currDate]
+            
             dailyVaccineDistributed = vaccinationDf[['GEOID','Doses_Administered','Doses_Distributed']].reset_index(drop=True)
             dailyVaccineDistributed.loc[:,'remaining'] = dailyVaccineDistributed['Doses_Distributed'] - dailyVaccineDistributed['Doses_Administered']
             dailyVaccineDistributed = dailyVaccineDistributed[['GEOID','remaining']]
-            dailyVaccineAdministered1.columns = ['fips',currDate]
-            dailyVaccineAdministered2.columns = ['fips',currDate]
             dailyVaccineDistributed.columns = ['fips',currDate]
 
+            # Merge
             vaccineAdministered1 = vaccineAdministered1.merge(dailyVaccineAdministered1, on=["fips"])
             vaccineAdministered2 = vaccineAdministered2.merge(dailyVaccineAdministered2, on=["fips"])
             vaccineDistributed = vaccineDistributed.merge(dailyVaccineDistributed, on=["fips"])
+
     return { 'vaccineAdministered1': vaccineAdministered1, 'vaccineAdministered2': vaccineAdministered2, 'vaccineDistributed': vaccineDistributed }
 
-def getCdcData():
-    # front end CDC page with links
-    URL = 'https://healthdata.gov/dataset/covid-19-diagnostic-laboratory-testing-pcr-testing-time-series'
-
-    # download Page as HTML
-    page = requests.get(URL)
-
-    # parse HTML with BS4
-    soup = BeautifulSoup(page.content, 'html.parser')
-
-    # snag the HREF from the known "download" button
-    accessLink = soup.find('a', {'class': 'data-link'})['href']
-    
-    raw = pd.read_csv(accessLink)[['state_fips','overall_outcome','date','new_results_reported','total_results_reported']]
+def getCdcData():    
+    # read in data from HealthData.gov API endpoint (god bless them allows CORS)
+    raw = pd.read_csv('https://healthdata.gov/resource/j8mb-icvb.csv')[['state_fips','overall_outcome','date','new_results_reported','total_results_reported']]
     
     totalNew = raw[['state_fips','date','new_results_reported']].groupby(['state_fips','date']).sum().reset_index().rename(columns={'new_results_reported':'total'})
     positiveNew = raw[raw['overall_outcome']=='Positive'][['state_fips','date','new_results_reported']].rename(columns={'new_results_reported':'positive'})
@@ -120,9 +131,9 @@ if __name__ == "__main__":
     fileList = downloadCDCVaccinationData()
     parsedData = parseVaccinationData(fileList)
 
-    parsedData['vaccineDistributed'].to_csv(os.path.join(repo_root, 'public/csv/vaccine_dist_cdc.csv'), index=False)
-    parsedData['vaccineAdministered1'].to_csv(os.path.join(repo_root, 'public/csv/vaccine_admin1_cdc.csv'), index=False)
-    parsedData['vaccineAdministered2'].to_csv(os.path.join(repo_root, 'public/csv/vaccine_admin2_cdc.csv'), index=False)
+    parsedData['vaccineDistributed'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_to_be_distributed_cdc.csv'), index=False)
+    parsedData['vaccineAdministered1'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_one_or_more_doses_cdc.csv'), index=False)
+    parsedData['vaccineAdministered2'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_fully_vaccinated_cdc.csv'), index=False)
 
     ## State Testing Data
     currentData = getCdcData()

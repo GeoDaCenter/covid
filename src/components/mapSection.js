@@ -223,8 +223,27 @@ function MapSection(props){
 
     const dispatch = useDispatch();
 
+    let hidden = null;
+    let visibilityChange = null;
+    if (typeof document.hidden !== 'undefined') { // Opera 12.10 and Firefox 18 and later support 
+        hidden = 'hidden';
+        visibilityChange = 'visibilitychange';
+    } else if (typeof document.msHidden !== 'undefined') {
+        hidden = 'msHidden';
+        visibilityChange = 'msvisibilitychange';
+    } else if (typeof document.webkitHidden !== 'undefined') {
+        hidden = 'webkitHidden';
+        visibilityChange = 'webkitvisibilitychange';
+    }
+
     // shared view broadcast
     useEffect(() => { 
+
+        document.addEventListener(visibilityChange, () => {
+            setBoxSelect(false);
+            setMultipleSelect(false);
+        });
+
         window.addEventListener('storage', () => {
             // When local storage changes, dump the list to
             // the console.
@@ -994,7 +1013,7 @@ function MapSection(props){
             onKeyDown={handleKeyDown}
             onKeyUp={handleKeyUp}
             onMouseDown={e => boxSelect ? handleBoxSelect(e) : null}
-            onMouseUp={e => boxSelect ? handleBoxSelect(e) : null} 
+            onMouseUp={e => boxSelect ? handleBoxSelect(e) : null}
         >
             {
                 // boxSelectDims.hasOwnProperty('x') && 
