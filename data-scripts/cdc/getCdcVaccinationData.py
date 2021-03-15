@@ -82,8 +82,9 @@ def parseVaccinationData(vaccinationDataList):
 
 def getCdcData():    
     # read in data from HealthData.gov API endpoint (god bless them allows CORS)
-    raw = pd.read_csv('https://healthdata.gov/resource/j8mb-icvb.csv')[['state_fips','overall_outcome','date','new_results_reported','total_results_reported']]
-    
+    raw = pd.read_csv('https://healthdata.gov/api/views/j8mb-icvb/rows.csv?accessType=DOWNLOAD')[['state_fips','overall_outcome','date','new_results_reported','total_results_reported']]
+    raw['date'] = raw['date'].str.slice(0,10)
+
     totalNew = raw[['state_fips','date','new_results_reported']].groupby(['state_fips','date']).sum().reset_index().rename(columns={'new_results_reported':'total'})
     positiveNew = raw[raw['overall_outcome']=='Positive'][['state_fips','date','new_results_reported']].rename(columns={'new_results_reported':'positive'})
 
@@ -94,7 +95,7 @@ def parseCsvOutput(df, colName, operation=None):
     # https://stackoverflow.com/questions/54915215/expressing-time-series-data-in-the-columns-rather-than-the-rows-of-a-dataframe
     tempDf = df[['state_fips','date',colName]]
     tempDf = tempDf.pivot_table(index='state_fips', columns='date').swaplevel(0, 1, 1).sort_index(1).reset_index()
-    tempDf.columns = [column[0] for column in list(tempDf.columns)]
+    tempDf.columns = [column[0].replace('/','-') for column in list(tempDf.columns)]
 
     return tempDf
 
