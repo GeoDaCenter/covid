@@ -781,7 +781,7 @@ const VariablePanel = (props) => {
               <MenuItem value={'clinics_hospitals'} key={'variable1'}>Clinics and Hospitals<Tooltip id="ClinicsAndHospitals"/></MenuItem>
               <MenuItem value={'clinics'} key={'variable2'}>Clinics<Tooltip id="Clinics"/></MenuItem>
               <MenuItem value={'hospitals'} key={'variable3'}>Hospitals<Tooltip id="Hospitals"/></MenuItem>
-              <MenuItem value={'vaccinationSites'} key={'variable4'}>Vaccination Sites<Tooltip id="vaccinationSites"/></MenuItem>
+              <MenuItem value={'vaccinationSites'} key={'variable4'}>Federal Vaccination Sites<Tooltip id="vaccinationSites"/></MenuItem>
 
               
             </Select>
