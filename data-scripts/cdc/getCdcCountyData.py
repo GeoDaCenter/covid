@@ -46,7 +46,6 @@ def getCdcCountyData():
 
     # sort by and clean date
     parsed = parsed.sort_values('date')
-    parsed['date'] = parsed['date'].str.slice(0,-9)
 
     # return sorted DF
     return parsed
