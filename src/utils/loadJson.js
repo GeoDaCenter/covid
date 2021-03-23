@@ -5,6 +5,7 @@ const data = getJson(url).then(values => {
     gda_proxy.ReadGeojsonMap(url.split('/').slice(-1,)[0], values.ab);
     return values.response.json().then(
     data => {
+        console.log(data.features)
         return {
         data: data,
         geoidIndex: getGeoidIndex(data.features)

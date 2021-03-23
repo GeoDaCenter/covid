@@ -2,6 +2,7 @@ import getCurrentWuuid from './getCurrentWuuid.js';
 
 const getLisaValues = (gda_proxy, dataset, data, geoids) => {
   let w = getCurrentWuuid(gda_proxy, dataset);
+  let t0 = performance.now();
   let all_zeros = true;
   for (let i=0; i<data.length; ++i) { 
     if (data[i] !== 0)
@@ -20,6 +21,8 @@ const getLisaValues = (gda_proxy, dataset, data, geoids) => {
     clusters = gda_proxy.parseVecDouble(lisa.clusters());
     sig = gda_proxy.parseVecDouble(lisa.significances());
   }
+  
+  console.log(t0 - performance.now());
   return clusters;
 }
 

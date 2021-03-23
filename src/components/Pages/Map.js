@@ -24,6 +24,24 @@ import { MapSection, NavBar, VariablePanel, Legend,  TopPanel, Preloader,
 
 import { colorScales, fixedScales, dataPresets, variablePresets, colors } from '../../config';
 
+import JsGeoDaWorker from '../../JsGeoDaWorker';
+
+const gdaProxy = new JsGeoDaWorker();
+
+const loadGeodaData = async (url) => {
+  // Load in the GeoJson 
+  const jsonData = await gdaProxy.LoadGeojson(url)
+
+  // Making fake data for the LISA Clusters
+  const fakeData = Array(jsonData.features.length).fill(0).map(_ => Math.random()*100)
+
+  // Generates Weights
+  const w_uid = await gdaProxy.CreateWeights.Queen('county_1p3a.geojson')
+
+  // Generate Clusters
+  const clusters = await gdaProxy.Cluster.LocalMoran1('county_1p3a.geojson', w_uid, fakeData)
+}
+
 // Main function, App. This function does 2 things:
 // 1: App manages the majority of the side effects when the state changes.
 //    This takes the form of React's UseEffect hook, which listens
@@ -49,32 +67,33 @@ const getDefaultDimensions = () => ({
   minWidth: window.innerWidth <= 1024 ? window.innerWidth*.5 : 200,
 })
 
+
+
 function App() {
-
   const dateLists = getDateLists()
-
   // These selectors access different pieces of the store. While App mainly
   // dispatches to the store, we need checks to make sure side effects
   // are OK to trigger. Issues arise with missing data, columns, etc.
-  const {storedData, storedGeojson, currentData, mapParams, dataParams, dateIndices, mapLoaded } = useSelector(state => state);
+  const {storedData, storedGeojson, currentData, mapParams, dataParams, dateIndices, mapLoaded, panelState } = useSelector(state => state);
   // const fullState = useSelector(state => state)
-
-  // gda_proxy is the WebGeoda proxy class. Generally, having a non-serializable
+  // gdaProxy is the WebGeoda proxy class. Generally, having a non-serializable
   // data in the state is poor for performance, but the App component state only
-  // contains gda_proxy.
-  const [gda_proxy, set_gda_proxy] = useState(null);
+  // contains gdaProxy.
   const [defaultDimensions, setDefaultDimensions] = useState({...getDefaultDimensions()})
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();  
   // // Dispatch helper functions for side effects and data handling
   // Get centroid data for cartogram
-  // const getCentroids = (geojson, gda_proxy) =>  dispatch(setCentroids(gda_proxy.GetCentroids(geojson), geojson))
+  // const getCentroids = (geojson, gdaProxy) =>  dispatch(setCentroids(gdaProxy.GetCentroids(geojson), geojson))
   
   // Main data loader
   // This functions asynchronously accesses the Geojson data and CSVs
   //   then performs a join and loads the data into the store
-  const loadData = async (params, gda_proxy) => {
+  const loadData = async (params) => {
     setIsLoading(true)
+
+    if (!gdaProxy.ready) await gdaProxy.init()
+
     // destructure parameters
     const { geojson, csvs, joinCols, tableNames, accumulate, dateList } = params
     // promise all data fetching - CSV and Json
@@ -85,93 +104,83 @@ function App() {
         accumulate.includes(csv),
         dateLists[dateList[csv]]
       ).then(result => {return result}))
-
-    Promise.all([
-      loadJson(`${process.env.PUBLIC_URL}/geojson/${geojson}`, gda_proxy).then(result => {return result}),
+    
+    const values = await Promise.all([
+      gdaProxy.LoadGeojson(`${process.env.PUBLIC_URL}/geojson/${geojson}`),
       ...csvPromises
-    ]).then(values => {
-      // store geojson lookup table
-      // merge data and get results
-      let tempData = mergeData(values[0]['data'], joinCols[0], values.slice(1,), tableNames, joinCols[1]);
-      let ColNames = getColumns(values.slice(1,), tableNames);
-      let DateIndices = getDateIndices(values.slice(1,), tableNames);
-      let denomIndices = DateIndices[dataParams.numerator]
-      let lastIndex = denomIndices !== null ? denomIndices.slice(-1,)[0] : null;
-      let chartData = getDataForCharts(tempData, 'cases', DateIndices['cases'], dateLists.isoDateList);
-      let binData = getDataForBins(tempData, {...dataParams, nIndex: lastIndex || dataParams.nIndex, binIndex: lastIndex || dataParams.binIndex});
-      let bins;
+    ])
 
-      if (dataParams.fixedScale === null || dataParams.fixedScale === undefined){
-        // calculate breaks
-        let nb = gda_proxy.custom_breaks(
-          geojson, 
-          mapParams.mapType,
-          mapParams.nBins,
-          null,
-          binData
-        );        
+    let tempData = mergeData(values[0]['data'], joinCols[0], values.slice(1,), tableNames, joinCols[1]);
+    let ColNames = getColumns(values.slice(1,), tableNames);
+    let DateIndices = getDateIndices(values.slice(1,), tableNames);
+    let denomIndices = DateIndices[dataParams.numerator]
+    let lastIndex = denomIndices !== null ? denomIndices.slice(-1,)[0] : null;
+    let chartData = getDataForCharts(tempData, 'cases', DateIndices['cases'], dateLists.isoDateList);
+    let binData = getDataForBins(tempData, {...dataParams, nIndex: lastIndex || dataParams.nIndex, binIndex: lastIndex || dataParams.binIndex});
+    let bins;
 
-        bins = {
-          bins: mapParams.mapType === "natural_breaks" ? nb.bins : ['Lower Outlier','< 25%','25-50%','50-75%','>75%','Upper Outlier'],
-          breaks: [-Math.pow(10, 12), ...nb.breaks.slice(1,-1), Math.pow(10, 12)]
-        }
-      } else {
-        bins = fixedScales[dataParams.fixedScale]
+    if (dataParams.fixedScale === null || dataParams.fixedScale === undefined){
+      // calculate breaks
+      let nb = mapParams.mapType === "natural_breaks" ? 
+        await gdaProxy.Bins.NaturalBreaks(mapParams.nBins, binData) :
+        await gdaProxy.Bins.Hinge15(mapParams.nBins, binData)  
+      bins = {
+        bins: mapParams.mapType === "natural_breaks" ? nb.bins : ['Lower Outlier','< 25%','25-50%','50-75%','>75%','Upper Outlier'],
+        breaks: [-Math.pow(10, 12), ...nb.breaks.slice(1,-1), Math.pow(10, 12)]
       }
+    } else {
+      bins = fixedScales[dataParams.fixedScale]
+    }
 
       // store data, data name, and column names
-      dispatch(
-        dataLoad({
-          storeData: {
-            data: tempData, 
-            name: geojson
-          },
-          currentData: geojson,
-          columnNames: {
-            data: ColNames,
-            name: geojson
-          },
-          dateIndices: {
-            data: DateIndices,
-            name: geojson
-          },
-          storeGeojson: {
-            data: values[0]['geoidIndex'],
-            name: geojson
-          },
-          chartData: chartData,
-          mapParams: {
-            bins,
-            colorScale: colorScales[dataParams.colorScale || mapParams.mapType]
-          },
-          variableParams: {
-            nIndex: lastIndex || dataParams.nIndex,
-            binIndex: lastIndex || dataParams.binIndex
-          },
-        })
-      )
-      setIsLoading(false)
-    })
+    dispatch(
+      dataLoad({
+        storeData: {
+          data: tempData, 
+          name: geojson
+        },
+        currentData: geojson,
+        columnNames: {
+          data: ColNames,
+          name: geojson
+        },
+        dateIndices: {
+          data: DateIndices,
+          name: geojson
+        },
+        storeGeojson: {
+          data: values[0].indices,
+          name: geojson
+        },
+        chartData: chartData,
+        mapParams: {
+          bins,
+          colorScale: colorScales[dataParams.colorScale || mapParams.mapType]
+        },
+        variableParams: {
+          nIndex: lastIndex || dataParams.nIndex,
+          binIndex: lastIndex || dataParams.binIndex
+        },
+      })
+    )
+    setIsLoading(false)
   }
 
-  const updateBins = useCallback((params) => {
-    const { storedData, currentData, dataParams, mapParams, gda_proxy, colorScales } = params;
+  const updateBins = async (params) => {
+    const { storedData, currentData, dataParams, mapParams, colorScales } = params;
     if (
       !storedData.hasOwnProperty(currentData) || 
       !storedData[currentData][0].hasOwnProperty(dataParams.numerator)
     ) { return };
 
-    if (gda_proxy !== null && storedData.hasOwnProperty(currentData) && mapParams.mapType !== "lisa"){
+    if (gdaProxy.ready && storedData.hasOwnProperty(currentData) && mapParams.mapType !== "lisa"){
       if (dataParams.fixedScale === null || mapParams.mapType !== 'natural_breaks') {
         let binData = getDataForBins( storedData[currentData], dataParams )
-        let nb = gda_proxy.custom_breaks(
-          currentData, 
-          mapParams.mapType, 
-          mapParams.nBins, 
-          null, 
-          binData
-        )
-
+        
+        let nb = mapParams.mapType === "natural_breaks" ? 
+          await gdaProxy.Bins.NaturalBreaks(mapParams.nBins, binData) :
+          await gdaProxy.Bins.Hinge15(mapParams.nBins, binData)
+        if (!nb) return;
         dispatch(
           setMapParams({
             bins: {
@@ -190,9 +199,20 @@ function App() {
         )
       }
     }
-  },[]);
+  };
 
-  // After runtime is initialized, this loads in gda_proxy to the state
+  const updateLisa = async (currentData, storedData, storedGeojson, dataParams) => {
+    const dataForLisa = getDataForLisa(
+      storedData, 
+      dataParams,
+      storedGeojson.indexOrder
+    )
+    const weight_uid = 'Queen' in gdaProxy.geojsonMaps[currentData] ? gdaProxy.geojsonMaps[currentData].Queen : await gdaProxy.CreateWeights.Queen(currentData);
+    const lisaValues = await gdaProxy.Cluster.LocalMoran1(currentData, weight_uid, dataForLisa)    
+    dispatch(storeLisaValues(lisaValues.clusters))
+  }
+
+  // After runtime is initialized, this loads in gdaProxy to the state
   // TODO: Recompile WebGeoda and load it into a worker
   useEffect(() => {
     let paramsDict = {}; 
@@ -230,40 +250,18 @@ function App() {
       }))
     }
 
-    import('jsgeoda').then(jsgeoda => {
-      const newGeoda = async () => {
-        let geoda = await jsgeoda.New();
-        set_gda_proxy(geoda);
-        window.gda_proxy = geoda
-      }
-
-      if (window.gda_proxy === undefined) {
-        newGeoda()
-      } else {
-        set_gda_proxy(window.gda_proxy)
-      }
-    
-    })
     dispatch(setDates(dateLists.isoDateList))
   },[])
 
 
-  // On initial load and after gda_proxy has been initialized, this loads in the default data sets (USA Facts)
+  // On initial load and after gdaProxy has been initialized, this loads in the default data sets (USA Facts)
   // Otherwise, this side-effect loads the selected data.
-  // Each conditions checks to make sure gda_proxy is working.
+  // Each conditions checks to make sure gdaProxy is working.
   useEffect(() => {
-    if (gda_proxy === null) {
-      return;
-    } else if (storedData === {}) {
-      loadData(
-        dataPresets[currentData],
-        gda_proxy
-      )
+    if (storedData === {}) {
+      loadData(dataPresets[currentData])
     } else if (storedData[currentData] === undefined) {
-      loadData(
-        dataPresets[currentData],
-        gda_proxy
-      )
+      loadData(dataPresets[currentData])
     } else if (dateIndices[currentData] !== undefined) {
       
       let denomIndices = dateIndices[currentData][dataParams.numerator]
@@ -279,43 +277,29 @@ function App() {
           chartData: getDataForCharts(storedData[currentData],'cases', dateIndices[currentData]['cases'], dateLists.isoDateList)
         })
       )
-      updateBins( { storedData, currentData, mapParams, gda_proxy, colorScales,
+      updateBins( { storedData, currentData, mapParams, colorScales,
         dataParams: { 
           ...dataParams,  
           nIndex: lastIndex || dataParams.nIndex,
           binIndex: lastIndex || dataParams.nIndex,
         }, 
       })
-      
-      // updateBins();
     }
-  },[gda_proxy, currentData])
+  },[gdaProxy.ready, currentData])
 
-  // This listens for gda_proxy events for LISA and Cartogram calculations
+  // This listens for gdaProxy events for LISA and Cartogram calculations
   // Both of these are computationally heavy.
   useEffect(() => {
-    if (gda_proxy !== null && mapParams.mapType === "lisa" && storedGeojson[currentData] !== undefined){
-      dispatch(
-        storeLisaValues(
-          getLisaValues(
-            gda_proxy, 
-            currentData, 
-            getDataForLisa(
-              storedData[currentData], 
-              dataParams,
-              storedGeojson[currentData].indexOrder
-            )
-          )
-        )
-      )
+    if (gdaProxy.ready && mapParams.mapType === "lisa" && storedGeojson[currentData] !== undefined){
+      updateLisa(currentData, storedData[currentData], storedGeojson[currentData], dataParams)
     }
-    if (gda_proxy !== null && mapParams.vizType === 'cartogram' && storedGeojson[currentData] !== undefined){
+    if (gdaProxy.ready && mapParams.vizType === 'cartogram' && storedGeojson[currentData] !== undefined){
       // let tempId = getVarId(currentData, dataParams)
       if (storedGeojson[currentData] !== undefined) {
         dispatch(
           storeCartogramData(
             getCartogramValues(
-              gda_proxy, 
+              gdaProxy, 
               currentData, 
               getDataForLisa( storedData[currentData], dataParams, storedGeojson[currentData].indexOrder )
             )
@@ -328,15 +312,15 @@ function App() {
   // Trigger on parameter change for metric values
   // Gets bins and sets map parameters
   useEffect(() => {
-    if (storedData.hasOwnProperty(currentData) && gda_proxy !== null && mapParams.binMode !== 'dynamic' && mapParams.mapType !== 'lisa') {
-      updateBins( { storedData, currentData, dataParams, mapParams, gda_proxy, colorScales } );
+    if (storedData.hasOwnProperty(currentData) && gdaProxy.ready && mapParams.binMode !== 'dynamic' && mapParams.mapType !== 'lisa') {
+      updateBins( { storedData, currentData, dataParams, mapParams, colorScales } );
     }
   }, [dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.dRange, mapParams.mapType, mapParams.vizType] );
 
   // Trigger on index change while dynamic bin mode
   useEffect(() => {
-    if (storedData.hasOwnProperty(currentData) && gda_proxy !== null && mapParams.binMode === 'dynamic' && mapParams.mapType !== 'lisa') {
-      updateBins( { storedData, currentData, dataParams: { ...dataParams, binIndex: dataParams.nIndex }, mapParams, gda_proxy, colorScales } );
+    if (storedData.hasOwnProperty(currentData) && gdaProxy.ready && mapParams.binMode === 'dynamic' && mapParams.mapType !== 'lisa') {
+      updateBins( { storedData, currentData, dataParams: { ...dataParams, binIndex: dataParams.nIndex }, mapParams, colorScales } );
     }
   }, [dataParams.nIndex, dataParams.dIndex, mapParams.binMode, dataParams.variableName, dataParams.nRange, mapParams.mapType, mapParams.vizType] ); 
 
@@ -346,15 +330,21 @@ function App() {
   }, [window.innerHeight, window.innerWidth])
   // const dragHandlers = {onStart: this.onStart, onStop: this.onStop};
 
+  // const testData = async (url) => {
+  //   const jsonData = await gdaProxy.LoadGeojson(`${process.env.PUBLIC_URL}/geojson/county_1p3a.geojson`)
+  //   console.log(jsonData)
+  // }
+  // testData(`${process.env.PUBLIC_URL}/geojson/county_1p3a.geojson`)
 
   return (
     <div className="Map-App">
       <Preloader loaded={mapLoaded} />
       <NavBar />
       {isLoading && <div id="loadingIcon" style={{backgroundImage: `url('${process.env.PUBLIC_URL}assets/img/bw_preloader.gif')`}}></div>}
-      <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
-        {/* <button onClick={() => console.log(fullState)}>Log state</button> */}
-      </header>
+      {/* <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
+        <button onClick={() => retryWeights()}>weights</button>
+        <button onClick={() => testGeoda()}>test</button>
+      </header> */}
       <div id="mainContainer" className={isLoading ? 'loading' : ''}>
         <MapSection />
         <TopPanel />
@@ -369,7 +359,7 @@ function App() {
         <DataPanel />
         <Popover /> 
         <NotificationBox />  
-        <Draggable 
+        {panelState.lineChart && <Draggable 
           z={9}
           defaultX={defaultDimensions.defaultXLong}
           defaultY={defaultDimensions.defaultY}
@@ -384,8 +374,8 @@ function App() {
             defaultHeight={defaultDimensions.defaultHeight}
             minHeight={defaultDimensions.minHeight}
             minWidth={defaultDimensions.minWidth} />
-        }/>      
-        <Draggable 
+        }/>} 
+        {panelState.tutorial && <Draggable 
           z={10}
           defaultX={defaultDimensions.defaultXManual}
           defaultY={defaultDimensions.defaultYManual}
@@ -400,7 +390,7 @@ function App() {
             defaultHeight={defaultDimensions.defaultHeightManual}
             minHeight={defaultDimensions.minHeight}
             minWidth={defaultDimensions.minWidth} />
-        }/>
+        }/>}
 
       </div>
     </div>

@@ -222,7 +222,12 @@ const VariablePanel = (props) => {
 
   const dispatch = useDispatch();    
 
-  const { currentData,  dataParams, mapParams, panelState, urlParams } = useSelector(state => state); 
+  const currentData = useSelector(state => state.currentData);
+  const dataParams = useSelector(state => state.dataParams);
+  const mapParams = useSelector(state => state.mapParams);
+  const panelState = useSelector(state => state.panelState);
+  const urlParams = useSelector(state => state.urlParams);
+
   // currentVariable, currentZVariable, storedMobilityData
   // const [bivariateZ, setBivariateZ] = useState(false);
 
@@ -549,7 +554,7 @@ const VariablePanel = (props) => {
 
   return (
     <VariablePanelContainer className={panelState.variables ? '' : 'hidden'} otherPanels={panelState.info} id="variablePanel">
-      <ControlsContainer>
+      {panelState.variables && <ControlsContainer>
         <h2>Data Sources &amp;<br/> Map Variables</h2>
         <Gutter h={20}/>
         <StyledDropDown id="newVariableSelect">
@@ -787,7 +792,7 @@ const VariablePanel = (props) => {
             </Select>
           </StyledDropDown>
         </TwoUp>        
-      </ControlsContainer>
+      </ControlsContainer>}
       <div className="noteContainer">
         {/* <h3>Help us improve the Atlas!</h3>
         <p>
