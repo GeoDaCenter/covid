@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
 import Slider from '@material-ui/core/Slider';
 import Button from '@material-ui/core/Button';
 import styled from 'styled-components';
 import { setVariableParams, incrementDate } from '../actions';
-import { useEffect } from 'react/cjs/react.development';
 
 const SliderContainer = styled.div`
     color: white;
