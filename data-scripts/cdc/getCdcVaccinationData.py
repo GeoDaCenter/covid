@@ -38,19 +38,33 @@ def parseVaccinationData(vaccinationDataList):
 
         # Older data has only the number of second doses administered (before J+J vaccine)
         # Series_Complete_Yes is a more robust measure of the total vaccine series completed
+        fullyVaccinatedColumn = False
+        firstDoseColumn = False
         if 'Series_Complete_Yes' in vaccinationDf.columns:
             fullyVaccinatedColumn = 'Series_Complete_Yes'
-        else:
+        elif 'Administered_Dose2_Recip' in vaccinationDf.columns:
             fullyVaccinatedColumn = 'Administered_Dose2_Recip'
+        else: 
+            fullyVaccinatedColumn = 'Administered_Dose2'
+
+        
+        if 'Administered_Dose1_Recip' in vaccinationDf.columns:
+            firstDoseColumn = 'Administered_Dose1_Recip'
+        else:
+            firstDoseColumn = 'Administered_Dose1'
+
+        if 'Doses_Administered' not in vaccinationDf.columns:
+            vaccinationDf['Doses_Administered'] = vaccinationDf[firstDoseColumn] + vaccinationDf[fullyVaccinatedColumn]
 
         # Defensive: skip if missing dose1 recip column
         # This column is defined as number of individuals residing in a state, not crossing over the get doses
-        if 'Administered_Dose1_Recip' not in vaccinationDf.columns:
+        if not isinstance(fullyVaccinatedColumn, str) or not isinstance(firstDoseColumn, str):
             continue
+
         # on first iteration, define new data frames
         # After that, define temporary dataframe sna dmerge below
         if len(vaccineAdministered1) == 0:
-            vaccineAdministered1 = vaccinationDf[['GEOID','Administered_Dose1_Recip']]
+            vaccineAdministered1 = vaccinationDf[['GEOID',firstDoseColumn]]
             vaccineAdministered1.columns = ['fips',currDate]
 
             vaccineAdministered2 = vaccinationDf[['GEOID',fullyVaccinatedColumn]]
@@ -62,7 +76,7 @@ def parseVaccinationData(vaccinationDataList):
             vaccineDistributed.columns = ['fips',currDate]
 
         else:
-            dailyVaccineAdministered1 = vaccinationDf[['GEOID','Administered_Dose1_Recip']]
+            dailyVaccineAdministered1 = vaccinationDf[['GEOID',firstDoseColumn]]
             dailyVaccineAdministered1.columns = ['fips',currDate]
             
             dailyVaccineAdministered2 = vaccinationDf[['GEOID',fullyVaccinatedColumn]]

@@ -14,7 +14,7 @@ import MapboxGLMap from 'react-map-gl';
 
 // component, action, util, and config import
 import { MapTooltipContent, Geocoder } from '../components';
-import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData, openContextMenu } from '../actions';
+import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData, openContextMenu, setNotification } from '../actions';
 import { mapFn, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, getURLParams } from '../utils';
 import { colors, colorScales, MAPBOX_ACCESS_TOKEN } from '../config';
 import MAP_STYLE from '../config/style.json';
@@ -378,6 +378,16 @@ function MapSection(props){
             if (!resourceLayerData.vaccineSites.length) {
                 getCSV(`${process.env.PUBLIC_URL}/csv/context_vaccination_sites_hrsa_wh.csv`)
                 .then(values => setResourceLayerData(prev => ({...prev, vaccineSites: values})))
+                dispatch(setNotification(`
+                    <h2>COVID19 Vaccine Access</h2>
+                    <p>
+                        <br/>
+                        Federal Vaccination Sites only include White House/FEMA large vaccination centers and HRSA-supported clinics (FQHCs).
+                        <br/><br/>
+                        For a more complete listing of places to get the COVID19 please visit the <a href="https://vaccinefinder.org/search/" target="_blank" rel="noopener noreferrer">CDC VaccineFinder</a> or check your local jurisdiction.
+                    </a>
+                    </p>
+                `))
             }
         }
         

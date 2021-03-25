@@ -56,7 +56,13 @@ function App() {
   // These selectors access different pieces of the store. While App mainly
   // dispatches to the store, we need checks to make sure side effects
   // are OK to trigger. Issues arise with missing data, columns, etc.
-  const {storedData, storedGeojson, currentData, mapParams, dataParams, dateIndices, mapLoaded } = useSelector(state => state);
+  const storedData = useSelector(state => state.storedData);
+  const storedGeojson = useSelector(state => state.storedGeojson);
+  const currentData = useSelector(state => state.currentData);
+  const mapParams = useSelector(state => state.mapParams);
+  const dataParams = useSelector(state => state.dataParams);
+  const dateIndices = useSelector(state => state.dateIndices);
+  const mapLoaded = useSelector(state => state.mapLoaded);
   // const fullState = useSelector(state => state)
 
   // gda_proxy is the WebGeoda proxy class. Generally, having a non-serializable
@@ -364,6 +370,7 @@ function App() {
           bins={mapParams.bins.bins}
           fixedScale={dataParams.fixedScale}
           resource={mapParams.resource}
+          note={dataParams.dataNote}
           />
         <VariablePanel />
         <DataPanel />

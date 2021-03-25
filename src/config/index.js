@@ -617,6 +617,7 @@ export const variablePresets = {
         scale3D: 100,
         fixedScale: null,
         colorScale: null,
+        dataNote: null,
     },
     "Confirmed Count per 100K Population": {
         variableName:"Confirmed Count per 100K Population",
@@ -633,6 +634,7 @@ export const variablePresets = {
         scale3D: 1000,
         fixedScale: null,
         colorScale: null,
+        dataNote: null,
     },
     "Confirmed Count per Licensed Bed": {
         variableName:"Confirmed Count per Licensed Bed",
@@ -649,6 +651,7 @@ export const variablePresets = {
         scale3D: 100000,
         fixedScale: null,
         colorScale: null,
+        dataNote: null,
     },
     "Death Count":{
       variableName:"Death Count",
@@ -664,7 +667,8 @@ export const variablePresets = {
       scale:1,
       scale3D: 10000,
       fixedScale: null,
-      colorScale: null,        
+      colorScale: null,
+      dataNote: null,      
     }, 
     "Death Count per 100K Population":{
       variableName:"Death Count per 100K Population",
@@ -681,6 +685,7 @@ export const variablePresets = {
       scale3D: 15000,
       fixedScale: null,
       colorScale: null,
+      dataNote: null,
     },
     "Death Count / Confirmed Count":{
       variableName:"Death Count / Confirmed Count",
@@ -695,6 +700,7 @@ export const variablePresets = {
       scale:1,
       fixedScale: null,
       colorScale: null,
+      dataNote: null,
     },
     "Uninsured Percent":{
       variableName:"Uninsured Percent",
@@ -711,6 +717,7 @@ export const variablePresets = {
       fixedScale: null,
       colorScale: 'uninsured',
       scale3D: 15000,
+      dataNote: null,
     },
     "Over 65 Years Percent":{
       variableName:"Over 65 Years Percent",
@@ -727,6 +734,7 @@ export const variablePresets = {
       fixedScale: null,
       colorScale: 'over65',
       scale3D: 15000,
+      dataNote: null
     },
     "Life Expectancy":{
       variableName:"Life Expectancy",
@@ -742,7 +750,8 @@ export const variablePresets = {
       scale:1,
       colorScale: 'lifeExp',
       fixedScale: null,
-      scale3D: 1000
+      scale3D: 1000,
+      dataNote: null,
     },
     "7 Day Testing Positivity Rate Percent": {
       variableName:"7 Day Testing Positivity Rate Percent",
@@ -758,7 +767,8 @@ export const variablePresets = {
       scale:1,
       fixedScale: 'testing',
       colorScale: 'testing',
-      scale3D: 10000000
+      scale3D: 10000000,
+      dataNote: null,
     },
     "7 Day Testing Capacity": {
       variableName:"7 Day Testing Capacity",
@@ -774,7 +784,8 @@ export const variablePresets = {
       scale:1,
       fixedScale: 'testingCap',
       colorScale: 'testingCap',
-      scale3D: 3000
+      scale3D: 3000,
+      dataNote: null,
     }, 
     "7 Day Testing Capacity per 100K": {
       variableName:"7 Day Testing Capacity per 100K Population",
@@ -790,7 +801,8 @@ export const variablePresets = {
       scale:1,
       fixedScale: 'testingCap',
       colorScale: 'testingCap',
-      scale3D: 3000
+      scale3D: 3000,
+      dataNote: null,
     }, 
     "7 Day Testing Capacity per 100K Population": {
         variableName:"7 Day Testing Capacity per 100K Population",
@@ -806,7 +818,8 @@ export const variablePresets = {
         scale:1,
         fixedScale: 'testingCap',
         colorScale: 'testingCap',
-        scale3D: 3000
+        scale3D: 3000,
+        dataNote: null,
     }, 
     "7 Day Confirmed Cases per Testing %":{
       variableName:"7 Day Confirmed Cases per Testing %",
@@ -822,7 +835,8 @@ export const variablePresets = {
       scale:1,
       fixedScale: 'testing',
       colorScale: 'testing',
-      scale3D: 10000000
+      scale3D: 10000000,
+      dataNote: null,
     },
     "Percent Received First Dose": {
         variableName:"Percent Received First Dose",
@@ -839,6 +853,7 @@ export const variablePresets = {
         scale3D: 1000,
         colorScale: 'YlGnBu8',
         fixedScale: null,
+        dataNote: null,
     },
     "Percent Received Second Dose": {
         variableName:"Percent Received Second Dose",
@@ -855,6 +870,7 @@ export const variablePresets = {
         scale3D: 1000,
         colorScale: 'YlGn8',
         fixedScale: null,
+        dataNote: null,
     },
     "Doses to be Administered per 100K Population": {
         variableName:"Doses to be Administered per 100K Population",
@@ -871,6 +887,7 @@ export const variablePresets = {
         scale3D: 1000,
         colorScale: 'BuPu8',
         fixedScale: null,
+        dataNote: null,
     },
     "Doses Available per 100K Population": {
         variableName:"Doses Available per 100K Population",
@@ -887,6 +904,7 @@ export const variablePresets = {
         scale3D: 1000,
         colorScale: 'vaccination',
         fixedScale: null,
+        dataNote: null,
     },
     
     "Percent Received At Least One Dose": {
@@ -904,6 +922,7 @@ export const variablePresets = {
         scale3D: 1000,
         colorScale: 'YlGnBu8',
         fixedScale: null,
+        dataNote: 'Data prior to 2/28/21 include any doses administered in the state and may include residents of other states.'
     },
     "Percent Fully Vaccinated": {
         variableName:"Percent Fully Vaccinated",
@@ -920,6 +939,7 @@ export const variablePresets = {
         scale3D: 1000,
         colorScale: 'YlGn8',
         fixedScale: null,
+        dataNote: 'Data prior to 2/28/21 include any doses administered in the state and may include residents of other states.'
     },
     "Doses to be Administered per 100 People": {
         variableName:"Doses to be Administered per 100 People",
@@ -936,6 +956,7 @@ export const variablePresets = {
         scale3D: 10,
         colorScale: 'BuPu8',
         fixedScale: null,
+        dataNote: null,
     },
 
     "Forecasting (5-Day Severity Index)": {
@@ -952,7 +973,8 @@ export const variablePresets = {
       scale:1,
       colorScale: 'forecasting',
       fixedScale: 'forecasting',
-      scale3D: 50000
+      scale3D: 50000,
+      dataNote: null,
     },
     "Percent Essential Workers":{
       variableName:"Percent Essential Workers",
@@ -968,7 +990,8 @@ export const variablePresets = {
       scale:100,
       colorScale: 'lifeExp',
       fixedScale: null,
-      scale3D: 1000
+      scale3D: 1000,
+      dataNote: null,
     },  
     "Percent Part Time on Workdays": {
       variableName:"Percent Part Time on Workdays",
@@ -985,6 +1008,7 @@ export const variablePresets = {
       scale3D: 10000,
       colorScale: 'mobilityWork',
       fixedScale: null,
+      dataNote: null,
     },
     "Percent Full Time on Workdays": {
       variableName:"Percent Full Time on Workdays",
@@ -1001,6 +1025,7 @@ export const variablePresets = {
       scale3D: 10000,
       colorScale: 'mobilityWork',
       fixedScale: null,
+      dataNote: null,
     },
     "Percent Home on Workdays": {
       variableName:"Percent Home on Workdays",
@@ -1017,6 +1042,7 @@ export const variablePresets = {
       scale3D: 500000,
       colorScale: 'mobilityHome',
       fixedScale: null,
+      dataNote: null,
     },
 }
 

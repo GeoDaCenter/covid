@@ -39,7 +39,8 @@ export const INITIAL_STATE = {
     zAxisParams: null,
     fixedScale: null,
     colorScale: null,
-    storedRange: null
+    storedRange: null,
+    dataNote: false
   },
   mapParams: {
     mapType: 'natural_breaks',

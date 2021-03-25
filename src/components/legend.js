@@ -5,6 +5,7 @@ import BinsList from './binsList';
 import { colors } from '../config';
 import { Gutter } from '../styled_components';
 import Tooltip from './tooltip';
+import { alert } from '../config/svg';
 
 const BottomPanel = styled.div`
     position: fixed;
@@ -131,6 +132,19 @@ const BinBars = styled.div`
     }
 `
 
+const DataNote = styled.p`
+    margin-top:1.5rem;
+    text-align:center;
+    svg {
+        height:20px;
+        width:20px;
+        display:inline-block;
+        transform:translateY(5px);
+        margin-right:5px;
+        fill:${colors.yellow};
+    }
+`
+
 
 const Legend =  (props) => {
     
@@ -173,6 +187,11 @@ const Legend =  (props) => {
                     {props.resource.includes('vaccination') && <><img src={`${process.env.PUBLIC_URL}/assets/img/participating_clinic.png`} alt=""/><span className="icons-text">Clinic<Tooltip id="vaccineClinic"/></span></>}
                     {props.resource.includes('vaccination') && <><img src={`${process.env.PUBLIC_URL}/assets/img/invited_clinic.png`} alt=""/><span className="icons-text">Invited Clinic<Tooltip id="vaccineClinicInvited"/></span></>}
                 </IconContainer>
+            }
+            {props.note && <DataNote>
+                {alert}
+                {props.note}
+                </DataNote>
             }
             </LegendContainer>
         </BottomPanel>

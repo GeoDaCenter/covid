@@ -28,6 +28,9 @@ const Notification = styled.div`
     -ms-user-select: none;
     user-select: none;
     transform:translate(-50%, -50%);
+    a {
+        color:${colors.yellow};
+    }
 `
 
 const CloseTutorial = styled.button`
