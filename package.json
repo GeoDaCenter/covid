@@ -44,9 +44,6 @@
     "web-vitals": "^0.2.4",
     "webfontloader": "^1.6.28"
   },
-  "dev-dependencies": {
-    "source-map-explorer": "^2.5.2"
-  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -74,6 +71,7 @@
     ]
   },
   "devDependencies": {
-    "worker-loader": "^3.0.6"
+    "worker-loader": "^3.0.6",
+    "source-map-explorer": "^2.5.2"
   }
 }

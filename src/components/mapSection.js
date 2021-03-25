@@ -1008,6 +1008,7 @@ function MapSection(props){
         }
     }
     
+    console.log(deckRef.current)
     return (
         <MapContainer
             onKeyDown={handleKeyDown}
