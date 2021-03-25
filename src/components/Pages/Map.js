@@ -28,20 +28,6 @@ import JsGeoDaWorker from '../../JsGeoDaWorker';
 
 const gdaProxy = new JsGeoDaWorker();
 
-const loadGeodaData = async (url) => {
-  // Load in the GeoJson 
-  const jsonData = await gdaProxy.LoadGeojson(url)
-
-  // Making fake data for the LISA Clusters
-  const fakeData = Array(jsonData.features.length).fill(0).map(_ => Math.random()*100)
-
-  // Generates Weights
-  const w_uid = await gdaProxy.CreateWeights.Queen('county_1p3a.geojson')
-
-  // Generate Clusters
-  const clusters = await gdaProxy.Cluster.LocalMoran1('county_1p3a.geojson', w_uid, fakeData)
-}
-
 // Main function, App. This function does 2 things:
 // 1: App manages the majority of the side effects when the state changes.
 //    This takes the form of React's UseEffect hook, which listens
@@ -67,8 +53,6 @@ const getDefaultDimensions = () => ({
   minWidth: window.innerWidth <= 1024 ? window.innerWidth*.5 : 200,
 })
 
-
-
 function App() {
   const dateLists = getDateLists()
   // These selectors access different pieces of the store. While App mainly
@@ -91,9 +75,7 @@ function App() {
   //   then performs a join and loads the data into the store
   const loadData = async (params) => {
     setIsLoading(true)
-
     if (!gdaProxy.ready) await gdaProxy.init()
-
     // destructure parameters
     const { geojson, csvs, joinCols, tableNames, accumulate, dateList } = params
     // promise all data fetching - CSV and Json
@@ -118,7 +100,6 @@ function App() {
     let chartData = getDataForCharts(tempData, 'cases', DateIndices['cases'], dateLists.isoDateList);
     let binData = getDataForBins(tempData, {...dataParams, nIndex: lastIndex || dataParams.nIndex, binIndex: lastIndex || dataParams.binIndex});
     let bins;
-
     if (dataParams.fixedScale === null || dataParams.fixedScale === undefined){
       // calculate breaks
       let nb = mapParams.mapType === "natural_breaks" ? 
@@ -166,50 +147,66 @@ function App() {
     setIsLoading(false)
   }
 
-  const updateBins = async (params) => {
-    const { storedData, currentData, dataParams, mapParams, colorScales } = params;
-    if (
-      !storedData.hasOwnProperty(currentData) || 
-      !storedData[currentData][0].hasOwnProperty(dataParams.numerator)
-    ) { return };
+  const updateBins = useCallback(
+    async (params) => { 
+      const { storedData, currentData, dataParams, mapParams, colorScales } = params;
+      if (
+        !storedData.hasOwnProperty(currentData) || 
+        !storedData[currentData][0].hasOwnProperty(dataParams.numerator)
+      ) { return };
 
-    if (gdaProxy.ready && storedData.hasOwnProperty(currentData) && mapParams.mapType !== "lisa"){
-      if (dataParams.fixedScale === null || mapParams.mapType !== 'natural_breaks') {
-        let binData = getDataForBins( storedData[currentData], dataParams )
-        
-        let nb = mapParams.mapType === "natural_breaks" ? 
-          await gdaProxy.Bins.NaturalBreaks(mapParams.nBins, binData) :
-          await gdaProxy.Bins.Hinge15(mapParams.nBins, binData)
-        if (!nb) return;
-        dispatch(
-          setMapParams({
-            bins: {
-              bins: mapParams.mapType === 'natural_breaks' ? nb.bins : ['Lower Outlier','< 25%','25-50%','50-75%','>75%','Upper Outlier'],
-              breaks: [-Math.pow(10, 12), ...nb.breaks.slice(1,-1), Math.pow(10, 12)]
-            },
-            colorScale: mapParams.mapType === 'natural_breaks' ? colorScales[dataParams.colorScale || mapParams.mapType] : colorScales[mapParams.mapType || dataParams.colorScale]
-          })
-        )
-      } else {
-        dispatch(
-          setMapParams({
-            bins: fixedScales[dataParams.fixedScale],
-            colorScale: colorScales[dataParams.fixedScale]
-          })
-        )
+      if (gdaProxy.ready && storedData.hasOwnProperty(currentData) && mapParams.mapType !== "lisa"){
+        if (dataParams.fixedScale === null || mapParams.mapType !== 'natural_breaks') {
+          let binData = getDataForBins( storedData[currentData], dataParams);
+          let nb = mapParams.mapType === "natural_breaks" ? 
+            await gdaProxy.Bins.NaturalBreaks(mapParams.nBins, binData) :
+            await gdaProxy.Bins.Hinge15(mapParams.nBins, binData)  
+          dispatch(
+            setMapParams({
+              bins: {
+                bins: mapParams.mapType === 'natural_breaks' ? nb.bins : ['Lower Outlier','< 25%','25-50%','50-75%','>75%','Upper Outlier'],
+                breaks: [-Math.pow(10, 12), ...nb.breaks.slice(1,-1), Math.pow(10, 12)]
+              },
+              colorScale: mapParams.mapType === 'natural_breaks' ? colorScales[dataParams.colorScale || mapParams.mapType] : colorScales[mapParams.mapType || dataParams.colorScale]
+            })
+          )
+        } else {
+          dispatch(
+            setMapParams({
+              bins: fixedScales[dataParams.fixedScale],
+              colorScale: colorScales[dataParams.fixedScale]
+            })
+          )
+        }
       }
-    }
-  };
+    }, 
+    [dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.dRange, mapParams.mapType, mapParams.vizType],
+  )
 
   const updateLisa = async (currentData, storedData, storedGeojson, dataParams) => {
     const dataForLisa = getDataForLisa(
       storedData, 
       dataParams,
       storedGeojson.indexOrder
-    )
+    );
     const weight_uid = 'Queen' in gdaProxy.geojsonMaps[currentData] ? gdaProxy.geojsonMaps[currentData].Queen : await gdaProxy.CreateWeights.Queen(currentData);
-    const lisaValues = await gdaProxy.Cluster.LocalMoran1(currentData, weight_uid, dataForLisa)    
+    const lisaValues = await gdaProxy.Cluster.LocalMoran(currentData, weight_uid, dataForLisa);
     dispatch(storeLisaValues(lisaValues.clusters))
+  }
+
+  const updateCartogram = async (currentData, storedData, dataParams, storedGeojson) => {
+    const data = await getDataForLisa(
+      storedData[currentData], 
+      dataParams, 
+      storedGeojson[currentData].indexOrder
+    );
+    const cartogramData = await gdaProxy.cartogram(currentData, data);
+    let tempArray = new Array(cartogramData.length)
+    for (let i=0; i<cartogramData.length; i++){
+        cartogramData[i].value = data[i]
+        tempArray[i] = cartogramData[i]
+    };
+    dispatch(storeCartogramData(tempArray));
   }
 
   // After runtime is initialized, this loads in gdaProxy to the state
@@ -258,12 +255,9 @@ function App() {
   // Otherwise, this side-effect loads the selected data.
   // Each conditions checks to make sure gdaProxy is working.
   useEffect(() => {
-    if (storedData === {}) {
+    if (storedData === {}||(storedData[currentData] === undefined)) {
       loadData(dataPresets[currentData])
-    } else if (storedData[currentData] === undefined) {
-      loadData(dataPresets[currentData])
-    } else if (dateIndices[currentData] !== undefined) {
-      
+    } else if (dateIndices[currentData] !== undefined) {      
       let denomIndices = dateIndices[currentData][dataParams.numerator]
       let lastIndex = denomIndices !== null ? denomIndices.slice(-1,)[0] : null;
       dispatch(
@@ -285,8 +279,9 @@ function App() {
         }, 
       })
     }
-  },[gdaProxy.ready, currentData])
+  },[currentData])
 
+  
   // This listens for gdaProxy events for LISA and Cartogram calculations
   // Both of these are computationally heavy.
   useEffect(() => {
@@ -296,15 +291,7 @@ function App() {
     if (gdaProxy.ready && mapParams.vizType === 'cartogram' && storedGeojson[currentData] !== undefined){
       // let tempId = getVarId(currentData, dataParams)
       if (storedGeojson[currentData] !== undefined) {
-        dispatch(
-          storeCartogramData(
-            getCartogramValues(
-              gdaProxy, 
-              currentData, 
-              getDataForLisa( storedData[currentData], dataParams, storedGeojson[currentData].indexOrder )
-            )
-          )
-        )
+        updateCartogram(currentData, storedData, dataParams, storedGeojson)
       }
     }
   }, [currentData, storedGeojson[currentData], dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.nIndex, dataParams.dIndex, mapParams.binMode, dataParams.variableName, mapParams.mapType, mapParams.vizType])

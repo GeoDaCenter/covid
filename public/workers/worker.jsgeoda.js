@@ -112,112 +112,149 @@ function custom_breaks(map_uid, break_name, k, sel_field, values) {
   }
 }
 
+async function cartogram(map_uid, values) {
+  let cart = gdaProxy.wasm.cartogram(map_uid, toVecDouble(values));
+  let x = cart.get_x();
+  let y = cart.get_y();
+  let r = cart.get_radius();
+  // rescale x, y [-100,0], [0, 45]
+  let min_x = x.get(0);
+  let max_x = x.get(0);
+  let min_y = y.get(0);
+  let max_y = y.get(0);
+  for (let i = 0; i < x.size(); ++i) {
+    if (min_x > x.get(i)) min_x = x.get(i);
+    if (max_x < x.get(i)) max_x = x.get(i);
+    if (min_y > y.get(i)) min_y = y.get(i);
+    if (max_y < y.get(i)) max_y = y.get(i);
+  }
+  let scale_x = 100.0 / (max_x - min_x);
+  let scale_y = 45.0 / (max_y - min_y);
 
+
+  var result = [];
+  for (let i = 0; i < x.size(); ++i) {
+    let xx = (x.get(i) - min_x) * scale_x;
+    let yy = (y.get(i) - min_y) * scale_y;
+    result.push({
+      'properties': {
+        'id': i
+      },
+      'position': [x.get(i) / 10000.0, y.get(i) / 10000.0],
+      'radius': r.get(i)
+    });
+  }
+  return result;
+}
 
 self.onmessage = function onmessage(event) {
     "use strict";
     
-    var buff; 
-    var data; 
-    var result;
-
-    data = event["data"];
+    var data = event["data"];
     
     switch (data && data["action"]) {
-        case "Ready":
-            initGdaProxy(exports).then(_ => {
-              return postMessage({
-                version: gdaProxy.version
-            });
-          })
-          break
-        case "List":
-          return postMessage({
-              success: true,
-              result: gdaProxy.geojson_maps
-          });
-        case "quantile breaks":
-            quantileBreaks(data['params']).then(result => {
-                return postMessage({
-                    success: true,
-                    bins: result
-                });
-            });
-            break
-        case "ReadGeojsonMap":
-          loadGeojson(data['params'].url).then(jsonData => {
-            var geoidOrder = {};
-            var indexOrder = {};
-            for (var i=0; i<jsonData.features.length; i++) {
-                geoidOrder[jsonData.features[i].properties.GEOID] = i;
-                indexOrder[i] = jsonData.features[i].properties.GEOID;
-            };
+      case "Ready":
+          initGdaProxy(exports).then(_ => {
             return postMessage({
-              success: true,
-              result: {
-                data: jsonData,
-                indices: {
-                  geoidOrder,
-                  indexOrder
-                },
-                geojsonMaps: gdaProxy.geojson_maps
-              }
-            });
-          })
-          break
-        case "CreateQueenWeights":
-            CreateQueenWeights(
-                data['params'].map_uid,
-                data['params'].order,
-                data['params'].include_lower_order,
-                data['params'].precision,
-            ).then(weight_uid => {
-                return postMessage({
-                    success: true,
-                    result: weight_uid
-                });
-            });
-            break
-        case "local_moran1":
-          local_moran1(
-            data['params'].map_uid,
-            data['params'].weight_uid,
-            data['params'].values
-          ).then(clusters => {
+              version: gdaProxy.version
+          });
+        })
+        break
+      case "List":
+        return postMessage({
+            success: true,
+            result: gdaProxy.geojson_maps,
+            id: data['params'].id
+        });
+      case "ReadGeojsonMap":
+        loadGeojson(data['params'].url).then(jsonData => {
+          var geoidOrder = {};
+          var indexOrder = {};
+          for (var i=0; i<jsonData.features.length; i++) {
+              geoidOrder[jsonData.features[i].properties.GEOID] = i;
+              indexOrder[i] = jsonData.features[i].properties.GEOID;
+          };
+          return postMessage({
+            success: true,
+            result: {
+              data: jsonData,
+              indices: {
+                geoidOrder,
+                indexOrder
+              },
+              geojsonMaps: gdaProxy.geojson_maps
+            },
+            id: data['params'].id
+          });
+        })
+        break
+      case "CreateQueenWeights":
+          CreateQueenWeights(
+              data['params'].map_uid,
+              data['params'].order,
+              data['params'].include_lower_order,
+              data['params'].precision,
+          ).then(weight_uid => {
               return postMessage({
                   success: true,
-                  result: clusters
+                  result: weight_uid,
+                  id: data['params'].id
               });
           });
           break
-          case "quantile_breaks":
-            quantile_breaks(
-              data['params'].numberOfBins,
-              data['params'].values
-            ).then(bins => {
-              return postMessage({
-                  success: true,
-                  result: {
-                    bins,
-                  }
-              });
+      case "local_moran1":
+        local_moran1(
+          data['params'].map_uid,
+          data['params'].weight_uid,
+          data['params'].values
+        ).then(clusters => {
+            return postMessage({
+                success: true,
+                result: clusters,
+                id: data['params'].id
             });
-            break
-        case "custom_breaks":
-          var bins = custom_breaks(
-            '', 
-            data['params'].algorithm, 
-            data['params'].numberOfBins,
-            null, 
-            data['params'].values
-          )
-          
+        });
+        break
+      case "quantile_breaks":
+        quantile_breaks(
+          data['params'].numberOfBins,
+          data['params'].values
+        ).then(bins => {
           return postMessage({
               success: true,
-              result: bins
+              result: bins,
+              id: data['params'].id
           });
-          break
-        default:
-            throw new Error("Invalid action : " + (data && data["action"]));
-    }
+        });
+        break
+      case "custom_breaks":
+        var bins = custom_breaks(
+          '', 
+          data['params'].algorithm, 
+          data['params'].numberOfBins,
+          null, 
+          data['params'].values
+        )
+        
+        return postMessage({
+            success: true,
+            result: bins,
+            id: data['params'].id
+        });
+        break
+      case "cartogram":
+        cartogram(
+          data['params'].map_uid,
+          data['params'].values
+        ).then(cartogramData => {
+          return postMessage({
+              success: true,
+              result: cartogramData,
+              id: data['params'].id
+          });
+        });
+        break
+      default:
+          throw new Error("Invalid action : " + (data && data["action"]));
+  }
 };

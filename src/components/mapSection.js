@@ -317,7 +317,7 @@ function MapSection(props){
     useEffect(() => {
         if (mapParams.vizType !== 'cartogram') return;
         
-        if (storedCartogramData){
+        if (storedCartogramData.length){
             let center = getCartogramCenter(storedCartogramData);
 
             let roundedCenter = [Math.floor(center[0]),Math.floor(center[1])];
@@ -1008,7 +1008,6 @@ function MapSection(props){
         }
     }
     
-    console.log(deckRef.current)
     return (
         <MapContainer
             onKeyDown={handleKeyDown}
