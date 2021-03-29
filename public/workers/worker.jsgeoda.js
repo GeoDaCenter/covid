@@ -147,6 +147,11 @@ async function cartogram(map_uid, values) {
   return result;
 }
 
+async function GetNeighbors(map_uid, weight_uid, idx) {
+  const nbrs = await gdaProxy.wasm.get_neighbors(map_uid, weight_uid, idx);
+  return gdaProxy.parseVecInt(nbrs);
+}
+
 self.onmessage = function onmessage(event) {
     "use strict";
     
@@ -254,6 +259,18 @@ self.onmessage = function onmessage(event) {
           });
         });
         break
+      case 'get_neighbors':
+        GetNeighbors(
+          data['params'].map_uid,
+          data['params'].weight_uid,
+          data['params'].idx
+        ).then(nbrs => {
+          return postMessage({
+            success: true,
+            result: nbrs,
+            id: data['params'].id
+          });
+        })
       default:
           throw new Error("Invalid action : " + (data && data["action"]));
   }
