@@ -12,10 +12,10 @@ def downloadCDCVaccinationData():
     loadedJson = raw.json()['vaccination_data']
     vaccinationData = pd.DataFrame(loadedJson)
     outputDate = loadedJson[0]["Date"].replace('/','-')
-    with open(os.path.join(repo_root, f'data-scripts/cdc/json/cdc_vaccine_data_{outputDate}.json'), 'w') as outfile:
+    with open(os.path.join(repo_root, f'data-scripts/cdc/vaccination_state/cdc_vaccine_data_{outputDate}.json'), 'w') as outfile:
         json.dump(loadedJson, outfile)
 
-    return glob(os.path.join(repo_root, 'data-scripts/cdc/json/*.json'))
+    return glob(os.path.join(repo_root, 'data-scripts/cdc/vaccination_state/*.json'))
 
 def parseVaccinationData(vaccinationDataList):
     geoidTable = pd.read_csv(os.path.join(repo_root,'data-scripts/cdc/statename_geoid.csv'))
