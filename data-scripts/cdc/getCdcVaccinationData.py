@@ -10,16 +10,31 @@ repo_root = os.path.abspath(os.path.join(dir_path, '..', '..'))
 def downloadCDCVaccinationData():
     raw = requests.get('https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_data')
     loadedJson = raw.json()['vaccination_data']
-    vaccinationData = pd.DataFrame(loadedJson)
     outputDate = loadedJson[0]["Date"].replace('/','-')
     with open(os.path.join(repo_root, f'data-scripts/cdc/vaccination_state/cdc_vaccine_data_{outputDate}.json'), 'w') as outfile:
         json.dump(loadedJson, outfile)
 
     return glob(os.path.join(repo_root, 'data-scripts/cdc/vaccination_state/*.json'))
 
+def downloadCDCCountyVaccinationData():
+    raw = requests.get('https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_county_condensed_data')
+    loadedJson = raw.json()['vaccination_county_condensed_data']
+    outputDate = loadedJson[0]["Date"].replace('/','-')
+    with open(os.path.join(repo_root, f'data-scripts/cdc/vaccination_county/vaccination_county_condensed_data_{outputDate}.json'), 'w') as outfile:
+        json.dump(loadedJson, outfile)
+    return glob(os.path.join(repo_root, 'data-scripts/cdc/vaccination_county/*.json'))
+
+def downloadCDCDemographicVaccinationData():
+    raw = requests.get('https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_demographics_data')
+    loadedJson = raw.json()['vaccination_demographics_data']
+    vaccinationData = pd.DataFrame(loadedJson)
+    outputDate = loadedJson[0]["Date"].replace('/','-')
+    with open(os.path.join(repo_root, f'data-scripts/cdc/vaccination_demographics/vaccine_demographics_{outputDate}.json'), 'w') as outfile:
+        json.dump(loadedJson, outfile)
+    return True
+
 def parseVaccinationData(vaccinationDataList):
     geoidTable = pd.read_csv(os.path.join(repo_root,'data-scripts/cdc/statename_geoid.csv'))
-    vaccineAdministered1 = ''
 
     for idx, file in enumerate(vaccinationDataList):
         with open(file) as f:
@@ -63,7 +78,7 @@ def parseVaccinationData(vaccinationDataList):
 
         # on first iteration, define new data frames
         # After that, define temporary dataframe sna dmerge below
-        if len(vaccineAdministered1) == 0:
+        if idx == 0:
             vaccineAdministered1 = vaccinationDf[['GEOID',firstDoseColumn]]
             vaccineAdministered1.columns = ['fips',currDate]
 
@@ -94,8 +109,34 @@ def parseVaccinationData(vaccinationDataList):
 
     return { 'vaccineAdministered1': vaccineAdministered1, 'vaccineAdministered2': vaccineAdministered2, 'vaccineDistributed': vaccineDistributed }
 
+def parseCountyVaccinationData(vaccinationDataList):
+    for idx, file in enumerate(vaccinationDataList):
+        with open(file) as f:
+            data = json.load(f)
+            if (type(data)==dict):
+                data = data['vaccination_county_condensed_data']
+
+        # Pull report date from first row of data
+        currDate = data[0]['Date']
+        # Try to load in JSON to dataframe, pass iteration if fail
+
+        # on first iteration, define new data frames
+        # After that, define temporary dataframe sna dmerge below
+        if idx == 0:
+            vaccineAdministered2 = pd.DataFrame(data)[['FIPS','Series_Complete_Yes']]
+            vaccineAdministered2.columns = ['fips',currDate]
+
+        else:
+            dailyVaccineAdministered2 = pd.DataFrame(data)[['FIPS','Series_Complete_Yes']]
+            dailyVaccineAdministered2.columns = ['fips',currDate]
+
+            # Merge
+            vaccineAdministered2 = vaccineAdministered2.merge(dailyVaccineAdministered2, on=["fips"])
+
+    return vaccineAdministered2
+
 def getCdcData():    
-    # read in data from HealthData.gov API endpoint (god bless them allows CORS)
+    # read in data from HealthData.gov API endpoint (god bless them. allows CORS)
     raw = pd.read_csv('https://healthdata.gov/api/views/j8mb-icvb/rows.csv?accessType=DOWNLOAD')[['state_fips','overall_outcome','date','new_results_reported','total_results_reported']]
     raw['date'] = raw['date'].str.slice(0,10)
 
@@ -149,6 +190,15 @@ if __name__ == "__main__":
     parsedData['vaccineDistributed'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_to_be_distributed_cdc.csv'), index=False)
     parsedData['vaccineAdministered1'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_one_or_more_doses_cdc.csv'), index=False)
     parsedData['vaccineAdministered2'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_fully_vaccinated_cdc.csv'), index=False)
+
+    ## County Vaccination Data
+    countyFileList = downloadCDCCountyVaccinationData()
+    parsedCountyData = parseCountyVaccinationData(countyFileList)
+    parsedCountyData.to_csv(os.path.join(repo_root, 'public/csv/vaccine_fully_vaccinated_cdc.csv'),index=False)
+
+    ## Demographic Data
+    downloadCDCDemographicVaccinationData()
+
 
     ## State Testing Data
     currentData = getCdcData()
