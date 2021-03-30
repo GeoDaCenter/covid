@@ -11,6 +11,7 @@ const MapTooltipContent = (props) => {
     let caseN = cases && props.index;
     let deathN = deaths && props.index;
     let testingN = testing && props.index;
+
     // conditional returns for combination of information
     // this is not elegant but a bit more reliable than JSX conditional rendering
     if (properties && cases && deaths && testing && vaccines_one_dose) { // State Feature
@@ -37,7 +38,7 @@ const MapTooltipContent = (props) => {
                 </div>
             </div>
         )
-    } else if (properties && cases && deaths && testing) { // State Feature
+    } else if (properties && cases && deaths && testing) { // CDC county Feature
         return (
             <div>
                 <h3>
@@ -45,6 +46,10 @@ const MapTooltipContent = (props) => {
                 </h3>
                 <div>
                     <hr />
+                    Percent Fully Vaccinated: {vaccines_fully_vaccinated[props.index]===null ? 0 : `${Math.round(vaccines_fully_vaccinated[props.index]/properties.population*10000)/100}%`}<br/>
+                    People Vaccinationed: {vaccines_fully_vaccinated[props.index]===null ? 0 : vaccines_fully_vaccinated[props.index]?.toLocaleString('en')}<br/>
+                    Daily Vaccinations: {vaccines_fully_vaccinated[props.index]===null ? 0 : (vaccines_fully_vaccinated[props.index]-vaccines_fully_vaccinated[props.index-1])?.toLocaleString('en')}<br/>
+                    <br/>
                     Cases: {cases[caseN]?.toLocaleString('en')}<br/>
                     Deaths: {deaths[deathN]?.toLocaleString('en')}<br/>
                     <br/>
@@ -65,6 +70,10 @@ const MapTooltipContent = (props) => {
                 </h3>
                 <div>
                     <hr />
+                    Percent Fully Vaccinated: {vaccines_fully_vaccinated[props.index]===null ? 0 : `${Math.round(vaccines_fully_vaccinated[props.index]/properties.population*10000)/100}%`}<br/>
+                    People Vaccinationed: {vaccines_fully_vaccinated[props.index]===null ? 0 : vaccines_fully_vaccinated[props.index]?.toLocaleString('en')}<br/>
+                    Daily Vaccinations: {vaccines_fully_vaccinated[props.index]===null ? 0 : (vaccines_fully_vaccinated[props.index]-vaccines_fully_vaccinated[props.index-1])?.toLocaleString('en')}<br/>
+                    <br/>
                     Cases: {cases[caseN]===null ? 0 : cases[caseN]?.toLocaleString('en')}<br/>
                     Deaths: {deaths[deathN]===null ? 0 : deaths[deathN]?.toLocaleString('en')||0}<br/>
                     <br/>
