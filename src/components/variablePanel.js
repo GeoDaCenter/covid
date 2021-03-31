@@ -471,7 +471,7 @@ const VariablePanel = (props) => {
                   <h2>Map Note</h2>
                   <p>
                       <br/>
-                      Red-colored areas represent a <b>high</b> share of the population that has been vaccinated. Blue-colored areas represent areas where vaccination rates remain <b>low</b>.                    </a>
+                      Red-colored areas represent a <i>high</i> share of the population that has been vaccinated. Blue-colored areas represent areas where vaccination rates remain <i>low</i>.
                   </p>
               `,
               'bottom-right'))
