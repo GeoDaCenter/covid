@@ -166,6 +166,7 @@ function MapSection(props){
     const dataParams = useSelector(state => state.dataParams);
     const mapParams = useSelector(state => state.mapParams);
     const urlParams = useSelector(state => state.urlParams);
+    const excludeList = useSelector(state => state.excludeList);
 
     // component state elements
     // hover and highlight geographibes
@@ -313,7 +314,7 @@ function MapSection(props){
             let center = getCartogramCenter(storedCartogramData);
 
             let roundedCenter = [Math.floor(center[0]),Math.floor(center[1])];
-            if (storedCenter === null || roundedCenter[0] !== storedCenter[0]) {
+            if ((storedCenter === null || roundedCenter[0] !== storedCenter[0]) && center) {
                 setViewState({
                     latitude: center[1],
                     longitude: center[0],
@@ -379,7 +380,8 @@ function MapSection(props){
                         For a more complete listing of places to get the COVID19 vaccine please visit the <a href="https://vaccinefinder.org/search/" target="_blank" rel="noopener noreferrer">CDC VaccineFinder</a> or check your local jurisdiction.
                     </a>
                     </p>
-                `))
+                `,
+                'center'))
             }
         }
         
@@ -426,14 +428,15 @@ function MapSection(props){
                     }))
                 }
         }
-    },[mapParams.mapType, mapParams.vizType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, storedGeojson[currentData], storedCartogramData, currentData])
+    },[dataParams.variableName, mapParams.mapType, mapParams.vizType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, storedGeojson[currentData], storedCartogramData, currentData])
     
     useEffect(() => {
         forceUpdate()
-    }, [currentMapData.params])
+    }, [currentMapData.params, dataParams.numerator, dataParams.variableName, dataParams.denominator, dataParams.nIndex])
+
     const GetFillColor = (f, bins, mapType, varID) => {
-        if ((!bins.hasOwnProperty("bins")) || (!f.hasOwnProperty(dataParams.numerator))) {
-            return [240,240,240,120]
+        if (!f[dataParams.numerator] || !f[dataParams.numerator][dataParams.nIndex]) {
+            return null
         } else if (mapType === 'lisa') {
             return colorScales.lisa[storedLisaData[storedGeojson[currentData]['geoidOrder'][f.properties.GEOID]]]
         } else {
@@ -451,16 +454,9 @@ function MapSection(props){
         }
     }
     
-    // const GetFillColors = (data, bins, mapType, varID) => {
-    //     let tempObj = {}
-    //     for (let i=0; i < data.length; i++) {
-    //         tempObj[data[i].properties.GEOID] = GetFillColor(data[i], bins, mapType, varID)
-    //     }
-    //     return tempObj
-    // };
-
     const cleanData = ( parameters ) => {
         const {data, bins, mapType, varID, vizType} = parameters; //dataName, dataType, params, colorScale
+        if (!bins.hasOwnProperty("bins")) return [];
         if ((data === undefined) || (mapType !== 'lisa' && bins.breaks === undefined)) return [];
         var returnArray = [];
         let i = 0;
@@ -482,6 +478,10 @@ function MapSection(props){
             default:
                 while (i < data.length) {
                     let tempColor = GetFillColor(data[i], bins, mapType, varID);
+                    if (tempColor === null) {
+                        i++;
+                        continue;
+                    }
                     let tempHeight = GetHeight(data[i]);
                     for (let n=0; n<data[i].geometry.coordinates.length; n++) {
                         returnArray.push({

@@ -225,7 +225,8 @@ export default function Map() {
             </h3>  
           </a>
           </p>
-        `))
+        `,
+        'center'))
     }
 
     if (window.innerWidth <= 1024) {

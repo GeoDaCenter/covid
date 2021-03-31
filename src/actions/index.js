@@ -350,11 +350,12 @@ export const setMapLoaded = ( loaded ) => {
     }
 }
 
-export const setNotification = ( info ) => {
+export const setNotification = ( info, location ) => {
     return {
         type: 'SET_NOTIFICATION',
         payload: {
-            info
+            info,
+            location
         }
     }
 }

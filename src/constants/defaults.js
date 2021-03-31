@@ -80,7 +80,10 @@ export const INITIAL_STATE = {
   sidebarData: {},
   anchorEl: null,
   mapLoaded: false,
-  notification: null,
+  notification: {
+    info: null,
+    location: ''
+  },
   urlParams: {},
   tooltipContent: {
     x:0,

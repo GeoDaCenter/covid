@@ -36,7 +36,7 @@ export default function MapTooltipContent(){
             <br/>
         </>}
         {testing && <>
-            Total Testing: {testing[nIndex].toLocaleString('en')}<br/>
+            Total Testing: {testing[nIndex]?.toLocaleString('en')}<br/>
             7-Day Positivity Rate: {(testing_wk_pos[nIndex]*100)?.toFixed(2)}%<br/>
             7-Day Testing Capacity per 100K: {(testing_tcap[nIndex])?.toFixed(2)}<br/>
             <br/>

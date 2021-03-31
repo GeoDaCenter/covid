@@ -9,8 +9,10 @@ const Notification = styled.div`
     width: 300px;
     max-width: 90vw;
     position: fixed;
-    left: 50%;
-    top: 50%;
+    left: ${props => props.location === "center" ? '50%' : props.location.includes('left') ? '4rem' : 'intial'};
+    right: ${props => props.location.includes('right') ? '4rem' : 'intial'};
+    top: ${props => props.location === "center" ? '50%' : props.location.includes('top') ? '4rem' : 'intial'};
+    bottom: ${props => props.location.includes('bottom') ? '3rem' : 'intial'};
     z-index: 15;
     background: ${colors.gray};
     color: ${colors.white};
@@ -27,13 +29,13 @@ const Notification = styled.div`
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    transform:translate(-50%, -50%);
+    transform:${props => props.location === "center" ? 'translate(-50%, -50%)' : 'none'};
     a {
         color:${colors.yellow};
     }
 `
 
-const CloseTutorial = styled.button`
+const CloseNotification = styled.button`
     position: absolute;
     top: 12px;
     right: 10px;
@@ -51,10 +53,10 @@ const NotificationBox = () => {
     const notification = useSelector(state => state.notification);
 
     return (
-        notification && 
-        <Notification>
-            <div dangerouslySetInnerHTML={{__html: notification}}></div>
-            <CloseTutorial onClick={() => dispatch(setNotification(null))}>×</CloseTutorial>
+        notification.info && 
+        <Notification location={notification.location}>
+            <div dangerouslySetInnerHTML={{__html: notification.info}}></div>
+            <CloseNotification onClick={() => dispatch(setNotification(null, ''))}>×</CloseNotification>
         </Notification>
     )
 }

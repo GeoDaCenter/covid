@@ -16,7 +16,7 @@ import styled from 'styled-components';
 
 import Tooltip from './tooltip';
 import { StyledDropDown, BinsContainer, Gutter } from '../styled_components';
-import { setVariableParams, setMapParams, setCurrentData, setPanelState, setParametersAndData } from '../actions'; //variableChangeZ, setNotification, storeMobilityData
+import { setVariableParams, setMapParams, setCurrentData, setPanelState, setParametersAndData, setNotification } from '../actions';
 import { fixedScales, colorScales, colors, variableTree, variablePresets, urlParamsTree, datasetTree, allGeographies, allDatasets } from '../config';
 import * as SVG from '../config/svg';
 
@@ -373,6 +373,16 @@ const VariablePanel = (props) => {
   const handleMapType = (event, newValue) => {
     let nBins = newValue === 'hinge15_breaks' ? 6 : 8
     if (newValue === 'lisa') {
+      if (dataParams.numerator === 'vaccines_one_dose' || dataParams.numerator === 'vaccines_fully_vaccinated'){
+        dispatch(setNotification(`
+                    <h2>Map Note</h2>
+                    <p>
+                        <br/>
+                        Red-colored areas represent a <b>high</b> share of the population that has been vaccinated. Blue-colored areas represent areas where vaccination rates remain <b>low</b>.                    </a>
+                    </p>
+                `,
+                'bottom-right'))
+      }
       dispatch(
         setMapParams(
           {
@@ -456,6 +466,16 @@ const VariablePanel = (props) => {
     let tempGeography = currentGeography + '';
     let tempDataset = currentDataset + '';
     let conditionalParameters = {};
+    if (mapParams.mapType === 'lisa' && (variablePresets[e.target.value].numerator === 'vaccines_one_dose' || variablePresets[e.target.value].numerator === 'vaccines_fully_vaccinated')){
+      dispatch(setNotification(`
+                  <h2>Map Note</h2>
+                  <p>
+                      <br/>
+                      Red-colored areas represent a <b>high</b> share of the population that has been vaccinated. Blue-colored areas represent areas where vaccination rates remain <b>low</b>.                    </a>
+                  </p>
+              `,
+              'bottom-right'))
+    }
 
     if (variablePresets[e.target.value].nType === 'time-series' && dataParams.nType === 'time-series'){
       conditionalParameters['nRange'] = variablePresets[e.target.value].nRange !== null && dataParams.nRange !== null ? dataParams.nRange : variablePresets[e.target.value].nRange;

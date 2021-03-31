@@ -384,7 +384,10 @@ var reducer = (state = INITIAL_STATE, action) => {
         case 'SET_NOTIFICATION':
             return {
                 ...state,
-                notification: action.payload.info
+                notification: {
+                    info: action.payload.info,
+                    location: action.payload.location
+                }
             }
         case 'SET_URL_PARAMS':
             const { urlParams, presets } = action.payload;
