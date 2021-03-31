@@ -355,7 +355,7 @@ export default function Map() {
 
 
   return (
-    <div className="Map-App">
+    <div className="Map-App" style={{overflow:'hidden'}}>
       <Preloader loaded={mapLoaded} />
       <NavBar />
       {isLoading && <div id="loadingIcon" style={{backgroundImage: `url('${process.env.PUBLIC_URL}assets/img/bw_preloader.gif')`}}></div>}

@@ -169,7 +169,7 @@ function MapSection(props){
 
     // component state elements
     // hover and highlight geographibes
-    const [hoverInfo, setHoverInfo] = useState({x:null, y:null, object:null});
+    const [hoverGeog, setHoverGeog] = useState({x:null, y:null, object:null});
     const [highlightGeog, setHighlightGeog] = useState([]);
 
     // mapstyle and global map mode (WIP)
@@ -557,13 +557,11 @@ function MapSection(props){
 
     const handleMapHover = ({x, y, object, layer}) => {
         dispatch(setTooltipContent(x, y, Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : find(storedData[currentData],o => o.properties.GEOID === object?.GEOID)))
-        // setHoverInfo(
-        //     {
-        //         x, 
-        //         y, 
-        //         object: Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : find(storedData[currentData],o => o.properties.GEOID === object?.GEOID) //layer.props?.hasOwnProperty('getIcon') ? object : 
-        //     }
-        // )
+        if (object && object.GEOID) {
+            if (object.GEOID !== hoverGeog) setHoverGeog(object.GEOID)
+        } else {
+            setHoverGeog(null)
+        }
     }
 
     const handleMapClick = (info, e) => {
@@ -704,7 +702,7 @@ function MapSection(props){
             opacity: 0.8,
             material:false,
             onHover: handleMapHover,
-            onClick: handleMapClick,            
+            onClick: handleMapClick,           
             updateTriggers: {
                 getPolygon: [currentMapData.params, dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
                 getElevation: [currentMapData.params, dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
@@ -734,7 +732,7 @@ function MapSection(props){
             id: 'hoverHighlightlayer',    
             data: currentMapData.data,
             getPolygon: d => d.geom,
-            getLineColor: d => hoverInfo?.object?.properties?.GEOID === d.GEOID ? [50, 50, 50] : [50, 50, 50, 0], 
+            getLineColor: d => hoverGeog === d.GEOID ? [50, 50, 50] : [50, 50, 50, 0], 
             getElevation: d => d.height,
             pickable: false,
             stroked: true,
@@ -747,7 +745,7 @@ function MapSection(props){
             lineWidthMaxPixels: 10,
             updateTriggers: {
                 getPolygon: currentData,
-                getLineColor: hoverInfo.object,
+                getLineColor: hoverGeog,
                 getElevation: [currentMapData.data, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
                 extruded: mapParams.vizType
             }
@@ -1047,11 +1045,6 @@ function MapSection(props){
                 }
                 views={view}
                 pickingRadius={20}
-                onAfterRender={() => console.log('rendered')}
-
-                // onViewStateChange={onViewStateChange}
-                // viewState={viewStates}
-                // views={insetMap ? views : views[0]}
             >
                 <MapboxGLMap
                     reuseMaps
@@ -1059,8 +1052,6 @@ function MapSection(props){
                     mapStyle={mapStyle} //{globalMap || mapParams.vizType === 'cartogram' ? 'mapbox://styles/lixun910/ckhtcdx4b0xyc19qzlt4b5c0d' : 'mapbox://styles/lixun910/ckhkoo8ix29s119ruodgwfxec'}
                     preventStyleDiffing={true}
                     mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
-                    // onViewportChange={() => hoverInfo.x !== null ? setHoverInfo({x:null, y:null, object:null}) : ''}
-                    // onViewportChange={viewState  => console.log(mapRef.current.props.viewState)} 
                     onLoad={() => {
                         dispatch(setMapLoaded(true))
                     }}
