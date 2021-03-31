@@ -14,7 +14,7 @@ import MapboxGLMap from 'react-map-gl';
 
 // component, action, util, and config import
 import { MapTooltipContent, Geocoder } from '../components';
-import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData, openContextMenu, setNotification } from '../actions';
+import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData, openContextMenu, setNotification, setTooltipContent } from '../actions';
 import { mapFn, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, getURLParams } from '../utils';
 import { colors, colorScales, MAPBOX_ACCESS_TOKEN } from '../config';
 import MAP_STYLE from '../config/style.json';
@@ -66,22 +66,6 @@ const MapContainer = styled.div`
             display:none;
         }
     }
-`
-
-const HoverDiv = styled.div`
-    background:${colors.gray};
-    padding:20px;
-    color:white;
-    box-shadow: 0px 0px 5px rgba(0,0,0,0.7);
-    border-radius:0.5vh 0.5vh 0 0;
-    h3 {
-        margin:5px 0;
-    }
-    hr {
-        margin: 5px 0;
-    }
-    max-width:50ch;
-    line-height:1.25;
 `
 
 const MapButtonContainer = styled.div`
@@ -171,9 +155,17 @@ function useForceUpdate(){
 
 function MapSection(props){ 
     // fetch pieces of state from store    
-    const { storedData, storedGeojson, currentData, storedLisaData, dateIndices,
-        storedCartogramData, panelState, dates, dataParams, mapParams,
-        urlParams, } = useSelector(state => state);
+    const storedData = useSelector(state => state.storedData);
+    const storedGeojson = useSelector(state => state.storedGeojson);
+    const currentData = useSelector(state => state.currentData);
+    const storedLisaData = useSelector(state => state.storedLisaData);
+    const dateIndices = useSelector(state => state.dateIndices);
+    const storedCartogramData = useSelector(state => state.storedCartogramData);
+    const panelState = useSelector(state => state.panelState);
+    const dates = useSelector(state => state.dates);
+    const dataParams = useSelector(state => state.dataParams);
+    const mapParams = useSelector(state => state.mapParams);
+    const urlParams = useSelector(state => state.urlParams);
 
     // component state elements
     // hover and highlight geographibes
@@ -564,13 +556,14 @@ function MapSection(props){
     }
 
     const handleMapHover = ({x, y, object, layer}) => {
-        setHoverInfo(
-            {
-                x, 
-                y, 
-                object: Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : find(storedData[currentData],o => o.properties.GEOID === object?.GEOID) //layer.props?.hasOwnProperty('getIcon') ? object : 
-            }
-        )
+        dispatch(setTooltipContent(x, y, Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : find(storedData[currentData],o => o.properties.GEOID === object?.GEOID)))
+        // setHoverInfo(
+        //     {
+        //         x, 
+        //         y, 
+        //         object: Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : find(storedData[currentData],o => o.properties.GEOID === object?.GEOID) //layer.props?.hasOwnProperty('getIcon') ? object : 
+        //     }
+        // )
     }
 
     const handleMapClick = (info, e) => {
@@ -1054,6 +1047,7 @@ function MapSection(props){
                 }
                 views={view}
                 pickingRadius={20}
+                onAfterRender={() => console.log('rendered')}
 
                 // onViewStateChange={onViewStateChange}
                 // viewState={viewStates}
@@ -1141,12 +1135,6 @@ function MapSection(props){
                     onChange={handleGeocoder}
                 />
             </GeocoderContainer>
-
-            {hoverInfo.object && (
-                <HoverDiv style={{position: 'absolute', zIndex: 1, pointerEvents: 'none', left: hoverInfo.x, top: hoverInfo.y}}>
-                    <MapTooltipContent content={hoverInfo.object} index={dataParams.nIndex} />
-                </HoverDiv>
-                )}
         </MapContainer>
     ) 
 }

@@ -81,5 +81,10 @@ export const INITIAL_STATE = {
   anchorEl: null,
   mapLoaded: false,
   notification: null,
-  urlParams: {}
+  urlParams: {},
+  tooltipContent: {
+    x:0,
+    y:0,
+    data: null
+  }
 };

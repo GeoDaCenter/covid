@@ -377,3 +377,15 @@ export const openContextMenu = ( params ) => {
         }
     }
 }
+
+export const setTooltipContent = ( x, y, data ) => {
+    return {
+        type: 'SET_TOOLTIP_CONTENT',
+        payload: {
+            x,
+            y,
+            data
+        }
+    }
+
+}

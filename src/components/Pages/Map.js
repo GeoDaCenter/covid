@@ -20,7 +20,8 @@ import {
 
 import { MapSection, NavBar, VariablePanel, Legend,  TopPanel, Preloader,
   DataPanel, MainLineChart, Scaleable, Draggable, InfoBox,
-  NotificationBox, Popover } from '../../components';  
+  NotificationBox, Popover, MapTooltipContent } from '../../components';  
+import { HoverDiv } from '../../styled_components'; 
 
 import { colorScales, fixedScales, dataPresets, variablePresets, colors } from '../../config';
 
@@ -49,7 +50,7 @@ const getDefaultDimensions = () => ({
   minWidth: window.innerWidth <= 1024 ? window.innerWidth*.5 : 200,
 })
 
-function App() {
+export default function Map() {
 
   const dateLists = getDateLists()
 
@@ -408,10 +409,9 @@ function App() {
             minHeight={defaultDimensions.minHeight}
             minWidth={defaultDimensions.minWidth} />
         }/>
+        <MapTooltipContent />
 
       </div>
     </div>
   );
 }
-
-export default App;

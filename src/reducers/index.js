@@ -438,6 +438,15 @@ var reducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 panelState: contextPanelsObj
             }
+        case 'SET_TOOLTIP_CONTENT':
+            return {
+                ...state,
+                tooltipContent: {
+                    x: action.payload.x,
+                    y: action.payload.y,
+                    data: action.payload.data,
+                }
+            } 
         default:
             return state;
     }
