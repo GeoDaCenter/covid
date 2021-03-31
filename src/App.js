@@ -16,6 +16,7 @@ const Map = React.lazy(() => import('./components/Pages/Map'));
 const Methodology = React.lazy(() => import('./components/Pages/Methodology'));
 const Time = React.lazy(() => import('./components/Pages/Time'));
 const Trends = React.lazy(() => import('./components/Pages/Trends'));
+const Products = React.lazy(() => import('./components/Pages/Products'));
 
 class App extends Component {
 
@@ -51,6 +52,8 @@ class App extends Component {
                 <Route path="/faq.html" component={Faq}/>
                 <Route path="/conduct" component={CodeOfConduct}/>
                 <Route path="/conduct.html" component={CodeOfConduct}/>
+                <Route path="/products" component={Products}/>
+                <Route path="/products.html" component={Products}/>
                 <Route component={ErrorPage} />
                 <Route />
             </Switch>
