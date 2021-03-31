@@ -71,19 +71,3 @@ export default function MapTooltipContent(){
         </>}
         </HoverDiv>
 }
-//     } else if (properties){ // County Feature PR NYT
-//         return (
-//             <div>
-//                 <h3>
-//                     {`${properties.NAME}${properties.state_name && `, ${properties.state_name}`}`}
-//                 </h3>
-//             </div>
-//         )
-//     } else {
-//         return (
-//             <div></div>
-//         )
-//     }
-// }
-
-// export default MapTooltipContent
