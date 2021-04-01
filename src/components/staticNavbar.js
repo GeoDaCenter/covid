@@ -157,9 +157,6 @@ const StaticNavbar = () => {
                             <NavLink to="/insights">Insights</NavLink>
                         </li>
                         <li>
-                            <NavLink to="/products">Products</NavLink>
-                        </li>
-                        <li>
                             <NavLink to="/about">About</NavLink>
                         </li>
                         <li>

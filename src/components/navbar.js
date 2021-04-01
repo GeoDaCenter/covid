@@ -74,7 +74,6 @@ const NavBar = () => {
             <li><NavLink to="/methods">METHODS</NavLink></li>
             <li><NavLink to="/faq">FAQ</NavLink></li>
             <li><NavLink to="/insights">INSIGHTS</NavLink></li>
-            <li><NavLink to="/products">PRODUCTS</NavLink></li>
             <li><NavLink to="/about">ABOUT</NavLink></li>
             <li><NavLink to="/contact">CONTACT</NavLink></li>
           </NavItems>
