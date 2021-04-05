@@ -8,7 +8,7 @@ async function getParseCSV(url, joinCol, accumulate, dateList){
       return response.ok ? response.text() : Promise.reject(response.status);
     }).then(text => {
       let data = d3.csvParse(text, d3.autoType);
-      let rtn = {};
+      let rtn = [];
       let n = data.length;
       let selectedJoinColumn;
       let dateIndices = null; 
@@ -22,31 +22,35 @@ async function getParseCSV(url, joinCol, accumulate, dateList){
         while (n>0){
           n--;
           let i = 0;
-          let tempArr = new Array(dateList.length)
-          while (i < dateList.length){
-            tempArr[i] = ((data[n][dateList[i]]||0)+(tempArr[i-1]||0))||null
+          let tempArr = new Array(dateIndices.length)
+          while (i < dateIndices.length){
+            tempArr[i] = 
+              data[n][dateList[dateIndices[i]]] === undefined || data[n][dateList[dateIndices[i]]] === null ? 'NULL' 
+              : tempArr[i-1] === 'NULL' || i === 0 ? data[n][dateList[dateIndices[i]]]
+              : (data[n][dateList[dateIndices[i]]])+(tempArr[i-1])               
             i++;
           }
-          rtn[data[n][selectedJoinColumn]] = tempArr
+          rtn.push([data[n][selectedJoinColumn],...tempArr]);
         }
       } else if (dateList !== undefined){
         while (n>0){
           n--;
           let i = 0;
-          let tempArr = new Array(dateList.length)
-          while (i < dateList.length){
-            tempArr[i] = (data[n][dateList[i]]||tempArr[i-1])||null
+          let tempArr = new Array(dateIndices.length)
+          while (i < dateIndices.length){
+            tempArr[i] = (data[n][dateList[dateIndices[i]]]||tempArr[i-1])||'NULL'
             i++;
           }
-          rtn[data[n][selectedJoinColumn]] = tempArr
+          rtn.push([data[n][selectedJoinColumn], ...tempArr]);
         }
       } else {
         while (n>0){
           n--;
-          rtn[data[n][selectedJoinColumn]] = Object.values(data[n])
+          rtn.push(Object.values(data[n]));
         }
       }
-      return [rtn, Object.keys(data[0]), dateIndices]
+      const colList = dateIndices === null ? Object.keys(data[0]) : [selectedJoinColumn, ...dateIndices.map(d => dateList[d])];
+      return [rtn, colList, dateIndices]
     });
   return tempData;
 }

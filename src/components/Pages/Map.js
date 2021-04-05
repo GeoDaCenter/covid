@@ -24,6 +24,8 @@ import { MapSection, NavBar, VariablePanel, Legend,  TopPanel, Preloader,
 
 import { colorScales, fixedScales, dataPresets, variablePresets, colors } from '../../config';
 
+import initSqlJs from "sql.js";
+
 // Main function, App. This function does 2 things:
 // 1: App manages the majority of the side effects when the state changes.
 //    This takes the form of React's UseEffect hook, which listens
@@ -69,6 +71,7 @@ function App() {
   // data in the state is poor for performance, but the App component state only
   // contains gda_proxy.
   const [gda_proxy, set_gda_proxy] = useState(null);
+  const [db, setDb] = useState(null)
   const [defaultDimensions, setDefaultDimensions] = useState({...getDefaultDimensions()})
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();  
@@ -76,6 +79,48 @@ function App() {
   // Get centroid data for cartogram
   // const getCentroids = (geojson, gda_proxy) =>  dispatch(setCentroids(gda_proxy.GetCentroids(geojson), geojson))
   
+  const findColumnType = (joinColumns, columnName, val) => {
+    if (joinColumns.includes(columnName)) {
+      return 'BIGINT'
+    } else if (typeof val === 'string') {
+      return 'TEXT'
+    } else if (typeof val === 'string') {
+      return 'TEXT'
+    } else if (val !== null &&val % 1 === 0) {
+      return 'INT'
+    } else {
+      return 'FLOAT'
+    }
+  }
+
+  const loadDb = (data, name, joinCols) => {
+    let tempValues = Object.values(data[0]);
+    let tempNames = data[1];
+    let types = [];
+    let columns = ``
+
+    let tempStmt = `CREATE TABLE ${name} (`
+
+    for (let i=0; i<tempValues[1].length; i++){
+      let tempType = findColumnType(joinCols, tempNames[i], tempValues[1][i]);
+      tempStmt += `"${tempNames[i]}" ${tempType}, `;
+      columns += `"${tempNames[i]}", `
+      types.push(tempType);
+    }
+    tempStmt = tempStmt.slice(0,-2) + `);`
+    db.run(tempStmt);
+
+    let insertStmt = `INSERT INTO ${name} (${columns.slice(0,-2)}) VALUES `
+    for (let i=0; i<tempValues.length; i++){
+      insertStmt += `(${tempValues[i].map((val, idx) => val === null ? 'NULL' : types[idx] === 'TEXT' ? `"${val}"` : val).join(', ')}), `
+      if (i % 100 === 0){
+        db.run(insertStmt.slice(0,-2) + ';');
+        insertStmt = `INSERT INTO ${name} (${columns.slice(0,-2)}) VALUES `
+      }
+    }
+    if (tempValues.length % 100 !== 0) db.run(insertStmt.slice(0,-2) + ';');
+  }
+
   // Main data loader
   // This functions asynchronously accesses the Geojson data and CSVs
   //   then performs a join and loads the data into the store
@@ -98,65 +143,69 @@ function App() {
     ]).then(values => {
       // store geojson lookup table
       // merge data and get results
-      let tempData = mergeData(values[0]['data'], joinCols[0], values.slice(1,), tableNames, joinCols[1]);
-      let ColNames = getColumns(values.slice(1,), tableNames);
-      let DateIndices = getDateIndices(values.slice(1,), tableNames);
-      let denomIndices = DateIndices[dataParams.numerator]
-      let lastIndex = denomIndices !== null ? denomIndices.slice(-1,)[0] : null;
-      let chartData = getDataForCharts(tempData, 'cases', DateIndices['cases'], dateLists.isoDateList);
-      let binData = getDataForBins(tempData, {...dataParams, nIndex: lastIndex || dataParams.nIndex, binIndex: lastIndex || dataParams.binIndex});
-      let bins;
-
-      if (dataParams.fixedScale === null || dataParams.fixedScale === undefined){
-        // calculate breaks
-        let nb = gda_proxy.custom_breaks(
-          geojson, 
-          mapParams.mapType,
-          mapParams.nBins,
-          null,
-          binData
-        );        
-
-        bins = {
-          bins: mapParams.mapType === "natural_breaks" ? nb.bins : ['Lower Outlier','< 25%','25-50%','50-75%','>75%','Upper Outlier'],
-          breaks: [-Math.pow(10, 12), ...nb.breaks.slice(1,-1), Math.pow(10, 12)]
-        }
-      } else {
-        bins = fixedScales[dataParams.fixedScale]
+      for (let i=1; i<values.length; i++){
+        loadDb(values[i], csvs[i-1], joinCols)
       }
+      console.log(csvs)
+      // let tempData = mergeData(values[0]['data'], joinCols[0], values.slice(1,), tableNames, joinCols[1]);
+      // let ColNames = getColumns(values.slice(1,), tableNames);
+      // let DateIndices = getDateIndices(values.slice(1,), tableNames);
+      // let denomIndices = DateIndices[dataParams.numerator]
+      // let lastIndex = denomIndices !== null ? denomIndices.slice(-1,)[0] : null;
+      // let chartData = getDataForCharts(tempData, 'cases', DateIndices['cases'], dateLists.isoDateList);
+      // let binData = getDataForBins(tempData, {...dataParams, nIndex: lastIndex || dataParams.nIndex, binIndex: lastIndex || dataParams.binIndex});
+      // let bins;
 
-      // store data, data name, and column names
-      dispatch(
-        dataLoad({
-          storeData: {
-            data: tempData, 
-            name: geojson
-          },
-          currentData: geojson,
-          columnNames: {
-            data: ColNames,
-            name: geojson
-          },
-          dateIndices: {
-            data: DateIndices,
-            name: geojson
-          },
-          storeGeojson: {
-            data: values[0]['geoidIndex'],
-            name: geojson
-          },
-          chartData: chartData,
-          mapParams: {
-            bins,
-            colorScale: colorScales[dataParams.colorScale || mapParams.mapType]
-          },
-          variableParams: {
-            nIndex: lastIndex || dataParams.nIndex,
-            binIndex: lastIndex || dataParams.binIndex
-          },
-        })
-      )
-      setIsLoading(false)
+      // if (dataParams.fixedScale === null || dataParams.fixedScale === undefined){
+      //   // calculate breaks
+      //   let nb = gda_proxy.custom_breaks(
+      //     geojson, 
+      //     mapParams.mapType,
+      //     mapParams.nBins,
+      //     null,
+      //     binData
+      //   );        
+
+      //   bins = {
+      //     bins: mapParams.mapType === "natural_breaks" ? nb.bins : ['Lower Outlier','< 25%','25-50%','50-75%','>75%','Upper Outlier'],
+      //     breaks: [-Math.pow(10, 12), ...nb.breaks.slice(1,-1), Math.pow(10, 12)]
+      //   }
+      // } else {
+      //   bins = fixedScales[dataParams.fixedScale]
+      // }
+
+      // // store data, data name, and column names
+      // dispatch(
+      //   dataLoad({
+      //     storeData: {
+      //       data: tempData, 
+      //       name: geojson
+      //     },
+      //     currentData: geojson,
+      //     columnNames: {
+      //       data: ColNames,
+      //       name: geojson
+      //     },
+      //     dateIndices: {
+      //       data: DateIndices,
+      //       name: geojson
+      //     },
+      //     storeGeojson: {
+      //       data: values[0]['geoidIndex'],
+      //       name: geojson
+      //     },
+      //     chartData: chartData,
+      //     mapParams: {
+      //       bins,
+      //       colorScale: colorScales[dataParams.colorScale || mapParams.mapType]
+      //     },
+      //     variableParams: {
+      //       nIndex: lastIndex || dataParams.nIndex,
+      //       binIndex: lastIndex || dataParams.binIndex
+      //     },
+      //   })
+      // )
+      // setIsLoading(false)
     })
   }
 
@@ -201,6 +250,7 @@ function App() {
   // After runtime is initialized, this loads in gda_proxy to the state
   // TODO: Recompile WebGeoda and load it into a worker
   useEffect(() => {
+    initSqlJs({locateFile: file => `${process.env.PUBLIC_URL}/wasm/${file}`}).then(SQL => setDb(new SQL.Database()));
     let paramsDict = {}; 
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -236,6 +286,7 @@ function App() {
       }))
     }
 
+
     import('jsgeoda').then(jsgeoda => {
       const newGeoda = async () => {
         let geoda = await jsgeoda.New();
@@ -248,7 +299,6 @@ function App() {
       } else {
         set_gda_proxy(window.gda_proxy)
       }
-    
     })
     dispatch(setDates(dateLists.isoDateList))
   },[])
@@ -258,7 +308,7 @@ function App() {
   // Otherwise, this side-effect loads the selected data.
   // Each conditions checks to make sure gda_proxy is working.
   useEffect(() => {
-    if (gda_proxy === null) {
+    if (gda_proxy === null || db === null) {
       return;
     } else if (storedData === {}) {
       loadData(
@@ -295,7 +345,7 @@ function App() {
       
       // updateBins();
     }
-  },[gda_proxy, currentData])
+  },[gda_proxy, db, currentData])
 
   // This listens for gda_proxy events for LISA and Cartogram calculations
   // Both of these are computationally heavy.
@@ -352,14 +402,35 @@ function App() {
   }, [window.innerHeight, window.innerWidth])
   // const dragHandlers = {onStart: this.onStart, onStop: this.onStop};
 
-
+  const queryDb = (table) => {
+    const t0 = performance.now();
+    const res = db.exec(`SELECT * FROM ${table}`);
+    console.log(performance.now() - t0)
+    return res;
+  }
+  
+  const joinQuery = (table1, table2, date, date2, joinCol) => {
+    const t0 = performance.now();
+    const res = db.exec(`
+    
+    SELECT (${table1}."${date}"*100.0)/(${table2}."${date}"*100.0) as "MORTALITY${date}", (${table1}."${date2}"*100.0)/(${table2}."${date2}"*100.0) as "MORTALITY${date2}", ${table1}."${joinCol}", ${table2}."${joinCol}"
+    FROM ${table1}
+    INNER JOIN ${table2}
+    ON  ${table1}.${joinCol}=${table2}.${joinCol} 
+  `);
+    console.log(performance.now() - t0)
+    return res;
+  }
+  
   return (
     <div className="Map-App">
       <Preloader loaded={mapLoaded} />
       <NavBar />
       {isLoading && <div id="loadingIcon" style={{backgroundImage: `url('${process.env.PUBLIC_URL}assets/img/bw_preloader.gif')`}}></div>}
       <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
-        {/* <button onClick={() => console.log(fullState)}>Log state</button> */}
+        <button onClick={() => console.log(queryDb("covid_confirmed_1p3a"))}>cases</button>
+        <button onClick={() => console.log(queryDb("covid_deaths_1p3a"))}>deaths</button>
+        <button onClick={() => console.log(joinQuery("covid_deaths_1p3a", "covid_confirmed_1p3a", '2021-03-15','2021-03-16', 'GEOID'))}>join</button>
       </header>
       <div id="mainContainer" className={isLoading ? 'loading' : ''}>
         <MapSection />
