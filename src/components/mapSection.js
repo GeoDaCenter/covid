@@ -312,7 +312,7 @@ function MapSection(props){
         
         if (storedCartogramData){
             let center = getCartogramCenter(storedCartogramData);
-
+            if (isNaN(center[0])) return;
             let roundedCenter = [Math.floor(center[0]),Math.floor(center[1])];
             if ((storedCenter === null || roundedCenter[0] !== storedCenter[0]) && center) {
                 setViewState({

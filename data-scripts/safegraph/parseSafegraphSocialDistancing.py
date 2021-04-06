@@ -6,7 +6,7 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 repo_root = os.path.abspath(os.path.join(dir_path, '..', '..'))
 
 def parseSG():
-    dailyStats = pd.read_csv(os.path.join(repo_root, 'data-scripts/safegraph/fullData2021-03-19.csv')) # just COVID dates
+    dailyStats = pd.read_csv(os.path.join(repo_root, 'data-scripts/safegraph/fullData2021-04-05.csv')) # just COVID dates
 
     dailyStats['pct_home'] = round(dailyStats['completely_home_device_count']/dailyStats['device_count'],4)
     dailyStats['pct_fulltime'] = round(dailyStats['full_time_work_behavior_devices']/dailyStats['device_count'],4)
