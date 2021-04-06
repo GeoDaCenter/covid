@@ -1064,13 +1064,13 @@ export const variableTree = {
     "HEADER:cases":{},
     "Confirmed Count": {
         "County": {
-            "1point3acres": {
-                "geojson":'county_1p3a.geojson',
-                "csv":['covid_confirmed_1p3a']
-            },
             "USA Facts": {
                 "geojson":'county_usfacts.geojson',
                 "csv":['covid_confirmed_usafacts'] 
+            },
+            "1point3acres": {
+                "geojson":'county_1p3a.geojson',
+                "csv":['covid_confirmed_1p3a']
             },
             "New York Times": {
                 "geojson":'county_nyt.geojson',
@@ -1090,13 +1090,13 @@ export const variableTree = {
     },
     "Confirmed Count per 100K Population":{
         "County": {
-            "1point3acres": {
-                "geojson":'county_1p3a.geojson',
-                "csv":['covid_confirmed_1p3a']
-            },
             "USA Facts": {
                 "geojson":'county_usfacts.geojson',
                 "csv":['covid_confirmed_usafacts'] 
+            },
+            "1point3acres": {
+                "geojson":'county_1p3a.geojson',
+                "csv":['covid_confirmed_1p3a']
             },
             "New York Times": {
                 "geojson":'county_nyt.geojson',
@@ -1116,13 +1116,13 @@ export const variableTree = {
     },
     "Confirmed Count per Licensed Bed":{
         "County": {
-            "1point3acres": {
-                "geojson":'county_1p3a.geojson',
-                "csv":['covid_confirmed_1p3a']
-            },
             "USA Facts": {
                 "geojson":'county_usfacts.geojson',
                 "csv":['covid_confirmed_usafacts'] 
+            },
+            "1point3acres": {
+                "geojson":'county_1p3a.geojson',
+                "csv":['covid_confirmed_1p3a']
             },
             "New York Times": {
                 "geojson":'county_nyt.geojson',
@@ -1143,13 +1143,13 @@ export const variableTree = {
     "HEADER:deaths":{},
     "Death Count":{
         "County": {
-            "1point3acres": {
-                "geojson":'county_1p3a.geojson',
-                "csv":['covid_deaths_1p3a']
-            },
             "USA Facts": {
                 "geojson":'county_usfacts.geojson',
                 "csv":['covid_deaths_usafacts'] 
+            },
+            "1point3acres": {
+                "geojson":'county_1p3a.geojson',
+                "csv":['covid_deaths_1p3a']
             },
             "New York Times": {
                 "geojson":'county_nyt.geojson',
@@ -1169,13 +1169,13 @@ export const variableTree = {
     },
     "Death Count per 100K Population": {
         "County": {
-            "1point3acres": {
-                "geojson":'county_1p3a.geojson',
-                "csv":['covid_deaths_1p3a']
-            },
             "USA Facts": {
                 "geojson":'county_usfacts.geojson',
                 "csv":['covid_deaths_usafacts'] 
+            },
+            "1point3acres": {
+                "geojson":'county_1p3a.geojson',
+                "csv":['covid_deaths_1p3a']
             },
             "New York Times": {
                 "geojson":'county_nyt.geojson',
@@ -1195,11 +1195,11 @@ export const variableTree = {
     },
     "Death Count / Confirmed Count": {
         "County": {
-            "1point3acres": {
-                "geojson":'county_1p3a.geojson'
-            },
             "USA Facts": {
                 "geojson":'county_usfacts.geojson'
+            },
+            "1point3acres": {
+                "geojson":'county_1p3a.geojson'
             },
             "New York Times": {
                 "geojson":'county_nyt.geojson'
