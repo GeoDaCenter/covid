@@ -8,7 +8,7 @@ export const INITIAL_STATE = {
   storedMobilityData: {},
   cols: {},
   dateIndices: {},
-  currentData: 'county_1p3a.geojson',
+  currentData: 'county_usfacts.geojson',
   chartData: [{}],
   selectionKeys: [],
   selectionIndex: [],
