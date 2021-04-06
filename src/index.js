@@ -29,7 +29,7 @@ const store = createStore(
 
 WebFont.load({
   google: {
-    families: ['Lato:300,400,700,900', 'Playfair Display:ital', 'sans-serif']
+    families: ['Lato:400,400i,700,900', 'Playfair Display:ital', 'sans-serif']
   }
 });
 

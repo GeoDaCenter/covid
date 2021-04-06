@@ -177,3 +177,19 @@ export const Gutter = styled.div`
     display:block;
     height: ${props => props.h}px;
 `
+
+export const HoverDiv = styled.div`
+  background:${colors.gray};
+  padding:20px;
+  color:white;
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.7);
+  border-radius:0.5vh 0.5vh 0 0;
+  h3 {
+      margin:5px 0;
+  }
+  hr {
+      margin: 5px 0;
+  }
+  max-width:50ch;
+  line-height:1.25;
+`

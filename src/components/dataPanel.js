@@ -267,14 +267,14 @@ const DataPanel = () => {
   // List of all current datasets joined
   const datasetList = ['properties', 'cases', 'deaths', 'predictions',
     'chr_health_factors', 'chr_life', 'chr_health_context',
-    'testing', 'vaccines_one_dose', 'essential_workers', 'pct_home']
+    'testing', 'vaccines_one_dose', 'vaccines_fully_vaccinated', 'essential_workers', 'pct_home']
 
   // Map datasetList to check if each key is present in the current data
   // Output variables are checked below for conditional rendering
   const [ properties, cases, deaths, predictions,
     chr_health_factors, chr_life, chr_health_context,
-    testing, vaccines_one_dose, essential_workers,
-    pct_home
+    testing, vaccines_one_dose, vaccines_fully_vaccinated,
+    essential_workers, pct_home
   ] = datasetList.map(dataset => {
     if (storedData[currentData] === undefined) {
       return false 
@@ -497,22 +497,22 @@ const DataPanel = () => {
                       <br/><br/>
                     </>
                   }
-                  <p>% of Population<br className="bigOnly"/>  Received First Dose</p>
+                  <p>% of Population<br className="bigOnly"/>  Received At Least One Dose</p>
                   <div className="numberChartContainer">
                     <h3>{aggregateDataFunction('vaccines_one_dose', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: 'population', dIndex: null, dRange: null, scale: 100}, 'weighted_average')?.toFixed(2).toLocaleString('en')}%</h3>
                     {expanded && <TwoWeekChart data={aggregate2WeekTimeSeries('vaccines_one_dose', currDateIndex, 'sum')} schema='vaccination'/>}
                   </div>
                   
-                  <p>Total Number<br className="bigOnly"/>  Received First Dose</p>
+                  <p>Total Number<br className="bigOnly"/>  Received At Least One Dose</p>
                   <h3>{aggregateDataFunction('vaccines_one_dose', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: null, dIndex: null, dRange: null, scale: 1}, 'sum')?.toLocaleString('en')}</h3>
                   
-                  <p>% of Population<br className="bigOnly"/>  Received Second Dose</p>
+                  <p>% of Population<br className="bigOnly"/>  Fully Vaccinated</p>
                   <div className="numberChartContainer">
                     <h3>{aggregateDataFunction('vaccines_fully_vaccinated', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: 'population', dIndex: null, dRange: null, scale: 100}, 'weighted_average')?.toFixed(2).toLocaleString('en')}%</h3>
                     {expanded && <TwoWeekChart data={aggregate2WeekTimeSeries('vaccines_fully_vaccinated', currDateIndex, 'sum')} schema='vaccination'/>}
                   </div>
 
-                  <p>Total Number<br className="bigOnly"/>  Received Second Dose</p>
+                  <p>Total Number<br className="bigOnly"/>  Fully Vaccinated</p>
                   <h3>{aggregateDataFunction('vaccines_fully_vaccinated', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: null, dIndex: null, dRange: null, scale: 1}, 'sum')?.toLocaleString('en')}</h3>
 
                   <p>Doses to be Administered<br className="bigOnly"/>  Per 100 People</p>
@@ -520,6 +520,22 @@ const DataPanel = () => {
                 
                 </ReportSection>
               }
+              {(vaccines_fully_vaccinated && selectionIndex.length) &&
+                  <ReportSection>
+                    <h2>COVID Vaccination</h2><br/>
+                    <h6>Source: <a href="https://covid.cdc.gov/covid-data-tracker/#vaccinations" target="_blank" rel="noopener noreferrer">CDC COVID Data Tracker</a></h6>            
+
+                  <p>% of Population<br className="bigOnly"/>  Fully Vaccinated</p>
+                  <div className="numberChartContainer">
+                    <h3>{aggregateDataFunction('vaccines_fully_vaccinated', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: 'population', dIndex: null, dRange: null, scale: 100}, 'weighted_average')?.toFixed(2).toLocaleString('en')}%</h3>
+                    {expanded && <TwoWeekChart data={aggregate2WeekTimeSeries('vaccines_fully_vaccinated', currDateIndex, 'sum')} schema='vaccination'/>}
+                  </div>
+
+                  <p>Total Number<br className="bigOnly"/>  Fully Vaccinated</p>
+                  <h3>{aggregateDataFunction('vaccines_fully_vaccinated', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: null, dIndex: null, dRange: null, scale: 1}, 'sum')?.toLocaleString('en')}</h3>
+
+                  </ReportSection>
+                }
           {(testing && selectionIndex.length) &&
               <ReportSection>
                 <h2>Testing</h2><br/>

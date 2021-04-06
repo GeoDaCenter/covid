@@ -350,11 +350,12 @@ export const setMapLoaded = ( loaded ) => {
     }
 }
 
-export const setNotification = ( info ) => {
+export const setNotification = ( info, location ) => {
     return {
         type: 'SET_NOTIFICATION',
         payload: {
-            info
+            info,
+            location
         }
     }
 }
@@ -376,4 +377,16 @@ export const openContextMenu = ( params ) => {
             params
         }
     }
+}
+
+export const setTooltipContent = ( x, y, data ) => {
+    return {
+        type: 'SET_TOOLTIP_CONTENT',
+        payload: {
+            x,
+            y,
+            data
+        }
+    }
+
 }

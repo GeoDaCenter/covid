@@ -8,7 +8,7 @@ export const INITIAL_STATE = {
   storedMobilityData: {},
   cols: {},
   dateIndices: {},
-  currentData: 'county_1p3a.geojson',
+  currentData: 'county_usfacts.geojson',
   chartData: [{}],
   selectionKeys: [],
   selectionIndex: [],
@@ -80,6 +80,14 @@ export const INITIAL_STATE = {
   sidebarData: {},
   anchorEl: null,
   mapLoaded: false,
-  notification: null,
-  urlParams: {}
+  notification: {
+    info: null,
+    location: ''
+  },
+  urlParams: {},
+  tooltipContent: {
+    x:0,
+    y:0,
+    data: null
+  }
 };

@@ -281,7 +281,8 @@ export const dataPresets = {
             'mobility_home_workdays_safegraph',
             'mobility_parttime_workdays_safegraph',
             'mobility_fulltime_workdays_safegraph',
-            'context_essential_workers_acs'
+            'context_essential_workers_acs',
+            'vaccine_fully_vaccinated_cdc'
         ], 
         tableNames: [ // table names in order of CSVs
             'cases',
@@ -293,7 +294,8 @@ export const dataPresets = {
             'pct_home',
             'pct_parttime',
             'pct_fulltime',
-            'essential_workers'
+            'essential_workers',
+            'vaccines_fully_vaccinated'
         ],
         joinCols: ['GEOID', ['FIPS','fips','countyFIPS', 'county']], // geospatial data join column and then list of valid table join columns
         accumulate: [], // CSV names to accumulate over time
@@ -303,6 +305,7 @@ export const dataPresets = {
             'mobility_home_workdays_safegraph': 'isoDateList',
             'mobility_parttime_workdays_safegraph': 'isoDateList',
             'mobility_fulltime_workdays_safegraph': 'isoDateList',
+            'vaccine_fully_vaccinated_cdc': 'isoDateList',
         }
     },
     'county_1p3a.geojson': {
@@ -315,6 +318,7 @@ export const dataPresets = {
             'chr_health_context',
             'chr_life',
             'chr_health_factors',
+            'vaccine_fully_vaccinated_cdc'
         ], 
         tableNames: [
             'cases',
@@ -323,12 +327,14 @@ export const dataPresets = {
             'chr_health_context', 
             'chr_life', 
             'chr_health_factors',
+            'vaccines_fully_vaccinated'
         ],
         joinCols: ['GEOID', ['FIPS','fips','countyFIPS', 'GEOID']], 
         accumulate: ['covid_confirmed_1p3a','covid_deaths_1p3a'],
         dateList: {
             'covid_confirmed_1p3a': 'isoDateList', 
-            'covid_deaths_1p3a': 'isoDateList'
+            'covid_deaths_1p3a': 'isoDateList',
+            'vaccine_fully_vaccinated_cdc': 'isoDateList',
         }
     },
     'county_nyt.geojson': {
@@ -341,7 +347,8 @@ export const dataPresets = {
             'chr_health_context', 
             'chr_life', 
             'chr_health_factors',
-            'context_essential_workers_acs'
+            'context_essential_workers_acs',
+            'vaccine_fully_vaccinated_cdc'
         ],  
         tableNames: [
             'cases', 
@@ -350,13 +357,15 @@ export const dataPresets = {
             'chr_health_context', 
             'chr_life', 
             'chr_health_factors',
-            'essential_workers'
+            'essential_workers',
+            'vaccines_fully_vaccinated'
         ],
         joinCols: ['GEOID', ['FIPS','fips','countyFIPS']],
         accumulate: [],
         dateList: {
             'covid_confirmed_nyt': 'isoDateList',
-            'covid_deaths_nyt': 'isoDateList'
+            'covid_deaths_nyt': 'isoDateList',
+            'vaccine_fully_vaccinated_cdc': 'isoDateList',
         }
     },
     'state_1p3a.geojson': {
@@ -522,7 +531,8 @@ export const dataPresets = {
             'covid_wk_pos_cdc', 
             'covid_tcap_cdc', 
             'covid_ccpt_cdc',
-            'context_essential_workers_acs'
+            'context_essential_workers_acs',
+            'vaccine_fully_vaccinated_cdc'
         ],  
         tableNames: [
             'cases',
@@ -535,7 +545,8 @@ export const dataPresets = {
             'testing_wk_pos', 
             'testing_tcap', 
             'testing_ccpt',
-            'essential_workers'
+            'essential_workers',
+            'vaccines_fully_vaccinated'
         ],
         joinCols: ['GEOID', ['fips_code', 'fips', 'FIPS', 'countyFIPS']],
         accumulate: [],
@@ -545,7 +556,8 @@ export const dataPresets = {
             'covid_testing_cdc': 'isoDateList', 
             'covid_wk_pos_cdc': 'isoDateList', 
             'covid_tcap_cdc': 'isoDateList', 
-            'covid_ccpt_cdc': 'isoDateList'
+            'covid_ccpt_cdc': 'isoDateList',
+            'vaccine_fully_vaccinated_cdc': 'isoDateList',
         }
     },
 }
@@ -1228,18 +1240,22 @@ export const variableTree = {
         }
     },
     "HEADER:vaccination":{},
+    "Percent Fully Vaccinated":{
+        "County": {
+            "CDC": {
+                "geojson": "cdc.geojson",
+            }
+        },
+        "State": {
+            "CDC": {
+                "geojson": "state_1p3a.geojson",
+            }
+        },
+    },
     "Percent Received At Least One Dose":{
         "State": {
             "CDC": {
                 "geojson": "state_1p3a.geojson"
-            }
-        },
-    },
-    "Percent Fully Vaccinated":{
-        "State": {
-            "CDC": {
-                "geojson": "state_1p3a.geojson",
-                "csv": ["vaccine_admin_cdc_1p3a_state"],
             }
         },
     },

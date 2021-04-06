@@ -14,7 +14,7 @@ import MapboxGLMap from 'react-map-gl';
 
 // component, action, util, and config import
 import { MapTooltipContent, Geocoder } from '../components';
-import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData, openContextMenu, setNotification } from '../actions';
+import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData, openContextMenu, setNotification, setTooltipContent } from '../actions';
 import { mapFn, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, getURLParams } from '../utils';
 import { colors, colorScales, MAPBOX_ACCESS_TOKEN } from '../config';
 import MAP_STYLE from '../config/style.json';
@@ -66,22 +66,6 @@ const MapContainer = styled.div`
             display:none;
         }
     }
-`
-
-const HoverDiv = styled.div`
-    background:${colors.gray};
-    padding:20px;
-    color:white;
-    box-shadow: 0px 0px 5px rgba(0,0,0,0.7);
-    border-radius:0.5vh 0.5vh 0 0;
-    h3 {
-        margin:5px 0;
-    }
-    hr {
-        margin: 5px 0;
-    }
-    max-width:50ch;
-    line-height:1.25;
 `
 
 const MapButtonContainer = styled.div`
@@ -171,13 +155,22 @@ function useForceUpdate(){
 
 function MapSection(props){ 
     // fetch pieces of state from store    
-    const { storedData, storedGeojson, currentData, storedLisaData, dateIndices,
-        storedCartogramData, panelState, dates, dataParams, mapParams,
-        urlParams, } = useSelector(state => state);
+    const storedData = useSelector(state => state.storedData);
+    const storedGeojson = useSelector(state => state.storedGeojson);
+    const currentData = useSelector(state => state.currentData);
+    const storedLisaData = useSelector(state => state.storedLisaData);
+    const dateIndices = useSelector(state => state.dateIndices);
+    const storedCartogramData = useSelector(state => state.storedCartogramData);
+    const panelState = useSelector(state => state.panelState);
+    const dates = useSelector(state => state.dates);
+    const dataParams = useSelector(state => state.dataParams);
+    const mapParams = useSelector(state => state.mapParams);
+    const urlParams = useSelector(state => state.urlParams);
+    const excludeList = useSelector(state => state.excludeList);
 
     // component state elements
     // hover and highlight geographibes
-    const [hoverInfo, setHoverInfo] = useState({x:null, y:null, object:null});
+    const [hoverGeog, setHoverGeog] = useState({x:null, y:null, object:null});
     const [highlightGeog, setHighlightGeog] = useState([]);
 
     // mapstyle and global map mode (WIP)
@@ -321,7 +314,7 @@ function MapSection(props){
             let center = getCartogramCenter(storedCartogramData);
 
             let roundedCenter = [Math.floor(center[0]),Math.floor(center[1])];
-            if (storedCenter === null || roundedCenter[0] !== storedCenter[0]) {
+            if ((storedCenter === null || roundedCenter[0] !== storedCenter[0]) && center) {
                 setViewState({
                     latitude: center[1],
                     longitude: center[0],
@@ -387,7 +380,8 @@ function MapSection(props){
                         For a more complete listing of places to get the COVID19 vaccine please visit the <a href="https://vaccinefinder.org/search/" target="_blank" rel="noopener noreferrer">CDC VaccineFinder</a> or check your local jurisdiction.
                     </a>
                     </p>
-                `))
+                `,
+                'center'))
             }
         }
         
@@ -434,14 +428,15 @@ function MapSection(props){
                     }))
                 }
         }
-    },[mapParams.mapType, mapParams.vizType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, storedGeojson[currentData], storedCartogramData, currentData])
+    },[dataParams.variableName, mapParams.mapType, mapParams.vizType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, storedGeojson[currentData], storedCartogramData, currentData])
     
     useEffect(() => {
         forceUpdate()
-    }, [currentMapData.params])
+    }, [currentMapData.params, dataParams.numerator, dataParams.variableName, dataParams.denominator, dataParams.nIndex])
+
     const GetFillColor = (f, bins, mapType, varID) => {
-        if ((!bins.hasOwnProperty("bins")) || (!f.hasOwnProperty(dataParams.numerator))) {
-            return [240,240,240,120]
+        if (!f[dataParams.numerator] || !f[dataParams.numerator][dataParams.nIndex]) {
+            return null
         } else if (mapType === 'lisa') {
             return colorScales.lisa[storedLisaData[storedGeojson[currentData]['geoidOrder'][f.properties.GEOID]]]
         } else {
@@ -459,16 +454,9 @@ function MapSection(props){
         }
     }
     
-    // const GetFillColors = (data, bins, mapType, varID) => {
-    //     let tempObj = {}
-    //     for (let i=0; i < data.length; i++) {
-    //         tempObj[data[i].properties.GEOID] = GetFillColor(data[i], bins, mapType, varID)
-    //     }
-    //     return tempObj
-    // };
-
     const cleanData = ( parameters ) => {
         const {data, bins, mapType, varID, vizType} = parameters; //dataName, dataType, params, colorScale
+        if (!bins.hasOwnProperty("bins")) return [];
         if ((data === undefined) || (mapType !== 'lisa' && bins.breaks === undefined)) return [];
         var returnArray = [];
         let i = 0;
@@ -490,6 +478,10 @@ function MapSection(props){
             default:
                 while (i < data.length) {
                     let tempColor = GetFillColor(data[i], bins, mapType, varID);
+                    if (tempColor === null) {
+                        i++;
+                        continue;
+                    }
                     let tempHeight = GetHeight(data[i]);
                     for (let n=0; n<data[i].geometry.coordinates.length; n++) {
                         returnArray.push({
@@ -564,13 +556,12 @@ function MapSection(props){
     }
 
     const handleMapHover = ({x, y, object, layer}) => {
-        setHoverInfo(
-            {
-                x, 
-                y, 
-                object: Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : find(storedData[currentData],o => o.properties.GEOID === object?.GEOID) //layer.props?.hasOwnProperty('getIcon') ? object : 
-            }
-        )
+        dispatch(setTooltipContent(x, y, Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : find(storedData[currentData],o => o.properties.GEOID === object?.GEOID)))
+        if (object && object.GEOID) {
+            if (object.GEOID !== hoverGeog) setHoverGeog(object.GEOID)
+        } else {
+            setHoverGeog(null)
+        }
     }
 
     const handleMapClick = (info, e) => {
@@ -711,7 +702,7 @@ function MapSection(props){
             opacity: 0.8,
             material:false,
             onHover: handleMapHover,
-            onClick: handleMapClick,            
+            onClick: handleMapClick,           
             updateTriggers: {
                 getPolygon: [currentMapData.params, dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
                 getElevation: [currentMapData.params, dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
@@ -741,7 +732,7 @@ function MapSection(props){
             id: 'hoverHighlightlayer',    
             data: currentMapData.data,
             getPolygon: d => d.geom,
-            getLineColor: d => hoverInfo?.object?.properties?.GEOID === d.GEOID ? [50, 50, 50] : [50, 50, 50, 0], 
+            getLineColor: d => hoverGeog === d.GEOID ? [50, 50, 50] : [50, 50, 50, 0], 
             getElevation: d => d.height,
             pickable: false,
             stroked: true,
@@ -754,7 +745,7 @@ function MapSection(props){
             lineWidthMaxPixels: 10,
             updateTriggers: {
                 getPolygon: currentData,
-                getLineColor: hoverInfo.object,
+                getLineColor: hoverGeog,
                 getElevation: [currentMapData.data, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
                 extruded: mapParams.vizType
             }
@@ -1054,10 +1045,6 @@ function MapSection(props){
                 }
                 views={view}
                 pickingRadius={20}
-
-                // onViewStateChange={onViewStateChange}
-                // viewState={viewStates}
-                // views={insetMap ? views : views[0]}
             >
                 <MapboxGLMap
                     reuseMaps
@@ -1065,8 +1052,6 @@ function MapSection(props){
                     mapStyle={mapStyle} //{globalMap || mapParams.vizType === 'cartogram' ? 'mapbox://styles/lixun910/ckhtcdx4b0xyc19qzlt4b5c0d' : 'mapbox://styles/lixun910/ckhkoo8ix29s119ruodgwfxec'}
                     preventStyleDiffing={true}
                     mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
-                    // onViewportChange={() => hoverInfo.x !== null ? setHoverInfo({x:null, y:null, object:null}) : ''}
-                    // onViewportChange={viewState  => console.log(mapRef.current.props.viewState)} 
                     onLoad={() => {
                         dispatch(setMapLoaded(true))
                     }}
@@ -1141,12 +1126,6 @@ function MapSection(props){
                     onChange={handleGeocoder}
                 />
             </GeocoderContainer>
-
-            {hoverInfo.object && (
-                <HoverDiv style={{position: 'absolute', zIndex: 1, pointerEvents: 'none', left: hoverInfo.x, top: hoverInfo.y}}>
-                    <MapTooltipContent content={hoverInfo.object} index={dataParams.nIndex} />
-                </HoverDiv>
-                )}
         </MapContainer>
     ) 
 }
