@@ -435,7 +435,7 @@ function MapSection(props){
     }, [currentMapData.params, dataParams.numerator, dataParams.variableName, dataParams.denominator, dataParams.nIndex])
 
     const GetFillColor = (f, bins, mapType, varID) => {
-        if (!f[dataParams.numerator] || !f[dataParams.numerator][dataParams.nIndex]) {
+        if (!f[dataParams.numerator] || (!f[dataParams.numerator][dataParams.nIndex] && !f[dataParams.numerator][dataParams.nProperty])) {
             return null
         } else if (mapType === 'lisa') {
             return colorScales.lisa[storedLisaData[storedGeojson[currentData]['geoidOrder'][f.properties.GEOID]]]
@@ -456,10 +456,17 @@ function MapSection(props){
     
     const cleanData = ( parameters ) => {
         const {data, bins, mapType, varID, vizType} = parameters; //dataName, dataType, params, colorScale
-        if (!bins.hasOwnProperty("bins")) return [];
-        if ((data === undefined) || (mapType !== 'lisa' && bins.breaks === undefined)) return [];
+        if (!bins.hasOwnProperty("bins")) {
+            return []
+        };
+
+        if ((data === undefined) || (mapType !== 'lisa' && bins.breaks === undefined)) {
+            return []
+        }
+
         var returnArray = [];
         let i = 0;
+
         switch(vizType) {
             case 'cartogram':
                 if (storedGeojson[currentData] === undefined) break;
