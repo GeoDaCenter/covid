@@ -219,6 +219,7 @@ function MapSection(props){
         data: [],
         params: {}
     })
+    const [dotDensityColorData, setDotDensityColorData] = useState({})
 
     const dispatch = useDispatch();
 
@@ -341,11 +342,11 @@ function MapSection(props){
         return tempArray
     };
     
-    const getDotDensityData = async () => fetch(`${process.env.PUBLIC_URL}/pbf/dotDensityFlat.pbf`)
+    const getDotDensityData = async () => fetch(`${process.env.PUBLIC_URL}/pbf/dotDensityFlatGeoid.pbf`)
         .then(r => r.arrayBuffer())
         .then(ab => new Pbf(ab))
         .then(pbf => Schemas.Dot.read(pbf).val)
-        .then(data => chunkArray(data, 3))
+        .then(data => chunkArray(data, 4))
         .then(chunks => dispatch(setDotDensityData(chunks)));
 
     // change mapbox layer on viztype change or overlay/resource change
@@ -456,11 +457,18 @@ function MapSection(props){
                     }))
                 }
         }
-    },[dataParams.variableName, mapParams.mapType, mapParams.vizType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, storedGeojson[currentData], storedCartogramData, currentData])
+    },[dataParams.variableName, mapParams.mapType, mapParams.vizType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, storedGeojson[currentData], storedCartogramData, mapParams.overlay, currentData])
     
     useEffect(() => {
         forceUpdate()
-    }, [currentMapData.params, dataParams.numerator, dataParams.variableName, dataParams.denominator, dataParams.nIndex])
+        if (mapParams.overlay === 'dotDensity') {
+            let tempObj = {}
+            for (let i=0; i<currentMapData.data.length; i++){
+                tempObj[currentMapData.data[i]?.GEOID] = currentMapData.data[i].color
+            }
+            setDotDensityColorData(tempObj)
+        }
+    }, [currentMapData, dataParams.numerator, dataParams.variableName, dataParams.denominator, dataParams.nIndex, mapParams.overlay])
 
     const GetFillColor = (f, bins, mapType, varID) => {
         if (!f[dataParams.numerator] || (!f[dataParams.numerator][dataParams.nIndex] && !f[dataParams.numerator][dataParams.nProperty])) {
@@ -734,7 +742,7 @@ function MapSection(props){
             filled: true,
             wireframe: mapParams.vizType === '3D',
             extruded: mapParams.vizType === '3D',
-            opacity: mapParams.overlay === 'dotDensity' ? 0.1 : 0.8,
+            opacity: mapParams.overlay === 'dotDensity' ? mapParams.dotDensityParams.backgroundTransparency : 0.8,
             material:false,
             onHover: handleMapHover,
             onClick: handleMapClick,           
@@ -892,19 +900,19 @@ function MapSection(props){
             data: dotDensityData,
             pickable:false,
             filled:true,
-            getPosition: f => [f[1]/1e6, f[2]/1e6],
-            getFillColor: f => colors.dotDensity[f[0]],
+            getPosition: f => [f[1]/1e5, f[2]/1e5],
+            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? dotDensityColorData[f[3]]||[0,0,0] : colors.dotDensity[f[0]],
             getRadius: 100,  
             radiusMinPixels: Math.sqrt(currentZoom)-1.5,
-            getFilterValue: f => f[0],
-            filterRange: [8, 8],
+            getFilterValue: f => (f[0]===8 && mapParams.dotDensityParams.raceCodes[f[0]]) ? 1 : 0,
+            filterRange: [1, 1], 
             // Define extensions
             extensions: [new DataFilterExtension({filterSize: 1})],
             updateTriggers: {
                 getPosition: dotDensityData.length,
-                getFillColor: dotDensityData.length,
+                getFillColor: [mapParams.dotDensityParams.colorCOVID, dotDensityColorData, dotDensityData],
                 data: dotDensityData,
-                getFilterValue: dotDensityData.length,
+                getFilterValue: [dotDensityData.length, mapParams.dotDensityParams.raceCodes[8]],
                 radiusMinPixels: currentZoom
             }
           }),    
@@ -913,25 +921,28 @@ function MapSection(props){
             data: dotDensityData,
             pickable:false,
             filled:true,
-            getPosition: f => [f[1]/1e6, f[2]/1e6],
-            getFillColor: f => colors.dotDensity[f[0]],
+            getPosition: f => [f[1]/1e5, f[2]/1e5],
+            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? dotDensityColorData[f[3]]||[0,0,0] : colors.dotDensity[f[0]],
             getRadius: 100,  
             radiusMinPixels: Math.sqrt(currentZoom)-1.5,
-            getFilterValue: f => f[0],
-            filterRange: [0, 7],
+            getFilterValue: f => (f[0]!==8 && mapParams.dotDensityParams.raceCodes[f[0]]) ? 1 : 0,
+            filterRange: [1, 1], 
             // Define extensions
             extensions: [new DataFilterExtension({filterSize: 1})],
             updateTriggers: {
                 getPosition: dotDensityData.length,
-                getFillColor: dotDensityData.length,
+                getFillColor: [mapParams.dotDensityParams.colorCOVID, dotDensityColorData, dotDensityData],
                 data: dotDensityData,
-                getFilterValue: dotDensityData.length,
+                getFilterValue: [dotDensityData.length, 
+                    mapParams.dotDensityParams.raceCodes[1],mapParams.dotDensityParams.raceCodes[2],mapParams.dotDensityParams.raceCodes[3],mapParams.dotDensityParams.raceCodes[4],
+                    mapParams.dotDensityParams.raceCodes[5],mapParams.dotDensityParams.raceCodes[6],mapParams.dotDensityParams.raceCodes[7]
+                ],
                 radiusMinPixels: currentZoom
             }
           })
         ],
     }
-
+    console.log(mapParams.dotDensityParams)
     const getLayers = useCallback((layers, vizType, overlays, resources, currData) => {
         var LayerArray = []
 

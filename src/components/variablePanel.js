@@ -11,12 +11,14 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Switch from '@material-ui/core/Switch';
+import Checkbox from '@material-ui/core/Checkbox';
+
 
 import styled from 'styled-components';
 
 import Tooltip from './tooltip';
 import { StyledDropDown, BinsContainer, Gutter } from '../styled_components';
-import { setVariableParams, setMapParams, setCurrentData, setPanelState, setParametersAndData, setNotification } from '../actions';
+import { setVariableParams, setMapParams, setCurrentData, setPanelState, setParametersAndData, setNotification, changeDotDensityMode, toggleDotDensityRace } from '../actions';
 import { fixedScales, colorScales, colors, variableTree, variablePresets, urlParamsTree, datasetTree, allGeographies, allDatasets } from '../config';
 import * as SVG from '../config/svg';
 
@@ -208,6 +210,30 @@ const ListSubheader = styled(MenuItem)`
   font-variant: small-caps;
   font-weight:800;
 `
+const AcsButtonContainer = styled.div`
+  max-width:200px;
+`
+
+const AcsRaceButton = styled.button`
+  background:${props => props.active ? colors.yellow : colors.darkgray};
+  color:${props => props.active ? colors.black : colors.white};
+  text-align:left;
+  border:none;
+  outline:none;
+  margin:0.25em;
+  padding:0.5em;
+  border-radius:0.5em;
+  cursor:pointer;
+`
+
+const dotDensityAcsGroups = ['American Indian or Alaska Native',
+  'Asian',
+  'Black or African American',
+  'Hispanic or Latino',
+  'Native Hawaiian or Other Pacific Islander',
+  'Other',
+  'Two or more',
+  'White']
 
 const VariablePanel = (props) => {
 
@@ -794,6 +820,33 @@ const VariablePanel = (props) => {
               {/* <MenuItem value={'mobility-county'} key={'mobility-county'}>Mobility Flows (County) WARNING BIG DATA</MenuItem> */}
             </Select>
           </StyledDropDown>
+          <Gutter h={20}/>
+          {mapParams.overlay === 'dotDensity' && 
+          <>
+            <BinsContainer>
+              <Switch
+                checked={mapParams.dotDensityParams.colorCOVID}
+                onChange={() => dispatch(changeDotDensityMode())}
+                name="dot density mode"
+              />
+              <p>{mapParams.dotDensityParams.colorCOVID ? 'Color by COVID Data' : 'Color by ACS Race / Ethnicity'}</p>
+              <Gutter h={10}/>
+              <p>Toggle ACS Race / Ethnicity Groups</p>
+              <Gutter h={5}/>
+              <AcsButtonContainer>
+                {dotDensityAcsGroups.map((group,idx) => 
+                  <AcsRaceButton 
+                    active={mapParams.dotDensityParams.raceCodes[idx+1]} 
+                    onClick={() => dispatch(toggleDotDensityRace(idx+1))}>
+                      {group}
+                    </AcsRaceButton>
+                )}
+              </AcsButtonContainer>
+            </BinsContainer> 
+            <Gutter h={10}/>
+            
+
+          </>}
           <Gutter h={20}/>
           <StyledDropDown>
             <InputLabel htmlFor="resource-select">Resource</InputLabel>

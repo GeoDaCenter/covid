@@ -67,6 +67,20 @@ export const INITIAL_STATE = {
       [227,26,28],
       [177,0,38],
     ],
+    dotDensityParams: {
+      raceCodes: {
+        1: true,
+        2: true,
+        3: true,
+        4: true,
+        5: true,
+        6: true,
+        7: true,
+        8: true
+      },
+      colorCOVID: false,
+      backgroundTransparency: 0.01      
+    }
   },
   panelState: {
     variables:true,
