@@ -450,6 +450,11 @@ var reducer = (state = INITIAL_STATE, action) => {
                     data: action.payload.data,
                 }
             } 
+        case 'SET_DOT_DENSITY':
+            return {
+                ...state,
+                dotDensityData: action.payload.data
+            }
         default:
             return state;
     }

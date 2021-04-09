@@ -9,6 +9,7 @@ export const INITIAL_STATE = {
   cols: {},
   dateIndices: {},
   currentData: 'county_usfacts.geojson',
+  dotDensityData: [],
   chartData: [{}],
   selectionKeys: [],
   selectionIndex: [],

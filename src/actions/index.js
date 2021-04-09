@@ -390,3 +390,12 @@ export const setTooltipContent = ( x, y, data ) => {
     }
 
 }
+
+export const setDotDensityData = ( data ) => {
+    return {
+        type: 'SET_DOT_DENSITY',
+        payload: {
+            data
+        }
+    }
+}

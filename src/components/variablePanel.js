@@ -786,6 +786,7 @@ const VariablePanel = (props) => {
               onChange={handleMapOverlay}
             >
               <MenuItem value="" key={'None'}>None</MenuItem> 
+              <MenuItem value={'dotDensity'} key={'dotDensity'}>Population Dot Density</MenuItem>
               <MenuItem value={'native_american_reservations'} key={'native_american_reservations'}>Native American Reservations</MenuItem>
               <MenuItem value={'segregated_cities'} key={'segregated_cities'}>Hypersegregated Cities<Tooltip id="Hypersegregated"/></MenuItem>
               <MenuItem value={'blackbelt'} key={'blackbelt'}>Black Belt Counties<Tooltip id="BlackBelt" /></MenuItem>

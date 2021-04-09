@@ -4,21 +4,26 @@ import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import {fromJS} from 'immutable';
 import { find, findIndex } from 'lodash';
+import * as Pbf from 'pbf';
 
 // deck GL and helper function import
 import DeckGL from '@deck.gl/react';
 import {MapView, FlyToInterpolator} from '@deck.gl/core';
 import { PolygonLayer, ScatterplotLayer, IconLayer, TextLayer } from '@deck.gl/layers';
+import {DataFilterExtension} from '@deck.gl/extensions';
 import {fitBounds} from '@math.gl/web-mercator';
 import MapboxGLMap from 'react-map-gl';
 
 // component, action, util, and config import
-import { MapTooltipContent, Geocoder } from '../components';
-import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData, openContextMenu, setNotification, setTooltipContent } from '../actions';
+import { Geocoder } from '../components';
+import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData, openContextMenu, setNotification, setTooltipContent, setDotDensityData } from '../actions';
 import { mapFn, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, getURLParams } from '../utils';
 import { colors, colorScales, MAPBOX_ACCESS_TOKEN } from '../config';
 import MAP_STYLE from '../config/style.json';
 import * as SVG from '../config/svg'; 
+
+// PBF schemas
+import * as Schemas from '../schemas';
 
 // US bounds
 const bounds = fitBounds({
@@ -166,12 +171,13 @@ function MapSection(props){
     const dataParams = useSelector(state => state.dataParams);
     const mapParams = useSelector(state => state.mapParams);
     const urlParams = useSelector(state => state.urlParams);
-    const excludeList = useSelector(state => state.excludeList);
+    const dotDensityData = useSelector(state => state.dotDensityData);
 
     // component state elements
     // hover and highlight geographibes
     const [hoverGeog, setHoverGeog] = useState({x:null, y:null, object:null});
     const [highlightGeog, setHighlightGeog] = useState([]);
+    const [currentZoom, setCurrentZoom] = useState(0)
 
     // mapstyle and global map mode (WIP)
     // const [globalMap, setGlobalMap] = useState(false);
@@ -327,8 +333,30 @@ function MapSection(props){
         }
     }, [storedCartogramData, currentData, mapParams.vizType])
 
+    const chunkArray = (data, chunk) => {
+        let tempArray = new Array(data.length/chunk).fill([])
+        for (let i=0; i < data.length; i+=chunk) {
+            tempArray[i/chunk] = data.slice(i,i+chunk);
+        }
+        return tempArray
+    };
+    
+    const getDotDensityData = async () => fetch(`${process.env.PUBLIC_URL}/pbf/dotDensityFlat.pbf`)
+        .then(r => r.arrayBuffer())
+        .then(ab => new Pbf(ab))
+        .then(pbf => Schemas.Dot.read(pbf).val)
+        .then(data => chunkArray(data, 3))
+        .then(chunks => dispatch(setDotDensityData(chunks)));
+
     // change mapbox layer on viztype change or overlay/resource change
     useEffect(() => {
+
+        if (mapParams.overlay === 'dotDensity') {
+            if (!dotDensityData.length) {
+                getDotDensityData();
+            }
+        }
+        
         const defaultLayers = defaultMapStyle.get('layers');
         let tempLayers;
         if (mapParams.vizType === 'cartogram' || globalMap) {
@@ -706,11 +734,12 @@ function MapSection(props){
             filled: true,
             wireframe: mapParams.vizType === '3D',
             extruded: mapParams.vizType === '3D',
-            opacity: 0.8,
+            opacity: mapParams.overlay === 'dotDensity' ? 0.1 : 0.8,
             material:false,
             onHover: handleMapHover,
             onClick: handleMapClick,           
             updateTriggers: {
+                opacity: mapParams.overlay,
                 getPolygon: [currentMapData.params, dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
                 getElevation: [currentMapData.params, dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
                 getFillColor: [currentMapData.params, dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
@@ -857,7 +886,50 @@ function MapSection(props){
                 getize: [storedCartogramData, mapParams.vizType],
                 getRadius: [storedCartogramData, mapParams.vizType]
             },
-        }),
+        }),        
+        dotDensity: [new ScatterplotLayer({
+            id: 'dot density layer white',
+            data: dotDensityData,
+            pickable:false,
+            filled:true,
+            getPosition: f => [f[1]/1e6, f[2]/1e6],
+            getFillColor: f => colors.dotDensity[f[0]],
+            getRadius: 100,  
+            radiusMinPixels: Math.sqrt(currentZoom)-1.5,
+            getFilterValue: f => f[0],
+            filterRange: [8, 8],
+            // Define extensions
+            extensions: [new DataFilterExtension({filterSize: 1})],
+            updateTriggers: {
+                getPosition: dotDensityData.length,
+                getFillColor: dotDensityData.length,
+                data: dotDensityData,
+                getFilterValue: dotDensityData.length,
+                radiusMinPixels: currentZoom
+            }
+          }),    
+          new ScatterplotLayer({
+            id: 'dot density layer',
+            data: dotDensityData,
+            pickable:false,
+            filled:true,
+            getPosition: f => [f[1]/1e6, f[2]/1e6],
+            getFillColor: f => colors.dotDensity[f[0]],
+            getRadius: 100,  
+            radiusMinPixels: Math.sqrt(currentZoom)-1.5,
+            getFilterValue: f => f[0],
+            filterRange: [0, 7],
+            // Define extensions
+            extensions: [new DataFilterExtension({filterSize: 1})],
+            updateTriggers: {
+                getPosition: dotDensityData.length,
+                getFillColor: dotDensityData.length,
+                data: dotDensityData,
+                getFilterValue: dotDensityData.length,
+                radiusMinPixels: currentZoom
+            }
+          })
+        ],
     }
 
     const getLayers = useCallback((layers, vizType, overlays, resources, currData) => {
@@ -870,17 +942,18 @@ function MapSection(props){
             return LayerArray
         } else if (vizType === '2D') {
             LayerArray.push(layers['choropleth'])
+            if (overlays && overlays.includes('dotDensity')) LayerArray.push(...layers['dotDensity'])
             LayerArray.push(layers['choroplethHighlight'])
             LayerArray.push(layers['choroplethHover'])
         } else if (vizType === '3D') {
             LayerArray.push(layers['choropleth'])
             LayerArray.push(layers['choroplethHover'])
+            if (overlays && overlays.includes('dotDensity')) LayerArray.push(...layers['dotDensity'])
         }
 
         if (resources && resources.includes('hospital')) LayerArray.push(layers['hospitals'])
         if (resources && resources.includes('clinic')) LayerArray.push(layers['clinic'])
         if (resources && resources.includes('vaccinationSites')) LayerArray.push(layers['vaccinationSites'])
-        
         return LayerArray
 
     })
@@ -1052,6 +1125,10 @@ function MapSection(props){
                 }
                 views={view}
                 pickingRadius={20}
+                onViewStateChange={viewState => {
+                    let zoom = Math.round(viewState.viewState.zoom);
+                    if (zoom !== currentZoom) setCurrentZoom(zoom)
+                }}
             >
                 <MapboxGLMap
                     reuseMaps
