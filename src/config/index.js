@@ -265,14 +265,14 @@ export const colors = {
     ],
     dotDensity: [
         [],
-        [61,174,43],
-        [0,145,179],
-        [255,108,14],
-        [0,51,161],
-        [255,209,0],
-        [136,67,29],
-        [101,102,93],
-        [243,178,219],
+        [68,187,153], // American Indian or Alaska Native
+        [238,136,102], // Asian
+        [119,170,221], // Black or African American
+        [187,204,51], // Hispanic or Latino
+        [187,187,187], // Native Hawaiian or Other Pac. Islander
+        [153,221,255], // Other
+        [255,255,255], // Two or more
+        [255,170,187], // White
     ]
 }
 

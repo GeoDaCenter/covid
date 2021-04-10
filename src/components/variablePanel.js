@@ -215,7 +215,7 @@ const AcsButtonContainer = styled.div`
 `
 
 const AcsRaceButton = styled.button`
-  background:${props => props.active ? colors.yellow : colors.darkgray};
+  background:${props => props.active ? `rgb(${props.bgColor.join(',')})` : colors.darkgray};
   color:${props => props.active ? colors.black : colors.white};
   text-align:left;
   border:none;
@@ -226,14 +226,39 @@ const AcsRaceButton = styled.button`
   cursor:pointer;
 `
 
-const dotDensityAcsGroups = ['American Indian or Alaska Native',
-  'Asian',
-  'Black or African American',
-  'Hispanic or Latino',
-  'Native Hawaiian or Other Pacific Islander',
-  'Other',
-  'Two or more',
-  'White']
+const dotDensityAcsGroups = [
+  {
+    'idx':3,
+    'name': 'Black or African American',
+  },
+  {
+    'idx':4,
+    'name': 'Hispanic or Latino',
+  },
+  {
+    'idx':2,
+    'name': 'Asian',
+  },
+  {
+    'idx':8,
+    'name': 'White'
+  },
+  {
+    'idx':1,
+    'name': 'American Indian or Alaska Native',
+  },
+  {
+    'idx':5,
+    'name': 'Native Hawaiian or Other Pacific Islander',
+  },
+  {
+    'idx':6,
+    'name': 'Other',
+  },
+  {
+    'idx':7,
+    'name': 'Two or more',
+  }]
 
 const VariablePanel = (props) => {
 
@@ -834,11 +859,12 @@ const VariablePanel = (props) => {
               <p>Toggle ACS Race / Ethnicity Groups</p>
               <Gutter h={5}/>
               <AcsButtonContainer>
-                {dotDensityAcsGroups.map((group,idx) => 
+                {dotDensityAcsGroups.map(group => 
                   <AcsRaceButton 
-                    active={mapParams.dotDensityParams.raceCodes[idx+1]} 
-                    onClick={() => dispatch(toggleDotDensityRace(idx+1))}>
-                      {group}
+                    active={mapParams.dotDensityParams.raceCodes[group.idx]} 
+                    bgColor={colors.dotDensity[group.idx]}
+                    onClick={() => dispatch(toggleDotDensityRace(group.idx))}>
+                      {group.name}
                     </AcsRaceButton>
                 )}
               </AcsButtonContainer>

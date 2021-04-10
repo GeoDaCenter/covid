@@ -177,7 +177,6 @@ function MapSection(props){
     // hover and highlight geographibes
     const [hoverGeog, setHoverGeog] = useState({x:null, y:null, object:null});
     const [highlightGeog, setHighlightGeog] = useState([]);
-    const [currentZoom, setCurrentZoom] = useState(0)
 
     // mapstyle and global map mode (WIP)
     // const [globalMap, setGlobalMap] = useState(false);
@@ -192,6 +191,8 @@ function MapSection(props){
         bearing:0,
         pitch:0
     })
+    
+    const [currentZoom, setCurrentZoom] = useState(Math.round(+urlParams.z || bounds.zoom))
     
     // locally stored data and color values
     // const [currVarId, setCurrVarId] = useState(null);
@@ -942,7 +943,7 @@ function MapSection(props){
           })
         ],
     }
-    console.log(mapParams.dotDensityParams)
+    
     const getLayers = useCallback((layers, vizType, overlays, resources, currData) => {
         var LayerArray = []
 
