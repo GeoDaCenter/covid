@@ -1,3 +1,4 @@
+# %%
 import warnings
 warnings.simplefilter(action='ignore')
 
@@ -9,7 +10,7 @@ import numpy as np
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 repo_root = os.path.abspath(os.path.join(dir_path, '..', '..'))
-
+# %%
 def downloadCDCVaccinationData():
     raw = requests.get('https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_data')
     loadedJson = raw.json()['vaccination_data']
@@ -139,10 +140,10 @@ def parseCountyVaccinationData(vaccinationDataList):
     return vaccineAdministered2
 
 def getCdcData():
-    raw = pd.read_csv('https://healthdata.gov/resource/j8mb-icvb.csv')[['state_fips','overall_outcome','date','new_results_reported','total_results_reported']]
+    raw = pd.read_csv('https://healthdata.gov/api/views/j8mb-icvb/rows.csv?accessType=DOWNLOAD')[['state_fips','overall_outcome','date','new_results_reported','total_results_reported']]
     
     totalNew = raw[['state_fips','date','new_results_reported']]
-    totalNew['date'] = totalNew['date'].str.slice(0,10)
+    totalNew['date'] = totalNew['date']
     totalNew = totalNew.groupby(['state_fips','date']).sum().reset_index().rename(columns={'new_results_reported':'total'})
     positiveNew = raw[raw['overall_outcome']=='Positive'][['state_fips','date','new_results_reported']].rename(columns={'new_results_reported':'positive'})
 
@@ -202,10 +203,10 @@ if __name__ == "__main__":
     ## Demographic Data
     downloadCDCDemographicVaccinationData()
 
-
+# %%
     ## State Testing Data
     currentData = getCdcData()
-
+# %%
     totalTesting = parseCsvOutput(currentData['totalNew'], 'total')
     testingPer100Rolling = parse7dayRolling(currentData['totalNew'], 'total', normalize=True).round(2).replace([np.inf, -np.inf], np.nan)
 
