@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+message Entry {
+    int64 geoid = 1;
+    repeated int32 vals = 2;
+}
+
+message Rows {
+    repeated string dates = 1;
+    repeated Entry row = 2;
+}
+

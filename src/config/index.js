@@ -283,15 +283,15 @@ export const dataPresets = {
         plainName: 'USA Facts County', // Plain english name for dataset
         geojson: 'county_usfacts.geojson', // geospatial data to join to
         csvs: [ // list of CSVs to join
-            'covid_confirmed_usafacts',
-            'covid_deaths_usafacts',
+            'covid_confirmed_usafacts.pbf',
+            'covid_deaths_usafacts.pbf',
             'berkeley_predictions',
             'chr_health_context',
             'chr_life',
             'chr_health_factors',
-            'mobility_home_workdays_safegraph',
-            'mobility_parttime_workdays_safegraph',
-            'mobility_fulltime_workdays_safegraph',
+            'mobility_home_workdays_safegraph.pbf',
+            'mobility_parttime_workdays_safegraph.pbf',
+            'mobility_fulltime_workdays_safegraph.pbf',
             'context_essential_workers_acs',
             'vaccine_fully_vaccinated_cdc'
         ], 
@@ -308,14 +308,14 @@ export const dataPresets = {
             'essential_workers',
             'vaccines_fully_vaccinated'
         ],
-        joinCols: ['GEOID', ['FIPS','fips','countyFIPS', 'county']], // geospatial data join column and then list of valid table join columns
+        joinCols: ['GEOID', ['FIPS','fips','countyFIPS', 'county', 'geoid']], // geospatial data join column and then list of valid table join columns
         accumulate: [], // CSV names to accumulate over time
         dateList: { // date lists to parse: isoDateList (eg. '2020-01-01') or usDateList (eg. '01/01/20')
-            'covid_confirmed_usafacts': 'isoDateList', 
-            'covid_deaths_usafacts': 'isoDateList',
-            'mobility_home_workdays_safegraph': 'isoDateList',
-            'mobility_parttime_workdays_safegraph': 'isoDateList',
-            'mobility_fulltime_workdays_safegraph': 'isoDateList',
+            'covid_confirmed_usafacts.pbf': 'isoDateList', 
+            'covid_deaths_usafacts.pbf': 'isoDateList',
+            'mobility_home_workdays_safegraph.pbf': 'isoDateList',
+            'mobility_parttime_workdays_safegraph.pbf': 'isoDateList',
+            'mobility_fulltime_workdays_safegraph.pbf': 'isoDateList',
             'vaccine_fully_vaccinated_cdc': 'isoDateList',
         }
     },
@@ -323,8 +323,8 @@ export const dataPresets = {
         plainName: '1Point3Acres County',
         geojson: 'county_1p3a.geojson', 
         csvs: [
-            'covid_confirmed_1p3a',
-            'covid_deaths_1p3a',
+            'covid_confirmed_1p3a.pbf',
+            'covid_deaths_1p3a.pbf',
             'berkeley_predictions',
             'chr_health_context',
             'chr_life',
@@ -340,11 +340,11 @@ export const dataPresets = {
             'chr_health_factors',
             'vaccines_fully_vaccinated'
         ],
-        joinCols: ['GEOID', ['FIPS','fips','countyFIPS', 'GEOID']], 
+        joinCols: ['GEOID', ['FIPS','fips','countyFIPS', 'GEOID','geoid']], 
         accumulate: ['covid_confirmed_1p3a','covid_deaths_1p3a'],
         dateList: {
-            'covid_confirmed_1p3a': 'isoDateList', 
-            'covid_deaths_1p3a': 'isoDateList',
+            'covid_confirmed_1p3a.pbf': 'isoDateList', 
+            'covid_deaths_1p3a.pbf': 'isoDateList',
             'vaccine_fully_vaccinated_cdc': 'isoDateList',
         }
     },
@@ -352,8 +352,8 @@ export const dataPresets = {
         plainName: 'New York Times County',
         geojson: 'county_nyt.geojson', 
         csvs: [
-            'covid_confirmed_nyt', 
-            'covid_deaths_nyt', 
+            'covid_confirmed_nyt.pbf', 
+            'covid_deaths_nyt.pbf', 
             'berkeley_predictions', 
             'chr_health_context', 
             'chr_life', 
@@ -374,8 +374,8 @@ export const dataPresets = {
         joinCols: ['GEOID', ['FIPS','fips','countyFIPS']],
         accumulate: [],
         dateList: {
-            'covid_confirmed_nyt': 'isoDateList',
-            'covid_deaths_nyt': 'isoDateList',
+            'covid_confirmed_nyt.pbf': 'isoDateList',
+            'covid_deaths_nyt.pbf': 'isoDateList',
             'vaccine_fully_vaccinated_cdc': 'isoDateList',
         }
     },
@@ -410,7 +410,7 @@ export const dataPresets = {
 			'vaccines_fully_vaccinated',
 			'vaccines_dist'
         ],
-        joinCols: ['GEOID', ['FIPS','fips','fips_code','state_fips','countyFIPS','GEOID']], 
+        joinCols: ['GEOID', ['FIPS','fips','fips_code','state_fips','countyFIPS','GEOID','geoid']], 
         accumulate: ['covid_confirmed_1p3a_state','covid_deaths_1p3a_state','covid_testing_cdc_state'],
         dateList: {
             'covid_confirmed_1p3a_state': 'isoDateList', 
@@ -455,7 +455,7 @@ export const dataPresets = {
 			'vaccines_fully_vaccinated',
 			'vaccines_dist'
         ],
-        joinCols: ['GEOID', ['FIPS','fips','fips_code','state_fips','stateFIPS']],
+        joinCols: ['GEOID', ['FIPS','fips','fips_code','state_fips','stateFIPS','geoid']],
         accumulate: ['covid_testing_cdc_state'],
         dateList: {
             'covid_confirmed_1p3a_state': 'isoDateList', 
@@ -486,7 +486,7 @@ export const dataPresets = {
 			'vaccination_fully_vaccinated_cdc',
 			'vaccination_to_be_distributed_cdc'
         ], 
-        joinCols: ['GEOID', ['FIPS','fips','countyFIPS']], 
+        joinCols: ['GEOID', ['FIPS','fips','countyFIPS','geoid']], 
         tableNames: [
             'cases', 
             'deaths', 
@@ -525,23 +525,23 @@ export const dataPresets = {
             'cases',
             'deaths'
         ],
-        joinCols: ['GEOID', ['UID']], 
+        joinCols: ['GEOID', ['UID','geoid']], 
         accumulate: []
     },
     'cdc.geojson': {
         plainName: 'Center for Disease Control County',
         geojson: 'cdc.geojson', 
         csvs: [
-            'covid_confirmed_usafacts',
-            'covid_deaths_usafacts',
+            'covid_confirmed_usafacts.pbf',
+            'covid_deaths_usafacts.pbf',
             'berkeley_predictions', 
             'chr_health_context', 
             'chr_life', 
             'chr_health_factors',
-            'covid_testing_cdc',
-            'covid_wk_pos_cdc', 
-            'covid_tcap_cdc', 
-            'covid_ccpt_cdc',
+            'covid_testing_cdc.pbf',
+            'covid_wk_pos_cdc.pbf', 
+            'covid_tcap_cdc.pbf', 
+            'covid_ccpt_cdc.pbf',
             'context_essential_workers_acs',
             'vaccine_fully_vaccinated_cdc'
         ],  
@@ -559,15 +559,15 @@ export const dataPresets = {
             'essential_workers',
             'vaccines_fully_vaccinated'
         ],
-        joinCols: ['GEOID', ['fips_code', 'fips', 'FIPS', 'countyFIPS']],
+        joinCols: ['GEOID', ['fips_code', 'fips', 'FIPS', 'countyFIPS','geoid']],
         accumulate: [],
         dateList: {
-            'covid_confirmed_usafacts': 'isoDateList', 
-            'covid_deaths_usafacts': 'isoDateList',
-            'covid_testing_cdc': 'isoDateList', 
-            'covid_wk_pos_cdc': 'isoDateList', 
-            'covid_tcap_cdc': 'isoDateList', 
-            'covid_ccpt_cdc': 'isoDateList',
+            'covid_confirmed_usafacts.pbf': 'isoDateList', 
+            'covid_deaths_usafacts.pbf': 'isoDateList',
+            'covid_testing_cdc.pbf': 'isoDateList', 
+            'covid_wk_pos_cdc.pbf': 'isoDateList', 
+            'covid_tcap_cdc.pbf': 'isoDateList', 
+            'covid_ccpt_cdc.pbf': 'isoDateList',
             'vaccine_fully_vaccinated_cdc': 'isoDateList',
         }
     },

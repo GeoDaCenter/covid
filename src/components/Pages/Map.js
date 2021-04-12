@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 // second row: data parsing for specific outputs
 // third row: data accessing
 import { 
-  getParseCSV, mergeData, getColumns, loadJson,
+  getParseCSV, getParsePbf, mergeData, getColumns, loadJson,
   getDataForBins, getDataForCharts, getDataForLisa, getDateLists,
   getLisaValues, getCartogramValues, getDateIndices } from '../../utils'; //getVarId
 
@@ -67,6 +67,7 @@ export default function Map() {
   const dataParams = useSelector(state => state.dataParams);
   const dateIndices = useSelector(state => state.dateIndices);
   const mapLoaded = useSelector(state => state.mapLoaded);
+  const panelState = useSelector(state => state.panelState);
   // const fullState = useSelector(state => state)
   // gdaProxy is the WebGeoda proxy class. Generally, having a non-serializable
   // data in the state is poor for performance, but the App component state only
@@ -87,17 +88,21 @@ export default function Map() {
     // destructure parameters
     const { geojson, csvs, joinCols, tableNames, accumulate, dateList } = params
     // promise all data fetching - CSV and Json
-    const csvPromises = csvs.map(csv => 
-      getParseCSV(
-        `${process.env.PUBLIC_URL}/csv/${csv}.csv`, 
-        joinCols[1], 
-        accumulate.includes(csv),
-        dateLists[dateList[csv]]
-      ).then(result => {return result}))
+    const tabularDataPromises = csvs.map(csv => 
+      csv.slice(-4,) === '.pbf' ? 
+        getParsePbf(csv, accumulate.includes(csv), dateLists[dateList[csv]])
+      :
+        getParseCSV(
+          `${process.env.PUBLIC_URL}/csv/${csv}.csv`, 
+          joinCols[1], 
+          accumulate.includes(csv),
+          dateLists[dateList[csv]]
+        )
+      )
     
     const values = await Promise.all([
       gdaProxy.LoadGeojson(`${process.env.PUBLIC_URL}/geojson/${geojson}`),
-      ...csvPromises
+      ...tabularDataPromises
     ])
 
     let tempData = mergeData(values[0]['data'], joinCols[0], values.slice(1,), tableNames, joinCols[1]);
