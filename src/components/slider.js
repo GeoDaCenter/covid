@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
 import Slider from '@material-ui/core/Slider';
@@ -184,6 +184,8 @@ const DateSelectorContainer = styled(Grid)`
         }
     }
 `
+
+
 const DateSlider = () => {
     const dispatch = useDispatch();  
 
@@ -193,22 +195,71 @@ const DateSlider = () => {
     const dates = useSelector(state => state.dates);
     
     const [timerId, setTimerId] = useState(null);
-    
-    const handleChange = (event, newValue) => {
+    const [currentMarks, setCurrentMarks] = useState([]);
+    const [timeCase, setTimeCase] = useState(0);
+    const [dRange, setDRange] = useState(false);
 
-        if (dataParams.nType === "time-series" && dataParams.dType === "time-series") {
-            dispatch(setVariableParams({nIndex: newValue, dIndex: newValue}))
-        } else if (dataParams.nType === "time-series") {
-            dispatch(setVariableParams({nIndex: newValue}))
-        } else if (dataParams.dType === "time-series") {
-            dispatch(setVariableParams({dIndex: newValue}))
-        } else if (dataParams.variableName.includes('Testing')||dataParams.variableName.includes('Workdays')){
-            dispatch(setVariableParams({nIndex: newValue}))
+    useEffect(() => {
+        if (dateIndices.hasOwnProperty(currentData) && dateIndices[currentData].hasOwnProperty(dataParams.numerator)){
+            const tempMarks = dateIndices[currentData][dataParams.numerator].map(date => { return { value: date }})
+            setCurrentMarks(tempMarks)
         }
+    },[dateIndices, currentData, dataParams.numerator])
+
+    useEffect(() => {
+        if (dataParams.nType === "time-series" && dataParams.dType === "time-series") {
+            setTimeCase(1)
+        } else if (dataParams.nType === "time-series") {
+            setTimeCase(2)
+        } else if (dataParams.dType === "time-series") {
+            setTimeCase(3)
+        } else if (dataParams.variableName.includes('Testing')||dataParams.variableName.includes('Workdays')){
+            setTimeCase(4)
+        }
+    },[dataParams.dType, dataParams.nType,dataParams.variableName.includes ])
+    
+    useEffect(() => {
+        if (dataParams.dRange) {
+            setDRange(true)
+        } else {
+            setDRange(false)
+        }
+    },[dataParams.dRange])
+    
+    function debounce(func, wait, immediate) {
+        var timeout;
+        return function() {
+            var context = this, args = arguments;
+            var later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
     };
+
+    const handleChange = debounce((event, newValue) => {
+        switch(timeCase){
+            case 1:
+                dispatch(setVariableParams({nIndex: newValue, dIndex: newValue}))
+                break
+            case 2:
+                dispatch(setVariableParams({nIndex: newValue}))
+                break
+            case 3:
+                dispatch(setVariableParams({dIndex: newValue}))
+                break
+            case 4:
+                dispatch(setVariableParams({nIndex: newValue}))
+                break
+        }
+    }, 25);
         
     const handleRangeChange = (event, newValue) => { 
-        if (dataParams.dRange) {
+        if (dRange) {
             dispatch(setVariableParams(
                 {
                     nIndex: newValue[1], 
@@ -290,7 +341,7 @@ const DateSlider = () => {
                                 // aria-labelledby="aria-valuetext"
                                 min={1}
                                 max={dates.length}
-                                marks={(dateIndices.hasOwnProperty(currentData) && dateIndices[currentData].hasOwnProperty(dataParams.numerator)) && dateIndices[currentData][dataParams.numerator].map(date => { return { value: date }})}
+                                marks={currentMarks}
                                 step={null}
                                 characteristic={dataParams.nType==="characteristic"}
                         />}
@@ -318,7 +369,7 @@ const DateSlider = () => {
                             aria-labelledby="aria-valuetext"
                             min={1}
                             max={dates.length}
-                            marks={(dateIndices.hasOwnProperty(currentData) && dateIndices[currentData].hasOwnProperty(dataParams.numerator)) && dateIndices[currentData][dataParams.numerator].map(date => { return { value: date }})}
+                            marks={currentMarks}
                             step={null}
                         />}
                     </Grid>
