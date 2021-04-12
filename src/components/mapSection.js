@@ -220,7 +220,6 @@ function MapSection(props){
         data: [],
         params: {}
     })
-    const [dotDensityColorData, setDotDensityColorData] = useState({})
 
     const dispatch = useDispatch();
 
@@ -434,27 +433,32 @@ function MapSection(props){
         switch(mapParams.vizType) {
             case 'cartogram':
                 if (storedCartogramData !== undefined) {
+                    let dataResults = cleanData({
+                        data: storedData[currentData],
+                        bins: {bins: mapParams.bins.bins, breaks:mapParams.bins.breaks}, 
+                        mapType: mapParams.mapType, 
+                        vizType: mapParams.vizType
+                    })
+
                     setCurrentMapData(prev => ({
                         params: getVarId(currentData, dataParams),
-                        data: cleanData({
-                            data: storedCartogramData,
-                            bins: {bins: mapParams.bins.bins, breaks:mapParams.bins.breaks}, 
-                            mapType: mapParams.mapType, 
-                            vizType: mapParams.vizType
-                        })
+                        data: dataResults.choropleth,
+                        dots: dataResults.dot
                     }))
                 }
                 break;
             default:
                 if (storedData[currentData] !== undefined) {
+                    let dataResults = cleanData({
+                        data: storedData[currentData],
+                        bins: {bins: mapParams.bins.bins, breaks:mapParams.bins.breaks}, 
+                        mapType: mapParams.mapType, 
+                        vizType: mapParams.vizType
+                    })
                     setCurrentMapData(prev => ({
                         params: getVarId(currentData, dataParams),
-                        data: cleanData({
-                            data: storedData[currentData],
-                            bins: {bins: mapParams.bins.bins, breaks:mapParams.bins.breaks}, 
-                            mapType: mapParams.mapType, 
-                            vizType: mapParams.vizType
-                        })
+                        data: dataResults.choropleth,
+                        dots: dataResults.dot
                     }))
                 }
         }
@@ -462,13 +466,6 @@ function MapSection(props){
     
     useEffect(() => {
         forceUpdate()
-        if (mapParams.overlay === 'dotDensity') {
-            let tempObj = {}
-            for (let i=0; i<currentMapData.data.length; i++){
-                tempObj[currentMapData.data[i]?.GEOID] = currentMapData.data[i].color
-            }
-            setDotDensityColorData(tempObj)
-        }
     }, [currentMapData, dataParams.numerator, dataParams.variableName, dataParams.denominator, dataParams.nIndex, mapParams.overlay])
 
     const GetFillColor = (f, bins, mapType, varID) => {
@@ -492,6 +489,7 @@ function MapSection(props){
     }
     
     const cleanData = ( parameters ) => {
+        let t0 = performance.now()
         const {data, bins, mapType, varID, vizType} = parameters; //dataName, dataType, params, colorScale
         if (!bins.hasOwnProperty("bins")) {
             return []
@@ -501,7 +499,8 @@ function MapSection(props){
             return []
         }
 
-        var returnArray = [];
+        let returnArray = [];
+        let returnObj = {};
         let i = 0;
 
         switch(vizType) {
@@ -534,11 +533,13 @@ function MapSection(props){
                             color: tempColor,
                             height: tempHeight
                         })
+                        returnObj[data[i].properties.GEOID] = tempColor
                     }
                     i++;
                 }
         }
-        return returnArray
+        console.log(t0 - performance.now())
+        return {choropleth: returnArray, dot: returnObj}
     }
 
     const GetHeight = (f) => dataFn(f[dataParams.numerator], f[dataParams.denominator], dataParams)*(dataParams.scale3D/((dataParams.nType === "time-series" && dataParams.nRange === null) ? (dataParams.nIndex)/10 : 1))
@@ -902,7 +903,7 @@ function MapSection(props){
             pickable:false,
             filled:true,
             getPosition: f => [f[1]/1e5, f[2]/1e5],
-            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? dotDensityColorData[f[3]]||[0,0,0] : colors.dotDensity[f[0]],
+            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? currentMapData.dots[f[3]]||[0,0,0] : colors.dotDensity[f[0]],
             getRadius: 100,  
             radiusMinPixels: Math.sqrt(currentZoom)-1.5,
             getFilterValue: f => (f[0]===8 && mapParams.dotDensityParams.raceCodes[f[0]]) ? 1 : 0,
@@ -911,7 +912,7 @@ function MapSection(props){
             extensions: [new DataFilterExtension({filterSize: 1})],
             updateTriggers: {
                 getPosition: dotDensityData.length,
-                getFillColor: [mapParams.dotDensityParams.colorCOVID, dotDensityColorData, dotDensityData],
+                getFillColor: [mapParams.dotDensityParams.colorCOVID, currentMapData.dots, dotDensityData],
                 data: dotDensityData,
                 getFilterValue: [dotDensityData.length, mapParams.dotDensityParams.raceCodes[8]],
                 radiusMinPixels: currentZoom
@@ -923,7 +924,7 @@ function MapSection(props){
             pickable:false,
             filled:true,
             getPosition: f => [f[1]/1e5, f[2]/1e5],
-            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? dotDensityColorData[f[3]]||[0,0,0] : colors.dotDensity[f[0]],
+            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? currentMapData.dots[f[3]]||[0,0,0] : colors.dotDensity[f[0]],
             getRadius: 100,  
             radiusMinPixels: Math.sqrt(currentZoom)-1.5,
             getFilterValue: f => (f[0]!==8 && mapParams.dotDensityParams.raceCodes[f[0]]) ? 1 : 0,
@@ -932,7 +933,7 @@ function MapSection(props){
             extensions: [new DataFilterExtension({filterSize: 1})],
             updateTriggers: {
                 getPosition: dotDensityData.length,
-                getFillColor: [mapParams.dotDensityParams.colorCOVID, dotDensityColorData, dotDensityData],
+                getFillColor: [mapParams.dotDensityParams.colorCOVID, currentMapData.dots, dotDensityData],
                 data: dotDensityData,
                 getFilterValue: [dotDensityData.length, 
                     mapParams.dotDensityParams.raceCodes[1],mapParams.dotDensityParams.raceCodes[2],mapParams.dotDensityParams.raceCodes[3],mapParams.dotDensityParams.raceCodes[4],
