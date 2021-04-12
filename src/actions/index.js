@@ -390,3 +390,27 @@ export const setTooltipContent = ( x, y, data ) => {
     }
 
 }
+
+export const setDotDensityData = ( data ) => {
+    return {
+        type: 'SET_DOT_DENSITY',
+        payload: {
+            data
+        }
+    }
+}
+
+export const changeDotDensityMode = () => {
+    return {
+        type: 'CHANGE_DOT_DENSITY_MODE'
+    }
+}
+
+export const toggleDotDensityRace = ( index ) => {
+    return {
+        type: 'TOGGLE_DOT_DENSITY_RACE',
+        payload: {
+            index
+        }
+    }
+}

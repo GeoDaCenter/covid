@@ -262,6 +262,17 @@ export const colors = {
         '#bc80bd',
         '#ccebc5',
         '#ffed6f',
+    ],
+    dotDensity: [
+        [],
+        [68,187,153], // American Indian or Alaska Native
+        [238,136,102], // Asian
+        [119,170,221], // Black or African American
+        [187,204,51], // Hispanic or Latino
+        [187,187,187], // Native Hawaiian or Other Pac. Islander
+        [153,221,255], // Other
+        [255,255,255], // Two or more
+        [255,170,187], // White
     ]
 }
 

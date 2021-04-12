@@ -450,6 +450,33 @@ var reducer = (state = INITIAL_STATE, action) => {
                     data: action.payload.data,
                 }
             } 
+        case 'SET_DOT_DENSITY':
+            return {
+                ...state,
+                dotDensityData: action.payload.data
+            }
+        case 'CHANGE_DOT_DENSITY_MODE':
+            let changeDotDensityObj = {
+                ...state.mapParams
+            }
+
+            changeDotDensityObj.dotDensityParams.colorCOVID = !changeDotDensityObj.dotDensityParams.colorCOVID;
+
+            return {
+                ...state,
+                mapParams:changeDotDensityObj
+            }
+        case 'TOGGLE_DOT_DENSITY_RACE':
+            let toggleAcsObj = {
+                ...state.mapParams
+            }
+
+            toggleAcsObj.dotDensityParams.raceCodes[action.payload.index] = !toggleAcsObj.dotDensityParams.raceCodes[action.payload.index];
+
+            return {
+                ...state,
+                mapParams:toggleAcsObj
+            }
         default:
             return state;
     }
