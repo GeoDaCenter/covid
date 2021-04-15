@@ -226,7 +226,7 @@ const ControlsContainer = styled.div`
   overflow-y:visible;
   padding:20px;
 
-  @media (max-height:899px){
+  @media (max-height:13px){
     overflow-y:scroll;
     padding:20px 20px 10vh 20px;
   }

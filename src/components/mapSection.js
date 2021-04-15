@@ -295,6 +295,17 @@ function MapSection(props){
                 });
                 setStoredCenter(null)
                 break
+            case 'dotDensity': 
+                setViewState({
+                    ...currMapView,
+                    latitude: +urlParams.lat || bounds.latitude,
+                    longitude: +urlParams.lon || bounds.longitude,
+                    zoom: +urlParams.z || bounds.zoom,
+                    bearing:0,
+                    pitch:0
+                });
+                setStoredCenter(null)
+                break
             case '3D':
                 setViewState({
                     ...currMapView,
@@ -434,17 +445,16 @@ function MapSection(props){
             case 'cartogram':
                 if (storedCartogramData !== undefined) {
                     let dataResults = cleanData({
-                        data: storedData[currentData],
+                        data: storedCartogramData,
                         bins: {bins: mapParams.bins.bins, breaks:mapParams.bins.breaks}, 
                         mapType: mapParams.mapType, 
                         vizType: mapParams.vizType
                     })
-
-                    setCurrentMapData(prev => ({
+                    setCurrentMapData({
                         params: getVarId(currentData, dataParams),
                         data: dataResults.choropleth,
                         dots: dataResults.dot
-                    }))
+                    })
                 }
                 break;
             default:
@@ -455,11 +465,11 @@ function MapSection(props){
                         mapType: mapParams.mapType, 
                         vizType: mapParams.vizType
                     })
-                    setCurrentMapData(prev => ({
+                    setCurrentMapData({
                         params: getVarId(currentData, dataParams),
                         data: dataResults.choropleth,
                         dots: dataResults.dot
-                    }))
+                    })
                 }
         }
     },[dataParams.variableName, mapParams.mapType, mapParams.vizType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, storedGeojson[currentData], storedCartogramData, mapParams.overlay, currentData])
@@ -472,7 +482,7 @@ function MapSection(props){
         if (!f[dataParams.numerator] || (!f[dataParams.numerator][dataParams.nIndex] && !f[dataParams.numerator][dataParams.nProperty])) {
             return null
         } else if (mapType === 'lisa') {
-            return colorScales.lisa[storedLisaData[storedGeojson[currentData]['geoidOrder'][f.properties.GEOID]]]
+            return colorScales.lisa[storedLisaData[storedGeojson[currentData]['geoidOrder'][f.properties.GEOID]]]||[240,240,240]
         } else {
             return mapFn(dataFn(f[dataParams.numerator], f[dataParams.denominator], dataParams), bins.breaks, mapParams.colorScale, mapParams.mapType, dataParams.numerator);
         }
