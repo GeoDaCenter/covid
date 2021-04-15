@@ -414,3 +414,12 @@ export const toggleDotDensityRace = ( index ) => {
         }
     }
 }
+
+export const setDotDensityBgOpacity = ( opacity ) => {
+    return {
+        type: 'SET_DOT_DENSITY_BACKGROUND_OPACITY',
+        payload: {
+            opacity
+        }
+    }
+}

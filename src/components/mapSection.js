@@ -352,7 +352,7 @@ function MapSection(props){
     // change mapbox layer on viztype change or overlay/resource change
     useEffect(() => {
 
-        if (mapParams.overlay === 'dotDensity') {
+        if (mapParams.vizType === 'dotDensity') {
             if (!dotDensityData.length) {
                 getDotDensityData();
             }
@@ -489,7 +489,6 @@ function MapSection(props){
     }
     
     const cleanData = ( parameters ) => {
-        let t0 = performance.now()
         const {data, bins, mapType, varID, vizType} = parameters; //dataName, dataType, params, colorScale
         if (!bins.hasOwnProperty("bins")) {
             return []
@@ -538,7 +537,6 @@ function MapSection(props){
                     i++;
                 }
         }
-        console.log(t0 - performance.now())
         return {choropleth: returnArray, dot: returnObj}
     }
 
@@ -601,7 +599,7 @@ function MapSection(props){
     }
 
     const handleMapHover = ({x, y, object, layer}) => {
-        dispatch(setTooltipContent(x, y, Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : find(storedData[currentData],o => o.properties.GEOID === object?.GEOID)))
+        dispatch(setTooltipContent(x, y, Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : find(storedData[currentData], o => o.properties.GEOID === object?.GEOID)))
         if (object && object.GEOID) {
             if (object.GEOID !== hoverGeog) setHoverGeog(object.GEOID)
         } else {
@@ -744,7 +742,7 @@ function MapSection(props){
             filled: true,
             wireframe: mapParams.vizType === '3D',
             extruded: mapParams.vizType === '3D',
-            opacity: mapParams.overlay === 'dotDensity' ? mapParams.dotDensityParams.backgroundTransparency : 0.8,
+            opacity: mapParams.vizType === 'dotDensity' ? mapParams.dotDensityParams.backgroundTransparency : 0.8,
             material:false,
             onHover: handleMapHover,
             onClick: handleMapClick,           
@@ -955,13 +953,16 @@ function MapSection(props){
             return LayerArray
         } else if (vizType === '2D') {
             LayerArray.push(layers['choropleth'])
-            if (overlays && overlays.includes('dotDensity')) LayerArray.push(...layers['dotDensity'])
             LayerArray.push(layers['choroplethHighlight'])
             LayerArray.push(layers['choroplethHover'])
         } else if (vizType === '3D') {
             LayerArray.push(layers['choropleth'])
             LayerArray.push(layers['choroplethHover'])
-            if (overlays && overlays.includes('dotDensity')) LayerArray.push(...layers['dotDensity'])
+        } else if (vizType === 'dotDensity') {            
+            LayerArray.push(layers['choropleth'])
+            LayerArray.push(...layers['dotDensity'])
+            LayerArray.push(layers['choroplethHighlight'])
+            LayerArray.push(layers['choroplethHover'])
         }
 
         if (resources && resources.includes('hospital')) LayerArray.push(layers['hospitals'])

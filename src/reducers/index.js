@@ -477,6 +477,17 @@ var reducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 mapParams:toggleAcsObj
             }
+        case 'SET_DOT_DENSITY_BACKGROUND_OPACITY':
+            let backgroundOpacityState = {
+                ...state.mapParams
+            }
+            backgroundOpacityState.dotDensityParams.backgroundTransparency = action.payload.opacity
+            
+            return {
+                ...state,
+                mapParams:backgroundOpacityState
+            }
+            
         default:
             return state;
     }

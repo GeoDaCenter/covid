@@ -392,6 +392,7 @@ export default function Map() {
             minHeight={defaultDimensions.minHeight}
             minWidth={defaultDimensions.minWidth} />
         }/>}
+        <MapTooltipContent />
 
       </div>
     </div>

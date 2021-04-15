@@ -8,17 +8,15 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Select from '@material-ui/core/Select';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Switch from '@material-ui/core/Switch';
 import Checkbox from '@material-ui/core/Checkbox';
-
+import Slider from '@material-ui/core/Slider';
 
 import styled from 'styled-components';
 
 import Tooltip from './tooltip';
 import { StyledDropDown, BinsContainer, Gutter } from '../styled_components';
-import { setVariableParams, setMapParams, setCurrentData, setPanelState, setParametersAndData, setNotification, changeDotDensityMode, toggleDotDensityRace } from '../actions';
+import { setVariableParams, setMapParams, setCurrentData, setPanelState, setParametersAndData, setNotification, changeDotDensityMode, toggleDotDensityRace, setDotDensityBgOpacity } from '../actions';
 import { fixedScales, colorScales, colors, variableTree, variablePresets, urlParamsTree, datasetTree, allGeographies, allDatasets } from '../config';
 import * as SVG from '../config/svg';
 
@@ -161,18 +159,51 @@ const VariablePanelContainer = styled.div`
   }
   user-select:none;
 `
-const StyledButtonGroup = styled(ButtonGroup)`
-  color:white;
-  .MuiButtonGroup-grouped {
-    color:white;
-    border-color:${colors.white}77;
-    &:hover {
-      border-color:white;
-    }
-    &.active {
-      background:white;
-      color:${colors.gray};
-    }
+const ButtonGroup = styled.div`
+
+  button:first-of-type {
+    border-radius: 0.5em 0 0 0.5em;
+  }
+  button:last-of-type {
+    border-radius: 0 0.5em 0.5em 0;
+  }
+`
+
+const VizTypeButton = styled.button`
+  background: ${props => props.active ? colors.white : 'none'};
+  color: ${props => props.active ? colors.darkgray : colors.white};
+  outline:none;
+  border:1px solid ${colors.white}77;
+  padding:.25em .75em;
+  margin:0;
+  font-family:'Lato', sans-serif;
+  font-size:.875rem;
+  cursor:pointer;
+  transition:250ms all;
+  letter-spacing:0.02857em;
+  font-weight:500;
+  &:hover {
+    background: ${colors.lightgray};
+    color:${colors.darkgray};
+  }
+
+`
+
+const DotDensityControls = styled.div`
+  border:1px solid ${colors.white}77;
+  max-width:20em;
+  padding: 0 .5em 1.5em .5em;
+  p.help-text {
+    text-transform:uppercase;
+    font-size:0.75rem;
+    font-weight:bold;
+    text-align:center;
+  }
+  span.MuiSlider-root {
+    margin:1em 1em 0 1em;
+    max-width:calc(100% - 2em);
+    padding:0;
+    color:${colors.white};
   }
 `
 
@@ -209,9 +240,6 @@ const ControlsContainer = styled.div`
 const ListSubheader = styled(MenuItem)`
   font-variant: small-caps;
   font-weight:800;
-`
-const AcsButtonContainer = styled.div`
-  max-width:200px;
 `
 
 const AcsRaceButton = styled.button`
@@ -494,6 +522,8 @@ const VariablePanel = (props) => {
     }
   }
 
+  const handleDotDensitySlider = (e, newValue) => dispatch(setDotDensityBgOpacity(newValue))
+
   // const handleZSwitch = () => {
   //   setBivariateZ(prev => !prev )
   // }
@@ -753,11 +783,12 @@ const VariablePanel = (props) => {
         </StyledDropDown>
         <Gutter h={15}/>
         <p>Visualization Type</p>
-        <StyledButtonGroup color="primary" aria-label="text button group" id="visualizationType">
-          <Button className={mapParams.vizType === '2D' ? 'active' : ''} data-val="2D" key="2D-btn" onClick={() => handleVizTypeButton('2D')}>2D</Button>
-          <Button className={mapParams.vizType === '3D' ? 'active' : ''} data-val="3D" key="3D-btn" onClick={() => handleVizTypeButton('3D')}>3D</Button>
-          <Button className={mapParams.vizType === 'cartogram' ? 'active' : ''} data-val="cartogram" key="cartogram-btn" onClick={() => handleVizTypeButton('cartogram')}>Cartogram</Button>
-        </StyledButtonGroup>
+        <ButtonGroup id="visualizationType">
+          <VizTypeButton active={mapParams.vizType === '2D'} data-val="2D" key="2D-btn" onClick={() => handleVizTypeButton('2D')}>2D</VizTypeButton>
+          <VizTypeButton active={mapParams.vizType === '3D'} data-val="3D" key="3D-btn" onClick={() => handleVizTypeButton('3D')}>3D</VizTypeButton>
+          <VizTypeButton active={mapParams.vizType === 'dotDensity'} data-val="dotDensity" key="dotDensity-btn" onClick={() => handleVizTypeButton('dotDensity')}>Dot Density</VizTypeButton>
+          <VizTypeButton active={mapParams.vizType === 'cartogram'} data-val="cartogram" key="cartogram-btn" onClick={() => handleVizTypeButton('cartogram')}>Cartogram</VizTypeButton>
+        </ButtonGroup>
         <Gutter h={12}/>
         {/* {
           mapParams.vizType === '3D' && 
@@ -829,6 +860,39 @@ const VariablePanel = (props) => {
               </Select>
             </StyledDropDown>
         } */}
+        {mapParams.vizType === 'dotDensity' && 
+          <DotDensityControls>
+            <p className="help-text">1 Dot = 500 People</p>
+            <BinsContainer>
+              <Switch
+                checked={mapParams.dotDensityParams.colorCOVID}
+                onChange={() => dispatch(changeDotDensityMode())}
+                name="dot density mode"
+              />
+              <p>{mapParams.dotDensityParams.colorCOVID ? 'Color by COVID Data' : 'Color by ACS Race / Ethnicity'}</p>
+              <Gutter h={10}/>
+              <p className="help-text">Toggle ACS Race / Ethnicity Groups</p>
+              <Gutter h={5}/>
+              {dotDensityAcsGroups.map(group => 
+                <AcsRaceButton 
+                  active={mapParams.dotDensityParams.raceCodes[group.idx]} 
+                  bgColor={colors.dotDensity[group.idx]}
+                  onClick={() => dispatch(toggleDotDensityRace(group.idx))}>
+                    {group.name}
+                  </AcsRaceButton>
+              )}
+            </BinsContainer>
+            <Gutter h={20}/> 
+            <p className="help-text">Background Opacity</p>
+            <Slider
+              value={mapParams.dotDensityParams.backgroundTransparency}
+              min={0}
+              step={0.01}
+              max={1}
+              onChange={handleDotDensitySlider}
+            />
+          </DotDensityControls>}
+        <Gutter h={20}/>
         <TwoUp id="overlaysResources">
           <StyledDropDown>
             <InputLabel htmlFor="overlay-select">Overlay</InputLabel>
@@ -838,7 +902,6 @@ const VariablePanel = (props) => {
               onChange={handleMapOverlay}
             >
               <MenuItem value="" key={'None'}>None</MenuItem> 
-              <MenuItem value={'dotDensity'} key={'dotDensity'}>Population Dot Density</MenuItem>
               <MenuItem value={'native_american_reservations'} key={'native_american_reservations'}>Native American Reservations</MenuItem>
               <MenuItem value={'segregated_cities'} key={'segregated_cities'}>Hypersegregated Cities<Tooltip id="Hypersegregated"/></MenuItem>
               <MenuItem value={'blackbelt'} key={'blackbelt'}>Black Belt Counties<Tooltip id="BlackBelt" /></MenuItem>
@@ -846,34 +909,6 @@ const VariablePanel = (props) => {
               {/* <MenuItem value={'mobility-county'} key={'mobility-county'}>Mobility Flows (County) WARNING BIG DATA</MenuItem> */}
             </Select>
           </StyledDropDown>
-          <Gutter h={20}/>
-          {mapParams.overlay === 'dotDensity' && 
-          <>
-            <BinsContainer>
-              <Switch
-                checked={mapParams.dotDensityParams.colorCOVID}
-                onChange={() => dispatch(changeDotDensityMode())}
-                name="dot density mode"
-              />
-              <p>{mapParams.dotDensityParams.colorCOVID ? 'Color by COVID Data' : 'Color by ACS Race / Ethnicity'}</p>
-              <Gutter h={10}/>
-              <p>Toggle ACS Race / Ethnicity Groups</p>
-              <Gutter h={5}/>
-              <AcsButtonContainer>
-                {dotDensityAcsGroups.map(group => 
-                  <AcsRaceButton 
-                    active={mapParams.dotDensityParams.raceCodes[group.idx]} 
-                    bgColor={colors.dotDensity[group.idx]}
-                    onClick={() => dispatch(toggleDotDensityRace(group.idx))}>
-                      {group.name}
-                    </AcsRaceButton>
-                )}
-              </AcsButtonContainer>
-            </BinsContainer> 
-            <Gutter h={10}/>
-            
-
-          </>}
           <Gutter h={20}/>
           <StyledDropDown>
             <InputLabel htmlFor="resource-select">Resource</InputLabel>
