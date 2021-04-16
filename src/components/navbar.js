@@ -10,7 +10,7 @@ const NavbarContainer  = styled.nav`
   position: absolute; 
   top: 0px; 
   left: 0px;
-  z-index:999;
+  z-index:249;
   font-family: Lato, sans-serif;
   font-size: 14px;
   line-height: 1.5;
