@@ -200,7 +200,7 @@ const DateSlider = () => {
     const [dRange, setDRange] = useState(false);
 
     useEffect(() => {
-        if (dateIndices.hasOwnProperty(currentData) && dateIndices[currentData].hasOwnProperty(dataParams.numerator)){
+        if (dateIndices.hasOwnProperty(currentData) && dateIndices[currentData][dataParams.numerator] !== null){
             const tempMarks = dateIndices[currentData][dataParams.numerator].map(date => { return { value: date }})
             setCurrentMarks(tempMarks)
         }

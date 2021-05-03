@@ -222,6 +222,39 @@ function MapSection(props){
     })
 
     const dispatch = useDispatch();
+    const updateMap = () => {
+        switch(mapParams.vizType) {
+            case 'cartogram':
+                if (storedCartogramData !== undefined) {
+                    let dataResults = cleanData({
+                        data: storedCartogramData,
+                        bins: {bins: mapParams.bins.bins, breaks:mapParams.bins.breaks}, 
+                        mapType: mapParams.mapType, 
+                        vizType: mapParams.vizType
+                    })
+                    setCurrentMapData({
+                        params: getVarId(currentData, dataParams),
+                        data: dataResults.choropleth,
+                        dots: dataResults.dot
+                    })
+                }
+                break;
+            default:
+                if (storedData[currentData] !== undefined) {
+                    let dataResults = cleanData({
+                        data: storedData[currentData],
+                        bins: {bins: mapParams.bins.bins, breaks:mapParams.bins.breaks}, 
+                        mapType: mapParams.mapType, 
+                        vizType: mapParams.vizType
+                    })
+                    setCurrentMapData({
+                        params: getVarId(currentData, dataParams),
+                        data: dataResults.choropleth,
+                        dots: dataResults.dot
+                    })
+                }
+        }
+    }
 
     let hidden = null;
     let visibilityChange = null;
@@ -441,38 +474,12 @@ function MapSection(props){
     // clean and set map data after parameter change
     // TODO: swap
     useEffect(() => {
-        switch(mapParams.vizType) {
-            case 'cartogram':
-                if (storedCartogramData !== undefined) {
-                    let dataResults = cleanData({
-                        data: storedCartogramData,
-                        bins: {bins: mapParams.bins.bins, breaks:mapParams.bins.breaks}, 
-                        mapType: mapParams.mapType, 
-                        vizType: mapParams.vizType
-                    })
-                    setCurrentMapData({
-                        params: getVarId(currentData, dataParams),
-                        data: dataResults.choropleth,
-                        dots: dataResults.dot
-                    })
-                }
-                break;
-            default:
-                if (storedData[currentData] !== undefined) {
-                    let dataResults = cleanData({
-                        data: storedData[currentData],
-                        bins: {bins: mapParams.bins.bins, breaks:mapParams.bins.breaks}, 
-                        mapType: mapParams.mapType, 
-                        vizType: mapParams.vizType
-                    })
-                    setCurrentMapData({
-                        params: getVarId(currentData, dataParams),
-                        data: dataResults.choropleth,
-                        dots: dataResults.dot
-                    })
-                }
-        }
+        if (mapParams.binMode !== 'dynamic') updateMap();
     },[dataParams.variableName, mapParams.mapType, mapParams.vizType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, storedGeojson[currentData], storedCartogramData, mapParams.overlay, currentData])
+    
+    useEffect(() => {
+        if (mapParams.binMode === 'dynamic') updateMap();
+    },[mapParams.bins.bins, mapParams.binMode])
     
     useEffect(() => {
         forceUpdate()
