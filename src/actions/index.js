@@ -423,3 +423,18 @@ export const setDotDensityBgOpacity = ( opacity ) => {
         }
     }
 }
+
+export const startPlaying = ( index ) => {
+    return {
+        type: 'SET_START_PLAYING',
+        payload: {
+            index
+        }
+    }
+}
+
+export const stopPlaying = () => {
+    return {
+        type: 'SET_STOP_PLAYING'
+    }
+}

@@ -16,7 +16,7 @@ import MapboxGLMap from 'react-map-gl';
 
 // component, action, util, and config import
 import { Geocoder } from '../components';
-import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData, openContextMenu, setNotification, setTooltipContent, setDotDensityData } from '../actions';
+import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData, openContextMenu, setNotification, setTooltipContent, setDotDensityData, incrementDate} from '../actions';
 import { mapFn, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, getURLParams } from '../utils';
 import { colors, colorScales, MAPBOX_ACCESS_TOKEN } from '../config';
 import MAP_STYLE from '../config/style.json';
@@ -158,6 +158,30 @@ function useForceUpdate(){
     return () => setValue(value => value + 1); // update the state to force render
 }
 
+// parse dot density 1D PBF into 2D
+const chunkArray = (data, chunk) => {
+    let tempArray = new Array(data.length/chunk).fill([])
+    for (let i=0; i < data.length; i+=chunk) {
+        tempArray[i/chunk] = data.slice(i,i+chunk);
+    }
+    return tempArray
+};
+
+function debounce(func, wait, immediate) {
+    var timeout;
+    return function() {
+        var context = this, args = arguments;
+        var later = function() {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+    };
+};
+
 function MapSection(props){ 
     // fetch pieces of state from store    
     const storedData = useSelector(state => state.storedData);
@@ -172,11 +196,13 @@ function MapSection(props){
     const mapParams = useSelector(state => state.mapParams);
     const urlParams = useSelector(state => state.urlParams);
     const dotDensityData = useSelector(state => state.dotDensityData);
-
+    const isPlaying = useSelector(state => state.isPlaying);
+    
     // component state elements
     // hover and highlight geographibes
     const [hoverGeog, setHoverGeog] = useState({x:null, y:null, object:null});
     const [highlightGeog, setHighlightGeog] = useState([]);
+    const [incrementTimeout, setIncrementTimeout] = useState(null);
 
     // mapstyle and global map mode (WIP)
     // const [globalMap, setGlobalMap] = useState(false);
@@ -271,7 +297,6 @@ function MapSection(props){
 
     // shared view broadcast
     useEffect(() => { 
-
         document.addEventListener(visibilityChange, () => {
             setBoxSelect(false);
             setMultipleSelect(false);
@@ -378,14 +403,6 @@ function MapSection(props){
         }
     }, [storedCartogramData, currentData, mapParams.vizType])
 
-    const chunkArray = (data, chunk) => {
-        let tempArray = new Array(data.length/chunk).fill([])
-        for (let i=0; i < data.length; i+=chunk) {
-            tempArray[i/chunk] = data.slice(i,i+chunk);
-        }
-        return tempArray
-    };
-    
     const getDotDensityData = async () => fetch(`${process.env.PUBLIC_URL}/pbf/dotDensityFlatGeoid.pbf`)
         .then(r => r.arrayBuffer())
         .then(ab => new Pbf(ab))
@@ -412,6 +429,22 @@ function MapSection(props){
             tempLayers = defaultLayers.map(layer => {
                 if ((layer.get('id').includes('label')) && !(layer.get('id').includes('water'))) return layer;
                 return layer.setIn(['layout', 'visibility'], 'none');
+            });
+        } else if (mapParams.vizType === 'dotDensity') {
+            tempLayers = defaultLayers.map(layer => {
+                if (mapParams.resource.includes(layer.get('id')) || mapParams.overlay.includes(layer.get('id'))) {
+                    return layer.setIn(['layout', 'visibility'], 'visible');
+                } else if (layer.get('id').includes('admin')) {
+                    return layer.setIn(['paint','line-color'], 'hsl(0,0%,80%)')
+                } else if (layer.get('id').includes('settlement-')) {
+                    
+                    return layer.get('id').includes('major') ? 
+                        layer.setIn(['paint','text-halo-blur'], 0).setIn(['paint','text-halo-width'], 2)
+                        :
+                        layer.setIn(['paint','text-halo-blur'], 0)
+                } else {
+                    return layer;
+                }
             });
         } else {
             tempLayers = defaultLayers.map(layer => {
@@ -475,7 +508,7 @@ function MapSection(props){
     // TODO: swap
     useEffect(() => {
         if (mapParams.binMode !== 'dynamic') updateMap();
-    },[dataParams.variableName, mapParams.mapType, mapParams.vizType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, storedGeojson[currentData], storedCartogramData, mapParams.overlay, currentData])
+    },[mapParams.mapType, mapParams.vizType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, storedGeojson[currentData], storedCartogramData, mapParams.overlay])
     
     useEffect(() => {
         if (mapParams.binMode === 'dynamic') updateMap();
@@ -483,7 +516,7 @@ function MapSection(props){
     
     useEffect(() => {
         forceUpdate()
-    }, [currentMapData, dataParams.numerator, dataParams.variableName, dataParams.denominator, dataParams.nIndex, mapParams.overlay])
+    }, [currentMapData, dataParams.numerator, dataParams.variableName, dataParams.denominator, dataParams.nIndex, mapParams.overlay, storedLisaData])
 
     const GetFillColor = (f, bins, mapType, varID) => {
         if (!f[dataParams.numerator] || (!f[dataParams.numerator][dataParams.nIndex] && !f[dataParams.numerator][dataParams.nProperty])) {
@@ -554,6 +587,7 @@ function MapSection(props){
                     i++;
                 }
         }
+
         return {choropleth: returnArray, dot: returnObj}
     }
 
@@ -745,7 +779,11 @@ function MapSection(props){
                 transitionInterpolator: new FlyToInterpolator()
             })
         }  
-      }, []);
+    }, []);
+
+    
+
+    // const handleIncrement = (delay) => !staticTimeout && statsicTimeout = setTimeout(() => dispatch(incrementDate(1)), delay);
 
     const FullLayers = {
         choropleth: new PolygonLayer({
@@ -774,7 +812,7 @@ function MapSection(props){
             id: 'highlightLayer',
             data: currentMapData.data,
             getPolygon: d => d.geom,
-            getLineColor: d => highlightGeog.indexOf(d.GEOID)!==-1 ? [0, 104, 109] : [0, 104, 109, 0], 
+            getLineColor: d => highlightGeog.indexOf(d.GEOID)!==-1 ? mapParams.vizType === 'dotDensity' ? [240,240,240] : [0, 104, 109] : [0, 104, 109, 0], 
             opacity: 0.8,
             material:false,
             pickable: false,
@@ -793,7 +831,7 @@ function MapSection(props){
             id: 'hoverHighlightlayer',    
             data: currentMapData.data,
             getPolygon: d => d.geom,
-            getLineColor: d => hoverGeog === d.GEOID ? [50, 50, 50] : [50, 50, 50, 0], 
+            getLineColor: d => hoverGeog === d.GEOID ? mapParams.vizType === 'dotDensity' ? [200,200,200] : [50, 50, 50] : [50, 50, 50, 0], 
             getElevation: d => d.height,
             pickable: false,
             stroked: true,
@@ -1160,6 +1198,7 @@ function MapSection(props){
                     let zoom = Math.round(viewState.viewState.zoom);
                     if (zoom !== currentZoom) setCurrentZoom(zoom)
                 }}
+                // onAfterRender={() => isPlaying && handleIncrement(1000) }
             >
                 <MapboxGLMap
                     reuseMaps

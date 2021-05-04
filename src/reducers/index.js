@@ -229,6 +229,36 @@ var reducer = (state = INITIAL_STATE, action) => {
                     dataParams:dateObj
                 }
             }
+        case 'SET_START_PLAYING': {
+            let dateObj = {
+                ...state.dataParams
+            }
+            let currIndices = state.dateIndices[state.currentData][state.dataParams.numerator]
+            let nextIndex = currIndices[currIndices.indexOf(state.dataParams.nIndex)+action.payload.index]
+
+            if (nextIndex === undefined) {
+                dateObj.nIndex = currIndices[0]
+                dateObj.dIndex = currIndices[0]
+                return {
+                    ...state,
+                    dataParams:dateObj
+                }
+            } else {
+                dateObj.nIndex = nextIndex;
+                dateObj.dIndex = nextIndex;
+                return {
+                    ...state,
+                    isPlaying:true,
+                    dataParams:dateObj
+                }
+            }
+        }
+        case 'SET_STOP_PLAYING': {
+            return {
+                ...state,
+                isPlaying:false,
+            }
+        }
         case 'SET_VARIABLE_PARAMS':
             let paramObj = {
                 ...state.dataParams,

@@ -15,6 +15,7 @@ export const INITIAL_STATE = {
   selectionIndex: [],
   centroids: {},
   dates: {},
+  isPlaying:false,
   currDate: '',
   currDateIndex: '',
   startDateIndex: '',
