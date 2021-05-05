@@ -469,7 +469,8 @@ const VariablePanel = (props) => {
             mapType: newValue,
             nBins: 4,
             bins: fixedScales[newValue],
-            colorScale: colorScales[newValue]
+            colorScale: colorScales[newValue],
+            binMode: 'natural_breaks'
             
           }
         )

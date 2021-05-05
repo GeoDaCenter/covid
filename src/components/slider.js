@@ -256,7 +256,7 @@ const DateSlider = () => {
                 dispatch(setVariableParams({nIndex: newValue}))
                 break
         }
-    }, 25);
+    }, 10);
         
     const handleRangeChange = (event, newValue) => { 
         if (dRange) {
