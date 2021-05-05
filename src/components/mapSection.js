@@ -1196,7 +1196,7 @@ function MapSection(props){
                 pickingRadius={20}
                 onViewStateChange={viewState => {
                     let zoom = Math.round(viewState.viewState.zoom);
-                    if (zoom !== currentZoom) setCurrentZoom(zoom)
+                    if (zoom !== currentZoom) setTimeout(() => setCurrentZoom(zoom), 1000);
                 }}
                 // onAfterRender={() => isPlaying && handleIncrement(1000) }
             >
