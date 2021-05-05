@@ -8,15 +8,15 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Select from '@material-ui/core/Select';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Switch from '@material-ui/core/Switch';
+import Checkbox from '@material-ui/core/Checkbox';
+import Slider from '@material-ui/core/Slider';
 
 import styled from 'styled-components';
 
 import Tooltip from './tooltip';
 import { StyledDropDown, BinsContainer, Gutter } from '../styled_components';
-import { setVariableParams, setMapParams, setCurrentData, setPanelState, setParametersAndData, setNotification } from '../actions';
+import { setVariableParams, setMapParams, setCurrentData, setPanelState, setParametersAndData, setNotification, changeDotDensityMode, toggleDotDensityRace, setDotDensityBgOpacity } from '../actions';
 import { fixedScales, colorScales, colors, variableTree, variablePresets, urlParamsTree, datasetTree, allGeographies, allDatasets } from '../config';
 import * as SVG from '../config/svg';
 
@@ -159,18 +159,51 @@ const VariablePanelContainer = styled.div`
   }
   user-select:none;
 `
-const StyledButtonGroup = styled(ButtonGroup)`
-  color:white;
-  .MuiButtonGroup-grouped {
-    color:white;
-    border-color:${colors.white}77;
-    &:hover {
-      border-color:white;
-    }
-    &.active {
-      background:white;
-      color:${colors.gray};
-    }
+const ButtonGroup = styled.div`
+
+  button:first-of-type {
+    border-radius: 0.5em 0 0 0.5em;
+  }
+  button:last-of-type {
+    border-radius: 0 0.5em 0.5em 0;
+  }
+`
+
+const VizTypeButton = styled.button`
+  background: ${props => props.active ? colors.white : 'none'};
+  color: ${props => props.active ? colors.darkgray : colors.white};
+  outline:none;
+  border:1px solid ${colors.white}77;
+  padding:.25em .75em;
+  margin:0;
+  font-family:'Lato', sans-serif;
+  font-size:.875rem;
+  cursor:pointer;
+  transition:250ms all;
+  letter-spacing:0.02857em;
+  font-weight:500;
+  &:hover {
+    background: ${colors.lightgray};
+    color:${colors.darkgray};
+  }
+
+`
+
+const DotDensityControls = styled.div`
+  border:1px solid ${colors.white}77;
+  max-width:20em;
+  padding: 0 .5em 1.5em .5em;
+  p.help-text {
+    text-transform:uppercase;
+    font-size:0.75rem;
+    font-weight:bold;
+    text-align:center;
+  }
+  span.MuiSlider-root {
+    margin:1em 1em 0 1em;
+    max-width:calc(100% - 2em);
+    padding:0;
+    color:${colors.white};
   }
 `
 
@@ -193,7 +226,7 @@ const ControlsContainer = styled.div`
   overflow-y:visible;
   padding:20px;
 
-  @media (max-height:899px){
+  @media (max-height:1325px){
     overflow-y:scroll;
     padding:20px 20px 10vh 20px;
   }
@@ -209,6 +242,52 @@ const ListSubheader = styled(MenuItem)`
   font-weight:800;
 `
 
+const AcsRaceButton = styled.button`
+  background:${props => props.active ? `rgb(${props.bgColor.join(',')})` : colors.darkgray};
+  color:${props => props.active ? colors.black : colors.white};
+  text-align:left;
+  border:none;
+  outline:none;
+  margin:0.25em;
+  padding:0.5em;
+  border-radius:0.5em;
+  cursor:pointer;
+`
+
+const dotDensityAcsGroups = [
+  {
+    'idx':3,
+    'name': 'Black or African American',
+  },
+  {
+    'idx':4,
+    'name': 'Hispanic or Latino',
+  },
+  {
+    'idx':2,
+    'name': 'Asian',
+  },
+  {
+    'idx':8,
+    'name': 'White'
+  },
+  {
+    'idx':1,
+    'name': 'American Indian or Alaska Native',
+  },
+  {
+    'idx':5,
+    'name': 'Native Hawaiian or Other Pacific Islander',
+  },
+  {
+    'idx':6,
+    'name': 'Other',
+  },
+  {
+    'idx':7,
+    'name': 'Two or more',
+  }]
+
 const VariablePanel = (props) => {
 
   // const getGzipAndCentroids = async (gzipUrl, centroidsUrl) => {
@@ -222,11 +301,12 @@ const VariablePanel = (props) => {
 
   const dispatch = useDispatch();    
 
-  const currentData = useSelector(state => state.currentData); 
-  const dataParams = useSelector(state => state.dataParams); 
-  const mapParams = useSelector(state => state.mapParams); 
-  const panelState = useSelector(state => state.panelState);  
-  const urlParams = useSelector(state => state.urlParams); 
+  const currentData = useSelector(state => state.currentData);
+  const dataParams = useSelector(state => state.dataParams);
+  const mapParams = useSelector(state => state.mapParams);
+  const panelState = useSelector(state => state.panelState);
+  const urlParams = useSelector(state => state.urlParams);
+
   // currentVariable, currentZVariable, storedMobilityData
   // const [bivariateZ, setBivariateZ] = useState(false);
 
@@ -442,6 +522,8 @@ const VariablePanel = (props) => {
     }
   }
 
+  const handleDotDensitySlider = (e, newValue) => dispatch(setDotDensityBgOpacity(newValue))
+
   // const handleZSwitch = () => {
   //   setBivariateZ(prev => !prev )
   // }
@@ -573,7 +655,7 @@ const VariablePanel = (props) => {
 
   return (
     <VariablePanelContainer className={panelState.variables ? '' : 'hidden'} otherPanels={panelState.info} id="variablePanel">
-      <ControlsContainer>
+      {panelState.variables && <ControlsContainer>
         <h2>Data Sources &amp;<br/> Map Variables</h2>
         <Gutter h={20}/>
         <StyledDropDown id="newVariableSelect">
@@ -701,11 +783,12 @@ const VariablePanel = (props) => {
         </StyledDropDown>
         <Gutter h={15}/>
         <p>Visualization Type</p>
-        <StyledButtonGroup color="primary" aria-label="text button group" id="visualizationType">
-          <Button className={mapParams.vizType === '2D' ? 'active' : ''} data-val="2D" key="2D-btn" onClick={() => handleVizTypeButton('2D')}>2D</Button>
-          <Button className={mapParams.vizType === '3D' ? 'active' : ''} data-val="3D" key="3D-btn" onClick={() => handleVizTypeButton('3D')}>3D</Button>
-          <Button className={mapParams.vizType === 'cartogram' ? 'active' : ''} data-val="cartogram" key="cartogram-btn" onClick={() => handleVizTypeButton('cartogram')}>Cartogram</Button>
-        </StyledButtonGroup>
+        <ButtonGroup id="visualizationType">
+          <VizTypeButton active={mapParams.vizType === '2D'} data-val="2D" key="2D-btn" onClick={() => handleVizTypeButton('2D')}>2D</VizTypeButton>
+          <VizTypeButton active={mapParams.vizType === '3D'} data-val="3D" key="3D-btn" onClick={() => handleVizTypeButton('3D')}>3D</VizTypeButton>
+          <VizTypeButton active={mapParams.vizType === 'dotDensity'} data-val="dotDensity" key="dotDensity-btn" onClick={() => handleVizTypeButton('dotDensity')}>Dot Density</VizTypeButton>
+          <VizTypeButton active={mapParams.vizType === 'cartogram'} data-val="cartogram" key="cartogram-btn" onClick={() => handleVizTypeButton('cartogram')}>Cartogram</VizTypeButton>
+        </ButtonGroup>
         <Gutter h={12}/>
         {/* {
           mapParams.vizType === '3D' && 
@@ -777,6 +860,39 @@ const VariablePanel = (props) => {
               </Select>
             </StyledDropDown>
         } */}
+        {mapParams.vizType === 'dotDensity' && 
+          <DotDensityControls>
+            <p className="help-text">1 Dot = 500 People</p>
+            <BinsContainer>
+              <Switch
+                checked={mapParams.dotDensityParams.colorCOVID}
+                onChange={() => dispatch(changeDotDensityMode())}
+                name="dot density mode"
+              />
+              <p>{mapParams.dotDensityParams.colorCOVID ? 'Color by COVID Data' : 'Color by ACS Race / Ethnicity'}</p>
+              <Gutter h={10}/>
+              <p className="help-text">Toggle ACS Race / Ethnicity Groups</p>
+              <Gutter h={5}/>
+              {dotDensityAcsGroups.map(group => 
+                <AcsRaceButton 
+                  active={mapParams.dotDensityParams.raceCodes[group.idx]} 
+                  bgColor={colors.dotDensity[group.idx]}
+                  onClick={() => dispatch(toggleDotDensityRace(group.idx))}>
+                    {group.name}
+                  </AcsRaceButton>
+              )}
+            </BinsContainer>
+            <Gutter h={20}/> 
+            <p className="help-text">Background Opacity</p>
+            <Slider
+              value={mapParams.dotDensityParams.backgroundTransparency}
+              min={0}
+              step={0.01}
+              max={1}
+              onChange={handleDotDensitySlider}
+            />
+          </DotDensityControls>}
+        <Gutter h={20}/>
         <TwoUp id="overlaysResources">
           <StyledDropDown>
             <InputLabel htmlFor="overlay-select">Overlay</InputLabel>
@@ -811,7 +927,7 @@ const VariablePanel = (props) => {
             </Select>
           </StyledDropDown>
         </TwoUp>        
-      </ControlsContainer>
+      </ControlsContainer>}
       <div className="noteContainer">
         {/* <h3>Help us improve the Atlas!</h3>
         <p>

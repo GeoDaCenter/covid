@@ -19,10 +19,11 @@ import { getDateLists } from './getDateLists.js';
 import getGeoidIndex from './getGeoidIndex';
 import getGeoids from './getGeoids';
 import getGzipData from './getGzipData';
-import getJson from './getJson.js';
-import getJsonPure from './getJsonPure.js';
+import getJson from './getJson';
+import getJsonPure from './getJsonPure';
 import getLisaValues from './getLisaValues';
-import getParseCSV from './getParseCSV.js';
+import getParseCSV from './getParseCSV';
+import getParsePbf from './getParsePbf'
 import getURLParams from './getURLParams';
 import getVarId from './getVarId';
 import loadGeojsonToGeoda from './loadGeojsonToGeoda';
@@ -57,6 +58,7 @@ export {
     getJsonPure,
     getLisaValues,
     getParseCSV,
+    getParsePbf,
     getURLParams,
     getVarId,
     getGzipData,

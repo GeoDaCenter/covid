@@ -229,6 +229,36 @@ var reducer = (state = INITIAL_STATE, action) => {
                     dataParams:dateObj
                 }
             }
+        case 'SET_START_PLAYING': {
+            let dateObj = {
+                ...state.dataParams
+            }
+            let currIndices = state.dateIndices[state.currentData][state.dataParams.numerator]
+            let nextIndex = currIndices[currIndices.indexOf(state.dataParams.nIndex)+action.payload.index]
+
+            if (nextIndex === undefined) {
+                dateObj.nIndex = currIndices[0]
+                dateObj.dIndex = currIndices[0]
+                return {
+                    ...state,
+                    dataParams:dateObj
+                }
+            } else {
+                dateObj.nIndex = nextIndex;
+                dateObj.dIndex = nextIndex;
+                return {
+                    ...state,
+                    isPlaying:true,
+                    dataParams:dateObj
+                }
+            }
+        }
+        case 'SET_STOP_PLAYING': {
+            return {
+                ...state,
+                isPlaying:false,
+            }
+        }
         case 'SET_VARIABLE_PARAMS':
             let paramObj = {
                 ...state.dataParams,
@@ -450,6 +480,44 @@ var reducer = (state = INITIAL_STATE, action) => {
                     data: action.payload.data,
                 }
             } 
+        case 'SET_DOT_DENSITY':
+            return {
+                ...state,
+                dotDensityData: action.payload.data
+            }
+        case 'CHANGE_DOT_DENSITY_MODE':
+            let changeDotDensityObj = {
+                ...state.mapParams
+            }
+
+            changeDotDensityObj.dotDensityParams.colorCOVID = !changeDotDensityObj.dotDensityParams.colorCOVID;
+
+            return {
+                ...state,
+                mapParams:changeDotDensityObj
+            }
+        case 'TOGGLE_DOT_DENSITY_RACE':
+            let toggleAcsObj = {
+                ...state.mapParams
+            }
+
+            toggleAcsObj.dotDensityParams.raceCodes[action.payload.index] = !toggleAcsObj.dotDensityParams.raceCodes[action.payload.index];
+
+            return {
+                ...state,
+                mapParams:toggleAcsObj
+            }
+        case 'SET_DOT_DENSITY_BACKGROUND_OPACITY':
+            let backgroundOpacityState = {
+                ...state.mapParams
+            }
+            backgroundOpacityState.dotDensityParams.backgroundTransparency = action.payload.opacity
+            
+            return {
+                ...state,
+                mapParams:backgroundOpacityState
+            }
+            
         default:
             return state;
     }

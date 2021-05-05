@@ -390,3 +390,51 @@ export const setTooltipContent = ( x, y, data ) => {
     }
 
 }
+
+export const setDotDensityData = ( data ) => {
+    return {
+        type: 'SET_DOT_DENSITY',
+        payload: {
+            data
+        }
+    }
+}
+
+export const changeDotDensityMode = () => {
+    return {
+        type: 'CHANGE_DOT_DENSITY_MODE'
+    }
+}
+
+export const toggleDotDensityRace = ( index ) => {
+    return {
+        type: 'TOGGLE_DOT_DENSITY_RACE',
+        payload: {
+            index
+        }
+    }
+}
+
+export const setDotDensityBgOpacity = ( opacity ) => {
+    return {
+        type: 'SET_DOT_DENSITY_BACKGROUND_OPACITY',
+        payload: {
+            opacity
+        }
+    }
+}
+
+export const startPlaying = ( index ) => {
+    return {
+        type: 'SET_START_PLAYING',
+        payload: {
+            index
+        }
+    }
+}
+
+export const stopPlaying = () => {
+    return {
+        type: 'SET_STOP_PLAYING'
+    }
+}

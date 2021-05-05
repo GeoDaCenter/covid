@@ -262,6 +262,17 @@ export const colors = {
         '#bc80bd',
         '#ccebc5',
         '#ffed6f',
+    ],
+    dotDensity: [
+        [],
+        [68,187,153], // American Indian or Alaska Native
+        [238,136,102], // Asian
+        [119,170,221], // Black or African American
+        [187,204,51], // Hispanic or Latino
+        [187,187,187], // Native Hawaiian or Other Pac. Islander
+        [153,221,255], // Other
+        [255,255,255], // Two or more
+        [255,170,187], // White
     ]
 }
 
@@ -297,7 +308,7 @@ export const dataPresets = {
             'essential_workers',
             'vaccines_fully_vaccinated'
         ],
-        joinCols: ['GEOID', ['FIPS','fips','countyFIPS', 'county']], // geospatial data join column and then list of valid table join columns
+        joinCols: ['GEOID', ['FIPS','fips','countyFIPS', 'county', 'geoid']], // geospatial data join column and then list of valid table join columns
         accumulate: [], // CSV names to accumulate over time
         dateList: { // date lists to parse: isoDateList (eg. '2020-01-01') or usDateList (eg. '01/01/20')
             'covid_confirmed_usafacts': 'isoDateList', 
@@ -329,7 +340,7 @@ export const dataPresets = {
             'chr_health_factors',
             'vaccines_fully_vaccinated'
         ],
-        joinCols: ['GEOID', ['FIPS','fips','countyFIPS', 'GEOID']], 
+        joinCols: ['GEOID', ['FIPS','fips','countyFIPS', 'GEOID','geoid']], 
         accumulate: ['covid_confirmed_1p3a','covid_deaths_1p3a'],
         dateList: {
             'covid_confirmed_1p3a': 'isoDateList', 
@@ -399,7 +410,7 @@ export const dataPresets = {
 			'vaccines_fully_vaccinated',
 			'vaccines_dist'
         ],
-        joinCols: ['GEOID', ['FIPS','fips','fips_code','state_fips','countyFIPS','GEOID']], 
+        joinCols: ['GEOID', ['FIPS','fips','fips_code','state_fips','countyFIPS','GEOID','geoid']], 
         accumulate: ['covid_confirmed_1p3a_state','covid_deaths_1p3a_state','covid_testing_cdc_state'],
         dateList: {
             'covid_confirmed_1p3a_state': 'isoDateList', 
@@ -444,7 +455,7 @@ export const dataPresets = {
 			'vaccines_fully_vaccinated',
 			'vaccines_dist'
         ],
-        joinCols: ['GEOID', ['FIPS','fips','fips_code','state_fips','stateFIPS']],
+        joinCols: ['GEOID', ['FIPS','fips','fips_code','state_fips','stateFIPS','geoid']],
         accumulate: ['covid_testing_cdc_state'],
         dateList: {
             'covid_confirmed_1p3a_state': 'isoDateList', 
@@ -475,7 +486,7 @@ export const dataPresets = {
 			'vaccination_fully_vaccinated_cdc',
 			'vaccination_to_be_distributed_cdc'
         ], 
-        joinCols: ['GEOID', ['FIPS','fips','countyFIPS']], 
+        joinCols: ['GEOID', ['FIPS','fips','countyFIPS','geoid']], 
         tableNames: [
             'cases', 
             'deaths', 
@@ -514,7 +525,7 @@ export const dataPresets = {
             'cases',
             'deaths'
         ],
-        joinCols: ['GEOID', ['UID']], 
+        joinCols: ['GEOID', ['UID','geoid']], 
         accumulate: []
     },
     'cdc.geojson': {
@@ -548,7 +559,7 @@ export const dataPresets = {
             'essential_workers',
             'vaccines_fully_vaccinated'
         ],
-        joinCols: ['GEOID', ['fips_code', 'fips', 'FIPS', 'countyFIPS']],
+        joinCols: ['GEOID', ['fips_code', 'fips', 'FIPS', 'countyFIPS','geoid']],
         accumulate: [],
         dateList: {
             'covid_confirmed_usafacts': 'isoDateList', 

@@ -4,21 +4,26 @@ import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import {fromJS} from 'immutable';
 import { find, findIndex } from 'lodash';
+import * as Pbf from 'pbf';
 
 // deck GL and helper function import
 import DeckGL from '@deck.gl/react';
 import {MapView, FlyToInterpolator} from '@deck.gl/core';
 import { PolygonLayer, ScatterplotLayer, IconLayer, TextLayer } from '@deck.gl/layers';
+import {DataFilterExtension} from '@deck.gl/extensions';
 import {fitBounds} from '@math.gl/web-mercator';
 import MapboxGLMap from 'react-map-gl';
 
 // component, action, util, and config import
-import { MapTooltipContent, Geocoder } from '../components';
-import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData, openContextMenu, setNotification, setTooltipContent } from '../actions';
+import { Geocoder } from '../components';
+import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData, openContextMenu, setNotification, setTooltipContent, setDotDensityData, incrementDate} from '../actions';
 import { mapFn, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, getURLParams } from '../utils';
 import { colors, colorScales, MAPBOX_ACCESS_TOKEN } from '../config';
 import MAP_STYLE from '../config/style.json';
 import * as SVG from '../config/svg'; 
+
+// PBF schemas
+import * as Schemas from '../schemas';
 
 // US bounds
 const bounds = fitBounds({
@@ -153,6 +158,30 @@ function useForceUpdate(){
     return () => setValue(value => value + 1); // update the state to force render
 }
 
+// parse dot density 1D PBF into 2D
+const chunkArray = (data, chunk) => {
+    let tempArray = new Array(data.length/chunk).fill([])
+    for (let i=0; i < data.length; i+=chunk) {
+        tempArray[i/chunk] = data.slice(i,i+chunk);
+    }
+    return tempArray
+};
+
+function debounce(func, wait, immediate) {
+    var timeout;
+    return function() {
+        var context = this, args = arguments;
+        var later = function() {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+    };
+};
+
 function MapSection(props){ 
     // fetch pieces of state from store    
     const storedData = useSelector(state => state.storedData);
@@ -166,12 +195,14 @@ function MapSection(props){
     const dataParams = useSelector(state => state.dataParams);
     const mapParams = useSelector(state => state.mapParams);
     const urlParams = useSelector(state => state.urlParams);
-    const excludeList = useSelector(state => state.excludeList);
-
+    const dotDensityData = useSelector(state => state.dotDensityData);
+    const isPlaying = useSelector(state => state.isPlaying);
+    
     // component state elements
     // hover and highlight geographibes
     const [hoverGeog, setHoverGeog] = useState({x:null, y:null, object:null});
     const [highlightGeog, setHighlightGeog] = useState([]);
+    const [incrementTimeout, setIncrementTimeout] = useState(null);
 
     // mapstyle and global map mode (WIP)
     // const [globalMap, setGlobalMap] = useState(false);
@@ -186,6 +217,8 @@ function MapSection(props){
         bearing:0,
         pitch:0
     })
+    
+    const [currentZoom, setCurrentZoom] = useState(Math.round(+urlParams.z || bounds.zoom))
     
     // locally stored data and color values
     // const [currVarId, setCurrVarId] = useState(null);
@@ -215,6 +248,39 @@ function MapSection(props){
     })
 
     const dispatch = useDispatch();
+    const updateMap = () => {
+        switch(mapParams.vizType) {
+            case 'cartogram':
+                if (storedCartogramData !== undefined) {
+                    let dataResults = cleanData({
+                        data: storedCartogramData,
+                        bins: {bins: mapParams.bins.bins, breaks:mapParams.bins.breaks}, 
+                        mapType: mapParams.mapType, 
+                        vizType: mapParams.vizType
+                    })
+                    setCurrentMapData({
+                        params: getVarId(currentData, dataParams),
+                        data: dataResults.choropleth,
+                        dots: dataResults.dot
+                    })
+                }
+                break;
+            default:
+                if (storedData[currentData] !== undefined) {
+                    let dataResults = cleanData({
+                        data: storedData[currentData],
+                        bins: {bins: mapParams.bins.bins, breaks:mapParams.bins.breaks}, 
+                        mapType: mapParams.mapType, 
+                        vizType: mapParams.vizType
+                    })
+                    setCurrentMapData({
+                        params: getVarId(currentData, dataParams),
+                        data: dataResults.choropleth,
+                        dots: dataResults.dot
+                    })
+                }
+        }
+    }
 
     let hidden = null;
     let visibilityChange = null;
@@ -231,7 +297,6 @@ function MapSection(props){
 
     // shared view broadcast
     useEffect(() => { 
-
         document.addEventListener(visibilityChange, () => {
             setBoxSelect(false);
             setMultipleSelect(false);
@@ -288,6 +353,17 @@ function MapSection(props){
                 });
                 setStoredCenter(null)
                 break
+            case 'dotDensity': 
+                setViewState({
+                    ...currMapView,
+                    latitude: +urlParams.lat || bounds.latitude,
+                    longitude: +urlParams.lon || bounds.longitude,
+                    zoom: +urlParams.z || bounds.zoom,
+                    bearing:0,
+                    pitch:0
+                });
+                setStoredCenter(null)
+                break
             case '3D':
                 setViewState({
                     ...currMapView,
@@ -310,7 +386,7 @@ function MapSection(props){
     useEffect(() => {
         if (mapParams.vizType !== 'cartogram') return;
         
-        if (storedCartogramData){
+        if (storedCartogramData.length){
             let center = getCartogramCenter(storedCartogramData);
             if (isNaN(center[0])) return;
             let roundedCenter = [Math.floor(center[0]),Math.floor(center[1])];
@@ -327,8 +403,22 @@ function MapSection(props){
         }
     }, [storedCartogramData, currentData, mapParams.vizType])
 
+    const getDotDensityData = async () => fetch(`${process.env.PUBLIC_URL}/pbf/dotDensityFlatGeoid.pbf`)
+        .then(r => r.arrayBuffer())
+        .then(ab => new Pbf(ab))
+        .then(pbf => Schemas.Dot.read(pbf).val)
+        .then(data => chunkArray(data, 4))
+        .then(chunks => dispatch(setDotDensityData(chunks)));
+
     // change mapbox layer on viztype change or overlay/resource change
     useEffect(() => {
+
+        if (mapParams.vizType === 'dotDensity') {
+            if (!dotDensityData.length) {
+                getDotDensityData();
+            }
+        }
+        
         const defaultLayers = defaultMapStyle.get('layers');
         let tempLayers;
         if (mapParams.vizType === 'cartogram' || globalMap) {
@@ -339,6 +429,22 @@ function MapSection(props){
             tempLayers = defaultLayers.map(layer => {
                 if ((layer.get('id').includes('label')) && !(layer.get('id').includes('water'))) return layer;
                 return layer.setIn(['layout', 'visibility'], 'none');
+            });
+        } else if (mapParams.vizType === 'dotDensity') {
+            tempLayers = defaultLayers.map(layer => {
+                if (mapParams.resource.includes(layer.get('id')) || mapParams.overlay.includes(layer.get('id'))) {
+                    return layer.setIn(['layout', 'visibility'], 'visible');
+                } else if (layer.get('id').includes('admin')) {
+                    return layer.setIn(['paint','line-color'], 'hsl(0,0%,80%)')
+                } else if (layer.get('id').includes('settlement-')) {
+                    
+                    return layer.get('id').includes('major') ? 
+                        layer.setIn(['paint','text-halo-blur'], 0).setIn(['paint','text-halo-width'], 2)
+                        :
+                        layer.setIn(['paint','text-halo-blur'], 0)
+                } else {
+                    return layer;
+                }
             });
         } else {
             tempLayers = defaultLayers.map(layer => {
@@ -401,44 +507,22 @@ function MapSection(props){
     // clean and set map data after parameter change
     // TODO: swap
     useEffect(() => {
-        switch(mapParams.vizType) {
-            case 'cartogram':
-                if (storedCartogramData !== undefined) {
-                    setCurrentMapData(prev => ({
-                        params: getVarId(currentData, dataParams),
-                        data: cleanData({
-                            data: storedCartogramData,
-                            bins: {bins: mapParams.bins.bins, breaks:mapParams.bins.breaks}, 
-                            mapType: mapParams.mapType, 
-                            vizType: mapParams.vizType
-                        })
-                    }))
-                }
-                break;
-            default:
-                if (storedData[currentData] !== undefined) {
-                    setCurrentMapData(prev => ({
-                        params: getVarId(currentData, dataParams),
-                        data: cleanData({
-                            data: storedData[currentData],
-                            bins: {bins: mapParams.bins.bins, breaks:mapParams.bins.breaks}, 
-                            mapType: mapParams.mapType, 
-                            vizType: mapParams.vizType
-                        })
-                    }))
-                }
-        }
-    },[dataParams.variableName, mapParams.mapType, mapParams.vizType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, storedGeojson[currentData], storedCartogramData, currentData])
+        if (mapParams.binMode !== 'dynamic') updateMap();
+    },[mapParams.mapType, mapParams.vizType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, storedGeojson[currentData], storedCartogramData, mapParams.overlay])
+    
+    useEffect(() => {
+        if (mapParams.binMode === 'dynamic') updateMap();
+    },[mapParams.bins.bins, mapParams.binMode])
     
     useEffect(() => {
         forceUpdate()
-    }, [currentMapData.params, dataParams.numerator, dataParams.variableName, dataParams.denominator, dataParams.nIndex])
+    }, [currentMapData, dataParams.numerator, dataParams.variableName, dataParams.denominator, dataParams.nIndex, mapParams.overlay, storedLisaData])
 
     const GetFillColor = (f, bins, mapType, varID) => {
         if (!f[dataParams.numerator] || (!f[dataParams.numerator][dataParams.nIndex] && !f[dataParams.numerator][dataParams.nProperty])) {
             return null
         } else if (mapType === 'lisa') {
-            return colorScales.lisa[storedLisaData[storedGeojson[currentData]['geoidOrder'][f.properties.GEOID]]]
+            return colorScales.lisa[storedLisaData[storedGeojson[currentData]['geoidOrder'][f.properties.GEOID]]]||[240,240,240]
         } else {
             return mapFn(dataFn(f[dataParams.numerator], f[dataParams.denominator], dataParams), bins.breaks, mapParams.colorScale, mapParams.mapType, dataParams.numerator);
         }
@@ -464,7 +548,8 @@ function MapSection(props){
             return []
         }
 
-        var returnArray = [];
+        let returnArray = [];
+        let returnObj = {};
         let i = 0;
 
         switch(vizType) {
@@ -497,11 +582,13 @@ function MapSection(props){
                             color: tempColor,
                             height: tempHeight
                         })
+                        returnObj[data[i].properties.GEOID] = tempColor
                     }
                     i++;
                 }
         }
-        return returnArray
+
+        return {choropleth: returnArray, dot: returnObj}
     }
 
     const GetHeight = (f) => dataFn(f[dataParams.numerator], f[dataParams.denominator], dataParams)*(dataParams.scale3D/((dataParams.nType === "time-series" && dataParams.nRange === null) ? (dataParams.nIndex)/10 : 1))
@@ -563,7 +650,7 @@ function MapSection(props){
     }
 
     const handleMapHover = ({x, y, object, layer}) => {
-        dispatch(setTooltipContent(x, y, Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : find(storedData[currentData],o => o.properties.GEOID === object?.GEOID)))
+        dispatch(setTooltipContent(x, y, Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : find(storedData[currentData], o => o.properties.GEOID === object?.GEOID)))
         if (object && object.GEOID) {
             if (object.GEOID !== hoverGeog) setHoverGeog(object.GEOID)
         } else {
@@ -692,7 +779,11 @@ function MapSection(props){
                 transitionInterpolator: new FlyToInterpolator()
             })
         }  
-      }, []);
+    }, []);
+
+    
+
+    // const handleIncrement = (delay) => !staticTimeout && statsicTimeout = setTimeout(() => dispatch(incrementDate(1)), delay);
 
     const FullLayers = {
         choropleth: new PolygonLayer({
@@ -706,11 +797,12 @@ function MapSection(props){
             filled: true,
             wireframe: mapParams.vizType === '3D',
             extruded: mapParams.vizType === '3D',
-            opacity: 0.8,
+            opacity: mapParams.vizType === 'dotDensity' ? mapParams.dotDensityParams.backgroundTransparency : 0.8,
             material:false,
             onHover: handleMapHover,
             onClick: handleMapClick,           
             updateTriggers: {
+                opacity: mapParams.overlay,
                 getPolygon: [currentMapData.params, dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
                 getElevation: [currentMapData.params, dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
                 getFillColor: [currentMapData.params, dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
@@ -720,7 +812,7 @@ function MapSection(props){
             id: 'highlightLayer',
             data: currentMapData.data,
             getPolygon: d => d.geom,
-            getLineColor: d => highlightGeog.indexOf(d.GEOID)!==-1 ? [0, 104, 109] : [0, 104, 109, 0], 
+            getLineColor: d => highlightGeog.indexOf(d.GEOID)!==-1 ? mapParams.vizType === 'dotDensity' ? [240,240,240] : [0, 104, 109] : [0, 104, 109, 0], 
             opacity: 0.8,
             material:false,
             pickable: false,
@@ -739,7 +831,7 @@ function MapSection(props){
             id: 'hoverHighlightlayer',    
             data: currentMapData.data,
             getPolygon: d => d.geom,
-            getLineColor: d => hoverGeog === d.GEOID ? [50, 50, 50] : [50, 50, 50, 0], 
+            getLineColor: d => hoverGeog === d.GEOID ? mapParams.vizType === 'dotDensity' ? [200,200,200] : [50, 50, 50] : [50, 50, 50, 0], 
             getElevation: d => d.height,
             pickable: false,
             stroked: true,
@@ -857,9 +949,55 @@ function MapSection(props){
                 getize: [storedCartogramData, mapParams.vizType],
                 getRadius: [storedCartogramData, mapParams.vizType]
             },
-        }),
+        }),        
+        dotDensity: [new ScatterplotLayer({
+            id: 'dot density layer white',
+            data: dotDensityData,
+            pickable:false,
+            filled:true,
+            getPosition: f => [f[1]/1e5, f[2]/1e5],
+            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? currentMapData.dots[f[3]]||[0,0,0] : colors.dotDensity[f[0]],
+            getRadius: 100,  
+            radiusMinPixels: Math.sqrt(currentZoom)-1.5,
+            getFilterValue: f => (f[0]===8 && mapParams.dotDensityParams.raceCodes[f[0]]) ? 1 : 0,
+            filterRange: [1, 1], 
+            // Define extensions
+            extensions: [new DataFilterExtension({filterSize: 1})],
+            updateTriggers: {
+                getPosition: dotDensityData.length,
+                getFillColor: [mapParams.dotDensityParams.colorCOVID, currentMapData.dots, dotDensityData],
+                data: dotDensityData,
+                getFilterValue: [dotDensityData.length, mapParams.dotDensityParams.raceCodes[8]],
+                radiusMinPixels: currentZoom
+            }
+          }),    
+          new ScatterplotLayer({
+            id: 'dot density layer',
+            data: dotDensityData,
+            pickable:false,
+            filled:true,
+            getPosition: f => [f[1]/1e5, f[2]/1e5],
+            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? currentMapData.dots[f[3]]||[0,0,0] : colors.dotDensity[f[0]],
+            getRadius: 100,  
+            radiusMinPixels: Math.sqrt(currentZoom)-1.5,
+            getFilterValue: f => (f[0]!==8 && mapParams.dotDensityParams.raceCodes[f[0]]) ? 1 : 0,
+            filterRange: [1, 1], 
+            // Define extensions
+            extensions: [new DataFilterExtension({filterSize: 1})],
+            updateTriggers: {
+                getPosition: dotDensityData.length,
+                getFillColor: [mapParams.dotDensityParams.colorCOVID, currentMapData.dots, dotDensityData],
+                data: dotDensityData,
+                getFilterValue: [dotDensityData.length, 
+                    mapParams.dotDensityParams.raceCodes[1],mapParams.dotDensityParams.raceCodes[2],mapParams.dotDensityParams.raceCodes[3],mapParams.dotDensityParams.raceCodes[4],
+                    mapParams.dotDensityParams.raceCodes[5],mapParams.dotDensityParams.raceCodes[6],mapParams.dotDensityParams.raceCodes[7]
+                ],
+                radiusMinPixels: currentZoom
+            }
+          })
+        ],
     }
-
+    
     const getLayers = useCallback((layers, vizType, overlays, resources, currData) => {
         var LayerArray = []
 
@@ -875,12 +1013,16 @@ function MapSection(props){
         } else if (vizType === '3D') {
             LayerArray.push(layers['choropleth'])
             LayerArray.push(layers['choroplethHover'])
+        } else if (vizType === 'dotDensity') {            
+            LayerArray.push(layers['choropleth'])
+            LayerArray.push(...layers['dotDensity'])
+            LayerArray.push(layers['choroplethHighlight'])
+            LayerArray.push(layers['choroplethHover'])
         }
 
         if (resources && resources.includes('hospital')) LayerArray.push(layers['hospitals'])
         if (resources && resources.includes('clinic')) LayerArray.push(layers['clinic'])
         if (resources && resources.includes('vaccinationSites')) LayerArray.push(layers['vaccinationSites'])
-        
         return LayerArray
 
     })
@@ -1052,6 +1194,11 @@ function MapSection(props){
                 }
                 views={view}
                 pickingRadius={20}
+                onViewStateChange={viewState => {
+                    let zoom = Math.round(viewState.viewState.zoom);
+                    if (zoom !== currentZoom) setCurrentZoom(zoom)
+                }}
+                // onAfterRender={() => isPlaying && handleIncrement(1000) }
             >
                 <MapboxGLMap
                     reuseMaps

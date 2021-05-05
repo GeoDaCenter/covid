@@ -15,9 +15,9 @@
   "homepage": "https://theuscovidatlas.org",
   "dependencies": {
     "@deck.gl/core": "^8.3.11",
+    "@deck.gl/extensions": "^8.4.12",
     "@deck.gl/geo-layers": "^8.3.12",
     "@deck.gl/layers": "^8.3.11",
-    "@deck.gl/mesh-layers": "^8.3.12",
     "@deck.gl/react": "^8.3.11",
     "@material-ui/core": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
@@ -28,13 +28,12 @@
     "d3-scale": "^3.2.0",
     "file-saver": "^2.0.5",
     "immutable": "^4.0.0-rc.12",
-    "jsgeoda": "^0.1.8",
     "jszip": "^3.6.0",
     "lodash": "^4.17.20",
+    "pbf": "^3.2.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-map-gl": "^5.2.11",
-    "react-map-gl-geocoder": "^2.1.6",
     "react-markdown": "^5.0.3",
     "react-redux": "^7.2.2",
     "react-router-dom": "^5.2.0",
@@ -43,7 +42,6 @@
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
     "remark-gfm": "^1.0.0",
-    "source-map-explorer": "^2.5.2",
     "styled-components": "^5.2.1",
     "web-vitals": "^0.2.4",
     "webfontloader": "^1.6.28"
@@ -75,6 +73,7 @@
     ]
   },
   "devDependencies": {
-    "worker-loader": "^3.0.6"
+    "worker-loader": "^3.0.6",
+    "source-map-explorer": "^2.5.2"
   }
 }
