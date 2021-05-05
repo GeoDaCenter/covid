@@ -704,7 +704,7 @@ const VariablePanel = (props) => {
                   <MenuItem value={'custom'} key={'customRange'} disabled={dataParams.variableName.indexOf('Testing') !== -1 || dataParams.variableName.indexOf('Workdays') !== -1}>Custom Range</MenuItem>
               </Select>
           </StyledDropDown>
-          <BinsContainer id="binModeSwitch" disabled={dataParams.variableName.indexOf('Testing') !== -1 || dataParams.nType === "characteristic"}>
+          <BinsContainer id="binModeSwitch" disabled={dataParams.variableName.indexOf('Testing') !== -1 || dataParams.nType === "characteristic" || mapParams.mapType === 'lisa'}>
             <Switch
                 checked={mapParams.binMode === 'dynamic'}
                 onChange={handleSwitch}
