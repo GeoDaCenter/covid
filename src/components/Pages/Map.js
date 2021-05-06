@@ -27,6 +27,7 @@ import { HoverDiv } from '../../styled_components';
 import { colorScales, fixedScales, dataPresets, variablePresets, colors } from '../../config';
 
 import JsGeoDaWorker from '../../JsGeoDaWorker';
+import { set } from 'immutable';
 const gdaProxy = new JsGeoDaWorker();
 
 // Main function, App. This function does 2 things:
@@ -54,14 +55,6 @@ const getDefaultDimensions = () => ({
   minWidth: window.innerWidth <= 1024 ? window.innerWidth*.5 : 200,
 })
 
-const lazyFetchData = async (dataPresets) => {
-  let toCache = [...new Set(Object.values(dataPresets).map(dataset => dataset.tables).flat())]
-
-  for (const dataset of toCache){
-    let test = await fetch(dataset.slice(-4,) === '.pbf' ? `${process.env.PUBLIC_URL}/pbf/${dataset}` : `${process.env.PUBLIC_URL}/csv/${dataset}.csv`);
-  }
-};
-
 export default function Map() {
 
   const dateLists = getDateLists()
@@ -83,6 +76,17 @@ export default function Map() {
   const [defaultDimensions, setDefaultDimensions] = useState({...getDefaultDimensions()})
   const [isLoading, setIsLoading] = useState(false);
   const [lazyFetched, setLazyFetched] = useState(false)
+
+  const lazyFetchData = async (dataPresets) => {
+    let toCache = [...new Set(Object.values(dataPresets).map(dataset => dataset.tables).flat())]
+  
+    for (const dataset of toCache){
+      let test = await fetch(dataset.slice(-4,) === '.pbf' ? `${process.env.PUBLIC_URL}/pbf/${dataset}` : `${process.env.PUBLIC_URL}/csv/${dataset}.csv`);
+      if (!test) console.log(`${dataset} failed to cache.`)
+    }
+    setLazyFetched(true)
+  };
+
   const dispatch = useDispatch();  
   // // Dispatch helper functions for side effects and data handling
   // Get centroid data for cartogram
@@ -283,7 +287,6 @@ export default function Map() {
         () => {
           if (!lazyFetched) {
             lazyFetchData(dataPresets)
-            setLazyFetched(true)
           }
         })
     } else if (dateIndices[currentData] !== undefined) {      
