@@ -412,10 +412,9 @@ var reducer = (state = INITIAL_STATE, action) => {
                 mapLoaded: action.payload.loaded
             }
         case 'LAZY_LOAD_DATA':
-            let toCache = [...new Set(Object.values(action.payload.dataPresets).map(dataset => dataset.csvs).flat())]
+            let toCache = [...new Set(Object.values(action.payload.dataPresets).map(dataset => dataset.tables).flat())]
 
             toCache.forEach(dataset => {
-                console.log(`${process.env.PUBLIC_URL}/csv/${dataset}.csv`)
                 fetch(`${process.env.PUBLIC_URL}/csv/${dataset}.csv`)
             })
 

@@ -45,8 +45,6 @@ export default async function getParsePbf(url, accumulate, dateList){
             }
         }
     }
-    console.log(url)
-    console.log([returnData, columnNames, dateIndices])
     return [returnData, columnNames, dateIndices]
 
 

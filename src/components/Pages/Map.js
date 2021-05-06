@@ -55,10 +55,10 @@ const getDefaultDimensions = () => ({
 })
 
 const lazyFetchData = async (dataPresets) => {
-  let toCache = [...new Set(Object.values(dataPresets).map(dataset => dataset.csvs).flat())]
+  let toCache = [...new Set(Object.values(dataPresets).map(dataset => dataset.tables).flat())]
 
   for (const dataset of toCache){
-    let test = await fetch(`${process.env.PUBLIC_URL}/csv/${dataset}.csv`);
+    let test = await fetch(dataset.slice(-4,) === '.pbf' ? `${process.env.PUBLIC_URL}/pbf/${dataset}` : `${process.env.PUBLIC_URL}/csv/${dataset}.csv`);
   }
 };
 
@@ -76,13 +76,13 @@ export default function Map() {
   const dateIndices = useSelector(state => state.dateIndices);
   const mapLoaded = useSelector(state => state.mapLoaded);
   const panelState = useSelector(state => state.panelState);
-  const lazyFetched = useSelector(state => state.lazyFetched);
   // const fullState = useSelector(state => state)
   // gdaProxy is the WebGeoda proxy class. Generally, having a non-serializable
   // data in the state is poor for performance, but the App component state only
   // contains gdaProxy.
   const [defaultDimensions, setDefaultDimensions] = useState({...getDefaultDimensions()})
   const [isLoading, setIsLoading] = useState(false);
+  const [lazyFetched, setLazyFetched] = useState(false)
   const dispatch = useDispatch();  
   // // Dispatch helper functions for side effects and data handling
   // Get centroid data for cartogram
@@ -95,9 +95,9 @@ export default function Map() {
     setIsLoading(true)
     if (!gdaProxy.ready) await gdaProxy.init()
     // destructure parameters
-    const { geojson, csvs, joinCols, tableNames, accumulate, dateList } = params
+    const { geojson, tables, joinCols, tableNames, accumulate, dateList } = params
     // promise all data fetching - CSV and Json
-    const tabularDataPromises = csvs.map(csv => 
+    const tabularDataPromises = tables.map(csv => 
       csv.slice(-4,) === '.pbf' ? 
         getParsePbf(csv, accumulate.includes(csv), dateLists[dateList[csv]])
       :

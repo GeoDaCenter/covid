@@ -282,16 +282,16 @@ export const dataPresets = {
     'county_usfacts.geojson': {
         plainName: 'USA Facts County', // Plain english name for dataset
         geojson: 'county_usfacts.geojson', // geospatial data to join to
-        csvs: [ // list of CSVs to join
-            'covid_confirmed_usafacts',
+        tables: [ // list of CSVs to join
+            'covid_confirmed_usafacts.pbf',
             'covid_deaths_usafacts',
             'berkeley_predictions',
             'chr_health_context',
             'chr_life',
             'chr_health_factors',
-            'mobility_home_workdays_safegraph',
-            'mobility_parttime_workdays_safegraph',
-            'mobility_fulltime_workdays_safegraph',
+            'mobility_home_workdays_safegraph.pbf',
+            'mobility_parttime_workdays_safegraph.pbf',
+            'mobility_fulltime_workdays_safegraph.pbf',
             'context_essential_workers_acs',
             'vaccine_fully_vaccinated_cdc'
         ], 
@@ -311,18 +311,18 @@ export const dataPresets = {
         joinCols: ['GEOID', ['FIPS','fips','countyFIPS', 'county', 'geoid']], // geospatial data join column and then list of valid table join columns
         accumulate: [], // CSV names to accumulate over time
         dateList: { // date lists to parse: isoDateList (eg. '2020-01-01') or usDateList (eg. '01/01/20')
-            'covid_confirmed_usafacts': 'isoDateList', 
+            'covid_confirmed_usafacts.pbf': 'isoDateList', 
             'covid_deaths_usafacts': 'isoDateList',
-            'mobility_home_workdays_safegraph': 'isoDateList',
-            'mobility_parttime_workdays_safegraph': 'isoDateList',
-            'mobility_fulltime_workdays_safegraph': 'isoDateList',
+            'mobility_home_workdays_safegraph.pbf': 'isoDateList',
+            'mobility_parttime_workdays_safegraph.pbf': 'isoDateList',
+            'mobility_fulltime_workdays_safegraph.pbf': 'isoDateList',
             'vaccine_fully_vaccinated_cdc': 'isoDateList',
         }
     },
     'county_1p3a.geojson': {
         plainName: '1Point3Acres County',
         geojson: 'county_1p3a.geojson', 
-        csvs: [
+        tables: [
             'covid_confirmed_1p3a',
             'covid_deaths_1p3a',
             'berkeley_predictions',
@@ -351,7 +351,7 @@ export const dataPresets = {
     'county_nyt.geojson': {
         plainName: 'New York Times County',
         geojson: 'county_nyt.geojson', 
-        csvs: [
+        tables: [
             'covid_confirmed_nyt', 
             'covid_deaths_nyt', 
             'berkeley_predictions', 
@@ -382,7 +382,7 @@ export const dataPresets = {
     'state_1p3a.geojson': {
         plainName: '1Point3Acres State',
         geojson: 'state_1p3a.geojson', 
-        csvs: [
+        tables: [
         	'covid_confirmed_1p3a_state',
 			'covid_deaths_1p3a_state',
 			'chr_health_context_state',
@@ -427,7 +427,7 @@ export const dataPresets = {
     'state_usafacts.geojson': {
         plainName: 'USA Facts State',
         geojson: 'state_usafacts.geojson', 
-        csvs: [
+        tables: [
             'covid_confirmed_usafacts_state',
             'covid_deaths_usafacts_state',
             'chr_health_context_state',
@@ -472,7 +472,7 @@ export const dataPresets = {
     'state_nyt.geojson': {
         plainName: 'New York Times State',
         geojson: 'state_nyt.geojson', 
-        csvs: [
+        tables: [
             'covid_confirmed_nyt_state',
             'covid_deaths_nyt_state',
             'chr_health_context_state',
@@ -517,7 +517,7 @@ export const dataPresets = {
     'global_jhu.geojson': {
         plainName: 'John Hopkins University (Global)',
         geojson: 'global_jhu.geojson', 
-        csvs: [
+        tables: [
             'covid_confirmed_jhu',
             'covid_deaths_jhu'
         ], 
@@ -531,7 +531,7 @@ export const dataPresets = {
     'cdc.geojson': {
         plainName: 'Center for Disease Control County',
         geojson: 'cdc.geojson', 
-        csvs: [
+        tables: [
             'covid_confirmed_usafacts',
             'covid_deaths_usafacts',
             'berkeley_predictions', 
