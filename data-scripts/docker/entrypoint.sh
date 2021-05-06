@@ -31,6 +31,10 @@ case $DATA_SOURCE in
 		export COMMAND="python ./data-scripts/cdc/getCdcCountyData.py && python ./data-scripts/cdc/getCdcVaccinationData.py"
 		;;
 
+	hrsa)
+		export COMMAND="python ./data-scripts/hrsa/getVaccinationClinics.py"
+		;;
+
 	testing)
 		export COMMAND='bash ./data-scripts/testing/run_testing.sh'
 

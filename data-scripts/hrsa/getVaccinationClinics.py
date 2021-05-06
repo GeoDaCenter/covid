@@ -1,7 +1,9 @@
 from bs4 import BeautifulSoup
-import csv, requests
+import csv, requests, os
 import pandas as pd
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+repo_root = os.path.abspath(os.path.join(dir_path, '..', '..'))
 
 # Main function that scrapes the HRSA pages by states and updates the current list
 # Takes a list of US state 2-letter names and returs 3 dataframes: 
@@ -12,7 +14,7 @@ def scrapeHrsa(pageList):
         # request page, find the table element with the clinic status
         page = requests.get(f'https://www.hrsa.gov/coronavirus/health-center-program/participants/{abr}')
         html = page.text
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup(html, features="html.parser")
         table = soup.find('table')
 
         # declare an output array
@@ -35,7 +37,7 @@ def scrapeHrsa(pageList):
             combinedDf = pd.concat([combinedDf, pd.DataFrame(output_rows)])
 
     # load in existing geocoded clinics, and merge    
-    geocodedClinics = pd.read_csv('full_clinics_geocoded.csv')
+    geocodedClinics = pd.read_csv(os.path.join(repo_root,'data-scripts/hrsa/full_clinics_geocoded.csv'))
     merged = combinedDf.merge(geocodedClinics, on=["Health Center Name", 'City', 'State'], how="left")
     
     return {
@@ -47,13 +49,14 @@ def scrapeHrsa(pageList):
 # read in past data for federal sites (doesn't change for now). 
 # the type column defines invited clinics (0), participating clinics (1), and federal sites (3)
 def getFederalSites():
-    pastData = pd.read_csv('../../public/csv/context_vaccination_sites_hrsa_wh.csv')
+    pastData = pd.read_csv(os.path.join(repo_root,'public/csv/context_vaccination_sites_hrsa_wh.csv'))
     return pastData[pastData.type==3]
 
 # Gets data from Google Places API based on a dataframe
 # We use the google places API because we lack info beyond the name, city and state
 def handleMissingData(placeList):
-    API_KEY = # GCP PLACES AND MAPS API KEY HERE but not on github pls
+    return []
+    API_KEY = ''# GCP PLACES AND MAPS API KEY HERE but not on github pls
     
     # Simple lambda function to make a single query for google places / maps api
     def combineKey(row):
@@ -138,7 +141,7 @@ def handleMissingData(placeList):
 # To avoid re-running google queries, this updates the csv with new locations after each run
 def updateGeocodedList(newData):
     # call geocoded csv
-    geocodedClinics = pd.read_csv('full_clinics_geocoded.csv')
+    geocodedClinics = pd.read_csv(os.path.join(repo_root,'data-scripts/hrsa/full_clinics_geocoded.csv'))
     # filter out new entries
     geocodedClinics = geocodedClinics[~geocodedClinics['Health Center Name'].isin(newData['Health Center Name'])]
     # concat with new data and return
@@ -147,7 +150,7 @@ def updateGeocodedList(newData):
 
 # one final clean before export
 def cleanAndExport(clinicData, federalData):
-    geocodedClinics = pd.read_csv('full_clinics_geocoded.csv')
+    geocodedClinics = pd.read_csv(os.path.join(repo_root,'data-scripts/hrsa/full_clinics_geocoded.csv'))
     # merge with geocoded
     merged = clinicData.merge(geocodedClinics, on=["Health Center Name", 'City', 'State'], how="left")
     # drop missing geometry
@@ -190,4 +193,4 @@ if __name__ == "__main__":
         pass
 
     cleanedData = cleanAndExport(currentData['full'], federalSites)
-    cleanedData.to_csv('../../public/csv/context_vaccination_sites_hrsa_wh.csv', index=False)
+    cleanedData.to_csv(os.path.join(repo_root,'public/csv/context_vaccination_sites_hrsa_wh.csv'), index=False)
