@@ -116,7 +116,7 @@ const products = [
         </p>,
         'thumbnail':`${process.env.PUBLIC_URL}/products/500000.png`,
         'alt':'A group of figures stands near the St Louis Gateway arch, a massive 630 foot tall monument. Each one represents a life in the us lost to COVID19.',
-        'link':`${process.env.PUBLIC_URL}/500000`,
+        'link':`${process.env.PUBLIC_URL}/500000/index.html`,
     }
 ]
   
