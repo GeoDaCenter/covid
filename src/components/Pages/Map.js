@@ -59,7 +59,6 @@ const lazyFetchData = async (dataPresets) => {
 
   for (const dataset of toCache){
     let test = await fetch(`${process.env.PUBLIC_URL}/csv/${dataset}.csv`);
-    console.log(test)
   }
 };
 
@@ -282,7 +281,10 @@ export default function Map() {
     if (storedData === {}||(storedData[currentData] === undefined)) {
       loadData(dataPresets[currentData]).then(
         () => {
-          if (!lazyFetched) lazyFetchData(dataPresets)
+          if (!lazyFetched) {
+            lazyFetchData(dataPresets)
+            setLazyFetched(true)
+          }
         })
     } else if (dateIndices[currentData] !== undefined) {      
       let denomIndices = dateIndices[currentData][dataParams.numerator]
