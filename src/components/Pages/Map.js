@@ -16,7 +16,7 @@ import {
 // third row: map and variable parameters
 import { 
   dataLoad, dataLoadExisting, storeLisaValues, storeCartogramData, setDates, setNotification,
-  setMapParams, setUrlParams, setPanelState, lazyFetchData } from '../../actions';
+  setMapParams, setUrlParams, setPanelState } from '../../actions';
 
 import { MapSection, NavBar, VariablePanel, Legend,  TopPanel, Preloader,
   DataPanel, MainLineChart, Scaleable, Draggable, InfoBox,
@@ -53,6 +53,15 @@ const getDefaultDimensions = () => ({
   minHeight: window.innerWidth <= 1024 ? window.innerHeight*.5 : 200,
   minWidth: window.innerWidth <= 1024 ? window.innerWidth*.5 : 200,
 })
+
+const lazyFetchData = async (dataPresets) => {
+  let toCache = [...new Set(Object.values(dataPresets).map(dataset => dataset.csvs).flat())]
+
+  for (const dataset of toCache){
+    let test = await fetch(`${process.env.PUBLIC_URL}/csv/${dataset}.csv`);
+    console.log(test)
+  }
+};
 
 export default function Map() {
 
@@ -273,7 +282,7 @@ export default function Map() {
     if (storedData === {}||(storedData[currentData] === undefined)) {
       loadData(dataPresets[currentData]).then(
         () => {
-          if (!lazyFetched) dispatch(lazyFetchData(dataPresets))
+          if (!lazyFetched) lazyFetchData(dataPresets)
         })
     } else if (dateIndices[currentData] !== undefined) {      
       let denomIndices = dateIndices[currentData][dataParams.numerator]
