@@ -16,17 +16,17 @@ import {
 // third row: map and variable parameters
 import { 
   dataLoad, dataLoadExisting, storeLisaValues, storeCartogramData, setDates, setNotification,
-  setMapParams, setUrlParams, setPanelState } from '../../actions';
+  setMapParams, setUrlParams, setPanelState, lazyFetchData } from '../../actions';
 
 import { MapSection, NavBar, VariablePanel, Legend,  TopPanel, Preloader,
   DataPanel, MainLineChart, Scaleable, Draggable, InfoBox,
   NotificationBox, Popover, MapTooltipContent } from '../../components';  
+  
 import { HoverDiv } from '../../styled_components'; 
 
 import { colorScales, fixedScales, dataPresets, variablePresets, colors } from '../../config';
 
 import JsGeoDaWorker from '../../JsGeoDaWorker';
-
 const gdaProxy = new JsGeoDaWorker();
 
 // Main function, App. This function does 2 things:
@@ -68,6 +68,7 @@ export default function Map() {
   const dateIndices = useSelector(state => state.dateIndices);
   const mapLoaded = useSelector(state => state.mapLoaded);
   const panelState = useSelector(state => state.panelState);
+  const lazyFetched = useSelector(state => state.lazyFetched);
   // const fullState = useSelector(state => state)
   // gdaProxy is the WebGeoda proxy class. Generally, having a non-serializable
   // data in the state is poor for performance, but the App component state only
@@ -330,6 +331,10 @@ export default function Map() {
     setDefaultDimensions({...getDefaultDimensions()})
   }, [window.innerHeight, window.innerWidth])
   // const dragHandlers = {onStart: this.onStart, onStop: this.onStop};
+
+  useEffect(() => {
+    if (mapLoaded && !lazyFetched) dispatch(lazyFetchData(dataPresets))
+  },[mapLoaded])
 
   // const testData = async (url) => {
   //   const jsonData = await gdaProxy.LoadGeojson(`${process.env.PUBLIC_URL}/geojson/county_1p3a.geojson`)

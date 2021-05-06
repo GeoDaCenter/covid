@@ -7,6 +7,9 @@ import flatData_pb2
 
 # %%
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+repo_root = os.path.abspath(os.path.join(dir_path, '..', '..'))
+
 fileList = [
     {
         'fileName':'covid_confirmed_usafacts',
@@ -85,10 +88,8 @@ fileList = [
     },
 ]
 
-
-# %%
-for fileInfo in fileList:
-    csvData = pd.read_csv(f'../../public/csv/{fileInfo["fileName"]}.csv')
+def parseCsv(fileInfo):
+    csvData = pd.read_csv(os.path.join(repo_root, f'public/csv/{fileInfo["fileName"]}.csv'))
     dataOut = flatData_pb2.Rows()
     dataOut.dates.extend(list(csvData.columns[fileInfo['dateIndex']:]))
 
@@ -105,8 +106,10 @@ for fileInfo in fileList:
 
         rowObj[i].vals.extend(cleanVals)
 
-    f = open(f'../../public/pbf/{fileInfo["fileName"]}.pbf', "wb")
+    f = open(os.path.join(repo_root, f'public/pbf/{fileInfo["fileName"]}.pbf'), "wb")
     f.write(dataOut.SerializeToString())
     f.close()
-
 # %%
+if __name__ == '__main__':
+    for fileInfo in fileList:
+        parseCsv(fileInfo)
