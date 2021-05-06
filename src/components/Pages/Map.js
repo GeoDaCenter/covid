@@ -271,7 +271,10 @@ export default function Map() {
   // Each conditions checks to make sure gdaProxy is working.
   useEffect(() => {
     if (storedData === {}||(storedData[currentData] === undefined)) {
-      loadData(dataPresets[currentData])
+      loadData(dataPresets[currentData]).then(
+        () => {
+          if (!lazyFetched) dispatch(lazyFetchData(dataPresets))
+        })
     } else if (dateIndices[currentData] !== undefined) {      
       let denomIndices = dateIndices[currentData][dataParams.numerator]
       let lastIndex = denomIndices !== null ? denomIndices.slice(-1,)[0] : null;
@@ -331,10 +334,6 @@ export default function Map() {
     setDefaultDimensions({...getDefaultDimensions()})
   }, [window.innerHeight, window.innerWidth])
   // const dragHandlers = {onStart: this.onStart, onStop: this.onStop};
-
-  useEffect(() => {
-    if (mapLoaded && !lazyFetched) dispatch(lazyFetchData(dataPresets))
-  },[mapLoaded])
 
   // const testData = async (url) => {
   //   const jsonData = await gdaProxy.LoadGeojson(`${process.env.PUBLIC_URL}/geojson/county_1p3a.geojson`)
