@@ -1,7 +1,7 @@
 export const INITIAL_STATE = {
   geodaProxy: null,
-  storedData: {},
   storedGeojson: {},
+  storedData: {},
   storedLisaData: {},
   storedCartogramData: {},
   storedCSV: {},

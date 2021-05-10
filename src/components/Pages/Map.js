@@ -24,7 +24,7 @@ import { MapSection, NavBar, VariablePanel, Legend,  TopPanel, Preloader,
   
 import { HoverDiv } from '../../styled_components'; 
 
-import { colorScales, fixedScales, dataPresets, variablePresets, colors } from '../../config';
+import { colorScales, fixedScales, dataPresets, defaultTables, dataPresetsRedux, variablePresets, colors } from '../../config';
 
 import JsGeoDaWorker from '../../JsGeoDaWorker';
 import { set } from 'immutable';
@@ -69,7 +69,7 @@ export default function Map() {
   const dateIndices = useSelector(state => state.dateIndices);
   const mapLoaded = useSelector(state => state.mapLoaded);
   const panelState = useSelector(state => state.panelState);
-  // const fullState = useSelector(state => state)
+  const fullState = useSelector(state => state)
   // gdaProxy is the WebGeoda proxy class. Generally, having a non-serializable
   // data in the state is poor for performance, but the App component state only
   // contains gdaProxy.
@@ -87,6 +87,8 @@ export default function Map() {
     setLazyFetched(true)
   };
 
+  const handleLoadData = (fileInfo) => fileInfo.file.slice(-4,) === '.pbf' ? getParsePbf(fileInfo, dateLists[fileInfo.dates]) : getParseCSV(fileInfo, dateLists[fileInfo.dates])
+
   const dispatch = useDispatch();  
   // // Dispatch helper functions for side effects and data handling
   // Get centroid data for cartogram
@@ -95,36 +97,28 @@ export default function Map() {
   // Main data loader
   // This functions asynchronously accesses the Geojson data and CSVs
   //   then performs a join and loads the data into the store
-  const loadData = async (params) => {
+  const loadDataRedux = async (datasetParams, defaultTables, currentDataParams) => {
     setIsLoading(true)
     if (!gdaProxy.ready) await gdaProxy.init()
-    // destructure parameters
-    const { geojson, tables, joinCols, tableNames, accumulate, dateList } = params
-    // promise all data fetching - CSV and Json
-    const tabularDataPromises = tables.map(csv => 
-      csv.slice(-4,) === '.pbf' ? 
-        getParsePbf(csv, accumulate.includes(csv), dateLists[dateList[csv]])
-      :
-        getParseCSV(
-          `${process.env.PUBLIC_URL}/csv/${csv}.csv`, 
-          joinCols[1], 
-          accumulate.includes(csv),
-          dateLists[dateList[csv]]
-        )
-      )
     
-    const values = await Promise.all([
-      gdaProxy.LoadGeojson(`${process.env.PUBLIC_URL}/geojson/${geojson}`),
-      ...tabularDataPromises
-    ])
+    const numeratorParams = datasetParams.tables[currentDataParams.numerator]||defaultTables[datasetParams['geography']][currentDataParams.numerator]
+    const denominatorParams = currentDataParams.denominator != 'properties' ? datasetParams.tables[currentDataParams.denominator]||defaultTables[datasetParams['geography']][currentDataParams.denominator] : null
 
-    let tempData = mergeData(values[0]['data'], joinCols[0], values.slice(1,), tableNames, joinCols[1]);
-    let ColNames = getColumns(values.slice(1,), tableNames);
-    let DateIndices = getDateIndices(values.slice(1,), tableNames);
-    let denomIndices = DateIndices[dataParams.numerator]
-    let lastIndex = denomIndices !== null ? denomIndices.slice(-1,)[0] : null;
-    let chartData = getDataForCharts(tempData, 'cases', DateIndices['cases'], dateLists.isoDateList);
-    let binData = getDataForBins(tempData, {...dataParams, nIndex: lastIndex || dataParams.nIndex, binIndex: lastIndex || dataParams.binIndex});
+    const firstLoadPromises = [
+      gdaProxy.LoadGeojson(`${process.env.PUBLIC_URL}/geojson/${datasetParams.geojson}`),
+      numeratorParams && handleLoadData(numeratorParams),
+      denominatorParams && handleLoadData(denominatorParams)
+    ] 
+
+    let [geojsonData, numeratorData, denominatorData] = await Promise.all(firstLoadPromises)
+
+    let dateIndices = numeratorData[2]
+    let lastIndex = dateIndices !== null ? dateIndices.slice(-1)[0] : null;
+    let binData = getDataForBins(
+      currentDataParams.numerator === 'properties' ? geojsonData.data.features : numeratorData[0], 
+      currentDataParams.denominator === 'properties' ? geojsonData.properties : denominatorData[0], 
+      {...dataParams, nIndex: lastIndex || dataParams.nIndex, binIndex: lastIndex || dataParams.binIndex}
+    );
     let bins;
     if (dataParams.fixedScale === null || dataParams.fixedScale === undefined){
       // calculate breaks
@@ -138,39 +132,56 @@ export default function Map() {
     } else {
       bins = fixedScales[dataParams.fixedScale]
     }
+    // // promise all data fetching - CSV and Json
+    // const tabularDataPromises = tables.map(csv => 
 
-      // store data, data name, and column names
-    dispatch(
-      dataLoad({
-        storeData: {
-          data: tempData, 
-          name: geojson
-        },
-        currentData: geojson,
-        columnNames: {
-          data: ColNames,
-          name: geojson
-        },
-        dateIndices: {
-          data: DateIndices,
-          name: geojson
-        },
-        storeGeojson: {
-          data: values[0].indices,
-          name: geojson
-        },
-        chartData: chartData,
-        mapParams: {
-          bins,
-          colorScale: colorScales[dataParams.colorScale || mapParams.mapType]
-        },
-        variableParams: {
-          nIndex: lastIndex || dataParams.nIndex,
-          binIndex: lastIndex || dataParams.binIndex
-        },
-      })
-    )
-    setIsLoading(false)
+    
+    // const values = await Promise.all([
+    //   gdaProxy.LoadGeojson(`${process.env.PUBLIC_URL}/geojson/${geojson}`),
+    //   ...tabularDataPromises
+    // ])
+    
+
+    // let tempData = mergeData(values[0]['data'], joinCols[0], values.slice(1,), tableNames, joinCols[1]);
+    // let ColNames = getColumns(values.slice(1,), tableNames);
+    // let DateIndices = getDateIndices(values.slice(1,), tableNames);
+
+    // let chartData = getDataForCharts(tempData, 'cases', DateIndices['cases'], dateLists.isoDateList);
+    // 
+
+
+    //   // store data, data name, and column names
+    // dispatch(
+    //   dataLoad({
+    //     storeData: {
+    //       data: tempData, 
+    //       name: geojson
+    //     },
+    //     currentData: geojson,
+    //     columnNames: {
+    //       data: ColNames,
+    //       name: geojson
+    //     },
+    //     dateIndices: {
+    //       data: DateIndices,
+    //       name: geojson
+    //     },
+    //     storeGeojson: {
+    //       data: values[0].indices,
+    //       name: geojson
+    //     },
+    //     chartData: chartData,
+    //     mapParams: {
+    //       bins,
+    //       colorScale: colorScales[dataParams.colorScale || mapParams.mapType]
+    //     },
+    //     variableParams: {
+    //       nIndex: lastIndex || dataParams.nIndex,
+    //       binIndex: lastIndex || dataParams.binIndex
+    //     },
+    //   })
+    // )
+    // setIsLoading(false)
   }
 
   const updateBins = useCallback(
@@ -237,80 +248,83 @@ export default function Map() {
 
   // After runtime is initialized, this loads in gdaProxy to the state
   // TODO: Recompile WebGeoda and load it into a worker
-  useEffect(() => {
-    let paramsDict = {}; 
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    for (const [key, value] of urlParams ) { paramsDict[key] = value; }
+  // useEffect(() => {
+  //   let paramsDict = {}; 
+  //   const queryString = window.location.search;
+  //   const urlParams = new URLSearchParams(queryString);
+  //   for (const [key, value] of urlParams ) { paramsDict[key] = value; }
 
-    if (!paramsDict.hasOwnProperty('v')) {
-      // do nothing, most of the time
-    } else if (paramsDict['v'] === '2') {
-      dispatch(
-        setUrlParams(paramsDict, variablePresets)
-      );
-    } else if (paramsDict['v'] === '1') {
-      dispatch(setNotification(`
-          <h2>Welcome to the Atlas v2!</h2>
-          <p>
-          The share link you have entered is for an earlier release of the US Covid Atlas. 
-          Explore the new version here, or continue using your current share link by click below.
-          <a href="./vintage/map.html${window.location.search}" target="_blank" rel="noopener noreferrer" style="color:${colors.yellow}; text-align:center;">
-            <h3 style="text-align:center">
-              US Covid Atlas v1
-            </h3>  
-          </a>
-          </p>
-        `,
-        'center'))
-    }
+  //   if (!paramsDict.hasOwnProperty('v')) {
+  //     // do nothing, most of the time
+  //   } else if (paramsDict['v'] === '2') {
+  //     dispatch(
+  //       setUrlParams(paramsDict, variablePresets)
+  //     );
+  //   } else if (paramsDict['v'] === '1') {
+  //     dispatch(setNotification(`
+  //         <h2>Welcome to the Atlas v2!</h2>
+  //         <p>
+  //         The share link you have entered is for an earlier release of the US Covid Atlas. 
+  //         Explore the new version here, or continue using your current share link by click below.
+  //         <a href="./vintage/map.html${window.location.search}" target="_blank" rel="noopener noreferrer" style="color:${colors.yellow}; text-align:center;">
+  //           <h3 style="text-align:center">
+  //             US Covid Atlas v1
+  //           </h3>  
+  //         </a>
+  //         </p>
+  //       `,
+  //       'center'))
+  //   }
 
-    if (window.innerWidth <= 1024) {
-      dispatch(setPanelState({
-        variables:false,
-        info:false,
-        tutorial:false,
-        lineChart: false
-      }))
-    }
+  //   if (window.innerWidth <= 1024) {
+  //     dispatch(setPanelState({
+  //       variables:false,
+  //       info:false,
+  //       tutorial:false,
+  //       lineChart: false
+  //     }))
+  //   }
 
-    dispatch(setDates(dateLists.isoDateList))
-  },[])
+  //   dispatch(setDates(dateLists.isoDateList))
+  // },[])
 
 
   // On initial load and after gdaProxy has been initialized, this loads in the default data sets (USA Facts)
   // Otherwise, this side-effect loads the selected data.
   // Each conditions checks to make sure gdaProxy is working.
   useEffect(() => {
-    if (storedData === {}||(storedData[currentData] === undefined)) {
-      loadData(dataPresets[currentData]).then(
-        () => {
-          if (!lazyFetched) {
-            lazyFetchData(dataPresets)
-          }
-        })
-    } else if (dateIndices[currentData] !== undefined) {      
-      let denomIndices = dateIndices[currentData][dataParams.numerator]
-      let lastIndex = denomIndices !== null ? denomIndices.slice(-1,)[0] : null;
-      dispatch(
-        dataLoadExisting({
-          variableParams: {
-            nIndex: lastIndex || dataParams.nIndex,
-            dIndex: dataParams.dType === 'time-series' ? lastIndex : dataParams.dType,
-            dRange: dataParams.dType === 'time-series' ? dataParams.nRange : dataParams.dRange,
-            binIndex: lastIndex || dataParams.nIndex,
-          },
-          chartData: getDataForCharts(storedData[currentData],'cases', dateIndices[currentData]['cases'], dateLists.isoDateList)
-        })
-      )
-      updateBins( { storedData, currentData, mapParams, colorScales,
-        dataParams: { 
-          ...dataParams,  
-          nIndex: lastIndex || dataParams.nIndex,
-          binIndex: lastIndex || dataParams.nIndex,
-        }, 
-      })
+    console.log(currentData)
+    if (!storedGeojson[currentData]) {
+      loadDataRedux(dataPresetsRedux[currentData], defaultTables[dataPresetsRedux[currentData]['geography']], dataParams)
+      // .then(
+      //   () => {
+      //     if (!lazyFetched) {
+      //       lazyFetchData(dataPresets)
+      //     }
+      //   })
     }
+    // } else if (dateIndices[currentData] !== undefined) {      
+    //   let denomIndices = dateIndices[currentData][dataParams.numerator]
+    //   let lastIndex = denomIndices !== null ? denomIndices.slice(-1,)[0] : null;
+    //   dispatch(
+    //     dataLoadExisting({
+    //       variableParams: {
+    //         nIndex: lastIndex || dataParams.nIndex,
+    //         dIndex: dataParams.dType === 'time-series' ? lastIndex : dataParams.dType,
+    //         dRange: dataParams.dType === 'time-series' ? dataParams.nRange : dataParams.dRange,
+    //         binIndex: lastIndex || dataParams.nIndex,
+    //       },
+    //       chartData: getDataForCharts(storedData[currentData],'cases', dateIndices[currentData]['cases'], dateLists.isoDateList)
+    //     })
+    //   )
+    //   updateBins( { storedData, currentData, mapParams, colorScales,
+    //     dataParams: { 
+    //       ...dataParams,  
+    //       nIndex: lastIndex || dataParams.nIndex,
+    //       binIndex: lastIndex || dataParams.nIndex,
+    //     }, 
+    //   })
+    // }
   },[currentData])
 
   
@@ -357,13 +371,13 @@ export default function Map() {
 
   return (
     <div className="Map-App" style={{overflow:'hidden'}}>
-      <Preloader loaded={mapLoaded} />
+      {/* <Preloader loaded={mapLoaded} /> */}
       <NavBar />
-      {isLoading && <div id="loadingIcon" style={{backgroundImage: `url('${process.env.PUBLIC_URL}assets/img/bw_preloader.gif')`}}></div>}
-      {/* <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
+      {/* {isLoading && <div id="loadingIcon" style={{backgroundImage: `url('${process.env.PUBLIC_URL}assets/img/bw_preloader.gif')`}}></div>} */}
+      <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
         <button onClick={() => console.log(fullState)}>Log state</button>
-      </header> */}
-      <div id="mainContainer" className={isLoading ? 'loading' : ''}>
+      </header>
+      {/* <div id="mainContainer" className={isLoading ? 'loading' : ''}>
         <MapSection />
         <TopPanel />
         <Legend 
@@ -412,7 +426,7 @@ export default function Map() {
         }/>}
         <MapTooltipContent />
 
-      </div>
+      </div> */}
     </div>
   );
 }

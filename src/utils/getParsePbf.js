@@ -3,9 +3,9 @@ import * as Pbf from 'pbf';
 // PBF schemas
 import * as Schemas from '../schemas';
 
-export default async function getParsePbf(url, accumulate, dateList){
+export default async function getParsePbf(fileInfo, dateList){
     
-    const pbfData = await fetch(`${process.env.PUBLIC_URL}/pbf/${url}`)
+    const pbfData = await fetch(`${process.env.PUBLIC_URL}/pbf/${fileInfo.file}`)
         .then(r => r.arrayBuffer())
         .then(ab => new Pbf(ab))
         .then(pbf => Schemas.Rows.read(pbf))
@@ -24,7 +24,7 @@ export default async function getParsePbf(url, accumulate, dateList){
         }
     }
 
-    if (accumulate) {
+    if (fileInfo.accumulate) {
         for (let i=0; i<pbfData.row.length; i++){
             returnData[pbfData.row[i].geoid] = [,]
             for (let n=0; n<pbfData.row[i].vals.length; n++) {

@@ -277,6 +277,106 @@ export const colors = {
 }
 
 export const defaultData = 'county_usfacts.geojson';
+export const defaultTables = {
+    'County': {
+        'predictions':{
+            'file':'berkeley_predictions',
+            'type':'characteristic'
+        },
+        'chr_health_context':{
+            'file':'chr_health_context',
+            'type':'characteristic'
+        },
+        'chr_life':{
+            'file':'chr_life',
+            'type':'characteristic'
+        },
+        'chr_health_factors':{
+            'file':'chr_health_factors',
+            'type':'characteristic'
+        },
+        'pct_home':{
+            'file':'mobility_home_workdays_safegraph.pbf',
+            'dates':'isoDateList',
+            'type':'time-series'
+        },
+        'pct_parttime':{
+            'file':'mobility_parttime_workdays_safegraph.pbf',
+            'dates':'isoDateList',
+            'type':'time-series'
+        },
+        'pct_fulltime':{
+            'file':'mobility_fulltime_workdays_safegraph.pbf',
+            'dates':'isoDateList',
+            'type':'time-series'
+        },
+        'essential_workers':{
+            'file':'context_essential_workers_acs',
+            'type':'characteristic'
+        },
+        'vaccines_fully_vaccinated':{
+            'file':'vaccine_fully_vaccinated_cdc',
+            'dates':'isoDateList',
+            'type':'time-series-cumulative'
+        },
+    },
+    'State': {
+
+    },
+}
+
+export const dataPresetsRedux = {
+    'county_usfacts.geojson': {
+        plainName: 'USA Facts County', // Plain english name for dataset
+        geojson: 'county_usfacts.geojson', // geospatial data to join to
+        geography: 'County',
+        tables: {
+            'cases': {
+                'file':'covid_confirmed_usafacts.pbf',
+                'dates':'isoDateList',
+                'type':'time-series-cumulative'
+            },
+            'deaths': {
+                'file':'covid_deaths_usafacts.pbf',
+                'dates':'isoDateList',
+                'type':'time-series-cumulative'
+            }
+        }
+    },
+    'county_1p3a.geojson': {
+        plainName: '1Point3Acres County',
+        geojson: 'county_1p3a.geojson',
+        geography: 'County',
+        tables: {
+            'cases': {
+                'file':'covid_confirmed_1p3a.pbf',
+                'dates':'isoDateList',
+                'type':'time-series-cumulative',
+                'accumulate':true
+            },
+            'deaths': {
+                'file':'covid_deaths_1p3a.pbf',
+                'dates':'isoDateList',
+                'type':'time-series-cumulative',
+                'accumulate':true
+            }
+        }
+    },
+    'county_nyt.geojson': {
+        plainName: 'New York Times County', // Plain english name for dataset
+        geojson: 'county_nyt.geojson', // geospatial data to join to
+        tables: {
+            'cases': {
+                'file':'covid_confirmed_nyt.pbf',
+                'dates':'isoDateList'
+            },
+            'deaths': {
+                'file':'covid_deaths_nyt.pbf',
+                'dates':'isoDateList'
+            }
+        }
+    },
+}
 
 export const dataPresets = {
     'county_usfacts.geojson': {
