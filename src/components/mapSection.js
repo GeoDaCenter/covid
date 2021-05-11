@@ -197,7 +197,8 @@ function MapSection(props){
     const urlParams = useSelector(state => state.urlParams);
     const dotDensityData = useSelector(state => state.dotDensityData);
     const isPlaying = useSelector(state => state.isPlaying);
-    
+    const currentMapData = useSelector(state => state.mapData);
+
     // component state elements
     // hover and highlight geographibes
     const [hoverGeog, setHoverGeog] = useState({x:null, y:null, object:null});
@@ -241,46 +242,7 @@ function MapSection(props){
     // const [resetSelect, setResetSelect] = useState(null);
     // const [mobilityData, setMobilityData] = useState([]);
 
-    // local data store for parsed data
-    const [currentMapData, setCurrentMapData] = useState({
-        data: [],
-        params: {}
-    })
-
     const dispatch = useDispatch();
-    const updateMap = () => {
-        switch(mapParams.vizType) {
-            case 'cartogram':
-                if (storedCartogramData !== undefined) {
-                    let dataResults = cleanData({
-                        data: storedCartogramData,
-                        bins: {bins: mapParams.bins.bins, breaks:mapParams.bins.breaks}, 
-                        mapType: mapParams.mapType, 
-                        vizType: mapParams.vizType
-                    })
-                    setCurrentMapData({
-                        params: getVarId(currentData, dataParams),
-                        data: dataResults.choropleth,
-                        dots: dataResults.dot
-                    })
-                }
-                break;
-            default:
-                if (storedData[currentData] !== undefined) {
-                    let dataResults = cleanData({
-                        data: storedData[currentData],
-                        bins: {bins: mapParams.bins.bins, breaks:mapParams.bins.breaks}, 
-                        mapType: mapParams.mapType, 
-                        vizType: mapParams.vizType
-                    })
-                    setCurrentMapData({
-                        params: getVarId(currentData, dataParams),
-                        data: dataResults.choropleth,
-                        dots: dataResults.dot
-                    })
-                }
-        }
-    }
 
     let hidden = null;
     let visibilityChange = null;
@@ -504,94 +466,9 @@ function MapSection(props){
         }));
     }, [urlParams])
 
-    // clean and set map data after parameter change
-    // TODO: swap
-    useEffect(() => {
-        if (mapParams.binMode !== 'dynamic') updateMap();
-    },[mapParams.mapType, mapParams.vizType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, storedGeojson[currentData], storedCartogramData, mapParams.overlay])
-    
-    useEffect(() => {
-        if (mapParams.binMode === 'dynamic') updateMap();
-    },[mapParams.bins.bins, mapParams.binMode])
-    
     useEffect(() => {
         forceUpdate()
     }, [currentMapData, dataParams.numerator, dataParams.variableName, dataParams.denominator, dataParams.nIndex, mapParams.overlay, storedLisaData])
-
-    const GetFillColor = (f, bins, mapType, varID) => {
-        if (!f[dataParams.numerator] || (!f[dataParams.numerator][dataParams.nIndex] && !f[dataParams.numerator][dataParams.nProperty])) {
-            return null
-        } else if (mapType === 'lisa') {
-            return colorScales.lisa[storedLisaData[storedGeojson[currentData]['geoidOrder'][f.properties.GEOID]]]||[240,240,240]
-        } else {
-            return mapFn(dataFn(f[dataParams.numerator], f[dataParams.denominator], dataParams), bins.breaks, mapParams.colorScale, mapParams.mapType, dataParams.numerator);
-        }
-    }
-
-    const GetSimpleFillColor = (value, geoid, bins, mapType) => {
-        if (value===null) {
-            return [240,240,240,120]
-        } else if (mapType === 'lisa') {
-            return colorScales.lisa[storedLisaData[storedGeojson[currentData]['geoidOrder'][geoid]]]
-        } else {
-            return mapFn(value, bins, mapParams.colorScale, mapParams.mapType, dataParams.numerator);
-        }
-    }
-    
-    const cleanData = ( parameters ) => {
-        const {data, bins, mapType, varID, vizType} = parameters; //dataName, dataType, params, colorScale
-        if (!bins.hasOwnProperty("bins")) {
-            return []
-        };
-
-        if ((data === undefined) || (mapType !== 'lisa' && bins.breaks === undefined)) {
-            return []
-        }
-
-        let returnArray = [];
-        let returnObj = {};
-        let i = 0;
-
-        switch(vizType) {
-            case 'cartogram':
-                if (storedGeojson[currentData] === undefined) break;
-                while (i < data.length) {
-                    const tempGeoid = storedGeojson[currentData]['indexOrder'][data[i].properties?.id]
-                    const tempColor = GetSimpleFillColor(data[i].value, tempGeoid, bins.breaks, mapType);
-                    returnArray.push({
-                        GEOID: tempGeoid,
-                        position: data[i].position,
-                        color: tempColor,
-                        radius: data[i].radius
-                    })
-                    i++;
-                }
-                break
-            default:
-                while (i < data.length) {
-                    let tempColor = GetFillColor(data[i], bins, mapType, varID);
-                    if (tempColor === null) {
-                        i++;
-                        continue;
-                    }
-                    let tempHeight = GetHeight(data[i]);
-                    for (let n=0; n<data[i].geometry.coordinates.length; n++) {
-                        returnArray.push({
-                            GEOID: data[i].properties.GEOID,
-                            geom: data[i].geometry.coordinates[n],
-                            color: tempColor,
-                            height: tempHeight
-                        })
-                        returnObj[data[i].properties.GEOID] = tempColor
-                    }
-                    i++;
-                }
-        }
-
-        return {choropleth: returnArray, dot: returnObj}
-    }
-
-    const GetHeight = (f) => dataFn(f[dataParams.numerator], f[dataParams.denominator], dataParams)*(dataParams.scale3D/((dataParams.nType === "time-series" && dataParams.nRange === null) ? (dataParams.nIndex)/10 : 1))
 
     const GetMapView = () => {
         try {

@@ -1,8 +1,8 @@
-const mapFn = (val, bins, colors, maptype, column) => {
+const mapFn = (val, bins, colors, maptype, table) => {
   if (val === null) {
     return null;
   } else if (maptype === "natural_breaks") {
-    if (val === 0 || (val === -1 && column.includes('testing'))) return colors[0];
+    if (val === 0 || (val === -1 && table.includes('testing'))) return colors[0];
 
     for (let i=1; i<bins.length; i++) {
       if (val < bins[i]) {

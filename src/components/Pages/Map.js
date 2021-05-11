@@ -16,7 +16,7 @@ import {
 // third row: map and variable parameters
 import { 
   initialDataLoad, addTables, dataLoad, dataLoadExisting, storeLisaValues, storeCartogramData, setDates, setNotification,
-  setMapParams, setUrlParams, setPanelState } from '../../actions';
+  setMapParams, setUrlParams, setPanelState, updateMap } from '../../actions';
 
 import { MapSection, NavBar, VariablePanel, Legend,  TopPanel, Preloader,
   DataPanel, MainLineChart, Scaleable, Draggable, InfoBox,
@@ -27,8 +27,11 @@ import { HoverDiv } from '../../styled_components';
 import { colorScales, fixedScales, dataPresets, defaultTables, dataPresetsRedux, variablePresets, colors } from '../../config';
 
 import JsGeoDaWorker from '../../JsGeoDaWorker';
+
 import { set } from 'immutable';
+
 const gdaProxy = new JsGeoDaWorker();
+const mapWorker = new Worker(`${process.env.PUBLIC_URL}/workers/mapWorker.js`);
 
 // Main function, App. This function does 2 things:
 // 1: App manages the majority of the side effects when the state changes.
@@ -290,7 +293,10 @@ export default function Map() {
   useEffect(() => {
     if (!storedGeojson[currentData]) {
       firstLoad(dataPresetsRedux[currentData], defaultTables[dataPresetsRedux[currentData]['geography']], dataParams)
-        .then(primaryTables => 
+        .then(primaryTables => {
+          dispatch(updateMap());
+          return primaryTables
+        }).then(primaryTables => 
           secondLoad(dataPresetsRedux[currentData], defaultTables[dataPresetsRedux[currentData]['geography']], [...Object.keys(storedData), ...primaryTables])
         ).then(allLoadedTables => {
           if (!lazyFetched && allLoadedTables) lazyFetchData(dataPresetsRedux, Object.keys(storedData))
@@ -370,9 +376,9 @@ export default function Map() {
       <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
         <button onClick={() => console.log(fullState)}>Log state</button>
       </header>
-      {/* <div id="mainContainer" className={isLoading ? 'loading' : ''}>
+      <div id="mainContainer" className={isLoading ? 'loading' : ''}>
         <MapSection />
-        <TopPanel />
+        {/* <TopPanel />
         <Legend 
           variableName={dataParams.variableName} 
           colorScale={mapParams.colorScale}
@@ -417,9 +423,9 @@ export default function Map() {
             minHeight={defaultDimensions.minHeight}
             minWidth={defaultDimensions.minWidth} />
         }/>}
-        <MapTooltipContent />
+        <MapTooltipContent /> */}
 
-      </div> */}
+      </div>
     </div>
   );
 }

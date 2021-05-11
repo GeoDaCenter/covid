@@ -24,6 +24,10 @@ export const INITIAL_STATE = {
   currentMethod: 'natural_breaks',
   currentOverlay: '',
   currentResource: '',
+  mapData : {
+    data: [],
+    params: []
+  },
   dataParams: {
     variableName: 'Confirmed Count per 100K Population',
     numerator: 'cases',

@@ -1,4 +1,13 @@
 import { INITIAL_STATE } from '../constants/defaults';
+import { mapFn, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, getURLParams } from '../utils';
+import { colorScales, fixedScales, dataPresets, defaultTables, dataPresetsRedux, variablePresets, colors } from '../config';
+
+
+
+const getSimpleColor = (value, bins, colorScale, mapType, numerator, storedLisaData, storedGeojson, currentData, GEOID) => mapFn(value, bins, colorScale, mapType, numerator);
+const getLisaColor = (value, bins, colorScale, mapType, numerator, storedLisaData, storedGeojson, currentData, GEOID) => colorScale[storedLisaData[storedGeojson[currentData]['geoidOrder'][GEOID]]]||[240,240,240]
+const getColorFunction = (mapType) => mapType === 'lisa' ? getLisaColor : getSimpleColor
+const getHeight = (val, dataParams) => val*(dataParams.scale3D/((dataParams.nType === "time-series" && dataParams.nRange === null) ? (dataParams.nIndex)/10 : 1))
 
 var reducer = (state = INITIAL_STATE, action) => {
     switch(action.type) {
@@ -6,12 +15,11 @@ var reducer = (state = INITIAL_STATE, action) => {
             const dataParams = {
                 ...state.dataParams,
                 ...action.payload.data.variableParams,
-                mapParams: {
-                    ...state.dataParams.mapParams,
-                    ...action.payload.data.mapParams
-                }
             }
-
+            const mapParams = {
+                ...state.mapParams,
+                ...action.payload.data.mapParams
+            }
             const storedData = {
                 ...state.storedData,
                 ...action.payload.data.storedData,
@@ -27,7 +35,8 @@ var reducer = (state = INITIAL_STATE, action) => {
                 currentData: action.payload.data.currentData,
                 storedGeojson,
                 storedData,
-                dataParams
+                dataParams,
+                mapParams
             }
         }
         case 'ADD_TABLES': {
@@ -38,6 +47,90 @@ var reducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 storedData
+            }
+        }
+        case 'UPDATE_MAP': {
+            // const {data, varID} = parameters; //dataName, dataType, params, colorScale
+            if (!state.mapParams.bins.hasOwnProperty("bins") || (state.mapParams.mapType !== 'lisa' && !state.mapParams.bins.breaks)) {
+                return state
+            };
+    
+            let returnArray = [];
+            let returnObj = {};
+            let i = 0;
+
+            const getTable = (i, predicate) => 
+                state.dataParams[predicate] === 'properties' 
+                    ?
+                state.storedGeojson[state.currentData].data.features[i].properties 
+                    : 
+                state.storedData[dataPresetsRedux[state.currentData].tables[state.dataParams[predicate]].file][0][state.storedGeojson[state.currentData].data.features[i].properties.GEOID]
+                    ||
+                state.storedData[defaultTables[dataPresetsRedux[state.currentData].geography][state.dataParams[predicate]].file][0][state.storedGeojson[state.currentData].data.features[i].properties.GEOID];
+
+            const getColor = getColorFunction(state.mapParams.mapType)
+
+            switch(state.mapParams.vizType) {
+                // case 'cartogram':{
+                //     if (storedGeojson[currentData] === undefined) break;
+                //     while (i < data.length) {
+                //         const tempGeoid = storedGeojson[currentData]['indexOrder'][data[i].properties?.id]
+                //         const tempColor = GetSimpleFillColor(data[i].value, tempGeoid, bins.breaks, mapType);
+                //         returnArray.push({
+                //             GEOID: tempGeoid,
+                //             position: data[i].position,
+                //             color: tempColor,
+                //             radius: data[i].radius
+                //         })
+                //         i++;
+                //     }
+                //     break
+                // }
+                default: {
+                    let t0 = performance.now()
+                    for (let i=0; i<state.storedGeojson[state.currentData].data.features.length; i++){
+                        for (let n=0; n<state.storedGeojson[state.currentData].data.features[i].geometry.coordinates.length; n++){
+                            const tempVal = dataFn(getTable(i, 'numerator'), getTable(i, 'denominator'), state.dataParams)
+                            
+                            const tempColor = getColor(
+                                tempVal, 
+                                state.mapParams.bins.breaks, 
+                                state.mapParams.colorScale, 
+                                state.mapParams.mapType, 
+                                state.dataParams.numerator, 
+                                state.storedLisaData, 
+                                state.storedGeojson, 
+                                state.currentData, 
+                                state.storedGeojson[state.currentData].data.features[i].properties.GEOID
+                            );
+
+                            const tempHeight = getHeight(tempVal, state.dataParams);
+
+                            if (tempColor === null) {
+                                continue;
+                            }
+
+                            returnArray.push({
+                                GEOID: state.storedGeojson[state.currentData].data.features[i].properties.GEOID,
+                                geom: state.storedGeojson[state.currentData].data.features[i].geometry.coordinates[n],
+                                color: tempColor,
+                                height: tempHeight
+                            })
+                            returnObj[state.storedGeojson[state.currentData].data.features[i].properties.GEOID] = tempColor
+                        }
+                    }
+
+                    console.log(t0 - performance.now())
+                }
+
+                return {
+                    ...state,
+                    mapData: {
+                        params: getVarId(state.currentData, state.dataParams),
+                        data: returnArray, 
+                        dots: returnObj
+                    }
+                }
             }
         }
         case 'DATA_LOAD':

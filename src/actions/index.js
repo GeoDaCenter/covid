@@ -465,3 +465,9 @@ export const addTables = ( data ) => {
         }
     }
 }
+
+export const updateMap = () => {
+    return {
+        type: 'UPDATE_MAP'
+    }
+}
