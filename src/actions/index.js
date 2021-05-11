@@ -447,3 +447,21 @@ export const lazyFetchData = (dataPresets) => {
         }
     }
 }
+
+export const initialDataLoad = (data) => {
+    return {
+        type: 'INITIAL_LOAD',
+        payload: {
+            data
+        }
+    }
+}
+
+export const addTables = ( data ) => {
+    return {
+        type:'ADD_TABLES',
+        payload: {
+            data
+        }
+    }
+}

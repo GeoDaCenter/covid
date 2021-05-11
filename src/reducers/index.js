@@ -2,6 +2,44 @@ import { INITIAL_STATE } from '../constants/defaults';
 
 var reducer = (state = INITIAL_STATE, action) => {
     switch(action.type) {
+        case 'INITIAL_LOAD': {
+            const dataParams = {
+                ...state.dataParams,
+                ...action.payload.data.variableParams,
+                mapParams: {
+                    ...state.dataParams.mapParams,
+                    ...action.payload.data.mapParams
+                }
+            }
+
+            const storedData = {
+                ...state.storedData,
+                ...action.payload.data.storedData,
+            }
+
+            const storedGeojson = {
+                ...state.storedGeojson,
+                ...action.payload.data.storedGeojson,
+            }
+
+            return {
+                ...state,
+                currentData: action.payload.data.currentData,
+                storedGeojson,
+                storedData,
+                dataParams
+            }
+        }
+        case 'ADD_TABLES': {
+            const storedData = {
+                ...state.storedData,
+                ...action.payload.data
+            }
+            return {
+                ...state,
+                storedData
+            }
+        }
         case 'DATA_LOAD':
             // main new data loading reducer
             // I: Destructure payload (load) object
