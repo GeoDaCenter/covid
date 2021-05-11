@@ -36,7 +36,9 @@ var reducer = (state = INITIAL_STATE, action) => {
                 storedGeojson,
                 storedData,
                 dataParams,
-                mapParams
+                mapParams,
+                currentTable: action.payload.data.currentTable,
+                dates: action.payload.data.dates
             }
         }
         case 'ADD_TABLES': {
@@ -87,7 +89,6 @@ var reducer = (state = INITIAL_STATE, action) => {
                 //     break
                 // }
                 default: {
-                    let t0 = performance.now()
                     for (let i=0; i<state.storedGeojson[state.currentData].data.features.length; i++){
                         for (let n=0; n<state.storedGeojson[state.currentData].data.features[i].geometry.coordinates.length; n++){
                             const tempVal = dataFn(getTable(i, 'numerator'), getTable(i, 'denominator'), state.dataParams)
@@ -119,8 +120,6 @@ var reducer = (state = INITIAL_STATE, action) => {
                             returnObj[state.storedGeojson[state.currentData].data.features[i].properties.GEOID] = tempColor
                         }
                     }
-
-                    console.log(t0 - performance.now())
                 }
 
                 return {

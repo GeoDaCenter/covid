@@ -21,6 +21,7 @@ import Popover from './tooltipPopper';
 import Preloader from './preloader';
 import Scaleable from './scaleable';
 import StaticNavbar from './staticNavbar';
+import Ticks from './ticks';
 import Tooltip from './tooltip';
 import TopPanel from './topPanel';
 import Geocoder from './geocoder';
@@ -68,6 +69,7 @@ export {
     Preloader,
     Scaleable,
     StaticNavbar,
+    Ticks,
     Tooltip, 
     TopPanel,
 

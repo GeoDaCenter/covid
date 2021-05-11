@@ -132,7 +132,7 @@ const RangeSlider = styled(Slider)`
     }
 `
 
-const DateTitle = styled.h3`
+const DateH3 = styled.h3`
     width:100%;
     font-size:1.05rem;
     padding:10px 0 5px 0;
@@ -185,46 +185,74 @@ const DateSelectorContainer = styled(Grid)`
     }
 `
 
+const TickMarks = styled.div`
+    width:100%;
+    height:10px;
+    display:flex;
+    div {
+        width:1px;
+        height:10px;
+        display:inline-block;
+    }
+`
 
-const DateSlider = () => {
+const valuetext = (dates, value) => `${dates[value].slice(-5,-3)}-${dates[value].slice(2,4)}`;
+    
+const formatDate = (date) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    let rawDate = new Date(date);
+    rawDate.setDate(rawDate.getDate() + 1);
+    return rawDate.toLocaleDateString('en-US', options);
+}
+
+function DateTitle(){
+    const nType = useSelector(state => state.dataParams.nType);
+    const nIndex = useSelector(state => state.dataParams.nIndex);
+    const dates = useSelector(state => state.dates);
+
+    return <>
+        <DateSelectorContainer item xs={12}>
+            <DateH3>{nType !== 'characteristic' ? formatDate(`${dates[nIndex]}`) : 'Characteristic Data'}</DateH3>
+        </DateSelectorContainer>
+    </>
+}
+
+function DateSlider(){
     const dispatch = useDispatch();  
 
     const currentData = useSelector(state => state.currentData);
-    const dataParams = useSelector(state => state.dataParams);
-    const dateIndices = useSelector(state => state.dateIndices);
+    const nType = useSelector(state => state.dataParams.nType);
+    const nIndex = useSelector(state => state.dataParams.nIndex);
+    const dType = useSelector(state => state.dataParams.dType);
+    const rangeType = useSelector(state => state.dataParams.rangeType);
+    const variableName = useSelector(state => state.dataParams.variableName);
+    const currTable = useSelector(state => state.storedData[state.currentTable.numerator]);
+    const dateIndices = currTable !== undefined && currTable[2];
     const dates = useSelector(state => state.dates);
-    
     const [timerId, setTimerId] = useState(null);
-    const [currentMarks, setCurrentMarks] = useState([]);
     const [timeCase, setTimeCase] = useState(0);
     const [dRange, setDRange] = useState(false);
 
-    useEffect(() => {
-        if (dateIndices.hasOwnProperty(currentData) && dateIndices[currentData][dataParams.numerator] !== null){
-            const tempMarks = dateIndices[currentData][dataParams.numerator].map(date => { return { value: date }})
-            setCurrentMarks(tempMarks)
-        }
-    },[dateIndices, currentData, dataParams.numerator])
 
     useEffect(() => {
-        if (dataParams.nType === "time-series" && dataParams.dType === "time-series") {
+        if (nType === "time-series" && dType === "time-series") {
             setTimeCase(1)
-        } else if (dataParams.nType === "time-series") {
+        } else if (nType === "time-series") {
             setTimeCase(2)
-        } else if (dataParams.dType === "time-series") {
+        } else if (dType === "time-series") {
             setTimeCase(3)
-        } else if (dataParams.variableName.includes('Testing')||dataParams.variableName.includes('Workdays')){
+        } else if (variableName.includes('Testing')||variableName.includes('Workdays')){
             setTimeCase(4)
         }
-    },[dataParams.dType, dataParams.nType,dataParams.variableName.includes ])
+    },[dType, nType, variableName ])
     
     useEffect(() => {
-        if (dataParams.dRange) {
+        if (dRange) {
             setDRange(true)
         } else {
             setDRange(false)
         }
-    },[dataParams.dRange])
+    },[dRange])
     
     function debounce(func, wait, immediate) {
         var timeout;
@@ -242,21 +270,27 @@ const DateSlider = () => {
     };
 
     const handleChange = debounce((event, newValue) => {
+        const val = dateIndices.includes(newValue) 
+                ? 
+            newValue 
+                :
+            dateIndices.reduce((a, b) => {return Math.abs(b - newValue) < Math.abs(a - newValue) ? b : a});
+
         switch(timeCase){
             case 1:
-                dispatch(setVariableParams({nIndex: newValue, dIndex: newValue}))
+                dispatch(setVariableParams({nIndex: val, dIndex: val}))
                 break
             case 2:
-                dispatch(setVariableParams({nIndex: newValue}))
+                dispatch(setVariableParams({nIndex: val}))
                 break
             case 3:
-                dispatch(setVariableParams({dIndex: newValue}))
+                dispatch(setVariableParams({dIndex: val}))
                 break
             case 4:
-                dispatch(setVariableParams({nIndex: newValue}))
+                dispatch(setVariableParams({nIndex: val}))
                 break
         }
-    }, 10);
+    }, 5);
         
     const handleRangeChange = (event, newValue) => { 
         if (dRange) {
@@ -287,26 +321,15 @@ const DateSlider = () => {
         }
     }
 
-    const valuetext = (value) => `${dates[value].slice(-5,-3)}-${dates[value].slice(2,4)}`;
     
-    const formatDate = (date) => {
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        let rawDate = new Date(date);
-        rawDate.setDate(rawDate.getDate() + 1);
-        return rawDate.toLocaleDateString('en-US', options);
-    }
-    
-    if (dateIndices[currentData] !== undefined) {
+    if (dateIndices) {
         return (
             <SliderContainer>
                 <Grid container spacing={2} style={{display:'flex', padding: '0 0 10px 0'}}>
-                        {dataParams.rangeType !== 'custom' && 
-                            <DateSelectorContainer item xs={12}>
-                                <DateTitle>{dataParams.nType !== 'characteristic' ? formatDate(`${dates[dataParams.nIndex]}`) : 'Characteristic Data'}</DateTitle>
-                            </DateSelectorContainer>
+                        {rangeType !== 'custom' && <DateTitle/>
                         } 
                     
-                    {dataParams.nType !== 'characteristic' && <PlayPauseContainer item xs={1}>
+                    {nType !== 'characteristic' && <PlayPauseContainer item xs={1}>
                         <PlayPauseButton id="playPause" onClick={() => handlePlayPause(timerId, 1, 100)}>
                             {timerId === null ? 
                                 <svg x="0px" y="0px" viewBox="0 0 100 100" ><path d="M78.627,47.203L24.873,16.167c-1.082-0.625-2.227-0.625-3.311,0C20.478,16.793,20,17.948,20,19.199V81.27  c0,1.25,0.478,2.406,1.561,3.031c0.542,0.313,1.051,0.469,1.656,0.469c0.604,0,1.161-0.156,1.703-0.469l53.731-31.035  c1.083-0.625,1.738-1.781,1.738-3.031C80.389,48.984,79.71,47.829,78.627,47.203z"></path></svg>
@@ -330,10 +353,10 @@ const DateSlider = () => {
                     </PlayPauseContainer>}
                     <Grid item xs={11}> {/* Sliders Grid Item */}
                         {/* Main Slider for changing date */}
-                        { (dataParams.rangeType !== 'custom' && dataParams.nType !== "characteristic") && 
+                        { (rangeType !== 'custom' && nType !== "characteristic") && 
                             <LineSlider 
                                 id="timeSlider"
-                                value={dataParams.nIndex} 
+                                value={nIndex} 
                                 // valueLabelDisplay="on"
                                 onChange={handleChange} 
                                 // getAriaValueText={valuetext}
@@ -341,9 +364,8 @@ const DateSlider = () => {
                                 // aria-labelledby="aria-valuetext"
                                 min={1}
                                 max={dates.length}
-                                marks={currentMarks}
-                                step={null}
-                                characteristic={dataParams.nType==="characteristic"}
+                                step={1}
+                                characteristic={nType==="characteristic"}
                         />}
                         {/* Slider for bin date */}
                         {/* {!customRange && 
@@ -359,9 +381,9 @@ const DateSlider = () => {
                                 max={startDateIndex+dates[currentData].length-1}
                         />} */}
                         {/* Slider for changing date range */}
-                        {dataParams.rangeType === 'custom' && <RangeSlider 
+                        {rangeType === 'custom' && <RangeSlider 
                             id="timeSlider"
-                            value={[dataParams.nIndex-dataParams.nRange, dataParams.nIndex]} 
+                            // value={[dataParams.nIndex-.nRange, dataParams.nIndex]} 
                             valueLabelDisplay="on"
                             onChange={handleRangeChange} 
                             getAriaValueText={valuetext}
@@ -369,12 +391,11 @@ const DateSlider = () => {
                             aria-labelledby="aria-valuetext"
                             min={1}
                             max={dates.length}
-                            marks={currentMarks}
                             step={null}
                         />}
                     </Grid>
-                    {(dataParams.rangeType !== 'custom' && dataParams.nType !== 'characteristic') && <InitialDate>{dates[0]}</InitialDate>}
-                    {(dataParams.rangeType !== 'custom' && dataParams.nType !== 'characteristic') && <EndDate>{dateIndices[currentData] !== undefined && dates[dateIndices[currentData][dataParams.numerator].slice(-1,)[0]]}</EndDate>}
+                    {(rangeType !== 'custom' && nType !== 'characteristic') && <InitialDate>{dates[0]}</InitialDate>}
+                    {(rangeType !== 'custom' && nType !== 'characteristic') && <EndDate>{dateIndices !== undefined && dates[dateIndices.slice(-1,)[0]]}</EndDate>}
                 </Grid>
             </SliderContainer>
         );
