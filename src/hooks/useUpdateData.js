@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
-import {useEffect} from 'react';
+import {useState, useEffect} from 'react';
 import { 
   getParseCSV, getParsePbf, mergeData, getColumns, loadJson,
   getDataForBins, getDataForCharts, getDataForLisa, getDateLists,
@@ -13,6 +13,22 @@ import {
   setMapParams, setUrlParams, setPanelState, updateMap } from '../actions';
 
 import { colorScales, fixedScales, dataPresets, defaultTables, dataPresetsRedux, variablePresets, colors } from '../config';
+import { set } from 'immutable';
+
+function debounce(func, wait, immediate) {
+  var timeout;
+  return function() {
+      var context = this, args = arguments;
+      var later = function() {
+          timeout = null;
+          if (!immediate) func.apply(context, args);
+      };
+      var callNow = immediate && !timeout;
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+      if (callNow) func.apply(context, args);
+  };
+};
 
 export default function useUpdateData(gdaProxy){
 
@@ -20,19 +36,20 @@ export default function useUpdateData(gdaProxy){
     const dataParams = useSelector(state => state.dataParams);
     const mapParams = useSelector(state => state.mapParams);
     const currentData = useSelector(state => state.currentData);
+    const currentTable = useSelector(state => state.currentTable);
     const storedData = useSelector(state => state.storedData);
     const storedGeojson = useSelector(state => state.storedGeojson);
+    const [isCalculating, setIsCalculating] = useState(false)
 
-    const updateBins =  async (params) => { 
-      const { storedData, currentData, dataParams, mapParams, colorScales } = params;
-      if (
-        !storedData.hasOwnProperty(currentData) || 
-        !storedData[currentData][0].hasOwnProperty(dataParams.numerator)
-      ) { return };
-
-      if (gdaProxy.ready && storedData.hasOwnProperty(currentData) && mapParams.mapType !== "lisa"){
+    const updateBins =  async () => { 
+      setIsCalculating(true)
+      if (gdaProxy.ready && (storedData[currentTable.numerator]||dataParams.numerator==='properties') && mapParams.mapType !== "lisa"){
         if (dataParams.fixedScale === null || mapParams.mapType !== 'natural_breaks') {
-          let binData = getDataForBins( storedData[currentData], dataParams);
+          let binData = getDataForBins(
+            dataParams.numerator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.numerator][0], 
+            dataParams.denominator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.denominator][0], 
+            dataParams
+          );
           let nb = mapParams.mapType === "natural_breaks" ? 
             await gdaProxy.Bins.NaturalBreaks(mapParams.nBins, binData) :
             await gdaProxy.Bins.Hinge15(mapParams.nBins, binData)  
@@ -53,64 +70,70 @@ export default function useUpdateData(gdaProxy){
             })
           )
         }
+        setIsCalculating(false)
       }
     }
 
-  const updateLisa = async (currentData, storedData, storedGeojson, dataParams) => {
-    const dataForLisa = getDataForLisa(
-      storedData, 
+  const updateLisa = async () => {
+    setIsCalculating(true)
+    const dataForLisa = getDataForBins(
+      dataParams.numerator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.numerator][0], 
+      dataParams.denominator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.denominator][0], 
       dataParams,
-      storedGeojson.indexOrder
+      Object.values(storedGeojson[currentData].indices.indexOrder)
     );
     const weight_uid = 'Queen' in gdaProxy.geojsonMaps[currentData] ? gdaProxy.geojsonMaps[currentData].Queen : await gdaProxy.CreateWeights.Queen(currentData);
     const lisaValues = await gdaProxy.Cluster.LocalMoran(currentData, weight_uid, dataForLisa);
-    dispatch(storeLisaValues(lisaValues.clusters))
+    dispatch(storeLisaValues(lisaValues.clusters));
+    setIsCalculating(false)
   }
 
-  const updateCartogram = async (currentData, storedData, dataParams, storedGeojson) => {
-    const data = await getDataForLisa(
-      storedData[currentData], 
-      dataParams, 
-      storedGeojson[currentData].indexOrder
+  const updateCartogram = async () => {
+    setIsCalculating(true)
+    const dataForCartogram = getDataForBins(
+      dataParams.numerator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.numerator][0], 
+      dataParams.denominator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.denominator][0], 
+      dataParams,
+      Object.values(storedGeojson[currentData].indices.indexOrder)
     );
-    const cartogramData = await gdaProxy.cartogram(currentData, data);
+    const cartogramData = await gdaProxy.cartogram(currentData, dataForCartogram);
     let tempArray = new Array(cartogramData.length)
     for (let i=0; i<cartogramData.length; i++){
-        cartogramData[i].value = data[i]
+        cartogramData[i].value = dataForCartogram[i]
         tempArray[i] = cartogramData[i]
     };
     dispatch(storeCartogramData(tempArray));
+    setIsCalculating(false)
   }
 
-  // Trigger on parameter change for metric values
-  // Gets bins and sets map parameters
-  useEffect(() => {
-    if (storedData.hasOwnProperty(currentData) && gdaProxy.ready && mapParams.binMode !== 'dynamic' && mapParams.mapType !== 'lisa') {
-      updateBins( { storedData, currentData, dataParams, mapParams, colorScales } );
-    }
-  }, [dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.dRange, mapParams.mapType, mapParams.vizType] );
-  
   // This listens for gdaProxy events for LISA and Cartogram calculations
   // Both of these are computationally heavy.
   useEffect(() => {
-    if (gdaProxy.ready && mapParams.mapType === "lisa" && storedGeojson[currentData] !== undefined){
-      updateLisa(currentData, storedData[currentData], storedGeojson[currentData], dataParams)
-    }
-    if (gdaProxy.ready && mapParams.vizType === 'cartogram' && storedGeojson[currentData] !== undefined){
-      // let tempId = getVarId(currentData, dataParams)
-      if (storedGeojson[currentData] !== undefined) {
-        updateCartogram(currentData, storedData, dataParams, storedGeojson)
+    if (!isCalculating && gdaProxy.ready) {
+      if (mapParams.mapType === "lisa" ){
+        updateLisa()
+      }
+      if (mapParams.vizType === 'cartogram'){
+        updateCartogram()
       }
     }
   }, [currentData, storedGeojson[currentData], dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.nIndex, dataParams.dIndex, mapParams.binMode, dataParams.variableName, mapParams.mapType, mapParams.vizType])
 
   // Trigger on index change while dynamic bin mode
   useEffect(() => {
-    if (storedData.hasOwnProperty(currentData) && gdaProxy.ready && mapParams.binMode === 'dynamic' && mapParams.mapType !== 'lisa') {
-      updateBins( { storedData, currentData, dataParams: { ...dataParams, binIndex: dataParams.nIndex }, mapParams, colorScales } );
+    if (!isCalculating &&  storedData[currentTable.numerator] && gdaProxy.ready && mapParams.binMode === 'dynamic' && mapParams.mapType !== 'lisa') {
+      updateBins()
     }
   }, [dataParams.nIndex, dataParams.dIndex, mapParams.binMode, dataParams.variableName, dataParams.nRange, mapParams.mapType, mapParams.vizType] ); 
 
+  // Trigger on parameter change for metric values
+  // Gets bins and sets map parameters
+  useEffect(() => {
+    if (!isCalculating && storedData[currentTable.numerator] && gdaProxy.ready && mapParams.binMode !== 'dynamic' && mapParams.mapType !== 'lisa') {
+      updateBins();
+    }
+  }, [dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.dRange, mapParams.mapType, mapParams.vizType] );
+  
 
   return [
       updateBins,

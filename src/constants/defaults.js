@@ -92,6 +92,10 @@ export const INITIAL_STATE = {
       backgroundTransparency: 0.01      
     }
   },
+  chartParams: {
+    table: 'cases',
+    populationNormalized: false
+  },
   panelState: {
     variables:true,
     info:false,

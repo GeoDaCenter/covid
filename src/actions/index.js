@@ -471,3 +471,18 @@ export const updateMap = () => {
         type: 'UPDATE_MAP'
     }
 }
+
+export const setChartParams = ( params ) => {
+    return {
+        type: 'SET_CHART_PARAMS',
+        payload: {
+            params
+        }
+    }
+}
+
+export const updateChart = () => {
+    return {
+        type: 'UPDATE_CHART'
+    }
+}

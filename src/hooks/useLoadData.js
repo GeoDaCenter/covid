@@ -11,7 +11,7 @@ import {
 
 import { 
   initialDataLoad, addTables, dataLoad, dataLoadExisting, storeLisaValues, storeCartogramData, setDates, setNotification,
-  setMapParams, setUrlParams, setPanelState, updateMap } from '../actions';
+  setMapParams, setUrlParams, setPanelState, updateMap, updateChart } from '../actions';
 
 import { colorScales, fixedScales, dataPresets, defaultTables, dataPresetsRedux, variablePresets, colors } from '../config';
 
@@ -24,11 +24,20 @@ export default function useLoadData(gdaProxy){
   const mapParams = useSelector(state => state.mapParams);
   const currentData = useSelector(state => state.currentData);
   const storedGeojson = useSelector(state => state.storedGeojson);
+  const storedLisaData = useSelector(state => state.storedLisaData);
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (storedGeojson[currentData]) dispatch(updateMap());
-  }, [mapParams.bins.breaks, mapParams.colorScale, dataParams.nIndex, storedGeojson])
+  }, [dataParams.nIndex, storedGeojson])
+
+  useEffect(() => {
+    if (storedGeojson[currentData] && mapParams.mapType !== 'lisa' ) dispatch(updateMap());
+  }, [mapParams.bins.breaks])
+
+  useEffect(() => {
+    if (storedGeojson[currentData] && mapParams.mapType === 'lisa' ) dispatch(updateMap());
+  }, [storedLisaData])
 
   const firstLoad = useMemo(() => async (datasetParams, defaultTables) => {
 
@@ -94,6 +103,7 @@ export default function useLoadData(gdaProxy){
 
 
   const secondLoad = useMemo(() => async (datasetParams, defaultTables, loadedTables) => {
+    dispatch(updateChart());
     const filesToLoad = [
       ...Object.values(datasetParams.tables),
       ...Object.values(defaultTables)

@@ -374,13 +374,11 @@ function MapSection(props){
 
     // change mapbox layer on viztype change or overlay/resource change
     useEffect(() => {
-
         if (mapParams.vizType === 'dotDensity') {
             if (!dotDensityData.length) {
                 getDotDensityData();
             }
         }
-        
         const defaultLayers = defaultMapStyle.get('layers');
         let tempLayers;
         if (mapParams.vizType === 'cartogram' || globalMap) {

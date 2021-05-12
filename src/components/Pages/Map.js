@@ -75,7 +75,9 @@ export default function Map() {
   const dataNote = useSelector(state => state.dataParams.dataNote);
   const fixedScale = useSelector(state => state.dataParams.fixedScale);
   const variableName = useSelector(state => state.dataParams.variableName);
-  // const fullState = useSelector(state => state);
+  const panelState = useSelector(state => state.panelState);
+  const mapLoaded = useSelector(state => state.mapLoaded);
+  const fullState = useSelector(state => state);
 
   const dispatch = useDispatch(); 
   // gdaProxy is the WebGeoda proxy class. Generally, having a non-serializable
@@ -138,13 +140,15 @@ export default function Map() {
   // Each conditions checks to make sure gdaProxy is working.
   useEffect(() => {
     if (!storedGeojson[currentData]) {
+      setIsLoading(true)
       firstLoad(dataPresetsRedux[currentData], defaultTables[dataPresetsRedux[currentData]['geography']])
         .then(primaryTables => {
           dispatch(updateMap());
+          setIsLoading(false);
           return primaryTables
-        }).then(primaryTables => 
-          secondLoad(dataPresetsRedux[currentData], defaultTables[dataPresetsRedux[currentData]['geography']], [...Object.keys(storedData), ...primaryTables])
-        ).then(allLoadedTables => {
+        }).then(primaryTables => {
+          return secondLoad(dataPresetsRedux[currentData], defaultTables[dataPresetsRedux[currentData]['geography']], [...Object.keys(storedData), ...primaryTables])
+        }).then(allLoadedTables => {
           if (!lazyFetched && allLoadedTables) lazyFetchData(dataPresetsRedux, Object.keys(storedData))
         })
     }
@@ -177,21 +181,14 @@ export default function Map() {
   useEffect(() => {
     setDefaultDimensions({...getDefaultDimensions()})
   }, [window.innerHeight, window.innerWidth])
-  // const dragHandlers = {onStart: this.onStart, onStop: this.onStop};
-
-  // const testData = async (url) => {
-  //   const jsonData = await gdaProxy.LoadGeojson(`${process.env.PUBLIC_URL}/geojson/county_1p3a.geojson`)
-  //   console.log(jsonData)
-  // }
-  // testData(`${process.env.PUBLIC_URL}/geojson/county_1p3a.geojson`)
 
   return (
     <div className="Map-App" style={{overflow:'hidden'}}>
-      {/* <Preloader loaded={mapLoaded} /> */}
+      <Preloader loaded={mapLoaded} />
       <NavBar />
-      {/* {isLoading && <div id="loadingIcon" style={{backgroundImage: `url('${process.env.PUBLIC_URL}assets/img/bw_preloader.gif')`}}></div>} */}
+      {isLoading && <div id="loadingIcon" style={{backgroundImage: `url('${process.env.PUBLIC_URL}assets/img/bw_preloader.gif')`}}></div>}
       <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
-        {/* <button onClick={() => console.log(fullState)}>Log state</button> */}
+        <button onClick={() => console.log(fullState)}>Log state</button>
       </header>
       <div id="mainContainer" className={isLoading ? 'loading' : ''}>
         <MapSection />
@@ -205,7 +202,7 @@ export default function Map() {
           note={dataNote}
           />
         <VariablePanel />
-        {/* <DataPanel />
+        <DataPanel />
         <Popover /> 
         <NotificationBox />  
         {panelState.lineChart && <Draggable 
@@ -240,7 +237,7 @@ export default function Map() {
             minHeight={defaultDimensions.minHeight}
             minWidth={defaultDimensions.minWidth} />
         }/>}
-        <MapTooltipContent /> */}
+        <MapTooltipContent />
 
       </div>
     </div>

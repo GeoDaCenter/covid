@@ -1,13 +1,13 @@
 import dataFn from './dataFunction';
 // this function loops through the current data set and provides data for GeodaJS to create custom breaks 
-const getDataForBins = (numeratorData, denominatorData, dataParams) => {
+const getDataForBins = (numeratorData, denominatorData, dataParams, fixedOrder=false) => {
     const { nProperty, nIndex, dType, dIndex} = dataParams;
 
     // declare empty array for return variables
-    let rtn = new Array(numeratorData.length);
+    let rtn = new Array(fixedOrder ? fixedOrder.length : numeratorData.length);
 
     // length of data table to loop through
-    const keys = Object.keys(numeratorData);
+    const keys = fixedOrder || Object.keys(numeratorData);
     const n = keys.length;
 
     // this checks if the bins generated should be dynamic (generating for each date) or fixed (to the most recent date)

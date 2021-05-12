@@ -5,7 +5,7 @@ import { colorScales, fixedScales, dataPresets, defaultTables, dataPresetsRedux,
 
 
 const getSimpleColor = (value, bins, colorScale, mapType, numerator, storedLisaData, storedGeojson, currentData, GEOID) => mapFn(value, bins, colorScale, mapType, numerator);
-const getLisaColor = (value, bins, colorScale, mapType, numerator, storedLisaData, storedGeojson, currentData, GEOID) => colorScale[storedLisaData[storedGeojson[currentData]['geoidOrder'][GEOID]]]||[240,240,240]
+const getLisaColor = (value, bins, colorScale, mapType, numerator, storedLisaData, storedGeojson, currentData, GEOID) => colorScale[storedLisaData[storedGeojson[currentData].indices['geoidOrder'][GEOID]]]||[240,240,240]
 const getColorFunction = (mapType) => mapType === 'lisa' ? getLisaColor : getSimpleColor
 const getHeight = (val, dataParams) => val*(dataParams.scale3D/((dataParams.nType === "time-series" && dataParams.nRange === null) ? (dataParams.nIndex)/10 : 1))
 
@@ -46,6 +46,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                 ...state.storedData,
                 ...action.payload.data
             }
+
             return {
                 ...state,
                 storedData
@@ -132,7 +133,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                 }
             }
         }
-        case 'DATA_LOAD':
+        case 'DATA_LOAD':{
             // main new data loading reducer
             // I: Destructure payload (load) object
             let { storeData, currentData, columnNames, dateIndices,
@@ -183,7 +184,37 @@ var reducer = (state = INITIAL_STATE, action) => {
                 sidebarData: {},
                 panelState: panelsDataObj
 
-            };
+            }
+        }
+        case 'UPDATE_CHART': {
+            const currCaseData = dataPresetsRedux[state.currentData].tables[state.chartParams.table]?.file||defaultTables[dataPresetsRedux[state.currentData].geography][state.chartParams.table].file
+            const additionalParams = {
+                populationData: state.chartParams.populationNormalized ? state.storedGeojson[state.currentData].data.features : null
+            }
+            const chartData = getDataForCharts(state.storedData[currCaseData], state.dates, additionalParams);
+
+            return {
+                ...state,
+                chartData
+            }
+        }
+        case 'SET_CHART_PARAMS':{
+            const chartParams = {
+                ...state.chartParams,
+                ...action.payload.params
+            }
+            const currCaseData = dataPresetsRedux[state.currentData].tables[state.chartParams.table]?.file||defaultTables[dataPresetsRedux[state.currentData].geography][state.chartParams.table].file
+            const additionalParams = {
+                populationData: chartParams.populationNormalized ? state.storedGeojson[state.currentData].data.features : null
+            }
+            const chartData = getDataForCharts(state.storedData[currCaseData], state.dates, additionalParams);
+
+            return {
+                ...state,
+                chartParams,
+                chartData
+            }
+        }
         case 'DATA_LOAD_EXISTING':
             
             let [ variableParamsExDataObj, panelsExDataObj ] 
