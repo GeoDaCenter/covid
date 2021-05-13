@@ -28,7 +28,7 @@ import getURLParams from './getURLParams';
 import getVarId from './getVarId';
 import loadGeojsonToGeoda from './loadGeojsonToGeoda';
 import loadJson from './loadJson';
-import mapFn from './mapFunction.js';
+import { mapFn, mapFnNb, mapFnTesting, mapFnHinge} from './mapFunction.js';
 import mergeData from './mergeData.js';
 import parseBinPairs from './parseBinPairs';
 import parseMobilityData from './parseMobilityData';
@@ -65,6 +65,9 @@ export {
     loadGeojsonToGeoda,
     loadJson,
     mapFn,
+    mapFnNb, 
+    mapFnTesting, 
+    mapFnHinge,
     mergeData,
     parseBinPairs,
     parseMobilityData

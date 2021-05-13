@@ -28,13 +28,10 @@ import { colorScales, fixedScales, dataPresets, defaultTables, dataPresetsRedux,
 
 import JsGeoDaWorker from '../../JsGeoDaWorker';
 
-import { set } from 'immutable';
-
 import useLoadData from '../../hooks/useLoadData';
 import useUpdateData from '../../hooks/useUpdateData';
 
 const gdaProxy = new JsGeoDaWorker();
-const mapWorker = new Worker(`${process.env.PUBLIC_URL}/workers/mapWorker.js`);
 
 // Main function, App. This function does 2 things:
 // 1: App manages the majority of the side effects when the state changes.
@@ -68,9 +65,6 @@ export default function Map() {
   // These selectors access different pieces of the store. While App mainly
   // dispatches to the store, we need checks to make sure side effects
   // are OK to trigger. Issues arise with missing data, columns, etc.
-  const storedData = useSelector(state => state.storedData);
-  const storedGeojson = useSelector(state => state.storedGeojson);
-  const currentData = useSelector(state => state.currentData);
   const mapParams = useSelector(state => state.mapParams);
   const dataNote = useSelector(state => state.dataParams.dataNote);
   const fixedScale = useSelector(state => state.dataParams.fixedScale);
@@ -80,13 +74,12 @@ export default function Map() {
   const fullState = useSelector(state => state);
 
   const dispatch = useDispatch(); 
+
   // gdaProxy is the WebGeoda proxy class. Generally, having a non-serializable
   // data in the state is poor for performance, but the App component state only
   // contains gdaProxy.
   const [defaultDimensions, setDefaultDimensions] = useState({...getDefaultDimensions()})
-  const [isLoading, setIsLoading] = useState(false);
-  const [lazyFetched, setLazyFetched] = useState(false)
-  const [firstLoad, secondLoad, lazyFetchData] = useLoadData(gdaProxy)
+  const [firstLoad, secondLoad, lazyFetchData, isLoading] = useLoadData(gdaProxy)
   const [] = useUpdateData(gdaProxy)
 
   // // Dispatch helper functions for side effects and data handling
@@ -132,50 +125,7 @@ export default function Map() {
     }
 
     dispatch(setDates(dateLists.isoDateList))
-  },[])
-
-
-  // On initial load and after gdaProxy has been initialized, this loads in the default data sets (USA Facts)
-  // Otherwise, this side-effect loads the selected data.
-  // Each conditions checks to make sure gdaProxy is working.
-  useEffect(() => {
-    if (!storedGeojson[currentData]) {
-      setIsLoading(true)
-      firstLoad(dataPresetsRedux[currentData], defaultTables[dataPresetsRedux[currentData]['geography']])
-        .then(primaryTables => {
-          dispatch(updateMap());
-          setIsLoading(false);
-          return primaryTables
-        }).then(primaryTables => {
-          return secondLoad(dataPresetsRedux[currentData], defaultTables[dataPresetsRedux[currentData]['geography']], [...Object.keys(storedData), ...primaryTables])
-        }).then(allLoadedTables => {
-          if (!lazyFetched && allLoadedTables) lazyFetchData(dataPresetsRedux, Object.keys(storedData))
-        })
-    }
-    // } else if (dateIndices[currentData] !== undefined) {      
-    //   let denomIndices = dateIndices[currentData][dataParams.numerator]
-    //   let lastIndex = denomIndices !== null ? denomIndices.slice(-1,)[0] : null;
-    //   dispatch(
-    //     dataLoadExisting({
-    //       variableParams: {
-    //         nIndex: lastIndex || dataParams.nIndex,
-    //         dIndex: dataParams.dType === 'time-series' ? lastIndex : dataParams.dType,
-    //         dRange: dataParams.dType === 'time-series' ? dataParams.nRange : dataParams.dRange,
-    //         binIndex: lastIndex || dataParams.nIndex,
-    //       },
-    //       chartData: getDataForCharts(storedData[currentData],'cases', dateIndices[currentData]['cases'], dateLists.isoDateList)
-    //     })
-    //   )
-    //   updateBins( { storedData, currentData, mapParams, colorScales,
-    //     dataParams: { 
-    //       ...dataParams,  
-    //       nIndex: lastIndex || dataParams.nIndex,
-    //       binIndex: lastIndex || dataParams.nIndex,
-    //     }, 
-    //   })
-    // }
-  },[currentData])
-  
+  },[])  
 
   // default width handlers on resize
   useEffect(() => {

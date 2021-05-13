@@ -1,6 +1,6 @@
 
 import { useSelector, useDispatch } from 'react-redux';
-import { useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { 
   getParseCSV, getParsePbf, mergeData, getColumns, loadJson,
   getDataForBins, getDataForCharts, getDataForLisa, getDateLists,
@@ -23,28 +23,20 @@ export default function useLoadData(gdaProxy){
   const dataParams = useSelector(state => state.dataParams);
   const mapParams = useSelector(state => state.mapParams);
   const currentData = useSelector(state => state.currentData);
+  const storedData = useSelector(state => state.storedData);
   const storedGeojson = useSelector(state => state.storedGeojson);
-  const storedLisaData = useSelector(state => state.storedLisaData);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (storedGeojson[currentData]) dispatch(updateMap());
-  }, [dataParams.nIndex, storedGeojson])
-
-  useEffect(() => {
-    if (storedGeojson[currentData] && mapParams.mapType !== 'lisa' ) dispatch(updateMap());
-  }, [mapParams.bins.breaks])
-
-  useEffect(() => {
-    if (storedGeojson[currentData] && mapParams.mapType === 'lisa' ) dispatch(updateMap());
-  }, [storedLisaData])
+  const [isLoading, setIsLoading] = useState(false);
+  const [lazyFetched, setLazyFetched] = useState(false);
 
   const firstLoad = useMemo(() => async (datasetParams, defaultTables) => {
-
+    
     if (!gdaProxy.ready) await gdaProxy.init()  
-    const numeratorParams = datasetParams.tables[dataParams.numerator]||defaultTables[datasetParams['geography']][dataParams.numerator]
-    const denominatorParams = dataParams.denominator != 'properties' ? datasetParams.tables[dataParams.denominator]||defaultTables[datasetParams['geography']][dataParams.denominator] : null
+    const numeratorParams = datasetParams.tables[dataParams.numerator]||defaultTables[dataParams.numerator]
+    const denominatorParams = dataParams.denominator !== 'properties' ? datasetParams.tables[dataParams.denominator]||defaultTables[dataParams.denominator] : null
 
+    if ((storedData.hasOwnProperty(numeratorParams?.file)||dataParams.numerator === 'properties') && (storedData.hasOwnProperty(denominatorParams?.file)||dataParams.denominator !== 'properties')) return [numeratorParams.file, denominatorParams && denominatorParams.file]
     const firstLoadPromises = [
       gdaProxy.LoadGeojson(`${process.env.PUBLIC_URL}/geojson/${datasetParams.geojson}`),
       numeratorParams && handleLoadData(numeratorParams),
@@ -135,9 +127,52 @@ export default function useLoadData(gdaProxy){
     // setLazyFetched(true)
   }, [currentData])
 
+  
+  // On initial load and after gdaProxy has been initialized, this loads in the default data sets (USA Facts)
+  // Otherwise, this side-effect loads the selected data.
+  // Each conditions checks to make sure gdaProxy is working.
+  useEffect(() => {
+    if (!storedGeojson[currentData]) {
+      setIsLoading(true)
+      firstLoad(dataPresetsRedux[currentData], defaultTables[dataPresetsRedux[currentData]['geography']])
+        .then(primaryTables => {
+          dispatch(updateMap());
+          setIsLoading(false);
+          return primaryTables
+        }).then(primaryTables => {
+          return secondLoad(dataPresetsRedux[currentData], defaultTables[dataPresetsRedux[currentData]['geography']], [...Object.keys(storedData), ...primaryTables])
+        }).then(allLoadedTables => {
+          if (!lazyFetched && allLoadedTables) lazyFetchData(dataPresetsRedux, Object.keys(storedData))
+        })
+    }
+    // } else if (dateIndices[currentData] !== undefined) {      
+    //   let denomIndices = dateIndices[currentData][dataParams.numerator]
+    //   let lastIndex = denomIndices !== null ? denomIndices.slice(-1,)[0] : null;
+    //   dispatch(
+    //     dataLoadExisting({
+    //       variableParams: {
+    //         nIndex: lastIndex || dataParams.nIndex,
+    //         dIndex: dataParams.dType === 'time-series' ? lastIndex : dataParams.dType,
+    //         dRange: dataParams.dType === 'time-series' ? dataParams.nRange : dataParams.dRange,
+    //         binIndex: lastIndex || dataParams.nIndex,
+    //       },
+    //       chartData: getDataForCharts(storedData[currentData],'cases', dateIndices[currentData]['cases'], dateLists.isoDateList)
+    //     })
+    //   )
+    //   updateBins( { storedData, currentData, mapParams, colorScales,
+    //     dataParams: { 
+    //       ...dataParams,  
+    //       nIndex: lastIndex || dataParams.nIndex,
+    //       binIndex: lastIndex || dataParams.nIndex,
+    //     }, 
+    //   })
+    // }
+  },[currentData])
+
   return [
     firstLoad,
     secondLoad,
-    lazyFetchData
+    lazyFetchData,
+    isLoading
   ]
 }

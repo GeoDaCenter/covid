@@ -525,7 +525,7 @@ function MapSection(props){
     }
 
     const handleMapHover = ({x, y, object, layer}) => {
-        dispatch(setTooltipContent(x, y, Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : find(storedData[currentData], o => o.properties.GEOID === object?.GEOID)))
+        dispatch(setTooltipContent(x, y, Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : object?.GEOID))
         if (object && object.GEOID) {
             if (object.GEOID !== hoverGeog) setHoverGeog(object.GEOID)
         } else {

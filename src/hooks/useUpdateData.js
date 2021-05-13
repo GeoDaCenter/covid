@@ -39,6 +39,7 @@ export default function useUpdateData(gdaProxy){
     const currentTable = useSelector(state => state.currentTable);
     const storedData = useSelector(state => state.storedData);
     const storedGeojson = useSelector(state => state.storedGeojson);
+    const storedLisaData = useSelector(state => state.storedLisaData);
     const [isCalculating, setIsCalculating] = useState(false)
 
     const updateBins =  async () => { 
@@ -121,7 +122,7 @@ export default function useUpdateData(gdaProxy){
 
   // Trigger on index change while dynamic bin mode
   useEffect(() => {
-    if (!isCalculating &&  storedData[currentTable.numerator] && gdaProxy.ready && mapParams.binMode === 'dynamic' && mapParams.mapType !== 'lisa') {
+    if (!isCalculating && storedData[currentTable.numerator] && gdaProxy.ready && mapParams.binMode === 'dynamic' && mapParams.mapType !== 'lisa') {
       updateBins()
     }
   }, [dataParams.nIndex, dataParams.dIndex, mapParams.binMode, dataParams.variableName, dataParams.nRange, mapParams.mapType, mapParams.vizType] ); 
@@ -129,11 +130,23 @@ export default function useUpdateData(gdaProxy){
   // Trigger on parameter change for metric values
   // Gets bins and sets map parameters
   useEffect(() => {
-    if (!isCalculating && storedData[currentTable.numerator] && gdaProxy.ready && mapParams.binMode !== 'dynamic' && mapParams.mapType !== 'lisa') {
+    if (!isCalculating && storedGeojson[currentData] && storedData[currentTable.numerator] && gdaProxy.ready && mapParams.binMode !== 'dynamic' && mapParams.mapType !== 'lisa') {
+      console.log(currentTable.numerator)
       updateBins();
     }
   }, [dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.dRange, mapParams.mapType, mapParams.vizType] );
   
+  useEffect(() => {
+    if (storedGeojson[currentData]) dispatch(updateMap());
+  }, [dataParams.nIndex, storedGeojson])
+
+  useEffect(() => {
+    if (storedGeojson[currentData] && mapParams.mapType !== 'lisa' ) dispatch(updateMap());
+  }, [mapParams.bins.breaks])
+
+  useEffect(() => {
+    if (storedGeojson[currentData] && mapParams.mapType === 'lisa' ) dispatch(updateMap());
+  }, [storedLisaData])
 
   return [
       updateBins,

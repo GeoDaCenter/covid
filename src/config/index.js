@@ -195,7 +195,7 @@ export const colorScales = {
 export const fixedScales = {
     'testing': {
         bins: ['No Data','<3%','5%','10%','15%','20%','>25%'],
-        breaks:[0,.03,.05,.10,.15,.20,.25,Math.pow(10, 12)]
+        breaks:[0,3,5,10,15,20,25,Math.pow(10, 12)]
     },
     'testingCap': {
         bins: ['No Data','<50','100','150','200','250','300','350','>400'],
@@ -550,7 +550,7 @@ export const dataPresetsRedux = {
         }
     }, 
 }
-
+export const tooltipTables = ['cases','deaths','testing_wk_pos','testing_tcap','vaccines_fully_vaccinated']
 // export const dataPresets = {
 //     'county_usfacts.geojson': {
 //         plainName: 'USA Facts County', // Plain english name for dataset

@@ -1,13 +1,14 @@
 import { INITIAL_STATE } from '../constants/defaults';
-import { mapFn, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, getURLParams } from '../utils';
-import { colorScales, fixedScales, dataPresets, defaultTables, dataPresetsRedux, variablePresets, colors } from '../config';
+import { mapFnNb, mapFnTesting, mapFnHinge, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, getURLParams } from '../utils';
+import { colorScales, fixedScales, dataPresets, defaultTables, dataPresetsRedux, variablePresets, tooltipTables } from '../config';
 
 
 
-const getSimpleColor = (value, bins, colorScale, mapType, numerator, storedLisaData, storedGeojson, currentData, GEOID) => mapFn(value, bins, colorScale, mapType, numerator);
+const getSimpleColor = (value, bins, colorScale, mapType, numerator, storedLisaData, storedGeojson, currentData, GEOID, mapFn) => mapFn(value, bins, colorScale, mapType, numerator);
 const getLisaColor = (value, bins, colorScale, mapType, numerator, storedLisaData, storedGeojson, currentData, GEOID) => colorScale[storedLisaData[storedGeojson[currentData].indices['geoidOrder'][GEOID]]]||[240,240,240]
-const getColorFunction = (mapType) => mapType === 'lisa' ? getLisaColor : getSimpleColor
-const getHeight = (val, dataParams) => val*(dataParams.scale3D/((dataParams.nType === "time-series" && dataParams.nRange === null) ? (dataParams.nIndex)/10 : 1))
+const getColorFunction = (mapType) => mapType === 'lisa' ? getLisaColor : getSimpleColor;
+const getMapFunction = (mapType, table) => mapType.includes("hinge") ? mapFnHinge : table.includes('testing') ? mapFnTesting : mapFnNb;
+const getHeight = (val, dataParams) => val*(dataParams.scale3D/((dataParams.nType === "time-series" && dataParams.nRange === null) ? (dataParams.nIndex)/10 : 1));
 
 var reducer = (state = INITIAL_STATE, action) => {
     switch(action.type) {
@@ -62,17 +63,20 @@ var reducer = (state = INITIAL_STATE, action) => {
             let returnObj = {};
             let i = 0;
 
-            const getTable = (i, predicate) => 
-                state.dataParams[predicate] === 'properties' 
-                    ?
-                state.storedGeojson[state.currentData].data.features[i].properties 
-                    : 
-                state.storedData[dataPresetsRedux[state.currentData].tables[state.dataParams[predicate]].file][0][state.storedGeojson[state.currentData].data.features[i].properties.GEOID]
-                    ||
-                state.storedData[defaultTables[dataPresetsRedux[state.currentData].geography][state.dataParams[predicate]].file][0][state.storedGeojson[state.currentData].data.features[i].properties.GEOID];
+            const getTable = (i, predicate) => {
+                if (state.dataParams[predicate] === 'properties' ) {
+                    return state.storedGeojson[state.currentData].data.features[i].properties 
+                } else {
+                    try {
+                        return state.storedData[dataPresetsRedux[state.currentData].tables[state.dataParams[predicate]].file][0][state.storedGeojson[state.currentData].data.features[i].properties.GEOID]
+                    } catch {
+                        return state.storedData[defaultTables[dataPresetsRedux[state.currentData].geography][state.dataParams[predicate]].file][0][state.storedGeojson[state.currentData].data.features[i].properties.GEOID];
+                    }
+                }
+            }
 
             const getColor = getColorFunction(state.mapParams.mapType)
-
+            const mapFn = getMapFunction(state.mapParams.mapType, state.dataParams.numerator)
             switch(state.mapParams.vizType) {
                 // case 'cartogram':{
                 //     if (storedGeojson[currentData] === undefined) break;
@@ -103,7 +107,8 @@ var reducer = (state = INITIAL_STATE, action) => {
                                 state.storedLisaData, 
                                 state.storedGeojson, 
                                 state.currentData, 
-                                state.storedGeojson[state.currentData].data.features[i].properties.GEOID
+                                state.storedGeojson[state.currentData].data.features[i].properties.GEOID,
+                                mapFn
                             );
 
                             const tempHeight = getHeight(tempVal, state.dataParams);
@@ -634,7 +639,7 @@ var reducer = (state = INITIAL_STATE, action) => {
             let contextPanelsObj = {
                 ...state.panelState,
                 context: true,
-                contextPos: {
+                contextPos: { 
                     x: action.payload.params.x,
                     y: action.payload.params.y
                 }
@@ -643,15 +648,41 @@ var reducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 panelState: contextPanelsObj
             }
-        case 'SET_TOOLTIP_CONTENT':
+        case 'SET_TOOLTIP_CONTENT':{
+            let tooltipData;
+            if (typeof action.payload.data === "number" || typeof action.payload.data === "string"){
+                const properties = state.storedGeojson[state.currentData].properties[+action.payload.data];
+                const geography = dataPresetsRedux[state.currentData].geography;
+
+                tooltipData = {
+                    population: properties.population,
+                    name: geography === 'County' ? properties.NAME + ', ' + properties.state_abbr : properties.name
+                }
+                
+                const currentTables = {
+                    ...defaultTables[geography],
+                    ...dataPresetsRedux[state.currentData].tables
+                }
+
+                for (const table in currentTables){
+                    if (currentTables[table].file in state.storedData && tooltipTables.includes(table)) {
+                        tooltipData[table] = state.storedData[currentTables[table].file][0][+action.payload.data][state.dataParams.nIndex]
+                        if (table === 'cases' || table === 'deaths') tooltipData[`daily_${table}`] = state.storedData[currentTables[table].file][0][+action.payload.data][state.dataParams.nIndex]-state.storedData[currentTables[table].file][0][+action.payload.data][state.dataParams.nIndex-1]
+                    }
+                }
+            } else {
+                tooltipData = action.payload.data
+            }
+            const tooltipContent = {
+                x: action.payload.x,
+                y: action.payload.y,
+                data: tooltipData,
+            }
             return {
                 ...state,
-                tooltipContent: {
-                    x: action.payload.x,
-                    y: action.payload.y,
-                    data: action.payload.data,
-                }
+                tooltipContent
             } 
+        }
         case 'SET_DOT_DENSITY':
             return {
                 ...state,
