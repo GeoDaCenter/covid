@@ -486,3 +486,12 @@ export const updateChart = () => {
         type: 'UPDATE_CHART'
     }
 }
+
+export const addGeojson = ( data ) => {
+    return {
+        type: 'ADD_GEOJSON',
+        payload: {
+            data
+        }
+    }
+}

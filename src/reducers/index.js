@@ -134,6 +134,17 @@ var reducer = (state = INITIAL_STATE, action) => {
                 storedData
             }
         }
+        case 'ADD_GEOJSON':{
+            const storedGeojson = {
+                ...state.storedGeojson,
+                ...action.payload.data
+            }
+
+            return {
+                ...state,
+                storedGeojson
+            }
+        }
         case 'UPDATE_MAP': {
             // const {data, varID} = parameters; //dataName, dataType, params, colorScale
             

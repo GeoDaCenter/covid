@@ -365,12 +365,12 @@ export const defaultTables = {
     },
     'State': {
         'cases': {
-            'file':'covid_confirmed_usafacts_state.pbf',
+            'file':'covid_confirmed_usafacts_state',
             'dates':'isoDateList',
             'type':'time-series-cumulative'
         },
         'deaths': {
-            'file':'covid_deaths_usafacts_state.pbf',
+            'file':'covid_deaths_usafacts_state',
             'dates':'isoDateList',
             'type':'time-series-cumulative'
         },
@@ -390,43 +390,43 @@ export const defaultTables = {
             'join':'FIPS'
         },
         'testing':{
-            'file':'covid_testing_cdc_state.pbf',
+            'file':'covid_testing_cdc_state',
             'dates':'isoDateList',
             'type':'time-series',
             'join':'county'
         },
         'testing_wk_pos':{
-            'file':'covid_wk_pos_cdc_state.pbf',
+            'file':'covid_wk_pos_cdc_state',
             'dates':'isoDateList',
             'type':'time-series',
             'join':'county'
         },
         'testing_tcap':{
-            'file':'covid_tcap_cdc_state.pbf',
+            'file':'covid_tcap_cdc_state',
             'dates':'isoDateList',
             'type':'time-series',
             'join':'county'
         },
         'testing_ccpt':{
-            'file':'covid_ccpt_cdc_state.pbf',
+            'file':'covid_ccpt_cdc_state',
             'dates':'isoDateList',
             'type':'time-series',
             'join':'county'
         },
         'vaccines_one_dose':{
-            'file':'vaccination_one_or_more_doses_cdc.pbf',
+            'file':'vaccination_one_or_more_doses_cdc',
             'dates':'isoDateList',
             'type':'time-series',
             'join':'county'
         },
         'vaccines_fully_vaccinated':{
-            'file':'vaccination_fully_vaccinated_cdc.pbf',
+            'file':'vaccination_fully_vaccinated_cdc',
             'dates':'isoDateList',
             'type':'time-series',
             'join':'county'
         },
         'vaccines_dist':{
-            'file':'vaccination_to_be_distributed_cdc.pbf',
+            'file':'vaccination_to_be_distributed_cdc',
             'dates':'isoDateList',
             'type':'time-series',
             'join':'county'
@@ -500,13 +500,13 @@ export const dataPresetsRedux = {
         geography: 'State',
         tables: {
             'cases': {
-                'file':'covid_confirmed_1p3a_state.pbf',
+                'file':'covid_confirmed_1p3a_state',
                 'dates':'isoDateList',
                 'type':'time-series-cumulative',
                 'accumulate':true
             },
             'deaths': {
-                'file':'covid_deaths_1p3a_state.pbf',
+                'file':'covid_deaths_1p3a_state',
                 'dates':'isoDateList',
                 'type':'time-series-cumulative',
                 'accumulate':true
@@ -519,13 +519,13 @@ export const dataPresetsRedux = {
         geography: 'State',
         tables: {
             'cases': {
-                'file':'covid_confirmed_usafacts_state.pbf',
+                'file':'covid_confirmed_usafacts_state',
                 'dates':'isoDateList',
                 'type':'time-series-cumulative',
                 'accumulate':true
             },
             'deaths': {
-                'file':'covid_deaths_usafacts_state.pbf',
+                'file':'covid_deaths_usafacts_state',
                 'dates':'isoDateList',
                 'type':'time-series-cumulative',
                 'accumulate':true
@@ -538,12 +538,12 @@ export const dataPresetsRedux = {
         geography: 'State',
         tables: {
             'cases': {
-                'file':'covid_confirmed_nyt_state.pbf',
+                'file':'covid_confirmed_nyt_state',
                 'dates':'isoDateList',
                 'type':'time-series-cumulative'
             },
             'deaths': {
-                'file':'covid_deaths_nyt_state.pbf',
+                'file':'covid_deaths_nyt_state',
                 'dates':'isoDateList',
                 'type':'time-series-cumulative'
             }

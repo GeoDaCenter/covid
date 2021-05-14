@@ -10,7 +10,7 @@ import {
 //   then performs a join and loads the data into the store
 
 import { 
-  initialDataLoad, addTables, dataLoad, dataLoadExisting, storeLisaValues, storeCartogramData, setDates, setNotification,
+  initialDataLoad, addTables, addGeojson, dataLoad, dataLoadExisting, storeLisaValues, storeCartogramData, setDates, setNotification,
   setMapParams, setUrlParams, setPanelState, updateMap, updateChart } from '../actions';
 
 import { colorScales, fixedScales, dataPresets, defaultTables, dataPresetsRedux, variablePresets, colors } from '../config';
@@ -28,10 +28,11 @@ export default function useLoadData(gdaProxy){
   const dispatch = useDispatch();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isInProcess, setIsInProcess] = useState(false);
   const [lazyFetched, setLazyFetched] = useState(false);
 
   const firstLoad = useMemo(() => async (datasetParams, defaultTables) => {
-    
+    setIsInProcess(true)
     if (!gdaProxy.ready) await gdaProxy.init()  
     const numeratorParams = datasetParams.tables[dataParams.numerator]||defaultTables[dataParams.numerator]
     const denominatorParams = dataParams.denominator !== 'properties' ? datasetParams.tables[dataParams.denominator]||defaultTables[dataParams.denominator] : null
@@ -90,18 +91,20 @@ export default function useLoadData(gdaProxy){
         dates: dateLists.isoDateList
       })
     )
+    setIsInProcess(false)
     return [numeratorParams.file, denominatorParams && denominatorParams.file]
   },[currentData])
 
 
   const secondLoad = useMemo(() => async (datasetParams, defaultTables, loadedTables) => {
+    setIsInProcess(true)
     dispatch(updateChart());
     const filesToLoad = [
       ...Object.values(datasetParams.tables),
       ...Object.values(defaultTables)
     ]
 
-    const tablePromises = filesToLoad.map(table => loadedTables.includes(table.file) ? null : handleLoadData(table))
+    const tablePromises = filesToLoad.map(table => Object.keys(storedData).includes(table.file) ? null : handleLoadData(table))
     const fetchedData = await Promise.all(tablePromises)
     let dataObj = {}
     for (let i=0; i<filesToLoad.length; i++){
@@ -112,19 +115,40 @@ export default function useLoadData(gdaProxy){
       }
     }
     dispatch(addTables(dataObj))
-    
+    setIsInProcess(false)
     return filesToLoad.map(d => d.file)
   }, [currentData])
   
   const lazyFetchData = useMemo(() => async (dataPresets, loadedTables) => {
-    console.log(dataPresets)
-    // let toCache = [...new Set(Object.values(dataPresets).map(dataset => dataset.tables).flat())]
-  
-    // for (const dataset of toCache){
-    //   let test = await fetch(dataset.slice(-4,) === '.pbf' ? `${process.env.PUBLIC_URL}/pbf/${dataset}` : `${process.env.PUBLIC_URL}/csv/${dataset}.csv`);
-    //   if (!test) console.log(`${dataset} failed to cache.`)
-    // }
-    // setLazyFetched(true)
+    const loadedGeojsons = Object.keys(storedGeojson)
+    const geojsonFiles = Object.keys(dataPresets)
+
+    for (let i=0; i<geojsonFiles.length;i++){
+      if (isInProcess) return;
+      const file = geojsonFiles[i];
+      if (!loadedTables.includes(file) && !loadedGeojsons.includes(file) && !(currentData === file)){
+        const geojsonData = await gdaProxy.LoadGeojson(`${process.env.PUBLIC_URL}/geojson/${file}`)
+        dispatch(addGeojson({[file]:geojsonData}))
+      }
+    }
+
+    const allLoadedTables = [...loadedTables, ...Object.keys(storedData)]
+    let tableFiles = []
+    for (let i=0; i<geojsonFiles.length; i++){
+      for (const table in dataPresets[geojsonFiles[i]].tables){
+        tableFiles.push(dataPresets[geojsonFiles[i]].tables[table])
+      }
+    }
+    
+    for (let i=0; i<tableFiles.length; i++){
+      if (isInProcess) return;
+      const fileInfo = tableFiles[i];
+      if (!allLoadedTables.includes(fileInfo.file)){
+        const tableData = await handleLoadData(fileInfo)
+        dispatch(addTables({[fileInfo.file]:tableData}))
+      }
+    }
+
   }, [currentData])
 
   
@@ -142,7 +166,7 @@ export default function useLoadData(gdaProxy){
         }).then(primaryTables => {
           return secondLoad(dataPresetsRedux[currentData], defaultTables[dataPresetsRedux[currentData]['geography']], [...Object.keys(storedData), ...primaryTables])
         }).then(allLoadedTables => {
-          if (!lazyFetched && allLoadedTables) lazyFetchData(dataPresetsRedux, Object.keys(storedData))
+          if (!lazyFetched && allLoadedTables) lazyFetchData(dataPresetsRedux, allLoadedTables)
         })
     }
     // } else if (dateIndices[currentData] !== undefined) {      
