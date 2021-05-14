@@ -1,14 +1,10 @@
 export const INITIAL_STATE = {
-  geodaProxy: null,
   storedGeojson: {},
   storedData: {},
   storedLisaData: {},
   storedCartogramData: {},
-  storedCSV: {},
   storedMobilityData: {},
   lazyFetched:false,
-  cols: {},
-  dateIndices: {},
   currentData: 'county_usfacts.geojson',
   currentTable: {
     numerator: '',
@@ -21,9 +17,6 @@ export const INITIAL_STATE = {
   centroids: {},
   dates: {},
   isPlaying:false,
-  currDate: '',
-  currDateIndex: '',
-  startDateIndex: '',
   currentZVariable: null,
   currentMethod: 'natural_breaks',
   currentOverlay: '',
@@ -105,7 +98,6 @@ export const INITIAL_STATE = {
     contextPos: {x:null,y:null}
   },
   storedRange: null,
-  currentGeoid: '',
   sidebarData: {},
   anchorEl: null,
   mapLoaded: false,

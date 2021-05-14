@@ -1063,7 +1063,7 @@ export const variablePresets = {
       scale:1,
       fixedScale: 'testing',
       colorScale: 'testing',
-      scale3D: 10000000,
+      scale3D: 100000,
       dataNote: null,
     },
     "7 Day Testing Capacity": {
@@ -1080,7 +1080,7 @@ export const variablePresets = {
       scale:1,
       fixedScale: 'testingCap',
       colorScale: 'testingCap',
-      scale3D: 3000,
+      scale3D: 30,
       dataNote: null,
     }, 
     "7 Day Testing Capacity per 100K": {
@@ -1097,7 +1097,7 @@ export const variablePresets = {
       scale:1,
       fixedScale: 'testingCap',
       colorScale: 'testingCap',
-      scale3D: 3000,
+      scale3D: 30,
       dataNote: null,
     }, 
     "7 Day Testing Capacity per 100K Population": {

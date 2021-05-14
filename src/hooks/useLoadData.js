@@ -169,28 +169,6 @@ export default function useLoadData(gdaProxy){
           if (!lazyFetched && allLoadedTables) lazyFetchData(dataPresetsRedux, allLoadedTables)
         })
     }
-    // } else if (dateIndices[currentData] !== undefined) {      
-    //   let denomIndices = dateIndices[currentData][dataParams.numerator]
-    //   let lastIndex = denomIndices !== null ? denomIndices.slice(-1,)[0] : null;
-    //   dispatch(
-    //     dataLoadExisting({
-    //       variableParams: {
-    //         nIndex: lastIndex || dataParams.nIndex,
-    //         dIndex: dataParams.dType === 'time-series' ? lastIndex : dataParams.dType,
-    //         dRange: dataParams.dType === 'time-series' ? dataParams.nRange : dataParams.dRange,
-    //         binIndex: lastIndex || dataParams.nIndex,
-    //       },
-    //       chartData: getDataForCharts(storedData[currentData],'cases', dateIndices[currentData]['cases'], dateLists.isoDateList)
-    //     })
-    //   )
-    //   updateBins( { storedData, currentData, mapParams, colorScales,
-    //     dataParams: { 
-    //       ...dataParams,  
-    //       nIndex: lastIndex || dataParams.nIndex,
-    //       binIndex: lastIndex || dataParams.nIndex,
-    //     }, 
-    //   })
-    // }
   },[currentData])
 
   return [

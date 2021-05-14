@@ -2,8 +2,7 @@ import { INITIAL_STATE } from '../constants/defaults';
 import { mapFnNb, mapFnTesting, mapFnHinge, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, getURLParams } from '../utils';
 import { colorScales, fixedScales, dataPresets, defaultTables, dataPresetsRedux, variablePresets, tooltipTables } from '../config';
 
-
-
+// utils
 const getSimpleColor = (value, bins, colorScale, mapType, numerator, storedLisaData, storedGeojson, currentData, GEOID, mapFn) => mapFn(value, bins, colorScale, mapType, numerator);
 const getLisaColor = (value, bins, colorScale, mapType, numerator, storedLisaData, storedGeojson, currentData, GEOID) => colorScale[storedLisaData[storedGeojson[currentData].indices['geoidOrder'][GEOID]]]||[240,240,240]
 const getColorFunction = (mapType) => mapType === 'lisa' ? getLisaColor : getSimpleColor;
@@ -14,7 +13,6 @@ const generateMapData = (state) => {
         return state
     };
 
-    let returnArray = [];
     let returnObj = {};
     let i = 0;
 
@@ -32,63 +30,153 @@ const generateMapData = (state) => {
 
     const getColor = getColorFunction(state.mapParams.mapType)
     const mapFn = getMapFunction(state.mapParams.mapType, state.dataParams.numerator)
-    switch(state.mapParams.vizType) {
-        // case 'cartogram':{
-        //     if (storedGeojson[currentData] === undefined) break;
-        //     while (i < data.length) {
-        //         const tempGeoid = storedGeojson[currentData]['indexOrder'][data[i].properties?.id]
-        //         const tempColor = GetSimpleFillColor(data[i].value, tempGeoid, bins.breaks, mapType);
-        //         returnArray.push({
-        //             GEOID: tempGeoid,
-        //             position: data[i].position,
-        //             color: tempColor,
-        //             radius: data[i].radius
-        //         })
-        //         i++;
-        //     }
-        //     break
-        // }
-        default: {
-            for (let i=0; i<state.storedGeojson[state.currentData].data.features.length; i++){
-                for (let n=0; n<state.storedGeojson[state.currentData].data.features[i].geometry.coordinates.length; n++){
-                    const tempVal = dataFn(getTable(i, 'numerator'), getTable(i, 'denominator'), state.dataParams)
-                    
-                    const tempColor = getColor(
-                        tempVal, 
-                        state.mapParams.bins.breaks, 
-                        state.mapParams.colorScale, 
-                        state.mapParams.mapType, 
-                        state.dataParams.numerator, 
-                        state.storedLisaData, 
-                        state.storedGeojson, 
-                        state.currentData, 
-                        state.storedGeojson[state.currentData].data.features[i].properties.GEOID,
-                        mapFn
-                    );
 
-                    const tempHeight = getHeight(tempVal, state.dataParams);
+    for (let i=0; i<state.storedGeojson[state.currentData].data.features.length; i++){
+        const tempVal = dataFn(getTable(i, 'numerator'), getTable(i, 'denominator'), state.dataParams)
+        
+        const color = getColor(
+            tempVal, 
+            state.mapParams.bins.breaks, 
+            state.mapParams.colorScale, 
+            state.mapParams.mapType, 
+            state.dataParams.numerator, 
+            state.storedLisaData, 
+            state.storedGeojson, 
+            state.currentData, 
+            state.storedGeojson[state.currentData].data.features[i].properties.GEOID,
+            mapFn
+        );
 
-                    if (tempColor === null) {
-                        continue;
-                    }
+        const height = getHeight(tempVal, state.dataParams);
 
-                    returnArray.push({
-                        GEOID: state.storedGeojson[state.currentData].data.features[i].properties.GEOID,
-                        geom: state.storedGeojson[state.currentData].data.features[i].geometry.coordinates[n],
-                        color: tempColor,
-                        height: tempHeight
-                    })
-                    returnObj[state.storedGeojson[state.currentData].data.features[i].properties.GEOID] = tempColor
-                }
-            }
+        if (color === null) {
+            returnObj[state.storedGeojson[state.currentData].data.features[i].properties.GEOID] = {color:[0,0,0,0],height:0}
+            continue;
         }
+
+        returnObj[state.storedGeojson[state.currentData].data.features[i].properties.GEOID] = {color,height}
     }
+
     return {
-        params: getVarId(state.currentData, state.dataParams),
-        data: returnArray, 
-        dots: returnObj
+        params: getVarId(state.currentData, state.dataParams, state.mapParams),
+        data: returnObj
     }
 };
+const shallowEqual = (object1, object2) => { // Thanks @Dmitri Pavlutin
+    const keys = Object.keys(object1);
+    if (keys.length !== keys.length) return false; 
+    for (let i=0; i<keys.length; i++) {
+        if (object1[keys[i]] !== object2[keys[i]]) {
+            if (keys[i] !== 'nIndex' && keys[i] !== 'dIndex') return false;  
+        }
+    }
+    return true;
+};
+
+
+// Replace Null/NaN with 0 
+const cleanData = (inputData) => inputData.map(d => d >=0 ? d : isNaN(d) || d===null ? 0 : d)
+
+// Performs different operations on the data array output
+// Sum, Average, and weighted average
+const performOperation = (dataArray, operation, totalPopulation) => {
+// Sum up data
+    const reducer = (accumulator, currentValue) => accumulator + currentValue;
+    // Clean data
+    let clean = cleanData(dataArray);
+
+    switch(operation) {
+        case 'sum':
+            return clean.reduce(reducer)
+        case 'average':
+            return clean.reduce(reducer)/clean.length
+        case 'weighted_average':
+            return Math.round(clean.reduce(reducer)/totalPopulation*100)/100
+        default:
+            return null
+    }
+} 
+
+// // Prepares data for the previous operation
+// const aggregateProperty = (dataset, property, operation, specialCase=null) => {
+//     let dataArray; 
+//     let totalPopulation = 0;
+//     // Loop through and collect data from selected geographies in SelectionIndex
+//     try {
+//         if (operation === 'weighted_average') {
+//             dataArray = selectionIndex.map(selection => {
+//                 let selectionPop = storedData[currentData][selection]['properties']['population'];
+//                 totalPopulation+=selectionPop;
+//                 if (specialCase === 'pcp') try { return parseInt(storedData[currentData][selection][dataset][property].split(':')[0])*selectionPop } catch { return 0}
+//                 return storedData[currentData][selection][dataset][property]*selectionPop
+//             })
+//         } else {
+//             dataArray = selectionIndex.map(selection => storedData[currentData][selection][dataset][property]);
+//         }
+//     } catch {
+//         return 0
+//     }
+
+//     return performOperation(dataArray, operation, totalPopulation);
+// }
+
+// // Same as aggregteProperty(), but for time-series data
+// const aggregateTimeseries = (dataset, index, operation) => {
+//     let dataArray; 
+//     let totalPopulation = 0;
+//     try {
+//         if (operation === 'weighted_average') {
+//         dataArray = selectionIndex.map(selection => {
+//             let selectionPop = storedData[currentData][selection]['properties']['population'];
+//             totalPopulation+=selectionPop;
+//             return storedData[currentData][selection][dataset].slice(index,)[0]*selectionPop
+//         })
+//         } else {
+//         dataArray = selectionIndex.map(selection => storedData[currentData][selection][dataset].slice(index,)[0]);
+//         }
+//     } catch {
+//         return 0
+//     }
+
+//     return performOperation(dataArray, operation, totalPopulation);
+// }
+
+// // Generate data for 2-week line charts
+// const aggregate2WeekTimeSeries = (dataset, index, operation) => {
+//     let lookbackPeriod = []
+//     let rtn;
+
+//     try {
+//         for (let i=-13;i<1;i++) {
+//         lookbackPeriod.push(index+i)
+//         }
+//         rtn = lookbackPeriod.map(day => aggregateTimeseries(dataset, day, operation))
+//     } catch {
+//         return 0
+//     }
+//     return rtn;
+// }
+
+// // For more complete data functions (like population normalized)
+// const aggregateDataFunction = (numerator, denominator, params, operation) => {
+//     let dataArray; 
+//     let totalPopulation = 0;
+//     try {
+//         if (operation === 'weighted_average') {
+//         dataArray = selectionIndex.map(selection => {
+//             let selectionPop = storedData[currentData][selection]['properties']['population'];
+//             totalPopulation+=selectionPop;
+//             return dataFn(storedData[currentData][selection][numerator], storedData[currentData][selection][denominator], params)*selectionPop
+//         })
+//         } else {
+//         dataArray = selectionIndex.map(selection => dataFn(storedData[currentData][selection][numerator], storedData[currentData][selection][denominator], params));
+//         }
+//     } catch {
+//         return 0
+//     }
+
+//     return performOperation(dataArray, operation, totalPopulation);
+// }
 
 var reducer = (state = INITIAL_STATE, action) => {
     console.log(action.type)
@@ -146,8 +234,6 @@ var reducer = (state = INITIAL_STATE, action) => {
             }
         }
         case 'UPDATE_MAP': {
-            // const {data, varID} = parameters; //dataName, dataType, params, colorScale
-            
             const mapData = generateMapData(state)
             return {
                 ...state,
@@ -393,28 +479,28 @@ var reducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 sidebarData: action.payload.data
             }
-        case 'INCREMENT_DATE':
-            let dateObj = {
+        case 'INCREMENT_DATE':{
+            let dataParams = {
                 ...state.dataParams
             }
-            let currIndices = state.dateIndices[state.currentData][state.dataParams.numerator]
-            let nextIndex = currIndices[currIndices.indexOf(state.dataParams.nIndex)+action.payload.index]
+
+            const currIndices = state.storedData[state.currentTable.numerator][2]
+            const nextIndex = currIndices[currIndices.indexOf(state.dataParams.nIndex)+action.payload.index]
 
             if (nextIndex === undefined) {
-                dateObj.nIndex = currIndices[0]
-                dateObj.dIndex = currIndices[0]
                 return {
-                    ...state,
-                    dataParams:dateObj
+                    ...state
                 }
             } else {
-                dateObj.nIndex = nextIndex;
-                dateObj.dIndex = nextIndex;
+                dataParams.nIndex = nextIndex;
+                dataParams.dIndex = nextIndex;
                 return {
                     ...state,
-                    dataParams:dateObj
+                    dataParams,
+                    mapData: generateMapData({...state, dataParams}) 
                 }
             }
+        }
         case 'SET_START_PLAYING': {
             let dateObj = {
                 ...state.dataParams
@@ -451,6 +537,23 @@ var reducer = (state = INITIAL_STATE, action) => {
                 ...action.payload.params
             }
 
+            const currentTable = {
+                numerator: 
+                    dataParams.numerator === "properties" ? "properties" : 
+                    dataPresetsRedux[state.currentData].tables.hasOwnProperty(dataParams.numerator) 
+                        ? 
+                    dataPresetsRedux[state.currentData].tables[dataParams.numerator].file
+                        :
+                    defaultTables[dataPresetsRedux[state.currentData].geography][dataParams.numerator].file,
+                denominator:
+                    dataParams.denominator === "properties" ? "properties" : 
+                    dataPresetsRedux[state.currentData].tables.hasOwnProperty(dataParams.denominator) 
+                        ? 
+                    dataPresetsRedux[state.currentData].tables[dataParams.denominator].file
+                        :
+                    defaultTables[dataPresetsRedux[state.currentData].geography][dataParams.denominator].file,
+            }
+
             if (state.dataParams.zAxisParams !== null) {
                 dataParams.zAxisParams.nIndex = dataParams.nIndex;
                 dataParams.zAxisParams.dIndex = dataParams.dIndex;
@@ -464,8 +567,13 @@ var reducer = (state = INITIAL_STATE, action) => {
                 dataParams.dIndex = state.storedIndex;
                 dataParams.dRange = state.storedRange;
             }
-
-            const mapData = state.mapParams.binMode !== 'dynamic' && state.mapParams.mapType === 'natural_breaks' ? generateMapData({...state, dataParams}) : state.mapData
+            
+            const mapData = 
+                state.mapParams.binMode !== 'dynamic' && state.mapParams.mapType === 'natural_breaks' && shallowEqual(state.dataParams, dataParams)
+                    ? 
+                generateMapData({...state, dataParams}) 
+                    : 
+                state.mapData
 
             if (dataParams.nType === 'characteristic' && state.dataParams.nType === 'time-series') {
                 return {
@@ -473,37 +581,56 @@ var reducer = (state = INITIAL_STATE, action) => {
                     storedIndex: state.dataParams.nIndex,
                     storedRange: state.dataParams.nRange,
                     dataParams,
-                    mapData
+                    mapData,
+                    currentTable
                 }
             } else {
                 return {
                     ...state,
                     dataParams,
-                    mapData
+                    mapData,
+                    currentTable
                 }
             }
         }
-        case 'SET_VARIABLE_PARAMS_AND_DATASET':
-            const { params, dataset, dataMapParams } = action.payload.params;
-
-            let dataAndParamsObj = {
+        case 'SET_VARIABLE_PARAMS_AND_DATASET':{
+            const dataParams = {
                 ...state.dataParams,
-                ...params
+                ...action.payload.params.params
             };
 
-            let dataAndMapParamsObj = {
+            const mapParams = {
                 ...state.mapParams,
-                ...dataMapParams
+                ...action.payload.params.dataMapParams
+            }
+
+            const currentTable = {
+                numerator: 
+                    dataParams.numerator === "properties" ? "properties" : 
+                    dataPresetsRedux[state.currentData].tables.hasOwnProperty(dataParams.numerator) 
+                        ? 
+                    dataPresetsRedux[state.currentData].tables[dataParams.numerator].file
+                        :
+                    defaultTables[dataPresetsRedux[state.currentData].geography][dataParams.numerator].file,
+                denominator:
+                    dataParams.denominator === "properties" ? "properties" : 
+                    dataPresetsRedux[state.currentData].tables.hasOwnProperty(dataParams.denominator) 
+                        ? 
+                    dataPresetsRedux[state.currentData].tables[dataParams.denominator].file
+                        :
+                    defaultTables[dataPresetsRedux[state.currentData].geography][dataParams.denominator].file,
             }
             
             return {
                 ...state,
-                dataParams: dataAndParamsObj,
-                mapParams: dataAndMapParamsObj,
+                dataParams,
+                mapParams,
+                currentTable,
                 selectionKeys: [],
                 selectionIndex: [],
-                currentData: dataset
+                currentData: action.payload.params.dataset
             };
+        }
         case 'SET_Z_VARIABLE_PARAMS':
             let paramObjZ = {
                 ...state.dataParams,
@@ -536,7 +663,8 @@ var reducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 mapParams,
                 dataParams,
-                currentZVariable: zAxisVariableReset
+                currentZVariable: zAxisVariableReset,
+                mapData: generateMapData({...state, mapParams})
             }
         }
         case 'SET_PANELS':
@@ -553,47 +681,33 @@ var reducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 currentVariable: action.payload.name
             }
-        case 'SET_SELECTION_DATA':
+        case 'UPDATE_SELECTION':{
+            let sidebarData = {};
+            let geoidList = state.selectionKeys;
+            let chartData;
+            
+            if (action.payload.type === "update"){
+                const currCaseData = dataPresetsRedux[state.currentData].tables[state.chartParams.table]?.file||defaultTables[dataPresetsRedux[state.currentData].geography][state.chartParams.table].file
+                const additionalParams = {
+                    populationData: state.chartParams.populationNormalized ? state.storedGeojson[state.currentData].properties[action.payload.geoid].population : null,
+                    geoid: action.payload.geoid
+                }
+                chartData = getDataForCharts(state.storedData[currCaseData], state.dates, additionalParams);
+            }
+            if (action.payload.type === "append"){
+
+            }
+            if (action.payload.type === "bulk-append"){
+
+            }
+            if (action.payload.type === "remove"){
+
+            }
             return {
                 ...state,
-                chartData: action.payload.data.values,
-                selectionKeys: [action.payload.data.name],
-                selectionIndex: [action.payload.data.index]
+                chartData
             }
-        case 'APPEND_SELECTION_DATA':
-            let appendedChartData = state.chartData;
-            let countCol = action.payload.data.name + ' Daily Count'
-            let sumCol = action.payload.data.name + ' Total Cases'
-
-            for (let i=0; i<appendedChartData.length;i++) {
-                appendedChartData[i][countCol] = action.payload.data.values[i][countCol]
-                appendedChartData[i][sumCol] = action.payload.data.values[i][sumCol]
-            }
-
-            let appendedSelectionNames = [action.payload.data.name, ...state.selectionKeys];
-            let appendedSelectionIndex = [action.payload.data.index, ...state.selectionIndex];
-
-            return {
-                ...state,
-                chartData: appendedChartData,
-                selectionKeys: appendedSelectionNames,
-                selectionIndex: appendedSelectionIndex,
-            }
-        case 'REMOVE_SELECTION_DATA':
-            let removedSelectionNames = [...state.selectionKeys]
-            let tempRemoveIndex = removedSelectionNames.indexOf(action.payload.data.name)
-            removedSelectionNames.splice(tempRemoveIndex, 1)
-
-            let removedSelectionIndex = [...state.selectionIndex]
-            tempRemoveIndex = removedSelectionIndex.indexOf(action.payload.data.index)
-            removedSelectionIndex.splice(tempRemoveIndex, 1)
-
-
-            return {
-                ...state,
-                selectionKeys: removedSelectionNames,
-                selectionIndex: removedSelectionIndex,
-            }
+        }
         case 'SET_ANCHOR_EL':
             return {
                 ...state,
@@ -604,18 +718,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 mapLoaded: action.payload.loaded
             }
-        case 'LAZY_LOAD_DATA':
-            let toCache = [...new Set(Object.values(action.payload.dataPresets).map(dataset => dataset.tables).flat())]
-
-            toCache.forEach(dataset => {
-                fetch(`${process.env.PUBLIC_URL}/csv/${dataset}.csv`)
-            })
-
-            return {
-                ...state,
-                lazyFetched: true
-            }
-        case 'SET_NOTIFICATION':
+        case 'SET_NOTIFICATION':{
             return {
                 ...state,
                 notification: {
@@ -623,6 +726,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                     location: action.payload.location
                 }
             }
+        }
         case 'SET_URL_PARAMS':
             const { urlParams, presets } = action.payload;
 

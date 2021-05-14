@@ -130,6 +130,8 @@ const MainLineChart = () => {
     const chartData = useSelector(state => state.chartData.data);
     const maximums = useSelector(state => state.chartData.maximums);
     const dataParams = useSelector(state => state.dataParams);
+    const nType = useSelector(state => state.dataParams.nType);
+    const dType = useSelector(state => state.dataParams.dType);
     const currentVariable = useSelector(state => state.currentVariable);
     const currentData = useSelector(state => state.currentData);
     const selectionKeys = useSelector(state => state.selectionKeys);
@@ -147,11 +149,11 @@ const MainLineChart = () => {
     const handlePopSwitch = () => dispatch(setChartParams({populationNormalized: !populationNormalized}))
     const handleSummarizedSwitch = () => setShowSummarized(prev => !prev)
     const handleChange = (newValue) => {
-        if (dataParams.nType === "time-series" && dataParams.dType === "time-series") {
+        if (nType === "time-series" && dType === "time-series") {
             dispatch(setVariableParams({nIndex: newValue, dIndex: newValue}))
-        } else if (dataParams.nType === "time-series") {
+        } else if (nType === "time-series") {
             dispatch(setVariableParams({nIndex: newValue}))
-        } else if (dataParams.dType === "time-series") {
+        } else if (dType === "time-series") {
             dispatch(setVariableParams({dIndex: newValue}))
         } else if (currentVariable.includes('Testing')){
             dispatch(setVariableParams({nIndex: newValue}))
@@ -201,7 +203,7 @@ const MainLineChart = () => {
                         margin={{
                             top: 0, right: 10, left: 10, bottom: 20,
                         }}
-                        onClick={dataParams.nType === 'characteristic' ? '' : chartSetDate}
+                        onClick={nType === 'characteristic' ? '' : chartSetDate}
                     >
                         <XAxis 
                             dataKey="date"

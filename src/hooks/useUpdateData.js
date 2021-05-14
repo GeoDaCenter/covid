@@ -1,34 +1,11 @@
 import { useSelector, useDispatch } from 'react-redux';
 import {useState, useEffect} from 'react';
-import { 
-  getParseCSV, getParsePbf, mergeData, getColumns, loadJson,
-  getDataForBins, getDataForCharts, getDataForLisa, getDateLists,
-  getLisaValues, getCartogramValues, getDateIndices } from '../utils'; //getVarId
-// Main data loader
-// This functions asynchronously accesses the Geojson data and CSVs
-//   then performs a join and loads the data into the store
+import { getDataForBins } from '../utils';
 
 import { 
-  initialDataLoad, addTables, dataLoad, dataLoadExisting, storeLisaValues, storeCartogramData, setDates, setNotification,
-  setMapParams, setUrlParams, setPanelState, updateMap } from '../actions';
+  storeLisaValues, storeCartogramData, setMapParams, updateMap } from '../actions';
 
-import { colorScales, fixedScales, dataPresets, defaultTables, dataPresetsRedux, variablePresets, colors } from '../config';
-import { set } from 'immutable';
-
-function debounce(func, wait, immediate) {
-  var timeout;
-  return function() {
-      var context = this, args = arguments;
-      var later = function() {
-          timeout = null;
-          if (!immediate) func.apply(context, args);
-      };
-      var callNow = immediate && !timeout;
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-      if (callNow) func.apply(context, args);
-  };
-};
+import { colorScales, fixedScales } from '../config';
 
 export default function useUpdateData(gdaProxy){
 
@@ -121,7 +98,7 @@ export default function useUpdateData(gdaProxy){
   }, [currentData, storedGeojson[currentData], dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.nIndex, dataParams.dIndex, mapParams.binMode, dataParams.variableName, mapParams.mapType, mapParams.vizType])
 
   // Trigger on index change while dynamic bin mode
-  useEffect(() => {
+  useEffect(() => { 
     if (!isCalculating && storedData[currentTable.numerator] && gdaProxy.ready && mapParams.binMode === 'dynamic' && mapParams.mapType !== 'lisa') {
       updateBins()
     }

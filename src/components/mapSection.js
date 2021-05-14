@@ -9,14 +9,14 @@ import * as Pbf from 'pbf';
 // deck GL and helper function import
 import DeckGL from '@deck.gl/react';
 import {MapView, FlyToInterpolator} from '@deck.gl/core';
-import { PolygonLayer, ScatterplotLayer, IconLayer, TextLayer } from '@deck.gl/layers';
+import { PolygonLayer, ScatterplotLayer, IconLayer, TextLayer, GeoJsonLayer } from '@deck.gl/layers';
 import {DataFilterExtension} from '@deck.gl/extensions';
 import {fitBounds} from '@math.gl/web-mercator';
 import MapboxGLMap from 'react-map-gl';
 
 // component, action, util, and config import
 import { Geocoder } from '../components';
-import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData, openContextMenu, setNotification, setTooltipContent, setDotDensityData, incrementDate} from '../actions';
+import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData, openContextMenu, setNotification, setTooltipContent, setDotDensityData, updateSelectionKeys} from '../actions';
 import { mapFn, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, getURLParams } from '../utils';
 import { colors, colorScales, MAPBOX_ACCESS_TOKEN } from '../config';
 import MAP_STYLE from '../config/style.json';
@@ -182,26 +182,24 @@ function debounce(func, wait, immediate) {
     };
 };
 
-function MapSection(props){ 
+function MapSection(){ 
     // fetch pieces of state from store    
     const storedData = useSelector(state => state.storedData);
-    const storedGeojson = useSelector(state => state.storedGeojson);
     const currentData = useSelector(state => state.currentData);
-    const storedLisaData = useSelector(state => state.storedLisaData);
     const dateIndices = useSelector(state => state.dateIndices);
     const storedCartogramData = useSelector(state => state.storedCartogramData);
     const panelState = useSelector(state => state.panelState);
     const dates = useSelector(state => state.dates);
-    const dataParams = useSelector(state => state.dataParams);
     const mapParams = useSelector(state => state.mapParams);
     const urlParams = useSelector(state => state.urlParams);
     const dotDensityData = useSelector(state => state.dotDensityData);
-    const isPlaying = useSelector(state => state.isPlaying);
-    const currentMapData = useSelector(state => state.mapData);
+    const currentMapData = useSelector(state => state.mapData.data);
+    const currentMapID = useSelector(state => state.mapData.params);
+    const currentMapGeography = useSelector(state => state.storedGeojson[state.currentData]?.data);
 
     // component state elements
     // hover and highlight geographibes
-    const [hoverGeog, setHoverGeog] = useState({x:null, y:null, object:null});
+    const [hoverGeog, setHoverGeog] = useState(null);
     const [highlightGeog, setHighlightGeog] = useState([]);
     const [incrementTimeout, setIncrementTimeout] = useState(null);
 
@@ -293,12 +291,6 @@ function MapSection(props){
             }))
         })
     },[])
-
-    // create unique var id -- used only for cartogram data
-    // TODO: swap this out...
-    // useEffect(() => {
-    //     setCurrVarId(getVarId(currentData, dataParams))
-    // }, [dataParams, mapParams, currentData, storedLisaData])
 
     // change map center on viztype change
     useEffect(() => {
@@ -464,9 +456,9 @@ function MapSection(props){
         }));
     }, [urlParams])
 
-    useEffect(() => {
-        forceUpdate()
-    }, [currentMapData, dataParams.numerator, dataParams.variableName, dataParams.denominator, dataParams.nIndex, mapParams.overlay, storedLisaData])
+    // useEffect(() => {
+    //     forceUpdate()
+    // }, [currentMapID])
 
     const GetMapView = () => {
         try {
@@ -525,51 +517,35 @@ function MapSection(props){
     }
 
     const handleMapHover = ({x, y, object, layer}) => {
-        dispatch(setTooltipContent(x, y, Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : object?.GEOID))
-        if (object && object.GEOID) {
-            if (object.GEOID !== hoverGeog) setHoverGeog(object.GEOID)
+        dispatch(setTooltipContent(x, y, Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : object?.properties?.GEOID));
+
+        if (object && object?.properties?.GEOID) {
+            if (object?.properties?.GEOID !== hoverGeog) setHoverGeog(object?.properties?.GEOID)
         } else {
             setHoverGeog(null)
         }
     }
 
     const handleMapClick = (info, e) => {
+
         if (e.rightButton) return;
-        let tempData = storedData[currentData][storedData[currentData].findIndex(o => o.properties.GEOID === info.object?.GEOID)]        
-        const dataName = tempData.properties.hasOwnProperty('state_abbr') ? `${tempData.properties.NAME}, ${tempData.properties.state_abbr}` : `${tempData.properties.NAME}`
-        
+        const objectID = +info.object?.properties?.GEOID
+        if (!objectID) return;
+
         if (multipleSelect) {
             try {
-                if (highlightGeog.indexOf(info.object?.GEOID) === -1) {
-                    let GeoidList = [...highlightGeog, info.object?.GEOID]
+                if (highlightGeog.indexOf(objectID) === -1) {
+                    let GeoidList = [...highlightGeog, objectID]
                     setHighlightGeog(GeoidList); 
-                    dispatch(
-                        appendSelectionData({
-                            values: getDataForCharts(
-                                [tempData], 
-                                'cases', 
-                                dateIndices[currentData]['cases'], 
-                                dates, 
-                                dataName
-                            ),
-                            name: dataName,
-                            index: findIndex(storedData[currentData], o => o.properties.GEOID === info.object?.GEOID)
-                        })
-                    );
+                    dispatch(updateSelectionKeys(objectID, 'append'))
                     window.localStorage.setItem('SHARED_GEOID', GeoidList);
                     window.localStorage.setItem('SHARED_VIEW', JSON.stringify(GetMapView()));
                 } else {
                     if (highlightGeog.length > 1) {
                         let tempArray = [...highlightGeog];
-                        let geogIndex = tempArray.indexOf(info.object?.GEOID);
-                        tempArray.splice(geogIndex, 1);
+                        tempArray.splice(tempArray.indexOf(objectID), 1);
                         setHighlightGeog(tempArray);
-                        dispatch(
-                            removeSelectionData({
-                                name: dataName,
-                                index: findIndex(storedData[currentData], o => o.properties.GEOID === info.object?.GEOID)
-                            })
-                        )
+                        dispatch(updateSelectionKeys(objectID, 'remove'))
                         window.localStorage.setItem('SHARED_GEOID', tempArray);
                         window.localStorage.setItem('SHARED_VIEW', JSON.stringify(GetMapView()));
                     }
@@ -577,21 +553,9 @@ function MapSection(props){
             } catch {}
         } else {
             try {
-                setHighlightGeog([info.object?.GEOID]); 
-                dispatch(
-                    setSelectionData({
-                        values: getDataForCharts(
-                            [tempData], 
-                            'cases', 
-                            dateIndices[currentData]['cases'], 
-                            dates, 
-                            dataName
-                        ),
-                        name: dataName,
-                        index: findIndex(storedData[currentData], o => o.properties.GEOID === info.object?.GEOID)
-                    })
-                );
-                window.localStorage.setItem('SHARED_GEOID', info.object?.GEOID);
+                setHighlightGeog([objectID]); 
+                dispatch(updateSelectionKeys(objectID, 'update'))
+                window.localStorage.setItem('SHARED_GEOID', objectID);
                 window.localStorage.setItem('SHARED_VIEW', JSON.stringify(GetMapView()));
             } catch {}
         }
@@ -656,17 +620,12 @@ function MapSection(props){
         }  
     }, []);
 
-    
-
-    // const handleIncrement = (delay) => !staticTimeout && statsicTimeout = setTimeout(() => dispatch(incrementDate(1)), delay);
-
     const FullLayers = {
-        choropleth: new PolygonLayer({
+        choropleth: new GeoJsonLayer({
             id: 'choropleth',
-            data: currentMapData.data,
-            getFillColor: d => d.color,
-            getPolygon: d => d.geom,
-            getElevation: d => d.height,
+            data: currentMapGeography,
+            getFillColor: d => currentMapData[d.properties.GEOID].color,
+            getElevation: d => currentMapData[d.properties.GEOID].height,
             pickable: true,
             stroked: false,
             filled: true,
@@ -678,16 +637,14 @@ function MapSection(props){
             onClick: handleMapClick,           
             updateTriggers: {
                 opacity: mapParams.overlay,
-                getPolygon: [currentMapData.params, dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
-                getElevation: [currentMapData.params, dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
-                getFillColor: [currentMapData.params, dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
+                getElevation: currentMapID,
+                getFillColor: currentMapID,
             }
         }),
-        choroplethHighlight:  new PolygonLayer({
+        choroplethHighlight:  new GeoJsonLayer({
             id: 'highlightLayer',
-            data: currentMapData.data,
-            getPolygon: d => d.geom,
-            getLineColor: d => highlightGeog.indexOf(d.GEOID)!==-1 ? mapParams.vizType === 'dotDensity' ? [240,240,240] : [0, 104, 109] : [0, 104, 109, 0], 
+            data: currentMapGeography,
+            getLineColor: d => highlightGeog.indexOf(d.properties.GEOID)!==-1 ? mapParams.vizType === 'dotDensity' ? [240,240,240] : [0, 104, 109] : [0, 104, 109, 0], 
             opacity: 0.8,
             material:false,
             pickable: false,
@@ -698,16 +655,14 @@ function MapSection(props){
             lineWidthMinPixels: 1,
             lineWidthMaxPixels: 10,
             updateTriggers: {
-                getPolygon: currentData,
                 getLineColor: highlightGeog
             }
         }),
-        choroplethHover: new PolygonLayer({
+        choroplethHover: new GeoJsonLayer({
             id: 'hoverHighlightlayer',    
-            data: currentMapData.data,
-            getPolygon: d => d.geom,
-            getLineColor: d => hoverGeog === d.GEOID ? mapParams.vizType === 'dotDensity' ? [200,200,200] : [50, 50, 50] : [50, 50, 50, 0], 
-            getElevation: d => d.height,
+            data: currentMapGeography,
+            getLineColor: d => hoverGeog === d.properties.GEOID ? mapParams.vizType === 'dotDensity' ? [200,200,200] : [50, 50, 50] : [50, 50, 50, 0], 
+            getElevation: d => currentMapData[d.properties.GEOID].height,
             pickable: false,
             stroked: true,
             filled:false,
@@ -720,7 +675,7 @@ function MapSection(props){
             updateTriggers: {
                 getPolygon: currentData,
                 getLineColor: hoverGeog,
-                getElevation: [currentMapData.data, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
+                getElevation: currentMapID,
                 extruded: mapParams.vizType
             }
         }),
@@ -973,57 +928,24 @@ function MapSection(props){
                 window.addEventListener('mousemove', listener);
                 window.addEventListener('mouseup', removeListeners);
             } else {
-    
                 const {x, y, width, height } = boxSelectDims;
     
                 let layerIds = ['choropleth'];
-    
-                let features = deckRef.current.pickObjects(
-                        {
-                            x, y: y-50, width, height, layerIds
-                        }
-                    )
+                let features = deckRef.current.pickObjects({x, y: y-50, width, height, layerIds})
+
                 let GeoidList = [];
                 for (let i=0; i<features.length; i++) {
-                    if (GeoidList.indexOf(features[i].object?.GEOID) !== -1) continue
-                    const tempGEOID = features[i].object?.GEOID
-                    const tempData = storedData[currentData][storedData[currentData].findIndex(o => o.properties.GEOID === tempGEOID)]        
-                    const dataName = tempData.properties.hasOwnProperty('state_abbr') ? `${tempData.properties.NAME}, ${tempData.properties.state_abbr}` : `${tempData.properties.NAME}`
-                    GeoidList.push(tempGEOID)                    
-                    
-                    if (i===0){
-                        dispatch(
-                            setSelectionData({
-                                values: getDataForCharts(
-                                    [tempData], 
-                                    'cases', 
-                                    dateIndices[currentData]['cases'], 
-                                    dates, 
-                                    dataName
-                                ),
-                                name: dataName,
-                                index: findIndex(storedData[currentData], o => o.properties.GEOID === tempGEOID)
-                            })
-                        );
-                    } else {
-                        dispatch(
-                            appendSelectionData({
-                                values: getDataForCharts(
-                                    [tempData], 
-                                    'cases', 
-                                    dateIndices[currentData]['cases'], 
-                                    dates, 
-                                    dataName
-                                ),
-                                name: dataName,
-                                index: findIndex(storedData[currentData], o => o.properties.GEOID === tempGEOID)
-                            })
-                        );
-                    }
+                    const objectID = features[i].object?.properties?.GEOID
+                    if (!objectID || GeoidList.indexOf(objectID) !== -1) continue
+                    GeoidList.push(objectID)
                 }
+                
+                dispatch(updateSelectionKeys(GeoidList,'bulk-append'));
                 setHighlightGeog(GeoidList); 
+
                 window.localStorage.setItem('SHARED_GEOID', GeoidList);
                 window.localStorage.setItem('SHARED_VIEW', JSON.stringify(GetMapView()));
+
                 setBoxSelectDims({});
                 removeListeners();
                 setBoxSelect(false)
@@ -1140,7 +1062,8 @@ function MapSection(props){
                         title="Share this Map"
                         id="shareButton"
                         shareNotification={shared}
-                        onClick={() => handleShare({mapParams, dataParams, currentData, coords: GetMapView(), lastDateIndex: dateIndices[currentData][dataParams.numerator]})}
+                        // todo migrate handleShare to custom hook
+                        // onClick={() => handleShare({mapParams, dataParams, currentData, coords: GetMapView(), lastDateIndex: dateIndices[currentData][dataParams.numerator]})}
                     >
                         {SVG.share}
                     </NavInlineButton>

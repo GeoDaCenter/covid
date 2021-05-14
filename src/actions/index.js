@@ -291,6 +291,16 @@ export const setSelectionData = ( data ) => {
     }
 }
 
+export const updateSelectionKeys  = ( geoid, type) => {
+    return {
+        type: 'UPDATE_SELECTION',
+        payload: {
+            geoid,
+            type
+        }
+    }
+}
+
 // adds to current chart data from current data
 export const appendSelectionData = ( data ) => {
     return {

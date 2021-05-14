@@ -5,6 +5,8 @@ import Slider from '@material-ui/core/Slider';
 import Button from '@material-ui/core/Button';
 import styled from 'styled-components';
 import { setVariableParams, incrementDate } from '../actions';
+import useTickUpdate from '../hooks/useTickUpdate';
+import { colors } from '../config';
 
 const SliderContainer = styled.div`
     color: white;
@@ -87,6 +89,19 @@ const LineSlider = styled(Slider)`
     // }
     span.MuiSlider-thumb.MuiSlider-active {
         box-shadow: 0px 0px 10px rgba(200,200,200,0.5);
+    }
+`
+
+const SpeedSlider = styled.div`
+    position:absolute;
+    padding:0.75em 0.5em 0.25em 0.5em;
+    background:${colors.gray};
+    border-radius:0.5em;
+    left:0;
+    top:calc(100% + 0.25em);
+    box-shadow: 0px 0px 5px rgb(0 0 0 / 70%);
+    p {
+        text-align:center;
     }
 `
 
@@ -232,7 +247,7 @@ function DateSlider(){
     const [timerId, setTimerId] = useState(null);
     const [timeCase, setTimeCase] = useState(0);
     const [dRange, setDRange] = useState(false);
-
+    const [isTicking, setIsTicking, timing, setTiming] = useTickUpdate()
 
     useEffect(() => {
         if (nType === "time-series" && dType === "time-series") {
@@ -312,12 +327,11 @@ function DateSlider(){
         }
     }
 
-    const handlePlayPause = (timerId, rate, interval) => {
-        if (timerId === null) {
-            setTimerId(setInterval(o => dispatch(incrementDate(rate)), interval))
+    const handlePlayPause = () => {
+        if (!isTicking) {
+            setIsTicking(true)
         } else {
-            clearInterval(timerId);
-            setTimerId(null)
+            setIsTicking(false)
         }
     }
 
@@ -330,8 +344,8 @@ function DateSlider(){
                         } 
                     
                     {nType !== 'characteristic' && <PlayPauseContainer item xs={1}>
-                        <PlayPauseButton id="playPause" onClick={() => handlePlayPause(timerId, 1, 100)}>
-                            {timerId === null ? 
+                        <PlayPauseButton id="playPause" onClick={() => handlePlayPause()}>
+                            {!isTicking ? 
                                 <svg x="0px" y="0px" viewBox="0 0 100 100" ><path d="M78.627,47.203L24.873,16.167c-1.082-0.625-2.227-0.625-3.311,0C20.478,16.793,20,17.948,20,19.199V81.27  c0,1.25,0.478,2.406,1.561,3.031c0.542,0.313,1.051,0.469,1.656,0.469c0.604,0,1.161-0.156,1.703-0.469l53.731-31.035  c1.083-0.625,1.738-1.781,1.738-3.031C80.389,48.984,79.71,47.829,78.627,47.203z"></path></svg>
                                 : 
                                 <svg x="0px" y="0px" viewBox="0 0 100 100">
@@ -396,6 +410,20 @@ function DateSlider(){
                     </Grid>
                     {(rangeType !== 'custom' && nType !== 'characteristic') && <InitialDate>{dates[0]}</InitialDate>}
                     {(rangeType !== 'custom' && nType !== 'characteristic') && <EndDate>{dateIndices !== undefined && dates[dateIndices.slice(-1,)[0]]}</EndDate>}
+                    {isTicking && 
+                        <SpeedSlider>
+                        <p>Animation Speed</p>
+                        <LineSlider 
+                                value={1000 - timing} 
+                                onChange={(e, newValue) => setTiming(1000 - newValue)} 
+                                // getAriaValueText={valuetext}
+                                // valueLabelFormat={valuetext}
+                                // aria-labelledby="aria-valuetext"
+                                min={25}
+                                max={975}
+                                step={25}
+                        />
+                        </SpeedSlider>}
                 </Grid>
             </SliderContainer>
         );
