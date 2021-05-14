@@ -9,8 +9,89 @@ const getLisaColor = (value, bins, colorScale, mapType, numerator, storedLisaDat
 const getColorFunction = (mapType) => mapType === 'lisa' ? getLisaColor : getSimpleColor;
 const getMapFunction = (mapType, table) => mapType.includes("hinge") ? mapFnHinge : table.includes('testing') ? mapFnTesting : mapFnNb;
 const getHeight = (val, dataParams) => val*(dataParams.scale3D/((dataParams.nType === "time-series" && dataParams.nRange === null) ? (dataParams.nIndex)/10 : 1));
+const generateMapData = (state) => {
+    if (!state.mapParams.bins.hasOwnProperty("bins") || (state.mapParams.mapType !== 'lisa' && !state.mapParams.bins.breaks)) {
+        return state
+    };
+
+    let returnArray = [];
+    let returnObj = {};
+    let i = 0;
+
+    const getTable = (i, predicate) => {
+        if (state.dataParams[predicate] === 'properties' ) {
+            return state.storedGeojson[state.currentData].data.features[i].properties 
+        } else {
+            try {
+                return state.storedData[dataPresetsRedux[state.currentData].tables[state.dataParams[predicate]].file][0][state.storedGeojson[state.currentData].data.features[i].properties.GEOID]
+            } catch {
+                return state.storedData[defaultTables[dataPresetsRedux[state.currentData].geography][state.dataParams[predicate]].file][0][state.storedGeojson[state.currentData].data.features[i].properties.GEOID];
+            }
+        }
+    }
+
+    const getColor = getColorFunction(state.mapParams.mapType)
+    const mapFn = getMapFunction(state.mapParams.mapType, state.dataParams.numerator)
+    switch(state.mapParams.vizType) {
+        // case 'cartogram':{
+        //     if (storedGeojson[currentData] === undefined) break;
+        //     while (i < data.length) {
+        //         const tempGeoid = storedGeojson[currentData]['indexOrder'][data[i].properties?.id]
+        //         const tempColor = GetSimpleFillColor(data[i].value, tempGeoid, bins.breaks, mapType);
+        //         returnArray.push({
+        //             GEOID: tempGeoid,
+        //             position: data[i].position,
+        //             color: tempColor,
+        //             radius: data[i].radius
+        //         })
+        //         i++;
+        //     }
+        //     break
+        // }
+        default: {
+            for (let i=0; i<state.storedGeojson[state.currentData].data.features.length; i++){
+                for (let n=0; n<state.storedGeojson[state.currentData].data.features[i].geometry.coordinates.length; n++){
+                    const tempVal = dataFn(getTable(i, 'numerator'), getTable(i, 'denominator'), state.dataParams)
+                    
+                    const tempColor = getColor(
+                        tempVal, 
+                        state.mapParams.bins.breaks, 
+                        state.mapParams.colorScale, 
+                        state.mapParams.mapType, 
+                        state.dataParams.numerator, 
+                        state.storedLisaData, 
+                        state.storedGeojson, 
+                        state.currentData, 
+                        state.storedGeojson[state.currentData].data.features[i].properties.GEOID,
+                        mapFn
+                    );
+
+                    const tempHeight = getHeight(tempVal, state.dataParams);
+
+                    if (tempColor === null) {
+                        continue;
+                    }
+
+                    returnArray.push({
+                        GEOID: state.storedGeojson[state.currentData].data.features[i].properties.GEOID,
+                        geom: state.storedGeojson[state.currentData].data.features[i].geometry.coordinates[n],
+                        color: tempColor,
+                        height: tempHeight
+                    })
+                    returnObj[state.storedGeojson[state.currentData].data.features[i].properties.GEOID] = tempColor
+                }
+            }
+        }
+    }
+    return {
+        params: getVarId(state.currentData, state.dataParams),
+        data: returnArray, 
+        dots: returnObj
+    }
+};
 
 var reducer = (state = INITIAL_STATE, action) => {
+    console.log(action.type)
     switch(action.type) {
         case 'INITIAL_LOAD': {
             const dataParams = {
@@ -55,87 +136,11 @@ var reducer = (state = INITIAL_STATE, action) => {
         }
         case 'UPDATE_MAP': {
             // const {data, varID} = parameters; //dataName, dataType, params, colorScale
-            if (!state.mapParams.bins.hasOwnProperty("bins") || (state.mapParams.mapType !== 'lisa' && !state.mapParams.bins.breaks)) {
-                return state
-            };
-    
-            let returnArray = [];
-            let returnObj = {};
-            let i = 0;
-
-            const getTable = (i, predicate) => {
-                if (state.dataParams[predicate] === 'properties' ) {
-                    return state.storedGeojson[state.currentData].data.features[i].properties 
-                } else {
-                    try {
-                        return state.storedData[dataPresetsRedux[state.currentData].tables[state.dataParams[predicate]].file][0][state.storedGeojson[state.currentData].data.features[i].properties.GEOID]
-                    } catch {
-                        return state.storedData[defaultTables[dataPresetsRedux[state.currentData].geography][state.dataParams[predicate]].file][0][state.storedGeojson[state.currentData].data.features[i].properties.GEOID];
-                    }
-                }
-            }
-
-            const getColor = getColorFunction(state.mapParams.mapType)
-            const mapFn = getMapFunction(state.mapParams.mapType, state.dataParams.numerator)
-            switch(state.mapParams.vizType) {
-                // case 'cartogram':{
-                //     if (storedGeojson[currentData] === undefined) break;
-                //     while (i < data.length) {
-                //         const tempGeoid = storedGeojson[currentData]['indexOrder'][data[i].properties?.id]
-                //         const tempColor = GetSimpleFillColor(data[i].value, tempGeoid, bins.breaks, mapType);
-                //         returnArray.push({
-                //             GEOID: tempGeoid,
-                //             position: data[i].position,
-                //             color: tempColor,
-                //             radius: data[i].radius
-                //         })
-                //         i++;
-                //     }
-                //     break
-                // }
-                default: {
-                    for (let i=0; i<state.storedGeojson[state.currentData].data.features.length; i++){
-                        for (let n=0; n<state.storedGeojson[state.currentData].data.features[i].geometry.coordinates.length; n++){
-                            const tempVal = dataFn(getTable(i, 'numerator'), getTable(i, 'denominator'), state.dataParams)
-                            
-                            const tempColor = getColor(
-                                tempVal, 
-                                state.mapParams.bins.breaks, 
-                                state.mapParams.colorScale, 
-                                state.mapParams.mapType, 
-                                state.dataParams.numerator, 
-                                state.storedLisaData, 
-                                state.storedGeojson, 
-                                state.currentData, 
-                                state.storedGeojson[state.currentData].data.features[i].properties.GEOID,
-                                mapFn
-                            );
-
-                            const tempHeight = getHeight(tempVal, state.dataParams);
-
-                            if (tempColor === null) {
-                                continue;
-                            }
-
-                            returnArray.push({
-                                GEOID: state.storedGeojson[state.currentData].data.features[i].properties.GEOID,
-                                geom: state.storedGeojson[state.currentData].data.features[i].geometry.coordinates[n],
-                                color: tempColor,
-                                height: tempHeight
-                            })
-                            returnObj[state.storedGeojson[state.currentData].data.features[i].properties.GEOID] = tempColor
-                        }
-                    }
-                }
-
-                return {
-                    ...state,
-                    mapData: {
-                        params: getVarId(state.currentData, state.dataParams),
-                        data: returnArray, 
-                        dots: returnObj
-                    }
-                }
+            
+            const mapData = generateMapData(state)
+            return {
+                ...state,
+                mapData
             }
         }
         case 'DATA_LOAD':{
@@ -242,7 +247,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                 panelState: panelsExDataObj
 
             };
-        case 'SET_NEW_BINS':
+        case 'SET_NEW_BINS':{
             let [ binsVariableParams, binsMapParams] 
                 = [{
                     ...state.dataParams,
@@ -256,6 +261,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                 dataParams: binsVariableParams,
                 mapParams: binsMapParams
             }
+        }
         case 'SET_GEOID': 
             return {
                 ...state,
@@ -279,15 +285,18 @@ var reducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 storedGeojson: geojsonObj
             };
-        case 'SET_STORED_LISA_DATA':
+        case 'SET_STORED_LISA_DATA':{
             // let lisaObj = {
             //     ...state.storedLisaData,
             // }
             // lisaObj[action.payload.name] = action.payload.data
+            
             return {
                 ...state,
-                storedLisaData: action.payload.data
+                storedLisaData: action.payload.data,
+                mapData: generateMapData({...state, storedLisaData: action.payload.data})
             };
+        }
         case 'SET_STORED_CARTOGRAM_DATA':
             // let cartoObj = {
             //     ...state.storedCartogramData,
@@ -425,38 +434,44 @@ var reducer = (state = INITIAL_STATE, action) => {
                 isPlaying:false,
             }
         }
-        case 'SET_VARIABLE_PARAMS':
-            let paramObj = {
+        case 'SET_VARIABLE_PARAMS':{
+            let dataParams = {
                 ...state.dataParams,
                 ...action.payload.params
             }
 
             if (state.dataParams.zAxisParams !== null) {
-                paramObj.zAxisParams.nIndex = paramObj.nIndex;
-                paramObj.zAxisParams.dIndex = paramObj.dIndex;
+                dataParams.zAxisParams.nIndex = dataParams.nIndex;
+                dataParams.zAxisParams.dIndex = dataParams.dIndex;
             }
 
-            if (paramObj.nType === 'time-series' && paramObj.nIndex === null) {
-                paramObj.nIndex = state.storedIndex;
-                paramObj.nRange = state.storedRange;
+            if (dataParams.nType === 'time-series' && dataParams.nIndex === null) {
+                dataParams.nIndex = state.storedIndex;
+                dataParams.nRange = state.storedRange;
             }
-            if (paramObj.dType === 'time-series' && paramObj.dIndex === null) {
-                paramObj.dIndex = state.storedIndex;
-                paramObj.dRange = state.storedRange;
+            if (dataParams.dType === 'time-series' && dataParams.dIndex === null) {
+                dataParams.dIndex = state.storedIndex;
+                dataParams.dRange = state.storedRange;
             }
-            if (paramObj.nType === 'characteristic' && state.dataParams.nType === 'time-series') {
+
+            const mapData = state.mapParams.binMode !== 'dynamic' && state.mapParams.mapType === 'natural_breaks' ? generateMapData({...state, dataParams}) : state.mapData
+
+            if (dataParams.nType === 'characteristic' && state.dataParams.nType === 'time-series') {
                 return {
                     ...state,
                     storedIndex: state.dataParams.nIndex,
                     storedRange: state.dataParams.nRange,
-                    dataParams: paramObj,
+                    dataParams,
+                    mapData
                 }
             } else {
                 return {
                     ...state,
-                    dataParams: paramObj 
+                    dataParams,
+                    mapData
                 }
             }
+        }
         case 'SET_VARIABLE_PARAMS_AND_DATASET':
             const { params, dataset, dataMapParams } = action.payload.params;
 
@@ -490,28 +505,29 @@ var reducer = (state = INITIAL_STATE, action) => {
                 dataParams: paramObjZ 
             }
 
-        case 'SET_MAP_PARAMS':
-            let mapParamObj = {
+        case 'SET_MAP_PARAMS':{
+            let mapParams = {
                 ...state.mapParams,
                 ...action.payload.params
             }
 
-            let zAxisReset = {
+            let dataParams = {
                 ...state.dataParams
             }
             let zAxisVariableReset = state.currentZVariable
 
             if (action.payload.params.vizType !== '3D') {
-                zAxisReset.zAxisParams = null
+                dataParams.zAxisParams = null
                 zAxisVariableReset = null
             }
 
             return {
                 ...state,
-                mapParams: mapParamObj,
-                dataParams: zAxisReset,
+                mapParams,
+                dataParams,
                 currentZVariable: zAxisVariableReset
             }
+        }
         case 'SET_PANELS':
             let panelsObj = {
                 ...state.panelState,

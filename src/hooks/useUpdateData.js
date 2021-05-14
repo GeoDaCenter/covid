@@ -131,22 +131,13 @@ export default function useUpdateData(gdaProxy){
   // Gets bins and sets map parameters
   useEffect(() => {
     if (!isCalculating && storedGeojson[currentData] && storedData[currentTable.numerator] && gdaProxy.ready && mapParams.binMode !== 'dynamic' && mapParams.mapType !== 'lisa') {
-      console.log(currentTable.numerator)
       updateBins();
     }
   }, [dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.dRange, mapParams.mapType, mapParams.vizType] );
   
   useEffect(() => {
-    if (storedGeojson[currentData]) dispatch(updateMap());
-  }, [dataParams.nIndex, storedGeojson])
-
-  useEffect(() => {
     if (storedGeojson[currentData] && mapParams.mapType !== 'lisa' ) dispatch(updateMap());
   }, [mapParams.bins.breaks])
-
-  useEffect(() => {
-    if (storedGeojson[currentData] && mapParams.mapType === 'lisa' ) dispatch(updateMap());
-  }, [storedLisaData])
 
   return [
       updateBins,
