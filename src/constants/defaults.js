@@ -13,7 +13,7 @@ export const INITIAL_STATE = {
   dotDensityData: [],
   chartData: [{}],
   selectionKeys: [],
-  selectionIndex: [],
+  selectionNames: [],
   centroids: {},
   dates: {},
   isPlaying:false,

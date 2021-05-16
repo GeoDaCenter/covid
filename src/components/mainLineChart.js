@@ -136,13 +136,14 @@ const MainLineChart = () => {
     const currentVariable = useSelector(state => state.currentVariable);
     const currentData = useSelector(state => state.currentData);
     const selectionKeys = useSelector(state => state.selectionKeys);
+    const selectionNames = useSelector(state => state.selectionNames);
     const storedData = useSelector(state => state.storedData);
     const currentTable = useSelector(state => state.currentTable);
     const populationNormalized = useSelector(state => state.chartParams.populationNormalized);
 
     const [logChart, setLogChart] = useState(false);
     const [showSummarized, setShowSummarized] = useState(true);
-    const [strokeOpacities, setStrokeOpacities] = useState([]);
+    const [activeLine, setActiveLine] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -181,18 +182,18 @@ const MainLineChart = () => {
     }
 
     const handleLegendHover = (o) => {
-        setStrokeOpacities(o.dataKey)
+        setActiveLine(o.dataKey)
     }
 
     const handleLegendLeave = () => {
-        setStrokeOpacities(null)
+        setActiveLine(false)
     }
 
     if (maximums && chartData) {
         return (
             <ChartContainer id="lineChart">
-                {(columns === undefined || columns.length === 2) ?
-                    <ChartTitle>Total Cases and 7-Day Average New Cases{columns && columns.length > 0 && `: ${columns[0].slice(0,-4)}`}</ChartTitle>
+                {(selectionNames.length < 2) ?
+                    <ChartTitle>Total Cases and 7-Day Average New Cases{selectionNames.length && `: ${selectionNames[0]}`}</ChartTitle>
                     : 
                     <ChartTitle>7-Day Average New Cases</ChartTitle>
                 }
@@ -265,14 +266,14 @@ const MainLineChart = () => {
                             fillOpacity={0.15}
                             isAnimationActive={false}
                         />
-                        {selectionKeys.length < 2 && <Line type="monotone" yAxisId="left" dataKey={selectionKeys.length > 0 ? selectionKeys[0] + " Total Cases" : "sum"} name="Total Cases" stroke={colors.lightgray} dot={false} isAnimationActive={false} /> }
-                        {selectionKeys.length < 2 && <Line type="monotone" yAxisId="right" dataKey={selectionKeys.length > 0 ? selectionKeys[0] + " Daily Count": "count"} name="7-Day Average New Cases" stroke={colors.yellow} dot={false} isAnimationActive={false} /> }
+                        {selectionKeys.length < 2 && <Line type="monotone" yAxisId="left" dataKey={"sum"} name="Total Cases" stroke={colors.lightgray} dot={false} isAnimationActive={false} /> }
+                        {selectionKeys.length < 2 && <Line type="monotone" yAxisId="right" dataKey={selectionKeys.length > 0 ? selectionNames[0] : "count"} name="7-Day Average New Cases" stroke={colors.yellow} dot={false} isAnimationActive={false} /> }
                         
                         {(selectionKeys.length > 1 && showSummarized) &&
                                 <Line 
                                     type='monotone'
                                     yAxisId='right'
-                                    dataKey='summarized' 
+                                    dataKey='sum'
                                     name='Total For Selection' 
                                     stroke={colors.lightgray}
                                     strokeWidth={3} 
@@ -280,25 +281,25 @@ const MainLineChart = () => {
                                     isAnimationActive={false}  
                                 />
                         }
-                        {columns && 
-                            columns.map((key,index) => {
+                        {selectionKeys.length > 1 && 
+                            selectionNames.map((key,index) => {
                                 return <Line 
                                     type='monotone'
-                                    yAxisId='right' 
+                                    yAxisId='left' 
                                     dataKey={key} 
-                                    name={key} 
-                                    stroke={colors.qualtitiveScale[index]} 
+                                    name={key + ' 7-Day Ave'} 
+                                    stroke={selectionKeys.length > colors.qualtitiveScale.length ? 'white' : colors.qualtitiveScale[index]} 
                                     dot={false} 
                                     isAnimationActive={false}  
-                                    strokeOpacity={strokeOpacities === key.includes('7-Day') ? 1 : 0.7}
-                                    strokeWidth={strokeOpacities === key.includes('7-Day') ? 3 : 1}
+                                    strokeOpacity={activeLine === key ? 1 : 0.7}
+                                    strokeWidth={activeLine === key ? 3 : 1}
                                 />}
                             )
                         }
-                        <Legend 
+                        {selectionKeys.length < colors.qualtitiveScale.length && <Legend 
                             onMouseEnter={handleLegendHover} 
                             onMouseLeave={handleLegendLeave}
-                        />
+                        />}
                     </LineChart>
                 </ResponsiveContainer>
                 <SwitchesContainer>

@@ -295,11 +295,18 @@ var reducer = (state = INITIAL_STATE, action) => {
         }
         case 'UPDATE_CHART': {
             const currCaseData = dataPresetsRedux[state.currentData].tables[state.chartParams.table]?.file||defaultTables[dataPresetsRedux[state.currentData].geography][state.chartParams.table].file
+            let populationData = [];
+
+            if (state.chartParams.populationNormalized){
+                populationData.push(0)
+                for (let i=0; i<state.storedGeojson[state.currentData].data.features.length; i++){
+                    populationData[0] += state.storedGeojson[state.currentData].data.features[i].properties.population
+                }
+            }
             const additionalParams = {
-                populationData: state.chartParams.populationNormalized ? state.storedGeojson[state.currentData].data.features : null
+                populationData
             }
             const chartData = getDataForCharts(state.storedData[currCaseData], state.dates, additionalParams);
-
             return {
                 ...state,
                 chartData
@@ -310,10 +317,28 @@ var reducer = (state = INITIAL_STATE, action) => {
                 ...state.chartParams,
                 ...action.payload.params
             }
+
             const currCaseData = dataPresetsRedux[state.currentData].tables[state.chartParams.table]?.file||defaultTables[dataPresetsRedux[state.currentData].geography][state.chartParams.table].file
+            const properties = state.storedGeojson[state.currentData].properties
+
+            let populationData = [];
+
+            if (chartParams.populationNormalized){
+                if (state.selectionKeys.length){
+                    populationData = state.selectionKeys.map(key => properties[key].population)
+                } else {
+                    populationData.push(0)
+                    for (let i=0; i<state.storedGeojson[state.currentData].data.features.length; i++){
+                        populationData[0] += state.storedGeojson[state.currentData].data.features[i].properties.population
+                    }
+                }
+            }            
             const additionalParams = {
-                populationData: chartParams.populationNormalized ? state.storedGeojson[state.currentData].data.features : null
+                populationData,
+                geoid:state.selectionKeys,
+                name:state.selectionNames
             }
+            
             const chartData = getDataForCharts(state.storedData[currCaseData], state.dates, additionalParams);
 
             return {
@@ -673,35 +698,43 @@ var reducer = (state = INITIAL_STATE, action) => {
             }
         case 'UPDATE_SELECTION':{
             let sidebarData = {}
-            let geoidList = state.selectionKeys
+            let selectionKeys = [...state.selectionKeys]
             let chartData
             
             const properties = state.storedGeojson[state.currentData].properties
             const geography = dataPresetsRedux[state.currentData].geography
 
-            if (action.payload.type === "update"){
-                const currCaseData = dataPresetsRedux[state.currentData].tables[state.chartParams.table]?.file||defaultTables[dataPresetsRedux[state.currentData].geography][state.chartParams.table].file
-                const additionalParams = {
-                    populationData: state.chartParams.populationNormalized ? state.storedGeojson[state.currentData].properties[action.payload.geoid].population : null,
-                    geoid: [action.payload.geoid],
-                    name: [geography === 'County' ? properties[action.payload.geoid].NAME + ', ' + properties[action.payload.geoid].state_abbr : properties[action.payload.geoid].name]
-                }
+            if (!properties || !geography) return state;
 
-                chartData = getDataForCharts(state.storedData[currCaseData], state.dates, additionalParams);
-                chartData.columns = additionalParams.name.flatMap((entry) => [entry +' sum', entry +' 7-Day'])
+            if (action.payload.type === "update"){
+                selectionKeys = [action.payload.geoid]
             }
             if (action.payload.type === "append"){
-
+                selectionKeys.push(action.payload.geoid)
             }
             if (action.payload.type === "bulk-append"){
-
+                for (let i=0;i<action.payload.geoid.length; i++) {
+                    if (selectionKeys.indexOf(action.payload.geoid[i]) === -1) selectionKeys.push(action.payload.geoid[i])
+                }
             }
-            if (action.payload.type === "remove"){
-
+            if (action.payload.type === "remove"){                
+                selectionKeys.splice(selectionKeys.indexOf(action.payload.geoid), 1);
             }
+            
+            const currCaseData = dataPresetsRedux[state.currentData].tables[state.chartParams.table]?.file||defaultTables[dataPresetsRedux[state.currentData].geography][state.chartParams.table].fil
+
+            const additionalParams = {
+                geoid: selectionKeys,
+                populationData: state.chartParams.populationNormalized ? selectionKeys.map(key => properties[key].population) : [],
+                name: geography === 'County' ? selectionKeys.map(key => properties[key].NAME + ', ' + properties[key].state_abbr) : selectionKeys.map(key => properties[key].name)
+            };
+
+            chartData = getDataForCharts(state.storedData[currCaseData], state.dates, additionalParams);
             return {
                 ...state,
-                chartData
+                chartData,
+                selectionKeys,
+                selectionNames: additionalParams.name
             }
         }
         case 'SET_ANCHOR_EL':

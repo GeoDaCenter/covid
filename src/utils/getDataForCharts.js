@@ -1,13 +1,10 @@
 const getDataForCharts = (table, dates, additionalParams={}) => {
-    const { populationData=null, name=null, interval=1, geoid=false } = additionalParams;
-    let [data,_,dateIndices] = table;
-    if (geoid) {
-        data = {}
-        for (let i=0; i<geoid.length;i++){
-            data[geoid[i]] = table[0][geoid]
-        }
-    }
+    const { populationData=[], name=[], interval=1, geoid=[] } = additionalParams;
+    const data = table[0];
+    const dateIndices = table[2]
     
+    const populationModifier = populationData.length ? (val, population) => val === val && (val/population)*100_000 : val => val
+
     // get list of all features (GEOIDs/FIPS)
     const features = Object.keys(data);
     // return array
@@ -16,40 +13,40 @@ const getDataForCharts = (table, dates, additionalParams={}) => {
     let j = interval === 1 ? 7 : 1;
 
     // based on whether specific to geography, or all cases
-    const countCol = name === null ? 'count' : name +  ' Daily Count';
-    const sumCol = name === null ? 'sum' : name +  ' Total Cases';
+    const countCol = 'count';
+    const sumCol = 'sum';
     
     let maximums = {
         count:0,
         sum:0
     }
 
-    if (geoid){
+    
+    if (geoid.length){
         for (let y=0; y<geoid.length; y++){
             const currName = name[y];
             const currGeoid = geoid[y];
-            const sumCol = `${currName} sum`
-            const countCol = `${currName} 7-Day`
+            
             for (let n=0; n<dates.length; n+=interval) {
                 let tempObj = {};
                 // if we are missing data for that date, skip it
                 if (dateIndices.indexOf(n)===-1){
                     tempObj[sumCol] = null;
-                    tempObj[countCol] = null;
-                    rtn[n/interval] = tempObj;
+                    tempObj[currName] = null;
+                    rtn[n/interval] = {...rtn[n/interval], ...tempObj};
                 } else {
                     // loop through features and sum values for index
-                    tempObj[sumCol] = data[currGeoid][n]
+                    tempObj[sumCol] = rtn[n/interval][sumCol]||0 + data[currGeoid][n]
                     tempObj.date = dates[n]
                     if ((n < 7 && j === 7)||(n < 1 && j === 1)) {
-                        tempObj[countCol] = data[currGeoid][n]
+                        tempObj[currName] = populationModifier(data[currGeoid][n], populationData[y]||null)
                     } else {
-                        tempObj[countCol] = (data[currGeoid][n] - rtn[n/interval-j][sumCol])/(j)
+                        tempObj[currName] = populationModifier((data[currGeoid][n] - data[currGeoid][n-j]||0)/(j), populationData[y]||null)
                     }
                     rtn[n/interval] = {...rtn[n/interval], ...tempObj};
                 }
                 if (tempObj[sumCol] > maximums.sum) maximums.sum = tempObj[sumCol]
-                if (tempObj[countCol] > maximums.count) maximums.count = tempObj[countCol]
+                if (tempObj[currName] > maximums.count) maximums.count = tempObj[currName]
             }
         }
     } else {
@@ -80,26 +77,21 @@ const getDataForCharts = (table, dates, additionalParams={}) => {
         }
     }
     
-    if (populationData && !geoid) {
-        let populationSum = 0;
-        if (populationData.length) {
-            for (let i=0; i<populationData.length; i++) {
-                populationSum+=populationData[i].properties.population
+    if (populationData.length) {
+        const populationSum = populationData.reduce((a,b) => a+b)
+        if (geoid.length){
+            for (let i=0; i<rtn.length; i++) {
+                if (dateIndices.indexOf(i)!==-1) rtn[i][sumCol] = populationModifier(rtn[i][sumCol], populationSum)
             }
         } else {
-            populationSum = populationData;
-        }
-        const populationModifier = (val) => (val/populationSum)*100_000
-
-        
-        for (let i=0; i<rtn.length; i++) {
-            rtn[i][sumCol] = populationModifier(rtn[i][sumCol])
-            rtn[i][countCol] = populationModifier(rtn[i][countCol])
+            for (let i=0; i<rtn.length; i++) {
+                rtn[i][sumCol] = populationModifier(rtn[i][sumCol], populationSum)
+                rtn[i][countCol] = populationModifier(rtn[i][countCol], populationSum)
+            }
+            maximums.count = populationModifier(maximums.count)
         }
         maximums.sum = populationModifier(maximums.sum)
-        maximums.count = populationModifier(maximums.count)
     }
-
     return {data: rtn, maximums};
 }
 

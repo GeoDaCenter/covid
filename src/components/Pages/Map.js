@@ -71,7 +71,7 @@ export default function Map() {
   const variableName = useSelector(state => state.dataParams.variableName);
   const panelState = useSelector(state => state.panelState);
   const mapLoaded = useSelector(state => state.mapLoaded);
-  // const fullState = useSelector(state => state);
+  const fullState = useSelector(state => state);
 
   const dispatch = useDispatch(); 
 
@@ -138,7 +138,7 @@ export default function Map() {
       <NavBar />
       {isLoading && <div id="loadingIcon" style={{backgroundImage: `url('${process.env.PUBLIC_URL}assets/img/bw_preloader.gif')`}}></div>}
       <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
-        {/* <button onClick={() => console.log(fullState)}>Log state</button> */}
+        <button onClick={() => console.log(fullState)}>Log state</button>
       </header>
       <div id="mainContainer" className={isLoading ? 'loading' : ''}>
         <MapSection />
