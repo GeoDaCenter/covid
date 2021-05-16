@@ -48,7 +48,7 @@ const dataFn = (numeratorData, denominatorData, dataParams)  => {
   const nRange = nIndex <= dataParams.nRange ? nIndex : dataParams.nRange;
   const dRange = dIndex <= dataParams.dRange ? dIndex : dataParams.dRange;
   
-  if (numeratorData === undefined) {
+  if (numeratorData === undefined || denominatorData === undefined) {
     return null;
   } else if ((nProperty !== null && numeratorData[nProperty] === undefined) && (nIndex !== null && numeratorData[nIndex] === undefined)){
     return null;

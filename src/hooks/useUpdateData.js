@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
-import {useState, useEffect} from 'react';
+import { useState, useEffect} from 'react';
 import { getDataForBins } from '../utils';
 
 import { 
@@ -17,12 +17,19 @@ export default function useUpdateData(gdaProxy){
     const storedData = useSelector(state => state.storedData);
     const storedGeojson = useSelector(state => state.storedGeojson);
     const storedLisaData = useSelector(state => state.storedLisaData);
-    const [isCalculating, setIsCalculating] = useState(false)
+    const [isCalculating, setIsCalculating] = useState(false);
 
     const updateBins =  async () => { 
       setIsCalculating(true)
       if (gdaProxy.ready && (storedData[currentTable.numerator]||dataParams.numerator==='properties') && mapParams.mapType !== "lisa"){
-        if (dataParams.fixedScale === null || mapParams.mapType !== 'natural_breaks') {
+        if (dataParams.fixedScale) {
+          dispatch(
+            setMapParams({
+              bins: fixedScales[dataParams.fixedScale],
+              colorScale: colorScales[dataParams.fixedScale]
+            })
+          )
+        } else {
           let binData = getDataForBins(
             dataParams.numerator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.numerator][0], 
             dataParams.denominator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.denominator][0], 
@@ -30,7 +37,7 @@ export default function useUpdateData(gdaProxy){
           );
           let nb = mapParams.mapType === "natural_breaks" ? 
             await gdaProxy.Bins.NaturalBreaks(mapParams.nBins, binData) :
-            await gdaProxy.Bins.Hinge15(mapParams.nBins, binData)  
+            await gdaProxy.Bins.Hinge15(mapParams.nBins, binData)
           dispatch(
             setMapParams({
               bins: {
@@ -38,13 +45,6 @@ export default function useUpdateData(gdaProxy){
                 breaks: [-Math.pow(10, 12), ...nb.breaks.slice(1,-1), Math.pow(10, 12)]
               },
               colorScale: mapParams.mapType === 'natural_breaks' ? colorScales[dataParams.colorScale || mapParams.mapType] : colorScales[mapParams.mapType || dataParams.colorScale]
-            })
-          )
-        } else {
-          dispatch(
-            setMapParams({
-              bins: fixedScales[dataParams.fixedScale],
-              colorScale: colorScales[dataParams.fixedScale]
             })
           )
         }
@@ -88,29 +88,22 @@ export default function useUpdateData(gdaProxy){
   // Both of these are computationally heavy.
   useEffect(() => {
     if (!isCalculating && gdaProxy.ready) {
-      if (mapParams.mapType === "lisa" ){
-        updateLisa()
-      }
-      if (mapParams.vizType === 'cartogram'){
-        updateCartogram()
-      }
+      if (mapParams.mapType === "lisa" ) updateLisa()
+      if (mapParams.vizType === 'cartogram') updateCartogram()
     }
   }, [currentData, storedGeojson[currentData], dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.nIndex, dataParams.dIndex, mapParams.binMode, dataParams.variableName, mapParams.mapType, mapParams.vizType])
-
+  
+  const binReady = () => (storedGeojson[currentData] && storedData[currentTable.numerator] && gdaProxy.ready && mapParams.mapType !== 'lisa')
   // Trigger on index change while dynamic bin mode
   useEffect(() => { 
-    if (!isCalculating && storedData[currentTable.numerator] && gdaProxy.ready && mapParams.binMode === 'dynamic' && mapParams.mapType !== 'lisa') {
-      updateBins()
-    }
-  }, [dataParams.nIndex, dataParams.dIndex, mapParams.binMode, dataParams.variableName, dataParams.nRange, mapParams.mapType, mapParams.vizType] ); 
+    if (binReady() && mapParams.binMode === 'dynamic') updateBins()
+  }, [dataParams.nIndex, mapParams.binMode]); 
 
   // Trigger on parameter change for metric values
   // Gets bins and sets map parameters
   useEffect(() => {
-    if (!isCalculating && storedGeojson[currentData] && storedData[currentTable.numerator] && gdaProxy.ready && mapParams.binMode !== 'dynamic' && mapParams.mapType !== 'lisa') {
-      updateBins();
-    }
-  }, [dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.dRange, mapParams.mapType, mapParams.vizType] );
+    if (binReady()) updateBins()
+  }, [dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.dRange, mapParams.mapType, currentData] );
   
   useEffect(() => {
     if (storedGeojson[currentData] && mapParams.mapType !== 'lisa' ) dispatch(updateMap());

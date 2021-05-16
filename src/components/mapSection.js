@@ -182,7 +182,7 @@ function debounce(func, wait, immediate) {
     };
 };
 
-function MapSection(){ 
+export default function MapSection(){ 
     // fetch pieces of state from store    
     const storedData = useSelector(state => state.storedData);
     const currentData = useSelector(state => state.currentData);
@@ -195,7 +195,8 @@ function MapSection(){
     const dotDensityData = useSelector(state => state.dotDensityData);
     const currentMapData = useSelector(state => state.mapData.data);
     const currentMapID = useSelector(state => state.mapData.params);
-    const currentMapGeography = useSelector(state => state.storedGeojson[state.currentData]?.data);
+    const storedGeojson = useSelector(state => state.storedGeojson)
+    const currentMapGeography = storedGeojson[currentData]?.data||[]
 
     // component state elements
     // hover and highlight geographibes
@@ -456,9 +457,9 @@ function MapSection(){
         }));
     }, [urlParams])
 
-    // useEffect(() => {
-    //     forceUpdate()
-    // }, [currentMapID])
+    useEffect(() => {
+        forceUpdate()
+    }, [currentMapID])
 
     const GetMapView = () => {
         try {
@@ -525,6 +526,8 @@ function MapSection(){
             setHoverGeog(null)
         }
     }
+
+    const getScatterColor = (geoid) => currentMapData[geoid]?.color;
 
     const handleMapClick = (info, e) => {
 
@@ -673,7 +676,6 @@ function MapSection(){
             lineWidthMinPixels: 2,
             lineWidthMaxPixels: 10,
             updateTriggers: {
-                getPolygon: currentData,
                 getLineColor: hoverGeog,
                 getElevation: currentMapID,
                 extruded: mapParams.vizType
@@ -786,7 +788,7 @@ function MapSection(){
             pickable:false,
             filled:true,
             getPosition: f => [f[1]/1e5, f[2]/1e5],
-            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? currentMapData.dots[f[3]]||[0,0,0] : colors.dotDensity[f[0]],
+            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? getScatterColor(f[3]) : colors.dotDensity[f[0]],
             getRadius: 100,  
             radiusMinPixels: Math.sqrt(currentZoom)-1.5,
             getFilterValue: f => (f[0]===8 && mapParams.dotDensityParams.raceCodes[f[0]]) ? 1 : 0,
@@ -795,7 +797,7 @@ function MapSection(){
             extensions: [new DataFilterExtension({filterSize: 1})],
             updateTriggers: {
                 getPosition: dotDensityData.length,
-                getFillColor: [mapParams.dotDensityParams.colorCOVID, currentMapData.dots, dotDensityData],
+                getFillColor: [mapParams.dotDensityParams.colorCOVID, currentMapID, dotDensityData],
                 data: dotDensityData,
                 getFilterValue: [dotDensityData.length, mapParams.dotDensityParams.raceCodes[8]],
                 radiusMinPixels: currentZoom
@@ -807,7 +809,7 @@ function MapSection(){
             pickable:false,
             filled:true,
             getPosition: f => [f[1]/1e5, f[2]/1e5],
-            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? currentMapData.dots[f[3]]||[0,0,0] : colors.dotDensity[f[0]],
+            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? getScatterColor(f[3]) : colors.dotDensity[f[0]],
             getRadius: 100,  
             radiusMinPixels: Math.sqrt(currentZoom)-1.5,
             getFilterValue: f => (f[0]!==8 && mapParams.dotDensityParams.raceCodes[f[0]]) ? 1 : 0,
@@ -816,7 +818,7 @@ function MapSection(){
             extensions: [new DataFilterExtension({filterSize: 1})],
             updateTriggers: {
                 getPosition: dotDensityData.length,
-                getFillColor: [mapParams.dotDensityParams.colorCOVID, currentMapData.dots, dotDensityData],
+                getFillColor: [mapParams.dotDensityParams.colorCOVID, currentMapID, dotDensityData],
                 data: dotDensityData,
                 getFilterValue: [dotDensityData.length, 
                     mapParams.dotDensityParams.raceCodes[1],mapParams.dotDensityParams.raceCodes[2],mapParams.dotDensityParams.raceCodes[3],mapParams.dotDensityParams.raceCodes[4],
@@ -895,6 +897,7 @@ function MapSection(){
         // setY(e?.targetTouches[0]?.clientY-15)
         // console.log(e)
     }
+    
 
     const removeListeners = () => {
         window.removeEventListener('touchmove', touchListener)
@@ -1081,5 +1084,3 @@ function MapSection(){
         </MapContainer>
     ) 
 }
-
-export default MapSection

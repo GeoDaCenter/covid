@@ -137,9 +137,9 @@ export default function Map() {
       <Preloader loaded={mapLoaded} />
       <NavBar />
       {isLoading && <div id="loadingIcon" style={{backgroundImage: `url('${process.env.PUBLIC_URL}assets/img/bw_preloader.gif')`}}></div>}
-      {/* <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
-        <button onClick={() => console.log(fullState)}>Log state</button>
-      </header> */}
+      <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
+        {/* <button onClick={() => console.log(fullState)}>Log state</button> */}
+      </header>
       <div id="mainContainer" className={isLoading ? 'loading' : ''}>
         <MapSection />
         <TopPanel />

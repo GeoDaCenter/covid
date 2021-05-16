@@ -1,14 +1,13 @@
 const getDataForCharts = (table, dates, additionalParams={}) => {
     const { populationData=null, name=null, interval=1, geoid=false } = additionalParams;
     let [data,_,dateIndices] = table;
-
     if (geoid) {
         data = {}
         for (let i=0; i<geoid.length;i++){
             data[geoid[i]] = table[0][geoid]
         }
     }
-
+    
     // get list of all features (GEOIDs/FIPS)
     const features = Object.keys(data);
     // return array
@@ -21,8 +20,8 @@ const getDataForCharts = (table, dates, additionalParams={}) => {
     const sumCol = name === null ? 'sum' : name +  ' Total Cases';
     
     let maximums = {
-        [countCol]:0,
-        [sumCol]:0
+        count:0,
+        sum:0
     }
 
     if (geoid){
@@ -31,7 +30,6 @@ const getDataForCharts = (table, dates, additionalParams={}) => {
             const currGeoid = geoid[y];
             const sumCol = `${currName} sum`
             const countCol = `${currName} 7-Day`
-
             for (let n=0; n<dates.length; n+=interval) {
                 let tempObj = {};
                 // if we are missing data for that date, skip it
@@ -46,12 +44,12 @@ const getDataForCharts = (table, dates, additionalParams={}) => {
                     if ((n < 7 && j === 7)||(n < 1 && j === 1)) {
                         tempObj[countCol] = data[currGeoid][n]
                     } else {
-                        tempObj[countCol] = (data[currGeoid][n] - data[currGeoid][n-j][sumCol])/(j)
+                        tempObj[countCol] = (data[currGeoid][n] - rtn[n/interval-j][sumCol])/(j)
                     }
                     rtn[n/interval] = {...rtn[n/interval], ...tempObj};
                 }
-                if (tempObj[sumCol] > maximums[sumCol]) maximums[sumCol] = tempObj[sumCol]
-                if (tempObj[countCol] > maximums[countCol]) maximums[countCol] = tempObj[countCol]
+                if (tempObj[sumCol] > maximums.sum) maximums.sum = tempObj[sumCol]
+                if (tempObj[countCol] > maximums.count) maximums.count = tempObj[countCol]
             }
         }
     } else {
@@ -77,8 +75,8 @@ const getDataForCharts = (table, dates, additionalParams={}) => {
                 }
                 rtn[n/interval] = tempObj;
             }
-            if (tempObj[sumCol] > maximums[sumCol]) maximums[sumCol] = tempObj[sumCol]
-            if (tempObj[countCol] > maximums[countCol]) maximums[countCol] = tempObj[countCol]
+            if (tempObj[sumCol] > maximums.sum) maximums.sum = tempObj[sumCol]
+            if (tempObj[countCol] > maximums.count) maximums.count = tempObj[countCol]
         }
     }
     
@@ -98,8 +96,8 @@ const getDataForCharts = (table, dates, additionalParams={}) => {
             rtn[i][sumCol] = populationModifier(rtn[i][sumCol])
             rtn[i][countCol] = populationModifier(rtn[i][countCol])
         }
-        maximums[sumCol] = populationModifier(maximums[sumCol])
-        maximums[countCol] = populationModifier(maximums[countCol])
+        maximums.sum = populationModifier(maximums.sum)
+        maximums.count = populationModifier(maximums.count)
     }
 
     return {data: rtn, maximums};

@@ -383,11 +383,6 @@ var reducer = (state = INITIAL_STATE, action) => {
                 storedGeojson: geojsonObj
             };
         case 'SET_STORED_LISA_DATA':{
-            // let lisaObj = {
-            //     ...state.storedLisaData,
-            // }
-            // lisaObj[action.payload.name] = action.payload.data
-            
             return {
                 ...state,
                 storedLisaData: action.payload.data,
@@ -395,10 +390,6 @@ var reducer = (state = INITIAL_STATE, action) => {
             };
         }
         case 'SET_STORED_CARTOGRAM_DATA':
-            // let cartoObj = {
-            //     ...state.storedCartogramData,
-            // }
-            // cartoObj[action.payload.name] = action.payload.data
             return {
                 ...state,
                 storedCartogramData: action.payload.data
@@ -569,7 +560,7 @@ var reducer = (state = INITIAL_STATE, action) => {
             }
             
             const mapData = 
-                state.mapParams.binMode !== 'dynamic' && state.mapParams.mapType === 'natural_breaks' && shallowEqual(state.dataParams, dataParams)
+                state.mapParams.binMode !== 'dynamic' && (state.mapParams.mapType !== 'lisa') && shallowEqual(state.dataParams, dataParams)
                     ? 
                 generateMapData({...state, dataParams}) 
                     : 
@@ -663,8 +654,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 mapParams,
                 dataParams,
-                currentZVariable: zAxisVariableReset,
-                mapData: generateMapData({...state, mapParams})
+                currentZVariable: zAxisVariableReset
             }
         }
         case 'SET_PANELS':
@@ -682,17 +672,23 @@ var reducer = (state = INITIAL_STATE, action) => {
                 currentVariable: action.payload.name
             }
         case 'UPDATE_SELECTION':{
-            let sidebarData = {};
-            let geoidList = state.selectionKeys;
-            let chartData;
+            let sidebarData = {}
+            let geoidList = state.selectionKeys
+            let chartData
             
+            const properties = state.storedGeojson[state.currentData].properties
+            const geography = dataPresetsRedux[state.currentData].geography
+
             if (action.payload.type === "update"){
                 const currCaseData = dataPresetsRedux[state.currentData].tables[state.chartParams.table]?.file||defaultTables[dataPresetsRedux[state.currentData].geography][state.chartParams.table].file
                 const additionalParams = {
                     populationData: state.chartParams.populationNormalized ? state.storedGeojson[state.currentData].properties[action.payload.geoid].population : null,
-                    geoid: action.payload.geoid
+                    geoid: [action.payload.geoid],
+                    name: [geography === 'County' ? properties[action.payload.geoid].NAME + ', ' + properties[action.payload.geoid].state_abbr : properties[action.payload.geoid].name]
                 }
+
                 chartData = getDataForCharts(state.storedData[currCaseData], state.dates, additionalParams);
+                chartData.columns = additionalParams.name.flatMap((entry) => [entry +' sum', entry +' 7-Day'])
             }
             if (action.payload.type === "append"){
 

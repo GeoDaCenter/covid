@@ -128,6 +128,7 @@ const CustomTooltip = props => {
 
 const MainLineChart = () => {
     const chartData = useSelector(state => state.chartData.data);
+    const columns = useSelector(state => state.chartData.columns);
     const maximums = useSelector(state => state.chartData.maximums);
     const dataParams = useSelector(state => state.dataParams);
     const nType = useSelector(state => state.dataParams.nType);
@@ -186,15 +187,13 @@ const MainLineChart = () => {
     const handleLegendLeave = () => {
         setStrokeOpacities(null)
     }
+
     if (maximums && chartData) {
         return (
             <ChartContainer id="lineChart">
-                {selectionKeys.length < 2 && 
-                    <ChartTitle>
-                        Total Cases and 7-Day Average New Cases{selectionKeys.length>0 && `: ${selectionKeys[0]}`}
-                    </ChartTitle>
-                }
-                {selectionKeys.length >= 2 && 
+                {(columns === undefined || columns.length === 2) ?
+                    <ChartTitle>Total Cases and 7-Day Average New Cases{columns && columns.length > 0 && `: ${columns[0].slice(0,-4)}`}</ChartTitle>
+                    : 
                     <ChartTitle>7-Day Average New Cases</ChartTitle>
                 }
                 <ResponsiveContainer width="100%" height="80%">
@@ -281,18 +280,18 @@ const MainLineChart = () => {
                                     isAnimationActive={false}  
                                 />
                         }
-                        {selectionKeys.length > 1 && 
-                            selectionKeys.map((key,index) => {
+                        {columns && 
+                            columns.map((key,index) => {
                                 return <Line 
                                     type='monotone'
                                     yAxisId='right' 
-                                    dataKey={key + ' Daily Count'} 
+                                    dataKey={key} 
                                     name={key} 
                                     stroke={colors.qualtitiveScale[index]} 
                                     dot={false} 
                                     isAnimationActive={false}  
-                                    strokeOpacity={strokeOpacities === key + ' Daily Count' ? 1 : 0.7}
-                                    strokeWidth={strokeOpacities === key + ' Daily Count' ? 3 : 1}
+                                    strokeOpacity={strokeOpacities === key.includes('7-Day') ? 1 : 0.7}
+                                    strokeWidth={strokeOpacities === key.includes('7-Day') ? 3 : 1}
                                 />}
                             )
                         }

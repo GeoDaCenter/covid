@@ -4,6 +4,7 @@ import { incrementDate } from '../actions';
 
 export default function useTickUpdate(){
     const nIndex = useSelector(state => state.dataParams.nIndex);
+    const mapType = useSelector(state => state.mapParams.mapType);
     const [isTicking, setIsTicking] = useState(false);
     const [tickTimer, setTickTimer] = useState(100);
     const [tickTimeout, setTickTimeout] = useState()
@@ -22,8 +23,13 @@ export default function useTickUpdate(){
             clearTimeout(resetTimeout)
             setResetTimeout(setTimeout(() => setIsTicking(false), 1500))
         }
-
     },[nIndex])
+
+    useEffect(() => {
+        clearTimeout(resetTimeout)
+        clearTimeout(tickTimeout)
+        setIsTicking(false)
+    }, [mapType])
 
     return [isTicking, setIsTicking, tickTimer, setTickTimer]
 }
