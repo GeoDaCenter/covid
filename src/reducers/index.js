@@ -120,9 +120,10 @@ const performOperation = (dataArray, operation, totalPopulation) => {
     }
 } 
 // Prepares data for the previous operation
-const aggregateProperty = (table, properties, geoids, column, operation, specialCase=null) => {
+const aggregateProperty = (table, properties, geoids, prop, operation, specialCase=null) => {
     let dataArray = []
     let totalPopulation = 0;
+    const column = typeof prop === "string" ? prop : Object.keys(Object.values(table)[0])[prop];
     // Loop through and collect data from selected geographies in SelectionIndex
     if (operation === 'weighted_average') {
         for (let i=0; i<geoids.length; i++){
@@ -145,7 +146,6 @@ const aggregateProperty = (table, properties, geoids, column, operation, special
             dataArray.push(table[geoids[i]][column])
         }
     }
-
     return performOperation(dataArray, operation, totalPopulation);
 }
 
@@ -183,7 +183,6 @@ const aggregate2WeekTimeSeries = (table, geoids, endIndex) => {
 const aggregateDataFunction = (numeratorTable, denominatorTable, properties, geoids, operation, params) => {
     let dataArray = []; 
     let totalPopulation = 0;
-    console.log(numeratorTable, denominatorTable, properties, geoids, operation, params)
     
     if (operation === 'weighted_average') {
         for (let i=0; i<geoids.length; i++){
@@ -197,7 +196,6 @@ const aggregateDataFunction = (numeratorTable, denominatorTable, properties, geo
             dataArray.push(dataFn(numeratorTable[geoids[i]], denominatorTable[geoids[i]], params))
         }
     }
-    console.log(dataArray)
 
     return performOperation(dataArray, operation, totalPopulation);
 }
@@ -215,8 +213,9 @@ const generateReport = (geoids, state, dataPresetsRedux, defaultTables) => {
         geography === "County" ? 'Selected Counties' : 'Selected States'
             :
         geography === "County" ? geoids.map(key => properties[key].NAME + ', ' + properties[key].state_abbr).join(", ") : geoids.map(key => properties[key].name).join(", ")
-    
+
     report.population = aggregateProperty(properties, properties, geoids, 'population', 'sum')
+    report.date = state.dates[state.dataParams.nIndex]
 
     report.cases = aggregateTimeseries(state.storedData[currentTables.cases.file][0], properties, geoids, state.dataParams.nIndex, 'sum')
     report.cases7d = (report.cases - aggregateTimeseries(state.storedData[currentTables.cases.file][0], properties, geoids, state.dataParams.nIndex-7, 'sum'))/7
@@ -249,49 +248,65 @@ const generateReport = (geoids, state, dataPresetsRedux, defaultTables) => {
         report.doses_dist100 = (report.doses_dist / report.population) * 100
     }
 
-    
-    if (state.storedData.hasOwnProperty(currentTables.testing.file)){
+    if (state.storedData.hasOwnProperty(currentTables.testing?.file)){
         report.wk_pos = aggregateTimeseries(state.storedData[currentTables.testing_wk_pos.file][0], properties, geoids, state.dataParams.nIndex, 'weighted_average')
-        report.doses_dist14 = aggregate2WeekTimeSeries(state.storedData[currentTables.vaccines_dist?.file][0], geoids, state.dataParams.nIndex)
-        report.doses_dist14 = aggregate2WeekTimeSeries(state.storedData[currentTables.vaccines_dist?.file][0], geoids, state.dataParams.nIndex)
-        report.doses_dist100 = (report.doses_dist / report.population) * 100
+        report.wk_pos14 = aggregate2WeekTimeSeries(state.storedData[currentTables.testing_wk_pos.file][0], geoids, state.dataParams.nIndex)
+        report.tcap = aggregateTimeseries(state.storedData[currentTables.testing_tcap.file][0], properties, geoids, state.dataParams.nIndex, 'weighted_average')
+        report.tcap14 = aggregate2WeekTimeSeries(state.storedData[currentTables.testing_tcap.file][0], geoids, state.dataParams.nIndex)
+        report.testing = aggregateTimeseries(state.storedData[currentTables.testing.file][0], properties, geoids, state.dataParams.nIndex, 'sum')
+        report.ccpt = aggregateTimeseries(state.storedData[currentTables.testing_ccpt.file][0], properties, geoids, state.dataParams.nIndex, 'weighted_average')
     }    
 
-    // if (state.storedData.hasOwnProperty(currentTables.chr_health_factors.file)){
-    //     report.child_poverty = 
-    // }
-//     <ReportSection>
-//     <h2>Community Health Factors<Tooltip id="healthfactor"/></h2>
-//     <h6>Source: <a href="https://www.countyhealthrankings.org/" target="_blank" rel="noopener noreferrer">County Health Rankings</a></h6>
-//     <p>Children in poverty</p><Tooltip id="PovChldPrc"/>
-//     <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'PovChldPrc'), 'weighted_average')}%</h3>
-//     <p>Income inequality<Tooltip id="IncRt"/></p>
-//     <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'IncRt'), 'weighted_average')}</h3>
+    if (state.storedData.hasOwnProperty(currentTables.chr_health_factors?.file)){
+        report.PovChldPrc = aggregateProperty(state.storedData[currentTables.chr_health_factors.file][0], properties, geoids, 'PovChldPrc', 'weighted_average')
+        report.IncRt = aggregateProperty(state.storedData[currentTables.chr_health_factors.file][0], properties, geoids, 'IncRt', 'weighted_average')
+        report.MedianHouseholdIncome = aggregateProperty(state.storedData[currentTables.chr_health_factors.file][0], properties, geoids, 'MedianHouseholdIncome', 'weighted_average')
+        report.FdInsPrc = aggregateProperty(state.storedData[currentTables.chr_health_factors.file][0], properties, geoids, 'FdInsPrc', 'weighted_average')
+        report.UnEmplyPrc = aggregateProperty(state.storedData[currentTables.chr_health_factors.file][0], properties, geoids, 'UnEmplyPrc', 'weighted_average')
+        report.UnInPrc = aggregateProperty(state.storedData[currentTables.chr_health_factors.file][0], properties, geoids, 'UnInPrc', 'weighted_average')
+        report.PrmPhysRt = aggregateProperty(state.storedData[currentTables.chr_health_factors.file][0], properties, geoids, 'PrmPhysRt', 'weighted_average', 'pcp')
+        report.PrevHospRt = aggregateProperty(state.storedData[currentTables.chr_health_factors.file][0], properties, geoids, 'PrevHospRt', 'sum')
+        report.RsiSgrBlckRt = aggregateProperty(state.storedData[currentTables.chr_health_factors.file][0], properties, geoids, 'RsiSgrBlckRt', 'weighted_average')
+        report.SvrHsngPrbRt = aggregateProperty(state.storedData[currentTables.chr_health_factors.file][0], properties, geoids, 'SvrHsngPrbRt', 'weighted_average')
+    }
 
-//     <p>Median household income</p><Tooltip id="MedianHouseholdIncome"/>
-//     <h3>${aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'MedianHouseholdIncome'), 'weighted_average').toLocaleString('en')}</h3>
+    if (state.storedData.hasOwnProperty(currentTables.essential_workers?.file)){
+        report.EssentialPct = aggregateProperty(state.storedData[currentTables.essential_workers.file][0], properties, geoids, 'pct_essential', 'weighted_average')
+    }
 
-//     <p>Food insecurity</p><Tooltip id="FdInsPrc"/>
-//     <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'FdInsPrc'), 'weighted_average')}%</h3>
+    if (state.storedData.hasOwnProperty(currentTables.chr_health_context?.file)){
+        report.Over65YearsPrc = aggregateProperty(state.storedData[currentTables.chr_health_context.file][0], properties, geoids, 'Over65YearsPrc', 'weighted_average')
+        report.AdObPrc = aggregateProperty(state.storedData[currentTables.chr_health_context.file][0], properties, geoids, 'AdObPrc', 'weighted_average')
+        report.AdDibPrc = aggregateProperty(state.storedData[currentTables.chr_health_context.file][0], properties, geoids, 'AdDibPrc', 'weighted_average')
+        report.SmkPrc = aggregateProperty(state.storedData[currentTables.chr_health_context.file][0], properties, geoids, 'SmkPrc', 'weighted_average')
+        report.ExcDrkPrc = aggregateProperty(state.storedData[currentTables.chr_health_context.file][0], properties, geoids, 'ExcDrkPrc', 'weighted_average')
+        report.DrOverdMrtRt = aggregateProperty(state.storedData[currentTables.chr_health_context.file][0], properties, geoids, 'DrOverdMrtRt', 'sum')
+    }
 
-//     <p>Unemployment</p><Tooltip id="UnEmplyPrc"/>
-//     <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'UnEmplyPrc'), 'weighted_average')}%</h3>
+    if (state.storedData.hasOwnProperty(currentTables.chr_life?.file)){
+        report.LfExpRt = aggregateProperty(state.storedData[currentTables.chr_life.file][0], properties, geoids, 'LfExpRt', 'weighted_average')
+        report.SlfHlthPrc = aggregateProperty(state.storedData[currentTables.chr_life.file][0], properties, geoids, 'SlfHlthPrc', 'weighted_average')
+    }
+    
+    if (state.storedData.hasOwnProperty(currentTables.predictions?.file)){
+        report.severity_index = aggregateProperty(state.storedData[currentTables.predictions.file][0], properties, geoids, 'severity_index', 'weighted_average')
+        report.predDates = []
+        for (let i = 2; i < 15; i+=2) report.predDates.push(state.storedData[currentTables.predictions.file][1][i])
+        report.pred1 = aggregateProperty(state.storedData[currentTables.predictions.file][0], properties, geoids, 2, 'sum')
+        report.pred2 = aggregateProperty(state.storedData[currentTables.predictions.file][0], properties, geoids, 4, 'sum')
+        report.pred3 = aggregateProperty(state.storedData[currentTables.predictions.file][0], properties, geoids, 6, 'sum')
+        report.pred4 = aggregateProperty(state.storedData[currentTables.predictions.file][0], properties, geoids, 8, 'sum')
+        report.pred5 = aggregateProperty(state.storedData[currentTables.predictions.file][0], properties, geoids, 10, 'sum')
+        report.pred6 = aggregateProperty(state.storedData[currentTables.predictions.file][0], properties, geoids, 12, 'sum')
+        report.pred7 = aggregateProperty(state.storedData[currentTables.predictions.file][0], properties, geoids, 14, 'sum')
+    }
 
-//     <p>Uninsured</p><Tooltip id="UnInPrc"/>
-//     <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'UnInPrc'), 'weighted_average')}%</h3>
-
-//     <p>Primary care physicians</p><Tooltip id="PrmPhysRt"/>
-//     <h3>{Math.round(aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'PrmPhysRt'), 'weighted_average', 'pcp'))}:1</h3>
-
-//     <p>Preventable hospital stays</p><Tooltip id="PrevHospRt"/>
-//     <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'PrevHospRt'), 'sum')}</h3>
-
-//     <p>Residential segregation <br/>black / white</p>
-//     <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'RsiSgrBlckRt'), 'weighted_average')}</h3>
-
-//     <p>Severe housing problems</p><Tooltip id="SvrHsngPrbRt"/>
-//     <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'SvrHsngPrbRt'), 'weighted_average')}%</h3>
-//   </ReportSection>
+    if (state.storedData.hasOwnProperty(currentTables.pct_home?.file)){
+        report.pct_home = aggregateTimeseries(state.storedData[currentTables.pct_home.file][0], properties, geoids, state.dataParams.nIndex, 'weighted_average')
+        report.pct_fulltime = aggregateTimeseries(state.storedData[currentTables.pct_fulltime.file][0], properties, geoids, state.dataParams.nIndex, 'weighted_average')
+        report.pct_parttime = aggregateTimeseries(state.storedData[currentTables.pct_parttime.file][0], properties, geoids, state.dataParams.nIndex, 'weighted_average')
+    }
+    
     return report
 }
 
@@ -351,10 +366,9 @@ var reducer = (state = INITIAL_STATE, action) => {
             }
         }
         case 'UPDATE_MAP': {
-            const mapData = generateMapData(state)
             return {
                 ...state,
-                mapData
+                mapData: generateMapData(state)
             }
         }
         case 'DATA_LOAD':{
@@ -623,13 +637,6 @@ var reducer = (state = INITIAL_STATE, action) => {
             const currIndices = state.storedData[state.currentTable.numerator][2]
             const nextIndex = currIndices[currIndices.indexOf(state.dataParams.nIndex)+action.payload.index]
             
-            const tooltipContent = {
-                x: state.tooltipContent.x,
-                y: state.tooltipContent.y,
-                data: state.tooltipContent.geoid ? parseTooltipData(state.tooltipContent.geoid, state) : state.tooltipContent,
-                geoid: state.tooltipContent.geoid
-            }
-            
             if (nextIndex === undefined) {
                 return {
                     ...state
@@ -640,8 +647,14 @@ var reducer = (state = INITIAL_STATE, action) => {
                 return {
                     ...state,
                     dataParams,
-                    tooltipContent,
-                    mapData: generateMapData({...state, dataParams}) 
+                    tooltipContent: {
+                        x: state.tooltipContent.x,
+                        y: state.tooltipContent.y,
+                        data: state.tooltipContent.geoid ? parseTooltipData(state.tooltipContent.geoid, state) : state.tooltipContent.data,
+                        geoid: state.tooltipContent.geoid
+                    },
+                    mapData: generateMapData({...state, dataParams}),
+                    sidebarData: state.selectionKeys.length ? generateReport(state.selectionKeys, state, dataPresetsRedux, defaultTables) : state.sidebarData
                 }
             }
         }
@@ -710,40 +723,26 @@ var reducer = (state = INITIAL_STATE, action) => {
             if (dataParams.dType === 'time-series' && dataParams.dIndex === null) {
                 dataParams.dIndex = state.storedIndex;
                 dataParams.dRange = state.storedRange;
-            }
-            
-            const mapData = 
-                state.mapParams.binMode !== 'dynamic' && (state.mapParams.mapType !== 'lisa') && shallowEqual(state.dataParams, dataParams)
-                    ? 
-                generateMapData({...state, dataParams}) 
-                    : 
-                state.mapData
-
-            const tooltipContent = {
-                x: state.tooltipContent.x,
-                y: state.tooltipContent.y,
-                data: state.tooltipContent.geoid ? parseTooltipData(state.tooltipContent.geoid, state) : state.tooltipContent,
-                geoid: state.tooltipContent.geoid
-            }
+            }   
                 
-            if (dataParams.nType === 'characteristic' && state.dataParams.nType === 'time-series') {
-                return {
-                    ...state,
-                    storedIndex: state.dataParams.nIndex,
-                    storedRange: state.dataParams.nRange,
-                    dataParams,
-                    mapData,
-                    currentTable,
-                    tooltipContent
-                }
-            } else {
-                return {
-                    ...state,
-                    dataParams,
-                    mapData,
-                    currentTable,
-                    tooltipContent
-                }
+            return {
+                ...state,
+                storedIndex: (dataParams.nType === 'characteristic' && state.dataParams.nType === 'time-series') ? state.dataParams.nIndex : state.storedIndex,
+                storedRange: (dataParams.nType === 'characteristic' && state.dataParams.nType === 'time-series') ? state.dataParams.nRange : state.storedRange,
+                dataParams,
+                mapData: state.mapParams.binMode !== 'dynamic' && (state.mapParams.mapType !== 'lisa') && shallowEqual(state.dataParams, dataParams)
+                        ? 
+                    generateMapData({...state, dataParams}) 
+                        : 
+                    state.mapData,
+                currentTable,
+                tooltipContent: {
+                    x: state.tooltipContent.x,
+                    y: state.tooltipContent.y,
+                    data: state.tooltipContent.geoid ? parseTooltipData(state.tooltipContent.geoid, state) : state.tooltipContent.data,
+                    geoid: state.tooltipContent.geoid
+                },
+                sidebarData: state.selectionKeys.length ? generateReport(state.selectionKeys, state, dataPresetsRedux, defaultTables) : state.sidebarData
             }
         }
         case 'SET_VARIABLE_PARAMS_AND_DATASET':{
@@ -866,14 +865,12 @@ var reducer = (state = INITIAL_STATE, action) => {
                 name: geography === 'County' ? selectionKeys.map(key => properties[key].NAME + ', ' + properties[key].state_abbr) : selectionKeys.map(key => properties[key].name)
             };
 
-            chartData = getDataForCharts(state.storedData[currCaseData], state.dates, additionalParams);
-            const reportData = generateReport(selectionKeys, state, dataPresetsRedux, defaultTables)
-            console.log(reportData)
             return {
                 ...state,
-                chartData,
                 selectionKeys,
-                selectionNames: additionalParams.name
+                selectionNames: additionalParams.name,
+                chartData: getDataForCharts(state.storedData[currCaseData], state.dates, additionalParams),
+                sidebarData: generateReport(selectionKeys, state, dataPresetsRedux, defaultTables),
             }
         }
         case 'SET_ANCHOR_EL':

@@ -362,6 +362,11 @@ export const defaultTables = {
             'type':'time-series',
             'join':'county'
         },
+        'essential_workers': {
+            'file':'context_essential_workers_acs',
+            'type':'characteristic',
+            'join':'fips'
+        }
     },
     'State': {
         'cases': {
@@ -1002,7 +1007,7 @@ export const variablePresets = {
       variableName:"Uninsured Percent",
       numerator: 'chr_health_factors',
       nType: 'characteristic',
-      nProperty: 9,
+      nProperty: 'UnInPrc',
       nRange: null,
       denominator: 'properties',
       dType: null,
@@ -1019,7 +1024,7 @@ export const variablePresets = {
       variableName:"Over 65 Years Percent",
       numerator: 'chr_health_context',
       nType: 'characteristic',
-      nProperty: 3,
+      nProperty: 'Over65YearsPrc',
       nRange: null,
       denominator: 'properties',
       dType: null,
@@ -1036,7 +1041,7 @@ export const variablePresets = {
       variableName:"Life Expectancy",
       numerator: 'chr_life',
       nType: 'characteristic',
-      nProperty: 3,
+      nProperty: 'LfExpRt',
       nRange: null,
       denominator: 'properties',
       dType: null,
@@ -1202,7 +1207,6 @@ export const variablePresets = {
         fixedScale: null,
         dataNote: null,
     },
-    
     "Percent Received At Least One Dose": {
         variableName:"Percent Received At Least One Dose",
         numerator: 'vaccines_one_dose',
@@ -1259,7 +1263,7 @@ export const variablePresets = {
       variableName:"Forecasting (5-Day Severity Index)",
       numerator: 'predictions',
       nType: 'characteristic',
-      nProperty: 1,
+      nProperty: 'severity_index',
       nRange: null,
       denominator: 'properties',
       dType: null,
@@ -1276,7 +1280,7 @@ export const variablePresets = {
       variableName:"Percent Essential Workers",
       numerator: 'essential_workers',
       nType: 'characteristic',
-      nProperty: 1,
+      nProperty: 'pct_essential',
       nRange: null,
       denominator: 'properties',
       dType: null,

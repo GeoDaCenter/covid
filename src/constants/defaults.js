@@ -91,7 +91,7 @@ export const INITIAL_STATE = {
   },
   panelState: {
     variables:true,
-    info:false,
+    info:true,
     tutorial:false,
     lineChart:true,
     context: false,
