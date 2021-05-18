@@ -276,9 +276,38 @@ export const colors = {
     ]
 }
 
-export const defaultData = 'county_usfacts.geojson';
+export const defaultData = 'cdc_h.geojson';
 
 export const dataPresets = {
+    'cdc_h.geojson': {
+        plainName: 'CDC (Hybrid)', // Plain english name for dataset
+        geojson: 'cdc_h.geojson', // geospatial data to join to
+        csvs: [ // list of CSVs to join
+            'covid_confirmed_usafacts_h',
+            'covid_deaths_usafacts_h',
+            'chr_health_context',
+            'chr_life',
+            'chr_health_factors',
+            'context_essential_workers_acs',
+            'vaccine_fully_vaccinated_cdc_h'
+        ], 
+        tableNames: [ // table names in order of CSVs
+            'cases',
+            'deaths',
+            'chr_health_context',
+            'chr_life',
+            'chr_health_factors',
+            'essential_workers',
+            'vaccines_fully_vaccinated'
+        ],
+        joinCols: ['GEOID', ['FIPS','fips','countyFIPS', 'county', 'geoid']], // geospatial data join column and then list of valid table join columns
+        accumulate: [], // CSV names to accumulate over time
+        dateList: { // date lists to parse: isoDateList (eg. '2020-01-01') or usDateList (eg. '01/01/20')
+            'covid_confirmed_usafacts_h': 'isoDateList', 
+            'covid_deaths_usafacts_h': 'isoDateList',
+            'vaccine_fully_vaccinated_cdc_h': 'isoDateList',
+        }
+    },
     'county_usfacts.geojson': {
         plainName: 'USA Facts County', // Plain english name for dataset
         geojson: 'county_usfacts.geojson', // geospatial data to join to
@@ -1070,7 +1099,7 @@ export const variablePresets = {
 }
 
 export const allGeographies = ['County', 'State']
-export const allDatasets = ['1point3acres', 'USA Facts', 'New York Times', 'CDC', 'County Health Rankings', 'Yu Group at Berkeley', 'ACS', 'Safegraph'] 
+export const allDatasets = ['1point3acres', 'USA Facts', 'New York Times', 'CDC', 'CDC (Hybrid)', 'County Health Rankings', 'Yu Group at Berkeley', 'ACS', 'Safegraph'] 
 export const variableTree = {
     "HEADER:cases":{},
     "Confirmed Count": {
@@ -1253,8 +1282,8 @@ export const variableTree = {
     "HEADER:vaccination":{},
     "Percent Fully Vaccinated":{
         "County": {
-            "CDC": {
-                "geojson": "cdc.geojson",
+            "CDC (Hybrid)": {
+                "geojson": "cdc_h.geojson",
             }
         },
         "State": {
@@ -1366,6 +1395,7 @@ export const datasetTree = {
       'New York Times':'county_nyt.geojson',
       'USA Facts':'county_usfacts.geojson',
       'CDC':'cdc.geojson',
+      'CDC (Hybrid)':'cdc_h.geojson',
       'Yu Group at Berkeley':'county_usfacts.geojson',
       'County Health Rankings':'county_usfacts.geojson',
       'ACS':'county_usfacts.geojson',   
@@ -1410,6 +1440,10 @@ export const urlParamsTree = {
     },
     'cdc.geojson': {
       name: 'CDC',
+      geography: 'County'
+    },
+    'cdc_h.geojson': {
+      name: 'CDC (Hybrid)',
       geography: 'County'
     },
     'safegraph.geojson': {
