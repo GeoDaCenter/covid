@@ -105,8 +105,6 @@ export default function Map() {
       ...tabularDataPromises
     ])
 
-    console.log(values)
-
     let tempData = mergeData(values[0]['data'], joinCols[0], values.slice(1,), tableNames, joinCols[1]);
     let ColNames = getColumns(values.slice(1,), tableNames);
     let DateIndices = getDateIndices(values.slice(1,), tableNames);

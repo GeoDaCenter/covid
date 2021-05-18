@@ -484,11 +484,11 @@ export const dataPresets = {
 			'vaccines_fully_vaccinated',
 			'vaccines_dist'
         ],
-        joinCols: ['GEOID', ['FIPS','fips','fips_code','state_fips','stateFIPS','geoid']],
+        joinCols: ['GEOID', ['FIPS','fips','fips_code','state_fips','StateFIPS','stateFIPS','geoid']],
         accumulate: ['covid_testing_cdc_state'],
         dateList: {
-            'covid_confirmed_1p3a_state': 'isoDateList', 
-            'covid_deaths_1p3a_state': 'isoDateList', 
+            'covid_confirmed_usafacts_state': 'isoDateList', 
+            'covid_deaths_usafacts_state': 'isoDateList', 
             'covid_testing_cdc_state': 'isoDateList', 
             'covid_wk_pos_cdc_state': 'isoDateList', 
             'covid_tcap_cdc_state': 'isoDateList', 
@@ -1118,6 +1118,10 @@ export const variableTree = {
             }
         },
         "State": {
+            "USA Facts": {
+                "geojson":'state_usafacts.geojson',
+                "csv":['covid_confirmed_usafacts_state'] 
+            },
             "1point3acres": {
                 "geojson":'state_1p3a.geojson',
                 "csv":['covid_confirmed_1p3a_state']
@@ -1144,6 +1148,10 @@ export const variableTree = {
             }
         },
         "State": {
+            "USA Facts": {
+                "geojson":'state_usafacts.geojson',
+                "csv":['covid_deaths_usafacts_state'] 
+            },
             "1point3acres": {
                 "geojson":'state_1p3a.geojson',
                 "csv":['covid_confirmed_1p3a_state']
@@ -1411,6 +1419,7 @@ export const datasetTree = {
     'State': {
       '1point3acres':'state_1p3a.geojson',
       'New York Times':'state_nyt.geojson',
+      'USA Facts':'state_usafacts.geojson',
       'CDC':'state_1p3a.geojson',
       'County Health Rankings':'state_1p3a.geojson'
     }
