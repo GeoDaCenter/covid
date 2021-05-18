@@ -193,7 +193,7 @@ const MainLineChart = () => {
         return (
             <ChartContainer id="lineChart">
                 {(selectionNames.length < 2) ?
-                    <ChartTitle>Total Cases and 7-Day Average New Cases{selectionNames.length && `: ${selectionNames[0]}`}</ChartTitle>
+                    <ChartTitle>Total Cases and 7-Day Average New Cases {selectionNames.length ? `: ${selectionNames[0]}` : ''}</ChartTitle>
                     : 
                     <ChartTitle>7-Day Average New Cases</ChartTitle>
                 }

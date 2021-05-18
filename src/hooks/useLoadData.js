@@ -168,6 +168,8 @@ export default function useLoadData(gdaProxy){
         }).then(allLoadedTables => {
           if (!lazyFetched && allLoadedTables) lazyFetchData(dataPresetsRedux, allLoadedTables)
         })
+    } else {
+      dispatch(updateChart());
     }
   },[currentData])
 

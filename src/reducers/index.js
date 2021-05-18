@@ -73,6 +73,29 @@ const shallowEqual = (object1, object2) => { // Thanks @Dmitri Pavlutin
     return true;
 };
 
+const parseTooltipData = (geoid, state) => {
+    let tooltipData = {}
+    const properties = state.storedGeojson[state.currentData].properties[geoid];
+    const geography = dataPresetsRedux[state.currentData].geography;
+
+    tooltipData = {
+        population: properties.population,
+        name: geography === 'County' ? properties.NAME + ', ' + properties.state_abbr : properties.name
+    }
+    
+    const currentTables = {
+        ...defaultTables[geography],
+        ...dataPresetsRedux[state.currentData].tables
+    }
+
+    for (const table in currentTables){
+        if (currentTables[table].file in state.storedData && tooltipTables.includes(table)) {
+            tooltipData[table] = state.storedData[currentTables[table].file][0][geoid][state.dataParams.nIndex]
+            if (table === 'cases' || table === 'deaths') tooltipData[`daily_${table}`] = state.storedData[currentTables[table].file][0][geoid][state.dataParams.nIndex]-state.storedData[currentTables[table].file][0][geoid][state.dataParams.nIndex-1]
+        }
+    }
+    return tooltipData
+}
 
 // Replace Null/NaN with 0 
 const cleanData = (inputData) => inputData.map(d => d >=0 ? d : isNaN(d) || d===null ? 0 : d)
@@ -81,9 +104,9 @@ const cleanData = (inputData) => inputData.map(d => d >=0 ? d : isNaN(d) || d===
 // Sum, Average, and weighted average
 const performOperation = (dataArray, operation, totalPopulation) => {
 // Sum up data
-    const reducer = (accumulator, currentValue) => accumulator + currentValue;
+    const reducer = (a, b) => a + b;
     // Clean data
-    let clean = cleanData(dataArray);
+    const clean = cleanData(dataArray);
 
     switch(operation) {
         case 'sum':
@@ -96,87 +119,181 @@ const performOperation = (dataArray, operation, totalPopulation) => {
             return null
     }
 } 
+// Prepares data for the previous operation
+const aggregateProperty = (table, properties, geoids, column, operation, specialCase=null) => {
+    let dataArray = []
+    let totalPopulation = 0;
+    // Loop through and collect data from selected geographies in SelectionIndex
+    if (operation === 'weighted_average') {
+        for (let i=0; i<geoids.length; i++){
+            let selectionPop = properties[geoids[i]].population;
+            totalPopulation+=selectionPop;
 
-// // Prepares data for the previous operation
-// const aggregateProperty = (dataset, property, operation, specialCase=null) => {
-//     let dataArray; 
-//     let totalPopulation = 0;
-//     // Loop through and collect data from selected geographies in SelectionIndex
-//     try {
-//         if (operation === 'weighted_average') {
-//             dataArray = selectionIndex.map(selection => {
-//                 let selectionPop = storedData[currentData][selection]['properties']['population'];
-//                 totalPopulation+=selectionPop;
-//                 if (specialCase === 'pcp') try { return parseInt(storedData[currentData][selection][dataset][property].split(':')[0])*selectionPop } catch { return 0}
-//                 return storedData[currentData][selection][dataset][property]*selectionPop
-//             })
-//         } else {
-//             dataArray = selectionIndex.map(selection => storedData[currentData][selection][dataset][property]);
-//         }
-//     } catch {
-//         return 0
-//     }
+            if (specialCase !== null) {
+                if (specialCase === 'pcp'){
+                    try { 
+                        dataArray.push(parseInt(table[geoids[i]][column].split(':')[0])*selectionPop)
+                    } catch { dataArray.push(0) }
+                } 
+                
+            } else {
+                dataArray.push(table[geoids[i]][column]*selectionPop)
+            }
+        }
+    } else {
+        for (let i=0; i<geoids.length; i++){
+            dataArray.push(table[geoids[i]][column])
+        }
+    }
 
-//     return performOperation(dataArray, operation, totalPopulation);
-// }
+    return performOperation(dataArray, operation, totalPopulation);
+}
 
-// // Same as aggregteProperty(), but for time-series data
-// const aggregateTimeseries = (dataset, index, operation) => {
-//     let dataArray; 
-//     let totalPopulation = 0;
-//     try {
-//         if (operation === 'weighted_average') {
-//         dataArray = selectionIndex.map(selection => {
-//             let selectionPop = storedData[currentData][selection]['properties']['population'];
-//             totalPopulation+=selectionPop;
-//             return storedData[currentData][selection][dataset].slice(index,)[0]*selectionPop
-//         })
-//         } else {
-//         dataArray = selectionIndex.map(selection => storedData[currentData][selection][dataset].slice(index,)[0]);
-//         }
-//     } catch {
-//         return 0
-//     }
+// Same as aggregteProperty(), but for time-series data
+const aggregateTimeseries = (table, properties, geoids, index, operation) => {
+    let dataArray = [];
+    let totalPopulation = 0;
+    if (operation === 'weighted_average') {
+        for (let i=0; i<geoids.length; i++){
+            let selectionPop = properties[geoids[i]].population;
+            totalPopulation+=selectionPop;
+            dataArray.push(table[geoids[i]][index]*selectionPop)
+        }
+    } else {
+        for (let i=0; i<geoids.length; i++){
+            dataArray.push(table[geoids[i]][index])
+        }
+    }
 
-//     return performOperation(dataArray, operation, totalPopulation);
-// }
+    return performOperation(dataArray, operation, totalPopulation);
+}
 
-// // Generate data for 2-week line charts
-// const aggregate2WeekTimeSeries = (dataset, index, operation) => {
-//     let lookbackPeriod = []
-//     let rtn;
-
-//     try {
-//         for (let i=-13;i<1;i++) {
-//         lookbackPeriod.push(index+i)
-//         }
-//         rtn = lookbackPeriod.map(day => aggregateTimeseries(dataset, day, operation))
-//     } catch {
-//         return 0
-//     }
-//     return rtn;
-// }
+// Generate data for 2-week line charts
+const aggregate2WeekTimeSeries = (table, geoids, endIndex) => {
+    let twoWeek = new Array(14).fill(0)
+    for (let i=0, n=13;i<14;i++, n--){
+        for (let g=0; g<geoids.length; g++){
+            twoWeek[n] += table[geoids[g]][endIndex - i]
+        }
+    }
+    return twoWeek
+}
 
 // // For more complete data functions (like population normalized)
-// const aggregateDataFunction = (numerator, denominator, params, operation) => {
-//     let dataArray; 
-//     let totalPopulation = 0;
-//     try {
-//         if (operation === 'weighted_average') {
-//         dataArray = selectionIndex.map(selection => {
-//             let selectionPop = storedData[currentData][selection]['properties']['population'];
-//             totalPopulation+=selectionPop;
-//             return dataFn(storedData[currentData][selection][numerator], storedData[currentData][selection][denominator], params)*selectionPop
-//         })
-//         } else {
-//         dataArray = selectionIndex.map(selection => dataFn(storedData[currentData][selection][numerator], storedData[currentData][selection][denominator], params));
-//         }
-//     } catch {
-//         return 0
-//     }
+const aggregateDataFunction = (numeratorTable, denominatorTable, properties, geoids, operation, params) => {
+    let dataArray = []; 
+    let totalPopulation = 0;
+    console.log(numeratorTable, denominatorTable, properties, geoids, operation, params)
+    
+    if (operation === 'weighted_average') {
+        for (let i=0; i<geoids.length; i++){
+            let selectionPop = properties[geoids[i]].population;
+            totalPopulation+=selectionPop;
+            console.log(dataFn(numeratorTable[geoids[i]], denominatorTable[geoids[i]], params))
+            dataArray.push(dataFn(numeratorTable[geoids[i]], denominatorTable[geoids[i]], params)*selectionPop)
+        }
+    } else {
+        for (let i=0; i<geoids.length; i++){
+            dataArray.push(dataFn(numeratorTable[geoids[i]], denominatorTable[geoids[i]], params))
+        }
+    }
+    console.log(dataArray)
 
-//     return performOperation(dataArray, operation, totalPopulation);
-// }
+    return performOperation(dataArray, operation, totalPopulation);
+}
+
+const generateReport = (geoids, state, dataPresetsRedux, defaultTables) => {
+    let report = {}
+
+    const properties = state.storedGeojson[state.currentData].properties;
+    const geography = dataPresetsRedux[state.currentData].geography;
+    const currentTables = {...defaultTables[geography], ...dataPresetsRedux[state.currentData].tables}
+
+    report.name = 
+        geoids.length > 3 
+            ? 
+        geography === "County" ? 'Selected Counties' : 'Selected States'
+            :
+        geography === "County" ? geoids.map(key => properties[key].NAME + ', ' + properties[key].state_abbr).join(", ") : geoids.map(key => properties[key].name).join(", ")
+    
+    report.population = aggregateProperty(properties, properties, geoids, 'population', 'sum')
+
+    report.cases = aggregateTimeseries(state.storedData[currentTables.cases.file][0], properties, geoids, state.dataParams.nIndex, 'sum')
+    report.cases7d = (report.cases - aggregateTimeseries(state.storedData[currentTables.cases.file][0], properties, geoids, state.dataParams.nIndex-7, 'sum'))/7
+    report.cases100k = (report.cases7d/report.population)*100_000
+    report.cases14 = aggregate2WeekTimeSeries(state.storedData[currentTables.cases.file][0], geoids, state.dataParams.nIndex)    
+    
+    report.deaths = aggregateTimeseries(state.storedData[currentTables.deaths.file][0], properties, geoids, state.dataParams.nIndex, 'sum')
+    report.deaths7d = (report.deaths - aggregateTimeseries(state.storedData[currentTables.deaths.file][0], properties, geoids, state.dataParams.nIndex-7, 'sum'))/7
+    report.deaths100k = (report.deaths7d/report.population)*100_000
+    report.deaths14 = aggregate2WeekTimeSeries(state.storedData[currentTables.deaths.file][0], geoids, state.dataParams.nIndex)
+
+    report.beds = aggregateProperty(properties, properties, geoids, 'beds', 'sum')
+    report.casesPerBed = report.cases7d / report.beds
+
+    if (state.storedData.hasOwnProperty(currentTables.vaccines_fully_vaccinated?.file)){
+        report.fully_vaccinated = aggregateTimeseries(state.storedData[currentTables.vaccines_fully_vaccinated?.file][0], properties, geoids, state.dataParams.nIndex, 'weighted_average')
+        report.fully_vaccinated14 = aggregate2WeekTimeSeries(state.storedData[currentTables.vaccines_fully_vaccinated?.file][0], geoids, state.dataParams.nIndex)
+        report.fully_vaccinatedPc = report.fully_vaccinated / report.population
+    }
+    
+    if (state.storedData.hasOwnProperty(currentTables.vaccines_one_dose?.file)){
+        report.one_dose = aggregateTimeseries(state.storedData[currentTables.vaccines_one_dose?.file][0], properties, geoids, state.dataParams.nIndex, 'weighted_average')
+        report.one_dose14 = aggregate2WeekTimeSeries(state.storedData[currentTables.vaccines_one_dose?.file][0], geoids, state.dataParams.nIndex)
+        report.one_dosePc = report.one_dose / report.population
+    }
+    
+    if (state.storedData.hasOwnProperty(currentTables.vaccines_dist?.file)){
+        report.doses_dist = aggregateTimeseries(state.storedData[currentTables.vaccines_dist?.file][0], properties, geoids, state.dataParams.nIndex, 'weighted_average')
+        report.doses_dist14 = aggregate2WeekTimeSeries(state.storedData[currentTables.vaccines_dist?.file][0], geoids, state.dataParams.nIndex)
+        report.doses_dist100 = (report.doses_dist / report.population) * 100
+    }
+
+    
+    if (state.storedData.hasOwnProperty(currentTables.testing.file)){
+        report.wk_pos = aggregateTimeseries(state.storedData[currentTables.testing_wk_pos.file][0], properties, geoids, state.dataParams.nIndex, 'weighted_average')
+        report.doses_dist14 = aggregate2WeekTimeSeries(state.storedData[currentTables.vaccines_dist?.file][0], geoids, state.dataParams.nIndex)
+        report.doses_dist14 = aggregate2WeekTimeSeries(state.storedData[currentTables.vaccines_dist?.file][0], geoids, state.dataParams.nIndex)
+        report.doses_dist100 = (report.doses_dist / report.population) * 100
+    }    
+
+    // if (state.storedData.hasOwnProperty(currentTables.chr_health_factors.file)){
+    //     report.child_poverty = 
+    // }
+//     <ReportSection>
+//     <h2>Community Health Factors<Tooltip id="healthfactor"/></h2>
+//     <h6>Source: <a href="https://www.countyhealthrankings.org/" target="_blank" rel="noopener noreferrer">County Health Rankings</a></h6>
+//     <p>Children in poverty</p><Tooltip id="PovChldPrc"/>
+//     <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'PovChldPrc'), 'weighted_average')}%</h3>
+//     <p>Income inequality<Tooltip id="IncRt"/></p>
+//     <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'IncRt'), 'weighted_average')}</h3>
+
+//     <p>Median household income</p><Tooltip id="MedianHouseholdIncome"/>
+//     <h3>${aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'MedianHouseholdIncome'), 'weighted_average').toLocaleString('en')}</h3>
+
+//     <p>Food insecurity</p><Tooltip id="FdInsPrc"/>
+//     <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'FdInsPrc'), 'weighted_average')}%</h3>
+
+//     <p>Unemployment</p><Tooltip id="UnEmplyPrc"/>
+//     <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'UnEmplyPrc'), 'weighted_average')}%</h3>
+
+//     <p>Uninsured</p><Tooltip id="UnInPrc"/>
+//     <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'UnInPrc'), 'weighted_average')}%</h3>
+
+//     <p>Primary care physicians</p><Tooltip id="PrmPhysRt"/>
+//     <h3>{Math.round(aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'PrmPhysRt'), 'weighted_average', 'pcp'))}:1</h3>
+
+//     <p>Preventable hospital stays</p><Tooltip id="PrevHospRt"/>
+//     <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'PrevHospRt'), 'sum')}</h3>
+
+//     <p>Residential segregation <br/>black / white</p>
+//     <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'RsiSgrBlckRt'), 'weighted_average')}</h3>
+
+//     <p>Severe housing problems</p><Tooltip id="SvrHsngPrbRt"/>
+//     <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'SvrHsngPrbRt'), 'weighted_average')}%</h3>
+//   </ReportSection>
+    return report
+}
 
 var reducer = (state = INITIAL_STATE, action) => {
     console.log(action.type)
@@ -436,7 +553,10 @@ var reducer = (state = INITIAL_STATE, action) => {
         case 'SET_CURRENT_DATA':
             return {
                 ...state,
-                currentData: action.payload.data
+                currentData: action.payload.data,
+                selectionKeys: [],
+                selectionNaes: [],
+                sidebarData: {}
             }
         case 'SET_GEODA_PROXY':
             return {
@@ -502,7 +622,14 @@ var reducer = (state = INITIAL_STATE, action) => {
 
             const currIndices = state.storedData[state.currentTable.numerator][2]
             const nextIndex = currIndices[currIndices.indexOf(state.dataParams.nIndex)+action.payload.index]
-
+            
+            const tooltipContent = {
+                x: state.tooltipContent.x,
+                y: state.tooltipContent.y,
+                data: state.tooltipContent.geoid ? parseTooltipData(state.tooltipContent.geoid, state) : state.tooltipContent,
+                geoid: state.tooltipContent.geoid
+            }
+            
             if (nextIndex === undefined) {
                 return {
                     ...state
@@ -513,6 +640,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                 return {
                     ...state,
                     dataParams,
+                    tooltipContent,
                     mapData: generateMapData({...state, dataParams}) 
                 }
             }
@@ -591,6 +719,13 @@ var reducer = (state = INITIAL_STATE, action) => {
                     : 
                 state.mapData
 
+            const tooltipContent = {
+                x: state.tooltipContent.x,
+                y: state.tooltipContent.y,
+                data: state.tooltipContent.geoid ? parseTooltipData(state.tooltipContent.geoid, state) : state.tooltipContent,
+                geoid: state.tooltipContent.geoid
+            }
+                
             if (dataParams.nType === 'characteristic' && state.dataParams.nType === 'time-series') {
                 return {
                     ...state,
@@ -598,14 +733,16 @@ var reducer = (state = INITIAL_STATE, action) => {
                     storedRange: state.dataParams.nRange,
                     dataParams,
                     mapData,
-                    currentTable
+                    currentTable,
+                    tooltipContent
                 }
             } else {
                 return {
                     ...state,
                     dataParams,
                     mapData,
-                    currentTable
+                    currentTable,
+                    tooltipContent
                 }
             }
         }
@@ -730,6 +867,8 @@ var reducer = (state = INITIAL_STATE, action) => {
             };
 
             chartData = getDataForCharts(state.storedData[currCaseData], state.dates, additionalParams);
+            const reportData = generateReport(selectionKeys, state, dataPresetsRedux, defaultTables)
+            console.log(reportData)
             return {
                 ...state,
                 chartData,
@@ -811,25 +950,7 @@ var reducer = (state = INITIAL_STATE, action) => {
         case 'SET_TOOLTIP_CONTENT':{
             let tooltipData;
             if (typeof action.payload.data === "number" || typeof action.payload.data === "string"){
-                const properties = state.storedGeojson[state.currentData].properties[+action.payload.data];
-                const geography = dataPresetsRedux[state.currentData].geography;
-
-                tooltipData = {
-                    population: properties.population,
-                    name: geography === 'County' ? properties.NAME + ', ' + properties.state_abbr : properties.name
-                }
-                
-                const currentTables = {
-                    ...defaultTables[geography],
-                    ...dataPresetsRedux[state.currentData].tables
-                }
-
-                for (const table in currentTables){
-                    if (currentTables[table].file in state.storedData && tooltipTables.includes(table)) {
-                        tooltipData[table] = state.storedData[currentTables[table].file][0][+action.payload.data][state.dataParams.nIndex]
-                        if (table === 'cases' || table === 'deaths') tooltipData[`daily_${table}`] = state.storedData[currentTables[table].file][0][+action.payload.data][state.dataParams.nIndex]-state.storedData[currentTables[table].file][0][+action.payload.data][state.dataParams.nIndex-1]
-                    }
-                }
+                tooltipData = parseTooltipData(action.payload.data, state)
             } else {
                 tooltipData = action.payload.data
             }
@@ -837,6 +958,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                 x: action.payload.x,
                 y: action.payload.y,
                 data: tooltipData,
+                geoid: +action.payload.data
             }
             return {
                 ...state,

@@ -8,7 +8,7 @@ export default function MapTooltipContent(){
     // destructure the object for cleaner formatting
     const tooltipContent = useSelector(state => state.tooltipContent);
     if (!tooltipContent.data) return <></>;
-
+    
     const { cases, daily_cases, deaths, daily_deaths, name, population, testing_tcap, testing_wk_pos, vaccines_fully_vaccinated } = tooltipContent.data;
     try {
         return <HoverDiv style={{position: 'absolute', zIndex: 1, pointerEvents: 'none', left: tooltipContent.x, top: tooltipContent.y}}>
