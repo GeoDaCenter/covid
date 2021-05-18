@@ -280,7 +280,7 @@ export const defaultData = 'cdc_h.geojson';
 
 export const dataPresets = {
     'cdc_h.geojson': {
-        plainName: 'CDC ', // Plain english name for dataset
+        plainName: 'CDC', // Plain english name for dataset
         geojson: 'cdc_h.geojson', // geospatial data to join to
         csvs: [ // list of CSVs to join
             'covid_confirmed_usafacts_h',
@@ -1098,8 +1098,8 @@ export const variablePresets = {
     },
 }
 
-export const allGeographies = ['County', 'State']
-export const allDatasets = ['1point3acres', 'USA Facts', 'New York Times', 'CDC', 'CDC ', 'County Health Rankings', 'Yu Group at Berkeley', 'ACS', 'Safegraph'] 
+export const allGeographies = ['County', 'County (Hybrid)', 'State']
+export const allDatasets = ['1point3acres', 'USA Facts', 'New York Times', 'CDC', 'County Health Rankings', 'Yu Group at Berkeley', 'ACS', 'Safegraph'] 
 export const variableTree = {
     "HEADER:cases":{},
     "Confirmed Count": {
@@ -1281,9 +1281,14 @@ export const variableTree = {
     },
     "HEADER:vaccination":{},
     "Percent Fully Vaccinated":{
-        "County": {
-            "CDC ": {
+        "County (Hybrid)": {
+            "CDC": {
                 "geojson": "cdc_h.geojson",
+            }
+        },
+        "County": {
+            "CDC": {
+                "geojson": "cdc.geojson",
             }
         },
         "State": {
@@ -1395,12 +1400,14 @@ export const datasetTree = {
       'New York Times':'county_nyt.geojson',
       'USA Facts':'county_usfacts.geojson',
       'CDC':'cdc.geojson',
-      'CDC ':'cdc_h.geojson',
       'Yu Group at Berkeley':'county_usfacts.geojson',
       'County Health Rankings':'county_usfacts.geojson',
       'ACS':'county_usfacts.geojson',   
       'Safegraph':'county_usfacts.geojson'
     }, 
+    'County (Hybrid)':{
+      'CDC':'cdc_h.geojson',
+    },
     'State': {
       '1point3acres':'state_1p3a.geojson',
       'New York Times':'state_nyt.geojson',
@@ -1443,8 +1450,8 @@ export const urlParamsTree = {
       geography: 'County'
     },
     'cdc_h.geojson': {
-      name: 'CDC ',
-      geography: 'County'
+      name: 'CDC',
+      geography: 'County (Hybrid)'
     },
     'safegraph.geojson': {
       name: 'Safegraph',
