@@ -41,7 +41,7 @@ export const INITIAL_STATE = {
     binIndex: '',
     zAxisParams: null,
     storedRange: null,
-    dataNote: false
+    dataNote: 'Texas reports only state-level vaccination rates to the CDC.'
   },
   mapParams: {
     mapType: 'natural_breaks',
