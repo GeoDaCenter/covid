@@ -148,10 +148,43 @@ export default function useLoadData(gdaProxy){
         dispatch(addTables({[fileInfo.file]:tableData}))
       }
     }
+    return true
 
   }, [currentData])
 
-  
+  const lazyGenerateWeights = useMemo(() => async (dataPresets) => {
+    const geojsonFiles = Object.keys(dataPresets)
+
+    for (let i=0; i<geojsonFiles.length;i++){
+      if (isInProcess) return;
+      const file = geojsonFiles[i];
+      if ('Queen' in gdaProxy.geojsonMaps[file]){
+        continue
+      } else {
+        let weights = await gdaProxy.CreateWeights.Queen(file);
+      }
+    }
+    console.log(gdaProxy)
+
+    // const allLoadedTables = [...loadedTables, ...Object.keys(storedData)]
+    // let tableFiles = []
+    // for (let i=0; i<geojsonFiles.length; i++){
+    //   for (const table in dataPresets[geojsonFiles[i]].tables){
+    //     tableFiles.push(dataPresets[geojsonFiles[i]].tables[table])
+    //   }
+    // }
+    
+    // for (let i=0; i<tableFiles.length; i++){
+    //   if (isInProcess) return;
+    //   const fileInfo = tableFiles[i];
+    //   if (!allLoadedTables.includes(fileInfo.file)){
+    //     const tableData = await handleLoadData(fileInfo)
+    //     dispatch(addTables({[fileInfo.file]:tableData}))
+    //   }
+    // }
+
+  }, [currentData])
+
   // On initial load and after gdaProxy has been initialized, this loads in the default data sets (USA Facts)
   // Otherwise, this side-effect loads the selected data.
   // Each conditions checks to make sure gdaProxy is working.
@@ -166,7 +199,13 @@ export default function useLoadData(gdaProxy){
         }).then(primaryTables => {
           return secondLoad(dataPresetsRedux[currentData], defaultTables[dataPresetsRedux[currentData]['geography']], [...Object.keys(storedData), ...primaryTables])
         }).then(allLoadedTables => {
-          if (!lazyFetched && allLoadedTables) lazyFetchData(dataPresetsRedux, allLoadedTables)
+          if (!lazyFetched && allLoadedTables) {
+            return lazyFetchData(dataPresetsRedux, allLoadedTables)
+          } else {
+            return true
+          }
+        }).then(lazyFetch => {
+          lazyGenerateWeights(dataPresetsRedux);
         })
     } else {
       dispatch(updateChart());
