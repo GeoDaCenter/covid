@@ -319,8 +319,8 @@ export default function Map() {
     setBinDataset(currentData + '')
     if (currentData === binDataset && storedData.hasOwnProperty(currentData) && gdaProxy.ready && mapParams.binMode !== 'dynamic' && mapParams.mapType !== 'lisa') {
       let binParams = {...dataParams};
-
-      if (dateIndices[currentData][dataParams.numerator].indexOf(dataParams.nIndex) === -1){
+      
+      if (dateIndices[currentData][dataParams.numerator]?.indexOf(dataParams.nIndex) === -1){
         binParams.nIndex = dateIndices[currentData][dataParams.numerator].slice(-1,)[0];
         binParams.dIndex = dataParams.dIndex !== null ? dateIndices[currentData][dataParams.numerator].slice(-1,)[0] : dataParams.dIndex;
         dispatch(setVariableParams(binParams));
