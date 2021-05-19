@@ -188,6 +188,7 @@ export default function MapSection(){
     const currentData = useSelector(state => state.currentData);
     const dateIndices = useSelector(state => state.dateIndices);
     const storedCartogramData = useSelector(state => state.storedCartogramData);
+    const storedCentroids = useSelector(state => state.storedCentroids);
     const panelState = useSelector(state => state.panelState);
     const dates = useSelector(state => state.dates);
     const mapParams = useSelector(state => state.mapParams);
@@ -197,7 +198,7 @@ export default function MapSection(){
     const currentMapID = useSelector(state => state.mapData.params);
     const storedGeojson = useSelector(state => state.storedGeojson)
     const currentMapGeography = storedGeojson[currentData]?.data||[]
-
+    
     // component state elements
     // hover and highlight geographibes
     const [hoverGeog, setHoverGeog] = useState(null);
@@ -343,6 +344,7 @@ export default function MapSection(){
         
         if (storedCartogramData.length){
             let center = getCartogramCenter(storedCartogramData);
+            console.log(center)
             if (isNaN(center[0])) return;
             let roundedCenter = [Math.floor(center[0]),Math.floor(center[1])];
             if ((storedCenter === null || roundedCenter[0] !== storedCenter[0]) && center) {
@@ -622,7 +624,9 @@ export default function MapSection(){
             })
         }  
     }, []);
-
+    try {
+        console.log(currentMapData[currentMapGeography.features[0].properties.GEOID])
+    } catch {}
     const FullLayers = {
         choropleth: new GeoJsonLayer({
             id: 'choropleth',
@@ -746,35 +750,35 @@ export default function MapSection(){
         }),
         cartogram: new ScatterplotLayer({
             id: 'cartogram layer',
-            data: currentMapData.data,
+            data: currentMapGeography.features,
             pickable:true,
-            getPosition: f => f.position,
-            getFillColor: f => f.color,
-            getRadius: f => f.radius,  
+            getPosition: d => currentMapData[d.properties.GEOID].position,
+            getFillColor: d => currentMapData[d.properties.GEOID].color,
+            getRadius: d => currentMapData[d.properties.GEOID].radius,  
             onHover: handleMapHover,
             radiusScale: currentData.includes('state') ? 9 : 6,
             updateTriggers: {
-                getPosition: currentMapData,
-                getFillColor: currentMapData,
-                getRadius: currentMapData
+                data: currentMapGeography,
+                getPosition: currentMapID,
+                getFillColor: currentMapID,
+                getRadius: currentMapID
             },
           }),
         cartogramText: new TextLayer({
             id: 'cartogram text layer',
-            data: currentMapData.data,
-            getPosition: f => f.position,
-            getSize: f => f.radius,
+            data: currentMapGeography.features,
+            getPosition: d => currentMapData[d.properties.GEOID].position,
+            getRadius: d => currentMapData[d.properties.GEOID].radius,  
             sizeScale: 4,
             backgroundColor: [240,240,240],
             pickable:false,
-            visible: currentData.includes('state'),
             sizeUnits: 'meters',
             fontWeight: 'bold',
             getTextAnchor: 'middle',
             getAlignmentBaseline: 'center',
             maxWidth: 500,
             wordBreak: 'break-word',
-            getText: f => find(storedData[currentData], o => o.properties.GEOID === f.GEOID)?.properties?.NAME,
+            getText: d => d.properties?.NAME,
             updateTriggers: {
                 getPosition: [storedCartogramData, mapParams.vizType],
                 getFillColor: [storedCartogramData, mapParams.vizType],

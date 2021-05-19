@@ -75,6 +75,7 @@ export default function useUpdateData(gdaProxy){
       Object.values(storedGeojson[currentData].indices.indexOrder)
     );
     const cartogramData = await gdaProxy.cartogram(currentData, dataForCartogram);
+    console.log(cartogramData)
     let tempArray = new Array(cartogramData.length)
     for (let i=0; i<cartogramData.length; i++){
         cartogramData[i].value = dataForCartogram[i]

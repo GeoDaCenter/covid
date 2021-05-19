@@ -8,6 +8,7 @@ const getLisaColor = (value, bins, colorScale, mapType, numerator, storedLisaDat
 const getColorFunction = (mapType) => mapType === 'lisa' ? getLisaColor : getSimpleColor;
 const getMapFunction = (mapType, table) => mapType.includes("hinge") ? mapFnHinge : table.includes('testing') ? mapFnTesting : mapFnNb;
 const getHeight = (val, dataParams) => val*(dataParams.scale3D/((dataParams.nType === "time-series" && dataParams.nRange === null) ? (dataParams.nIndex)/10 : 1));
+
 const generateMapData = (state) => {
     if (!state.mapParams.bins.hasOwnProperty("bins") || (state.mapParams.mapType !== 'lisa' && !state.mapParams.bins.breaks)) {
         return state
@@ -30,6 +31,39 @@ const generateMapData = (state) => {
 
     const getColor = getColorFunction(state.mapParams.mapType)
     const mapFn = getMapFunction(state.mapParams.mapType, state.dataParams.numerator)
+
+    if (state.mapParams.vizType === "cartogram"){
+        for (let i=0; i<state.storedCartogramData.length; i++){
+            const currGeoid = state.storedGeojson[state.currentData].indices.indexOrder[state.storedCartogramData[i].properties.id]
+
+            const color = getColor(
+                state.storedCartogramData[i].value, 
+                state.mapParams.bins.breaks, 
+                state.mapParams.colorScale, 
+                state.mapParams.mapType, 
+                state.dataParams.numerator, 
+                state.storedLisaData, 
+                state.storedGeojson, 
+                state.currentData, 
+                state.storedGeojson[state.currentData].properties[currGeoid],
+                mapFn
+            );
+            if (color === null) {
+                returnObj[currGeoid] = {color:[0,0,0,0]}
+                continue;
+            }
+    
+            returnObj[currGeoid] = {
+                ...state.storedCartogramData[i],
+                color
+            }
+        }
+        console.log(returnObj)
+        return {
+            params: getVarId(state.currentData, state.dataParams, state.mapParams),
+            data: returnObj
+        }
+    }
 
     for (let i=0; i<state.storedGeojson[state.currentData].data.features.length; i++){
         const tempVal = dataFn(getTable(i, 'numerator'), getTable(i, 'denominator'), state.dataParams)
@@ -62,6 +96,7 @@ const generateMapData = (state) => {
         data: returnObj
     }
 };
+
 const shallowEqual = (object1, object2) => { // Thanks @Dmitri Pavlutin
     const keys = Object.keys(object1);
     if (keys.length !== keys.length) return false; 
@@ -545,11 +580,13 @@ var reducer = (state = INITIAL_STATE, action) => {
                 mapData: generateMapData({...state, storedLisaData: action.payload.data})
             };
         }
-        case 'SET_STORED_CARTOGRAM_DATA':
+        case 'SET_STORED_CARTOGRAM_DATA':{
             return {
                 ...state,
+                mapData: generateMapData({...state, storedCartogramData: action.payload.data}),
                 storedCartogramData: action.payload.data
             };
+        }
         case 'SET_STORED_MOBILITY_DATA':
             return {
                 ...state,

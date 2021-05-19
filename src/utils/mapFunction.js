@@ -19,7 +19,7 @@ export function mapFn(val, bins, colors, maptype, table){
         return colors[i-1]
       }
     }
-    return colors[0];
+    return colors[colors.length-1];
   }
 }
 
@@ -31,7 +31,7 @@ export function mapFnNb(val, bins, colors, maptype, table){
       return colors[i]
     }
   }
-  return colors[0];
+  return colors[colors.length-1];
 }
 
 export function mapFnTesting(val, bins, colors, maptype, table){
@@ -42,7 +42,7 @@ export function mapFnTesting(val, bins, colors, maptype, table){
       return colors[i]
     }
   }
-  return colors[0];
+  return colors[colors.length-1];
 }
 
 export function mapFnHinge(val, bins, colors, maptype, table){
@@ -53,5 +53,5 @@ export function mapFnHinge(val, bins, colors, maptype, table){
       return colors[i-1]
     }
   }
-  return colors[0];
+  return colors[colors.length-1];
 }
