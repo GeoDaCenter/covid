@@ -991,7 +991,7 @@ export const variablePresets = {
         scale3D: 1000,
         colorScale: 'YlGn8',
         fixedScale: null,
-        dataNote: 'Data prior to 2/28/21 include any doses administered in the state and may include residents of other states.'
+        dataNote: 'Texas reports only state-level vaccination rates to the CDC.'
     },
     "Doses to be Administered per 100 People": {
         variableName:"Doses to be Administered per 100 People",

@@ -321,7 +321,7 @@ export default function Map() {
       updateBins( { storedData, currentData, dataParams, mapParams, colorScales } );
     }
 
-  }, [dataParams.variableName, dataParams.nRange, dataParams.numerator] );
+  }, [dataParams.variableName, dataParams.nRange, dataParams.numerator, mapParams.mapType] );
 
   // Trigger on index change while dynamic bin mode
   useEffect(() => {
