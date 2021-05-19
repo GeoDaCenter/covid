@@ -270,6 +270,7 @@ export default function Map() {
   // Otherwise, this side-effect loads the selected data.
   // Each conditions checks to make sure gdaProxy is working.
   useEffect(() => {
+    setBinDataset(currentData + '')
     if (storedData === {}||(storedData[currentData] === undefined)) {
       loadData(dataPresets[currentData])
     } else if (dateIndices[currentData] !== undefined) {
@@ -315,11 +316,11 @@ export default function Map() {
   // Trigger on parameter change for metric values
   // Gets bins and sets map parameters
   useEffect(() => {
+    setBinDataset(currentData + '')
     if (currentData === binDataset && storedData.hasOwnProperty(currentData) && gdaProxy.ready && mapParams.binMode !== 'dynamic' && mapParams.mapType !== 'lisa') {
       updateBins( { storedData, currentData, dataParams, mapParams, colorScales } );
-    } else {
-      setBinDataset(currentData + '')
     }
+
   }, [dataParams.variableName, dataParams.nRange, dataParams.numerator] );
 
   // Trigger on index change while dynamic bin mode
