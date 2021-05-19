@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 // Helper and Utility functions //
@@ -16,7 +16,7 @@ import {
 // third row: map and variable parameters
 import { 
   dataLoad, dataLoadExisting, storeLisaValues, storeCartogramData, setDates, setNotification,
-  setMapParams, setUrlParams, setPanelState } from '../../actions';
+  setMapParams, setUrlParams, setPanelState, setVariableParams } from '../../actions';
 
 import { MapSection, NavBar, VariablePanel, Legend,  TopPanel, Preloader,
   DataPanel, MainLineChart, Scaleable, Draggable, InfoBox,
@@ -74,6 +74,7 @@ export default function Map() {
   // contains gdaProxy.
   const [defaultDimensions, setDefaultDimensions] = useState({...getDefaultDimensions()})
   const [isLoading, setIsLoading] = useState(false);
+  const [binDataset, setBinDataset] = useState(`${currentData}`);
   const dispatch = useDispatch();  
   // // Dispatch helper functions for side effects and data handling
   // Get centroid data for cartogram
@@ -160,8 +161,7 @@ export default function Map() {
     setIsLoading(false)
   }
 
-  const updateBins = useCallback(
-    async (params) => { 
+  const updateBins = useMemo(() => async (params) => { 
       const { storedData, currentData, dataParams, mapParams, colorScales } = params;
       if (
         !storedData.hasOwnProperty(currentData) || 
@@ -173,7 +173,8 @@ export default function Map() {
           let binData = getDataForBins( storedData[currentData], dataParams);
           let nb = mapParams.mapType === "natural_breaks" ? 
             await gdaProxy.Bins.NaturalBreaks(mapParams.nBins, binData) :
-            await gdaProxy.Bins.Hinge15(mapParams.nBins, binData)  
+            await gdaProxy.Bins.Hinge15(mapParams.nBins, binData) 
+            
           dispatch(
             setMapParams({
               bins: {
@@ -193,7 +194,7 @@ export default function Map() {
         }
       }
     }, 
-    [dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.dRange, mapParams.mapType, mapParams.vizType],
+    [dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.dRange, mapParams.mapType, mapParams.vizType, currentData],
   )
 
   const updateLisa = async (currentData, storedData, storedGeojson, dataParams) => {
@@ -269,9 +270,10 @@ export default function Map() {
   // Otherwise, this side-effect loads the selected data.
   // Each conditions checks to make sure gdaProxy is working.
   useEffect(() => {
+    setBinDataset(currentData + '')
     if (storedData === {}||(storedData[currentData] === undefined)) {
       loadData(dataPresets[currentData])
-    } else if (dateIndices[currentData] !== undefined) {      
+    } else if (dateIndices[currentData] !== undefined) {
       let denomIndices = dateIndices[currentData][dataParams.numerator]
       let lastIndex = denomIndices !== null ? denomIndices.slice(-1,)[0] : null;
       dispatch(
@@ -288,12 +290,13 @@ export default function Map() {
       updateBins( { storedData, currentData, mapParams, colorScales,
         dataParams: { 
           ...dataParams,  
-          nIndex: lastIndex || dataParams.nIndex,
-          binIndex: lastIndex || dataParams.nIndex,
+          nIndex: lastIndex,
+          binIndex: lastIndex,
         }, 
       })
     }
   },[currentData])
+
 
   
   // This listens for gdaProxy events for LISA and Cartogram calculations
@@ -313,17 +316,27 @@ export default function Map() {
   // Trigger on parameter change for metric values
   // Gets bins and sets map parameters
   useEffect(() => {
-    if (storedData.hasOwnProperty(currentData) && gdaProxy.ready && mapParams.binMode !== 'dynamic' && mapParams.mapType !== 'lisa') {
-      updateBins( { storedData, currentData, dataParams, mapParams, colorScales } );
+    setBinDataset(currentData + '')
+    if (currentData === binDataset && storedData.hasOwnProperty(currentData) && gdaProxy.ready && mapParams.binMode !== 'dynamic' && mapParams.mapType !== 'lisa') {
+      let binParams = {...dataParams};
+
+      if (dateIndices[currentData][dataParams.numerator].indexOf(dataParams.nIndex) === -1){
+        binParams.nIndex = dateIndices[currentData][dataParams.numerator].slice(-1,)[0];
+        binParams.dIndex = dataParams.dIndex !== null ? dateIndices[currentData][dataParams.numerator].slice(-1,)[0] : dataParams.dIndex;
+        dispatch(setVariableParams(binParams));
+      }
+
+      updateBins( { storedData, currentData, dataParams: binParams, mapParams, colorScales } );
     }
-  }, [dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.dRange, mapParams.mapType, mapParams.vizType] );
+
+  }, [dataParams.variableName, dataParams.nRange, dataParams.numerator, mapParams.mapType] );
 
   // Trigger on index change while dynamic bin mode
   useEffect(() => {
     if (storedData.hasOwnProperty(currentData) && gdaProxy.ready && mapParams.binMode === 'dynamic' && mapParams.mapType !== 'lisa') {
       updateBins( { storedData, currentData, dataParams: { ...dataParams, binIndex: dataParams.nIndex }, mapParams, colorScales } );
     }
-  }, [dataParams.nIndex, dataParams.dIndex, mapParams.binMode, dataParams.variableName, dataParams.nRange, mapParams.mapType, mapParams.vizType] ); 
+  }, [dataParams.nIndex, mapParams.binMode] ); 
 
   // default width handlers on resize
   useEffect(() => {
