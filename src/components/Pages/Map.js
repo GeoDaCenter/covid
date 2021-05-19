@@ -16,7 +16,7 @@ import {
 // third row: map and variable parameters
 import { 
   dataLoad, dataLoadExisting, storeLisaValues, storeCartogramData, setDates, setNotification,
-  setMapParams, setUrlParams, setPanelState } from '../../actions';
+  setMapParams, setUrlParams, setPanelState, setVariableParams } from '../../actions';
 
 import { MapSection, NavBar, VariablePanel, Legend,  TopPanel, Preloader,
   DataPanel, MainLineChart, Scaleable, Draggable, InfoBox,
@@ -318,7 +318,15 @@ export default function Map() {
   useEffect(() => {
     setBinDataset(currentData + '')
     if (currentData === binDataset && storedData.hasOwnProperty(currentData) && gdaProxy.ready && mapParams.binMode !== 'dynamic' && mapParams.mapType !== 'lisa') {
-      updateBins( { storedData, currentData, dataParams, mapParams, colorScales } );
+      let binParams = {...dataParams};
+
+      if (dateIndices[currentData][dataParams.numerator].indexOf(dataParams.nIndex) === -1){
+        binParams.nIndex = dateIndices[currentData][dataParams.numerator].slice(-1,)[0];
+        binParams.dIndex = dataParams.dIndex !== null ? dateIndices[currentData][dataParams.numerator].slice(-1,)[0] : dataParams.dIndex;
+        dispatch(setVariableParams(binParams));
+      }
+
+      updateBins( { storedData, currentData, dataParams: binParams, mapParams, colorScales } );
     }
 
   }, [dataParams.variableName, dataParams.nRange, dataParams.numerator, mapParams.mapType] );
