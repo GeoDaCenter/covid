@@ -49,10 +49,9 @@ registerRoute(
 // An example runtime caching route for requests that aren't handled by the
 // precache, in this case same-origin .png requests like those from in public/
 registerRoute(
-  // Add in any other file extensions or routing criteria as needed.
-  ({ url }) => url.origin === self.location.origin && url.pathname.endsWith('.png'), // Customize this strategy as needed, e.g., by changing to CacheFirst.
+  ({ url }) => url.origin === self.location.origin && url.pathname.endsWith('.pbf'),
   new StaleWhileRevalidate({
-    cacheName: 'images',
+    cacheName: 'pbf',
     plugins: [
       // Ensure that once this runtime cache reaches a maximum size the
       // least-recently used images are removed.
@@ -62,8 +61,7 @@ registerRoute(
 );
 
 registerRoute(
-  // Add in any other file extensions or routing criteria as needed.
-  ({ url }) => url.origin === self.location.origin && url.pathname.endsWith('.csv'), // Customize this strategy as needed, e.g., by changing to CacheFirst.
+  ({ url }) => url.origin === self.location.origin && url.pathname.endsWith('.csv'),
   new StaleWhileRevalidate({
     cacheName: 'csv',
     plugins: [
@@ -80,8 +78,17 @@ registerRoute(
   new StaleWhileRevalidate({
     cacheName: 'html',
     plugins: [
-      // Ensure that once this runtime cache reaches a maximum size the
-      // least-recently used images are removed.
+      new ExpirationPlugin({ maxEntries: 0 }),
+    ],
+  })
+);
+
+registerRoute(
+  // Add in any other file extensions or routing criteria as needed.
+  ({ url }) => url.origin === self.location.origin && url.pathname.endsWith('.pbf'), // Customize this strategy as needed, e.g., by changing to CacheFirst.
+  new StaleWhileRevalidate({
+    cacheName: 'pbf',
+    plugins: [
       new ExpirationPlugin({ maxEntries: 0 }),
     ],
   })
