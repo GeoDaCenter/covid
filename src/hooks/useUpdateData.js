@@ -75,7 +75,6 @@ export default function useUpdateData(gdaProxy){
       Object.values(storedGeojson[currentData].indices.indexOrder)
     );
     const cartogramData = await gdaProxy.cartogram(currentData, dataForCartogram);
-    console.log(cartogramData)
     let tempArray = new Array(cartogramData.length)
     for (let i=0; i<cartogramData.length; i++){
         cartogramData[i].value = dataForCartogram[i]
@@ -97,7 +96,7 @@ export default function useUpdateData(gdaProxy){
   const binReady = () => (storedGeojson[currentData] && storedData[currentTable.numerator] && gdaProxy.ready && mapParams.mapType !== 'lisa')
   // Trigger on index change while dynamic bin mode
   useEffect(() => { 
-    if (binReady() && mapParams.binMode === 'dynamic') updateBins()
+    if (!isCalculating && binReady() && mapParams.binMode === 'dynamic') updateBins()
   }, [dataParams.nIndex, mapParams.binMode]); 
 
   // Trigger on parameter change for metric values

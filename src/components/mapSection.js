@@ -196,7 +196,8 @@ export default function MapSection(){
     const dotDensityData = useSelector(state => state.dotDensityData);
     const currentMapData = useSelector(state => state.mapData.data);
     const currentMapID = useSelector(state => state.mapData.params);
-    const storedGeojson = useSelector(state => state.storedGeojson)
+    const storedGeojson = useSelector(state => state.storedGeojson);
+    const selectionKeys = useSelector(state => state.selectionKeys);
     const currentMapGeography = storedGeojson[currentData]?.data||[]
     
     // component state elements
@@ -344,7 +345,6 @@ export default function MapSection(){
         
         if (storedCartogramData.length){
             let center = getCartogramCenter(storedCartogramData);
-            console.log(center)
             if (isNaN(center[0])) return;
             let roundedCenter = [Math.floor(center[0]),Math.floor(center[1])];
             if ((storedCenter === null || roundedCenter[0] !== storedCenter[0]) && center) {
@@ -521,7 +521,7 @@ export default function MapSection(){
 
     const handleMapHover = ({x, y, object, layer}) => {
         dispatch(setTooltipContent(x, y, Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : object?.properties?.GEOID));
-
+        console.log(object?.properties  )
         if (object && object?.properties?.GEOID) {
             if (object?.properties?.GEOID !== hoverGeog) setHoverGeog(object?.properties?.GEOID)
         } else {
@@ -624,9 +624,7 @@ export default function MapSection(){
             })
         }  
     }, []);
-    try {
-        console.log(currentMapData[currentMapGeography.features[0].properties.GEOID])
-    } catch {}
+
     const FullLayers = {
         choropleth: new GeoJsonLayer({
             id: 'choropleth',
@@ -763,7 +761,7 @@ export default function MapSection(){
                 getFillColor: currentMapID,
                 getRadius: currentMapID
             },
-          }),
+        }),
         cartogramText: new TextLayer({
             id: 'cartogram text layer',
             data: currentMapGeography.features,
@@ -778,12 +776,13 @@ export default function MapSection(){
             getAlignmentBaseline: 'center',
             maxWidth: 500,
             wordBreak: 'break-word',
-            getText: d => d.properties?.NAME,
+
+            getText: d => 'test',   //d.properties.NAME,
             updateTriggers: {
-                getPosition: [storedCartogramData, mapParams.vizType],
-                getFillColor: [storedCartogramData, mapParams.vizType],
-                getize: [storedCartogramData, mapParams.vizType],
-                getRadius: [storedCartogramData, mapParams.vizType]
+                data: currentMapGeography,
+                getPosition: currentMapID,
+                getFillColor: currentMapID,
+                getRadius: currentMapID
             },
         }),        
         dotDensity: [new ScatterplotLayer({
@@ -1017,7 +1016,7 @@ export default function MapSection(){
                 </MapboxGLMap >
             </DeckGL>
             <MapButtonContainer 
-                infoPanel={panelState.info}
+                infoPanel={panelState.info && selectionKeys.length}
             >
                 <NavInlineButtonGroup>
                     <NavInlineButton

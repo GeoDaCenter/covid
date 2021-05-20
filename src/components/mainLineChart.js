@@ -16,6 +16,7 @@ const ChartContainer = styled.span`
     span {
         color:white;
     }
+    user-select: none;
 `
 const SwitchesContainer = styled.div`
     display:flex;

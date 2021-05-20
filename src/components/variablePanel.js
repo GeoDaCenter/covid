@@ -607,15 +607,15 @@ const VariablePanel = (props) => {
   }
 
   const handleGeography = (e) => {
-    setCurrentGeography(e.target.value)
+    setCurrentGeography(e.target.value) 
     if (!variableTree[newVariable][e.target.value].hasOwnProperty(currentDataset)) {
       let datasetWithGeography = Object.keys(variableTree[newVariable][e.target.value])[0]
       setCurrentDataset(datasetWithGeography)
       dispatch(setCurrentData(datasetTree[e.target.value][datasetWithGeography]))
     } else {
+      console.log(datasetTree[e.target.value][currentDataset])
       dispatch(setCurrentData(datasetTree[e.target.value][currentDataset]))
     }
-
   }
 
   const handleDataset = (e) => {

@@ -13,6 +13,7 @@ const SliderContainer = styled.div`
     box-sizing:border-box;
     padding:5px 20px 5px 20px;
     width:100%;
+    user-select: none;
 `
 const PlayPauseContainer = styled(Grid)`
     height:0;

@@ -58,7 +58,6 @@ const generateMapData = (state) => {
                 color
             }
         }
-        console.log(returnObj)
         return {
             params: getVarId(state.currentData, state.dataParams, state.mapParams),
             data: returnObj
@@ -115,7 +114,7 @@ const parseTooltipData = (geoid, state) => {
 
     tooltipData = {
         population: properties.population,
-        name: geography === 'County' ? properties.NAME + ', ' + properties.state_abbr : properties.name
+        name: geography === 'County' ? properties.NAME + ', ' + properties.state_abbr : properties.NAME
     }
     
     const currentTables = {
@@ -223,7 +222,6 @@ const aggregateDataFunction = (numeratorTable, denominatorTable, properties, geo
         for (let i=0; i<geoids.length; i++){
             let selectionPop = properties[geoids[i]].population;
             totalPopulation+=selectionPop;
-            console.log(dataFn(numeratorTable[geoids[i]], denominatorTable[geoids[i]], params))
             dataArray.push(dataFn(numeratorTable[geoids[i]], denominatorTable[geoids[i]], params)*selectionPop)
         }
     } else {
@@ -601,14 +599,27 @@ var reducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 centroids: centroidsObj
             };
-        case 'SET_CURRENT_DATA':
+        case 'SET_CURRENT_DATA':{
+            const currentTable = {
+                numerator: 
+                    state.dataParams.numerator === "properties" ? "properties" 
+                        : 
+                    dataPresetsRedux[action.payload.data].tables[state.dataParams.numerator].file,
+                denominator: 
+                    state.dataParams.denominator === "properties" ? "properties" 
+                        : 
+                    dataPresetsRedux[action.payload.data].tables[state.dataParams.denominator].file,
+            }
+
             return {
                 ...state,
                 currentData: action.payload.data,
                 selectionKeys: [],
                 selectionNaes: [],
-                sidebarData: {}
+                sidebarData: {},
+                currentTable
             }
+        }
         case 'SET_GEODA_PROXY':
             return {
                 ...state,
@@ -767,7 +778,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                 storedIndex: (dataParams.nType === 'characteristic' && state.dataParams.nType === 'time-series') ? state.dataParams.nIndex : state.storedIndex,
                 storedRange: (dataParams.nType === 'characteristic' && state.dataParams.nType === 'time-series') ? state.dataParams.nRange : state.storedRange,
                 dataParams,
-                mapData: state.mapParams.binMode !== 'dynamic' && (state.mapParams.mapType !== 'lisa') && shallowEqual(state.dataParams, dataParams)
+                mapData: state.mapParams.mapType !== 'lisa' && shallowEqual(state.dataParams, dataParams)
                         ? 
                     generateMapData({...state, dataParams}) 
                         : 
