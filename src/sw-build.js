@@ -6,9 +6,12 @@ const buildSW = () => {
     swSrc: 'src/sw.js', // this is your sw template file
     swDest: 'build/sw.js', // this will be created in the build step
     globDirectory: 'build',
-    maximumFileSizeToCacheInBytes: 15000000,
+    maximumFileSizeToCacheInBytes: 3000000,
     globPatterns: [
-      '**\/*.{js,png,geojson}',
+      '**\/{csv,pbf,geojson}/*.{csv,pbf,geojson}',
+      '**\/static/{js,css}/*.{css,js,map}',
+      '**\/workers/*.{js}',
+      'index.html'
     ]
   }).then(({count, size, warnings}) => {
     // Optionally, log any warnings and details.

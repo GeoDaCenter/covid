@@ -521,7 +521,6 @@ export default function MapSection(){
 
     const handleMapHover = ({x, y, object, layer}) => {
         dispatch(setTooltipContent(x, y, Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : object?.properties?.GEOID));
-        console.log(object?.properties  )
         if (object && object?.properties?.GEOID) {
             if (object?.properties?.GEOID !== hoverGeog) setHoverGeog(object?.properties?.GEOID)
         } else {
