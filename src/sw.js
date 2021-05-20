@@ -25,7 +25,20 @@ if ('function' === typeof importScripts) {
         ],
       })
     );
+    
+    workbox.routing.registerRoute(
+      /\.(?:geojson)$/,
+      new workbox.strategies.CacheFirst({
+        cacheName: 'geodata',
+        plugins: [
+          new workbox.expiration.ExpirationPlugin({
+            maxEntries: 100,
+            maxAgeSeconds: 7 * 24 * 60 * 60, // 30 Days
+          }),
+        ],
+      })
+    );
   } else {
-      console.log('Workbox could not be loaded. No Offline support');
+    console.log('Workbox could not be loaded. No Offline support');
   }
 }
