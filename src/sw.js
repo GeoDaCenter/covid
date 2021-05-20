@@ -6,8 +6,10 @@ if ('function' === typeof importScripts) {
     if (workbox) {
       console.log('Workbox is loaded');
   
+      workbox.core.skipWaiting();
+  
       /* injection point for manifest files.  */
-      workbox.precaching.precacheAndRoute([]);
+      workbox.precaching.precacheAndRoute(self.__WB_MANIFEST);
   
   /* custom cache rules*/
   workbox.routing.registerNavigationRoute('/index.html', {
