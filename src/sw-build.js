@@ -8,15 +8,15 @@ const buildSW = () => {
     globDirectory: 'build',
     maximumFileSizeToCacheInBytes: 3000000,
     globPatterns: [
-      '**\/{csv,pbf,geojson}/*.{csv,pbf,geojson}',
+      '**\/{csv,pbf,geojson}/{county_usfacts,covid_confirmed_usafacts}.{csv,pbf,geojson}',
       '**\/static/{js,css}/*.{css,js,map}',
       '**\/workers/*.{js}',
       'index.html'
     ]
   }).then(({count, size, warnings}) => {
     // Optionally, log any warnings and details.
-    warnings.forEach(console.warn);
-    console.log(`${count} files will be precached, totaling ${size} bytes.`);
+    // warnings.forEach(console.warn);
+    // console.log(`${count} files will be precached, totaling ${size} bytes.`);
   });
 }
 buildSW();  
