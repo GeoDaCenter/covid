@@ -16,8 +16,8 @@ const Map = React.lazy(() => import('./components/Pages/Map'));
 const Methodology = React.lazy(() => import('./components/Pages/Methodology'));
 const Time = React.lazy(() => import('./components/Pages/Time'));
 const Trends = React.lazy(() => import('./components/Pages/Trends'));
-T
-console.log('loaded 3');
+
+console.log('loaded 4');
 
 class App extends Component {
   render() {
