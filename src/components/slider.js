@@ -287,7 +287,7 @@ const DateSlider = () => {
         }
     }
 
-    const valuetext = (value) => `${dates[value].slice(-5,-3)}-${dates[value].slice(2,4)}`;
+    const valuetext = (value) => `${dates[value]?.slice(-5,-3)}-${dates[value]?.slice(2,4)}`;
     
     const formatDate = (date) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -374,7 +374,7 @@ const DateSlider = () => {
                         />}
                     </Grid>
                     {(dataParams.rangeType !== 'custom' && dataParams.nType !== 'characteristic') && <InitialDate>{dates[0]}</InitialDate>}
-                    {(dataParams.rangeType !== 'custom' && dataParams.nType !== 'characteristic') && <EndDate>{dateIndices[currentData] !== undefined && dates[dateIndices[currentData][dataParams.numerator].slice(-1,)[0]]}</EndDate>}
+                    {(dataParams.rangeType !== 'custom' && dataParams.nType !== 'characteristic') && <EndDate>{dateIndices[currentData] !== undefined && dates[dateIndices[currentData][dataParams.numerator]?.slice(-1,)[0]]}</EndDate>}
                 </Grid>
             </SliderContainer>
         );
