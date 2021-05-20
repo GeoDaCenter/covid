@@ -1,7 +1,7 @@
 import React, { Component, Suspense  } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
  
-import {Map, Home, LoadingMessage, ErrorPage} from './components/';
+import {Home, LoadingMessage, ErrorPage} from './components/';
  
 const About = React.lazy(() => import('./components/Pages/About'));
 const Api = React.lazy(() => import('./components/Pages/Api'));
@@ -12,11 +12,11 @@ const Data = React.lazy(() => import('./components/Pages/Data'));
 const Faq = React.lazy(() => import('./components/Pages/Faq'));
 const Hotspots = React.lazy(() => import('./components/Pages/Hotspots'));
 const Insights = React.lazy(() => import('./components/Pages/Insights'));
-// const Map = React.lazy(() => import('./components/Pages/Map'));
+const Map = React.lazy(() => import('./components/Pages/Map'));
 const Methodology = React.lazy(() => import('./components/Pages/Methodology'));
 const Time = React.lazy(() => import('./components/Pages/Time'));
 const Trends = React.lazy(() => import('./components/Pages/Trends'));
-
+T
 console.log('loaded 3');
 
 class App extends Component {
@@ -26,7 +26,7 @@ class App extends Component {
         <div>
           <Suspense fallback={<LoadingMessage />}>
               <Switch>
-                <Route path="/" component={Map} exact/>
+                <Route path="/" component={Home} exact/>
                 <Route path="/map" component={Map}/>
                 <Route path="/map.html" component={Map}/>
                 <Route path="/about" component={About}/>

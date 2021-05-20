@@ -44,12 +44,14 @@
     "remark-gfm": "^1.0.0",
     "styled-components": "^5.2.1",
     "web-vitals": "^0.2.4",
-    "webfontloader": "^1.6.28"
+    "webfontloader": "^1.6.28",
+    "workbox-build": "^6.1.5"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "netlify-build": "react-scripts build && cd build && cat _redirects",
+    "build-sw": "node ./src/sw-build.js",
+    "build": "react-scripts build && npm run build-sw",
+    "netlify-build": "npm run build && cd build && cat _redirects",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -73,7 +75,7 @@
     ]
   },
   "devDependencies": {
-    "worker-loader": "^3.0.6",
-    "source-map-explorer": "^2.5.2"
+    "source-map-explorer": "^2.5.2",
+    "worker-loader": "^3.0.6"
   }
 }
