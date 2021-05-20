@@ -6,8 +6,9 @@ const buildSW = () => {
     swSrc: 'src/sw.js', // this is your sw template file
     swDest: 'build/sw.js', // this will be created in the build step
     globDirectory: 'build',
+    maximumFileSizeToCacheInBytes: 15000000,
     globPatterns: [
-      '**\/*.{js,css,html,png}',
+      '**\/*.{js,png,geojson}',
     ]
   }).then(({count, size, warnings}) => {
     // Optionally, log any warnings and details.
@@ -15,4 +16,4 @@ const buildSW = () => {
     console.log(`${count} files will be precached, totaling ${size} bytes.`);
   });
 }
-buildSW();
+buildSW();  
