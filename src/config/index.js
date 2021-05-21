@@ -276,7 +276,7 @@ export const colors = {
     ]
 }
 
-export const defaultData = 'county_usfacts.geojson';
+export const defaultData = 'cdc.geojson';
 export const defaultTables = {
     'County': {
         'predictions':{
@@ -497,7 +497,20 @@ export const dataPresetsRedux = {
         plainName: 'CDC', // Plain english name for dataset
         geojson: 'cdc.geojson', // geospatial data to join to
         geography: 'County',
-        tables: {}
+        tables: {
+            'cases': {
+                'file':'covid_confirmed_cdc.pbf',
+                'dates':'isoDateList',
+                'type':'time-series',
+                'accumulate':true
+            },
+            'deaths': {
+                'file':'covid_deaths_cdc.pbf',
+                'dates':'isoDateList',
+                'type':'time-series',
+                'accumulate':true
+            }
+        }
     },
     'state_1p3a.geojson': {
         plainName: '1Point3Acres State',
@@ -1059,302 +1072,83 @@ export const variablePresets = {
 export const variableTree = {
     "HEADER:cases":{},
     "Confirmed Count": {
-        "County": {
-            "USA Facts": {
-                "geojson":'county_usfacts.geojson',
-                "csv":['covid_confirmed_usafacts'] 
-            },
-            "1point3acres": {
-                "geojson":'county_1p3a.geojson',
-                "csv":['covid_confirmed_1p3a']
-            },
-            "New York Times": {
-                "geojson":'county_nyt.geojson',
-                "csv":['covid_confirmed_nyt']  
-            }
-        },
-        "State": {
-            "USA Facts": {
-                "geojson":'state_usafacts.geojson',
-                "csv":['covid_confirmed_usafacts'] 
-            },
-            "1point3acres": {
-                "geojson":'state_1p3a.geojson',
-                "csv":['covid_confirmed_1p3a_state']
-            },
-            "New York Times": {
-                "geojson":'state_nyt.geojson',
-                "csv":['covid_confirmed_nyt_state']
-            }, 
-        }
+        "County": ["USA Facts","1point3acres","New York Times","CDC"],
+        "State": ["USA Facts","1point3acres","New York Times"]
     },
     "Confirmed Count per 100K Population":{
-        "County": {
-            "USA Facts": {
-                "geojson":'county_usfacts.geojson',
-                "csv":['covid_confirmed_usafacts'] 
-            },
-            "1point3acres": {
-                "geojson":'county_1p3a.geojson',
-                "csv":['covid_confirmed_1p3a']
-            },
-            "New York Times": {
-                "geojson":'county_nyt.geojson',
-                "csv":['covid_confirmed_nyt']  
-            }
-        },
-        "State": {
-            "USA Facts": {
-                "geojson":'state_usafacts.geojson',
-                "csv":['covid_confirmed_usafacts'] 
-            },
-            "1point3acres": {
-                "geojson":'state_1p3a.geojson',
-                "csv":['covid_confirmed_1p3a_state']
-            },
-            "New York Times": {
-                "geojson":'state_nyt.geojson',
-                "csv":['covid_confirmed_nyt_state']
-            }, 
-        }
+        "County": ["USA Facts","1point3acres","New York Times","CDC"],
+        "State": ["USA Facts","1point3acres","New York Times"]
     },
     "Confirmed Count per Licensed Bed":{
-        "County": {
-            "USA Facts": {
-                "geojson":'county_usfacts.geojson',
-                "csv":['covid_confirmed_usafacts'] 
-            },
-            "1point3acres": {
-                "geojson":'county_1p3a.geojson',
-                "csv":['covid_confirmed_1p3a']
-            },
-            "New York Times": {
-                "geojson":'county_nyt.geojson',
-                "csv":['covid_confirmed_nyt']  
-            }
-        },
-        "State": {
-            "1point3acres": {
-                "geojson":'state_1p3a.geojson',
-                "csv":['covid_confirmed_1p3a_state']
-            },
-            "New York Times": {
-                "geojson":'state_nyt.geojson',
-                "csv":['covid_confirmed_nyt_state']
-            }, 
-        }
+        "County": ["USA Facts","1point3acres","New York Times","CDC"],
+        "State": ["USA Facts","1point3acres","New York Times"]
     },
     "HEADER:deaths":{},
     "Death Count":{
-        "County": {
-            "USA Facts": {
-                "geojson":'county_usfacts.geojson',
-                "csv":['covid_deaths_usafacts'] 
-            },
-            "1point3acres": {
-                "geojson":'county_1p3a.geojson',
-                "csv":['covid_deaths_1p3a']
-            },
-            "New York Times": {
-                "geojson":'county_nyt.geojson',
-                "csv":['covid_deaths_nyt']  
-            }
-        },
-        "State": {
-            "1point3acres": {
-                "geojson":'state_1p3a.geojson',
-                "csv":['covid_deaths_1p3a_state']
-            },
-            "New York Times": {
-                "geojson":'state_nyt.geojson',
-                "csv":['covid_deaths_nyt_state']
-            }, 
-        }
+        "County": ["USA Facts","1point3acres","New York Times","CDC"],
+        "State": ["USA Facts","1point3acres","New York Times"]
     },
     "Death Count per 100K Population": {
-        "County": {
-            "USA Facts": {
-                "geojson":'county_usfacts.geojson',
-                "csv":['covid_deaths_usafacts'] 
-            },
-            "1point3acres": {
-                "geojson":'county_1p3a.geojson',
-                "csv":['covid_deaths_1p3a']
-            },
-            "New York Times": {
-                "geojson":'county_nyt.geojson',
-                "csv":['covid_deaths_nyt']  
-            }
-        },
-        "State": {
-            "1point3acres": {
-                "geojson":'state_1p3a.geojson',
-                "csv":['covid_deaths_1p3a_state']
-            },
-            "New York Times": {
-                "geojson":'state_nyt.geojson',
-                "csv":['covid_deaths_nyt_state']
-            }, 
-        }
+        "County": ["USA Facts","1point3acres","New York Times","CDC"],
+        "State": ["USA Facts","1point3acres","New York Times"]
     },
     "Death Count / Confirmed Count": {
-        "County": {
-            "USA Facts": {
-                "geojson":'county_usfacts.geojson'
-            },
-            "1point3acres": {
-                "geojson":'county_1p3a.geojson'
-            },
-            "New York Times": {
-                "geojson":'county_nyt.geojson'
-            }
-        },
-        "State": {
-            "1point3acres": {
-                "geojson":'state_1p3a.geojson'
-            },
-            "New York Times": {
-                "geojson":'state_nyt.geojson'
-            }, 
-        }
+        "County": ["USA Facts","1point3acres","New York Times","CDC"],
+        "State": ["USA Facts","1point3acres","New York Times"]
     },
     "HEADER:testing":{},
     "7 Day Testing Positivity Rate Percent":{
-        "County": {
-            "CDC": {
-                "geojson": "cdc.geojson"
-            }
-        },
-        "State": {
-            "CDC": {
-                "geojson":'state_1p3a.geojson'
-            },
-        }
+        "County": ["CDC"],
+        "State": ["CDC"]
     },
     "7 Day Testing Capacity per 100K Population":{
-        "County": {
-            "CDC": {
-                "geojson": "cdc.geojson"
-            }
-        },
-        "State": {
-            "CDC": {
-                "geojson":'state_1p3a.geojson'
-            },
-        }
+        "County": ["CDC"],
+        "State": ["CDC"]
     },
     "HEADER:vaccination":{},
     "Percent Fully Vaccinated":{
-        "County": {
-            "CDC": {
-                "geojson": "cdc.geojson",
-            }
-        },
-        "State": {
-            "CDC": {
-                "geojson": "state_1p3a.geojson",
-            }
-        },
+        "County": ["CDC"],
+        "State": ["CDC"]
     },
     "Percent Received At Least One Dose":{
-        "State": {
-            "CDC": {
-                "geojson": "state_1p3a.geojson"
-            }
-        },
-    },
-    "Doses to be Administered per 100 People":{
-        "State": {
-            "CDC": {
-                "geojson": "state_1p3a.geojson"
-            }
-        },
+        "County": ["CDC"],
+        "State": ["CDC"]
     },
     "HEADER:forecasting":{},
     "Forecasting (5-Day Severity Index)":{
-        "County": {
-            "Yu Group at Berkeley": {
-                "geojson":'county_usfacts.geojson'
-            }
-        }
+        "County": ["Yu Group at Berkeley"]
     },
     "HEADER:community health information":{},
     "Uninsured Percent": {
-        "County": {
-            "County Health Rankings": {
-                "geojson":'county_usfacts.geojson',
-                "csv":['chr_health_factors']
-            }
-        },
-        "State": {
-            "County Health Rankings": {
-                "geojson":'state_1p3a.geojson'
-            }
-        }
+        "County": ["County Health Rankings"],
+        "State": ["County Health Rankings"]
     },
     "Over 65 Years Percent": {
-        "County": {
-            "County Health Rankings": {
-                "geojson":'county_usfacts.geojson'
-            }
-        },
-        "State": {
-            "County Health Rankings": {
-                "geojson":'state_1p3a.geojson'
-            }
-        }
+        "County": ["County Health Rankings"],
+        "State": ["County Health Rankings"]
     },
     "Life Expectancy": {
-        "County": {
-            "County Health Rankings": {
-                "geojson":'county_usfacts.geojson'
-            }
-        },
-        "State": {
-            "County Health Rankings": {
-                "geojson":'state_1p3a.geojson'
-            }
-        }
+        "County": ["County Health Rankings"],
+        "State": ["County Health Rankings"]
     },
     "Percent Essential Workers": {
-        "County": {
-            "ACS": {
-                "geojson":'county_usfacts.geojson'
-            }
-        },
-        // "State": {
-        //     "ACS": {
-        //         "geojson":'state_1p3a.geojson'
-        //     }
-        // }
+        "County": ['ACS']
     },
     "HEADER:mobility":{},
     "Percent Home on Workdays": {
-        "County": {
-            "Safegraph": {
-                "geojson":'county_usfacts.geojson'
-            }
-        }
+        "County": ["Safegraph"]
     },
     "Percent Part Time on Workdays": {
-        "County": {
-            "Safegraph": {
-                "geojson":'safegraph.geojson'
-            }
-        }
+        "County": ["Safegraph"]
     },
     "Percent Full Time on Workdays": {
-        "County": {
-            "Safegraph": {
-                "geojson":'safegraph.geojson'
-            }
-        }
+        "County": ["Safegraph"]
     }
 }
 
 const onlyUnique = (value, index, self) => self.indexOf(value) === index;
 export const allGeographies = Object.values(variableTree).flatMap(o => Object.keys(o)).filter(onlyUnique)
-export const allDatasets = Object.values(variableTree).flatMap(o => Object.values(o)).flatMap(o => Object.keys(o)).filter(onlyUnique)
+export const allDatasets = Object.values(variableTree).flatMap(o => Object.values(o)).flatMap(o => o).filter(onlyUnique)
 
 
 export const datasetTree = {
@@ -1363,10 +1157,10 @@ export const datasetTree = {
       'New York Times':'county_nyt.geojson',
       'USA Facts':'county_usfacts.geojson',
       'CDC':'cdc.geojson',
-      'Yu Group at Berkeley':'county_usfacts.geojson',
-      'County Health Rankings':'county_usfacts.geojson',
-      'ACS':'county_usfacts.geojson',   
-      'Safegraph':'county_usfacts.geojson'
+      'Yu Group at Berkeley':'cdc.geojson',
+      'County Health Rankings':'cdc.geojson',
+      'ACS':'cdc.geojson',   
+      'Safegraph':'cdc.geojson'
     }, 
     'State': {
       '1point3acres':'state_1p3a.geojson',

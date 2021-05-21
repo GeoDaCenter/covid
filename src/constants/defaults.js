@@ -5,7 +5,7 @@ export const INITIAL_STATE = {
   storedCartogramData: {},
   storedMobilityData: {},
   lazyFetched:false,
-  currentData: 'county_usfacts.geojson',
+  currentData: 'cdc.geojson',
   currentTable: {
     numerator: '',
     denominator: ''

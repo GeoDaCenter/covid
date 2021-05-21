@@ -431,9 +431,9 @@ const VariablePanel = (props) => {
     }
     
     // check if valid combination based on variable tree
-    if (!variableTree[e.target.value].hasOwnProperty(tempGeography) || !variableTree[e.target.value][tempGeography].hasOwnProperty(tempDataset)) {
+    if (!variableTree[e.target.value].hasOwnProperty(tempGeography) || !variableTree[e.target.value][tempGeography].indexOf(tempDataset) !== -1) {
       tempGeography = Object.keys(variableTree[e.target.value])[0]
-      tempDataset = Object.keys(variableTree[e.target.value][tempGeography])[0];
+      tempDataset = variableTree[e.target.value][tempGeography][0];
 
       
       dispatch(setParametersAndData({
@@ -461,8 +461,8 @@ const VariablePanel = (props) => {
 
   const handleGeography = (e) => {
     setCurrentGeography(e.target.value) 
-    if (!variableTree[newVariable][e.target.value].hasOwnProperty(currentDataset)) {
-      let datasetWithGeography = Object.keys(variableTree[newVariable][e.target.value])[0]
+    if (!variableTree[newVariable][e.target.value].indexOf(currentDataset) !== -1) {
+      let datasetWithGeography = variableTree[newVariable][e.target.value][0]
       setCurrentDataset(datasetWithGeography)
       dispatch(setCurrentData(datasetTree[e.target.value][datasetWithGeography]))
     } else {
@@ -589,7 +589,7 @@ const VariablePanel = (props) => {
               <MenuItem 
               value={dataset}
               key={dataset} 
-              disabled={variableTree[newVariable][currentGeography] === undefined || !variableTree[newVariable][currentGeography].hasOwnProperty(dataset)}
+              disabled={variableTree[newVariable][currentGeography] === undefined || variableTree[newVariable][currentGeography].indexOf(dataset) === -1}
               >
                 {dataset}
               </MenuItem>
