@@ -752,7 +752,7 @@ export default function MapSection(){
             getPosition: d => currentMapData[d.properties.GEOID].position,
             getFillColor: d => currentMapData[d.properties.GEOID].color,
             getRadius: d => currentMapData[d.properties.GEOID].radius,  
-            onHover: e => console.log,
+            onHover: handleMapHover,
             radiusScale: currentData.includes('state') ? 9 : 6,
             transitions: {
                 getPosition: currentData.includes('state') ? 125 : 250,

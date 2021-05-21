@@ -344,6 +344,7 @@ const generateReport = (geoids, state, dataPresetsRedux, defaultTables) => {
 }
 
 var reducer = (state = INITIAL_STATE, action) => {
+    console.log(action)
     switch(action.type) {
         case 'INITIAL_LOAD': {
             const dataParams = {

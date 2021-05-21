@@ -18,6 +18,8 @@ export default function useUpdateData(gdaProxy){
     const storedGeojson = useSelector(state => state.storedGeojson);
     const storedLisaData = useSelector(state => state.storedLisaData);
     const [isCalculating, setIsCalculating] = useState(false);
+    const [stingerTimeout, setStingerTimeout] = useState();
+    const [stinger, setStinger] = useState(false);
 
     const updateBins =  async () => { 
       setIsCalculating(true)
@@ -89,10 +91,24 @@ export default function useUpdateData(gdaProxy){
   useEffect(() => {
     if (!isCalculating && gdaProxy.ready) {
       if (mapParams.mapType === "lisa" ) updateLisa()
-      if (mapParams.vizType === 'cartogram') updateCartogram()
+      if (mapParams.vizType === 'cartogram') {
+        updateCartogram()
+        clearTimeout(stingerTimeout)
+        setStingerTimeout(setTimeout(() => {
+          setStinger(true)
+        }, 1250))
+      }
     }
   }, [currentData, storedGeojson[currentData], dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.nIndex, dataParams.dIndex, mapParams.binMode, dataParams.variableName, mapParams.mapType, mapParams.vizType])
   
+  useEffect(() => {
+    if (stinger){
+      setStinger(false)
+      clearTimeout(stingerTimeout)
+      updateCartogram();
+    }
+  },[stinger])
+
   const binReady = () => (storedGeojson[currentData] && storedData[currentTable.numerator] && gdaProxy.ready && mapParams.mapType !== 'lisa')
   // Trigger on index change while dynamic bin mode
   useEffect(() => { 
