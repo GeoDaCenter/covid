@@ -25,6 +25,8 @@ export default function useLoadData(gdaProxy){
   const currentData = useSelector(state => state.currentData);
   const storedData = useSelector(state => state.storedData);
   const storedGeojson = useSelector(state => state.storedGeojson);
+  const chartParams = useSelector(state => state.chartParams);
+
   const dispatch = useDispatch();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -46,11 +48,11 @@ export default function useLoadData(gdaProxy){
 
     let [geojsonData, numeratorData, denominatorData] = await Promise.all(firstLoadPromises)
 
-    let dateIndices = numeratorData[2]
+    let dateIndices = numeratorData.dates
     let lastIndex = dateIndices !== null ? dateIndices.slice(-1)[0] : null;
     let binData = getDataForBins(
-      dataParams.numerator === 'properties' ? geojsonData.data.features : numeratorData[0], 
-      dataParams.denominator === 'properties' ? geojsonData.properties : denominatorData[0], 
+      dataParams.numerator === 'properties' ? geojsonData.data.features : numeratorData.data, 
+      dataParams.denominator === 'properties' ? geojsonData.properties : denominatorData.data, 
       {...dataParams, nIndex: lastIndex || dataParams.nIndex, binIndex: lastIndex || dataParams.binIndex}
     );
     let bins;
@@ -97,8 +99,21 @@ export default function useLoadData(gdaProxy){
 
 
   const secondLoad = useMemo(() => async (datasetParams, defaultTables, loadedTables) => {
-    setIsInProcess(true)
-    dispatch(updateChart());
+    setIsInProcess(true);
+
+    const defaultChartTable = defaultTables[chartParams.table]
+    const currCaseData = dataPresetsRedux[currentData].hasOwnProperty('tables') ? dataPresetsRedux[currentData].tables[chartParams.table]||defaultChartTable : defaultChartTable;
+
+    if (storedData.hasOwnProperty(currCaseData?.file) || loadedTables.indexOf(currCaseData?.file) !== -1){
+      dispatch(updateChart());
+    } else {
+      const table = await handleLoadData(currCaseData);
+      console.log(table);
+      // dispatch(addTableAndChart({
+      //   [currCaseData.file]: table
+      // }))
+    }
+
     const filesToLoad = [
       ...Object.values(datasetParams.tables),
       ...Object.values(defaultTables)

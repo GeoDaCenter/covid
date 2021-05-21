@@ -17,8 +17,6 @@ const Methodology = React.lazy(() => import('./components/Pages/Methodology'));
 const Time = React.lazy(() => import('./components/Pages/Time'));
 const Trends = React.lazy(() => import('./components/Pages/Trends'));
 
-console.log('loaded 5001');
-
 class App extends Component {
   render() {
     return (     

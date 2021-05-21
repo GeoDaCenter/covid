@@ -398,43 +398,43 @@ export const defaultTables = {
             'file':'covid_testing_cdc_state',
             'dates':'isoDateList',
             'type':'time-series',
-            'join':'county'
+            'join':'state_fips'
         },
         'testing_wk_pos':{
             'file':'covid_wk_pos_cdc_state',
             'dates':'isoDateList',
             'type':'time-series',
-            'join':'county'
+            'join':'state_fips'
         },
         'testing_tcap':{
             'file':'covid_tcap_cdc_state',
             'dates':'isoDateList',
             'type':'time-series',
-            'join':'county'
+            'join':'state_fips'
         },
         'testing_ccpt':{
             'file':'covid_ccpt_cdc_state',
             'dates':'isoDateList',
             'type':'time-series',
-            'join':'county'
+            'join':'state_fips'
         },
         'vaccines_one_dose':{
             'file':'vaccination_one_or_more_doses_cdc',
             'dates':'isoDateList',
             'type':'time-series',
-            'join':'county'
+            'join':'fips'
         },
         'vaccines_fully_vaccinated':{
             'file':'vaccination_fully_vaccinated_cdc',
             'dates':'isoDateList',
             'type':'time-series',
-            'join':'county'
+            'join':'fips'
         },
         'vaccines_dist':{
             'file':'vaccination_to_be_distributed_cdc',
             'dates':'isoDateList',
             'type':'time-series',
-            'join':'county'
+            'join':'fips'
         },
     }
 }
@@ -529,15 +529,13 @@ export const dataPresetsRedux = {
                 'file':'covid_confirmed_usafacts_state',
                 'dates':'isoDateList',
                 'type':'time-series-cumulative',
-                'join':'StateFIPS',
-                'accumulate':true
+                'join':'StateFIPS'
             },
             'deaths': {
                 'file':'covid_deaths_usafacts_state',
                 'dates':'isoDateList',
                 'type':'time-series-cumulative',
-                'join':'StateFIPS',
-                'accumulate':true
+                'join':'StateFIPS'
             }
         }
     },

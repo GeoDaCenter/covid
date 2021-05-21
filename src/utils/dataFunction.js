@@ -50,9 +50,13 @@ const dataFn = (numeratorData, denominatorData, dataParams)  => {
   
   if (numeratorData === undefined || denominatorData === undefined) {
     return null;
-  } else if ((nProperty !== null && numeratorData[nProperty] === undefined) && (nIndex !== null && numeratorData[nIndex] === undefined)){
+  }
+  
+  if ((nProperty !== null && (numeratorData[nProperty] === undefined || numeratorData[nProperty] === null)) || (nIndex !== null && (numeratorData[nIndex] === undefined || numeratorData[nIndex] === null))){
     return null;
-  } else if (nType ==='time-series' && dType === 'time-series') {
+  }
+  
+  if (nType ==='time-series' && dType === 'time-series') {
     if (nRange === null & dRange === null) {
       return (
         (numeratorData[nIndex])
@@ -69,13 +73,21 @@ const dataFn = (numeratorData, denominatorData, dataParams)  => {
         *scale   
       )
     }
-  } else if (dProperty===null&&nRange===null){ // whole count or number -- no range, no normalization
+  } 
+  
+  if (dProperty===null&&nRange===null){ // whole count or number -- no range, no normalization
     return (numeratorData[nProperty]||numeratorData[nIndex])*scale
-  } else if (dProperty===null&&nRange!==null){ // range number, daily or weekly count -- no normalization
+  } 
+  
+  if (dProperty===null&&nRange!==null){ // range number, daily or weekly count -- no normalization
     return (numeratorData[nIndex]-numeratorData[nIndex-nRange])/nRange*scale
-  } else if (dProperty!==null&&nRange===null){ // whole count or number normalized -- no range
+  } 
+  
+  if (dProperty!==null&&nRange===null){ // whole count or number normalized -- no range
     return (numeratorData[nProperty]||numeratorData[nIndex])/(denominatorData[dProperty]||denominatorData[dIndex])*scale
-  } else if (dProperty!==null&&nRange!==null&&dRange===null){ // range number, daily or weekly count, normalized to a single value
+  } 
+  
+  if (dProperty!==null&&nRange!==null&&dRange===null){ // range number, daily or weekly count, normalized to a single value
     return (
       (numeratorData[nIndex]-numeratorData[nIndex-nRange])/nRange)/(denominatorData[dProperty]||denominatorData[dIndex]
         )*scale
@@ -86,9 +98,9 @@ const dataFn = (numeratorData, denominatorData, dataParams)  => {
   //     /
   //     ((denominatorData[dIndex]-denominatorData[dIndex-dIndex])/dIndex)
   //     *scale
-  } else {      
-    return 0;
   }
+
+  return null;
 }
 
 export default dataFn;

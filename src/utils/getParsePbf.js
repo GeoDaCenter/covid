@@ -26,27 +26,30 @@ export default async function getParsePbf(fileInfo, dateList){
 
     if (fileInfo.accumulate) {
         for (let i=0; i<pbfData.row.length; i++){
-            returnData[pbfData.row[i].geoid] = [,]
-            for (let n=0; n<pbfData.row[i].vals.length; n++) {
-                returnData[pbfData.row[i].geoid].push(((pbfData.row[i].vals[n]||0)+(pbfData.row[i].vals[n-1]||0))||null)
+            returnData[pbfData.row[i].geoid] = []
+            for (let n=0, j=0; n<constructorIndices.length; n++) {
+                if (constructorIndices[n]) {
+                    returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j] === -2147483648 ? null : ((pbfData.row[i].vals[j]||0)+(returnData[pbfData.row[i].geoid][n-1]||0))||null)
+                    j++;
+                } else {
+                    returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j] === -2147483648 ? null : pbfData.row[i].vals[j-1]||null)
+                }
             }
         }
     } else {
         for (let i=0; i<pbfData.row.length; i++){
-            returnData[pbfData.row[i].geoid] = [,]
+            returnData[pbfData.row[i].geoid] = []
             for (let n=0, j=0; n<constructorIndices.length; n++) {
                 if (constructorIndices[n]) {
-                    returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j])
+                    returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j] === -2147483648 ? null : pbfData.row[i].vals[j])
                     j++;
                 } else {
                     returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j-1]||null)
                 }
-                
             }
         }
     }
-    return [returnData, columnNames, dateIndices]
-
+    return {data: returnData, columns: columnNames, dates: dateIndices}
 
 //       return response.ok ? response.text() : Promise.reject(response.status);
 //     }).then(text => {

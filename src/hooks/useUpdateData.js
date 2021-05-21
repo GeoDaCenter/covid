@@ -31,8 +31,8 @@ export default function useUpdateData(gdaProxy){
           )
         } else {
           let binData = getDataForBins(
-            dataParams.numerator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.numerator][0], 
-            dataParams.denominator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.denominator][0], 
+            dataParams.numerator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.numerator].data, 
+            dataParams.denominator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.denominator].data, 
             dataParams
           );
           let nb = mapParams.mapType === "natural_breaks" ? 
@@ -55,8 +55,8 @@ export default function useUpdateData(gdaProxy){
   const updateLisa = async () => {
     setIsCalculating(true)
     const dataForLisa = getDataForBins(
-      dataParams.numerator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.numerator][0], 
-      dataParams.denominator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.denominator][0], 
+      dataParams.numerator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.numerator].data, 
+      dataParams.denominator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.denominator].data, 
       dataParams,
       Object.values(storedGeojson[currentData].indices.indexOrder)
     );
@@ -69,8 +69,8 @@ export default function useUpdateData(gdaProxy){
   const updateCartogram = async () => {
     setIsCalculating(true)
     const dataForCartogram = getDataForBins(
-      dataParams.numerator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.numerator][0], 
-      dataParams.denominator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.denominator][0], 
+      dataParams.numerator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.numerator].data, 
+      dataParams.denominator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.denominator].data, 
       dataParams,
       Object.values(storedGeojson[currentData].indices.indexOrder)
     );

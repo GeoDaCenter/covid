@@ -15,7 +15,7 @@ const TickMarks = styled.div`
 
 export default function Ticks(){
     const currTable = useSelector(state => state.storedData[state.currentTable.numerator]);
-    const dateIndices = currTable !== undefined && currTable[2];
+    const dateIndices = currTable !== undefined && currTable.dates;
     const length = useSelector(state => state.dates.length);
     
 

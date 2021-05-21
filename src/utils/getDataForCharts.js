@@ -1,7 +1,7 @@
 const getDataForCharts = (table, dates, additionalParams={}) => {
     const { populationData=[], name=[], interval=1, geoid=[] } = additionalParams;
-    const data = table[0];
-    const dateIndices = table[2]
+    const data = table.data;
+    const dateIndices = table.dates;
     
     const populationModifier = populationData.length ? (val, population) => val === val && (val/population)*100_000 : val => val
 

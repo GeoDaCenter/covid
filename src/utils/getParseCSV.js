@@ -31,7 +31,7 @@ async function getParseCSV(fileInfo, dateList){
       rtn[data[n][fileInfo.join]] = data[n]
     }
   }
-  return [rtn, Object.keys(data[0]), dateIndices]
+  return {data: rtn, columns: Object.keys(data[0]), dates:dateIndices}
 }
 
 export default getParseCSV

@@ -22,9 +22,9 @@ const generateMapData = (state) => {
             return state.storedGeojson[state.currentData].data.features[i].properties 
         } else {
             try {
-                return state.storedData[dataPresetsRedux[state.currentData].tables[state.dataParams[predicate]].file][0][state.storedGeojson[state.currentData].data.features[i].properties.GEOID]
+                return state.storedData[dataPresetsRedux[state.currentData].tables[state.dataParams[predicate]].file].data[state.storedGeojson[state.currentData].data.features[i].properties.GEOID]
             } catch {
-                return state.storedData[defaultTables[dataPresetsRedux[state.currentData].geography][state.dataParams[predicate]].file][0][state.storedGeojson[state.currentData].data.features[i].properties.GEOID];
+                return state.storedData[defaultTables[dataPresetsRedux[state.currentData].geography][state.dataParams[predicate]].file].data[state.storedGeojson[state.currentData].data.features[i].properties.GEOID];
             }
         }
     }
@@ -123,9 +123,9 @@ const parseTooltipData = (geoid, state) => {
     }
 
     for (const table in currentTables){
-        if (currentTables[table].file in state.storedData && tooltipTables.includes(table)) {
-            tooltipData[table] = state.storedData[currentTables[table].file][0][geoid][state.dataParams.nIndex]
-            if (table === 'cases' || table === 'deaths') tooltipData[`daily_${table}`] = state.storedData[currentTables[table].file][0][geoid][state.dataParams.nIndex]-state.storedData[currentTables[table].file][0][geoid][state.dataParams.nIndex-1]
+        if (state.storedData.hasOwnProperty(currentTables[table].file) && tooltipTables.includes(table) && state.storedData[currentTables[table].file].data.hasOwnProperty(geoid)){
+            tooltipData[table] = state.storedData[currentTables[table].file].data[geoid][state.dataParams.nIndex]
+            if (table === 'cases' || table === 'deaths') tooltipData[`daily_${table}`] = state.storedData[currentTables[table].file].data[geoid][state.dataParams.nIndex]-state.storedData[currentTables[table].file].data[geoid][state.dataParams.nIndex-1]
         }
     }
     return tooltipData
@@ -250,101 +250,101 @@ const generateReport = (geoids, state, dataPresetsRedux, defaultTables) => {
     report.population = aggregateProperty(properties, properties, geoids, 'population', 'sum')
     report.date = state.dates[state.dataParams.nIndex]
 
-    report.cases = aggregateTimeseries(state.storedData[currentTables.cases.file][0], properties, geoids, state.dataParams.nIndex, 'sum')
-    report.cases7d = (report.cases - aggregateTimeseries(state.storedData[currentTables.cases.file][0], properties, geoids, state.dataParams.nIndex-7, 'sum'))/7
+    report.cases = aggregateTimeseries(state.storedData[currentTables.cases.file].data, properties, geoids, state.dataParams.nIndex, 'sum')
+    report.cases7d = (report.cases - aggregateTimeseries(state.storedData[currentTables.cases.file].data, properties, geoids, state.dataParams.nIndex-7, 'sum'))/7
     report.cases100k = (report.cases7d/report.population)*100_000
-    report.cases14 = aggregate2WeekTimeSeries(state.storedData[currentTables.cases.file][0], geoids, state.dataParams.nIndex)    
-    
-    report.deaths = aggregateTimeseries(state.storedData[currentTables.deaths.file][0], properties, geoids, state.dataParams.nIndex, 'sum')
-    report.deaths7d = (report.deaths - aggregateTimeseries(state.storedData[currentTables.deaths.file][0], properties, geoids, state.dataParams.nIndex-7, 'sum'))/7
+    report.cases14 = aggregate2WeekTimeSeries(state.storedData[currentTables.cases.file].data, geoids, state.dataParams.nIndex)    
+  
+    report.deaths = aggregateTimeseries(state.storedData[currentTables.deaths.file].data, properties, geoids, state.dataParams.nIndex, 'sum')
+    report.deaths7d = (report.deaths - aggregateTimeseries(state.storedData[currentTables.deaths.file].data, properties, geoids, state.dataParams.nIndex-7, 'sum'))/7
     report.deaths100k = (report.deaths7d/report.population)*100_000
-    report.deaths14 = aggregate2WeekTimeSeries(state.storedData[currentTables.deaths.file][0], geoids, state.dataParams.nIndex)
+    report.deaths14 = aggregate2WeekTimeSeries(state.storedData[currentTables.deaths.file].data, geoids, state.dataParams.nIndex)
 
     report.beds = aggregateProperty(properties, properties, geoids, 'beds', 'sum')
     report.casesPerBed = report.cases7d / report.beds
 
     if (state.storedData.hasOwnProperty(currentTables.vaccines_fully_vaccinated?.file)){
-        report.fully_vaccinated = aggregateTimeseries(state.storedData[currentTables.vaccines_fully_vaccinated?.file][0], properties, geoids, state.dataParams.nIndex, 'weighted_average')
-        report.fully_vaccinated14 = aggregate2WeekTimeSeries(state.storedData[currentTables.vaccines_fully_vaccinated?.file][0], geoids, state.dataParams.nIndex)
+        report.fully_vaccinated = aggregateTimeseries(state.storedData[currentTables.vaccines_fully_vaccinated?.file].data, properties, geoids, state.dataParams.nIndex, 'weighted_average')
+        report.fully_vaccinated14 = aggregate2WeekTimeSeries(state.storedData[currentTables.vaccines_fully_vaccinated?.file].data, geoids, state.dataParams.nIndex)
         report.fully_vaccinatedPc = report.fully_vaccinated / report.population
     }
     
     if (state.storedData.hasOwnProperty(currentTables.vaccines_one_dose?.file)){
-        report.one_dose = aggregateTimeseries(state.storedData[currentTables.vaccines_one_dose?.file][0], properties, geoids, state.dataParams.nIndex, 'weighted_average')
-        report.one_dose14 = aggregate2WeekTimeSeries(state.storedData[currentTables.vaccines_one_dose?.file][0], geoids, state.dataParams.nIndex)
+        report.one_dose = aggregateTimeseries(state.storedData[currentTables.vaccines_one_dose?.file].data, properties, geoids, state.dataParams.nIndex, 'weighted_average')
+        report.one_dose14 = aggregate2WeekTimeSeries(state.storedData[currentTables.vaccines_one_dose?.file].data, geoids, state.dataParams.nIndex)
         report.one_dosePc = report.one_dose / report.population
     }
     
     if (state.storedData.hasOwnProperty(currentTables.vaccines_dist?.file)){
-        report.doses_dist = aggregateTimeseries(state.storedData[currentTables.vaccines_dist?.file][0], properties, geoids, state.dataParams.nIndex, 'weighted_average')
-        report.doses_dist14 = aggregate2WeekTimeSeries(state.storedData[currentTables.vaccines_dist?.file][0], geoids, state.dataParams.nIndex)
+        report.doses_dist = aggregateTimeseries(state.storedData[currentTables.vaccines_dist?.file].data, properties, geoids, state.dataParams.nIndex, 'weighted_average')
+        report.doses_dist14 = aggregate2WeekTimeSeries(state.storedData[currentTables.vaccines_dist?.file].data, geoids, state.dataParams.nIndex)
         report.doses_dist100 = (report.doses_dist / report.population) * 100
     }
 
     if (state.storedData.hasOwnProperty(currentTables.testing?.file)){
-        report.wk_pos = aggregateTimeseries(state.storedData[currentTables.testing_wk_pos.file][0], properties, geoids, state.dataParams.nIndex, 'weighted_average')
-        report.wk_pos14 = aggregate2WeekTimeSeries(state.storedData[currentTables.testing_wk_pos.file][0], geoids, state.dataParams.nIndex)
-        report.tcap = aggregateTimeseries(state.storedData[currentTables.testing_tcap.file][0], properties, geoids, state.dataParams.nIndex, 'weighted_average')
-        report.tcap14 = aggregate2WeekTimeSeries(state.storedData[currentTables.testing_tcap.file][0], geoids, state.dataParams.nIndex)
-        report.testing = aggregateTimeseries(state.storedData[currentTables.testing.file][0], properties, geoids, state.dataParams.nIndex, 'sum')
-        report.ccpt = aggregateTimeseries(state.storedData[currentTables.testing_ccpt.file][0], properties, geoids, state.dataParams.nIndex, 'weighted_average')
+        report.wk_pos = aggregateTimeseries(state.storedData[currentTables.testing_wk_pos.file].data, properties, geoids, state.dataParams.nIndex, 'weighted_average')
+        report.wk_pos14 = aggregate2WeekTimeSeries(state.storedData[currentTables.testing_wk_pos.file].data, geoids, state.dataParams.nIndex)
+        report.tcap = aggregateTimeseries(state.storedData[currentTables.testing_tcap.file].data, properties, geoids, state.dataParams.nIndex, 'weighted_average')
+        report.tcap14 = aggregate2WeekTimeSeries(state.storedData[currentTables.testing_tcap.file].data, geoids, state.dataParams.nIndex)
+        report.testing = aggregateTimeseries(state.storedData[currentTables.testing.file].data, properties, geoids, state.dataParams.nIndex, 'sum')
+        report.ccpt = aggregateTimeseries(state.storedData[currentTables.testing_ccpt.file].data, properties, geoids, state.dataParams.nIndex, 'weighted_average')
     }    
-
+    
     if (state.storedData.hasOwnProperty(currentTables.chr_health_factors?.file)){
-        report.PovChldPrc = aggregateProperty(state.storedData[currentTables.chr_health_factors.file][0], properties, geoids, 'PovChldPrc', 'weighted_average')
-        report.IncRt = aggregateProperty(state.storedData[currentTables.chr_health_factors.file][0], properties, geoids, 'IncRt', 'weighted_average')
-        report.MedianHouseholdIncome = aggregateProperty(state.storedData[currentTables.chr_health_factors.file][0], properties, geoids, 'MedianHouseholdIncome', 'weighted_average')
-        report.FdInsPrc = aggregateProperty(state.storedData[currentTables.chr_health_factors.file][0], properties, geoids, 'FdInsPrc', 'weighted_average')
-        report.UnEmplyPrc = aggregateProperty(state.storedData[currentTables.chr_health_factors.file][0], properties, geoids, 'UnEmplyPrc', 'weighted_average')
-        report.UnInPrc = aggregateProperty(state.storedData[currentTables.chr_health_factors.file][0], properties, geoids, 'UnInPrc', 'weighted_average')
-        report.PrmPhysRt = aggregateProperty(state.storedData[currentTables.chr_health_factors.file][0], properties, geoids, 'PrmPhysRt', 'weighted_average', 'pcp')
-        report.PrevHospRt = aggregateProperty(state.storedData[currentTables.chr_health_factors.file][0], properties, geoids, 'PrevHospRt', 'sum')
-        report.RsiSgrBlckRt = aggregateProperty(state.storedData[currentTables.chr_health_factors.file][0], properties, geoids, 'RsiSgrBlckRt', 'weighted_average')
-        report.SvrHsngPrbRt = aggregateProperty(state.storedData[currentTables.chr_health_factors.file][0], properties, geoids, 'SvrHsngPrbRt', 'weighted_average')
+        report.PovChldPrc = aggregateProperty(state.storedData[currentTables.chr_health_factors.file].data, properties, geoids, 'PovChldPrc', 'weighted_average')
+        report.IncRt = aggregateProperty(state.storedData[currentTables.chr_health_factors.file].data, properties, geoids, 'IncRt', 'weighted_average')
+        report.MedianHouseholdIncome = aggregateProperty(state.storedData[currentTables.chr_health_factors.file].data, properties, geoids, 'MedianHouseholdIncome', 'weighted_average')
+        report.FdInsPrc = aggregateProperty(state.storedData[currentTables.chr_health_factors.file].data, properties, geoids, 'FdInsPrc', 'weighted_average')
+        report.UnEmplyPrc = aggregateProperty(state.storedData[currentTables.chr_health_factors.file].data, properties, geoids, 'UnEmplyPrc', 'weighted_average')
+        report.UnInPrc = aggregateProperty(state.storedData[currentTables.chr_health_factors.file].data, properties, geoids, 'UnInPrc', 'weighted_average')
+        report.PrmPhysRt = aggregateProperty(state.storedData[currentTables.chr_health_factors.file].data, properties, geoids, 'PrmPhysRt', 'weighted_average', 'pcp')
+        report.PrevHospRt = aggregateProperty(state.storedData[currentTables.chr_health_factors.file].data, properties, geoids, 'PrevHospRt', 'sum')
+        report.RsiSgrBlckRt = aggregateProperty(state.storedData[currentTables.chr_health_factors.file].data, properties, geoids, 'RsiSgrBlckRt', 'weighted_average')
+        report.SvrHsngPrbRt = aggregateProperty(state.storedData[currentTables.chr_health_factors.file].data, properties, geoids, 'SvrHsngPrbRt', 'weighted_average')
     }
 
     if (state.storedData.hasOwnProperty(currentTables.essential_workers?.file)){
-        report.EssentialPct = aggregateProperty(state.storedData[currentTables.essential_workers.file][0], properties, geoids, 'pct_essential', 'weighted_average')
+        report.EssentialPct = aggregateProperty(state.storedData[currentTables.essential_workers.file].data, properties, geoids, 'pct_essential', 'weighted_average')
     }
 
     if (state.storedData.hasOwnProperty(currentTables.chr_health_context?.file)){
-        report.Over65YearsPrc = aggregateProperty(state.storedData[currentTables.chr_health_context.file][0], properties, geoids, 'Over65YearsPrc', 'weighted_average')
-        report.AdObPrc = aggregateProperty(state.storedData[currentTables.chr_health_context.file][0], properties, geoids, 'AdObPrc', 'weighted_average')
-        report.AdDibPrc = aggregateProperty(state.storedData[currentTables.chr_health_context.file][0], properties, geoids, 'AdDibPrc', 'weighted_average')
-        report.SmkPrc = aggregateProperty(state.storedData[currentTables.chr_health_context.file][0], properties, geoids, 'SmkPrc', 'weighted_average')
-        report.ExcDrkPrc = aggregateProperty(state.storedData[currentTables.chr_health_context.file][0], properties, geoids, 'ExcDrkPrc', 'weighted_average')
-        report.DrOverdMrtRt = aggregateProperty(state.storedData[currentTables.chr_health_context.file][0], properties, geoids, 'DrOverdMrtRt', 'sum')
+        report.Over65YearsPrc = aggregateProperty(state.storedData[currentTables.chr_health_context.file].data, properties, geoids, 'Over65YearsPrc', 'weighted_average')
+        report.AdObPrc = aggregateProperty(state.storedData[currentTables.chr_health_context.file].data, properties, geoids, 'AdObPrc', 'weighted_average')
+        report.AdDibPrc = aggregateProperty(state.storedData[currentTables.chr_health_context.file].data, properties, geoids, 'AdDibPrc', 'weighted_average')
+        report.SmkPrc = aggregateProperty(state.storedData[currentTables.chr_health_context.file].data, properties, geoids, 'SmkPrc', 'weighted_average')
+        report.ExcDrkPrc = aggregateProperty(state.storedData[currentTables.chr_health_context.file].data, properties, geoids, 'ExcDrkPrc', 'weighted_average')
+        report.DrOverdMrtRt = aggregateProperty(state.storedData[currentTables.chr_health_context.file].data, properties, geoids, 'DrOverdMrtRt', 'sum')
     }
 
     if (state.storedData.hasOwnProperty(currentTables.chr_life?.file)){
-        report.LfExpRt = aggregateProperty(state.storedData[currentTables.chr_life.file][0], properties, geoids, 'LfExpRt', 'weighted_average')
-        report.SlfHlthPrc = aggregateProperty(state.storedData[currentTables.chr_life.file][0], properties, geoids, 'SlfHlthPrc', 'weighted_average')
-    }
-    
-    if (state.storedData.hasOwnProperty(currentTables.predictions?.file)){
-        report.severity_index = aggregateProperty(state.storedData[currentTables.predictions.file][0], properties, geoids, 'severity_index', 'weighted_average')
-        report.predDates = []
-        for (let i = 2; i < 15; i+=2) report.predDates.push(state.storedData[currentTables.predictions.file][1][i])
-        report.pred1 = aggregateProperty(state.storedData[currentTables.predictions.file][0], properties, geoids, 2, 'sum')
-        report.pred2 = aggregateProperty(state.storedData[currentTables.predictions.file][0], properties, geoids, 4, 'sum')
-        report.pred3 = aggregateProperty(state.storedData[currentTables.predictions.file][0], properties, geoids, 6, 'sum')
-        report.pred4 = aggregateProperty(state.storedData[currentTables.predictions.file][0], properties, geoids, 8, 'sum')
-        report.pred5 = aggregateProperty(state.storedData[currentTables.predictions.file][0], properties, geoids, 10, 'sum')
-        report.pred6 = aggregateProperty(state.storedData[currentTables.predictions.file][0], properties, geoids, 12, 'sum')
-        report.pred7 = aggregateProperty(state.storedData[currentTables.predictions.file][0], properties, geoids, 14, 'sum')
+        report.LfExpRt = aggregateProperty(state.storedData[currentTables.chr_life.file].data, properties, geoids, 'LfExpRt', 'weighted_average')
+        report.SlfHlthPrc = aggregateProperty(state.storedData[currentTables.chr_life.file].data, properties, geoids, 'SlfHlthPrc', 'weighted_average')
     }
 
+    if (state.storedData.hasOwnProperty(currentTables.predictions?.file)){
+        report.severity_index = aggregateProperty(state.storedData[currentTables.predictions.file].data, properties, geoids, 'severity_index', 'weighted_average')
+        report.predDates = []
+        for (let i = 2; i < 15; i+=2) report.predDates.push(state.storedData[currentTables.predictions.file].columns[i])
+        report.pred1 = aggregateProperty(state.storedData[currentTables.predictions.file].data, properties, geoids, 2, 'sum')
+        report.pred2 = aggregateProperty(state.storedData[currentTables.predictions.file].data, properties, geoids, 4, 'sum')
+        report.pred3 = aggregateProperty(state.storedData[currentTables.predictions.file].data, properties, geoids, 6, 'sum')
+        report.pred4 = aggregateProperty(state.storedData[currentTables.predictions.file].data, properties, geoids, 8, 'sum')
+        report.pred5 = aggregateProperty(state.storedData[currentTables.predictions.file].data, properties, geoids, 10, 'sum')
+        report.pred6 = aggregateProperty(state.storedData[currentTables.predictions.file].data, properties, geoids, 12, 'sum')
+        report.pred7 = aggregateProperty(state.storedData[currentTables.predictions.file].data, properties, geoids, 14, 'sum')
+    }
+    
     if (state.storedData.hasOwnProperty(currentTables.pct_home?.file)){
-        report.pct_home = aggregateTimeseries(state.storedData[currentTables.pct_home.file][0], properties, geoids, state.dataParams.nIndex, 'weighted_average')
-        report.pct_fulltime = aggregateTimeseries(state.storedData[currentTables.pct_fulltime.file][0], properties, geoids, state.dataParams.nIndex, 'weighted_average')
-        report.pct_parttime = aggregateTimeseries(state.storedData[currentTables.pct_parttime.file][0], properties, geoids, state.dataParams.nIndex, 'weighted_average')
+        report.pct_home = aggregateTimeseries(state.storedData[currentTables.pct_home.file].data, properties, geoids, state.dataParams.nIndex, 'weighted_average')
+        report.pct_fulltime = aggregateTimeseries(state.storedData[currentTables.pct_fulltime.file].data, properties, geoids, state.dataParams.nIndex, 'weighted_average')
+        report.pct_parttime = aggregateTimeseries(state.storedData[currentTables.pct_parttime.file].data, properties, geoids, state.dataParams.nIndex, 'weighted_average')
     }
     
     return report
 }
 
 var reducer = (state = INITIAL_STATE, action) => {
-    console.log(action.type)
+    console.log(action)
     switch(action.type) {
         case 'INITIAL_LOAD': {
             const dataParams = {
@@ -459,6 +459,7 @@ var reducer = (state = INITIAL_STATE, action) => {
         }
         case 'UPDATE_CHART': {
             const currCaseData = dataPresetsRedux[state.currentData].tables[state.chartParams.table]?.file||defaultTables[dataPresetsRedux[state.currentData].geography][state.chartParams.table].file
+            
             let populationData = [];
 
             if (state.chartParams.populationNormalized){
@@ -602,13 +603,19 @@ var reducer = (state = INITIAL_STATE, action) => {
         case 'SET_CURRENT_DATA':{
             const currentTable = {
                 numerator: 
-                    state.dataParams.numerator === "properties" ? "properties" 
-                        : 
-                    dataPresetsRedux[action.payload.data].tables[state.dataParams.numerator].file,
-                denominator: 
-                    state.dataParams.denominator === "properties" ? "properties" 
-                        : 
-                    dataPresetsRedux[action.payload.data].tables[state.dataParams.denominator].file,
+                    state.dataParams.numerator === "properties" ? "properties" : 
+                    dataPresetsRedux[state.currentData].tables.hasOwnProperty(state.dataParams.numerator) 
+                        ? 
+                    dataPresetsRedux[state.currentData].tables[state.dataParams.numerator].file
+                        :
+                    defaultTables[dataPresetsRedux[state.currentData].geography][state.dataParams.numerator].file,
+                denominator:
+                    state.dataParams.denominator === "properties" ? "properties" : 
+                    dataPresetsRedux[state.currentData].tables.hasOwnProperty(state.dataParams.denominator) 
+                        ? 
+                    dataPresetsRedux[state.currentData].tables[state.dataParams.denominator].file
+                        :
+                    defaultTables[dataPresetsRedux[state.currentData].geography][state.dataParams.denominator].file,
             }
 
             return {
@@ -682,7 +689,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                 ...state.dataParams
             }
 
-            const currIndices = state.storedData[state.currentTable.numerator][2]
+            const currIndices = state.storedData[state.currentTable.numerator].dates
             const nextIndex = currIndices[currIndices.indexOf(state.dataParams.nIndex)+action.payload.index]
             
             if (nextIndex === undefined) {
@@ -881,9 +888,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                 currentVariable: action.payload.name
             }
         case 'UPDATE_SELECTION':{
-            let sidebarData = {}
-            let selectionKeys = [...state.selectionKeys]
-            let chartData
+            let selectionKeys = [...state.selectionKeys];
             
             const properties = state.storedGeojson[state.currentData].properties
             const geography = dataPresetsRedux[state.currentData].geography
@@ -904,15 +909,15 @@ var reducer = (state = INITIAL_STATE, action) => {
             if (action.payload.type === "remove"){                
                 selectionKeys.splice(selectionKeys.indexOf(action.payload.geoid), 1);
             }
-            
-            const currCaseData = dataPresetsRedux[state.currentData].tables[state.chartParams.table]?.file||defaultTables[dataPresetsRedux[state.currentData].geography][state.chartParams.table].fil
+
+            const currCaseData = dataPresetsRedux[state.currentData].tables[state.chartParams.table]?.file||defaultTables[dataPresetsRedux[state.currentData].geography][state.chartParams.table].file;
 
             const additionalParams = {
                 geoid: selectionKeys,
                 populationData: state.chartParams.populationNormalized ? selectionKeys.map(key => properties[key].population) : [],
                 name: geography === 'County' ? selectionKeys.map(key => properties[key].NAME + ', ' + properties[key].state_abbr) : selectionKeys.map(key => properties[key].name)
             };
-
+            
             return {
                 ...state,
                 selectionKeys,

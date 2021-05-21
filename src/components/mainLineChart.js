@@ -164,10 +164,10 @@ const MainLineChart = () => {
     };
     const chartSetDate = (e) => {
         if (e?.activeTooltipIndex !== undefined) {
-            if (storedData[currentTable.numerator][2].indexOf(e.activeTooltipIndex) !== -1) {
+            if (storedData[currentTable.numerator].dates.indexOf(e.activeTooltipIndex) !== -1) {
                 handleChange(e.activeTooltipIndex)
             } else {
-                handleChange(storedData[currentTable.numerator][2].reduce((a, b) => {return Math.abs(b - e.activeTooltipIndex) < Math.abs(a - e.activeTooltipIndex) ? b : a}))
+                handleChange(storedData[currentTable.numerator].dates.reduce((a, b) => {return Math.abs(b - e.activeTooltipIndex) < Math.abs(a - e.activeTooltipIndex) ? b : a}))
             }
         }
     }    

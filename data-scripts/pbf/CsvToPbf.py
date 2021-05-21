@@ -4,6 +4,7 @@ import pandas as pd
 import datetime
 import google.protobuf
 import flatData_pb2
+import numpy as np
 
 # %%
 
@@ -114,10 +115,10 @@ def parseCsv(fileInfo):
         rowObj[i].geoid = int(csvData.iloc[i][fileInfo['joinColumn']])
         cleanVals = []
         for val in list(csvData.iloc[i].values)[fileInfo['dateIndex']:]:
-            try: 
+            if np.isnan(val):
+                cleanVals.append(-2147483648)
+            else:
                 cleanVals.append(int(round(val*fileInfo['scale'])))
-            except:
-                cleanVals.append(int(0))
 
         rowObj[i].vals.extend(cleanVals)
 
