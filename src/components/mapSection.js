@@ -752,20 +752,26 @@ export default function MapSection(){
             getPosition: d => currentMapData[d.properties.GEOID].position,
             getFillColor: d => currentMapData[d.properties.GEOID].color,
             getRadius: d => currentMapData[d.properties.GEOID].radius,  
-            onHover: handleMapHover,
+            onHover: e => console.log,
             radiusScale: currentData.includes('state') ? 9 : 6,
+            transitions: {
+                getPosition: currentData.includes('state') ? 125 : 250,
+                getFillColor: currentData.includes('state') ? 125 : 250,
+                getRadius: currentData.includes('state') ? 125 : 250
+            },
             updateTriggers: {
                 data: currentMapGeography,
                 getPosition: currentMapID,
                 getFillColor: currentMapID,
-                getRadius: currentMapID
+                getRadius: currentMapID,
+                transitions: currentData
             },
         }),
         cartogramText: new TextLayer({
             id: 'cartogram text layer',
             data: currentMapGeography.features,
             getPosition: d => currentMapData[d.properties.GEOID].position,
-            getRadius: d => currentMapData[d.properties.GEOID].radius,  
+            getSize: d => currentMapData[d.properties.GEOID].radius,  
             sizeScale: 4,
             backgroundColor: [240,240,240],
             pickable:false,
@@ -775,13 +781,16 @@ export default function MapSection(){
             getAlignmentBaseline: 'center',
             maxWidth: 500,
             wordBreak: 'break-word',
-
-            getText: d => 'test',   //d.properties.NAME,
+            getText: d => d.properties.NAME,
+            transitions: {
+                getPosition: currentData.includes('state') ? 125 : 250,
+                getFillColor: currentData.includes('state') ? 125 : 250,
+                getRadius: currentData.includes('state') ? 125 : 250
+            },
             updateTriggers: {
                 data: currentMapGeography,
                 getPosition: currentMapID,
-                getFillColor: currentMapID,
-                getRadius: currentMapID
+                getSize: currentMapID
             },
         }),        
         dotDensity: [new ScatterplotLayer({
@@ -838,7 +847,9 @@ export default function MapSection(){
         if (vizType === 'cartogram') {
             LayerArray.push(layers['cartogramBackground'])
             LayerArray.push(layers['cartogram'])
-            LayerArray.push(layers['cartogramText'])
+            if (currentData.includes('state')) {
+                LayerArray.push(layers['cartogramText'])
+            }
             return LayerArray
         } else if (vizType === '2D') {
             LayerArray.push(layers['choropleth'])
@@ -964,8 +975,11 @@ export default function MapSection(){
         <MapContainer
             onKeyDown={handleKeyDown}
             onKeyUp={handleKeyUp}
-            onMouseDown={e => boxSelect ? handleBoxSelect(e) : null}
-            onMouseUp={e => boxSelect ? handleBoxSelect(e) : null}
+            onMouseDown={e => {
+                boxSelect && handleBoxSelect(e);
+                dispatch(setTooltipContent(null,null,null));
+            }}
+            onMouseUp={e => boxSelect && handleBoxSelect(e)}
         >
             {
                 // boxSelectDims.hasOwnProperty('x') && 

@@ -14,23 +14,19 @@ const TickMarks = styled.div`
 `
 
 export default function Ticks(){
-    const currTable = useSelector(state => state.storedData[state.currentTable.numerator]);
-    const dateIndices = currTable !== undefined && currTable.dates;
+    const storedTable = useSelector(state => state.storedData);
+    const numeratorTable = useSelector(state => state.currentTable.numerator);
+    const currTable = storedTable[numeratorTable];
     const length = useSelector(state => state.dates.length);
-    
+    const dateIndices = currTable?.dates;
+
+    if (!dateIndices) return null
 
     const items = []
 
-    if (dateIndices) {
-        for (let i=0; i<length;i++) {
-            items.push(<div key={i} style={{background: dateIndices.includes(i) ? "white" : "black"}}/>)
-        }
+    for (let i=0; i<length;i++) {
+        items.push(<div key={i} style={{background: dateIndices.includes(i) ? "white" : "black"}}/>)
     }
     
-    return dateIndices ? 
-        <TickMarks>
-            {items}
-        </TickMarks>
-        :
-        <></>
+    return  <TickMarks> {items} </TickMarks>
 }

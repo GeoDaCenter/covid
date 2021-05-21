@@ -52,7 +52,7 @@ const dataFn = (numeratorData, denominatorData, dataParams)  => {
     return null;
   }
   
-  if ((nProperty !== null && (numeratorData[nProperty] === undefined || numeratorData[nProperty] === null)) || (nIndex !== null && (numeratorData[nIndex] === undefined || numeratorData[nIndex] === null))){
+  if ((nProperty !== null && (numeratorData[nProperty] === undefined || numeratorData[nProperty] === null)) || ((nIndex !== null && nProperty === null) && (numeratorData[nIndex] === undefined || numeratorData[nIndex] === null))){
     return null;
   }
   

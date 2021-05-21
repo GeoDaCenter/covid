@@ -344,7 +344,6 @@ const generateReport = (geoids, state, dataPresetsRedux, defaultTables) => {
 }
 
 var reducer = (state = INITIAL_STATE, action) => {
-    console.log(action)
     switch(action.type) {
         case 'INITIAL_LOAD': {
             const dataParams = {
@@ -814,18 +813,18 @@ var reducer = (state = INITIAL_STATE, action) => {
             const currentTable = {
                 numerator: 
                     dataParams.numerator === "properties" ? "properties" : 
-                    dataPresetsRedux[state.currentData].tables.hasOwnProperty(dataParams.numerator) 
+                    dataPresetsRedux[action.payload.params.dataset].tables.hasOwnProperty(dataParams.numerator) 
                         ? 
-                    dataPresetsRedux[state.currentData].tables[dataParams.numerator].file
+                    dataPresetsRedux[action.payload.params.dataset].tables[dataParams.numerator].file
                         :
-                    defaultTables[dataPresetsRedux[state.currentData].geography][dataParams.numerator].file,
+                    defaultTables[dataPresetsRedux[action.payload.params.dataset].geography][dataParams.numerator].file,
                 denominator:
                     dataParams.denominator === "properties" ? "properties" : 
-                    dataPresetsRedux[state.currentData].tables.hasOwnProperty(dataParams.denominator) 
+                    dataPresetsRedux[action.payload.params.dataset].tables.hasOwnProperty(dataParams.denominator) 
                         ? 
-                    dataPresetsRedux[state.currentData].tables[dataParams.denominator].file
+                    dataPresetsRedux[action.payload.params.dataset].tables[dataParams.denominator].file
                         :
-                    defaultTables[dataPresetsRedux[state.currentData].geography][dataParams.denominator].file,
+                    defaultTables[dataPresetsRedux[action.payload.params.dataset].geography][dataParams.denominator].file,
             }
             
             return {
