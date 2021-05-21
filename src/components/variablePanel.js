@@ -290,170 +290,33 @@ const dotDensityAcsGroups = [
 
 const VariablePanel = (props) => {
 
-  // const getGzipAndCentroids = async (gzipUrl, centroidsUrl) => {
-  //   Promise.all([
-  //       getGzipData(gzipUrl),
-  //       getArrayCSV(centroidsUrl)
-  //     ]).then(
-  //       values => dispatch(storeMobilityData({centroids: values[1], flows: values[0]}))
-  //   )
-  // } 
-
   const dispatch = useDispatch();    
 
   const currentData = useSelector(state => state.currentData);
-  const dataParams = useSelector(state => state.dataParams);
-  const mapParams = useSelector(state => state.mapParams);
+
+  const binMode = useSelector(state => state.mapParams.binMode);
+
+  const mapType = useSelector(state => state.mapParams.mapType);
+  const vizType = useSelector(state => state.mapParams.vizType);
+  
+  const dotDensityParams = useSelector(state => state.mapParams.dotDensityParams);
+  const overlay = useSelector(state => state.mapParams.overlay);
+  const resource = useSelector(state => state.mapParams.resource);
   const panelState = useSelector(state => state.panelState);
   const urlParams = useSelector(state => state.urlParams);
-
-  // currentVariable, currentZVariable, storedMobilityData
-  // const [bivariateZ, setBivariateZ] = useState(false);
-
-  // mobility variable overlays
-
-  // const OneP3AVariables = {
-  //   "HEADER:mobility":{},
-  //   "Dex": {
-  //       numerator: 'dex',
-  //       nType: 'time-series',
-  //       nProperty: null,
-  //       denominator: 'properties',
-  //       dType: null,
-  //       dProperty: null,
-  //       dRange:null,
-  //       dIndex:null,
-  //       scale:1,
-  //       scale3D: 1000
-  //   },
-  //   "Dex Adjusted": {
-  //       numerator: 'dex_a',
-  //       nType: 'time-series',
-  //       nProperty: null,
-  //       denominator: 'properties',
-  //       dType: null,
-  //       dProperty: null,
-  //       dRange:null,
-  //       dIndex:null,
-  //       scale:1,
-  //       scale3D: 1000
-  //   },
-  // }
-
-  // useEffect(() => {
-  //   if (urlParams.var) handleVariable({event: { target: { 
-  //     value: legacyVariableOrder[urlParams.src||'county_usfacts.geojson'][urlParams.var]
-  //     }}})
-  // },[])
-
-  // useEffect(() => {
-  //   if (mapParams.overlay === "mobility-county" && storedMobilityData === {}) {
-  //     getGzipAndCentroids(
-  //       `${process.env.PUBLIC_URL}/gz/county_lex_2020-11-28.csv.gz`,
-  //       `${process.env.PUBLIC_URL}/csv/county_centroids.csv`
-  //     )
-  //     console.log('loaded mobility data')
-  //   }
-  // },[mapParams.overlay])
-
-  // const handleVariable = (event) => {
-  //   let variable = event.target.value;
-  //   let tempParams = PresetVariables[variable] || CountyVariables[variable] || StateVariables[variable] || OneP3AVariables[variable] || CDCVariables[variable] || null;
-    
-  //   // dispatch(variableChange({
-  //   //   variable,
-  //   //   mapParams: {
-  //   //     customScale: tempParams.colorScale || '', 
-  //   //     fixedScale: tempParams.fixedScale || null
-  //   //   },
-  //   //   variableParams: {
-  //   //     ...tempParams
-  //   //   }
-  //   // }))
-
-  //   // transitioning from a static characteristic (null time range)
-  //   // to a time-series data set 
-  //   if (dataParams.nType === 'characteristic' && tempParams.nType === 'time-series') tempParams.nRange = 7;
-
-  //   // if time series over time series, coordinate index and range
-  //   if (tempParams.nType === 'time-series' && tempParams.dType === 'time-series') {
-  //     tempParams.dIndex = dataParams.nIndex;
-  //     tempParams.dRange = tempParams.nRange || dataParams.nRange;
-  //   }
-
-
-  //   dispatch(setVariableParams({...tempParams}))
-  //   dispatch(setVariableName(variable))
-  //   dispatch(setMapParams({customScale: tempParams.colorScale || '', fixedScale: tempParams.fixedScale || null}))
-  // };
-
-  // const handleZVariable = (event) => {
-  //   let variable = event.target.value;
-  //   let tempParams = PresetVariables[variable] || CountyVariables[variable] || StateVariables[variable] || OneP3AVariables[variable] || CDCVariables[variable] || null;
-    
-  //   // transitioning from a static characteristic (null time range)
-  //   if (dataParams.zAxisParams?.nType === 'characteristic' && tempParams.nType === 'time-series') tempParams.nRange = 7;
-    
-  //   // to a time-series data set 
-
-  //   // if time series over time series, coordinate index and range
-  //   if (tempParams.nType === 'time-series' && tempParams.dType === 'time-series') {
-  //     tempParams.dIndex = dataParams.nIndex;
-  //     tempParams.dRange = tempParams.nRange || dataParams.nRange;
-  //   }
-    
-  //   dispatch(variableChangeZ(variable, tempParams))
-  // };
-
-  // const handleDataSource = (event) => {
-  //   let newDataSet = event.target.value
-  //   if ((newDataSet.includes("state") && CountyVariables.hasOwnProperty(currentVariable))||(newDataSet.includes("county") && StateVariables.hasOwnProperty(currentVariable))) {
-
-  //     // dispatch(resetVariable({
-  //     //   mapParams: {
-  //     //     customScale: '', 
-  //     //     fixedScale: null
-  //     //   },
-  //     //   variableParams: {
-  //     //     ...PresetVariables["Confirmed Count per 100K Population"]
-  //     //   },
-  //     //   variable: "Confirmed Count per 100K Population",
-  //     //   notification: `${dataPresets[newDataSet].plainName} data do not have ${currentVariable}. The Atlas will default to Confirmed Cases Per 100k People.`
-  //     // }))
-
-  //     dispatch(setMapParams({customScale: '', fixedScale: null}))
-  //     dispatch(setVariableParams({...PresetVariables["Confirmed Count per 100K Population"]}))
-  //     dispatch(setVariableName("Confirmed Count per 100K Population"))
-  //     dispatch(setNotification(`${dataPresets[newDataSet].plainName} data do not have ${currentVariable}. The Atlas will default to Confirmed Cases Per 100k People.`))  
-
-  //     setTimeout(() => {dispatch(setCurrentData(newDataSet))}, 250);
-  //     setTimeout(() => {dispatch(setNotification(null))},10000);
-  //   } else if (newDataSet.includes("cdc")) {
-  //     dispatch(setVariableParams({...CDCVariables["7-Day Confirmed Count per 100K Population"]}))
-  //     dispatch(setVariableName("7-Day Confirmed Count per 100K Population"))
-  //     dispatch(setNotification(`CDC County Data is aggregated to 7-Day rolling averages. The Atlas will default to 7-Day rolling average Confirmed Cases Per 100k People.`))  
-  //     setTimeout(() => {dispatch(setCurrentData(newDataSet))}, 250);
-  //     setTimeout(() => {dispatch(setNotification(null))},10000);
-  //   } else if (currentData.includes('cdc')) {
-  //     dispatch(setMapParams({customScale: '', fixedScale: null}))
-  //     dispatch(setVariableParams({...PresetVariables["Confirmed Count per 100K Population"]}))
-  //     dispatch(setVariableName("Confirmed Count per 100K Population"))
-  //     dispatch(setNotification(`Changing to ${dataPresets[newDataSet].plainName} data. CDC County Data is aggregated to 7-Day rolling averages. The Atlas will default to Confirmed Cases Per 100k People.`))  
-
-  //     setTimeout(() => {dispatch(setCurrentData(newDataSet))}, 250);
-  //     setTimeout(() => {dispatch(setNotification(null))},10000);
-  //   }
-    
-  //     else {
-  //     dispatch(setCurrentData(newDataSet)); 
-  //   }
-  // };
-
+  
+  const numerator = useSelector(state => state.dataParams.numerator);
+  const variableName = useSelector(state => state.dataParams.variableName);
+  const nType = useSelector(state => state.dataParams.nType);
+  const nRange = useSelector(state => state.dataParams.nRange);
+  const dType = useSelector(state => state.dataParams.dType);
+  const dRange = useSelector(state => state.dataParams.dRange);
+  const rangeType = useSelector(state => state.dataParams.rangeType);
 
   const handleMapType = (event, newValue) => {
     let nBins = newValue === 'hinge15_breaks' ? 6 : 8
     if (newValue === 'lisa') {
-      if (dataParams.numerator === 'vaccines_one_dose' || dataParams.numerator === 'vaccines_fully_vaccinated'){
+      if (numerator === 'vaccines_one_dose' || numerator === 'vaccines_fully_vaccinated'){
         dispatch(setNotification(`
                     <h2>Map Note</h2>
                     <p>
@@ -516,12 +379,7 @@ const VariablePanel = (props) => {
     }
   }
 
-  const handleVizTypeButton = (vizType) => {
-    // setBivariateZ(false)
-    if (mapParams.vizType !== vizType) {
-      dispatch(setMapParams({vizType}))
-    }
-  }
+  const handleVizTypeButton = (vizType) => dispatch(setMapParams({vizType}))
 
   const handleDotDensitySlider = (e, newValue) => dispatch(setDotDensityBgOpacity(newValue))
 
@@ -534,10 +392,10 @@ const VariablePanel = (props) => {
   const [currentDataset, setCurrentDataset] = useState(urlParamsTree[currentData].name);
 
   useEffect(() => {
-    if (newVariable !== dataParams.variableName) {
-      setNewVariable(dataParams.variableName)
+    if (newVariable !== variableName) {
+      setNewVariable(variableName)
       setCurrentGeography(urlParamsTree[currentData]['geography'])
-      if (dataParams.variableName.indexOf('Dose') !== -1 || (dataParams.variableName.indexOf('Test') !== -1 && currentData.indexOf('state') === -1)) {
+      if (variableName.indexOf('Dose') !== -1 || (variableName.indexOf('Test') !== -1 && currentData.indexOf('state') === -1)) {
         setCurrentDataset('CDC')
       } else {
         setCurrentDataset(urlParamsTree[currentData]['name'])
@@ -549,7 +407,7 @@ const VariablePanel = (props) => {
     let tempGeography = currentGeography + '';
     let tempDataset = currentDataset + '';
     let conditionalParameters = {};
-    if (mapParams.mapType === 'lisa' && (variablePresets[e.target.value].numerator === 'vaccines_one_dose' || variablePresets[e.target.value].numerator === 'vaccines_fully_vaccinated')){
+    if (mapType === 'lisa' && (variablePresets[e.target.value].numerator === 'vaccines_one_dose' || variablePresets[e.target.value].numerator === 'vaccines_fully_vaccinated')){
       dispatch(setNotification(`
                   <h2>Map Note</h2>
                   <p>
@@ -560,21 +418,16 @@ const VariablePanel = (props) => {
               'bottom-right'))
     }
 
-    if (variablePresets[e.target.value].nType === 'time-series' && dataParams.nType === 'time-series'){
-      conditionalParameters['nRange'] = variablePresets[e.target.value].nRange !== null && dataParams.nRange !== null ? dataParams.nRange : variablePresets[e.target.value].nRange;
-    } else if ((variablePresets[e.target.value].nType === 'time-series' && dataParams.nType !== 'time-series')||(variablePresets[e.target.value].nType !== 'time-series' && dataParams.nType === 'time-series')) {
+    if (variablePresets[e.target.value].nType === 'time-series' && nType === 'time-series'){
+      conditionalParameters['nRange'] = variablePresets[e.target.value].nRange !== null && nRange !== null ? nRange : variablePresets[e.target.value].nRange;
+    } else if ((variablePresets[e.target.value].nType === 'time-series' && nType !== 'time-series')||(variablePresets[e.target.value].nType !== 'time-series' && nType === 'time-series')) {
       conditionalParameters['nRange'] =  variablePresets[e.target.value].nRange;
     }
 
-    if (variablePresets[e.target.value].dType === 'time-series' && dataParams.dType === 'time-series'){
-      conditionalParameters['dRange'] = variablePresets[e.target.value].dRange !== null && dataParams.dRange !== null ? dataParams.dRange : variablePresets[e.target.value].dRange;
-    } else if ((variablePresets[e.target.value].dType === 'time-series' && dataParams.dType !== 'time-series')||(variablePresets[e.target.value].dType !== 'time-series' && dataParams.dType === 'time-series')) {
+    if (variablePresets[e.target.value].dType === 'time-series' && dType === 'time-series'){
+      conditionalParameters['dRange'] = variablePresets[e.target.value].dRange !== null && dRange !== null ? dRange : variablePresets[e.target.value].dRange;
+    } else if ((variablePresets[e.target.value].dType === 'time-series' && dType !== 'time-series')||(variablePresets[e.target.value].dType !== 'time-series' && dType === 'time-series')) {
       conditionalParameters['dRange'] =  variablePresets[e.target.value].dRange;
-    }
-
-    if (variablePresets[e.target.value].dType === 'time-series') {
-      conditionalParameters['dIndex'] = dataParams.nIndex;
-      conditionalParameters['nIndex'] = dataParams.nIndex;
     }
     
     // check if valid combination based on variable tree
@@ -628,31 +481,25 @@ const VariablePanel = (props) => {
     let val = event.target.value;
 
     if (val === 'custom') { // if swapping over to a custom range, which will use a 2-part slider to scrub the range
-        if (dataParams.nType === "time-series" && dataParams.dType === "time-series") {
+        if (nType === "time-series" && dType === "time-series") {
             dispatch(setVariableParams({nRange: 30, dRange: 30, rangeType: 'custom'}))
-        } else if (dataParams.nType === "time-series") {
+        } else if (nType === "time-series") {
             dispatch(setVariableParams({nRange: 30, rangeType: 'custom'}))
-        } else if (dataParams.dType === "time-series") {
+        } else if (dType === "time-series") {
             dispatch(setVariableParams({dRange: 30, rangeType: 'custom'}))
         } 
     } else { // use the new value -- null for cumulative, 1 for daily, 7 for weekly
-        if (dataParams.nType === "time-series" && dataParams.dType === "time-series") {
+        if (nType === "time-series" && dType === "time-series") {
             dispatch(setVariableParams({nRange: val, dRange: val, rangeType: 'fixed'}))
-        } else if (dataParams.nType === "time-series") {
+        } else if (nType === "time-series") {
             dispatch(setVariableParams({nRange: val, rangeType: 'fixed'}))
-        } else if (dataParams.dType === "time-series") {
+        } else if (dType === "time-series") {
             dispatch(setVariableParams({dRange: val, rangeType: 'fixed'}))
         }    
     }
   }
 
-  const handleSwitch = () => {
-    if (mapParams.binMode === 'dynamic') {
-        dispatch(setMapParams({binMode:''}))
-    } else {
-        dispatch(setMapParams({binMode:'dynamic'}))
-    }
-  }
+  const handleSwitch = () => dispatch(setMapParams({binMode: binMode === 'dynamic' ? '' : 'dynamic'}))
 
   return (
     <VariablePanelContainer className={panelState.variables ? '' : 'hidden'} otherPanels={panelState.info} id="variablePanel">
@@ -677,40 +524,40 @@ const VariablePanel = (props) => {
           </Select>
         </StyledDropDown>
         <Gutter h={35}/>
-        <DateSelectorContainer disabled={dataParams.nType === "characteristic"}>
+        <DateSelectorContainer disabled={nType === "characteristic"}>
           <StyledDropDown id="dateSelector">
               <InputLabel htmlFor="date-select">Date Range</InputLabel>
               <Select  
                   id="date-select"
                   value={
-                    (dataParams.nRange === null 
-                      || dataParams.rangeType === 'custom' 
-                      || dataParams.variableName.indexOf('Testing') !== -1
-                      || dataParams.variableName.indexOf('Workdays') !== -1
-                    ) ? 'x' : dataParams.nRange}
+                    (nRange === null 
+                      || rangeType === 'custom' 
+                      || variableName.indexOf('Testing') !== -1
+                      || variableName.indexOf('Workdays') !== -1
+                    ) ? 'x' : nRange}
                   onChange={handleRangeButton}
                   displayEmpty
                   inputProps={{ 'aria-label': 'Without label' }}
               >
                   <MenuItem value="x" disabled style={{display:'none'}}>
-                      {dataParams.rangeType === 'custom' && <span>Custom Range</span>}
-                      {(dataParams.nRange === null && dataParams.variableName.indexOf('Testing') === -1 && dataParams.variableName.indexOf('Workdays') === -1) && <span>Cumulative</span>}
-                      {dataParams.variableName.indexOf('Testing') !== -1 && <span>7-Day Average</span>}
-                      {dataParams.variableName.indexOf('Workdays') !== -1 && <span>Daily Average</span>}
+                      {rangeType === 'custom' && <span>Custom Range</span>}
+                      {(nRange === null && variableName.indexOf('Testing') === -1 && variableName.indexOf('Workdays') === -1) && <span>Cumulative</span>}
+                      {variableName.indexOf('Testing') !== -1 && <span>7-Day Average</span>}
+                      {variableName.indexOf('Workdays') !== -1 && <span>Daily Average</span>}
                   </MenuItem>
-                  <MenuItem value={null} key={'cumulative'} disabled={dataParams.variableName.indexOf('Testing') !== -1 || dataParams.variableName.indexOf('Workdays') !== -1}>Cumulative</MenuItem>
-                  <MenuItem value={1} key={'daily'} disabled={dataParams.variableName.indexOf('Testing') !== -1 || dataParams.variableName.indexOf('Workdays') !== -1}>Daily New</MenuItem>
-                  <MenuItem value={7} key={'7-day-ave'} disabled={dataParams.variableName.indexOf('Testing') !== -1 || dataParams.variableName.indexOf('Workdays') !== -1}>7-Day Average</MenuItem>
-                  <MenuItem value={'custom'} key={'customRange'} disabled={dataParams.variableName.indexOf('Testing') !== -1 || dataParams.variableName.indexOf('Workdays') !== -1}>Custom Range</MenuItem>
+                  <MenuItem value={null} key={'cumulative'} disabled={variableName.indexOf('Testing') !== -1 || variableName.indexOf('Workdays') !== -1}>Cumulative</MenuItem>
+                  <MenuItem value={1} key={'daily'} disabled={variableName.indexOf('Testing') !== -1 || variableName.indexOf('Workdays') !== -1}>Daily New</MenuItem>
+                  <MenuItem value={7} key={'7-day-ave'} disabled={variableName.indexOf('Testing') !== -1 || variableName.indexOf('Workdays') !== -1}>7-Day Average</MenuItem>
+                  <MenuItem value={'custom'} key={'customRange'} disabled={variableName.indexOf('Testing') !== -1 || variableName.indexOf('Workdays') !== -1}>Custom Range</MenuItem>
               </Select>
           </StyledDropDown>
-          <BinsContainer id="binModeSwitch" disabled={dataParams.variableName.indexOf('Testing') !== -1 || dataParams.nType === "characteristic" || mapParams.mapType === 'lisa'}>
+          <BinsContainer id="binModeSwitch" disabled={variableName.indexOf('Testing') !== -1 || nType === "characteristic" || mapType === 'lisa'}>
             <Switch
-                checked={mapParams.binMode === 'dynamic'}
+                checked={binMode === 'dynamic'}
                 onChange={handleSwitch}
                 name="bin chart switch"
             />
-            <p>{mapParams.binMode === 'dynamic' ? 'Dynamic' : 'Fixed Bins'}<Tooltip id="BinModes"/></p>
+            <p>{binMode === 'dynamic' ? 'Dynamic' : 'Fixed Bins'}<Tooltip id="BinModes"/></p>
           </BinsContainer> 
         </DateSelectorContainer> 
         <Gutter h={35}/>
@@ -756,7 +603,7 @@ const VariablePanel = (props) => {
             aria-label="maptype" 
             name="maptype1" 
             onChange={handleMapType} 
-            value={mapParams.mapType}
+            value={mapType}
             className="radioContainer"
             >
             <FormControlLabel 
@@ -785,10 +632,10 @@ const VariablePanel = (props) => {
         <Gutter h={15}/>
         <p>Visualization Type</p>
         <ButtonGroup id="visualizationType">
-          <VizTypeButton active={mapParams.vizType === '2D'} data-val="2D" key="2D-btn" onClick={() => handleVizTypeButton('2D')}>2D</VizTypeButton>
-          <VizTypeButton active={mapParams.vizType === '3D'} data-val="3D" key="3D-btn" onClick={() => handleVizTypeButton('3D')}>3D</VizTypeButton>
-          <VizTypeButton active={mapParams.vizType === 'dotDensity'} data-val="dotDensity" key="dotDensity-btn" onClick={() => handleVizTypeButton('dotDensity')}>Dot Density</VizTypeButton>
-          <VizTypeButton active={mapParams.vizType === 'cartogram'} data-val="cartogram" key="cartogram-btn" onClick={() => handleVizTypeButton('cartogram')}>Cartogram</VizTypeButton>
+          <VizTypeButton active={vizType === '2D'} data-val="2D" key="2D-btn" onClick={() => handleVizTypeButton('2D')}>2D</VizTypeButton>
+          <VizTypeButton active={vizType === '3D'} data-val="3D" key="3D-btn" onClick={() => handleVizTypeButton('3D')}>3D</VizTypeButton>
+          <VizTypeButton active={vizType === 'dotDensity'} data-val="dotDensity" key="dotDensity-btn" onClick={() => handleVizTypeButton('dotDensity')}>Dot Density</VizTypeButton>
+          <VizTypeButton active={vizType === 'cartogram'} data-val="cartogram" key="cartogram-btn" onClick={() => handleVizTypeButton('cartogram')}>Cartogram</VizTypeButton>
         </ButtonGroup>
         <Gutter h={12}/>
         {/* {
@@ -861,22 +708,22 @@ const VariablePanel = (props) => {
               </Select>
             </StyledDropDown>
         } */}
-        {mapParams.vizType === 'dotDensity' && 
+        {vizType === 'dotDensity' && 
           <DotDensityControls>
             <p className="help-text">1 Dot = 500 People</p>
             <BinsContainer>
               <Switch
-                checked={mapParams.dotDensityParams.colorCOVID}
+                checked={dotDensityParams.colorCOVID}
                 onChange={() => dispatch(changeDotDensityMode())}
                 name="dot density mode"
               />
-              <p>{mapParams.dotDensityParams.colorCOVID ? 'Color by COVID Data' : 'Color by ACS Race / Ethnicity'}</p>
+              <p>{dotDensityParams.colorCOVID ? 'Color by COVID Data' : 'Color by ACS Race / Ethnicity'}</p>
               <Gutter h={10}/>
               <p className="help-text">Toggle ACS Race / Ethnicity Groups</p>
               <Gutter h={5}/>
               {dotDensityAcsGroups.map(group => 
                 <AcsRaceButton 
-                  active={mapParams.dotDensityParams.raceCodes[group.idx]} 
+                  active={dotDensityParams.raceCodes[group.idx]} 
                   bgColor={colors.dotDensity[group.idx]}
                   onClick={() => dispatch(toggleDotDensityRace(group.idx))}>
                     {group.name}
@@ -886,7 +733,7 @@ const VariablePanel = (props) => {
             <Gutter h={20}/> 
             <p className="help-text">Background Opacity</p>
             <Slider
-              value={mapParams.dotDensityParams.backgroundTransparency}
+              value={dotDensityParams.backgroundTransparency}
               min={0}
               step={0.01}
               max={1}
@@ -899,7 +746,7 @@ const VariablePanel = (props) => {
             <InputLabel htmlFor="overlay-select">Overlay</InputLabel>
             <Select  
               id="overlay-select"
-              value={mapParams.overlay}
+              value={overlay}
               onChange={handleMapOverlay}
             >
               <MenuItem value="" key={'None'}>None</MenuItem> 
@@ -915,7 +762,7 @@ const VariablePanel = (props) => {
             <InputLabel htmlFor="resource-select">Resource</InputLabel>
             <Select  
               id="resource-select"
-              value={mapParams.resource}
+              value={resource}
               onChange={handleMapResource}
             >
               <MenuItem value="" key='None'>None</MenuItem> 

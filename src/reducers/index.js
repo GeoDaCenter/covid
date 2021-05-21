@@ -778,7 +778,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                 storedIndex: (dataParams.nType === 'characteristic' && state.dataParams.nType === 'time-series') ? state.dataParams.nIndex : state.storedIndex,
                 storedRange: (dataParams.nType === 'characteristic' && state.dataParams.nType === 'time-series') ? state.dataParams.nRange : state.storedRange,
                 dataParams,
-                mapData: state.mapParams.mapType !== 'lisa' && shallowEqual(state.dataParams, dataParams)
+                mapData: state.mapParams.binMode !== "dynamic" && state.mapParams.mapType !== 'lisa' && shallowEqual(state.dataParams, dataParams)
                         ? 
                     generateMapData({...state, dataParams}) 
                         : 

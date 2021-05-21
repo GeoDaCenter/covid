@@ -153,7 +153,7 @@ export default function useLoadData(gdaProxy){
   }, [currentData])
 
   const lazyGenerateWeights = useMemo(() => async (dataPresets) => {
-    const geojsonFiles = Object.keys(dataPresets)
+    const geojsonFiles = Object.keys(gdaProxy.geojsonMaps)
 
     for (let i=0; i<geojsonFiles.length;i++){
       if (isInProcess) return;
@@ -164,24 +164,6 @@ export default function useLoadData(gdaProxy){
         let weights = await gdaProxy.CreateWeights.Queen(file);
       }
     }
-    console.log(gdaProxy)
-
-    // const allLoadedTables = [...loadedTables, ...Object.keys(storedData)]
-    // let tableFiles = []
-    // for (let i=0; i<geojsonFiles.length; i++){
-    //   for (const table in dataPresets[geojsonFiles[i]].tables){
-    //     tableFiles.push(dataPresets[geojsonFiles[i]].tables[table])
-    //   }
-    // }
-    
-    // for (let i=0; i<tableFiles.length; i++){
-    //   if (isInProcess) return;
-    //   const fileInfo = tableFiles[i];
-    //   if (!allLoadedTables.includes(fileInfo.file)){
-    //     const tableData = await handleLoadData(fileInfo)
-    //     dispatch(addTables({[fileInfo.file]:tableData}))
-    //   }
-    // }
 
   }, [currentData])
 
@@ -198,13 +180,13 @@ export default function useLoadData(gdaProxy){
           return primaryTables
         }).then(primaryTables => {
           return secondLoad(dataPresetsRedux[currentData], defaultTables[dataPresetsRedux[currentData]['geography']], [...Object.keys(storedData), ...primaryTables])
-        }).then(allLoadedTables => {
-          if (!lazyFetched && allLoadedTables) {
-            return lazyFetchData(dataPresetsRedux, allLoadedTables)
-          } else {
-            return true
-          }
-        }).then(lazyFetch => {
+        // }).then(allLoadedTables => {
+        //   if (!lazyFetched && allLoadedTables) {
+        //     return lazyFetchData(dataPresetsRedux, allLoadedTables)
+        //   } else {
+        //     return true
+        //   }
+        }).then(() => {
           lazyGenerateWeights(dataPresetsRedux);
         })
     } else {
