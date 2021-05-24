@@ -276,7 +276,7 @@ export const colors = {
     ]
 }
 
-export const defaultData = 'cdc.geojson';
+export const defaultData = 'cdc_h.geojson';
 export const defaultTables = {
     'County': {
         'predictions':{

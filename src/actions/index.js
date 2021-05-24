@@ -505,3 +505,12 @@ export const addGeojson = ( data ) => {
         }
     }
 }
+
+export const addTableAndChart = ( data ) => {
+    return {
+        type: 'ADD_TABLE_AND_CHART',
+        payload: {
+            data
+        }
+    }
+}

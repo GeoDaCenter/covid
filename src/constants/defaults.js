@@ -5,7 +5,7 @@ export const INITIAL_STATE = {
   storedCartogramData: {},
   storedMobilityData: {},
   lazyFetched:false,
-  currentData: 'cdc.geojson',
+  currentData: 'cdc_h.geojson',
   currentTable: {
     numerator: '',
     denominator: ''
@@ -26,25 +26,24 @@ export const INITIAL_STATE = {
     params: []
   },
   dataParams: {
-    variableName: 'Confirmed Count per 100K Population',
-    numerator: 'cases',
+    variableName:"Percent Fully Vaccinated",
+    numerator: 'vaccines_fully_vaccinated',
     nType: 'time-series',
     nProperty: null,
-    nRange: 7,
-    nIndex:null,
+    nRange: null,
     denominator: 'properties',
     dType: 'characteristic',
     dProperty: 'population',
     dRange:null,
     dIndex:null,
-    scale:100000,
-    binIndex: '',
+    scale:100,
     scale3D: 1000,
+    colorScale: 'YlGn8',
+    fixedScale: null,
+    dataNote: 'Data prior to 2/28/21 include any doses administered in the state and may include residents of other states.',
     zAxisParams: null,
     fixedScale: null,
-    colorScale: null,
-    storedRange: null,
-    dataNote: false
+    storedRange: null
   },
   mapParams: {
     mapType: 'natural_breaks',
@@ -61,14 +60,14 @@ export const INITIAL_STATE = {
     resource: '',
     colorScale: [
       [240,240,240],
-      [255,255,204],
-      [255,237,160],
-      [254,217,118],
-      [254,178,76],
-      [253,141,60],
-      [252,78,42],
-      [227,26,28],
-      [177,0,38],
+      [255,255,229],
+      [247,252,185],
+      [217,240,163],
+      [173,221,142],
+      [120,198,121],
+      [65,171,93],
+      [35,132,67],
+      [0,90,50],
     ],
     dotDensityParams: {
       raceCodes: {

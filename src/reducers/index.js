@@ -471,10 +471,34 @@ var reducer = (state = INITIAL_STATE, action) => {
             const additionalParams = {
                 populationData
             }
-            const chartData = getDataForCharts(state.storedData[currCaseData], state.dates, additionalParams);
+
             return {
                 ...state,
-                chartData
+                chartData: getDataForCharts(state.storedData[currCaseData], state.dates, additionalParams)
+            }
+        }
+        case 'ADD_TABLE_AND_CHART': {
+            let populationData = [];
+
+            if (state.chartParams.populationNormalized){
+                populationData.push(0)
+                for (let i=0; i<state.storedGeojson[state.currentData].data.features.length; i++){
+                    populationData[0] += state.storedGeojson[state.currentData].data.features[i].properties.population
+                }
+            }
+            const additionalParams = {
+                populationData
+            }
+
+            const storedData = {
+                ...state.storedData,
+                ...action.payload.data
+            }
+
+            return {
+                ...state,
+                chartData: getDataForCharts(Object.values(action.payload.data)[0], state.dates, additionalParams),
+                storedData
             }
         }
         case 'SET_CHART_PARAMS':{

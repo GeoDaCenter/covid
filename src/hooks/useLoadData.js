@@ -11,7 +11,7 @@ import {
 
 import { 
   initialDataLoad, addTables, addGeojson, dataLoad, dataLoadExisting, storeLisaValues, storeCartogramData, setDates, setNotification,
-  setMapParams, setUrlParams, setPanelState, updateMap, updateChart } from '../actions';
+  setMapParams, setUrlParams, setPanelState, updateMap, updateChart, addTableAndChart } from '../actions';
 
 import { colorScales, fixedScales, dataPresets, defaultTables, dataPresetsRedux, variablePresets, colors } from '../config';
 
@@ -128,10 +128,9 @@ export default function useLoadData(gdaProxy){
       dispatch(updateChart());
     } else {
       const table = await handleLoadData(currCaseData);
-      console.log(table);
-      // dispatch(addTableAndChart({
-      //   [currCaseData.file]: table
-      // }))
+      dispatch(addTableAndChart({
+        [currCaseData.file]: table
+      }))
     }
 
     const filesToLoad = [
@@ -223,6 +222,7 @@ export default function useLoadData(gdaProxy){
         //   }
         }).then(() => {
           lazyGenerateWeights(dataPresetsRedux);
+
         })
     } else {
       dispatch(updateChart());
