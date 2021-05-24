@@ -33,6 +33,18 @@ export default function useLoadData(gdaProxy){
   const [isInProcess, setIsInProcess] = useState(false);
   const [lazyFetched, setLazyFetched] = useState(false);
 
+  const getLisaValues = async (geojsonData, currentData, dataParams, numeratorTable, denominatorTable) => {
+    const dataForLisa = getDataForBins(
+      dataParams.numerator === 'properties' ? geojsonData.properties : numeratorTable, 
+      dataParams.denominator === 'properties' ? geojsonData.properties : denominatorTable, 
+      dataParams,
+      Object.values(geojsonData.indices.indexOrder)
+    );
+    const weight_uid = 'Queen' in gdaProxy.geojsonMaps[currentData] ? gdaProxy.geojsonMaps[currentData].Queen : await gdaProxy.CreateWeights.Queen(currentData);
+    const lisaValues = await gdaProxy.Cluster.LocalMoran(currentData, weight_uid, dataForLisa);  
+    return lisaValues.clusters
+  }
+
   const firstLoad = useMemo(() => async (datasetParams, defaultTables) => {
     setIsInProcess(true)
     if (!gdaProxy.ready) await gdaProxy.init()  
@@ -48,15 +60,22 @@ export default function useLoadData(gdaProxy){
 
     let [geojsonData, numeratorData, denominatorData] = await Promise.all(firstLoadPromises)
 
-    let dateIndices = numeratorData.dates
-    let lastIndex = dateIndices !== null ? dateIndices.slice(-1)[0] : null;
+    const dateIndices = numeratorData.dates
+    const binIndex = dateIndices !== null ? mapParams.binMode === 'dynamic' ? dataParams.nIndex : dateIndices.slice(-1)[0] : null;
+    
     let binData = getDataForBins(
       dataParams.numerator === 'properties' ? geojsonData.data.features : numeratorData.data, 
       dataParams.denominator === 'properties' ? geojsonData.properties : denominatorData.data, 
-      {...dataParams, nIndex: lastIndex || dataParams.nIndex, binIndex: lastIndex || dataParams.binIndex}
+      {...dataParams, nIndex: binIndex, dIndex: dataParams.dType === 'time-series' ? binIndex : null}
     );
+
     let bins;
-    if (dataParams.fixedScale === null || dataParams.fixedScale === undefined){
+    
+    if (mapParams.mapType === 'lisa') {
+      bins = fixedScales['lisa']
+    } else if (dataParams.fixedScale !== null && dataParams.fixedScale !== undefined) {
+      bins = fixedScales[dataParams.fixedScale]
+    } else {
       // calculate breaks
       let nb = mapParams.mapType === "natural_breaks" ? 
         await gdaProxy.Bins.NaturalBreaks(mapParams.nBins, binData) :
@@ -65,9 +84,10 @@ export default function useLoadData(gdaProxy){
         bins: mapParams.mapType === "natural_breaks" ? nb.bins : ['Lower Outlier','< 25%','25-50%','50-75%','>75%','Upper Outlier'],
         breaks: [-Math.pow(10, 12), ...nb.breaks.slice(1,-1), Math.pow(10, 12)]
       }
-    } else {
-      bins = fixedScales[dataParams.fixedScale]
     }
+
+    const lisaData = mapParams.mapType === 'lisa' ? await getLisaValues(geojsonData, datasetParams.geojson, dataParams, numeratorData?.data, denominatorData?.data) : null;  
+    
     dispatch(
       initialDataLoad({
         storedData: {
@@ -87,10 +107,10 @@ export default function useLoadData(gdaProxy){
           colorScale: colorScales[dataParams.colorScale || mapParams.mapType]
         },
         variableParams: {
-          nIndex: lastIndex || dataParams.nIndex,
-          binIndex: lastIndex || dataParams.binIndex
+          nIndex: dataParams.nIndex || binIndex,
         },
-        dates: dateLists.isoDateList
+        dates: dateLists.isoDateList,
+        storedLisaData: lisaData
       })
     )
     setIsInProcess(false)

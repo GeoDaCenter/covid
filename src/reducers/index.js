@@ -344,7 +344,7 @@ const generateReport = (geoids, state, dataPresetsRedux, defaultTables) => {
 }
 
 var reducer = (state = INITIAL_STATE, action) => {
-    console.log(action)
+    console.table(action)
     switch(action.type) {
         case 'INITIAL_LOAD': {
             const dataParams = {
@@ -373,7 +373,8 @@ var reducer = (state = INITIAL_STATE, action) => {
                 dataParams,
                 mapParams,
                 currentTable: action.payload.data.currentTable,
-                dates: action.payload.data.dates
+                dates: action.payload.data.dates,
+                storedLisaData: action.payload.storedLisaData
             }
         }
         case 'ADD_TABLES': {
@@ -801,11 +802,11 @@ var reducer = (state = INITIAL_STATE, action) => {
             }
         }
         case 'SET_VARIABLE_PARAMS_AND_DATASET':{
-            const dataParams = {
+            let dataParams = {
                 ...state.dataParams,
                 ...action.payload.params.params
             };
-
+            
             const mapParams = {
                 ...state.mapParams,
                 ...action.payload.params.dataMapParams
@@ -827,6 +828,9 @@ var reducer = (state = INITIAL_STATE, action) => {
                         :
                     defaultTables[dataPresetsRedux[action.payload.params.dataset].geography][dataParams.denominator].file,
             }
+            
+            if (dataParams.nType === 'time-series' && state.storedData[currentTable.numerator]?.dates?.indexOf(dataParams.nIndex) === -1) dataParams.nIndex = state.storedData[currentTable.numerator]?.dates.slice(-1,)[0]
+            if (dataParams.dType === 'time-series' && state.storedData[currentTable.denominator]?.dates?.indexOf(dataParams.nIndex) === -1) dataParams.nIndex = state.storedData[currentTable.denominator]?.dates.slice(-1,)[0]
             
             return {
                 ...state,
@@ -859,6 +863,8 @@ var reducer = (state = INITIAL_STATE, action) => {
             let dataParams = {
                 ...state.dataParams
             }
+
+            if (state.storedData[state.currentTable.numerator]?.dates?.indexOf(dataParams.nIndex) === -1) dataParams.nIndex = state.storedData[state.currentTable.numerator]?.dates.slice(-1,)[0]
             let zAxisVariableReset = state.currentZVariable
 
             if (action.payload.params.vizType !== '3D') {

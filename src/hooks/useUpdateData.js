@@ -32,10 +32,15 @@ export default function useUpdateData(gdaProxy){
             })
           )
         } else {
+          let tempDataParams = {...dataParams}
+
+          if (mapParams.binMode !== 'dynamic' && dataParams.nType === 'time-series') tempDataParams.nIndex = storedData[currentTable.numerator]?.dates.slice(-1,)[0]
+          if (mapParams.binMode !== 'dynamic' && dataParams.dType === 'time-series') tempDataParams.dIndex = tempDataParams.nIndex
+
           let binData = getDataForBins(
             dataParams.numerator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.numerator].data, 
             dataParams.denominator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.denominator].data, 
-            dataParams
+            tempDataParams
           );
           let nb = mapParams.mapType === "natural_breaks" ? 
             await gdaProxy.Bins.NaturalBreaks(mapParams.nBins, binData) :
@@ -48,7 +53,7 @@ export default function useUpdateData(gdaProxy){
               },
               colorScale: mapParams.mapType === 'natural_breaks' ? colorScales[dataParams.colorScale || mapParams.mapType] : colorScales[mapParams.mapType || dataParams.colorScale]
             })
-          )
+          ) 
         }
         setIsCalculating(false)
       }
@@ -90,7 +95,7 @@ export default function useUpdateData(gdaProxy){
   // Both of these are computationally heavy.
   useEffect(() => {
     if (!isCalculating && gdaProxy.ready) {
-      if (mapParams.mapType === "lisa" ) updateLisa()
+      if (mapParams.mapType === "lisa" && storedData[currentTable.numerator] !== undefined && storedGeojson[currentData] !== undefined) updateLisa()
       if (mapParams.vizType === 'cartogram') {
         updateCartogram()
         clearTimeout(stingerTimeout)
@@ -99,7 +104,7 @@ export default function useUpdateData(gdaProxy){
         }, 1250))
       }
     }
-  }, [currentData, storedGeojson[currentData], dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.nIndex, dataParams.dIndex, mapParams.binMode, dataParams.variableName, mapParams.mapType, mapParams.vizType])
+  }, [dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.nIndex, dataParams.dIndex, mapParams.binMode, dataParams.variableName, mapParams.mapType, mapParams.vizType])
   
   useEffect(() => {
     if (stinger){

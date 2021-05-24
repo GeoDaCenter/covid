@@ -431,7 +431,7 @@ const VariablePanel = (props) => {
     }
     
     // check if valid combination based on variable tree
-    if (!variableTree[e.target.value].hasOwnProperty(tempGeography) || !variableTree[e.target.value][tempGeography].indexOf(tempDataset) !== -1) {
+    if (!(variableTree[e.target.value].hasOwnProperty(tempGeography)) || variableTree[e.target.value][tempGeography].indexOf(tempDataset) === -1) {
       tempGeography = Object.keys(variableTree[e.target.value])[0]
       tempDataset = variableTree[e.target.value][tempGeography][0];
 

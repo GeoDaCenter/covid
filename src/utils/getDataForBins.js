@@ -13,7 +13,7 @@ const getDataForBins = (numeratorData, denominatorData, dataParams, fixedOrder=f
     // this checks if the bins generated should be dynamic (generating for each date) or fixed (to the most recent date)
     if (nIndex === null && nProperty === null) {
         // if fixed, get the most recent date
-        let tempIndex = numeratorData.length-1;
+        let tempIndex = numeratorData[keys[0]].length-1;
         // if the denominator is time series data (eg. deaths / cases this week), make the indices the same (most recent)
         let tempDIndex = dType === 'time-series' ? denominatorData.length-1 : dIndex;
         // loop through, do appropriate calculation. add returned value to rtn array
