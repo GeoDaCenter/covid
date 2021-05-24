@@ -24,7 +24,7 @@ export default function useUpdateData(gdaProxy){
     const updateBins =  async () => { 
       setIsCalculating(true)
       if (gdaProxy.ready && (storedData[currentTable.numerator]||dataParams.numerator==='properties') && mapParams.mapType !== "lisa"){
-        if (dataParams.fixedScale) {
+        if (dataParams.fixedScale && mapParams.mapType === "natural_breaks") {
           dispatch(
             setMapParams({
               bins: fixedScales[dataParams.fixedScale],
@@ -42,6 +42,7 @@ export default function useUpdateData(gdaProxy){
             dataParams.denominator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.denominator].data, 
             tempDataParams
           );
+
           let nb = mapParams.mapType === "natural_breaks" ? 
             await gdaProxy.Bins.NaturalBreaks(mapParams.nBins, binData) :
             await gdaProxy.Bins.Hinge15(mapParams.nBins, binData)
@@ -55,8 +56,8 @@ export default function useUpdateData(gdaProxy){
             })
           ) 
         }
-        setIsCalculating(false)
       }
+      setIsCalculating(false)
     }
 
   const updateLisa = async () => {
@@ -104,7 +105,7 @@ export default function useUpdateData(gdaProxy){
         }, 1250))
       }
     }
-  }, [dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.nIndex, dataParams.dIndex, mapParams.binMode, dataParams.variableName, mapParams.mapType, mapParams.vizType])
+  }, [currentData, currentTable.numerator, dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.nIndex, dataParams.dIndex, mapParams.binMode, dataParams.variableName, mapParams.mapType, mapParams.vizType])
   
   useEffect(() => {
     if (stinger){

@@ -370,6 +370,8 @@ export const defaultTables = {
             'join':'fips'
         }
     },
+    'County (Hybrid)':{
+    },
     'State': {
         'cases': {
             'file':'covid_confirmed_usafacts_state',
@@ -511,6 +513,29 @@ export const dataPresetsRedux = {
                 'dates':'isoDateList',
                 'type':'time-series',
                 'accumulate':true
+            }
+        }
+    },
+    'cdc_h.geojson': {
+        plainName: 'CDC', // Plain english name for dataset
+        geojson: 'cdc_h.geojson', // geospatial data to join to
+        geography: 'County (Hybrid)',
+        tables: {
+            'vaccines_fully_vaccinated':{
+                'file':'vaccine_fully_vaccinated_cdc_h',
+                'dates':'isoDateList',
+                'type':'time-series-cumulative',
+                'join':'fips'
+            },
+            'cases': {
+                'file':'covid_confirmed_usafacts_h.pbf',
+                'dates':'isoDateList',
+                'type':'time-series'
+            },
+            'deaths': {
+                'file':'covid_deaths_usafacts_h.pbf',
+                'dates':'isoDateList',
+                'type':'time-series'
             }
         }
     },
@@ -1109,6 +1134,7 @@ export const variableTree = {
     },
     "HEADER:vaccination":{},
     "Percent Fully Vaccinated":{
+        "County (Hybrid)": ["CDC"],
         "County": ["CDC"],
         "State": ["CDC"]
     },
@@ -1156,6 +1182,9 @@ export const allDatasets = Object.values(variableTree).flatMap(o => Object.value
 
 
 export const datasetTree = {
+    'County (Hybrid)': {
+        'CDC':'cdc_h.geojson',
+    },
     'County': {
       '1point3acres':'county_1p3a.geojson',
       'New York Times':'county_nyt.geojson',
@@ -1177,36 +1206,40 @@ export const datasetTree = {
 
 export const urlParamsTree = {
     'county_usfacts.geojson': {
-      name: 'USA Facts',
-      geography: 'County'
+        name: 'USA Facts',
+        geography: 'County'
     },
     'county_1p3a.geojson': {
-      name: '1point3acres',
-      geography: 'County'
+        name: '1point3acres',
+        geography: 'County'
     },
     'county_nyt.geojson': {
-      name: 'New York Times',
-      geography: 'County'
+        name: 'New York Times',
+        geography: 'County'
     },
     'state_1p3a.geojson': {
-      name: '1point3acres',
-      geography: 'State'
+        name: '1point3acres',
+        geography: 'State'
     },
     'state_usafacts.geojson': {
-      name: 'USA Facts',
-      geography: 'State'
+        name: 'USA Facts',
+        geography: 'State'
     }, 
     'state_nyt.geojson': {
-      name: 'New York Times',
-      geography: 'State'
+        name: 'New York Times',
+        geography: 'State'
     },
     'global_jhu.geojson': {
-      name: 'John Hopkins University',
-      geography: 'Global'
+        name: 'John Hopkins University',
+        geography: 'Global'
     },
     'cdc.geojson': {
-      name: 'CDC',
-      geography: 'County'
+        name: 'CDC',
+        geography: 'County'
+    },
+    'cdc_h.geojson': {
+        name: 'CDC',
+        geography: 'County (Hybrid)'
     },
     'safegraph.geojson': {
       name: 'Safegraph',

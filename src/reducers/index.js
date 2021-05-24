@@ -344,7 +344,6 @@ const generateReport = (geoids, state, dataPresetsRedux, defaultTables) => {
 }
 
 var reducer = (state = INITIAL_STATE, action) => {
-    console.table(action)
     switch(action.type) {
         case 'INITIAL_LOAD': {
             const dataParams = {
@@ -374,7 +373,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                 mapParams,
                 currentTable: action.payload.data.currentTable,
                 dates: action.payload.data.dates,
-                storedLisaData: action.payload.storedLisaData
+                storedLisaData: action.payload.data.storedLisaData
             }
         }
         case 'ADD_TABLES': {
