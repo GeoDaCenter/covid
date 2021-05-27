@@ -97,7 +97,7 @@ export default function useUpdateData(gdaProxy){
   useEffect(() => {
     if (!isCalculating && gdaProxy.ready) {
       if (mapParams.mapType === "lisa" && storedData[currentTable.numerator] !== undefined && storedGeojson[currentData] !== undefined) updateLisa()
-      if (mapParams.vizType === 'cartogram') {
+      if (mapParams.vizType === 'cartogram' && storedData[currentTable.numerator] !== undefined && storedGeojson[currentData] !== undefined) {
         updateCartogram()
         clearTimeout(stingerTimeout)
         setStingerTimeout(setTimeout(() => {
@@ -124,7 +124,7 @@ export default function useUpdateData(gdaProxy){
   // Trigger on parameter change for metric values
   // Gets bins and sets map parameters
   useEffect(() => {
-    if (binReady()) updateBins()
+    if (binReady() && !isCalculating) updateBins()
   }, [dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.dRange, mapParams.mapType, currentData] );
   
   useEffect(() => {

@@ -27,8 +27,8 @@ export default function MapTooltipContent(){
         {tooltipContent.data.hasOwnProperty('daily_cases') && <>Daily New Cases: {tooltipContent.data.daily_cases?.toLocaleString('en')||0}<br/></>}
         {tooltipContent.data.hasOwnProperty('daily_deaths') && <>Daily New Deaths: {tooltipContent.data.daily_deaths?.toLocaleString('en')||0}<br/></>}
         <br/>
-        {tooltipContent.data.hasOwnProperty('testing_wk_pos') && <>7-Day Positivity Rate: {tooltipContent.data.testing_wk_pos?.toLocaleString('en')||0}%<br/></>}
-        {tooltipContent.data.hasOwnProperty('testing_tcap') && <>7-Day Testing Capacity: {tooltipContent.data.testing_tcap?.toLocaleString('en')||0}<br/></>}
+        {tooltipContent.data.hasOwnProperty('testing_wk_pos') && <>7-Day Average Positivity Rate: {tooltipContent.data.testing_wk_pos?.toLocaleString('en')||0}%<br/></>}
+        {tooltipContent.data.hasOwnProperty('testing_tcap') && <>7-Day Average Tests Performed: {tooltipContent.data.testing_tcap?.toLocaleString('en')||0} per 100k<br/></>}
         
         {tooltipContent.data['Hospital Type'] && <>
             <h3>{tooltipContent.data['Name']}</h3>

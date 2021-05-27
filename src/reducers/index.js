@@ -45,7 +45,7 @@ const generateMapData = (state) => {
                 state.storedLisaData, 
                 state.storedGeojson, 
                 state.currentData, 
-                state.storedGeojson[state.currentData].properties[currGeoid],
+                currGeoid,
                 mapFn
             );
             if (color === null) {
@@ -344,8 +344,10 @@ const generateReport = (geoids, state, dataPresetsRedux, defaultTables) => {
 }
 
 var reducer = (state = INITIAL_STATE, action) => {
+    console.log(action.type)
     switch(action.type) {
         case 'INITIAL_LOAD': {
+            console.log(action)
             const dataParams = {
                 ...state.dataParams,
                 ...action.payload.data.variableParams,
@@ -373,7 +375,8 @@ var reducer = (state = INITIAL_STATE, action) => {
                 mapParams,
                 currentTable: action.payload.data.currentTable,
                 dates: action.payload.data.dates,
-                storedLisaData: action.payload.data.storedLisaData
+                storedLisaData: action.payload.data.storedLisaData||{},
+                storedCartogramData: action.payload.data.storedCartogramData||{}
             }
         }
         case 'ADD_TABLES': {
@@ -604,6 +607,7 @@ var reducer = (state = INITIAL_STATE, action) => {
             };
         }
         case 'SET_STORED_CARTOGRAM_DATA':{
+            console.log(action)
             return {
                 ...state,
                 mapData: generateMapData({...state, storedCartogramData: action.payload.data}),

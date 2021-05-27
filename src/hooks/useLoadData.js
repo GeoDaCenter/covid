@@ -33,16 +33,21 @@ export default function useLoadData(gdaProxy){
   const [isInProcess, setIsInProcess] = useState(false);
   const [lazyFetched, setLazyFetched] = useState(false);
 
-  const getLisaValues = async (geojsonData, currentData, dataParams, numeratorTable, denominatorTable) => {
-    const dataForLisa = getDataForBins(
-      dataParams.numerator === 'properties' ? geojsonData.properties : numeratorTable, 
-      dataParams.denominator === 'properties' ? geojsonData.properties : denominatorTable, 
-      dataParams,
-      Object.values(geojsonData.indices.indexOrder)
-    );
+  const getLisaValues = async (currentData, dataForLisa) => {
     const weight_uid = 'Queen' in gdaProxy.geojsonMaps[currentData] ? gdaProxy.geojsonMaps[currentData].Queen : await gdaProxy.CreateWeights.Queen(currentData);
     const lisaValues = await gdaProxy.Cluster.LocalMoran(currentData, weight_uid, dataForLisa);  
     return lisaValues.clusters
+  }
+
+  const getCartogramValues = async (currentData, dataForCartogram) => {
+    let cartogramData = await gdaProxy.cartogram(currentData, dataForCartogram);
+    let tempArray = new Array(cartogramData.length)
+    for (let i=0; i<cartogramData.length; i++){
+        cartogramData[i].value = dataForCartogram[i]
+        tempArray[i] = cartogramData[i]
+    };
+    console.log(tempArray)
+    return tempArray
   }
 
   const firstLoad = useMemo(() => async (datasetParams, defaultTables) => {
@@ -66,7 +71,8 @@ export default function useLoadData(gdaProxy){
     let binData = getDataForBins(
       dataParams.numerator === 'properties' ? geojsonData.data.features : numeratorData.data, 
       dataParams.denominator === 'properties' ? geojsonData.properties : denominatorData.data, 
-      {...dataParams, nIndex: binIndex, dIndex: dataParams.dType === 'time-series' ? binIndex : null}
+      {...dataParams, nIndex: binIndex, dIndex: dataParams.dType === 'time-series' ? binIndex : null},
+      Object.values(geojsonData.indices.indexOrder)
     );
 
     let bins;
@@ -85,9 +91,11 @@ export default function useLoadData(gdaProxy){
         breaks: [-Math.pow(10, 12), ...nb.breaks.slice(1,-1), Math.pow(10, 12)]
       }
     }
-
-    const lisaData = mapParams.mapType === 'lisa' ? await getLisaValues(geojsonData, datasetParams.geojson, dataParams, numeratorData?.data, denominatorData?.data) : null;  
     
+    const lisaData = mapParams.mapType === 'lisa' ? await getLisaValues(datasetParams.geojson, binData) : null;  
+    const cartogramData = mapParams.vizType === 'cartogram' ? await getCartogramValues(datasetParams.geojson, binData) : null;
+    
+    console.log(cartogramData)
     dispatch(
       initialDataLoad({
         storedData: {
@@ -104,13 +112,14 @@ export default function useLoadData(gdaProxy){
         },
         mapParams: {
           bins,
-          colorScale: colorScales[dataParams.colorScale || mapParams.mapType]
+          colorScale: mapParams.mapType === 'natural_breaks' ? colorScales[dataParams.colorScale || mapParams.mapType] : colorScales[mapParams.mapType || dataParams.colorScale ]
         },
         variableParams: {
-          nIndex: dataParams.nIndex || binIndex,
+          nIndex: dateIndices.indexOf(dataParams.nIndex) === -1 ? binIndex : dataParams.nIndex,
         },
         dates: dateLists.isoDateList,
-        storedLisaData: lisaData
+        storedLisaData: lisaData,
+        storedCartogramData: cartogramData
       })
     )
     setIsInProcess(false)
@@ -214,12 +223,6 @@ export default function useLoadData(gdaProxy){
           return primaryTables
         }).then(primaryTables => {
           return secondLoad(dataPresetsRedux[currentData], defaultTables[dataPresetsRedux[currentData]['geography']], [...Object.keys(storedData), ...primaryTables])
-        // }).then(allLoadedTables => {
-        //   if (!lazyFetched && allLoadedTables) {
-        //     return lazyFetchData(dataPresetsRedux, allLoadedTables)
-        //   } else {
-        //     return true
-        //   }
         }).then(() => {
           lazyGenerateWeights(dataPresetsRedux);
 

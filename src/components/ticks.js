@@ -11,6 +11,10 @@ const TickMarks = styled.div`
         height:3px;
         display:inline-block;
     }
+    @media (max-width:600px){
+        margin-top:-30px;
+        transform:scaleX(.984) translateX(1px);
+    }
 `
 
 export default function Ticks(){

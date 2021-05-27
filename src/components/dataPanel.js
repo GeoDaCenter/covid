@@ -308,21 +308,6 @@ export default function DataPanel(){
               <h3>{sidebarData.beds.toLocaleString('en')}</h3>
             </ReportSection>
           }
-          {sidebarData.hasOwnProperty('one_dose') &&
-            <ReportSection>
-              <h2>COVID Vaccination</h2><br/>
-              <h6>Source: <a href="https://covid.cdc.gov/covid-data-tracker/#vaccinations" target="_blank" rel="noopener noreferrer">CDC COVID Data Tracker</a></h6>            
-              <p>% of Population<br className="bigOnly"/>  Received At Least One Dose</p>
-              <div className="numberChartContainer">
-                <h3>{sidebarData.one_dosePc}%</h3>
-                {expanded && <TwoWeekChart data={sidebarData.one_dose14} schema='vaccination'/>}
-              </div>
-              <p>Total Number<br className="bigOnly"/>  Received At Least One Dose</p>
-              <h3>{sidebarData.one_dose?.toLocaleString('en')}</h3>
-              <p>Doses to be Administered<br className="bigOnly"/>  Per 100 People</p>
-              <h3>{sidebarData.doses_dist100?.toFixed(2).toLocaleString('en')}</h3>
-            </ReportSection>
-          }
           {sidebarData.hasOwnProperty('fully_vaccinated') &&
             <ReportSection>
               <h2>COVID Vaccination</h2><br/>
@@ -336,6 +321,19 @@ export default function DataPanel(){
               <h3>{sidebarData.fully_vaccinated.toLocaleString('en')}</h3>
             </ReportSection>
           }
+          {sidebarData.hasOwnProperty('one_dose') &&
+            <ReportSection>
+              <p>% of Population<br className="bigOnly"/>  Received At Least One Dose</p>
+              <div className="numberChartContainer">
+                <h3>{(sidebarData.one_dosePc*100)?.toFixed(2)}%</h3>
+                {expanded && <TwoWeekChart data={sidebarData.one_dose14} schema='vaccination'/>}
+              </div>
+              <p>Total Number<br className="bigOnly"/>  Received At Least One Dose</p>
+              <h3>{sidebarData.one_dose?.toLocaleString('en')}</h3>
+              <p>Doses to be Administered<br className="bigOnly"/>  Per 100 People</p>
+              <h3>{sidebarData.doses_dist100?.toFixed(2).toLocaleString('en')}</h3>
+            </ReportSection>
+          }
           {sidebarData.hasOwnProperty('testing') &&
             <ReportSection>
               <h2>Testing</h2><br/>
@@ -345,7 +343,7 @@ export default function DataPanel(){
                 <h3>{Math.round(sidebarData.wk_pos)}%</h3>
                 {expanded && <TwoWeekChart data={sidebarData.wk_pos14} schema='testingPos'/>}
               </div>
-              <p>7-Day Testing Capacity<br className="bigOnly"/> per 100k People</p>
+              <p>7-Day Tests Performed <br className="bigOnly"/> per 100k People</p>
               <div className="numberChartContainer">
                 <h3>{Math.round(sidebarData.tcap)}</h3>
                 {expanded && <TwoWeekChart data={sidebarData.tcap14} schema='testingCap'/>}
@@ -452,22 +450,22 @@ export default function DataPanel(){
               </ReportSection>
             }
             {sidebarData.hasOwnProperty('pct_home') && 
-                <ReportSection>
-                  <h2>Mobility</h2><br/>     
-                  <p>Percent Completely At Home</p>
-                  <div className="numberChartContainer">
-                    <h3>{sidebarData.pct_home}%</h3>
-                  </div>
-                  <p>Percent Full Time Behavior</p>
-                  <div className="numberChartContainer">
-                    <h3>{sidebarData.pct_fulltime}%</h3>
-                  </div>
-                  <p>Percent Part Time Behavior</p>
-                  <div className="numberChartContainer">
-                    <h3>{sidebarData.pct_parttime}%</h3>
-                  </div>
-                </ReportSection>
-              }
+              <ReportSection>
+                <h2>Mobility</h2><br/>     
+                <p>Percent Completely At Home</p>
+                <div className="numberChartContainer">
+                  <h3>{sidebarData.pct_home}%</h3>
+                </div>
+                <p>Percent Full Time Behavior</p>
+                <div className="numberChartContainer">
+                  <h3>{sidebarData.pct_fulltime}%</h3>
+                </div>
+                <p>Percent Part Time Behavior</p>
+                <div className="numberChartContainer">
+                  <h3>{sidebarData.pct_parttime}%</h3>
+                </div>
+              </ReportSection>
+            }
           
           <div className="extraPadding"></div>
           

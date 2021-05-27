@@ -71,7 +71,7 @@ export default function Map() {
   const variableName = useSelector(state => state.dataParams.variableName);
   const panelState = useSelector(state => state.panelState);
   const mapLoaded = useSelector(state => state.mapLoaded);
-  // const fullState = useSelector(state => state);
+  const fullState = useSelector(state => state);
 
   const dispatch = useDispatch(); 
 
