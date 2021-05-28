@@ -98,6 +98,7 @@ const LineSlider = styled(Slider)`
 const SpeedSlider = styled.div`
     position:absolute;
     padding:0.75em 0.5em 0.25em 0.5em;
+    widht:100%;
     background:${colors.gray};
     border-radius:0.5em;
     left:0;
@@ -105,6 +106,16 @@ const SpeedSlider = styled.div`
     box-shadow: 0px 0px 5px rgb(0 0 0 / 70%);
     p {
         text-align:center;
+    }
+    span.MuiSlider-rail {
+        display:initial;
+    }
+    span.MuiSlider-track {
+        display:initial;
+    }
+    span.MuiSlider-root {
+        width:80%;
+        margin:0 10%;
     }
 `
 

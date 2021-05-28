@@ -184,13 +184,8 @@ function debounce(func, wait, immediate) {
 
 export default function MapSection(){ 
     // fetch pieces of state from store    
-    const storedData = useSelector(state => state.storedData);
     const currentData = useSelector(state => state.currentData);
-    const dateIndices = useSelector(state => state.dateIndices);
-    const storedCartogramData = useSelector(state => state.storedCartogramData);
-    const storedCentroids = useSelector(state => state.storedCentroids);
     const panelState = useSelector(state => state.panelState);
-    const dates = useSelector(state => state.dates);
     const mapParams = useSelector(state => state.mapParams);
     const urlParams = useSelector(state => state.urlParams);
     const dotDensityData = useSelector(state => state.dotDensityData);
@@ -199,6 +194,9 @@ export default function MapSection(){
     const storedGeojson = useSelector(state => state.storedGeojson);
     const selectionKeys = useSelector(state => state.selectionKeys);
     const currentMapGeography = storedGeojson[currentData]?.data||[]
+
+    const storedCartogramData = useSelector(state => state.storedCartogramData);
+    const storedLisaData = useSelector(state => state.storedLisaData);
     
     // component state elements
     // hover and highlight geographibes
@@ -461,7 +459,7 @@ export default function MapSection(){
 
     useEffect(() => {
         forceUpdate()
-    }, [currentMapID])
+    }, [currentMapID, storedCartogramData, storedLisaData])
 
     const GetMapView = () => {
         try {
@@ -761,10 +759,10 @@ export default function MapSection(){
             },
             updateTriggers: {
                 data: currentMapGeography,
-                getPosition: currentMapID,
-                getFillColor: currentMapID,
-                getRadius: currentMapID,
-                transitions: currentData
+                getPosition:  [currentMapID,storedLisaData,storedCartogramData],
+                getFillColor:  [currentMapID,storedLisaData,storedCartogramData],
+                getRadius:  [currentMapID,storedLisaData,storedCartogramData],
+                transitions:  [currentMapID,storedLisaData,storedCartogramData],
             },
         }),
         cartogramText: new TextLayer({

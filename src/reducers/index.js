@@ -7,7 +7,7 @@ const getSimpleColor = (value, bins, colorScale, mapType, numerator, storedLisaD
 const getLisaColor = (value, bins, colorScale, mapType, numerator, storedLisaData, storedGeojson, currentData, GEOID) => colorScale[storedLisaData[storedGeojson[currentData].indices['geoidOrder'][GEOID]]]||[240,240,240]
 const getColorFunction = (mapType) => mapType === 'lisa' ? getLisaColor : getSimpleColor;
 const getMapFunction = (mapType, table) => mapType.includes("hinge") ? mapFnHinge : table.includes('testing') ? mapFnTesting : mapFnNb;
-const getHeight = (val, dataParams) => val*(dataParams.scale3D/((dataParams.nType === "time-series" && dataParams.nRange === null) ? (dataParams.nIndex)/10 : 1));
+const getHeight = (val, dataParams) => val*(dataParams.scale3D/((dataParams.nType === "time-series" && dataParams.nRange === null) ? (dataParams.nIndex)/7 : 1));
 
 const generateMapData = (state) => {
     if (!state.mapParams.bins.hasOwnProperty("bins") || (state.mapParams.mapType !== 'lisa' && !state.mapParams.bins.breaks)) {
@@ -344,10 +344,8 @@ const generateReport = (geoids, state, dataPresetsRedux, defaultTables) => {
 }
 
 var reducer = (state = INITIAL_STATE, action) => {
-    console.log(action.type)
     switch(action.type) {
         case 'INITIAL_LOAD': {
-            console.log(action)
             const dataParams = {
                 ...state.dataParams,
                 ...action.payload.data.variableParams,
@@ -581,15 +579,16 @@ var reducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 currentGeoid: action.payload.geoid
             };
-        case 'SET_STORED_DATA':
-            let obj = {
+        case 'SET_STORED_DATA':{
+            const storedData = {
                 ...state.storedData,
+                [action.payload.name]: action.payload.data
             }
-            obj[action.payload.name] = action.payload.data
             return {
                 ...state,
-                storedData: obj
+                storedData
             };
+        }
         case 'SET_STORED_GEOJSON':
             let geojsonObj = {
                 ...state.storedGeojson,
@@ -600,6 +599,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                 storedGeojson: geojsonObj
             };
         case 'SET_STORED_LISA_DATA':{
+            console.log(action.payload.data)
             return {
                 ...state,
                 storedLisaData: action.payload.data,
@@ -607,7 +607,6 @@ var reducer = (state = INITIAL_STATE, action) => {
             };
         }
         case 'SET_STORED_CARTOGRAM_DATA':{
-            console.log(action)
             return {
                 ...state,
                 mapData: generateMapData({...state, storedCartogramData: action.payload.data}),
@@ -799,15 +798,30 @@ var reducer = (state = INITIAL_STATE, action) => {
                 dataParams.zAxisParams.dIndex = dataParams.dIndex;
             }
 
-            if (dataParams.nType === 'time-series' && dataParams.nIndex === null) {
-                dataParams.nIndex = state.storedIndex;
-                dataParams.nRange = state.storedRange;
-            }
-            if (dataParams.dType === 'time-series' && dataParams.dIndex === null) {
-                dataParams.dIndex = state.storedIndex;
-                dataParams.dRange = state.storedRange;
-            }   
+            if (action.payload.params.variableName !== undefined && (dataParams.variableName !== state.dataParams.variable)){
+                if (dataParams.nType === 'time-series' && state.dataParams.nType === 'time-series'){
+                    dataParams.nRange = dataParams.nType !== null && state.dataParams.nRange !== null ? state.dataParams.nRange : dataParams.nRange;
+                } 
                 
+                if (dataParams.nType === 'time-series' && state.storedData[currentTable.numerator]?.dates?.indexOf(dataParams.nIndex) === -1) {
+                    dataParams.nIndex = state.storedData[currentTable.numerator]?.dates.slice(-1,)[0]
+                }
+    
+                if (dataParams.dType === 'time-series') {
+                    dataParams.dIndex = dataParams.nIndex
+                    dataParams.dRange = dataParams.nRange
+                }
+
+                if (dataParams.nType === 'time-series' && dataParams.nIndex === null) {
+                    dataParams.nIndex = state.storedIndex;
+                    dataParams.nRange = state.storedRange;
+                }
+                if (dataParams.dType === 'time-series' && dataParams.dIndex === null) {
+                    dataParams.dIndex = state.storedIndex;
+                    dataParams.dRange = state.storedRange;
+                }   
+            }
+
             return {
                 ...state,
                 storedIndex: (dataParams.nType === 'characteristic' && state.dataParams.nType === 'time-series') ? state.dataParams.nIndex : state.storedIndex,
@@ -855,10 +869,22 @@ var reducer = (state = INITIAL_STATE, action) => {
                         :
                     defaultTables[dataPresetsRedux[action.payload.params.dataset].geography][dataParams.denominator].file,
             }
-            
-            if (dataParams.nType === 'time-series' && state.storedData[currentTable.numerator]?.dates?.indexOf(dataParams.nIndex) === -1) dataParams.nIndex = state.storedData[currentTable.numerator]?.dates.slice(-1,)[0]
-            if (dataParams.dType === 'time-series' && state.storedData[currentTable.denominator]?.dates?.indexOf(dataParams.nIndex) === -1) dataParams.nIndex = state.storedData[currentTable.denominator]?.dates.slice(-1,)[0]
-            
+
+            if (action.payload.params.variableName !== undefined && (dataParams.variableName !== state.dataParams.variable)){
+                if (dataParams.nType === 'time-series' && state.dataParams.nType === 'time-series'){
+                    dataParams.nRange = dataParams.nType !== null && state.dataParams.nRange !== null ? state.dataParams.nRange : dataParams.nRange;
+                } 
+                
+                if (dataParams.nType === 'time-series' && state.storedData[currentTable.numerator]?.dates?.indexOf(dataParams.nIndex) === -1) {
+                    dataParams.nIndex = state.storedData[currentTable.numerator]?.dates.slice(-1,)[0]
+                }
+
+                if (dataParams.dType === 'time-series') {
+                    dataParams.dIndex = dataParams.nIndex
+                    dataParams.dRange = dataParams.nRange
+                }
+            }
+
             return {
                 ...state,
                 dataParams,

@@ -37,10 +37,10 @@ export const INITIAL_STATE = {
     dRange:null,
     dIndex:null,
     scale:100,
-    scale3D: 1000,
+    scale3D: 500_000,
     colorScale: 'YlGn8',
     fixedScale: null,
-    dataNote: 'Data prior to 2/28/21 include any doses administered in the state and may include residents of other states.',
+    dataNote: 'Texas reports only state-level vaccination rates to the CDC.',
     zAxisParams: null,
     fixedScale: null,
     storedRange: null

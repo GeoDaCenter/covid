@@ -855,8 +855,8 @@ export const variablePresets = {
       scale3D: 30,
       dataNote: null,
     }, 
-    "7 Day Tests Performed per 100K": {
-      variableName:"7 Day Testing Capacity per 100K Population",
+    "7 Day Tests Performed per 100K Population": {
+      variableName:"7 Day Tests Performed per 100K Population",
       numerator: 'testing_tcap',
       nType: 'time-series',
       nProperty: null,
@@ -869,7 +869,7 @@ export const variablePresets = {
       scale:1,
       fixedScale: 'testingCap',
       colorScale: 'testingCap',
-      scale3D: 30,
+      scale3D: 10000,
       dataNote: null,
     }, 
     "7 Day Testing Capacity per 100K Population": {
@@ -1003,10 +1003,10 @@ export const variablePresets = {
         dRange:null,
         dIndex:null,
         scale:100,
-        scale3D: 1000,
+        scale3D: 500_000,
         colorScale: 'YlGn8',
         fixedScale: null,
-        dataNote: 'Data prior to 2/28/21 include any doses administered in the state and may include residents of other states.'
+        dataNote: 'Texas reports only state-level vaccination rates to the CDC.'
     },
     "Doses to be Administered per 100 People": {
         variableName:"Doses to be Administered per 100 People",

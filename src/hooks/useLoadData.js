@@ -46,7 +46,6 @@ export default function useLoadData(gdaProxy){
         cartogramData[i].value = dataForCartogram[i]
         tempArray[i] = cartogramData[i]
     };
-    console.log(tempArray)
     return tempArray
   }
 
@@ -95,7 +94,6 @@ export default function useLoadData(gdaProxy){
     const lisaData = mapParams.mapType === 'lisa' ? await getLisaValues(datasetParams.geojson, binData) : null;  
     const cartogramData = mapParams.vizType === 'cartogram' ? await getCartogramValues(datasetParams.geojson, binData) : null;
     
-    console.log(cartogramData)
     dispatch(
       initialDataLoad({
         storedData: {
@@ -115,7 +113,7 @@ export default function useLoadData(gdaProxy){
           colorScale: mapParams.mapType === 'natural_breaks' ? colorScales[dataParams.colorScale || mapParams.mapType] : colorScales[mapParams.mapType || dataParams.colorScale ]
         },
         variableParams: {
-          nIndex: dateIndices.indexOf(dataParams.nIndex) === -1 ? binIndex : dataParams.nIndex,
+          nIndex: dateIndices?.indexOf(dataParams.nIndex) === -1 ? binIndex : dataParams.nIndex,
         },
         dates: dateLists.isoDateList,
         storedLisaData: lisaData,

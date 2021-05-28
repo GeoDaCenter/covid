@@ -417,18 +417,6 @@ const VariablePanel = (props) => {
               `,
               'bottom-right'))
     }
-
-    if (variablePresets[e.target.value].nType === 'time-series' && nType === 'time-series'){
-      conditionalParameters['nRange'] = variablePresets[e.target.value].nRange !== null && nRange !== null ? nRange : variablePresets[e.target.value].nRange;
-    } else if ((variablePresets[e.target.value].nType === 'time-series' && nType !== 'time-series')||(variablePresets[e.target.value].nType !== 'time-series' && nType === 'time-series')) {
-      conditionalParameters['nRange'] =  variablePresets[e.target.value].nRange;
-    }
-
-    if (variablePresets[e.target.value].dType === 'time-series' && dType === 'time-series'){
-      conditionalParameters['dRange'] = variablePresets[e.target.value].dRange !== null && dRange !== null ? dRange : variablePresets[e.target.value].dRange;
-    } else if ((variablePresets[e.target.value].dType === 'time-series' && dType !== 'time-series')||(variablePresets[e.target.value].dType !== 'time-series' && dType === 'time-series')) {
-      conditionalParameters['dRange'] =  variablePresets[e.target.value].dRange;
-    }
     
     // check if valid combination based on variable tree
     if (!(variableTree[e.target.value].hasOwnProperty(tempGeography)) || variableTree[e.target.value][tempGeography].indexOf(tempDataset) === -1) {
@@ -438,8 +426,7 @@ const VariablePanel = (props) => {
       
       dispatch(setParametersAndData({
         params: {
-          ...variablePresets[e.target.value],
-          ...conditionalParameters,
+          ...variablePresets[e.target.value]
         },
         dataset: datasetTree[tempGeography][tempDataset],
         mapParams: {
@@ -450,8 +437,7 @@ const VariablePanel = (props) => {
       setCurrentDataset(tempDataset)
     } else {
       dispatch(setVariableParams({
-        ...variablePresets[e.target.value],
-        ...conditionalParameters,
+        ...variablePresets[e.target.value]
       }))
 
     }

@@ -99,6 +99,8 @@ export default function useUpdateData(gdaProxy){
       if (mapParams.mapType === "lisa" && storedData[currentTable.numerator] !== undefined && storedGeojson[currentData] !== undefined) updateLisa()
       if (mapParams.vizType === 'cartogram' && storedData[currentTable.numerator] !== undefined && storedGeojson[currentData] !== undefined) {
         updateCartogram()
+      }
+      if (mapParams.vizType === 'cartogram'){
         clearTimeout(stingerTimeout)
         setStingerTimeout(setTimeout(() => {
           setStinger(true)
