@@ -16,7 +16,9 @@ def parseTexasCases():
     texasData['County Name'] = 'Texas'
     texasData['StateFIPS'] = 48
 
-    return pd.concat([countyData, texasData])
+    merged = pd.concat([countyData, texasData], sort=True)
+    
+    return merged[list(countyData.columns)] 
 
 def parseTexasDeaths():
     countyData = pd.read_csv(os.path.join(repo_root, 'public/csv/covid_deaths_usafacts.csv'))
@@ -30,7 +32,9 @@ def parseTexasDeaths():
     texasData['County Name'] = 'Texas'
     texasData['StateFIPS'] = 48
 
-    return pd.concat([countyData, texasData])
+    merged = pd.concat([countyData, texasData], sort=True)
+    
+    return merged[list(countyData.columns)] 
 
 def parseTexasVaccine():
     countyData = pd.read_csv(os.path.join(repo_root, 'public/csv/vaccine_fully_vaccinated_cdc.csv'))
@@ -38,7 +42,9 @@ def parseTexasVaccine():
     texasData = stateData[stateData.fips == 48][[column for column in countyData.columns if column in stateData.columns]]
     texasData['2021-05-14'] = texasData['2021-05-13']
 
-    return pd.concat([countyData, texasData])
+    merged = pd.concat([countyData, texasData], sort=True)
+    
+    return merged[list(countyData.columns)] 
 
 if __name__ == "__main__":
     parseTexasCases().to_csv(os.path.join(repo_root, 'public/csv/covid_confirmed_usafacts_h.csv'), index=False)
