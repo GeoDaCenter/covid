@@ -800,11 +800,16 @@ var reducer = (state = INITIAL_STATE, action) => {
 
             if (action.payload.params.variableName !== undefined && (dataParams.variableName !== state.dataParams.variable)){
                 if (dataParams.nType === 'time-series' && state.dataParams.nType === 'time-series'){
-                    dataParams.nRange = dataParams.nType !== null && state.dataParams.nRange !== null ? state.dataParams.nRange : dataParams.nRange;
+                    dataParams.nRange = dataParams.nRange !== null && state.dataParams.nRange !== null ? state.dataParams.nRange : dataParams.nRange;
                 } 
                 
                 if (dataParams.nType === 'time-series' && state.storedData[currentTable.numerator]?.dates?.indexOf(dataParams.nIndex) === -1) {
-                    dataParams.nIndex = state.storedData[currentTable.numerator]?.dates.slice(-1,)[0]
+                    const nearestIndex = state.storedData[currentTable.numerator]?.dates?.reduce((a, b) => {return Math.abs(b - dataParams.nIndex) < Math.abs(a - dataParams.nIndex) ? b : a})
+                    if (Math.abs(dataParams.nIndex-nearestIndex) < 14){
+                        dataParams.nIndex = nearestIndex
+                    } else {
+                        dataParams.nIndex = state.storedData[currentTable.numerator]?.dates.slice(-1,)[0]
+                    }
                 }
     
                 if (dataParams.dType === 'time-series') {
@@ -872,11 +877,16 @@ var reducer = (state = INITIAL_STATE, action) => {
 
             if (action.payload.params.variableName !== undefined && (dataParams.variableName !== state.dataParams.variable)){
                 if (dataParams.nType === 'time-series' && state.dataParams.nType === 'time-series'){
-                    dataParams.nRange = dataParams.nType !== null && state.dataParams.nRange !== null ? state.dataParams.nRange : dataParams.nRange;
+                    dataParams.nRange = dataParams.nRange !== null && state.dataParams.nRange !== null ? state.dataParams.nRange : dataParams.nRange;
                 } 
                 
                 if (dataParams.nType === 'time-series' && state.storedData[currentTable.numerator]?.dates?.indexOf(dataParams.nIndex) === -1) {
-                    dataParams.nIndex = state.storedData[currentTable.numerator]?.dates.slice(-1,)[0]
+                    const nearestIndex = state.storedData[currentTable.numerator]?.dates?.reduce((a, b) => {return Math.abs(b - dataParams.nIndex) < Math.abs(a - dataParams.nIndex) ? b : a})
+                    if (Math.abs(dataParams.nIndex-nearestIndex) < 14){
+                        dataParams.nIndex = nearestIndex
+                    } else {
+                        dataParams.nIndex = state.storedData[currentTable.numerator]?.dates.slice(-1,)[0]
+                    }
                 }
 
                 if (dataParams.dType === 'time-series') {

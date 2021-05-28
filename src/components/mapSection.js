@@ -399,9 +399,19 @@ export default function MapSection(){
                     return layer;
                 }
             });
+        } else if (['native_american_reservations','segregated_cities','uscongress-districts'].includes(mapParams.overlay)){
+            tempLayers = defaultLayers.map(layer => {
+                if (mapParams.resource.includes(layer.get('id').split('-')[0]) || mapParams.overlay.includes(layer.get('id').split('-')[0])) {
+                    return layer.setIn(['layout', 'visibility'], 'visible');
+                } else if (layer.get('id').includes('label')){
+                    return layer.setIn(['layout', 'visibility'], 'none');
+                } else {
+                    return layer;
+                }
+            });
         } else {
             tempLayers = defaultLayers.map(layer => {
-                if (mapParams.resource.includes(layer.get('id')) || mapParams.overlay.includes(layer.get('id'))) {
+                if (mapParams.resource.includes(layer.get('id').split('-')[0]) || mapParams.overlay.includes(layer.get('id').split('-')[0])) {
                     return layer.setIn(['layout', 'visibility'], 'visible');
                 } else {
                     return layer;
