@@ -282,12 +282,12 @@ const generateReport = (geoids, state, dataPresetsRedux, defaultTables) => {
     }
 
     if (state.storedData.hasOwnProperty(currentTables.testing?.file)){
-        report.wk_pos = aggregateTimeseries(state.storedData[currentTables.testing_wk_pos.file].data, properties, geoids, state.dataParams.nIndex, 'weighted_average')
+        report.wk_pos = Math.round(aggregateTimeseries(state.storedData[currentTables.testing_wk_pos.file].data, properties, geoids, state.dataParams.nIndex, 'weighted_average')*10000)/10000
         report.wk_pos14 = aggregate2WeekTimeSeries(state.storedData[currentTables.testing_wk_pos.file].data, geoids, state.dataParams.nIndex)
         report.tcap = aggregateTimeseries(state.storedData[currentTables.testing_tcap.file].data, properties, geoids, state.dataParams.nIndex, 'weighted_average')
         report.tcap14 = aggregate2WeekTimeSeries(state.storedData[currentTables.testing_tcap.file].data, geoids, state.dataParams.nIndex)
         report.testing = aggregateTimeseries(state.storedData[currentTables.testing.file].data, properties, geoids, state.dataParams.nIndex, 'sum')
-        report.ccpt = aggregateTimeseries(state.storedData[currentTables.testing_ccpt.file].data, properties, geoids, state.dataParams.nIndex, 'weighted_average')
+        report.ccpt = Math.round(aggregateTimeseries(state.storedData[currentTables.testing_ccpt.file].data, properties, geoids, state.dataParams.nIndex, 'weighted_average')*10000)/10000
     }    
     
     if (state.storedData.hasOwnProperty(currentTables.chr_health_factors?.file)){

@@ -31,13 +31,13 @@
         },
         "mapbox:uiParadigm": "layers"
     },
-    "center": [-92.45299671003528, 39.43850956840032],
-    "zoom": 4.314568951397824,
+    "center": [-90.24791041669256, 33.22752144142228],
+    "zoom": 5.691721245819905,
     "bearing": 0,
     "pitch": 0,
     "sources": {
         "composite": {
-            "url": "mapbox://lixun910.5k6jyt33,lixun910.7s0ljdc6,mapbox.mapbox-streets-v8,lixun910.5bmq1hai,lixun910.3iql0bc1,lixun910.c1k7tmzy,lixun910.62ab73ca,lixun910.1wvopcgr,mapbox.mapbox-terrain-v2",
+            "url": "mapbox://lixun910.5k6jyt33,lixun910.7s0ljdc6,mapbox.mapbox-streets-v8,lixun910.405bjdze,lixun910.5bmq1hai,lixun910.3iql0bc1,lixun910.c1k7tmzy,lixun910.62ab73ca,mapbox.mapbox-terrain-v2",
             "type": "vector"
         }
     },
@@ -1276,10 +1276,11 @@
             "id": "segregated_cities-label",
             "type": "symbol",
             "source": "composite",
-            "source-layer": "segregated_cities_names-6124se",
+            "source-layer": "segregated_cities_names-1zlyqc",
             "layout": {
                 "text-field": ["to-string", ["get", "NAMELSAD"]],
                 "text-font": ["Lato Bold", "Arial Unicode MS Regular"],
+                "text-size": ["interpolate", ["linear"], ["zoom"], 4, 8, 9, 24],
                 "visibility": "none"
             },
             "paint": {
@@ -1296,15 +1297,8 @@
             "layout": {
                 "text-field": ["to-string", ["get", "IND_NAME"]],
                 "text-font": ["Lato Bold", "Arial Unicode MS Regular"],
-                "text-size": [
-                    "interpolate",
-                    ["linear"],
-                    ["zoom"],
-                    4,
-                    10,
-                    9,
-                    24
-                ],
+                "text-size": ["interpolate", ["linear"], ["zoom"], 4, 8, 9, 24],
+                "symbol-sort-key": ["*", ["get", "AREA"], ["-", 1]],
                 "visibility": "none"
             },
             "paint": {
@@ -1315,7 +1309,7 @@
         }
     ],
     "created": "2020-11-25T16:18:56.139Z",
-    "modified": "2021-05-28T15:00:46.665Z",
+    "modified": "2021-05-28T19:14:15.241Z",
     "id": "ckhxm4ot50yk919pj8witkk2d",
     "owner": "lixun910",
     "visibility": "private",

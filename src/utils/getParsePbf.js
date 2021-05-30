@@ -14,6 +14,9 @@ export default async function getParsePbf(fileInfo, dateList){
     let dateIndices = [];
     let constructorIndices = [];
     let columnNames = ['geoid', ...pbfData.dates]
+    
+    // embedded scientific scale exponent in file name
+    const scale = (/.e-[0-9]/g).exec(fileInfo.file) ? 10 ** -+(/.e-[0-9]/g).exec(fileInfo.file)[0]?.split('-')[1] : 1
 
     for (let i=0; i<dateList.length; i++) {
         if (pbfData.dates.indexOf(dateList[i]) !== -1){
@@ -29,10 +32,10 @@ export default async function getParsePbf(fileInfo, dateList){
             returnData[pbfData.row[i].geoid] = []
             for (let n=0, j=0; n<constructorIndices.length; n++) {
                 if (constructorIndices[n]) {
-                    returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j] === -2147483648 ? null : ((pbfData.row[i].vals[j]||0)+(returnData[pbfData.row[i].geoid][n-1]||0))||null)
+                    returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j] === -999 ? null : ((pbfData.row[i].vals[j]*scale||0)+(returnData[pbfData.row[i].geoid][n-1]||0))||null)
                     j++;
                 } else {
-                    returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j] === -2147483648 ? null : pbfData.row[i].vals[j-1]||null)
+                    returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j] === -999 ? null : pbfData.row[i].vals[j-1]*scale||null)
                 }
             }
         }
@@ -41,10 +44,10 @@ export default async function getParsePbf(fileInfo, dateList){
             returnData[pbfData.row[i].geoid] = []
             for (let n=0, j=0; n<constructorIndices.length; n++) {
                 if (constructorIndices[n]) {
-                    returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j] === -2147483648 ? null : pbfData.row[i].vals[j])
+                    returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j] === -999 ? null : pbfData.row[i].vals[j]*scale)
                     j++;
                 } else {
-                    returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j-1]||null)
+                    returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j-1]*scale||null)
                 }
             }
         }

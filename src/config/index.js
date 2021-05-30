@@ -285,13 +285,13 @@ export const defaultTables = {
             'join':'fips'
         },
         'cases': {
-            'file':'covid_confirmed_cdc.pbf',
+            'file':'covid_confirmed_cdc.e-2.pbf',
             'dates':'isoDateList',
             'type':'time-series-cumulative',
             'accumulate':true
         },
         'deaths': {
-            'file':'covid_deaths_cdc.pbf',
+            'file':'covid_deaths_cdc.e-2.pbf',
             'dates':'isoDateList',
             'type':'time-series-cumulative',
             'accumulate':true
@@ -341,25 +341,25 @@ export const defaultTables = {
             'join':'fips'
         },
         'testing':{
-            'file':'covid_testing_cdc.pbf',
+            'file':'covid_testing_cdc.e-2.pbf',
             'dates':'isoDateList',
             'type':'time-series',
             'join':'county'
         },
         'testing_wk_pos':{
-            'file':'covid_wk_pos_cdc.pbf',
+            'file':'covid_wk_pos_cdc.e-4.pbf',
             'dates':'isoDateList',
             'type':'time-series',
             'join':'county'
         },
         'testing_tcap':{
-            'file':'covid_tcap_cdc.pbf',
+            'file':'covid_tcap_cdc.e-2.pbf',
             'dates':'isoDateList',
             'type':'time-series',
             'join':'county'
         },
         'testing_ccpt':{
-            'file':'covid_ccpt_cdc.pbf',
+            'file':'covid_ccpt_cdc.e-4.pbf',
             'dates':'isoDateList',
             'type':'time-series',
             'join':'county'
@@ -503,13 +503,13 @@ export const dataPresetsRedux = {
         geography: 'County',
         tables: {
             'cases': {
-                'file':'covid_confirmed_cdc.pbf',
+                'file':'covid_confirmed_cdc.e-2.pbf',
                 'dates':'isoDateList',
                 'type':'time-series',
                 'accumulate':true
             },
             'deaths': {
-                'file':'covid_deaths_cdc.pbf',
+                'file':'covid_deaths_cdc.e-2.pbf',
                 'dates':'isoDateList',
                 'type':'time-series',
                 'accumulate':true
@@ -815,7 +815,7 @@ export const variablePresets = {
       dProperty: null,
       dRange:null,
       dIndex:null,
-      scale:1,
+      scale:100,
       fixedScale: 'testing',
       colorScale: 'testing',
       scale3D: 100000,
@@ -900,7 +900,7 @@ export const variablePresets = {
       dProperty: null,
       dRange:null,
       dIndex:null,
-      scale:1,
+      scale:100,
       fixedScale: 'testing',
       colorScale: 'testing',
       scale3D: 10000000,
