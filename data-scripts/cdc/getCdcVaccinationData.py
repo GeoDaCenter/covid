@@ -120,24 +120,24 @@ def parseCountyVaccinationData(vaccinationDataList):
             if (type(data)==dict):
                 data = data['vaccination_county_condensed_data']
 
-        # Pull report date from first row of data
-        currDate = data[0]['Date']
         # Try to load in JSON to dataframe, pass iteration if fail
 
         # on first iteration, define new data frames
         # After that, define temporary dataframe sna dmerge below
         if idx == 0:
-            vaccineAdministered2 = pd.DataFrame(data)[['FIPS','Series_Complete_Yes']]
-            vaccineAdministered2.columns = ['fips',currDate]
-
+            vaccineAdministered2 = pd.DataFrame(data)[['Date','FIPS','Series_Complete_Yes']]
         else:
-            dailyVaccineAdministered2 = pd.DataFrame(data)[['FIPS','Series_Complete_Yes']]
-            dailyVaccineAdministered2.columns = ['fips',currDate]
-
+            dailyVaccineAdministered2 = pd.DataFrame(data)[['Date','FIPS','Series_Complete_Yes']]
             # Merge
-            vaccineAdministered2 = vaccineAdministered2.merge(dailyVaccineAdministered2, on=["fips"])
+            vaccineAdministered2 = pd.concat([vaccineAdministered2,dailyVaccineAdministered2])
+    
+    vaccineAdministered2 = vaccineAdministered2.pivot_table(index='FIPS', columns='Date').swaplevel(0, 1, 1).sort_index(1).reset_index()
+    vaccineAdministered2.columns = ['fips'] + [column[0] for column in list(vaccineAdministered2.columns)[1:]]
+    vaccineAdministered2 = vaccineAdministered2[vaccineAdministered2['fips'].str.isnumeric()]
+    vaccineAdministered2['fips'] = vaccineAdministered2['fips'].astype(int)
 
     return vaccineAdministered2
+
 
 def getCdcData():
     raw = pd.read_csv('https://healthdata.gov/api/views/j8mb-icvb/rows.csv?accessType=DOWNLOAD')[['state_fips','overall_outcome','date','new_results_reported','total_results_reported']]

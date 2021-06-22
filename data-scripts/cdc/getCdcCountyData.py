@@ -2,7 +2,7 @@ import warnings
 warnings.simplefilter(action='ignore')
 
 import os
-import grequests
+import requests
 from datetime import datetime
 import pandas as pd
 import numpy as np
@@ -11,42 +11,23 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 repo_root = os.path.abspath(os.path.join(dir_path, '..', '..'))
 
 # fetches current CDC county level data
-def getCdcCountyData():
+def getCdcCountyData(columns):
     # state 2-digit codes
     state2Digit = ['AK', 'AL', 'AR', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL', 'GA', 'HI', 'IA', 'ID', 'IL', 'IN', 'KS', 'KY', 'LA', 'MA', 'MD', 'ME', 'MI', 'MN', 'MO', 'MS', 'MT', 'NC', 'ND', 'NE', 'NH', 'NJ', 'NM', 'NV', 'NY', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VA', 'VT', 'WA', 'WI', 'WV', 'WY']
-
+    columnsNeeded = ['fips_code','date'] + columns
     # get list of URL endpoints
     urls = [f"https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=integrated_county_timeseries_state_{stateCode}_external" for stateCode in state2Digit]
 
-    # fetch data in groups of 12
-    # fetching more than 12 causes issues
-    breakpoint = 12
-    urlDict = []
-    for i in range(0,5):
-        urlDict.append(urls[breakpoint*i:breakpoint*(i+1)])
-
-    # accumulate API responses in list
-    responses = []
-    for urlList in urlDict:
-        rs = (grequests.get(u,  timeout=120) for u in urlList)
-        response = grequests.map(rs)
-        responses.append(response)
-
-    # parse responses and concat in single DF
-    parsed = ''
-
-    for responseSet in responses:
-        for response in responseSet:
-            if response is None:
-                continue
-            if len(parsed)==0:
-                parsed = pd.DataFrame(response.json()['integrated_county_timeseries_external_data'])
-            else:
-                parsed = pd.concat([parsed, pd.DataFrame(response.json()['integrated_county_timeseries_external_data'])])
+    for idx, url in enumerate(urls):
+        response = requests.get(url)
+        if idx==0:
+            parsed = pd.DataFrame(response.json()['integrated_county_timeseries_external_data'])[columnsNeeded]
+        else:
+            parsed = pd.concat([parsed, pd.DataFrame(response.json()['integrated_county_timeseries_external_data'])[columnsNeeded]])
 
     # sort by and clean date
     parsed = parsed.sort_values('date')
-
+    
     # return sorted DF
     return parsed
 
@@ -117,9 +98,18 @@ def parsePopulationNormalized(df, colName):
     
 #     return weighted_results
 
+def unique(list):
+ 
+    uniqueList = []
+     
+    for el in list:
+        if el not in uniqueList:
+            uniqueList.append(el)
+    return uniqueList
+    
+     
+
 if __name__ == "__main__":
-    # fetch data
-    raw = getCdcCountyData()
 
     # columns and csv output names to loop through
     colsToParse = [
@@ -172,6 +162,12 @@ if __name__ == "__main__":
 
     ]
 
+    allNeededColumns = [entry['column'] for entry in colsToParse] + [entry['numerator'] for entry in colsToCalculate] + [entry['denominator'] for entry in colsToCalculate] + [entry['column'] for entry in colsToNormalize]
+    allNeededColumns = unique(allNeededColumns)
+    
+    # fetch data
+    raw = getCdcCountyData(allNeededColumns)
+
     # loop through list of column parsing entries
     # output CSV to this folder and docs
     for entry in colsToParse:
@@ -181,7 +177,6 @@ if __name__ == "__main__":
     for entry in colsToCalculate:
         tempDf = parseNewMeasure(raw, entry['numerator'], entry['denominator'], 1).replace([np.inf, -np.inf], np.nan).round(entry['roundTo'])
         tempDf.to_csv(os.path.join(repo_root, f'public/csv/{entry["csv"]}.csv'), index=False)
-
 
     for entry in colsToNormalize:
         tempDf = parsePopulationNormalized(raw, entry['column']).replace([np.inf, -np.inf], np.nan).round(entry['roundTo'])
