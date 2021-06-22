@@ -109,5 +109,7 @@ export const INITIAL_STATE = {
     x:0,
     y:0,
     data: null
-  }
+  },
+  shouldUpdate:true,
+  isLoading: true
 };

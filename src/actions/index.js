@@ -514,3 +514,18 @@ export const addTableAndChart = ( data ) => {
         }
     }
 }
+export const addTablesAndUpdate = ( data ) => {
+    return {
+        type: 'ADD_TABLES_AND_UPDATE',
+        payload: {
+            data
+        }
+    }
+}
+
+export const setIsLoading = () => {
+    return {
+        type: 'SET_IS_LOADING'
+    }
+}
+

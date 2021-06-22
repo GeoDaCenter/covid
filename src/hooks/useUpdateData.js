@@ -1,11 +1,14 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect} from 'react';
-import { getDataForBins } from '../utils';
+import { getDataForBins, findTableDetails, getParseCSV, getParsePbf, getDateLists } from '../utils';
 
 import { 
-  storeLisaValues, storeCartogramData, setMapParams, updateMap } from '../actions';
+  storeLisaValues, storeCartogramData, setMapParams, updateMap, addTablesAndUpdate, setIsLoading } from '../actions';
 
-import { colorScales, fixedScales } from '../config';
+import { colorScales, fixedScales, dataPresetsRedux, defaultTables } from '../config';
+
+const dateLists = getDateLists();
+const handleLoadData = (fileInfo) => fileInfo.file.slice(-4,) === '.pbf' ? getParsePbf(fileInfo, dateLists[fileInfo.dates]) : getParseCSV(fileInfo, dateLists[fileInfo.dates])
 
 export default function useUpdateData(gdaProxy){
 
@@ -17,48 +20,49 @@ export default function useUpdateData(gdaProxy){
     const storedData = useSelector(state => state.storedData);
     const storedGeojson = useSelector(state => state.storedGeojson);
     const storedLisaData = useSelector(state => state.storedLisaData);
+    const shouldUpdate = useSelector(state => state.shouldUpdate);
     const [isCalculating, setIsCalculating] = useState(false);
     const [stingerTimeout, setStingerTimeout] = useState();
     const [stinger, setStinger] = useState(false);
 
-    const updateBins =  async () => { 
-      setIsCalculating(true)
-      if (gdaProxy.ready && (storedData[currentTable.numerator]||dataParams.numerator==='properties') && mapParams.mapType !== "lisa"){
-        if (dataParams.fixedScale && mapParams.mapType === "natural_breaks") {
-          dispatch(
-            setMapParams({
-              bins: fixedScales[dataParams.fixedScale],
-              colorScale: colorScales[dataParams.fixedScale]
-            })
-          )
-        } else {
-          let tempDataParams = {...dataParams}
+  const updateBins =  async () => { 
+    setIsCalculating(true)
+    if (gdaProxy.ready && (storedData[currentTable.numerator]||dataParams.numerator==='properties') && mapParams.mapType !== "lisa"){
+      if (dataParams.fixedScale && mapParams.mapType === "natural_breaks") {
+        dispatch(
+          setMapParams({
+            bins: fixedScales[dataParams.fixedScale],
+            colorScale: colorScales[dataParams.fixedScale]
+          })
+        )
+      } else {
+        let tempDataParams = {...dataParams}
 
-          if (mapParams.binMode !== 'dynamic' && dataParams.nType === 'time-series') tempDataParams.nIndex = storedData[currentTable.numerator]?.dates.slice(-1,)[0]
-          if (mapParams.binMode !== 'dynamic' && dataParams.dType === 'time-series') tempDataParams.dIndex = tempDataParams.nIndex
+        if (mapParams.binMode !== 'dynamic' && dataParams.nType === 'time-series') tempDataParams.nIndex = storedData[currentTable.numerator]?.dates.slice(-1,)[0]
+        if (mapParams.binMode !== 'dynamic' && dataParams.dType === 'time-series') tempDataParams.dIndex = tempDataParams.nIndex
 
-          let binData = getDataForBins(
-            dataParams.numerator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.numerator].data, 
-            dataParams.denominator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.denominator].data, 
-            tempDataParams
-          );
+        let binData = getDataForBins(
+          dataParams.numerator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.numerator].data, 
+          dataParams.denominator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.denominator].data, 
+          tempDataParams
+        );
 
-          let nb = mapParams.mapType === "natural_breaks" ? 
-            await gdaProxy.Bins.NaturalBreaks(mapParams.nBins, binData) :
-            await gdaProxy.Bins.Hinge15(mapParams.nBins, binData)
-          dispatch(
-            setMapParams({
-              bins: {
-                bins: mapParams.mapType === 'natural_breaks' ? nb.bins : ['Lower Outlier','< 25%','25-50%','50-75%','>75%','Upper Outlier'],
-                breaks: [-Math.pow(10, 12), ...nb.breaks.slice(1,-1), Math.pow(10, 12)]
-              },
-              colorScale: mapParams.mapType === 'natural_breaks' ? colorScales[dataParams.colorScale || mapParams.mapType] : colorScales[mapParams.mapType || dataParams.colorScale]
-            })
-          ) 
-        }
+        let nb = mapParams.mapType === "natural_breaks" ? 
+          await gdaProxy.Bins.NaturalBreaks(mapParams.nBins, binData) :
+          await gdaProxy.Bins.Hinge15(mapParams.nBins, binData)
+        dispatch(
+          setMapParams({
+            bins: {
+              bins: mapParams.mapType === 'natural_breaks' ? nb.bins : ['Lower Outlier','< 25%','25-50%','50-75%','>75%','Upper Outlier'],
+              breaks: [-Math.pow(10, 12), ...nb.breaks.slice(1,-1), Math.pow(10, 12)]
+            },
+            colorScale: mapParams.mapType === 'natural_breaks' ? colorScales[dataParams.colorScale || mapParams.mapType] : colorScales[mapParams.mapType || dataParams.colorScale]
+          })
+        ) 
       }
-      setIsCalculating(false)
     }
+    setIsCalculating(false)
+  }
 
   const updateLisa = async () => {
     setIsCalculating(true)
@@ -92,6 +96,52 @@ export default function useUpdateData(gdaProxy){
     setIsCalculating(false)
   }
 
+  const fetchMissingTables = async (
+    currentTable, 
+    defaultTables, 
+    dataPresetsRedux, 
+    storedData
+  ) => {
+    let inProcessLoadPromises = []
+    let filesFetched = []
+    if (currentTable.numerator && !storedData.hasOwnProperty(currentTable.numerator) && currentTable.numerator !== 'properties') {
+      console.log(`fetching ${currentTable.numerator}`)
+      filesFetched.push(currentTable.numerator)
+      inProcessLoadPromises.push(
+        handleLoadData(
+          findTableDetails(
+            currentTable.numerator, 
+            defaultTables, 
+            dataPresetsRedux
+          )
+        )
+      )
+      
+    }
+
+    if (currentTable.numerator && !storedData.hasOwnProperty(currentTable.denominator) && currentTable.denominator !== 'properties') {
+      console.log(`fetching ${currentTable.denominator}`)
+      filesFetched.push(currentTable.denominator)
+      inProcessLoadPromises.push(
+        handleLoadData(
+          findTableDetails(
+            currentTable.denominator, 
+            defaultTables, 
+            dataPresetsRedux
+          )
+        )
+      )
+    }
+    if (inProcessLoadPromises.length) dispatch(setIsLoading())
+
+    const fetchedData = await Promise.all(inProcessLoadPromises);
+    let dataObj = {}
+    for (let i=0; i<fetchedData.length; i++){
+        dataObj[filesFetched[i]] = fetchedData[i]
+    }
+    dispatch(addTablesAndUpdate(dataObj))
+  }
+
   // This listens for gdaProxy events for LISA and Cartogram calculations
   // Both of these are computationally heavy.
   useEffect(() => {
@@ -117,6 +167,15 @@ export default function useUpdateData(gdaProxy){
     }
   },[stinger])
 
+  useEffect(() => {
+    fetchMissingTables(
+      currentTable, 
+      defaultTables, 
+      dataPresetsRedux,
+      storedData
+    )
+  },[currentTable.numerator, currentTable.denominator, dataPresetsRedux, defaultTables])
+
   const binReady = () => (storedGeojson[currentData] && storedData[currentTable.numerator] && gdaProxy.ready && mapParams.mapType !== 'lisa')
   // Trigger on index change while dynamic bin mode
   useEffect(() => { 
@@ -129,6 +188,13 @@ export default function useUpdateData(gdaProxy){
     if (binReady() && !isCalculating) updateBins()
   }, [dataParams.numerator, dataParams.nProperty, dataParams.nRange, dataParams.denominator, dataParams.dProperty, dataParams.dRange, mapParams.mapType, currentData] );
   
+  useEffect(() => {
+    if (binReady() && !isCalculating && shouldUpdate) {
+      console.log('Updating bins')
+      updateBins()
+    }
+  }, [shouldUpdate])
+
   useEffect(() => {
     if (storedGeojson[currentData] && mapParams.mapType !== 'lisa' ) dispatch(updateMap());
   }, [mapParams.bins.breaks])

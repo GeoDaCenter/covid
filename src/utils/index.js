@@ -5,6 +5,7 @@ import colLookup from './colLookup.js';
 import dataFn from './dataFunction.js';
 import findDates from './findDates';
 import { findDateIndices, getDateIndices } from './findDateIndices';
+import findTableDetails from './findTableDetails';
 import geojsonArrayBuffer from './geojsonArrayBuffer';
 import getArrayCSV from './getArrayCSV';
 import getCartogramValues from './getCartogramValues';
@@ -40,6 +41,7 @@ export {
     dataFn,
     findDates,
     findDateIndices,
+    findTableDetails,
     getDateIndices,
     geojsonArrayBuffer,
     getArrayCSV,

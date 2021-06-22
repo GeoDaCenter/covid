@@ -71,6 +71,7 @@ export default function Map() {
   const variableName = useSelector(state => state.dataParams.variableName);
   const panelState = useSelector(state => state.panelState);
   const mapLoaded = useSelector(state => state.mapLoaded);
+  const isLoading = useSelector(state => state.isLoading);
   // const fullState = useSelector(state => state);
 
   const dispatch = useDispatch(); 
@@ -79,7 +80,7 @@ export default function Map() {
   // data in the state is poor for performance, but the App component state only
   // contains gdaProxy.
   const [defaultDimensions, setDefaultDimensions] = useState({...getDefaultDimensions()})
-  const [firstLoad, secondLoad, lazyFetchData, isLoading] = useLoadData(gdaProxy)
+  const [firstLoad, secondLoad, lazyFetchData] = useLoadData(gdaProxy)
   const [] = useUpdateData(gdaProxy)
 
   // // Dispatch helper functions for side effects and data handling

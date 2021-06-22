@@ -11,7 +11,7 @@ import {
 
 import { 
   initialDataLoad, addTables, addGeojson, dataLoad, dataLoadExisting, storeLisaValues, storeCartogramData, setDates, setNotification,
-  setMapParams, setUrlParams, setPanelState, updateMap, updateChart, addTableAndChart } from '../actions';
+  setMapParams, setUrlParams, setPanelState, updateMap, updateChart, addTableAndChart, setIsLoading } from '../actions';
 
 import { colorScales, fixedScales, dataPresets, defaultTables, dataPresetsRedux, variablePresets, colors } from '../config';
 
@@ -26,10 +26,10 @@ export default function useLoadData(gdaProxy){
   const storedData = useSelector(state => state.storedData);
   const storedGeojson = useSelector(state => state.storedGeojson);
   const chartParams = useSelector(state => state.chartParams);
+  const isLoading = useSelector(state => state.isLoading);
 
   const dispatch = useDispatch();
 
-  const [isLoading, setIsLoading] = useState(false);
   const [isInProcess, setIsInProcess] = useState(false);
   const [lazyFetched, setLazyFetched] = useState(false);
 
@@ -213,11 +213,10 @@ export default function useLoadData(gdaProxy){
   // Each conditions checks to make sure gdaProxy is working.
   useEffect(() => {
     if (!storedGeojson[currentData]) {
-      setIsLoading(true)
+      dispatch(setIsLoading())
       firstLoad(dataPresetsRedux[currentData], defaultTables[dataPresetsRedux[currentData]['geography']])
         .then(primaryTables => {
           dispatch(updateMap());
-          setIsLoading(false);
           return primaryTables
         }).then(primaryTables => {
           return secondLoad(dataPresetsRedux[currentData], defaultTables[dataPresetsRedux[currentData]['geography']], [...Object.keys(storedData), ...primaryTables])
@@ -233,7 +232,6 @@ export default function useLoadData(gdaProxy){
   return [
     firstLoad,
     secondLoad,
-    lazyFetchData,
-    isLoading
+    lazyFetchData
   ]
 }

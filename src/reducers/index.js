@@ -388,6 +388,18 @@ var reducer = (state = INITIAL_STATE, action) => {
                 storedData
             }
         }
+        case 'ADD_TABLES_AND_UPDATE': {
+            const storedData = {
+                ...state.storedData,
+                ...action.payload.data
+            }
+
+            return {
+                ...state,
+                storedData,
+                shouldUpdate: true
+            }
+        }
         case 'ADD_GEOJSON':{
             const storedGeojson = {
                 ...state.storedGeojson,
@@ -402,7 +414,9 @@ var reducer = (state = INITIAL_STATE, action) => {
         case 'UPDATE_MAP': {
             return {
                 ...state,
-                mapData: generateMapData(state)
+                mapData: generateMapData(state),
+                shouldUpdate: false,
+                isLoading:false
             }
         }
         case 'DATA_LOAD':{
@@ -1005,6 +1019,12 @@ var reducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 mapLoaded: action.payload.loaded
             }
+        case 'SET_IS_LOADING':{
+            return {
+                ...state,
+                isLoading: true
+            }
+        }
         case 'SET_NOTIFICATION':{
             return {
                 ...state,
