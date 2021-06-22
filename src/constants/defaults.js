@@ -1,30 +1,28 @@
 export const INITIAL_STATE = {
-  storedGeojson: {},
+  geodaProxy: null,
   storedData: {},
+  storedGeojson: {},
   storedLisaData: {},
   storedCartogramData: {},
+  storedCSV: {},
   storedMobilityData: {},
-  lazyFetched:false,
+  cols: {},
+  dateIndices: {},
   currentData: 'cdc_h.geojson',
-  currentTable: {
-    numerator: '',
-    denominator: ''
-  },
   dotDensityData: [],
   chartData: [{}],
   selectionKeys: [],
-  selectionNames: [],
+  selectionIndex: [],
   centroids: {},
   dates: {},
   isPlaying:false,
+  currDate: '',
+  currDateIndex: '',
+  startDateIndex: '',
   currentZVariable: null,
   currentMethod: 'natural_breaks',
   currentOverlay: '',
   currentResource: '',
-  mapData : {
-    data: [],
-    params: []
-  },
   dataParams: {
     variableName:"Percent Fully Vaccinated",
     numerator: 'vaccines_fully_vaccinated',
@@ -37,13 +35,13 @@ export const INITIAL_STATE = {
     dRange:null,
     dIndex:null,
     scale:100,
-    scale3D: 500_000,
+    scale3D: 1000,
     colorScale: 'YlGn8',
     fixedScale: null,
-    dataNote: 'Texas reports only state-level vaccination rates to the CDC.',
+    binIndex: '',
     zAxisParams: null,
-    fixedScale: null,
-    storedRange: null
+    storedRange: null,
+    dataNote: 'Texas reports only state-level vaccination rates to the CDC.'
   },
   mapParams: {
     mapType: 'natural_breaks',
@@ -60,14 +58,14 @@ export const INITIAL_STATE = {
     resource: '',
     colorScale: [
       [240,240,240],
-      [255,255,229],
-      [247,252,185],
-      [217,240,163],
-      [173,221,142],
-      [120,198,121],
-      [65,171,93],
-      [35,132,67],
-      [0,90,50],
+      [255,255,204],
+      [255,237,160],
+      [254,217,118],
+      [254,178,76],
+      [253,141,60],
+      [252,78,42],
+      [227,26,28],
+      [177,0,38],
     ],
     dotDensityParams: {
       raceCodes: {
@@ -84,19 +82,16 @@ export const INITIAL_STATE = {
       backgroundTransparency: 0.01      
     }
   },
-  chartParams: {
-    table: 'cases',
-    populationNormalized: false
-  },
   panelState: {
     variables:true,
-    info:true,
+    info:false,
     tutorial:false,
     lineChart:true,
     context: false,
     contextPos: {x:null,y:null}
   },
   storedRange: null,
+  currentGeoid: '',
   sidebarData: {},
   anchorEl: null,
   mapLoaded: false,
@@ -109,7 +104,5 @@ export const INITIAL_STATE = {
     x:0,
     y:0,
     data: null
-  },
-  shouldUpdate:true,
-  isLoading: true
+  }
 };

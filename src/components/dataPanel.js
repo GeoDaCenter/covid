@@ -22,6 +22,7 @@ import { report } from '../config/svg';
 //// Styled components CSS
 // Main container for entire panel
 const DataPanelContainer = styled.div`
+  display: ${props => props.dataLength === 0 ? 'none' : 'initial'};
   position:fixed;
   min-width:250px;
   right:0;
@@ -157,7 +158,7 @@ const DataPanelContainer = styled.div`
     padding-bottom:20vh;
   }
   p {
-    padding-right: ${props => props.expanded ? '10px' : '0px'};
+    padding-right:10px;
   }
 `
 // Scrollable Wrapper for main report information
@@ -241,26 +242,190 @@ const ExpandSelect = styled(FormControl)`
 `
 
 // DataPanel Function Component
-export default function DataPanel(){
+const DataPanel = () => {
 
   const dispatch = useDispatch();
+
+  const storedData = useSelector(state => state.storedData);
+  // name of current data set
+  const currentData = useSelector(state => state.currentData);
+  // current date and index
+  const currDateIndex = useSelector(state => state.dataParams.nIndex);
+  const dates = useSelector(state => state.dates);
   const selectionKeys = useSelector(state => state.selectionKeys);
+  const selectionIndex = useSelector(state => state.selectionIndex);
+  // panels open/close state
   const panelState = useSelector(state => state.panelState);
-  const sidebarData = useSelector(state => state.sidebarData);
+  //column names
+  const cols = useSelector(state => state.cols);
   const [expanded, setExpanded] = useState(true)
-  if (!selectionKeys.length) return null;
+
+  // De-structure sidebarData, which houses selected geography data
+  // Based on if certain data are present or absent, the sidebar data will
+  // conditionally render (short circuit) parts of the component
+
+  // List of all current datasets joined
+  const datasetList = ['properties', 'cases', 'deaths', 'predictions',
+    'chr_health_factors', 'chr_life', 'chr_health_context',
+    'testing', 'vaccines_one_dose', 'vaccines_fully_vaccinated', 'essential_workers', 'pct_home']
+
+  // Map datasetList to check if each key is present in the current data
+  // Output variables are checked below for conditional rendering
+  const [ properties, cases, deaths, predictions,
+    chr_health_factors, chr_life, chr_health_context,
+    testing, vaccines_one_dose, vaccines_fully_vaccinated,
+    essential_workers, pct_home
+  ] = datasetList.map(dataset => {
+    if (storedData[currentData] === undefined) {
+      return false 
+    } else {
+      return storedData[currentData][0].hasOwnProperty(dataset)
+    }
+  });
+
   
+  // helper for predictions data
+  const parsePredictedDate = (list) => `${list.slice(-2,)[0]}/${list.slice(-1,)[0]}`
+
   // handles panel open/close
-  const handleOpenClose = () => dispatch(setPanelState({info: !panelState.info}))
+  const handleOpenClose = () => dispatch(setPanelState({info:panelState.info ? false : true}))
+
+  //// TODO DRY issue -- refactor these functions
+  
+  // Replace Null/NaN with 0 
+  const cleanData = (inputData) => inputData.map(d => d >=0 ? d : isNaN(d) || d===null ? 0 : d)
+  
+  // Performs different operations on the data array output
+  // Sum, Average, and weighted average
+  const performOperation = (dataArray, operation, totalPopulation) => {
+    // Sum up data
+    const reducer = (accumulator, currentValue) => accumulator + currentValue;
+    // Clean data
+    let clean = cleanData(dataArray);
+    
+    switch(operation) {
+      case 'sum':
+        return clean.reduce(reducer)
+      case 'average':
+        return clean.reduce(reducer)/clean.length
+      case 'weighted_average':
+        return Math.round(clean.reduce(reducer)/totalPopulation*100)/100
+      default:
+        return null
+    }
+  } 
+
+  // Prepares data for the previous operation
+  const aggregateProperty = (dataset, property, operation, specialCase=null) => {
+    let dataArray; 
+    let totalPopulation = 0;
+    // Loop through and collect data from selected geographies in SelectionIndex
+    try {
+      if (operation === 'weighted_average') {
+        dataArray = selectionIndex.map(selection => {
+          let selectionPop = storedData[currentData][selection]['properties']['population'];
+          totalPopulation+=selectionPop;
+          if (specialCase === 'pcp') try { return parseInt(storedData[currentData][selection][dataset][property].split(':')[0])*selectionPop } catch { return 0}
+          return storedData[currentData][selection][dataset][property]*selectionPop
+        })
+      } else {
+        dataArray = selectionIndex.map(selection => storedData[currentData][selection][dataset][property]);
+      }
+    } catch {
+      return 0
+    }
+
+    return performOperation(dataArray, operation, totalPopulation);
+  }
+
+  // Same as aggregteProperty(), but for time-series data
+  const aggregateTimeseries = (dataset, index, operation) => {
+    let dataArray; 
+    let totalPopulation = 0;
+    try {
+      if (operation === 'weighted_average') {
+        dataArray = selectionIndex.map(selection => {
+          let selectionPop = storedData[currentData][selection]['properties']['population'];
+          totalPopulation+=selectionPop;
+          return storedData[currentData][selection][dataset].slice(index,)[0]*selectionPop
+        })
+      } else {
+        dataArray = selectionIndex.map(selection => storedData[currentData][selection][dataset].slice(index,)[0]);
+      }
+    } catch {
+      return 0
+    }
+
+    return performOperation(dataArray, operation, totalPopulation);
+  }
+
+  // Generate data for 2-week line charts
+  const aggregate2WeekTimeSeries = (dataset, index, operation) => {
+    let lookbackPeriod = []
+    let rtn;
+
+    try {
+      for (let i=-13;i<1;i++) {
+        lookbackPeriod.push(index+i)
+      }
+      rtn = lookbackPeriod.map(day => aggregateTimeseries(dataset, day, operation))
+    } catch {
+      return 0
+    }
+    return rtn;
+  }
+  
+  // For more complete data functions (like population normalized)
+  const aggregateDataFunction = (numerator, denominator, params, operation) => {
+    
+    let dataArray; 
+    let totalPopulation = 0;
+    try {
+      if (operation === 'weighted_average') {
+        dataArray = selectionIndex.map(selection => {
+          let selectionPop = storedData[currentData][selection]['properties']['population'];
+          totalPopulation+=selectionPop;
+          return dataFn(storedData[currentData][selection][numerator], storedData[currentData][selection][denominator], params)*selectionPop
+        })
+      } else {
+        dataArray = selectionIndex.map(selection => dataFn(storedData[currentData][selection][numerator], storedData[currentData][selection][denominator], params));
+      }
+    } catch {
+      return 0
+    }
+
+    return performOperation(dataArray, operation, totalPopulation);
+  }
 
   // Set expanded or contracted view
   const handleExpandContract = (event) => setExpanded(event.target.value)
+
+  // // Not currently used, aggregate qualitative data (like testing criteria)
+  // const aggregateQualitative = (dataset, property) => {
+  //   let dataObj = {};
+  //   let returnStr = [];
+  //   try {
+  //     let dataArray = selectionIndex.map(selection => storedData[currentData][selection][dataset][property]);
+    
+  //     for (let i=0; i<dataArray.length; i++){
+  //       if (dataObj[dataArray[i]] === undefined) {
+  //         dataObj[dataArray[i]] = 1
+  //       } else {
+  //         dataObj[dataArray[i]] += 1
+  //       }
+  //     }  
+  //     for (let i=0; i<Object.keys(dataObj).length; i++){
+  //       returnStr.push(`${[Object.keys(dataObj)[i]]}: ${Math.round(dataObj[Object.keys(dataObj)[i]]/dataArray.length*10000)/100}%`)
+  //     }
+  //   } catch {
+  //     return 0
+  //   }
+  //   return returnStr;
+  // }
+
   return (
-    <DataPanelContainer 
-      className={panelState.info ? 'open' : ''} id="data-panel"  
-      expanded={expanded}
-      otherPanels={panelState.variables} 
-      dataLength={selectionKeys.length}>
+    <DataPanelContainer className={panelState.info ? 'open' : ''} id="data-panel"  otherPanels={panelState.variables} dataLength={selectionKeys.length}>
+      {properties &&  
       <ExpandSelect>
         <Select
           labelId="expand-view-label"
@@ -272,206 +437,274 @@ export default function DataPanel(){
           <MenuItem value={false}>Compact</MenuItem>
         </Select>
       </ExpandSelect>
+      }
       <ReportWrapper>
         <ReportContainer expanded={expanded}>
           <ReportSection>
-            {sidebarData.name && <h2>{sidebarData.name}</h2>}
+            {(properties && selectionIndex.length < 4) && <h2>{selectionKeys.map((key, index) => index === selectionKeys.length-1 ? selectionKeys.length === 1 ? key : `and ${key}` : `${key}, `)}</h2>}
+            {(properties && selectionIndex.length >= 4) && <h2>{(currentData.includes('county')||currentData.includes('cdc')) ? 'Selected Counties' : 'Selected States'}</h2>}
             <br/>
-            {sidebarData.date && 
-              <>
-                <h4>{sidebarData.date}</h4>
-                {sidebarData.population && <>Population <h3>{sidebarData.population?.toLocaleString('en')}</h3></>}
-              </>
+          {(properties && selectionIndex.length) && 
+              <span>
+                <h4>{dates[currDateIndex]}</h4>
+                <p>Population</p>
+                <h3>{aggregateProperty('properties', 'population', 'sum').toLocaleString('en')}</h3>
+              </span>
             }       
           </ReportSection>
-          {(sidebarData.hasOwnProperty('cases') && sidebarData.hasOwnProperty('deaths')) &&
-            <ReportSection>
-              Total Cases
-              <div className="numberChartContainer">
-                <h3>{sidebarData.cases?.toLocaleString('en')}</h3>
-                {expanded && <TwoWeekChart data={sidebarData.cases14} schema='cases/deaths'/>}
-              </div>
-              Total Deaths
-              <div className="numberChartContainer">
-                <h3>{sidebarData.deaths?.toLocaleString('en')}</h3>
-                {expanded && <TwoWeekChart data={sidebarData.deaths14} schema='cases/deaths'/>}
-              </div>
-              <p>Cases per 100k Population</p>
-              <h3>{sidebarData.cases100k?.toFixed(2).toLocaleString('en')}</h3>
-              <p>7-Day Average New Cases per 100k Population</p>
-              <h3>{sidebarData.cases7d?.toFixed(2).toLocaleString('en')}</h3>
-              <p>Deaths per 100k Population</p>
-              <h3>{sidebarData.deaths100k?.toFixed(2).toLocaleString('en')}</h3>
-              <p>7-Day Average New Deaths per 100k Population</p>
-              <h3>{sidebarData.deaths7d?.toFixed(2).toLocaleString('en')}</h3>
-              <p>Licensed Hospital Beds</p>
-              <h3>{sidebarData.beds.toLocaleString('en')}</h3>
-            </ReportSection>
-          }
-          {sidebarData.hasOwnProperty('fully_vaccinated') &&
-            <ReportSection>
-              <h2>COVID Vaccination</h2><br/>
-              <h6>Source: <a href="https://covid.cdc.gov/covid-data-tracker/#vaccinations" target="_blank" rel="noopener noreferrer">CDC COVID Data Tracker</a></h6>            
-              <p>% of Population<br className="bigOnly"/>  Fully Vaccinated</p>
-              <div className="numberChartContainer">
-                <h3>{Math.round(sidebarData.fully_vaccinatedPc*10000)/100}%</h3>
-                {expanded && <TwoWeekChart data={sidebarData.fully_vaccinated14} schema='vaccination'/>}
-              </div>
-              <p>Total Number<br className="bigOnly"/>  Fully Vaccinated</p>
-              <h3>{sidebarData.fully_vaccinated.toLocaleString('en')}</h3>
-            </ReportSection>
-          }
-          {sidebarData.hasOwnProperty('one_dose') &&
-            <ReportSection>
-              <p>% of Population<br className="bigOnly"/>  Received At Least One Dose</p>
-              <div className="numberChartContainer">
-                <h3>{(sidebarData.one_dosePc*100)?.toFixed(2)}%</h3>
-                {expanded && <TwoWeekChart data={sidebarData.one_dose14} schema='vaccination'/>}
-              </div>
-              <p>Total Number<br className="bigOnly"/>  Received At Least One Dose</p>
-              <h3>{sidebarData.one_dose?.toLocaleString('en')}</h3>
-              <p>Doses to be Administered<br className="bigOnly"/>  Per 100 People</p>
-              <h3>{sidebarData.doses_dist100?.toFixed(2).toLocaleString('en')}</h3>
-            </ReportSection>
-          }
-          {sidebarData.hasOwnProperty('testing') &&
-            <ReportSection>
-              <h2>Testing</h2><br/>
-              <h6>Source: <a href="https://healthdata.gov/dataset/covid-19-diagnostic-laboratory-testing-pcr-testing-time-series" target="_blank" rel="noopener noreferrer">HHS/CDC</a></h6>       
-              <p>7-Day Positivity Rate</p>
-              <div className="numberChartContainer">
-                <h3>{Math.round(sidebarData.wk_pos)}%</h3>
-                {expanded && <TwoWeekChart data={sidebarData.wk_pos14} schema='testingPos'/>}
-              </div>
-              <p>7-Day Tests Performed <br className="bigOnly"/> per 100k People</p>
-              <div className="numberChartContainer">
-                <h3>{Math.round(sidebarData.tcap)}</h3>
-                {expanded && <TwoWeekChart data={sidebarData.tcap14} schema='testingCap'/>}
-              </div>
-              <p>Total Testing</p>
-              <h3>{sidebarData.testing}</h3>
-              <p>7-Day Confirmed Cases<br className="bigOnly"/>  per Testing</p>
-              <h3>{sidebarData.ccpt.toLocaleString('en')}%</h3>
-            </ReportSection>
-          }
-          {sidebarData.hasOwnProperty('PovChldPrc') && 
+          {(cases && deaths && selectionIndex.length) && 
+              <ReportSection>
+                <p>Total Cases</p>
+                <div className="numberChartContainer">
+                  <h3>{aggregateTimeseries('cases', currDateIndex, 'sum')?.toLocaleString('en')}</h3>
+                  {expanded && <TwoWeekChart data={aggregate2WeekTimeSeries('cases', currDateIndex, 'sum')} schema='cases/deaths'/>}
+                </div>
+                <p>Total Deaths </p>
+                <div className="numberChartContainer">
+                  <h3>{aggregateTimeseries('deaths', -1, 'sum')?.toLocaleString('en')}</h3>
+                  {expanded && <TwoWeekChart data={aggregate2WeekTimeSeries('deaths', currDateIndex, 'sum')} schema='cases/deaths'/>}
+                </div>
+                <p>Cases per 100k Population</p>
+                <h3>{aggregateDataFunction('cases', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: 'population', dIndex: null, dRange: null, scale: 100000}, 'weighted_average')?.toFixed(2).toLocaleString('en')}</h3>
+                <p>Deaths per 100k Population</p>
+                <h3>{aggregateDataFunction('deaths', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: 'population', dIndex: null, dRange: null, scale: 100000}, 'weighted_average')?.toFixed(2).toLocaleString('en')}</h3>
+                <p>New Cases per 100k Population</p>
+                <h3>{aggregateDataFunction('cases', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: 1, dProperty: 'population', dIndex: null, dRange: null, scale: 100000}, 'weighted_average')?.toFixed(2).toLocaleString('en')}</h3>
+                <p>New Deaths per 100k Population</p>
+                <h3>{aggregateDataFunction('deaths', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: 1, dProperty: 'population', dIndex: null, dRange: null, scale: 100000}, 'weighted_average')?.toFixed(2).toLocaleString('en')}</h3>
+                <p>Licensed Hospital Beds</p>
+                <h3>{aggregateProperty('properties','beds','sum').toLocaleString('en')}</h3>
+                {/* <p>Cases per Bed: {dataFn(cases, null, cases.length-1, null, properties, 'beds', null, null, 1)?.toFixed(2)?.toLocaleString('en')}</p><br/> */}
+              </ReportSection>
+            }
+            {(vaccines_one_dose && selectionIndex.length) &&
+                <ReportSection>
+                  <h2>COVID Vaccination</h2><br/>
+                  <h6>Source: <a href="https://covid.cdc.gov/covid-data-tracker/#vaccinations" target="_blank" rel="noopener noreferrer">CDC COVID Data Tracker</a></h6>            
+                  {(storedData[currentData][selectionIndex[0]]?.properties?.link_name && selectionIndex.length === 1) 
+                    && 
+                    <><p>For more on the status of vaccinations in {selectionKeys[0]}, visit 
+                      the <a href={`${storedData[currentData][selectionIndex[0]].properties?.link_url}`} target="_blank" rel="noopener noreferrrer">
+                      {storedData[currentData][selectionIndex[0]].properties?.link_name}</a> website.</p><br/><br/></>
+                  }
+                  {(storedData[currentData][selectionIndex[0]]?.properties?.link_name && selectionIndex.length > 1) 
+                    && 
+                    <><p>For more on the status of vaccinations visit the links below:
+                      <ul>
+                        {selectionKeys.map((name, index) => <li><a href={storedData[currentData][selectionIndex[index]].properties?.link_url} target="_blank" rel="noopener noreferrer">{name}</a></li>)}
+                      </ul>
+                      </p>
+                      <br/><br/>
+                    </>
+                  }
+                  <p>% of Population<br className="bigOnly"/>  Received At Least One Dose</p>
+                  <div className="numberChartContainer">
+                    <h3>{aggregateDataFunction('vaccines_one_dose', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: 'population', dIndex: null, dRange: null, scale: 100}, 'weighted_average')?.toFixed(2).toLocaleString('en')}%</h3>
+                    {expanded && <TwoWeekChart data={aggregate2WeekTimeSeries('vaccines_one_dose', currDateIndex, 'sum')} schema='vaccination'/>}
+                  </div>
+                  
+                  <p>Total Number<br className="bigOnly"/>  Received At Least One Dose</p>
+                  <h3>{aggregateDataFunction('vaccines_one_dose', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: null, dIndex: null, dRange: null, scale: 1}, 'sum')?.toLocaleString('en')}</h3>
+                  
+                  <p>% of Population<br className="bigOnly"/>  Fully Vaccinated</p>
+                  <div className="numberChartContainer">
+                    <h3>{aggregateDataFunction('vaccines_fully_vaccinated', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: 'population', dIndex: null, dRange: null, scale: 100}, 'weighted_average')?.toFixed(2).toLocaleString('en')}%</h3>
+                    {expanded && <TwoWeekChart data={aggregate2WeekTimeSeries('vaccines_fully_vaccinated', currDateIndex, 'sum')} schema='vaccination'/>}
+                  </div>
+
+                  <p>Total Number<br className="bigOnly"/>  Fully Vaccinated</p>
+                  <h3>{aggregateDataFunction('vaccines_fully_vaccinated', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: null, dIndex: null, dRange: null, scale: 1}, 'sum')?.toLocaleString('en')}</h3>
+
+                  <p>Doses to be Administered<br className="bigOnly"/>  Per 100 People</p>
+                  <h3>{aggregateDataFunction('vaccines_dist', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: 'population', dIndex: null, dRange: null, scale: 100}, 'weighted_average')?.toFixed(2).toLocaleString('en')}</h3>
+                
+                </ReportSection>
+              }
+              {(vaccines_fully_vaccinated && selectionIndex.length) &&
+                  <ReportSection>
+                    <h2>COVID Vaccination</h2><br/>
+                    <h6>Source: <a href="https://covid.cdc.gov/covid-data-tracker/#vaccinations" target="_blank" rel="noopener noreferrer">CDC COVID Data Tracker</a></h6>            
+
+                  <p>% of Population<br className="bigOnly"/>  Fully Vaccinated</p>
+                  <div className="numberChartContainer">
+                    <h3>{aggregateDataFunction('vaccines_fully_vaccinated', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: 'population', dIndex: null, dRange: null, scale: 100}, 'weighted_average')?.toFixed(2).toLocaleString('en')}%</h3>
+                    {expanded && <TwoWeekChart data={aggregate2WeekTimeSeries('vaccines_fully_vaccinated', currDateIndex, 'sum')} schema='vaccination'/>}
+                  </div>
+
+                  <p>Total Number<br className="bigOnly"/>  Fully Vaccinated</p>
+                  <h3>{aggregateDataFunction('vaccines_fully_vaccinated', 'properties', {nProperty: null, nIndex: currDateIndex, nRange: null, dProperty: null, dIndex: null, dRange: null, scale: 1}, 'sum')?.toLocaleString('en')}</h3>
+
+                  </ReportSection>
+                }
+          {(testing && selectionIndex.length) &&
+              <ReportSection>
+                <h2>Testing</h2><br/>
+                <h6>Source: <a href="https://healthdata.gov/dataset/covid-19-diagnostic-laboratory-testing-pcr-testing-time-series" target="_blank" rel="noopener noreferrer">HHS/CDC</a></h6>       
+                <p>7-Day Positivity Rate</p>
+                <div className="numberChartContainer">
+                  <h3>{Math.round(aggregateTimeseries('testing_wk_pos', currDateIndex, 'weighted_average')*100)}%</h3>
+                  {expanded && <TwoWeekChart data={aggregate2WeekTimeSeries('testing_wk_pos', currDateIndex, 'weighted_average')} schema='testingPos'/>}
+                </div>
+
+                <p>7-Day Testing Capacity<br className="bigOnly"/> per 100k People</p>
+                <div className="numberChartContainer">
+                  <h3>{Math.round(aggregateTimeseries('testing_tcap', currDateIndex, 'weighted_average')*100)/100}</h3>
+                  {expanded && <TwoWeekChart data={aggregate2WeekTimeSeries('testing_tcap', currDateIndex, 'weighted_average')} schema='testingCap'/>}
+                </div>
+
+                <p>Total Testing</p>
+                <h3>{aggregateTimeseries('testing', currDateIndex, 'sum')?.toLocaleString('en')}</h3>
+
+                <p>7-Day Confirmed Cases<br className="bigOnly"/>  per Testing</p>
+                <h3>{Math.round(aggregateTimeseries('testing_ccpt', currDateIndex, 'weighted_average')?.toLocaleString('en')*100)}%</h3>
+
+                {/* <p>Testing Criterion</p><br className="bigOnly"/>
+                <h3>{aggregateQualitative('properties', 'criteria').map(f => <span>{f}<br/></span>)}</h3> */}
+              </ReportSection>
+            }
+          {(chr_health_factors && selectionIndex.length) && 
             <ReportSection>
               <h2>Community Health Factors<Tooltip id="healthfactor"/></h2>
               <h6>Source: <a href="https://www.countyhealthrankings.org/" target="_blank" rel="noopener noreferrer">County Health Rankings</a></h6>
               <p>Children in poverty</p><Tooltip id="PovChldPrc"/>
-              <h3>{sidebarData.PovChldPrc}%</h3>
+              <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'PovChldPrc'), 'weighted_average')}%</h3>
               <p>Income inequality<Tooltip id="IncRt"/></p>
-              <h3>{sidebarData.IncRt}</h3>
+              <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'IncRt'), 'weighted_average')}</h3>
+
               <p>Median household income</p><Tooltip id="MedianHouseholdIncome"/>
-              <h3>${sidebarData.MedianHouseholdIncome.toLocaleString('en')}</h3>
+              <h3>${aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'MedianHouseholdIncome'), 'weighted_average').toLocaleString('en')}</h3>
+
               <p>Food insecurity</p><Tooltip id="FdInsPrc"/>
-              <h3>{sidebarData.FdInsPrc}%</h3>
+              <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'FdInsPrc'), 'weighted_average')}%</h3>
+
               <p>Unemployment</p><Tooltip id="UnEmplyPrc"/>
-              <h3>{sidebarData.UnEmplyPrc}%</h3>
+              <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'UnEmplyPrc'), 'weighted_average')}%</h3>
+
               <p>Uninsured</p><Tooltip id="UnInPrc"/>
-              <h3>{sidebarData.UnInPrc}%</h3>
+              <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'UnInPrc'), 'weighted_average')}%</h3>
+
               <p>Primary care physicians</p><Tooltip id="PrmPhysRt"/>
-              <h3>{sidebarData.PrmPhysRt}:1</h3>
+              <h3>{Math.round(aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'PrmPhysRt'), 'weighted_average', 'pcp'))}:1</h3>
+
               <p>Preventable hospital stays</p><Tooltip id="PrevHospRt"/>
-              <h3>{sidebarData.PrevHospRt}</h3>
+              <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'PrevHospRt'), 'sum')}</h3>
+
               <p>Residential segregation <br/>black / white</p>
-              <h3>{sidebarData.RsiSgrBlckRt}</h3>
+              <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'RsiSgrBlckRt'), 'weighted_average')}</h3>
+
               <p>Severe housing problems</p><Tooltip id="SvrHsngPrbRt"/>
-              <h3>{sidebarData.SvrHsngPrbRt}%</h3>
+              <h3>{aggregateProperty('chr_health_factors', colLookup(cols, currentData, 'chr_health_factors', 'SvrHsngPrbRt'), 'weighted_average')}%</h3>
             </ReportSection>
           }
-          {sidebarData.hasOwnProperty('EssentialPct') &&               
+          {(essential_workers && selectionIndex.length) &&               
             <ReportSection>
               <h2>Essential Workers<Tooltip id="essentialWorkers"/></h2>
               <h6>Source: <a href="https://www.census.gov/programs-surveys/acs" target="_blank" rel="noopener noreferrer">American Community Survey</a></h6>
-              <h3>{Math.round(sidebarData.EssentialPct*100)}%</h3>
+              <h3>{Math.round(aggregateProperty('essential_workers', 1, 'weighted_average')*100)}%</h3>
             </ReportSection>
           }
-          {sidebarData.hasOwnProperty('Over65YearsPrc') && 
+          {(chr_health_context && selectionIndex.length) && 
               <ReportSection>
                 <h2>Community Health Context<Tooltip id="healthcontext"/></h2>
                 <h6>Source: <a href="https://www.countyhealthrankings.org/" target="_blank" rel="noopener noreferrer">County Health Rankings</a></h6>
+
                 <p>65 and older<Tooltip id="Over65YearsPrc"/></p>
-                <h3>{sidebarData.Over65YearsPrc}%</h3>
+                <h3>{aggregateProperty('chr_health_context', colLookup(cols, currentData, 'chr_health_context', 'Over65YearsPrc'), 'weighted_average')}%</h3>
+
                 <p>Adult obesity<Tooltip id="AdObPrc"/></p>
-                <h3>{sidebarData.AdObPrc}%</h3>
+                <h3>{aggregateProperty('chr_health_context', colLookup(cols, currentData, 'chr_health_context', 'AdObPrc'), 'weighted_average')}%</h3>
+
                 <p>Diabetes prevalence<Tooltip id="AdDibPrc"/></p>
-                <h3>{sidebarData.AdDibPrc}%</h3>
+                <h3>{aggregateProperty('chr_health_context', colLookup(cols, currentData, 'chr_health_context', 'AdDibPrc'), 'weighted_average')}%</h3>
+
                 <p>Adult smoking<Tooltip id="SmkPrc"/></p>
-                <h3>{sidebarData.SmkPrc}%</h3>
+                <h3>{aggregateProperty('chr_health_context', colLookup(cols, currentData, 'chr_health_context', 'SmkPrc'), 'weighted_average')}%</h3>
+
                 <p>Excessive drinking<Tooltip id="ExcDrkPrc"/></p>
-                <h3>{sidebarData.ExcDrkPrc}%</h3>
+                <h3>{aggregateProperty('chr_health_context', colLookup(cols, currentData, 'chr_health_context', 'ExcDrkPrc'), 'weighted_average')}%</h3>
+
                 <p>Drug overdose deaths<Tooltip id="DrOverdMrtRt"/></p>
-                <h3>{sidebarData.DrOverdMrtRt}</h3>
+                <h3>{aggregateProperty('chr_health_context', colLookup(cols, currentData, 'chr_health_context', 'DrOverdMrtRt'), 'sum')||0}</h3>
 
               </ReportSection>
             }
-          {sidebarData.hasOwnProperty('LfExpRt') &&
+          {(chr_life && selectionIndex.length) &&
               <ReportSection expanded={expanded}>
                 <h2>Length &amp; Quality of Life<Tooltip id="healthlife"/></h2>
                 <h6>Source: <a href="https://www.countyhealthrankings.org/" target="_blank" rel="noopener noreferrer">County Health Rankings</a></h6>
+                
                 <p>Life expectancy<Tooltip id="LfExpRt"/></p>
-                <h3>{sidebarData.LfExpRt}</h3>
+                <h3>{aggregateProperty('chr_life', colLookup(cols, currentData, 'chr_life', 'LfExpRt'), 'weighted_average')}</h3>
+
                 <p>Self-rated health<Tooltip id="SlfHlthPrc"/></p>
-                <h3>{sidebarData.SlfHlthPrc}%</h3>
+                <h3>{aggregateProperty('chr_life', colLookup(cols, currentData, 'chr_life', 'SlfHlthPrc'), 'weighted_average')}%</h3>
+
               </ReportSection>
             }
-          {sidebarData.hasOwnProperty('severity_index') && 
+          {(predictions && cols[currentData] && cols[currentData].predictions && selectionIndex.length) && 
               <ReportSection>
                 <h2>Forecasting</h2><br/>            
                 <h6>Source: <a href="https://github.com/Yu-Group/covid19-severity-prediction/" target="_blank" rel="noopener noreferrer">Yu Group at Berkeley</a></h6>            
                 
                 <p>5-Day Severity Index<Tooltip id="SeverityIndex"/></p>
-                <h3> {['','Low','Medium','High'][Math.round(sidebarData.severity_index)]}</h3>
+                <h3> {['','Low','Medium','High'][Math.round(aggregateProperty('predictions', 1, 'weighted_average'))]}</h3>
                 
-                <p>Predicted Deaths <Tooltip id="PredictedDeaths"/></p>
-                <br/>
-                <p>{sidebarData.predDates[0].split('_').slice(1,).join('-')}</p>
-                <h3>{Math.round(sidebarData.pred1*10)/10}</h3>
+                <p>Predicted Deaths by {parsePredictedDate(cols[currentData].predictions[2].split('_'))}<Tooltip id="PredictedDeaths"/></p>
+                <h3>{Math.round(aggregateProperty('predictions', 2, 'sum')*10)/10}</h3>
               
-                <p>{sidebarData.predDates[1].split('_').slice(1,).join('-')}</p>
-                <h3>{Math.round(sidebarData.pred2*10)/10}</h3>
+                <p>Predicted Deaths by {parsePredictedDate(cols[currentData].predictions[4].split('_'))}<Tooltip id="PredictedDeaths"/></p>
+                <h3>{Math.round(aggregateProperty('predictions', 4, 'sum')*10)/10}</h3>
                 
-                <p>{sidebarData.predDates[2].split('_').slice(1,).join('-')}</p>
-                <h3>{Math.round(sidebarData.pred3*10)/10}</h3>
+                <p>Predicted Deaths by {parsePredictedDate(cols[currentData].predictions[6].split('_'))}<Tooltip id="PredictedDeaths"/></p>
+                <h3>{Math.round(aggregateProperty('predictions', 6, 'sum')*10)/10}</h3>
                 
-                <p>{sidebarData.predDates[3].split('_').slice(1,).join('-')}</p>
-                <h3>{Math.round(sidebarData.pred4*10)/10}</h3>
+                <p>Predicted Deaths by {parsePredictedDate(cols[currentData].predictions[8].split('_'))}<Tooltip id="PredictedDeaths"/></p>
+                <h3>{Math.round(aggregateProperty('predictions', 8, 'sum')*10)/10}</h3>
                 
-                <p>{sidebarData.predDates[4].split('_').slice(1,).join('-')}</p>
-                <h3>{Math.round(sidebarData.pred5*10)/10}</h3>
+                <p>Predicted Deaths by {parsePredictedDate(cols[currentData].predictions[10].split('_'))}<Tooltip id="PredictedDeaths"/></p>
+                <h3>{Math.round(aggregateProperty('predictions', 10, 'sum')*10)/10}</h3>
                 
-                <p>{sidebarData.predDates[5].split('_').slice(1,).join('-')}</p>
-                <h3>{Math.round(sidebarData.pred6*10)/10}</h3>
+                <p>Predicted Deaths by {parsePredictedDate(cols[currentData].predictions[12].split('_'))}<Tooltip id="PredictedDeaths"/></p>
+                <h3>{Math.round(aggregateProperty('predictions', 12, 'sum')*10)/10}</h3>
                 
-                <p>{sidebarData.predDates[6].split('_').slice(1,).join('-')}</p>
-                <h3>{Math.round(sidebarData.pred7*10)/10}</h3>
+                <p>Predicted Deaths by {parsePredictedDate(cols[currentData].predictions[14].split('_'))}<Tooltip id="PredictedDeaths"/></p>
+                <h3>{Math.round(aggregateProperty('predictions', 14, 'sum')*10)/10}</h3>
               
               </ReportSection>
             }
-            {sidebarData.hasOwnProperty('pct_home') && 
-              <ReportSection>
-                <h2>Mobility</h2><br/>     
-                <p>Percent Completely At Home</p>
-                <div className="numberChartContainer">
-                  <h3>{sidebarData.pct_home}%</h3>
-                </div>
-                <p>Percent Full Time Behavior</p>
-                <div className="numberChartContainer">
-                  <h3>{sidebarData.pct_fulltime}%</h3>
-                </div>
-                <p>Percent Part Time Behavior</p>
-                <div className="numberChartContainer">
-                  <h3>{sidebarData.pct_parttime}%</h3>
-                </div>
-              </ReportSection>
-            }
+            {(pct_home && selectionIndex.length) && 
+                <ReportSection>
+                  <h2>Mobility</h2><br/>     
+                  <p>Percent Completely At Home</p>
+                  <div className="numberChartContainer">
+                    <h3>{aggregateTimeseries('pct_home', currDateIndex, 'weighted_average')}%</h3>
+                  </div>
+                  <p>Percent Full Time Behavior</p>
+                  <div className="numberChartContainer">
+                    <h3>{aggregateTimeseries('pct_fulltime', currDateIndex, 'weighted_average')}%</h3>
+                  </div>
+                  <p>Percent Part Time Behavior</p>
+                  <div className="numberChartContainer">
+                    <h3>{aggregateTimeseries('pct_parttime', currDateIndex, 'weighted_average')}%</h3>
+                  </div>
+                </ReportSection>
+              }
           
           <div className="extraPadding"></div>
           
-          <button onClick={handleOpenClose} id="showHideRight" className={panelState.info ? 'active' : 'hidden'}>{report}</button>
+          {properties && <button onClick={handleOpenClose} id="showHideRight" className={panelState.info ? 'active' : 'hidden'}>{report}</button>}
+          {/* {properties && <ResizeButton 
+                  id="resize"
+                  onMouseDown={handleDown}
+                  onTouchStart={handleTouch}
+                  style={{zIndex:10}}
+              >
+                  {verticalGrip}
+              </ResizeButton>} */}
         </ReportContainer>
       </ReportWrapper>
     </DataPanelContainer>
   );
 }
+
+export default DataPanel;

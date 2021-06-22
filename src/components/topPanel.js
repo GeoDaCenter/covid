@@ -3,7 +3,7 @@ import React from 'react';
 
 import styled from 'styled-components';
 
-import { DateSlider, Dock, Ticks } from '../components';
+import { DateSlider, Dock } from '../components';
 import { colors } from '../config';
 
 // Styled components
@@ -43,7 +43,6 @@ const TopPanel = () => {
         <TopDrawer id="timelinePanel">
             <DateSlider />
             <Dock />
-            <Ticks />
         </TopDrawer>
     )
 

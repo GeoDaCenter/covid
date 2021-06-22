@@ -18,6 +18,7 @@ const Time = React.lazy(() => import('./components/Pages/Time'));
 const Trends = React.lazy(() => import('./components/Pages/Trends'));
 
 class App extends Component {
+
   render() {
     return (     
        <Router basename={process.env.PUBLIC_URL}>

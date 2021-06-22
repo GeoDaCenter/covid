@@ -55,7 +55,7 @@ function Data(){
                 
                 <SectionTitle>Testing</SectionTitle>
                 <BlockIndent>
-                    <a href="https://covid.cdc.gov/covid-data-tracker/" target="_blank" rel="noopener noreferrer">CDC.</a> The Center for Disease Control provides county-level historic testing data as well as case and death data. Currently, we include tests performed and testing positivity rates as map variables. Total tests conducted and
+                    <a href="https://covid.cdc.gov/covid-data-tracker/" target="_blank" rel="noopener noreferrer">CDC.</a> The Center for Disease Control provides county-level historic testing data as well as case and death data. Currently, we include testing capacity and testing positivity rates as map variables. Total tests conducted and
                     confirmed cases per testing percent, a measure of testing coverage, are available in the Context panel for selected states or counties.
                     <Gutter h={20}/>
                     <a href="https://healthdata.gov/dataset/covid-19-diagnostic-laboratory-testing-pcr-testing-time-series" target="_blank" rel="noopener noreferrer">HHS.</a> The Department of Health and Human Services provides state-level historic testing data.

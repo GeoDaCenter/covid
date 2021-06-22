@@ -246,7 +246,7 @@ export const pages = {
                 <i>Time series data</i>
                 <ul>
                     <li>7 Day Testing Positivity Rate Percent: The percentage of COVID tests returning positive results, aggregated to a 7-day rolling average</li>
-                    <li>7 Day Tests Performed: The number of COVID tests administered in the county or state normalized to tests per 100,000 population</li>
+                    <li>7 Day Testing Capacity: The number of COVID tests administered in the county or state normalized to tests per 100,000 population</li>
                     {/* <li>7 Day Confirmed Cases per Testing %: The number of positive COVID cases per number of COVID tests as a percentage</li> */}
                 </ul>
 

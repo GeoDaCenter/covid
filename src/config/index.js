@@ -195,7 +195,7 @@ export const colorScales = {
 export const fixedScales = {
     'testing': {
         bins: ['No Data','<3%','5%','10%','15%','20%','>25%'],
-        breaks:[0,3,5,10,15,20,25,Math.pow(10, 12)]
+        breaks:[0,.03,.05,.10,.15,.20,.25,Math.pow(10, 12)]
     },
     'testingCap': {
         bins: ['No Data','<50','100','150','200','250','300','350','>400'],
@@ -277,329 +277,330 @@ export const colors = {
 }
 
 export const defaultData = 'cdc_h.geojson';
-export const defaultTables = {
-    'County': {
-        'predictions':{
-            'file':'berkeley_predictions',
-            'type':'characteristic',
-            'join':'fips'
-        },
-        'cases': {
-            'file':'covid_confirmed_cdc.e-2.pbf',
-            'dates':'isoDateList',
-            'type':'time-series-cumulative',
-            'accumulate':true
-        },
-        'deaths': {
-            'file':'covid_deaths_cdc.e-2.pbf',
-            'dates':'isoDateList',
-            'type':'time-series-cumulative',
-            'accumulate':true
-        },
-        'chr_health_context':{
-            'file':'chr_health_context',
-            'type':'characteristic',
-            'join':'FIPS'
-        },
-        'chr_life':{
-            'file':'chr_life',
-            'type':'characteristic',
-            'join':'FIPS'
-        },
-        'chr_health_factors':{
-            'file':'chr_health_factors',
-            'type':'characteristic',
-            'join':'FIPS'
-        },
-        'pct_home':{
-            'file':'mobility_home_workdays_safegraph.pbf',
-            'dates':'isoDateList',
-            'type':'time-series',
-            'join':'county'
-        },
-        'pct_parttime':{
-            'file':'mobility_parttime_workdays_safegraph.pbf',
-            'dates':'isoDateList',
-            'type':'time-series',
-            'join':'county'
-        },
-        'pct_fulltime':{
-            'file':'mobility_fulltime_workdays_safegraph.pbf',
-            'dates':'isoDateList',
-            'type':'time-series',
-            'join':'county'
-        },
-        'essential_workers':{
-            'file':'context_essential_workers_acs',
-            'type':'characteristic',
-            'join':'fips'
-        },
-        'vaccines_fully_vaccinated':{
-            'file':'vaccine_fully_vaccinated_cdc',
-            'dates':'isoDateList',
-            'type':'time-series-cumulative',
-            'join':'fips'
-        },
-        'testing':{
-            'file':'covid_testing_cdc.e-2.pbf',
-            'dates':'isoDateList',
-            'type':'time-series',
-            'join':'county'
-        },
-        'testing_wk_pos':{
-            'file':'covid_wk_pos_cdc.e-4.pbf',
-            'dates':'isoDateList',
-            'type':'time-series',
-            'join':'county'
-        },
-        'testing_tcap':{
-            'file':'covid_tcap_cdc.e-2.pbf',
-            'dates':'isoDateList',
-            'type':'time-series',
-            'join':'county'
-        },
-        'testing_ccpt':{
-            'file':'covid_ccpt_cdc.e-4.pbf',
-            'dates':'isoDateList',
-            'type':'time-series',
-            'join':'county'
-        },
-        'essential_workers': {
-            'file':'context_essential_workers_acs',
-            'type':'characteristic',
-            'join':'fips'
+
+export const dataPresets = {
+    'cdc_h.geojson': {
+        plainName: 'CDC', // Plain english name for dataset
+        geojson: 'cdc_h.geojson', // geospatial data to join to
+        csvs: [ // list of CSVs to join
+            'covid_confirmed_usafacts_h',
+            'covid_deaths_usafacts_h',
+            'chr_health_context',
+            'chr_life',
+            'chr_health_factors',
+            'context_essential_workers_acs',
+            'vaccine_fully_vaccinated_cdc_h'
+        ], 
+        tableNames: [ // table names in order of CSVs
+            'cases',
+            'deaths',
+            'chr_health_context',
+            'chr_life',
+            'chr_health_factors',
+            'essential_workers',
+            'vaccines_fully_vaccinated'
+        ],
+        joinCols: ['GEOID', ['FIPS','fips','countyFIPS', 'county', 'geoid']], // geospatial data join column and then list of valid table join columns
+        accumulate: [], // CSV names to accumulate over time
+        dateList: { // date lists to parse: isoDateList (eg. '2020-01-01') or usDateList (eg. '01/01/20')
+            'covid_confirmed_usafacts_h': 'isoDateList', 
+            'covid_deaths_usafacts_h': 'isoDateList',
+            'vaccine_fully_vaccinated_cdc_h': 'isoDateList',
         }
     },
-    'County (Hybrid)':{
-    },
-    'State': {
-        'cases': {
-            'file':'covid_confirmed_usafacts_state',
-            'dates':'isoDateList',
-            'type':'time-series-cumulative'
-        },
-        'deaths': {
-            'file':'covid_deaths_usafacts_state',
-            'dates':'isoDateList',
-            'type':'time-series-cumulative'
-        },
-        'chr_health_context':{
-            'file':'chr_health_context_state',
-            'type':'characteristic',
-            'join':'FIPS'
-        },
-        'chr_life':{
-            'file':'chr_life_state',
-            'type':'characteristic',
-            'join':'FIPS'
-        },
-        'chr_health_factors':{
-            'file':'chr_health_factors_state',
-            'type':'characteristic',
-            'join':'FIPS'
-        },
-        'testing':{
-            'file':'covid_testing_cdc_state',
-            'dates':'isoDateList',
-            'type':'time-series',
-            'join':'state_fips'
-        },
-        'testing_wk_pos':{
-            'file':'covid_wk_pos_cdc_state',
-            'dates':'isoDateList',
-            'type':'time-series',
-            'join':'state_fips'
-        },
-        'testing_tcap':{
-            'file':'covid_tcap_cdc_state',
-            'dates':'isoDateList',
-            'type':'time-series',
-            'join':'state_fips'
-        },
-        'testing_ccpt':{
-            'file':'covid_ccpt_cdc_state',
-            'dates':'isoDateList',
-            'type':'time-series',
-            'join':'state_fips'
-        },
-        'vaccines_one_dose':{
-            'file':'vaccination_one_or_more_doses_cdc',
-            'dates':'isoDateList',
-            'type':'time-series',
-            'join':'fips'
-        },
-        'vaccines_fully_vaccinated':{
-            'file':'vaccination_fully_vaccinated_cdc',
-            'dates':'isoDateList',
-            'type':'time-series',
-            'join':'fips'
-        },
-        'vaccines_dist':{
-            'file':'vaccination_to_be_distributed_cdc',
-            'dates':'isoDateList',
-            'type':'time-series',
-            'join':'fips'
-        },
-    }
-}
-
-export const dataPresetsRedux = {
     'county_usfacts.geojson': {
         plainName: 'USA Facts County', // Plain english name for dataset
         geojson: 'county_usfacts.geojson', // geospatial data to join to
-        geography: 'County',
-        tables: {
-            'cases': {
-                'file':'covid_confirmed_usafacts.pbf',
-                'dates':'isoDateList',
-                'type':'time-series-cumulative'
-            },
-            'deaths': {
-                'file':'covid_deaths_usafacts.pbf',
-                'dates':'isoDateList',
-                'type':'time-series-cumulative'
-            }
+        csvs: [ // list of CSVs to join
+            'covid_confirmed_usafacts',
+            'covid_deaths_usafacts',
+            'berkeley_predictions',
+            'chr_health_context',
+            'chr_life',
+            'chr_health_factors',
+            'mobility_home_workdays_safegraph',
+            'mobility_parttime_workdays_safegraph',
+            'mobility_fulltime_workdays_safegraph',
+            'context_essential_workers_acs',
+            'vaccine_fully_vaccinated_cdc'
+        ], 
+        tableNames: [ // table names in order of CSVs
+            'cases',
+            'deaths',
+            'predictions',
+            'chr_health_context',
+            'chr_life',
+            'chr_health_factors',
+            'pct_home',
+            'pct_parttime',
+            'pct_fulltime',
+            'essential_workers',
+            'vaccines_fully_vaccinated'
+        ],
+        joinCols: ['GEOID', ['FIPS','fips','countyFIPS', 'county', 'geoid']], // geospatial data join column and then list of valid table join columns
+        accumulate: [], // CSV names to accumulate over time
+        dateList: { // date lists to parse: isoDateList (eg. '2020-01-01') or usDateList (eg. '01/01/20')
+            'covid_confirmed_usafacts': 'isoDateList', 
+            'covid_deaths_usafacts': 'isoDateList',
+            'mobility_home_workdays_safegraph': 'isoDateList',
+            'mobility_parttime_workdays_safegraph': 'isoDateList',
+            'mobility_fulltime_workdays_safegraph': 'isoDateList',
+            'vaccine_fully_vaccinated_cdc': 'isoDateList',
         }
     },
     'county_1p3a.geojson': {
         plainName: '1Point3Acres County',
-        geojson: 'county_1p3a.geojson',
-        geography: 'County',
-        tables: {
-            'cases': {
-                'file':'covid_confirmed_1p3a.pbf',
-                'dates':'isoDateList',
-                'type':'time-series-cumulative',
-                'accumulate':true
-            },
-            'deaths': {
-                'file':'covid_deaths_1p3a.pbf',
-                'dates':'isoDateList',
-                'type':'time-series-cumulative',
-                'accumulate':true
-            }
+        geojson: 'county_1p3a.geojson', 
+        csvs: [
+            'covid_confirmed_1p3a',
+            'covid_deaths_1p3a',
+            'berkeley_predictions',
+            'chr_health_context',
+            'chr_life',
+            'chr_health_factors',
+            'vaccine_fully_vaccinated_cdc'
+        ], 
+        tableNames: [
+            'cases',
+            'deaths',
+            'predictions', 
+            'chr_health_context', 
+            'chr_life', 
+            'chr_health_factors',
+            'vaccines_fully_vaccinated'
+        ],
+        joinCols: ['GEOID', ['FIPS','fips','countyFIPS', 'GEOID','geoid']], 
+        accumulate: ['covid_confirmed_1p3a','covid_deaths_1p3a'],
+        dateList: {
+            'covid_confirmed_1p3a': 'isoDateList', 
+            'covid_deaths_1p3a': 'isoDateList',
+            'vaccine_fully_vaccinated_cdc': 'isoDateList',
         }
     },
     'county_nyt.geojson': {
-        plainName: 'New York Times County', // Plain english name for dataset
-        geojson: 'county_nyt.geojson', // geospatial data to join to
-        geography: 'County',
-        tables: {
-            'cases': {
-                'file':'covid_confirmed_nyt.pbf',
-                'dates':'isoDateList',
-                'type':'time-series-cumulative'
-            },
-            'deaths': {
-                'file':'covid_deaths_nyt.pbf',
-                'dates':'isoDateList',
-                'type':'time-series-cumulative'
-            }
-        }
-    },
-    'cdc.geojson': {
-        plainName: 'CDC', // Plain english name for dataset
-        geojson: 'cdc.geojson', // geospatial data to join to
-        geography: 'County',
-        tables: {
-            'cases': {
-                'file':'covid_confirmed_cdc.e-2.pbf',
-                'dates':'isoDateList',
-                'type':'time-series',
-                'accumulate':true
-            },
-            'deaths': {
-                'file':'covid_deaths_cdc.e-2.pbf',
-                'dates':'isoDateList',
-                'type':'time-series',
-                'accumulate':true
-            }
-        }
-    },
-    'cdc_h.geojson': {
-        plainName: 'CDC', // Plain english name for dataset
-        geojson: 'cdc_h.geojson', // geospatial data to join to
-        geography: 'County (Hybrid)',
-        tables: {
-            'vaccines_fully_vaccinated':{
-                'file':'vaccine_fully_vaccinated_cdc_h',
-                'dates':'isoDateList',
-                'type':'time-series-cumulative',
-                'join':'fips'
-            },
-            'cases': {
-                'file':'covid_confirmed_usafacts_h.pbf',
-                'dates':'isoDateList',
-                'type':'time-series'
-            },
-            'deaths': {
-                'file':'covid_deaths_usafacts_h.pbf',
-                'dates':'isoDateList',
-                'type':'time-series'
-            }
+        plainName: 'New York Times County',
+        geojson: 'county_nyt.geojson', 
+        csvs: [
+            'covid_confirmed_nyt', 
+            'covid_deaths_nyt', 
+            'berkeley_predictions', 
+            'chr_health_context', 
+            'chr_life', 
+            'chr_health_factors',
+            'context_essential_workers_acs',
+            'vaccine_fully_vaccinated_cdc'
+        ],  
+        tableNames: [
+            'cases', 
+            'deaths', 
+            'predictions', 
+            'chr_health_context', 
+            'chr_life', 
+            'chr_health_factors',
+            'essential_workers',
+            'vaccines_fully_vaccinated'
+        ],
+        joinCols: ['GEOID', ['FIPS','fips','countyFIPS']],
+        accumulate: [],
+        dateList: {
+            'covid_confirmed_nyt': 'isoDateList',
+            'covid_deaths_nyt': 'isoDateList',
+            'vaccine_fully_vaccinated_cdc': 'isoDateList',
         }
     },
     'state_1p3a.geojson': {
         plainName: '1Point3Acres State',
         geojson: 'state_1p3a.geojson', 
-        geography: 'State',
-        tables: {
-            'cases': {
-                'file':'covid_confirmed_1p3a_state',
-                'dates':'isoDateList',
-                'type':'time-series-cumulative',
-                'join':'GEOID',
-                'accumulate':true
-            },
-            'deaths': {
-                'file':'covid_deaths_1p3a_state',
-                'dates':'isoDateList',
-                'type':'time-series-cumulative',
-                'join':'GEOID',
-                'accumulate':true
-            }
+        csvs: [
+        	'covid_confirmed_1p3a_state',
+			'covid_deaths_1p3a_state',
+			'chr_health_context_state',
+			'chr_life_state',
+			'chr_health_factors_state',
+			'covid_testing_cdc_state',
+			'covid_wk_pos_cdc_state',
+			'covid_tcap_cdc_state',
+			'covid_ccpt_cdc_state',
+			'vaccination_one_or_more_doses_cdc',
+			'vaccination_fully_vaccinated_cdc',
+			'vaccination_to_be_distributed_cdc'
+		], 
+        tableNames: [
+	        'cases',
+			'deaths',
+			'chr_health_context',
+			'chr_life',
+			'chr_health_factors',
+			'testing',
+			'testing_wk_pos',
+			'testing_tcap',
+			'testing_ccpt',
+			'vaccines_one_dose',
+			'vaccines_fully_vaccinated',
+			'vaccines_dist'
+        ],
+        joinCols: ['GEOID', ['FIPS','fips','fips_code','state_fips','countyFIPS','GEOID','geoid']], 
+        accumulate: ['covid_confirmed_1p3a_state','covid_deaths_1p3a_state','covid_testing_cdc_state'],
+        dateList: {
+            'covid_confirmed_1p3a_state': 'isoDateList', 
+            'covid_deaths_1p3a_state': 'isoDateList', 
+            'covid_testing_cdc_state': 'isoDateList', 
+            'covid_wk_pos_cdc_state': 'isoDateList', 
+            'covid_tcap_cdc_state': 'isoDateList', 
+            'covid_ccpt_cdc_state': 'isoDateList', 
+            'vaccination_one_or_more_doses_cdc': 'isoDateList', 
+            'vaccination_fully_vaccinated_cdc': 'isoDateList', 
+            'vaccination_to_be_distributed_cdc': 'isoDateList'
         }
     },
     'state_usafacts.geojson': {
         plainName: 'USA Facts State',
         geojson: 'state_usafacts.geojson', 
-        geography: 'State',
-        tables: {
-            'cases': {
-                'file':'covid_confirmed_usafacts_state',
-                'dates':'isoDateList',
-                'type':'time-series-cumulative',
-                'join':'StateFIPS'
-            },
-            'deaths': {
-                'file':'covid_deaths_usafacts_state',
-                'dates':'isoDateList',
-                'type':'time-series-cumulative',
-                'join':'StateFIPS'
-            }
+        csvs: [
+            'covid_confirmed_usafacts_state',
+            'covid_deaths_usafacts_state',
+            'chr_health_context_state',
+            'chr_life_state',
+            'chr_health_factors_state',
+            'covid_testing_cdc_state',
+            'covid_wk_pos_cdc_state',
+            'covid_tcap_cdc_state',
+            'covid_ccpt_cdc_state',
+			'vaccination_one_or_more_doses_cdc',
+			'vaccination_fully_vaccinated_cdc',
+			'vaccination_to_be_distributed_cdc'
+        ],  
+        tableNames: [
+            'cases',
+            'deaths',
+            'chr_health_context',
+            'chr_life',
+            'chr_health_factors',
+            'testing',
+            'testing_wk_pos',
+            'testing_tcap',
+            'testing_ccpt',
+			'vaccines_one_dose',
+			'vaccines_fully_vaccinated',
+			'vaccines_dist'
+        ],
+        joinCols: ['GEOID', ['FIPS','fips','fips_code','state_fips','StateFIPS','stateFIPS','geoid']],
+        accumulate: ['covid_testing_cdc_state'],
+        dateList: {
+            'covid_confirmed_usafacts_state': 'isoDateList', 
+            'covid_deaths_usafacts_state': 'isoDateList', 
+            'covid_testing_cdc_state': 'isoDateList', 
+            'covid_wk_pos_cdc_state': 'isoDateList', 
+            'covid_tcap_cdc_state': 'isoDateList', 
+            'covid_ccpt_cdc_state': 'isoDateList', 
+            'vaccination_one_or_more_doses_cdc': 'isoDateList', 
+            'vaccination_fully_vaccinated_cdc': 'isoDateList', 
+            'vaccination_to_be_distributed_cdc': 'isoDateList'
         }
     },
     'state_nyt.geojson': {
-        plainName: 'New York Times County', // Plain english name for dataset
-        geojson: 'state_nyt.geojson', // geospatial data to join to
-        geography: 'State',
-        tables: {
-            'cases': {
-                'file':'covid_confirmed_nyt_state',
-                'dates':'isoDateList',
-                'type':'time-series-cumulative',
-                'join':'fips'
-            },
-            'deaths': {
-                'file':'covid_deaths_nyt_state',
-                'dates':'isoDateList',
-                'type':'time-series-cumulative',
-                'join':'fips'
-            }
+        plainName: 'New York Times State',
+        geojson: 'state_nyt.geojson', 
+        csvs: [
+            'covid_confirmed_nyt_state',
+            'covid_deaths_nyt_state',
+            'chr_health_context_state',
+            'chr_life_state',
+            'chr_health_factors_state',
+            'covid_testing_1p3a_state',
+            'covid_wk_pos_1p3a_state',
+            'covid_tcap_1p3a_state',
+            'covid_ccpt_1p3a_state',
+			'vaccination_one_or_more_doses_cdc',
+			'vaccination_fully_vaccinated_cdc',
+			'vaccination_to_be_distributed_cdc'
+        ], 
+        joinCols: ['GEOID', ['FIPS','fips','countyFIPS','geoid']], 
+        tableNames: [
+            'cases', 
+            'deaths', 
+            'chr_health_context', 
+            'chr_life', 
+            'chr_health_factors', 
+            'testing', 
+            'testing_wk_pos', 
+            'testing_tcap', 
+            'testing_ccpt',
+			'vaccines_one_dose',
+			'vaccines_fully_vaccinated',
+			'vaccines_dist'
+        ],
+        accumulate: ['covid_testing_cdc_state'],
+        dateList: {
+            'covid_confirmed_nyt_state': 'isoDateList', 
+            'covid_deaths_nyt_state': 'isoDateList',
+            'covid_testing_cdc_state': 'isoDateList', 
+            'covid_wk_pos_cdc_state': 'isoDateList', 
+            'covid_tcap_cdc_state': 'isoDateList', 
+            'covid_ccpt_cdc_state': 'isoDateList', 
+            'vaccination_one_or_more_doses_cdc': 'isoDateList', 
+            'vaccination_fully_vaccinated_cdc': 'isoDateList', 
+            'vaccination_to_be_distributed_cdc': 'isoDateList'
         }
-    }, 
+    },
+    'global_jhu.geojson': {
+        plainName: 'John Hopkins University (Global)',
+        geojson: 'global_jhu.geojson', 
+        csvs: [
+            'covid_confirmed_jhu',
+            'covid_deaths_jhu'
+        ], 
+        tableNames: [
+            'cases',
+            'deaths'
+        ],
+        joinCols: ['GEOID', ['UID','geoid']], 
+        accumulate: []
+    },
+    'cdc.geojson': {
+        plainName: 'Center for Disease Control County',
+        geojson: 'cdc.geojson', 
+        csvs: [
+            'covid_confirmed_usafacts',
+            'covid_deaths_usafacts',
+            'berkeley_predictions', 
+            'chr_health_context', 
+            'chr_life', 
+            'chr_health_factors',
+            'covid_testing_cdc',
+            'covid_wk_pos_cdc', 
+            'covid_tcap_cdc', 
+            'covid_ccpt_cdc',
+            'context_essential_workers_acs',
+            'vaccine_fully_vaccinated_cdc'
+        ],  
+        tableNames: [
+            'cases',
+            'deaths', 
+            'predictions', 
+            'chr_health_context', 
+            'chr_life', 
+            'chr_health_factors',
+            'testing', 
+            'testing_wk_pos', 
+            'testing_tcap', 
+            'testing_ccpt',
+            'essential_workers',
+            'vaccines_fully_vaccinated'
+        ],
+        joinCols: ['GEOID', ['fips_code', 'fips', 'FIPS', 'countyFIPS','geoid']],
+        accumulate: [],
+        dateList: {
+            'covid_confirmed_usafacts': 'isoDateList', 
+            'covid_deaths_usafacts': 'isoDateList',
+            'covid_testing_cdc': 'isoDateList', 
+            'covid_wk_pos_cdc': 'isoDateList', 
+            'covid_tcap_cdc': 'isoDateList', 
+            'covid_ccpt_cdc': 'isoDateList',
+            'vaccine_fully_vaccinated_cdc': 'isoDateList',
+        }
+    },
 }
-export const tooltipTables = ['cases','deaths','testing_wk_pos','testing_tcap','vaccines_fully_vaccinated']
 
 export const tooltipInfo = {
     Choropleth: <p>A thematic map used to represent data through various shading patterns on predetermined geographic areas (counties, state).</p>,
@@ -757,7 +758,7 @@ export const variablePresets = {
       variableName:"Uninsured Percent",
       numerator: 'chr_health_factors',
       nType: 'characteristic',
-      nProperty: 'UnInPrc',
+      nProperty: 9,
       nRange: null,
       denominator: 'properties',
       dType: null,
@@ -774,7 +775,7 @@ export const variablePresets = {
       variableName:"Over 65 Years Percent",
       numerator: 'chr_health_context',
       nType: 'characteristic',
-      nProperty: 'Over65YearsPrc',
+      nProperty: 3,
       nRange: null,
       denominator: 'properties',
       dType: null,
@@ -791,7 +792,7 @@ export const variablePresets = {
       variableName:"Life Expectancy",
       numerator: 'chr_life',
       nType: 'characteristic',
-      nProperty: 'LfExpRt',
+      nProperty: 3,
       nRange: null,
       denominator: 'properties',
       dType: null,
@@ -815,10 +816,10 @@ export const variablePresets = {
       dProperty: null,
       dRange:null,
       dIndex:null,
-      scale:100,
+      scale:1,
       fixedScale: 'testing',
       colorScale: 'testing',
-      scale3D: 100000,
+      scale3D: 10000000,
       dataNote: null,
     },
     "7 Day Testing Capacity": {
@@ -835,7 +836,7 @@ export const variablePresets = {
       scale:1,
       fixedScale: 'testingCap',
       colorScale: 'testingCap',
-      scale3D: 30,
+      scale3D: 3000,
       dataNote: null,
     }, 
     "7 Day Testing Capacity per 100K": {
@@ -852,24 +853,7 @@ export const variablePresets = {
       scale:1,
       fixedScale: 'testingCap',
       colorScale: 'testingCap',
-      scale3D: 30,
-      dataNote: null,
-    }, 
-    "7 Day Tests Performed per 100K Population": {
-      variableName:"7 Day Tests Performed per 100K Population",
-      numerator: 'testing_tcap',
-      nType: 'time-series',
-      nProperty: null,
-      nRange: null,
-      denominator: 'properties',
-      dType: null,
-      dProperty: null,
-      dRange:null,
-      dIndex:null,
-      scale:1,
-      fixedScale: 'testingCap',
-      colorScale: 'testingCap',
-      scale3D: 10000,
+      scale3D: 3000,
       dataNote: null,
     }, 
     "7 Day Testing Capacity per 100K Population": {
@@ -900,7 +884,7 @@ export const variablePresets = {
       dProperty: null,
       dRange:null,
       dIndex:null,
-      scale:100,
+      scale:1,
       fixedScale: 'testing',
       colorScale: 'testing',
       scale3D: 10000000,
@@ -974,6 +958,7 @@ export const variablePresets = {
         fixedScale: null,
         dataNote: null,
     },
+    
     "Percent Received At Least One Dose": {
         variableName:"Percent Received At Least One Dose",
         numerator: 'vaccines_one_dose',
@@ -1003,7 +988,7 @@ export const variablePresets = {
         dRange:null,
         dIndex:null,
         scale:100,
-        scale3D: 500_000,
+        scale3D: 1000,
         colorScale: 'YlGn8',
         fixedScale: null,
         dataNote: 'Texas reports only state-level vaccination rates to the CDC.'
@@ -1030,7 +1015,7 @@ export const variablePresets = {
       variableName:"Forecasting (5-Day Severity Index)",
       numerator: 'predictions',
       nType: 'characteristic',
-      nProperty: 'severity_index',
+      nProperty: 1,
       nRange: null,
       denominator: 'properties',
       dType: null,
@@ -1047,7 +1032,7 @@ export const variablePresets = {
       variableName:"Percent Essential Workers",
       numerator: 'essential_workers',
       nType: 'characteristic',
-      nProperty: 'pct_essential',
+      nProperty: 1,
       nRange: null,
       denominator: 'properties',
       dType: null,
@@ -1113,105 +1098,324 @@ export const variablePresets = {
     },
 }
 
+export const allGeographies = ['County', 'County (Hybrid)', 'State']
+export const allDatasets = ['1point3acres', 'USA Facts', 'New York Times', 'CDC', 'County Health Rankings', 'Yu Group at Berkeley', 'ACS', 'Safegraph'] 
 export const variableTree = {
     "HEADER:cases":{},
     "Confirmed Count": {
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
-        "State": ["USA Facts","1point3acres","New York Times"]
+        "County": {
+            "USA Facts": {
+                "geojson":'county_usfacts.geojson',
+                "csv":['covid_confirmed_usafacts'] 
+            },
+            "1point3acres": {
+                "geojson":'county_1p3a.geojson',
+                "csv":['covid_confirmed_1p3a']
+            },
+            "New York Times": {
+                "geojson":'county_nyt.geojson',
+                "csv":['covid_confirmed_nyt']  
+            }
+        },
+        "State": {
+            "USA Facts": {
+                "geojson":'state_usafacts.geojson',
+                "csv":['covid_confirmed_usafacts_state'] 
+            },
+            "1point3acres": {
+                "geojson":'state_1p3a.geojson',
+                "csv":['covid_confirmed_1p3a_state']
+            },
+            "New York Times": {
+                "geojson":'state_nyt.geojson',
+                "csv":['covid_confirmed_nyt_state']
+            }, 
+        }
     },
     "Confirmed Count per 100K Population":{
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
-        "State": ["USA Facts","1point3acres","New York Times"]
+        "County": {
+            "USA Facts": {
+                "geojson":'county_usfacts.geojson',
+                "csv":['covid_confirmed_usafacts'] 
+            },
+            "1point3acres": {
+                "geojson":'county_1p3a.geojson',
+                "csv":['covid_confirmed_1p3a']
+            },
+            "New York Times": {
+                "geojson":'county_nyt.geojson',
+                "csv":['covid_confirmed_nyt']  
+            }
+        },
+        "State": {
+            "USA Facts": {
+                "geojson":'state_usafacts.geojson',
+                "csv":['covid_deaths_usafacts_state'] 
+            },
+            "1point3acres": {
+                "geojson":'state_1p3a.geojson',
+                "csv":['covid_confirmed_1p3a_state']
+            },
+            "New York Times": {
+                "geojson":'state_nyt.geojson',
+                "csv":['covid_confirmed_nyt_state']
+            }, 
+        }
     },
     "Confirmed Count per Licensed Bed":{
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
-        "State": ["USA Facts","1point3acres","New York Times"]
+        "County": {
+            "USA Facts": {
+                "geojson":'county_usfacts.geojson',
+                "csv":['covid_confirmed_usafacts'] 
+            },
+            "1point3acres": {
+                "geojson":'county_1p3a.geojson',
+                "csv":['covid_confirmed_1p3a']
+            },
+            "New York Times": {
+                "geojson":'county_nyt.geojson',
+                "csv":['covid_confirmed_nyt']  
+            }
+        },
+        "State": {
+            "1point3acres": {
+                "geojson":'state_1p3a.geojson',
+                "csv":['covid_confirmed_1p3a_state']
+            },
+            "New York Times": {
+                "geojson":'state_nyt.geojson',
+                "csv":['covid_confirmed_nyt_state']
+            }, 
+        }
     },
     "HEADER:deaths":{},
     "Death Count":{
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
-        "State": ["USA Facts","1point3acres","New York Times"]
+        "County": {
+            "USA Facts": {
+                "geojson":'county_usfacts.geojson',
+                "csv":['covid_deaths_usafacts'] 
+            },
+            "1point3acres": {
+                "geojson":'county_1p3a.geojson',
+                "csv":['covid_deaths_1p3a']
+            },
+            "New York Times": {
+                "geojson":'county_nyt.geojson',
+                "csv":['covid_deaths_nyt']  
+            }
+        },
+        "State": {
+            "1point3acres": {
+                "geojson":'state_1p3a.geojson',
+                "csv":['covid_deaths_1p3a_state']
+            },
+            "New York Times": {
+                "geojson":'state_nyt.geojson',
+                "csv":['covid_deaths_nyt_state']
+            }, 
+        }
     },
     "Death Count per 100K Population": {
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
-        "State": ["USA Facts","1point3acres","New York Times"]
+        "County": {
+            "USA Facts": {
+                "geojson":'county_usfacts.geojson',
+                "csv":['covid_deaths_usafacts'] 
+            },
+            "1point3acres": {
+                "geojson":'county_1p3a.geojson',
+                "csv":['covid_deaths_1p3a']
+            },
+            "New York Times": {
+                "geojson":'county_nyt.geojson',
+                "csv":['covid_deaths_nyt']  
+            }
+        },
+        "State": {
+            "1point3acres": {
+                "geojson":'state_1p3a.geojson',
+                "csv":['covid_deaths_1p3a_state']
+            },
+            "New York Times": {
+                "geojson":'state_nyt.geojson',
+                "csv":['covid_deaths_nyt_state']
+            }, 
+        }
     },
     "Death Count / Confirmed Count": {
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
-        "State": ["USA Facts","1point3acres","New York Times"]
+        "County": {
+            "USA Facts": {
+                "geojson":'county_usfacts.geojson'
+            },
+            "1point3acres": {
+                "geojson":'county_1p3a.geojson'
+            },
+            "New York Times": {
+                "geojson":'county_nyt.geojson'
+            }
+        },
+        "State": {
+            "1point3acres": {
+                "geojson":'state_1p3a.geojson'
+            },
+            "New York Times": {
+                "geojson":'state_nyt.geojson'
+            }, 
+        }
     },
     "HEADER:testing":{},
     "7 Day Testing Positivity Rate Percent":{
-        "County": ["CDC"],
-        "State": ["CDC"]
+        "County": {
+            "CDC": {
+                "geojson": "cdc.geojson"
+            }
+        },
+        "State": {
+            "CDC": {
+                "geojson":'state_1p3a.geojson'
+            },
+        }
     },
-    "7 Day Tests Performed per 100K Population":{
-        "County": ["CDC"],
-        "State": ["CDC"]
+    "7 Day Testing Capacity per 100K Population":{
+        "County": {
+            "CDC": {
+                "geojson": "cdc.geojson"
+            }
+        },
+        "State": {
+            "CDC": {
+                "geojson":'state_1p3a.geojson'
+            },
+        }
     },
     "HEADER:vaccination":{},
     "Percent Fully Vaccinated":{
-        "County (Hybrid)": ["CDC"],
-        "County": ["CDC"],
-        "State": ["CDC"]
+        "County (Hybrid)": {
+            "CDC": {
+                "geojson": "cdc_h.geojson",
+            }
+        },
+        "County": {
+            "CDC": {
+                "geojson": "cdc.geojson",
+            }
+        },
+        "State": {
+            "CDC": {
+                "geojson": "state_1p3a.geojson",
+            }
+        },
     },
     "Percent Received At Least One Dose":{
-        "State": ["CDC"]
+        "State": {
+            "CDC": {
+                "geojson": "state_1p3a.geojson"
+            }
+        },
     },
-    'Doses to be Administered per 100 People': {
-        "State": ["CDC"]
+    "Doses to be Administered per 100 People":{
+        "State": {
+            "CDC": {
+                "geojson": "state_1p3a.geojson"
+            }
+        },
     },
     "HEADER:forecasting":{},
     "Forecasting (5-Day Severity Index)":{
-        "County": ["Yu Group at Berkeley"]
+        "County": {
+            "Yu Group at Berkeley": {
+                "geojson":'county_usfacts.geojson'
+            }
+        }
     },
     "HEADER:community health information":{},
     "Uninsured Percent": {
-        "County": ["County Health Rankings"],
-        "State": ["County Health Rankings"]
+        "County": {
+            "County Health Rankings": {
+                "geojson":'county_usfacts.geojson',
+                "csv":['chr_health_factors']
+            }
+        },
+        "State": {
+            "County Health Rankings": {
+                "geojson":'state_1p3a.geojson'
+            }
+        }
     },
     "Over 65 Years Percent": {
-        "County": ["County Health Rankings"],
-        "State": ["County Health Rankings"]
+        "County": {
+            "County Health Rankings": {
+                "geojson":'county_usfacts.geojson'
+            }
+        },
+        "State": {
+            "County Health Rankings": {
+                "geojson":'state_1p3a.geojson'
+            }
+        }
     },
     "Life Expectancy": {
-        "County": ["County Health Rankings"],
-        "State": ["County Health Rankings"]
+        "County": {
+            "County Health Rankings": {
+                "geojson":'county_usfacts.geojson'
+            }
+        },
+        "State": {
+            "County Health Rankings": {
+                "geojson":'state_1p3a.geojson'
+            }
+        }
     },
     "Percent Essential Workers": {
-        "County": ['ACS']
+        "County": {
+            "ACS": {
+                "geojson":'county_usfacts.geojson'
+            }
+        },
+        // "State": {
+        //     "ACS": {
+        //         "geojson":'state_1p3a.geojson'
+        //     }
+        // }
     },
     "HEADER:mobility":{},
     "Percent Home on Workdays": {
-        "County": ["Safegraph"]
+        "County": {
+            "Safegraph": {
+                "geojson":'county_usfacts.geojson'
+            }
+        }
     },
     "Percent Part Time on Workdays": {
-        "County": ["Safegraph"]
+        "County": {
+            "Safegraph": {
+                "geojson":'safegraph.geojson'
+            }
+        }
     },
     "Percent Full Time on Workdays": {
-        "County": ["Safegraph"]
+        "County": {
+            "Safegraph": {
+                "geojson":'safegraph.geojson'
+            }
+        }
     }
 }
 
-const onlyUnique = (value, index, self) => self.indexOf(value) === index;
-export const allGeographies = Object.values(variableTree).flatMap(o => Object.keys(o)).filter(onlyUnique)
-export const allDatasets = Object.values(variableTree).flatMap(o => Object.values(o)).flatMap(o => o).filter(onlyUnique)
-
 
 export const datasetTree = {
-    'County (Hybrid)': {
-        'CDC':'cdc_h.geojson',
-    },
     'County': {
       '1point3acres':'county_1p3a.geojson',
       'New York Times':'county_nyt.geojson',
       'USA Facts':'county_usfacts.geojson',
       'CDC':'cdc.geojson',
-      'Yu Group at Berkeley':'cdc.geojson',
-      'County Health Rankings':'cdc.geojson',
-      'ACS':'cdc.geojson',   
-      'Safegraph':'cdc.geojson'
+      'Yu Group at Berkeley':'county_usfacts.geojson',
+      'County Health Rankings':'county_usfacts.geojson',
+      'ACS':'county_usfacts.geojson',   
+      'Safegraph':'county_usfacts.geojson'
     }, 
+    'County (Hybrid)':{
+      'CDC':'cdc_h.geojson',
+    },
     'State': {
       '1point3acres':'state_1p3a.geojson',
       'New York Times':'state_nyt.geojson',
@@ -1223,40 +1427,40 @@ export const datasetTree = {
 
 export const urlParamsTree = {
     'county_usfacts.geojson': {
-        name: 'USA Facts',
-        geography: 'County'
+      name: 'USA Facts',
+      geography: 'County'
     },
     'county_1p3a.geojson': {
-        name: '1point3acres',
-        geography: 'County'
+      name: '1point3acres',
+      geography: 'County'
     },
     'county_nyt.geojson': {
-        name: 'New York Times',
-        geography: 'County'
+      name: 'New York Times',
+      geography: 'County'
     },
     'state_1p3a.geojson': {
-        name: '1point3acres',
-        geography: 'State'
+      name: '1point3acres',
+      geography: 'State'
     },
     'state_usafacts.geojson': {
-        name: 'USA Facts',
-        geography: 'State'
+      name: 'USA Facts',
+      geography: 'State'
     }, 
     'state_nyt.geojson': {
-        name: 'New York Times',
-        geography: 'State'
+      name: 'New York Times',
+      geography: 'State'
     },
     'global_jhu.geojson': {
-        name: 'John Hopkins University',
-        geography: 'Global'
+      name: 'John Hopkins University',
+      geography: 'Global'
     },
     'cdc.geojson': {
-        name: 'CDC',
-        geography: 'County'
+      name: 'CDC',
+      geography: 'County'
     },
     'cdc_h.geojson': {
-        name: 'CDC',
-        geography: 'County (Hybrid)'
+      name: 'CDC',
+      geography: 'County (Hybrid)'
     },
     'safegraph.geojson': {
       name: 'Safegraph',
