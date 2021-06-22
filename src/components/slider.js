@@ -5,12 +5,15 @@ import Slider from '@material-ui/core/Slider';
 import Button from '@material-ui/core/Button';
 import styled from 'styled-components';
 import { setVariableParams, incrementDate } from '../actions';
+import useTickUpdate from '../hooks/useTickUpdate';
+import { colors } from '../config';
 
 const SliderContainer = styled.div`
     color: white;
     box-sizing:border-box;
     padding:5px 20px 5px 20px;
     width:100%;
+    user-select: none;
 `
 const PlayPauseContainer = styled(Grid)`
     height:0;
@@ -22,10 +25,9 @@ const PlayPauseButton = styled(Button)`
     background:none;
     padding:0;
     margin:0;
-    transform:translate(-20px, -5px);
-    @media (max-width: 600px) {
-        transform:translate(-20px, 3px);
-    }
+    position:absolute;
+    left:-25px;
+    bottom:-25px;
     svg {
         width: 24px;
         height:24px;
@@ -48,16 +50,16 @@ const PlayPauseButton = styled(Button)`
 const LineSlider = styled(Slider)`
     &.MuiSlider-root {
         width:68%;
-        margin-left:15%;
+        margin-left:25%;
         box-sizing:border-box;
         color:#FFFFFF55;
         @media (max-width: 600px) {
-            width:50%;
+            margin-top:-10px;
             margin-left:24%;
         }
     }
     span.MuiSlider-rail {
-        // display:none;
+        display:none;
     }
     span.MuiSlider-track {
         // color:white;
@@ -77,6 +79,9 @@ const LineSlider = styled(Slider)`
                 background: none;
             }
         }
+        @media (max-width:768px){
+            transform:scale(1.25);
+        }
     }
     span.MuiSlider-mark {
         width:1px;
@@ -90,17 +95,48 @@ const LineSlider = styled(Slider)`
     }
 `
 
+const SpeedSlider = styled.div`
+    position:absolute;
+    padding:0.75em 0.5em 0.25em 0.5em;
+    widht:100%;
+    background:${colors.gray};
+    border-radius:0.5em;
+    left:0;
+    top:calc(100% + 0.25em);
+    box-shadow: 0px 0px 5px rgb(0 0 0 / 70%);
+    p {
+        text-align:center;
+    }
+    span.MuiSlider-rail {
+        display:initial;
+    }
+    span.MuiSlider-track {
+        display:initial;
+    }
+    span.MuiSlider-root {
+        width:80%;
+        margin:0 10%;
+    }
+`
+
 const RangeSlider = styled(Slider)`
     box-sizing:border-box;
     &.MuiSlider-root {
-        width:70%;
-        margin-left:13%;
+        width:68%;
+        margin-left:25%;
         box-sizing:border-box;
         color:#FFFFFF55;
-        padding-top: 50px;
+        padding-top:50px;
         @media (max-width: 600px) {
-            width:90%;
-            margin-left:0;
+            margin-left:24%;
+        }
+        span.MuiSlider-thumb[data-index='0'] span.MuiSlider-valueLabel span span{
+            margin-left:-30px;
+            margin-top:-30px;
+        }
+        span.MuiSlider-thumb[data-index='1'] span.MuiSlider-valueLabel span span{
+            margin-left:30px;
+            margin-top:30px;
         }
     }
     span.MuiSlider-rail {
@@ -122,6 +158,9 @@ const RangeSlider = styled(Slider)`
                 background: none;
             }
         }
+        @media (max-width:768px){
+            transform:scale(1.25);
+        }
     }
     span.MuiSlider-mark {
         width:1px;
@@ -130,9 +169,10 @@ const RangeSlider = styled(Slider)`
     span.MuiSlider-thumb.MuiSlider-active: {
         box-shadow: 0px 0px 10px rgba(200,200,200,0.5);
     }
+    
 `
 
-const DateTitle = styled.h3`
+const DateH3 = styled.h3`
     width:100%;
     font-size:1.05rem;
     padding:10px 0 5px 0;
@@ -147,7 +187,7 @@ const InitialDate = styled.p`
     bottom:18px;
     font-size:75%;
     @media (max-width: 600px) {
-        bottom:15px;
+        bottom:18px;
         left:12%;
     }
 `
@@ -185,46 +225,82 @@ const DateSelectorContainer = styled(Grid)`
     }
 `
 
+const TickMarks = styled.div`
+    width:100%;
+    height:10px;
+    display:flex;
+    div {
+        width:1px;
+        height:10px;
+        display:inline-block;
+    }
+`
 
-const DateSlider = () => {
+const valuetext = (dates, value) => {
+    const fullDate = dates[value]?.split('-')
+
+    return fullDate && `${parseInt(fullDate[1])}/${parseInt(fullDate[2])}/${fullDate[0]?.slice(2,)}`
+    
+}
+
+const speedtext = (value) => `Animation Tick Rate: ${value} milliseconds`;
+
+const formatDate = (date) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    let rawDate = new Date(date);
+    rawDate.setDate(rawDate.getDate() + 1);
+    return rawDate.toLocaleDateString('en-US', options);
+}
+
+function DateTitle(){
+    const nType = useSelector(state => state.dataParams.nType);
+    const nIndex = useSelector(state => state.dataParams.nIndex);
+    const dates = useSelector(state => state.dates);
+
+    return <>
+        <DateSelectorContainer item xs={12}>
+            <DateH3>{nType !== 'characteristic' ? formatDate(`${dates[nIndex]}`) : 'Characteristic Data'}</DateH3>
+        </DateSelectorContainer>
+    </>
+}
+
+function DateSlider(){
     const dispatch = useDispatch();  
 
-    const currentData = useSelector(state => state.currentData);
-    const dataParams = useSelector(state => state.dataParams);
-    const dateIndices = useSelector(state => state.dateIndices);
+    const nType = useSelector(state => state.dataParams.nType);
+    const nIndex = useSelector(state => state.dataParams.nIndex);
+    const nRange = useSelector(state => state.dataParams.nRange);
+    const dType = useSelector(state => state.dataParams.dType);
+    const rangeType = useSelector(state => state.dataParams.rangeType);
+    const variableName = useSelector(state => state.dataParams.variableName);
+    const currTable = useSelector(state => state.storedData[state.currentTable.numerator]);
+    const dateIndices = currTable !== undefined && currTable.dates;
     const dates = useSelector(state => state.dates);
-    
-    const [timerId, setTimerId] = useState(null);
-    const [currentMarks, setCurrentMarks] = useState([]);
+
     const [timeCase, setTimeCase] = useState(0);
     const [dRange, setDRange] = useState(false);
 
-    useEffect(() => {
-        if (dateIndices.hasOwnProperty(currentData) && dateIndices[currentData][dataParams.numerator] !== null){
-            const tempMarks = dateIndices[currentData][dataParams.numerator].map(date => { return { value: date }})
-            setCurrentMarks(tempMarks)
-        }
-    },[dateIndices, currentData, dataParams.numerator])
+    const [isTicking, setIsTicking, timing, setTiming] = useTickUpdate()
 
     useEffect(() => {
-        if (dataParams.nType === "time-series" && dataParams.dType === "time-series") {
+        if (nType === "time-series" && dType === "time-series") {
             setTimeCase(1)
-        } else if (dataParams.nType === "time-series") {
+        } else if (nType === "time-series") {
             setTimeCase(2)
-        } else if (dataParams.dType === "time-series") {
+        } else if (dType === "time-series") {
             setTimeCase(3)
-        } else if (dataParams.variableName.includes('Testing')||dataParams.variableName.includes('Workdays')){
+        } else if (variableName.includes('Testing')||variableName.includes('Workdays')){
             setTimeCase(4)
         }
-    },[dataParams.dType, dataParams.nType,dataParams.variableName.includes ])
+    },[dType, nType, variableName ])
     
     useEffect(() => {
-        if (dataParams.dRange) {
+        if (dRange) {
             setDRange(true)
         } else {
             setDRange(false)
         }
-    },[dataParams.dRange])
+    },[dRange])
     
     function debounce(func, wait, immediate) {
         var timeout;
@@ -242,108 +318,110 @@ const DateSlider = () => {
     };
 
     const handleChange = debounce((event, newValue) => {
+        const val = dateIndices.includes(newValue) 
+                ? 
+            newValue 
+                :
+            dateIndices.reduce((a, b) => {return Math.abs(b - newValue) < Math.abs(a - newValue) ? b : a});
+
         switch(timeCase){
             case 1:
-                dispatch(setVariableParams({nIndex: newValue, dIndex: newValue}))
+                dispatch(setVariableParams({nIndex: val, dIndex: val}))
                 break
             case 2:
-                dispatch(setVariableParams({nIndex: newValue}))
+                dispatch(setVariableParams({nIndex: val}))
                 break
             case 3:
-                dispatch(setVariableParams({dIndex: newValue}))
+                dispatch(setVariableParams({dIndex: val}))
                 break
             case 4:
-                dispatch(setVariableParams({nIndex: newValue}))
+                dispatch(setVariableParams({nIndex: val}))
                 break
         }
-    }, 10);
+    }, 5);
         
-    const handleRangeChange = (event, newValue) => { 
+    const handleRangeChange = debounce((event, newValue) => {
+        const val0 = dateIndices.includes(newValue[0]) 
+            ? 
+        newValue[0] 
+            :
+        dateIndices.reduce((a, b) => {return Math.abs(b - newValue[0]) < Math.abs(a - newValue[0]) ? b : a});
+
+        const val1 = dateIndices.includes(newValue[1]) 
+            ? 
+        newValue[1] 
+            :
+        dateIndices.reduce((a, b) => {return Math.abs(b - newValue[1]) < Math.abs(a - newValue[1]) ? b : a});
+        
         if (dRange) {
             dispatch(setVariableParams(
                 {
-                    nIndex: newValue[1], 
-                    nRange: newValue[1]-newValue[0],
-                    rIndex: newValue[1], 
-                    rRange: newValue[1]-newValue[0]
+                    nIndex: val1, 
+                    nRange: val1-val0,
+                    rIndex: val1,
+                    rRange: val1-val0
                 }
             ))
         } else {
             dispatch(setVariableParams(
                 {
-                    nIndex: newValue[1], 
-                    nRange: newValue[1]-newValue[0]
+                    nIndex: val1, 
+                    nRange: val1-val0
                 }
             ))
         }
-    }
+    }, 25);
 
-    const handlePlayPause = (timerId, rate, interval) => {
-        if (timerId === null) {
-            setTimerId(setInterval(o => dispatch(incrementDate(rate)), interval))
+    const handlePlayPause = () => {
+        if (!isTicking) {
+            setIsTicking(true)
         } else {
-            clearInterval(timerId);
-            setTimerId(null)
+            setIsTicking(false)
         }
     }
 
-    const valuetext = (value) => `${dates[value]?.slice(-5,-3)}-${dates[value]?.slice(2,4)}`;
-    
-    const formatDate = (date) => {
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        let rawDate = new Date(date);
-        rawDate.setDate(rawDate.getDate() + 1);
-        return rawDate.toLocaleDateString('en-US', options);
-    }
-    
-    if (dateIndices[currentData] !== undefined) {
+    if (dateIndices) {
         return (
             <SliderContainer>
-                <Grid container spacing={2} style={{display:'flex', padding: '0 0 10px 0'}}>
-                        {dataParams.rangeType !== 'custom' && 
-                            <DateSelectorContainer item xs={12}>
-                                <DateTitle>{dataParams.nType !== 'characteristic' ? formatDate(`${dates[dataParams.nIndex]}`) : 'Characteristic Data'}</DateTitle>
-                            </DateSelectorContainer>
-                        } 
-                    
-                    {dataParams.nType !== 'characteristic' && <PlayPauseContainer item xs={1}>
-                        <PlayPauseButton id="playPause" onClick={() => handlePlayPause(timerId, 1, 100)}>
-                            {timerId === null ? 
-                                <svg x="0px" y="0px" viewBox="0 0 100 100" ><path d="M78.627,47.203L24.873,16.167c-1.082-0.625-2.227-0.625-3.311,0C20.478,16.793,20,17.948,20,19.199V81.27  c0,1.25,0.478,2.406,1.561,3.031c0.542,0.313,1.051,0.469,1.656,0.469c0.604,0,1.161-0.156,1.703-0.469l53.731-31.035  c1.083-0.625,1.738-1.781,1.738-3.031C80.389,48.984,79.71,47.829,78.627,47.203z"></path></svg>
-                                : 
-                                <svg x="0px" y="0px" viewBox="0 0 100 100">
-                                    <g transform="translate(50 50) scale(0.69 0.69) rotate(0) translate(-50 -50)">
-                                        <g>
-                                            <path d="M22.4,0.6c3.4,0,6.8,0,10.3,0c6.5,0,11.8,5.3,11.8,11.8c0,25,0,50.1,0,75.2c0,6.5-5.3,11.8-11.8,11.8
-                                                c-3.4,0-6.8,0-10.3,0c-6.5,0-11.8-5.3-11.8-11.8c0-25.1,0-50.2,0-75.2C10.6,5.9,15.9,0.6,22.4,0.6z M22.4,6.5c3.4,0,6.8,0,10.3,0
-                                                c3.2,0,5.9,2.6,5.9,5.9c0,25,0,50.1,0,75.2c0,3.2-2.7,5.9-5.9,5.9c-3.4,0-6.8,0-10.3,0c-3.2,0-5.9-2.7-5.9-5.9
-                                                c0-25.1,0-50.2,0-75.2C16.5,9.1,19.2,6.5,22.4,6.5z M67.3,6.5c3.4,0,6.8,0,10.2,0s6,2.6,6,5.9c0,25,0,50.1,0,75.2
-                                                c0,3.2-2.7,5.9-6,5.9s-6.7,0-10.2,0c-3.3,0-5.9-2.7-5.9-5.9c0-25.1,0-50.2,0-75.2C61.4,9.1,64,6.5,67.3,6.5z M67.3,0.6
-                                                c3.4,0,6.8,0,10.2,0c6.5,0,11.8,5.3,11.8,11.8c0,25,0,50.1,0,75.2c0,6.5-5.3,11.8-11.8,11.8c-3.3,0-6.7,0-10.2,0
-                                                c-6.5,0-11.8-5.3-11.8-11.8c0-25.1,0-50.2,0-75.2C55.5,5.9,60.8,0.6,67.3,0.6z"/>
-                                        </g>
+                {nType !== 'characteristic' && <PlayPauseContainer item xs={1}>
+                    <PlayPauseButton id="playPause" onClick={() => handlePlayPause()}>
+                        {!isTicking ? 
+                            <svg x="0px" y="0px" viewBox="0 0 100 100" ><path d="M78.627,47.203L24.873,16.167c-1.082-0.625-2.227-0.625-3.311,0C20.478,16.793,20,17.948,20,19.199V81.27  c0,1.25,0.478,2.406,1.561,3.031c0.542,0.313,1.051,0.469,1.656,0.469c0.604,0,1.161-0.156,1.703-0.469l53.731-31.035  c1.083-0.625,1.738-1.781,1.738-3.031C80.389,48.984,79.71,47.829,78.627,47.203z"></path></svg>
+                            : 
+                            <svg x="0px" y="0px" viewBox="0 0 100 100">
+                                <g transform="translate(50 50) scale(0.69 0.69) rotate(0) translate(-50 -50)">
+                                    <g>
+                                        <path d="M22.4,0.6c3.4,0,6.8,0,10.3,0c6.5,0,11.8,5.3,11.8,11.8c0,25,0,50.1,0,75.2c0,6.5-5.3,11.8-11.8,11.8
+                                            c-3.4,0-6.8,0-10.3,0c-6.5,0-11.8-5.3-11.8-11.8c0-25.1,0-50.2,0-75.2C10.6,5.9,15.9,0.6,22.4,0.6z M22.4,6.5c3.4,0,6.8,0,10.3,0
+                                            c3.2,0,5.9,2.6,5.9,5.9c0,25,0,50.1,0,75.2c0,3.2-2.7,5.9-5.9,5.9c-3.4,0-6.8,0-10.3,0c-3.2,0-5.9-2.7-5.9-5.9
+                                            c0-25.1,0-50.2,0-75.2C16.5,9.1,19.2,6.5,22.4,6.5z M67.3,6.5c3.4,0,6.8,0,10.2,0s6,2.6,6,5.9c0,25,0,50.1,0,75.2
+                                            c0,3.2-2.7,5.9-6,5.9s-6.7,0-10.2,0c-3.3,0-5.9-2.7-5.9-5.9c0-25.1,0-50.2,0-75.2C61.4,9.1,64,6.5,67.3,6.5z M67.3,0.6
+                                            c3.4,0,6.8,0,10.2,0c6.5,0,11.8,5.3,11.8,11.8c0,25,0,50.1,0,75.2c0,6.5-5.3,11.8-11.8,11.8c-3.3,0-6.7,0-10.2,0
+                                            c-6.5,0-11.8-5.3-11.8-11.8c0-25.1,0-50.2,0-75.2C55.5,5.9,60.8,0.6,67.3,0.6z"/>
                                     </g>
-                                </svg>
+                                </g>
+                            </svg>
 
-                            }
-                        </PlayPauseButton>
-                    </PlayPauseContainer>}
+                        }
+                    </PlayPauseButton>
+                </PlayPauseContainer>}
+                <Grid container spacing={2} style={{display:'flex', padding: '0 0 10px 0'}}>
+                        {rangeType !== 'custom' && <DateTitle/> }
                     <Grid item xs={11}> {/* Sliders Grid Item */}
                         {/* Main Slider for changing date */}
-                        { (dataParams.rangeType !== 'custom' && dataParams.nType !== "characteristic") && 
+                        { (rangeType !== 'custom' && nType !== "characteristic") && 
                             <LineSlider 
                                 id="timeSlider"
-                                value={dataParams.nIndex} 
+                                value={nIndex} 
                                 // valueLabelDisplay="on"
                                 onChange={handleChange} 
-                                // getAriaValueText={valuetext}
-                                // valueLabelFormat={valuetext}
-                                // aria-labelledby="aria-valuetext"
+                                getAriaValueText={valuetext}
+                                valueLabelFormat={valuetext}
+                                aria-labelledby="aria-valuetext"
                                 min={1}
                                 max={dates.length}
-                                marks={currentMarks}
-                                step={null}
-                                characteristic={dataParams.nType==="characteristic"}
+                                step={1}
+                                characteristic={nType==="characteristic"}
                         />}
                         {/* Slider for bin date */}
                         {/* {!customRange && 
@@ -359,22 +437,35 @@ const DateSlider = () => {
                                 max={startDateIndex+dates[currentData].length-1}
                         />} */}
                         {/* Slider for changing date range */}
-                        {dataParams.rangeType === 'custom' && <RangeSlider 
+                        {rangeType === 'custom' && <RangeSlider 
                             id="timeSlider"
-                            value={[dataParams.nIndex-dataParams.nRange, dataParams.nIndex]} 
+                            value={[nIndex-nRange, nIndex]} 
                             valueLabelDisplay="on"
                             onChange={handleRangeChange} 
-                            getAriaValueText={valuetext}
-                            valueLabelFormat={valuetext}
+                            getAriaValueText={(val) => valuetext(dates, val)}
+                            valueLabelFormat={(val) => valuetext(dates, val)}
                             aria-labelledby="aria-valuetext"
                             min={1}
                             max={dates.length}
-                            marks={currentMarks}
-                            step={null}
+                            step={1}
                         />}
                     </Grid>
-                    {(dataParams.rangeType !== 'custom' && dataParams.nType !== 'characteristic') && <InitialDate>{dates[0]}</InitialDate>}
-                    {(dataParams.rangeType !== 'custom' && dataParams.nType !== 'characteristic') && <EndDate>{dateIndices[currentData] !== undefined && dates[dateIndices[currentData][dataParams.numerator]?.slice(-1,)[0]]}</EndDate>}
+                    {(rangeType !== 'custom' && nType !== 'characteristic') && <InitialDate>{valuetext(dates, 0)}</InitialDate>}
+                    {(rangeType !== 'custom' && nType !== 'characteristic') && <EndDate>{dateIndices !== undefined && valuetext(dates, [dateIndices.slice(-1,)[0]])}</EndDate>}
+                    {isTicking && 
+                        <SpeedSlider>
+                        <p>Animation Speed</p>
+                        <LineSlider 
+                                value={1000 - timing} 
+                                onChange={(e, newValue) => setTiming(1000 - newValue)} 
+                                getAriaValueText={speedtext}
+                                valueLabelFormat={speedtext}
+                                aria-labelledby="aria-valuetext"
+                                min={25}
+                                max={975}
+                                step={25}
+                        />
+                        </SpeedSlider>}
                 </Grid>
             </SliderContainer>
         );

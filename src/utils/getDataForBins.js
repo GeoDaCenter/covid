@@ -1,43 +1,35 @@
 import dataFn from './dataFunction';
 // this function loops through the current data set and provides data for GeodaJS to create custom breaks 
-const getDataForBins = (tableData, dataParams) => {
-    const { numerator, nProperty, nIndex, denominator, dType, dIndex} = dataParams;
-    if (tableData[0][denominator] === undefined) return;
+const getDataForBins = (numeratorData, denominatorData, dataParams, fixedOrder=false) => {
+    const { nProperty, nIndex, dType, dIndex} = dataParams;
+
     // declare empty array for return variables
-    let rtn = new Array(tableData.length);
-    // let rtnIndex = {};
+    let rtn = new Array(fixedOrder ? fixedOrder.length : numeratorData.length);
 
     // length of data table to loop through
-    let n = tableData.length;
+    const keys = fixedOrder || Object.keys(numeratorData);
+    const n = keys.length;
 
     // this checks if the bins generated should be dynamic (generating for each date) or fixed (to the most recent date)
     if (nIndex === null && nProperty === null) {
         // if fixed, get the most recent date
-        let tempIndex = tableData[0][numerator].length-1;
+        let tempIndex = numeratorData[keys[0]].length-1;
         // if the denominator is time series data (eg. deaths / cases this week), make the indices the same (most recent)
-        let tempDIndex = dType === 'time-series' ? tableData[0][denominator].length-1 : dIndex;
+        let tempDIndex = dType === 'time-series' ? denominatorData.length-1 : dIndex;
         // loop through, do appropriate calculation. add returned value to rtn array
-        while (n>0) {
-            n--;
-            rtn[n] = dataFn(tableData[n][numerator], tableData[n][denominator], {...dataParams, nIndex:tempIndex, dIndex: tempDIndex})||0
-            // rtnIndex[tableData[n].properties.GEOID] = n 
+        for (let i=0; i<n; i++){
+            rtn[keys[i]] = dataFn(numeratorData[keys[i]], denominatorData[keys[i]], {...dataParams, nIndex:tempIndex, dIndex: tempDIndex})||0
         }
     } else {
-       while (n>0) {
-            n--;
-            rtn[n] = dataFn(tableData[n][numerator], tableData[n][denominator], dataParams)||0
-            // rtnIndex[tableData[n].properties.GEOID] = n 
+        for (let i=0; i<n; i++){
+            rtn[i] = dataFn(numeratorData[keys[i]], denominatorData[keys[i]], dataParams)||0
         }
     }
-    
-    let conditionalCheck = () => false;
-    
-    if (numerator.indexOf('vaccin') !== -1) conditionalCheck = (val) => val > 100 ? true : false;
-    
+
     for (let i=0; i<rtn.length;i++){
-        if (rtn[i] < 0 || conditionalCheck(rtn[i])) rtn[i] = 0 
+        if (rtn[i] < 0) rtn[i] = 0
     }
-    
+
     return rtn;   
 }
 export default getDataForBins

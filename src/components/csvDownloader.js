@@ -145,7 +145,7 @@ const checkboxSets = [
                 name: 'covid_testing_cdc'
             },
             {
-                label: 'County - Testing Capacity Per 100k - CDC',
+                label: 'County - Tests Performed Per 100k - CDC',
                 name: 'covid_tcap_cdc'
             },
             {
@@ -161,7 +161,7 @@ const checkboxSets = [
                 name: 'covid_testing_cdc_state'
             },
             {
-                label: 'State - Testing Capacity Per 100k - HHS',
+                label: 'State - Tests Performed Per 100k - HHS',
                 name: 'covid_tcap_cdc_state'
             },
             {

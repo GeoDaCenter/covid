@@ -70,6 +70,7 @@ class JsGeoDaWorker {
                         }
                         resolve({
                             data: e.data.result.data,
+                            properties: e.data.result.properties,
                             indices: e.data.result.indices
                         });
                     }

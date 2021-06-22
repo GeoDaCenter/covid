@@ -175,14 +175,17 @@ self.onmessage = function onmessage(event) {
         loadGeojson(data['params'].url).then(jsonData => {
           var geoidOrder = {};
           var indexOrder = {};
+          var properties = {};
           for (var i=0; i<jsonData.features.length; i++) {
               geoidOrder[jsonData.features[i].properties.GEOID] = i;
               indexOrder[i] = jsonData.features[i].properties.GEOID;
+              properties[jsonData.features[i].properties.GEOID] = jsonData.features[i].properties
           };
           return postMessage({
             success: true,
             result: {
               data: jsonData,
+              properties: properties,
               indices: {
                 geoidOrder,
                 indexOrder

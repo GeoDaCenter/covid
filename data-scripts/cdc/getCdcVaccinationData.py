@@ -155,7 +155,6 @@ def parseCsvOutput(df, colName, operation=None):
     tempDf = df[['state_fips','date',colName]]
     tempDf = tempDf.pivot_table(index='state_fips', columns='date').swaplevel(0, 1, 1).sort_index(1).reset_index()
     tempDf.columns = [column[0].replace('/','-') for column in list(tempDf.columns)]
-
     return tempDf
 
 def parse7dayRolling(df, colName, preLoaded=False, normalize=False):
@@ -187,33 +186,35 @@ def parse7dayRolling(df, colName, preLoaded=False, normalize=False):
 
 if __name__ == "__main__":
 
-    ## Vaccination Data
-    fileList = downloadCDCVaccinationData()
-    parsedData = parseVaccinationData(fileList)
+    # ## Vaccination Data
+    # fileList = downloadCDCVaccinationData()
+    # parsedData = parseVaccinationData(fileList)
 
-    parsedData['vaccineDistributed'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_to_be_distributed_cdc.csv'), index=False)
-    parsedData['vaccineAdministered1'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_one_or_more_doses_cdc.csv'), index=False)
-    parsedData['vaccineAdministered2'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_fully_vaccinated_cdc.csv'), index=False)
+    # parsedData['vaccineDistributed'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_to_be_distributed_cdc.csv'), index=False)
+    # parsedData['vaccineAdministered1'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_one_or_more_doses_cdc.csv'), index=False)
+    # parsedData['vaccineAdministered2'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_fully_vaccinated_cdc.csv'), index=False)
 
-    ## County Vaccination Data
-    countyFileList = downloadCDCCountyVaccinationData()
-    parsedCountyData = parseCountyVaccinationData(countyFileList)
-    parsedCountyData.to_csv(os.path.join(repo_root, 'public/csv/vaccine_fully_vaccinated_cdc.csv'),index=False)
+    # ## County Vaccination Data
+    # countyFileList = downloadCDCCountyVaccinationData()
+    # parsedCountyData = parseCountyVaccinationData(countyFileList)
+    # parsedCountyData.to_csv(os.path.join(repo_root, 'public/csv/vaccine_fully_vaccinated_cdc.csv'),index=False)
 
-    ## Demographic Data
-    downloadCDCDemographicVaccinationData()
+    # ## Demographic Data
+    # downloadCDCDemographicVaccinationData()
 
 # %%
     ## State Testing Data
     currentData = getCdcData()
+    print(currentData)
 # %%
     totalTesting = parseCsvOutput(currentData['totalNew'], 'total')
-    testingPer100Rolling = parse7dayRolling(currentData['totalNew'], 'total', normalize=True).round(2).replace([np.inf, -np.inf], np.nan)
+    testingPer100Rolling = parse7dayRolling(currentData['totalNew'], 'total', normalize=True).round(4).replace([np.inf, -np.inf], np.nan)
 
     positiveTestsRolling = parse7dayRolling(currentData['positiveNew'], 'positive')
     testingRolling = parse7dayRolling(currentData['totalNew'], 'total')
 
-    testingPositivityRolling = positiveTestsRolling.div(testingRolling, axis='columns').round(2).replace([np.inf, -np.inf], np.nan)
+    testingPositivityRolling = positiveTestsRolling.div(testingRolling, axis='columns').round(4).replace([np.inf, -np.inf], np.nan)
+    testingPositivityRolling = testingPositivityRolling.multiply(100)
     testingPositivityRolling['state_fips'] = positiveTestsRolling['state_fips']
    
     casesRolling = parse7dayRolling(pd.read_csv(os.path.join(repo_root, 'public/csv/covid_confirmed_1p3a_state.csv'))\
@@ -223,7 +224,8 @@ if __name__ == "__main__":
     casesRolling = casesRolling[casesRolling.state_fips.isin(testingRolling.state_fips)].reset_index().drop(columns=['index'])
                                     
 
-    ccptRolling = casesRolling.div(testingRolling, axis='columns').round(2).replace([np.inf, -np.inf], np.nan)
+    ccptRolling = casesRolling.div(testingRolling, axis='columns').round(4).replace([np.inf, -np.inf], np.nan)
+    ccptRolling = ccptRolling.multiply(100)
     ccptRolling['state_fips'] = casesRolling['state_fips']
     
     totalTesting.to_csv(os.path.join(repo_root, 'public/csv/covid_testing_cdc_state.csv'), index=False)

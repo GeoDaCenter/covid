@@ -9,14 +9,14 @@ import * as Pbf from 'pbf';
 // deck GL and helper function import
 import DeckGL from '@deck.gl/react';
 import {MapView, FlyToInterpolator} from '@deck.gl/core';
-import { PolygonLayer, ScatterplotLayer, IconLayer, TextLayer } from '@deck.gl/layers';
+import { PolygonLayer, ScatterplotLayer, IconLayer, TextLayer, GeoJsonLayer } from '@deck.gl/layers';
 import {DataFilterExtension} from '@deck.gl/extensions';
 import {fitBounds} from '@math.gl/web-mercator';
 import MapboxGLMap from 'react-map-gl';
 
 // component, action, util, and config import
 import { Geocoder } from '../components';
-import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData, openContextMenu, setNotification, setTooltipContent, setDotDensityData, incrementDate} from '../actions';
+import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData, openContextMenu, setNotification, setTooltipContent, setDotDensityData, updateSelectionKeys} from '../actions';
 import { mapFn, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, getURLParams } from '../utils';
 import { colors, colorScales, MAPBOX_ACCESS_TOKEN } from '../config';
 import MAP_STYLE from '../config/style.json';
@@ -182,25 +182,25 @@ function debounce(func, wait, immediate) {
     };
 };
 
-function MapSection(props){ 
+export default function MapSection(){ 
     // fetch pieces of state from store    
-    const storedData = useSelector(state => state.storedData);
-    const storedGeojson = useSelector(state => state.storedGeojson);
     const currentData = useSelector(state => state.currentData);
-    const storedLisaData = useSelector(state => state.storedLisaData);
-    const dateIndices = useSelector(state => state.dateIndices);
-    const storedCartogramData = useSelector(state => state.storedCartogramData);
     const panelState = useSelector(state => state.panelState);
-    const dates = useSelector(state => state.dates);
-    const dataParams = useSelector(state => state.dataParams);
     const mapParams = useSelector(state => state.mapParams);
     const urlParams = useSelector(state => state.urlParams);
     const dotDensityData = useSelector(state => state.dotDensityData);
-    const isPlaying = useSelector(state => state.isPlaying);
+    const currentMapData = useSelector(state => state.mapData.data);
+    const currentMapID = useSelector(state => state.mapData.params);
+    const storedGeojson = useSelector(state => state.storedGeojson);
+    const selectionKeys = useSelector(state => state.selectionKeys);
+    const currentMapGeography = storedGeojson[currentData]?.data||[]
+
+    const storedCartogramData = useSelector(state => state.storedCartogramData);
+    const storedLisaData = useSelector(state => state.storedLisaData);
     
     // component state elements
     // hover and highlight geographibes
-    const [hoverGeog, setHoverGeog] = useState({x:null, y:null, object:null});
+    const [hoverGeog, setHoverGeog] = useState(null);
     const [highlightGeog, setHighlightGeog] = useState([]);
     const [incrementTimeout, setIncrementTimeout] = useState(null);
 
@@ -241,46 +241,7 @@ function MapSection(props){
     // const [resetSelect, setResetSelect] = useState(null);
     // const [mobilityData, setMobilityData] = useState([]);
 
-    // local data store for parsed data
-    const [currentMapData, setCurrentMapData] = useState({
-        data: [],
-        params: {}
-    })
-
     const dispatch = useDispatch();
-    const updateMap = () => {
-        switch(mapParams.vizType) {
-            case 'cartogram':
-                if (storedCartogramData !== undefined) {
-                    let dataResults = cleanData({
-                        data: storedCartogramData,
-                        bins: {bins: mapParams.bins.bins, breaks:mapParams.bins.breaks}, 
-                        mapType: mapParams.mapType, 
-                        vizType: mapParams.vizType
-                    })
-                    setCurrentMapData({
-                        params: getVarId(currentData, dataParams),
-                        data: dataResults.choropleth,
-                        dots: dataResults.dot
-                    })
-                }
-                break;
-            default:
-                if (storedData[currentData] !== undefined) {
-                    let dataResults = cleanData({
-                        data: storedData[currentData],
-                        bins: {bins: mapParams.bins.bins, breaks:mapParams.bins.breaks}, 
-                        mapType: mapParams.mapType, 
-                        vizType: mapParams.vizType
-                    })
-                    setCurrentMapData({
-                        params: getVarId(currentData, dataParams),
-                        data: dataResults.choropleth,
-                        dots: dataResults.dot
-                    })
-                }
-        }
-    }
 
     let hidden = null;
     let visibilityChange = null;
@@ -331,12 +292,6 @@ function MapSection(props){
             }))
         })
     },[])
-
-    // create unique var id -- used only for cartogram data
-    // TODO: swap this out...
-    // useEffect(() => {
-    //     setCurrVarId(getVarId(currentData, dataParams))
-    // }, [dataParams, mapParams, currentData, storedLisaData])
 
     // change map center on viztype change
     useEffect(() => {
@@ -412,13 +367,11 @@ function MapSection(props){
 
     // change mapbox layer on viztype change or overlay/resource change
     useEffect(() => {
-
         if (mapParams.vizType === 'dotDensity') {
             if (!dotDensityData.length) {
                 getDotDensityData();
             }
         }
-        
         const defaultLayers = defaultMapStyle.get('layers');
         let tempLayers;
         if (mapParams.vizType === 'cartogram' || globalMap) {
@@ -446,9 +399,19 @@ function MapSection(props){
                     return layer;
                 }
             });
+        } else if (['native_american_reservations','segregated_cities','uscongress-districts'].includes(mapParams.overlay)){
+            tempLayers = defaultLayers.map(layer => {
+                if (mapParams.resource.includes(layer.get('id').split('-')[0]) || mapParams.overlay.includes(layer.get('id').split('-')[0])) {
+                    return layer.setIn(['layout', 'visibility'], 'visible');
+                } else if (layer.get('id').includes('label')){
+                    return layer.setIn(['layout', 'visibility'], 'none');
+                } else {
+                    return layer;
+                }
+            });
         } else {
             tempLayers = defaultLayers.map(layer => {
-                if (mapParams.resource.includes(layer.get('id')) || mapParams.overlay.includes(layer.get('id'))) {
+                if (mapParams.resource.includes(layer.get('id').split('-')[0]) || mapParams.overlay.includes(layer.get('id').split('-')[0])) {
                     return layer.setIn(['layout', 'visibility'], 'visible');
                 } else {
                     return layer;
@@ -504,94 +467,9 @@ function MapSection(props){
         }));
     }, [urlParams])
 
-    // clean and set map data after parameter change
-    // TODO: swap
-    useEffect(() => {
-        if (mapParams.binMode !== 'dynamic') updateMap();
-    },[mapParams.mapType, mapParams.vizType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, storedGeojson[currentData], storedCartogramData, mapParams.overlay])
-    
-    useEffect(() => {
-        if (mapParams.binMode === 'dynamic') updateMap();
-    },[mapParams.bins.bins, mapParams.binMode])
-    
     useEffect(() => {
         forceUpdate()
-    }, [currentMapData, dataParams.numerator, dataParams.variableName, dataParams.denominator, dataParams.nIndex, mapParams.overlay, storedLisaData])
-
-    const GetFillColor = (f, bins, mapType, varID) => {
-        if (!f[dataParams.numerator] || (!f[dataParams.numerator][dataParams.nIndex] && !f[dataParams.numerator][dataParams.nProperty])) {
-            return null
-        } else if (mapType === 'lisa') {
-            return colorScales.lisa[storedLisaData[storedGeojson[currentData]['geoidOrder'][f.properties.GEOID]]]||[240,240,240]
-        } else {
-            return mapFn(dataFn(f[dataParams.numerator], f[dataParams.denominator], dataParams), bins.breaks, mapParams.colorScale, mapParams.mapType, dataParams.numerator);
-        }
-    }
-
-    const GetSimpleFillColor = (value, geoid, bins, mapType) => {
-        if (value===null) {
-            return [240,240,240,120]
-        } else if (mapType === 'lisa') {
-            return colorScales.lisa[storedLisaData[storedGeojson[currentData]['geoidOrder'][geoid]]]
-        } else {
-            return mapFn(value, bins, mapParams.colorScale, mapParams.mapType, dataParams.numerator);
-        }
-    }
-    
-    const cleanData = ( parameters ) => {
-        const {data, bins, mapType, varID, vizType} = parameters; //dataName, dataType, params, colorScale
-        if (!bins.hasOwnProperty("bins")) {
-            return []
-        };
-
-        if ((data === undefined) || (mapType !== 'lisa' && bins.breaks === undefined)) {
-            return []
-        }
-
-        let returnArray = [];
-        let returnObj = {};
-        let i = 0;
-
-        switch(vizType) {
-            case 'cartogram':
-                if (storedGeojson[currentData] === undefined) break;
-                while (i < data.length) {
-                    const tempGeoid = storedGeojson[currentData]['indexOrder'][data[i].properties?.id]
-                    const tempColor = GetSimpleFillColor(data[i].value, tempGeoid, bins.breaks, mapType);
-                    returnArray.push({
-                        GEOID: tempGeoid,
-                        position: data[i].position,
-                        color: tempColor,
-                        radius: data[i].radius
-                    })
-                    i++;
-                }
-                break
-            default:
-                while (i < data.length) {
-                    let tempColor = GetFillColor(data[i], bins, mapType, varID);
-                    if (tempColor === null) {
-                        i++;
-                        continue;
-                    }
-                    let tempHeight = GetHeight(data[i]);
-                    for (let n=0; n<data[i].geometry.coordinates.length; n++) {
-                        returnArray.push({
-                            GEOID: data[i].properties.GEOID,
-                            geom: data[i].geometry.coordinates[n],
-                            color: tempColor,
-                            height: tempHeight
-                        })
-                        returnObj[+data[i].properties.GEOID] = tempColor
-                    }
-                    i++;
-                }
-        }
-
-        return {choropleth: returnArray, dot: returnObj}
-    }
-
-    const GetHeight = (f) => dataFn(f[dataParams.numerator], f[dataParams.denominator], dataParams)*(dataParams.scale3D/((dataParams.nType === "time-series" && dataParams.nRange === null) ? (dataParams.nIndex)/10 : 1))
+    }, [currentMapID, storedCartogramData, storedLisaData])
 
     const GetMapView = () => {
         try {
@@ -650,51 +528,36 @@ function MapSection(props){
     }
 
     const handleMapHover = ({x, y, object, layer}) => {
-        dispatch(setTooltipContent(x, y, Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : find(storedData[currentData], o => o.properties.GEOID === object?.GEOID)))
-        if (object && object.GEOID) {
-            if (object.GEOID !== hoverGeog) setHoverGeog(object.GEOID)
+        dispatch(setTooltipContent(x, y, Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : object?.properties?.GEOID));
+        if (object && object?.properties?.GEOID) {
+            if (object?.properties?.GEOID !== hoverGeog) setHoverGeog(object?.properties?.GEOID)
         } else {
             setHoverGeog(null)
         }
     }
 
+    const getScatterColor = (geoid) => currentMapData[geoid]?.color;
+
     const handleMapClick = (info, e) => {
+
         if (e.rightButton) return;
-        let tempData = storedData[currentData][storedData[currentData].findIndex(o => o.properties.GEOID === info.object?.GEOID)]        
-        const dataName = tempData.properties.hasOwnProperty('state_abbr') ? `${tempData.properties.NAME}, ${tempData.properties.state_abbr}` : `${tempData.properties.NAME}`
-        
+        const objectID = +info.object?.properties?.GEOID
+        if (!objectID) return;
+
         if (multipleSelect) {
             try {
-                if (highlightGeog.indexOf(info.object?.GEOID) === -1) {
-                    let GeoidList = [...highlightGeog, info.object?.GEOID]
+                if (highlightGeog.indexOf(objectID) === -1) {
+                    let GeoidList = [...highlightGeog, objectID]
                     setHighlightGeog(GeoidList); 
-                    dispatch(
-                        appendSelectionData({
-                            values: getDataForCharts(
-                                [tempData], 
-                                'cases', 
-                                dateIndices[currentData]['cases'], 
-                                dates, 
-                                dataName
-                            ),
-                            name: dataName,
-                            index: findIndex(storedData[currentData], o => o.properties.GEOID === info.object?.GEOID)
-                        })
-                    );
+                    dispatch(updateSelectionKeys(objectID, 'append'))
                     window.localStorage.setItem('SHARED_GEOID', GeoidList);
                     window.localStorage.setItem('SHARED_VIEW', JSON.stringify(GetMapView()));
                 } else {
                     if (highlightGeog.length > 1) {
                         let tempArray = [...highlightGeog];
-                        let geogIndex = tempArray.indexOf(info.object?.GEOID);
-                        tempArray.splice(geogIndex, 1);
+                        tempArray.splice(tempArray.indexOf(objectID), 1);
                         setHighlightGeog(tempArray);
-                        dispatch(
-                            removeSelectionData({
-                                name: dataName,
-                                index: findIndex(storedData[currentData], o => o.properties.GEOID === info.object?.GEOID)
-                            })
-                        )
+                        dispatch(updateSelectionKeys(objectID, 'remove'))
                         window.localStorage.setItem('SHARED_GEOID', tempArray);
                         window.localStorage.setItem('SHARED_VIEW', JSON.stringify(GetMapView()));
                     }
@@ -702,21 +565,9 @@ function MapSection(props){
             } catch {}
         } else {
             try {
-                setHighlightGeog([info.object?.GEOID]); 
-                dispatch(
-                    setSelectionData({
-                        values: getDataForCharts(
-                            [tempData], 
-                            'cases', 
-                            dateIndices[currentData]['cases'], 
-                            dates, 
-                            dataName
-                        ),
-                        name: dataName,
-                        index: findIndex(storedData[currentData], o => o.properties.GEOID === info.object?.GEOID)
-                    })
-                );
-                window.localStorage.setItem('SHARED_GEOID', info.object?.GEOID);
+                setHighlightGeog([objectID]); 
+                dispatch(updateSelectionKeys(objectID, 'update'))
+                window.localStorage.setItem('SHARED_GEOID', objectID);
                 window.localStorage.setItem('SHARED_VIEW', JSON.stringify(GetMapView()));
             } catch {}
         }
@@ -781,17 +632,12 @@ function MapSection(props){
         }  
     }, []);
 
-    
-
-    // const handleIncrement = (delay) => !staticTimeout && statsicTimeout = setTimeout(() => dispatch(incrementDate(1)), delay);
-
     const FullLayers = {
-        choropleth: new PolygonLayer({
+        choropleth: new GeoJsonLayer({
             id: 'choropleth',
-            data: currentMapData.data,
-            getFillColor: d => d.color,
-            getPolygon: d => d.geom,
-            getElevation: d => d.height,
+            data: currentMapGeography,
+            getFillColor: d => currentMapData[d.properties.GEOID].color,
+            getElevation: d => currentMapData[d.properties.GEOID].height,
             pickable: true,
             stroked: false,
             filled: true,
@@ -803,16 +649,14 @@ function MapSection(props){
             onClick: handleMapClick,           
             updateTriggers: {
                 opacity: mapParams.overlay,
-                getPolygon: [currentMapData.params, dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
-                getElevation: [currentMapData.params, dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
-                getFillColor: [currentMapData.params, dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
+                getElevation: currentMapID,
+                getFillColor: currentMapID,
             }
         }),
-        choroplethHighlight:  new PolygonLayer({
+        choroplethHighlight:  new GeoJsonLayer({
             id: 'highlightLayer',
-            data: currentMapData.data,
-            getPolygon: d => d.geom,
-            getLineColor: d => highlightGeog.indexOf(d.GEOID)!==-1 ? mapParams.vizType === 'dotDensity' ? [240,240,240] : [0, 104, 109] : [0, 104, 109, 0], 
+            data: currentMapGeography,
+            getLineColor: d => highlightGeog.indexOf(d.properties.GEOID)!==-1 ? mapParams.vizType === 'dotDensity' ? [240,240,240] : [0, 104, 109] : [0, 104, 109, 0], 
             opacity: 0.8,
             material:false,
             pickable: false,
@@ -823,16 +667,14 @@ function MapSection(props){
             lineWidthMinPixels: 1,
             lineWidthMaxPixels: 10,
             updateTriggers: {
-                getPolygon: currentData,
                 getLineColor: highlightGeog
             }
         }),
-        choroplethHover: new PolygonLayer({
+        choroplethHover: new GeoJsonLayer({
             id: 'hoverHighlightlayer',    
-            data: currentMapData.data,
-            getPolygon: d => d.geom,
-            getLineColor: d => hoverGeog === d.GEOID ? mapParams.vizType === 'dotDensity' ? [200,200,200] : [50, 50, 50] : [50, 50, 50, 0], 
-            getElevation: d => d.height,
+            data: currentMapGeography,
+            getLineColor: d => hoverGeog === d.properties.GEOID ? mapParams.vizType === 'dotDensity' ? [200,200,200] : [50, 50, 50] : [50, 50, 50, 0], 
+            getElevation: d => currentMapData[d.properties.GEOID].height,
             pickable: false,
             stroked: true,
             filled:false,
@@ -843,9 +685,8 @@ function MapSection(props){
             lineWidthMinPixels: 2,
             lineWidthMaxPixels: 10,
             updateTriggers: {
-                getPolygon: currentData,
                 getLineColor: hoverGeog,
-                getElevation: [currentMapData.data, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
+                getElevation: currentMapID,
                 extruded: mapParams.vizType
             }
         }),
@@ -914,40 +755,50 @@ function MapSection(props){
         }),
         cartogram: new ScatterplotLayer({
             id: 'cartogram layer',
-            data: currentMapData.data,
+            data: currentMapGeography.features,
             pickable:true,
-            getPosition: f => f.position,
-            getFillColor: f => f.color,
-            getRadius: f => f.radius,  
+            getPosition: d => currentMapData[d.properties.GEOID].position,
+            getFillColor: d => currentMapData[d.properties.GEOID].color,
+            getRadius: d => currentMapData[d.properties.GEOID].radius,  
             onHover: handleMapHover,
             radiusScale: currentData.includes('state') ? 9 : 6,
-            updateTriggers: {
-                getPosition: currentMapData,
-                getFillColor: currentMapData,
-                getRadius: currentMapData
+            transitions: {
+                getPosition: currentData.includes('state') ? 125 : 250,
+                getFillColor: currentData.includes('state') ? 125 : 250,
+                getRadius: currentData.includes('state') ? 125 : 250
             },
-          }),
+            updateTriggers: {
+                data: currentMapGeography,
+                getPosition:  [currentMapID,storedLisaData,storedCartogramData],
+                getFillColor:  [currentMapID,storedLisaData,storedCartogramData],
+                getRadius:  [currentMapID,storedLisaData,storedCartogramData],
+                transitions:  [currentMapID,storedLisaData,storedCartogramData],
+            },
+        }),
         cartogramText: new TextLayer({
             id: 'cartogram text layer',
-            data: currentMapData.data,
-            getPosition: f => f.position,
-            getSize: f => f.radius,
+            data: currentMapGeography.features,
+            getPosition: d => currentMapData[d.properties.GEOID].position,
+            getSize: d => currentMapData[d.properties.GEOID].radius,  
             sizeScale: 4,
             backgroundColor: [240,240,240],
             pickable:false,
-            visible: currentData.includes('state'),
             sizeUnits: 'meters',
             fontWeight: 'bold',
             getTextAnchor: 'middle',
             getAlignmentBaseline: 'center',
             maxWidth: 500,
             wordBreak: 'break-word',
-            getText: f => find(storedData[currentData], o => o.properties.GEOID === f.GEOID)?.properties?.NAME,
+            getText: d => d.properties.NAME,
+            transitions: {
+                getPosition: currentData.includes('state') ? 125 : 250,
+                getFillColor: currentData.includes('state') ? 125 : 250,
+                getRadius: currentData.includes('state') ? 125 : 250
+            },
             updateTriggers: {
-                getPosition: [storedCartogramData, mapParams.vizType],
-                getFillColor: [storedCartogramData, mapParams.vizType],
-                getize: [storedCartogramData, mapParams.vizType],
-                getRadius: [storedCartogramData, mapParams.vizType]
+                data: currentMapGeography,
+                getPosition: currentMapID,
+                getSize: currentMapID
             },
         }),        
         dotDensity: [new ScatterplotLayer({
@@ -956,7 +807,7 @@ function MapSection(props){
             pickable:false,
             filled:true,
             getPosition: f => [f[1]/1e5, f[2]/1e5],
-            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? currentMapData.dots[f[3]]||[0,0,0,0] : colors.dotDensity[f[0]],
+            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? getScatterColor(f[3]) : colors.dotDensity[f[0]],
             getRadius: 100,  
             radiusMinPixels: Math.sqrt(currentZoom)-1.5,
             getFilterValue: f => (f[0]===8 && mapParams.dotDensityParams.raceCodes[f[0]]) ? 1 : 0,
@@ -965,7 +816,7 @@ function MapSection(props){
             extensions: [new DataFilterExtension({filterSize: 1})],
             updateTriggers: {
                 getPosition: dotDensityData.length,
-                getFillColor: [mapParams.dotDensityParams.colorCOVID, currentMapData.dots, dotDensityData],
+                getFillColor: [mapParams.dotDensityParams.colorCOVID, currentMapID, dotDensityData],
                 data: dotDensityData,
                 getFilterValue: [dotDensityData.length, mapParams.dotDensityParams.raceCodes[8]],
                 radiusMinPixels: currentZoom
@@ -977,7 +828,7 @@ function MapSection(props){
             pickable:false,
             filled:true,
             getPosition: f => [f[1]/1e5, f[2]/1e5],
-            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? currentMapData.dots[f[3]]||[0,0,0,0] : colors.dotDensity[f[0]],
+            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? getScatterColor(f[3]) : colors.dotDensity[f[0]],
             getRadius: 100,  
             radiusMinPixels: Math.sqrt(currentZoom)-1.5,
             getFilterValue: f => (f[0]!==8 && mapParams.dotDensityParams.raceCodes[f[0]]) ? 1 : 0,
@@ -986,7 +837,7 @@ function MapSection(props){
             extensions: [new DataFilterExtension({filterSize: 1})],
             updateTriggers: {
                 getPosition: dotDensityData.length,
-                getFillColor: [mapParams.dotDensityParams.colorCOVID, currentMapData.dots, dotDensityData],
+                getFillColor: [mapParams.dotDensityParams.colorCOVID, currentMapID, dotDensityData],
                 data: dotDensityData,
                 getFilterValue: [dotDensityData.length, 
                     mapParams.dotDensityParams.raceCodes[1],mapParams.dotDensityParams.raceCodes[2],mapParams.dotDensityParams.raceCodes[3],mapParams.dotDensityParams.raceCodes[4],
@@ -1004,7 +855,9 @@ function MapSection(props){
         if (vizType === 'cartogram') {
             LayerArray.push(layers['cartogramBackground'])
             LayerArray.push(layers['cartogram'])
-            LayerArray.push(layers['cartogramText'])
+            if (currentData.includes('state')) {
+                LayerArray.push(layers['cartogramText'])
+            }
             return LayerArray
         } else if (vizType === '2D') {
             LayerArray.push(layers['choropleth'])
@@ -1065,6 +918,7 @@ function MapSection(props){
         // setY(e?.targetTouches[0]?.clientY-15)
         // console.log(e)
     }
+    
 
     const removeListeners = () => {
         window.removeEventListener('touchmove', touchListener)
@@ -1098,57 +952,24 @@ function MapSection(props){
                 window.addEventListener('mousemove', listener);
                 window.addEventListener('mouseup', removeListeners);
             } else {
-    
                 const {x, y, width, height } = boxSelectDims;
     
                 let layerIds = ['choropleth'];
-    
-                let features = deckRef.current.pickObjects(
-                        {
-                            x, y: y-50, width, height, layerIds
-                        }
-                    )
+                let features = deckRef.current.pickObjects({x, y: y-50, width, height, layerIds})
+
                 let GeoidList = [];
                 for (let i=0; i<features.length; i++) {
-                    if (GeoidList.indexOf(features[i].object?.GEOID) !== -1) continue
-                    const tempGEOID = features[i].object?.GEOID
-                    const tempData = storedData[currentData][storedData[currentData].findIndex(o => o.properties.GEOID === tempGEOID)]        
-                    const dataName = tempData.properties.hasOwnProperty('state_abbr') ? `${tempData.properties.NAME}, ${tempData.properties.state_abbr}` : `${tempData.properties.NAME}`
-                    GeoidList.push(tempGEOID)                    
-                    
-                    if (i===0){
-                        dispatch(
-                            setSelectionData({
-                                values: getDataForCharts(
-                                    [tempData], 
-                                    'cases', 
-                                    dateIndices[currentData]['cases'], 
-                                    dates, 
-                                    dataName
-                                ),
-                                name: dataName,
-                                index: findIndex(storedData[currentData], o => o.properties.GEOID === tempGEOID)
-                            })
-                        );
-                    } else {
-                        dispatch(
-                            appendSelectionData({
-                                values: getDataForCharts(
-                                    [tempData], 
-                                    'cases', 
-                                    dateIndices[currentData]['cases'], 
-                                    dates, 
-                                    dataName
-                                ),
-                                name: dataName,
-                                index: findIndex(storedData[currentData], o => o.properties.GEOID === tempGEOID)
-                            })
-                        );
-                    }
+                    const objectID = features[i].object?.properties?.GEOID
+                    if (!objectID || GeoidList.indexOf(objectID) !== -1) continue
+                    GeoidList.push(objectID)
                 }
+                
+                dispatch(updateSelectionKeys(GeoidList,'bulk-append'));
                 setHighlightGeog(GeoidList); 
+
                 window.localStorage.setItem('SHARED_GEOID', GeoidList);
                 window.localStorage.setItem('SHARED_VIEW', JSON.stringify(GetMapView()));
+
                 setBoxSelectDims({});
                 removeListeners();
                 setBoxSelect(false)
@@ -1162,8 +983,11 @@ function MapSection(props){
         <MapContainer
             onKeyDown={handleKeyDown}
             onKeyUp={handleKeyUp}
-            onMouseDown={e => boxSelect ? handleBoxSelect(e) : null}
-            onMouseUp={e => boxSelect ? handleBoxSelect(e) : null}
+            onMouseDown={e => {
+                boxSelect && handleBoxSelect(e);
+                dispatch(setTooltipContent(null,null,null));
+            }}
+            onMouseUp={e => boxSelect && handleBoxSelect(e)}
         >
             {
                 // boxSelectDims.hasOwnProperty('x') && 
@@ -1213,7 +1037,7 @@ function MapSection(props){
                 </MapboxGLMap >
             </DeckGL>
             <MapButtonContainer 
-                infoPanel={panelState.info}
+                infoPanel={panelState.info && selectionKeys.length}
             >
                 <NavInlineButtonGroup>
                     <NavInlineButton
@@ -1265,7 +1089,8 @@ function MapSection(props){
                         title="Share this Map"
                         id="shareButton"
                         shareNotification={shared}
-                        onClick={() => handleShare({mapParams, dataParams, currentData, coords: GetMapView(), lastDateIndex: dateIndices[currentData][dataParams.numerator]})}
+                        // todo migrate handleShare to custom hook
+                        // onClick={() => handleShare({mapParams, dataParams, currentData, coords: GetMapView(), lastDateIndex: dateIndices[currentData][dataParams.numerator]})}
                     >
                         {SVG.share}
                     </NavInlineButton>
@@ -1283,5 +1108,3 @@ function MapSection(props){
         </MapContainer>
     ) 
 }
-
-export default MapSection

@@ -1,5 +1,5 @@
-const getVarId = (currentData, dataParams) => {
-    return `${currentData}-${dataParams.numerator}-${dataParams.nIndex}-${dataParams.nRange}-${dataParams.denominator}-${dataParams.dProperty}-${dataParams.dIndex}-${dataParams.dRange}-${dataParams.scale}`
+const getVarId = (currentData, dataParams, mapParams) => {
+    return `${currentData}-${dataParams.numerator}-${dataParams.nProperty}-${dataParams.nIndex}-${dataParams.nRange}-${dataParams.denominator}-${dataParams.dProperty}-${dataParams.dIndex}-${dataParams.dRange}-${dataParams.scale}-${mapParams.mapType}-${mapParams.vizType}-${mapParams.colorScale}-${mapParams.binMode}-${mapParams.bins.bins.slice(2,-2).join('')}`
 }
 
 export default getVarId;
