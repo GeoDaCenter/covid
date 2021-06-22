@@ -8,14 +8,14 @@ The table below lists the currently available datasets visualized in the Atlas. 
 
 | Dataset | Variables | Data Docs | Source Link | Data Scripts | API Access | 
 |:---------|:-----|:-----|:-----|:-----|:------|
-|USA Facts|Cases and Deaths|[📄](http://www.github.com/GeoDaCenter/covid/data-docs/data-docs/usafacts.md)|[🔗](https://usafacts.org/visualizations/coronavirus-covid-19-spread-map)|[👩‍💻](https://github.com/GeoDaCenter/covid/tree/master/data-scripts/usafacts)|✔️|
-|1point3acres|Cases and Deaths|[📄](http://www.github.com/GeoDaCenter/covid/data-docs/data-docs/1point3acres.md)|[🔗](http://1points3acres.com/)|[👩‍💻](https://github.com/GeoDaCenter/covid/tree/master/data-scripts/_1p3a)||
+|USA Facts|Cases and Deaths|[📄](http://www.github.com/GeoDaCenter/covid/blob/master/data-docs/usafacts.md)|[🔗](https://usafacts.org/visualizations/coronavirus-covid-19-spread-map)|[👩‍💻](https://github.com/GeoDaCenter/covid/tree/master/data-scripts/usafacts)|✔️|
+|1point3acres|Cases and Deaths|[📄](http://www.github.com/GeoDaCenter/covid/blob/master/data-docs/_1p3a.md)|[🔗](http://1points3acres.com/)|[👩‍💻](https://github.com/GeoDaCenter/covid/tree/master/data-scripts/_1p3a)||
 |New York Times|Cases and Deaths|[📄](https://github.com/GeoDaCenter/covid/blob/master/data-docs/new-york-times.md)|[🔗](https://github.com/nytimes/covid-19-data)|[👩‍💻](https://github.com/GeoDaCenter/covid/tree/master/data-scripts/nyt)||
 |CDC|Testing Positivity and Testing Capacity, Vaccine Doses Administered and Distributed|[📄](https://github.com/GeoDaCenter/covid/blob/master/data-docs/center-for-disease-control.md)|[🔗](https://healthdata.gov/dataset/covid-19-diagnostic-laboratory-testing-pcr-testing-time-series)|[👩‍💻](https://github.com/GeoDaCenter/covid/tree/master/data-scripts/cdc)||
 |HHS|State Level Testing|[📄](https://github.com/GeoDaCenter/covid/blob/master/data-docs/health-and-human-services.md)|[🔗](https://covid.cdc.gov/covid-data-tracker/#county-view)|[👩‍💻](https://github.com/GeoDaCenter/covid/tree/master/data-scripts/cdc)||
-|Yu Group at UC Berkeley|COVID Severity and Death Forecasting|[📄](http://www.github.com/GeoDaCenter/covid/data-docs/data-docs/yu-group.md)|[🔗](https://covidseverity.com/)|[👩‍💻](https://github.com/GeoDaCenter/covid/tree/master/data-scripts/berkeley_predictions)||
-|County Health Rankings| Percent Uninsured, Percent Over 65 Years Old, Life Expectancy, and other Social Determinants of Health|[📄](http://www.github.com/GeoDaCenter/covid/blob/master/data-docs/data-docs/county-health-rankings.md)|[🔗](https://www.countyhealthrankings.org/)|||
-|American Community Survey|Population|[📄](http://www.github.com/GeoDaCenter/covid/data-docs/data-docs/american-community-survey.md)|[🔗](https://www.census.gov/programs-surveys/acs)|||
+|Yu Group at UC Berkeley|COVID Severity and Death Forecasting|[📄](http://www.github.com/GeoDaCenter/covid/blob/master/data-docs/yu-group.md)|[🔗](https://covidseverity.com/)|[👩‍💻](https://github.com/GeoDaCenter/covid/tree/master/data-scripts/berkeley_predictions)||
+|County Health Rankings| Percent Uninsured, Percent Over 65 Years Old, Life Expectancy, and other Social Determinants of Health|[📄](http://www.github.com/GeoDaCenter/covid/blob/master/data-docs/county-health-rankings.md)|[🔗](https://www.countyhealthrankings.org/)|||
+|American Community Survey|Population|[📄](http://www.github.com/GeoDaCenter/covid/blob/master/data-docs/american-community-survey.md)|[🔗](https://www.census.gov/programs-surveys/acs)|||
 
 ## Archived Datasets
 

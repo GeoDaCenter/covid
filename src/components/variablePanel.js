@@ -387,8 +387,8 @@ const VariablePanel = (props) => {
   //   setBivariateZ(prev => !prev )
   // }
   
-  const [newVariable, setNewVariable] = useState("Confirmed Count per 100K Population");
-  const [currentGeography, setCurrentGeography] = useState('County');
+  const [newVariable, setNewVariable] = useState("Percent Fully Vaccinated");
+  const [currentGeography, setCurrentGeography] = useState('County (Hybrid)');
   const [currentDataset, setCurrentDataset] = useState(urlParamsTree[currentData].name);
 
   useEffect(() => {
