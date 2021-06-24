@@ -26,8 +26,12 @@ const getDataForBins = (numeratorData, denominatorData, dataParams, fixedOrder=f
         }
     }
 
+    let conditionalCheck = () => false;
+    
+    if (dataParams.numerator.indexOf('vaccin') !== -1) conditionalCheck = (val) => val > 100 ? true : false;
+    
     for (let i=0; i<rtn.length;i++){
-        if (rtn[i] < 0) rtn[i] = 0
+        if (rtn[i] < 0 || conditionalCheck(rtn[i])) rtn[i] = 0 
     }
 
     return rtn;   

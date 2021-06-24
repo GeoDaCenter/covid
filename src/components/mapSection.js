@@ -194,6 +194,7 @@ export default function MapSection(){
     const storedGeojson = useSelector(state => state.storedGeojson);
     const selectionKeys = useSelector(state => state.selectionKeys);
     const currentMapGeography = storedGeojson[currentData]?.data||[]
+    const colorFilter = useSelector(state => state.colorFilter);
 
     const storedCartogramData = useSelector(state => state.storedCartogramData);
     const storedLisaData = useSelector(state => state.storedLisaData);
@@ -636,7 +637,9 @@ export default function MapSection(){
         choropleth: new GeoJsonLayer({
             id: 'choropleth',
             data: currentMapGeography,
-            getFillColor: d => currentMapData[d.properties.GEOID].color,
+            getFillColor: d => currentMapData[d.properties.GEOID].color.length === 3 
+                ? [...currentMapData[d.properties.GEOID].color, 25+(!colorFilter || colorFilter===currentMapData[d.properties.GEOID].color)*225]
+                : currentMapData[d.properties.GEOID].color,
             getElevation: d => currentMapData[d.properties.GEOID].height,
             pickable: true,
             stroked: false,
@@ -646,12 +649,16 @@ export default function MapSection(){
             opacity: mapParams.vizType === 'dotDensity' ? mapParams.dotDensityParams.backgroundTransparency : 0.8,
             material:false,
             onHover: handleMapHover,
-            onClick: handleMapClick,           
+            onClick: handleMapClick,     
+            transitions: {
+                getFillColor: colorFilter ? 250 : 0
+            },      
             updateTriggers: {
+                transitions: colorFilter,
                 opacity: mapParams.overlay,
                 getElevation: currentMapID,
-                getFillColor: currentMapID,
-            }
+                getFillColor: [currentMapID,colorFilter]
+            },
         }),
         choroplethHighlight:  new GeoJsonLayer({
             id: 'highlightLayer',

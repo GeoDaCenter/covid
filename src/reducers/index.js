@@ -1141,7 +1141,12 @@ var reducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 mapParams:backgroundOpacityState
             }
-            
+        case 'SET_COLOR_FILTER': {
+            return {
+                ...state,
+                colorFilter: action.payload
+            }
+        }
         default:
             return state;
     }
