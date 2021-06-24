@@ -124,11 +124,15 @@ const checkboxSets = [
         name: 'vaccination',
         subset: [
             {
+                label: 'County - Complete Series Administered - CDC',
+                name: 'vaccine_fully_vaccinated_cdc_h'
+            },
+            {
                 label: 'State - First Doses Administered - CDC',
                 name: 'vaccine_admin1_cdc'
             },
             {
-                label: 'State - Second Doses Administered - CDC',
+                label: 'State - Complete Series Administered - CDC',
                 name: 'vaccine_admin2_cdc'
             },
             {
@@ -275,6 +279,7 @@ const CsvDownloader = () => {
             covid_ccpt_cdc: false,
             covid_ccpt_cdc_state: false,
         vaccination:false,
+            vaccine_fully_vaccinated_cdc_h: false,
             vaccine_admin1_cdc: false,
             vaccine_admin2_cdc: false,
             vaccine_dist_cdc: false,
