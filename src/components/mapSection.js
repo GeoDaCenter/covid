@@ -637,9 +637,9 @@ export default function MapSection(){
         choropleth: new GeoJsonLayer({
             id: 'choropleth',
             data: currentMapGeography,
-            getFillColor: d => currentMapData[d.properties.GEOID].color.length === 3 
-                ? [...currentMapData[d.properties.GEOID].color, 25+(!colorFilter || colorFilter===currentMapData[d.properties.GEOID].color)*225]
-                : currentMapData[d.properties.GEOID].color,
+            getFillColor: d => !colorFilter || currentMapData[d.properties.GEOID].color.length === 4 
+                ? currentMapData[d.properties.GEOID].color
+                : [...currentMapData[d.properties.GEOID].color, 25+(!colorFilter || colorFilter===currentMapData[d.properties.GEOID].color)*225],
             getElevation: d => currentMapData[d.properties.GEOID].height,
             pickable: true,
             stroked: false,

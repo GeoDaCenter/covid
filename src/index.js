@@ -44,8 +44,14 @@ ReactDOM.render(
     <Provider store={store}>
       {/* <PersistGate loading={null} persistor={persistor}> */}
         <App />
+        
       {/* </PersistGate> */}
     </Provider>
+
+    <button id="new-content-button" className="hidden" onClick={() => window.location.reload(true)}>
+      <span>New data is available</span>
+      Click here to reload
+    </button>
   </React.StrictMode>,
   document.getElementById('root')
 );
