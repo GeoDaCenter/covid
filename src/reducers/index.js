@@ -645,18 +645,18 @@ var reducer = (state = INITIAL_STATE, action) => {
             const currentTable = {
                 numerator: 
                     state.dataParams.numerator === "properties" ? "properties" : 
-                    dataPresetsRedux[state.currentData].tables.hasOwnProperty(state.dataParams.numerator) 
+                    dataPresetsRedux[action.payload.data].tables.hasOwnProperty(state.dataParams.numerator) 
                         ? 
-                    dataPresetsRedux[state.currentData].tables[state.dataParams.numerator].file
+                    dataPresetsRedux[action.payload.data].tables[state.dataParams.numerator].file
                         :
-                    defaultTables[dataPresetsRedux[state.currentData].geography][state.dataParams.numerator].file,
+                    defaultTables[dataPresetsRedux[action.payload.data].geography][state.dataParams.numerator].file,
                 denominator:
                     state.dataParams.denominator === "properties" ? "properties" : 
-                    dataPresetsRedux[state.currentData].tables.hasOwnProperty(state.dataParams.denominator) 
+                    dataPresetsRedux[action.payload.data].tables.hasOwnProperty(state.dataParams.denominator) 
                         ? 
-                    dataPresetsRedux[state.currentData].tables[state.dataParams.denominator].file
+                    dataPresetsRedux[action.payload.data].tables[state.dataParams.denominator].file
                         :
-                    defaultTables[dataPresetsRedux[state.currentData].geography][state.dataParams.denominator].file,
+                    defaultTables[dataPresetsRedux[action.payload.data].geography][state.dataParams.denominator].file,
             }
 
             return {

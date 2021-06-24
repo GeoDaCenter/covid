@@ -49,12 +49,14 @@ const PlayPauseButton = styled(Button)`
 
 const LineSlider = styled(Slider)`
     &.MuiSlider-root {
-        width:68%;
-        margin-left:25%;
+        margin-top:-10px;
+        margin-left:27%;
+        width:61.5%;
         box-sizing:border-box;
         color:#FFFFFF55;
-        @media (max-width: 600px) {
-            margin-top:-10px;
+        @media (min-width: 600px) {
+            margin-top:0;
+            width:68%;
             margin-left:24%;
         }
     }

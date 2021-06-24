@@ -223,11 +223,37 @@ const TwoUp = styled.div`
 
 const ControlsContainer = styled.div`
   max-height:78vh;
-  overflow-y:visible;
+  overflow-y:scroll;
   padding:20px;
 
+  
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #2b2b2b;
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: url('${process.env.PUBLIC_URL}/icons/grip.png'),  #999;
+    background-position: center center;
+    background-repeat: no-repeat, no-repeat;
+    background-size: 50%, 100%; 
+    transition:125ms all;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: url('${process.env.PUBLIC_URL}/icons/grip.png'),  #f9f9f9;
+    background-position: center center;
+    background-repeat: no-repeat, no-repeat;
+    background-size: 50%, 100%; 
+  }
+  
   @media (max-height:1325px){
-    overflow-y:scroll;
     padding:20px 20px 10vh 20px;
   }
   
@@ -452,7 +478,6 @@ const VariablePanel = (props) => {
       setCurrentDataset(datasetWithGeography)
       dispatch(setCurrentData(datasetTree[e.target.value][datasetWithGeography]))
     } else {
-      console.log(datasetTree[e.target.value][currentDataset])
       dispatch(setCurrentData(datasetTree[e.target.value][currentDataset]))
     }
   }
