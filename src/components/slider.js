@@ -252,7 +252,7 @@ const DateSlider = () => {
             case 3:
                 dispatch(setVariableParams({dIndex: newValue}))
                 break
-            case 4:
+            default:
                 dispatch(setVariableParams({nIndex: newValue}))
                 break
         }

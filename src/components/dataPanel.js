@@ -484,7 +484,7 @@ const DataPanel = () => {
                   {(storedData[currentData][selectionIndex[0]]?.properties?.link_name && selectionIndex.length === 1) 
                     && 
                     <><p>For more on the status of vaccinations in {selectionKeys[0]}, visit 
-                      the <a href={`${storedData[currentData][selectionIndex[0]].properties?.link_url}`} target="_blank" rel="noopener noreferrrer">
+                      the <a href={`${storedData[currentData][selectionIndex[0]].properties?.link_url}`} target="_blank" rel="noopener noreferrer">
                       {storedData[currentData][selectionIndex[0]].properties?.link_name}</a> website.</p><br/><br/></>
                   }
                   {(storedData[currentData][selectionIndex[0]]?.properties?.link_name && selectionIndex.length > 1) 

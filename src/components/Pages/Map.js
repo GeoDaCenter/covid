@@ -6,9 +6,9 @@ import { useSelector, useDispatch } from 'react-redux';
 // second row: data parsing for specific outputs
 // third row: data accessing
 import { 
-  getParseCSV, getParsePbf, mergeData, getColumns, loadJson,
+  getParseCSV, getParsePbf, mergeData, getColumns,
   getDataForBins, getDataForCharts, getDataForLisa, getDateLists,
-  getLisaValues, getCartogramValues, getDateIndices } from '../../utils'; //getVarId
+  getDateIndices } from '../../utils'; //getVarId
 
 // Actions -- Redux state manipulation following Flux architecture //
 // first row: data storage
@@ -21,7 +21,6 @@ import {
 import { MapSection, NavBar, VariablePanel, Legend,  TopPanel, Preloader,
   DataPanel, MainLineChart, Scaleable, Draggable, InfoBox,
   NotificationBox, Popover, MapTooltipContent } from '../../components';  
-import { HoverDiv } from '../../styled_components'; 
 
 import { colorScales, fixedScales, dataPresets, variablePresets, colors } from '../../config';
 

@@ -374,7 +374,6 @@ class JsGeoDaWorker {
          * @returns {Object} An instance of {@link LisaResult}
          */
         LocalG: async (map_uid, weight_uid, col_name) => {
-            let id = this.genId()
             this.gdaProxy.postMessage({
                 action: "local_g",
                 params:{
@@ -399,7 +398,6 @@ class JsGeoDaWorker {
          * @returns {Object} An instance of {@link LisaResult}
          */
         LocalGstar: async (map_uid, weight_uid, col_name) => {
-            let id = this.genId()
             this.gdaProxy.postMessage({
                 action: "local_gstar",
                 params:{
@@ -424,7 +422,6 @@ class JsGeoDaWorker {
          * @returns {Object} An instance of {@link LisaResult}
          */
         LocalGeary: async (map_uid, weight_uid, col_name) => {
-            let id = this.genId()
             this.gdaProxy.postMessage({
                 action: "local_geary",
                 params:{
@@ -449,7 +446,6 @@ class JsGeoDaWorker {
          * @returns {Object} An instance of {@link LisaResult}
          */
         LocalJoinCount: async (map_uid, weight_uid, col_name) => {
-            let id = this.genId()
             this.gdaProxy.postMessage({
                 action: "local_joincount",
                 params:{
@@ -466,15 +462,13 @@ class JsGeoDaWorker {
                 }
             }
         },        
-        REDCAP: async (map_uid, weight_uid, k, sel_fields, bound_var, min_bound, method) => {
-            let id = this.genId()
+        REDCAP: async (map_uid, weight_uid, k, sel_fields, bound_var, min_bound, method) => { 
             let col_names = this.toVecString(sel_fields);
             let clusters_vec = window.Module.redcap(map_uid, weight_uid, k, col_names, bound_var, min_bound, method);
             let clusters = this.parseVecVecInt(clusters_vec);
             return clusters;
         },  
         MaxP: async (map_uid, weight_uid, k, sel_fields, bound_var, min_bound, method, tabu_length, cool_rate, n_iter) => {
-            let id = this.genId()
             let col_names = this.toVecString(sel_fields);
             let clusters_vec = window.Module.maxp(map_uid, weight_uid, col_names, bound_var, min_bound, tabu_length, cool_rate, method, k, n_iter);
             let clusters = this.parseVecVecInt(clusters_vec);

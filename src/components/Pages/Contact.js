@@ -272,8 +272,9 @@ export default function Contact(){
                 'Message': false})
             
             const submissionURL = await generateURL(formData, url);
+            /* eslint no-unused-vars: "off" */
             const response = await fetch(submissionURL, { method: 'GET' });
-    
+            
             setIsSubmitting(false)
             setSubmitted(true)
         }

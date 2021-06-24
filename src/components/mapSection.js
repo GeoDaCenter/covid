@@ -16,7 +16,7 @@ import MapboxGLMap from 'react-map-gl';
 
 // component, action, util, and config import
 import { Geocoder } from '../components';
-import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData, openContextMenu, setNotification, setTooltipContent, setDotDensityData, incrementDate} from '../actions';
+import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData, openContextMenu, setNotification, setTooltipContent, setDotDensityData} from '../actions';
 import { mapFn, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, getURLParams } from '../utils';
 import { colors, colorScales, MAPBOX_ACCESS_TOKEN } from '../config';
 import MAP_STYLE from '../config/style.json';
@@ -167,21 +167,6 @@ const chunkArray = (data, chunk) => {
     return tempArray
 };
 
-function debounce(func, wait, immediate) {
-    var timeout;
-    return function() {
-        var context = this, args = arguments;
-        var later = function() {
-            timeout = null;
-            if (!immediate) func.apply(context, args);
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-    };
-};
-
 function MapSection(props){ 
     // fetch pieces of state from store    
     const storedData = useSelector(state => state.storedData);
@@ -196,13 +181,11 @@ function MapSection(props){
     const mapParams = useSelector(state => state.mapParams);
     const urlParams = useSelector(state => state.urlParams);
     const dotDensityData = useSelector(state => state.dotDensityData);
-    const isPlaying = useSelector(state => state.isPlaying);
     
     // component state elements
     // hover and highlight geographibes
     const [hoverGeog, setHoverGeog] = useState({x:null, y:null, object:null});
     const [highlightGeog, setHighlightGeog] = useState([]);
-    const [incrementTimeout, setIncrementTimeout] = useState(null);
 
     // mapstyle and global map mode (WIP)
     // const [globalMap, setGlobalMap] = useState(false);
@@ -282,16 +265,12 @@ function MapSection(props){
         }
     }
 
-    let hidden = null;
     let visibilityChange = null;
-    if (typeof document.hidden !== 'undefined') { // Opera 12.10 and Firefox 18 and later support 
-        hidden = 'hidden';
+    if (typeof hidden !== 'undefined') {
         visibilityChange = 'visibilitychange';
     } else if (typeof document.msHidden !== 'undefined') {
-        hidden = 'msHidden';
         visibilityChange = 'msvisibilitychange';
     } else if (typeof document.webkitHidden !== 'undefined') {
-        hidden = 'webkitHidden';
         visibilityChange = 'webkitvisibilitychange';
     }
 

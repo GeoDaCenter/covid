@@ -15,7 +15,7 @@ const CsvDownloaderContainer = styled.div`
     .inset {
         margin: 0 0 20px 20px;
     }
-    a {
+    button {
         font-size: 16px;
         font-weight: 700;
         letter-spacing: 1.75px;
@@ -354,7 +354,7 @@ const CsvDownloader = () => {
                     </p>
                 </Grid>
                 <Grid item xs={12} md={4}>
-                    <a onClick={() => GetFiles(checkboxes)} ping="https://theuscovidatlas.org/trackdownloads.html">Download Data</a>
+                    <button onClick={() => GetFiles(checkboxes)} ping="https://theuscovidatlas.org/trackdownloads.html">Download Data</button>
                 </Grid>
             </Grid>
             <Gutter h={20}/>

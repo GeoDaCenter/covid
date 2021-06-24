@@ -26,14 +26,14 @@ export default async function getParsePbf(url, accumulate, dateList){
 
     if (accumulate) {
         for (let i=0; i<pbfData.row.length; i++){
-            returnData[pbfData.row[i].geoid] = [,]
+            returnData[pbfData.row[i].geoid] = []
             for (let n=0; n<pbfData.row[i].vals.length; n++) {
                 returnData[pbfData.row[i].geoid].push(((pbfData.row[i].vals[n]||0)+(pbfData.row[i].vals[n-1]||0))||null)
             }
         }
     } else {
         for (let i=0; i<pbfData.row.length; i++){
-            returnData[pbfData.row[i].geoid] = [,]
+            returnData[pbfData.row[i].geoid] = []
             for (let n=0, j=0; n<constructorIndices.length; n++) {
                 if (constructorIndices[n]) {
                     returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j])
@@ -45,8 +45,7 @@ export default async function getParsePbf(url, accumulate, dateList){
             }
         }
     }
-    console.log(url)
-    console.log([returnData, columnNames, dateIndices])
+
     return [returnData, columnNames, dateIndices]
 
 

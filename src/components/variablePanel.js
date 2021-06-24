@@ -9,7 +9,6 @@ import Select from '@material-ui/core/Select';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Switch from '@material-ui/core/Switch';
-import Checkbox from '@material-ui/core/Checkbox';
 import Slider from '@material-ui/core/Slider';
 
 import styled from 'styled-components';
@@ -533,7 +532,7 @@ const VariablePanel = (props) => {
   const [currentGeography, setCurrentGeography] = useState('County (Hybrid)');
   const [currentDataset, setCurrentDataset] = useState(urlParamsTree[currentData].name);
 
-  useEffect(() => {
+  const handleUrlParams = () => {
     if (newVariable !== dataParams.variableName) {
       setNewVariable(dataParams.variableName)
       setCurrentGeography(urlParamsTree[currentData]['geography'])
@@ -543,7 +542,11 @@ const VariablePanel = (props) => {
         setCurrentDataset(urlParamsTree[currentData]['name'])
       }
     }
-  }, [urlParams])
+  }
+
+  useEffect(() => {
+    handleUrlParams()
+  }, [urlParams, handleUrlParams])
   
   const handleNewVariable = (e) => {
     let tempGeography = currentGeography + '';
