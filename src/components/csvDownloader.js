@@ -41,7 +41,7 @@ const CsvDownloaderContainer = styled.div`
         color:${colors.blue};
     }
     &.passive {
-        background:${colors.gray} url('${process.env.PUBLIC_URL}/assets/img/preloader.gif') ;
+        background:${colors.gray} url('${process.env.PUBLIC_URL}/assets/img/animated_cluster.svg') ;
         background-repeat:no-repeat;
         background-position:center center;
         opacity:0.5;

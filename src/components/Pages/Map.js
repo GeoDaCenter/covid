@@ -137,7 +137,13 @@ export default function Map() {
     <div className="Map-App" style={{overflow:'hidden'}}>
       <Preloader loaded={mapLoaded} />
       <NavBar />
-      {isLoading && <div id="loadingIcon" style={{backgroundImage: `url('${process.env.PUBLIC_URL}assets/img/bw_preloader.gif')`}}></div>}
+      {isLoading && <div id="loadingIcon">
+          <img
+            src={`${process.env.PUBLIC_URL}/assets/img/animated_cluster.svg`}
+            role="presentation"
+          />
+        </div>
+      }
       {/* <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
         <button onClick={() => console.log(fullState)}>Log state</button>
       </header> */}

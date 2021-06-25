@@ -217,6 +217,11 @@ button.mapboxgl-ctrl-attrib-button {
   pointer-events: none;
   mix-blend-mode: lighten;
 }
+#loadingIcon img {
+  width:100%;
+  height:100%;
+}
+
 #loadingIcon:after {
   content: 'Loading Data...';
   color:black;
@@ -225,6 +230,7 @@ button.mapboxgl-ctrl-attrib-button {
   bottom:-30px;
   text-align: center;
   width:100%;
+  transform:translateX(-100%);
   background:white;
 }
 
