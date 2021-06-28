@@ -7,7 +7,7 @@ const currVariable = paramsDict.hasOwnProperty('var')
   ? {
       ...variablePresets[paramsDict.var.replace(/_/g, " ")],
       [paramsDict.hasOwnProperty('date') && 'nIndex']: +paramsDict.date,
-      [paramsDict.hasOwnProperty('range') && 'nRange']: +paramsDict.range,
+      [paramsDict.hasOwnProperty('range') && 'nRange']: paramsDict.range === 'null' ? null : +paramsDict.range,
     }
   : {}
 
