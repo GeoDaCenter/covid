@@ -1,6 +1,6 @@
 import { 
   variablePresets,
-  dataPresetsRedux, 
+  dataPresets, 
   defaultTables,
   defaultData
 } from '../config/index';
@@ -17,35 +17,22 @@ const currVariable = paramsDict.hasOwnProperty('var')
   : {}
 
 export const INITIAL_STATE = {
+  // Default data state
+  currentData: paramsDict.hasOwnProperty('src') ? `${paramsDict.src}.geojson` : defaultData,
+  currentMethod: paramsDict.hasOwnProperty('mthd') ? paramsDict.mthd : 'natural_breaks',
+  dataPresets,
+  defaultTables,
+  variablePresets,
+  // Large data storage
+  lazyFetched:false,
   storedGeojson: {},
   storedData: {},
   storedLisaData: {},
   storedCartogramData: {},
   storedMobilityData: {},
-  lazyFetched:false,
-  currentData: paramsDict.hasOwnProperty('src') ? `${paramsDict.src}.geojson` : defaultData,
-  currentTable: {
-    numerator: '',
-    denominator: ''
-  },
-  variablePresets,
-  defaultTables,
-  dataPresets: dataPresetsRedux,
   dotDensityData: [],
-  chartData: [{}],
-  selectionKeys: [],
-  selectionNames: [],
   centroids: {},
-  dates: {},
-  isPlaying:false,
-  currentZVariable: null,
-  currentMethod: paramsDict.hasOwnProperty('mthd') ? paramsDict.mthd : 'natural_breaks',
-  currentOverlay: '',
-  currentResource: '',
-  mapData : {
-    data: [],
-    params: []
-  },
+  // data and map params 
   dataParams: {
     variableName:"Percent Fully Vaccinated",
     numerator: 'vaccines_fully_vaccinated',
@@ -67,6 +54,7 @@ export const INITIAL_STATE = {
     storedRange: null,
     ...currVariable
   },
+  storedRange: null,
   mapParams: {
     mapType: paramsDict.hasOwnProperty('mthd') ? paramsDict.mthd : 'natural_breaks',
     bins: {
@@ -114,6 +102,30 @@ export const INITIAL_STATE = {
     table: 'cases',
     populationNormalized: false
   },
+  // current data
+  chartData: [{}],
+  currentTable: {
+    numerator: '',
+    denominator: ''
+  },
+  currentZVariable: null,
+  dates: {},
+  mapData : {
+    data: [],
+    params: []
+  },
+  sidebarData: {},
+  // selection info
+  selectionKeys: [],
+  selectionNames: [],
+  // UI tags
+  anchorEl: null,
+  isPlaying:false,
+  mapLoaded: false,
+  notification: {
+    info: null,
+    location: ''
+  },
   panelState: {
     variables:true,
     info:true,
@@ -121,14 +133,6 @@ export const INITIAL_STATE = {
     lineChart:true,
     context: false,
     contextPos: {x:null,y:null}
-  },
-  storedRange: null,
-  sidebarData: {},
-  anchorEl: null,
-  mapLoaded: false,
-  notification: {
-    info: null,
-    location: ''
   },
   urlParams: {},
   tooltipContent: {
