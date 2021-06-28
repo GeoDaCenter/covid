@@ -2,18 +2,15 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect, useMemo } from 'react';
 import { 
-  getParseCSV, getParsePbf, mergeData, getColumns, loadJson,
-  getDataForBins, getDataForCharts, getDataForLisa, getDateLists,
-  getLisaValues, getCartogramValues, getDateIndices } from '../utils'; //getVarId
+  getParseCSV, getParsePbf, getDataForBins, getDateLists } from '../utils'; //getVarId
 // Main data loader
 // This functions asynchronously accesses the Geojson data and CSVs
 //   then performs a join and loads the data into the store
 
 import { 
-  initialDataLoad, addTables, addGeojson, dataLoad, dataLoadExisting, storeLisaValues, storeCartogramData, setDates, setNotification,
-  setMapParams, setUrlParams, setPanelState, updateMap, updateChart, addTableAndChart, setIsLoading } from '../actions';
+  initialDataLoad, addTables, addGeojson, updateMap, updateChart, addTableAndChart, setIsLoading } from '../actions';
 
-import { colorScales, fixedScales, dataPresets, defaultTables, dataPresetsRedux, variablePresets, colors } from '../config';
+import { colorScales, fixedScales } from '../config';
 
 const dateLists = getDateLists();
 const handleLoadData = (fileInfo) => fileInfo.file.slice(-4,) === '.pbf' ? getParsePbf(fileInfo, dateLists[fileInfo.dates]) : getParseCSV(fileInfo, dateLists[fileInfo.dates])
@@ -26,12 +23,12 @@ export default function useLoadData(gdaProxy){
   const storedData = useSelector(state => state.storedData);
   const storedGeojson = useSelector(state => state.storedGeojson);
   const chartParams = useSelector(state => state.chartParams);
-  const isLoading = useSelector(state => state.isLoading);
+  const dataPresets = useSelector((state) => state.dataPresets);
+  const defaultTables = useSelector((state) => state.defaultTables);
 
   const dispatch = useDispatch();
 
   const [isInProcess, setIsInProcess] = useState(false);
-  const [lazyFetched, setLazyFetched] = useState(false);
 
   const getLisaValues = async (currentData, dataForLisa) => {
     const weight_uid = 'Queen' in gdaProxy.geojsonMaps[currentData] ? gdaProxy.geojsonMaps[currentData].Queen : await gdaProxy.CreateWeights.Queen(currentData);
@@ -129,7 +126,7 @@ export default function useLoadData(gdaProxy){
     setIsInProcess(true);
 
     const defaultChartTable = defaultTables[chartParams.table]
-    const currCaseData = dataPresetsRedux[currentData].hasOwnProperty('tables') ? dataPresetsRedux[currentData].tables[chartParams.table]||defaultChartTable : defaultChartTable;
+    const currCaseData = dataPresets[currentData].hasOwnProperty('tables') ? dataPresets[currentData].tables[chartParams.table]||defaultChartTable : defaultChartTable;
 
     if (storedData.hasOwnProperty(currCaseData?.file) || loadedTables.indexOf(currCaseData?.file) !== -1){
       dispatch(updateChart());
@@ -214,14 +211,14 @@ export default function useLoadData(gdaProxy){
   useEffect(() => {
     if (!storedGeojson[currentData]) {
       dispatch(setIsLoading())
-      firstLoad(dataPresetsRedux[currentData], defaultTables[dataPresetsRedux[currentData]['geography']])
+      firstLoad(dataPresets[currentData], defaultTables[dataPresets[currentData]['geography']])
         .then(primaryTables => {
           dispatch(updateMap());
           return primaryTables
         }).then(primaryTables => {
-          return secondLoad(dataPresetsRedux[currentData], defaultTables[dataPresetsRedux[currentData]['geography']], [...Object.keys(storedData), ...primaryTables])
+          return secondLoad(dataPresets[currentData], defaultTables[dataPresets[currentData]['geography']], [...Object.keys(storedData), ...primaryTables])
         }).then(() => {
-          lazyGenerateWeights(dataPresetsRedux);
+          lazyGenerateWeights(dataPresets);
 
         })
     } else {

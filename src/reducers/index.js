@@ -1,6 +1,6 @@
 import { INITIAL_STATE } from '../constants/defaults';
 import { mapFnNb, mapFnTesting, mapFnHinge, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, getURLParams } from '../utils';
-import { colorScales, fixedScales, dataPresets, defaultTables, dataPresetsRedux, variablePresets, tooltipTables } from '../config';
+import { tooltipTables } from '../config';
 
 // utils
 const getSimpleColor = (value, bins, colorScale, mapType, numerator, storedLisaData, storedGeojson, currentData, GEOID, mapFn) => mapFn(value, bins, colorScale, mapType, numerator);
@@ -22,9 +22,9 @@ const generateMapData = (state) => {
             return state.storedGeojson[state.currentData].data.features[i].properties 
         } else {
             try {
-                return state.storedData[dataPresetsRedux[state.currentData].tables[state.dataParams[predicate]].file].data[state.storedGeojson[state.currentData].data.features[i].properties.GEOID]
+                return state.storedData[state.dataPresets[state.currentData].tables[state.dataParams[predicate]].file].data[state.storedGeojson[state.currentData].data.features[i].properties.GEOID]
             } catch {
-                return state.storedData[defaultTables[dataPresetsRedux[state.currentData].geography][state.dataParams[predicate]].file].data[state.storedGeojson[state.currentData].data.features[i].properties.GEOID];
+                return state.storedData[state.defaultTables[state.dataPresets[state.currentData].geography][state.dataParams[predicate]].file].data[state.storedGeojson[state.currentData].data.features[i].properties.GEOID];
             }
         }
     }
@@ -110,7 +110,7 @@ const shallowEqual = (object1, object2) => { // Thanks @Dmitri Pavlutin
 const parseTooltipData = (geoid, state) => {
     let tooltipData = {}
     const properties = state.storedGeojson[state.currentData].properties[geoid];
-    const geography = dataPresetsRedux[state.currentData].geography;
+    const geography = state.dataPresets[state.currentData].geography;
 
     tooltipData = {
         population: properties.population,
@@ -118,8 +118,8 @@ const parseTooltipData = (geoid, state) => {
     }
     
     const currentTables = {
-        ...defaultTables[geography],
-        ...dataPresetsRedux[state.currentData].tables
+        ...state.defaultTables[geography],
+        ...state.dataPresets[state.currentData].tables
     }
 
     for (const table in currentTables){
@@ -233,12 +233,12 @@ const aggregateDataFunction = (numeratorTable, denominatorTable, properties, geo
     return performOperation(dataArray, operation, totalPopulation);
 }
 
-const generateReport = (geoids, state, dataPresetsRedux, defaultTables) => {
+const generateReport = (geoids, state) => {
     let report = {}
 
     const properties = state.storedGeojson[state.currentData].properties;
-    const geography = dataPresetsRedux[state.currentData].geography;
-    const currentTables = {...defaultTables[geography], ...dataPresetsRedux[state.currentData].tables}
+    const geography = state.dataPresets[state.currentData].geography;
+    const currentTables = {...state.defaultTables[geography], ...state.dataPresets[state.currentData].tables}
 
     report.name = 
         geoids.length > 3 
@@ -473,7 +473,7 @@ var reducer = (state = INITIAL_STATE, action) => {
             }
         }
         case 'UPDATE_CHART': {
-            const currCaseData = dataPresetsRedux[state.currentData].tables[state.chartParams.table]?.file||defaultTables[dataPresetsRedux[state.currentData].geography][state.chartParams.table].file
+            const currCaseData = state.dataPresets[state.currentData].tables[state.chartParams.table]?.file||state.defaultTables[state.dataPresets[state.currentData].geography][state.chartParams.table].file
             
             let populationData = [];
 
@@ -521,7 +521,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                 ...action.payload.params
             }
 
-            const currCaseData = dataPresetsRedux[state.currentData].tables[state.chartParams.table]?.file||defaultTables[dataPresetsRedux[state.currentData].geography][state.chartParams.table].file
+            const currCaseData = state.dataPresets[state.currentData].tables[state.chartParams.table]?.file||state.defaultTables[state.dataPresets[state.currentData].geography][state.chartParams.table].file
             const properties = state.storedGeojson[state.currentData].properties
 
             let populationData = [];
@@ -643,18 +643,18 @@ var reducer = (state = INITIAL_STATE, action) => {
             const currentTable = {
                 numerator: 
                     state.dataParams.numerator === "properties" ? "properties" : 
-                    dataPresetsRedux[action.payload.data].tables.hasOwnProperty(state.dataParams.numerator) 
+                    state.dataPresets[action.payload.data].tables.hasOwnProperty(state.dataParams.numerator) 
                         ? 
-                    dataPresetsRedux[action.payload.data].tables[state.dataParams.numerator].file
+                    state.dataPresets[action.payload.data].tables[state.dataParams.numerator].file
                         :
-                    defaultTables[dataPresetsRedux[action.payload.data].geography][state.dataParams.numerator].file,
+                    state.defaultTables[state.dataPresets[action.payload.data].geography][state.dataParams.numerator].file,
                 denominator:
                     state.dataParams.denominator === "properties" ? "properties" : 
-                    dataPresetsRedux[action.payload.data].tables.hasOwnProperty(state.dataParams.denominator) 
+                    state.dataPresets[action.payload.data].tables.hasOwnProperty(state.dataParams.denominator) 
                         ? 
-                    dataPresetsRedux[action.payload.data].tables[state.dataParams.denominator].file
+                    state.dataPresets[action.payload.data].tables[state.dataParams.denominator].file
                         :
-                    defaultTables[dataPresetsRedux[action.payload.data].geography][state.dataParams.denominator].file,
+                    state.defaultTables[state.dataPresets[action.payload.data].geography][state.dataParams.denominator].file,
             }
 
             return {
@@ -748,7 +748,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                         geoid: state.tooltipContent.geoid
                     },
                     mapData: generateMapData({...state, dataParams}),
-                    sidebarData: state.selectionKeys.length ? generateReport(state.selectionKeys, state, dataPresetsRedux, defaultTables) : state.sidebarData
+                    sidebarData: state.selectionKeys.length ? generateReport(state.selectionKeys, state) : state.sidebarData
                 }
             }
         }
@@ -791,18 +791,18 @@ var reducer = (state = INITIAL_STATE, action) => {
             const currentTable = {
                 numerator: 
                     dataParams.numerator === "properties" ? "properties" : 
-                    dataPresetsRedux[state.currentData].tables.hasOwnProperty(dataParams.numerator) 
+                    state.dataPresets[state.currentData].tables.hasOwnProperty(dataParams.numerator) 
                         ? 
-                    dataPresetsRedux[state.currentData].tables[dataParams.numerator].file
+                    state.dataPresets[state.currentData].tables[dataParams.numerator].file
                         :
-                    defaultTables[dataPresetsRedux[state.currentData].geography][dataParams.numerator].file,
+                    state.defaultTables[state.dataPresets[state.currentData].geography][dataParams.numerator].file,
                 denominator:
                     dataParams.denominator === "properties" ? "properties" : 
-                    dataPresetsRedux[state.currentData].tables.hasOwnProperty(dataParams.denominator) 
+                    state.dataPresets[state.currentData].tables.hasOwnProperty(dataParams.denominator) 
                         ? 
-                    dataPresetsRedux[state.currentData].tables[dataParams.denominator].file
+                    state.dataPresets[state.currentData].tables[dataParams.denominator].file
                         :
-                    defaultTables[dataPresetsRedux[state.currentData].geography][dataParams.denominator].file,
+                    state.defaultTables[state.dataPresets[state.currentData].geography][dataParams.denominator].file,
             }
 
             if (state.dataParams.zAxisParams !== null) {
@@ -856,7 +856,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                     data: state.tooltipContent.geoid ? parseTooltipData(state.tooltipContent.geoid, state) : state.tooltipContent.data,
                     geoid: state.tooltipContent.geoid
                 },
-                sidebarData: state.selectionKeys.length ? generateReport(state.selectionKeys, state, dataPresetsRedux, defaultTables) : state.sidebarData
+                sidebarData: state.selectionKeys.length ? generateReport(state.selectionKeys, state) : state.sidebarData
             }
         }
         case 'SET_VARIABLE_PARAMS_AND_DATASET':{
@@ -873,18 +873,18 @@ var reducer = (state = INITIAL_STATE, action) => {
             const currentTable = {
                 numerator: 
                     dataParams.numerator === "properties" ? "properties" : 
-                    dataPresetsRedux[action.payload.params.dataset].tables.hasOwnProperty(dataParams.numerator) 
+                    state.dataPresets[action.payload.params.dataset].tables.hasOwnProperty(dataParams.numerator) 
                         ? 
-                    dataPresetsRedux[action.payload.params.dataset].tables[dataParams.numerator].file
+                    state.dataPresets[action.payload.params.dataset].tables[dataParams.numerator].file
                         :
-                    defaultTables[dataPresetsRedux[action.payload.params.dataset].geography][dataParams.numerator].file,
+                    state.defaultTables[state.dataPresets[action.payload.params.dataset].geography][dataParams.numerator].file,
                 denominator:
                     dataParams.denominator === "properties" ? "properties" : 
-                    dataPresetsRedux[action.payload.params.dataset].tables.hasOwnProperty(dataParams.denominator) 
+                    state.dataPresets[action.payload.params.dataset].tables.hasOwnProperty(dataParams.denominator) 
                         ? 
-                    dataPresetsRedux[action.payload.params.dataset].tables[dataParams.denominator].file
+                    state.dataPresets[action.payload.params.dataset].tables[dataParams.denominator].file
                         :
-                    defaultTables[dataPresetsRedux[action.payload.params.dataset].geography][dataParams.denominator].file,
+                    state.defaultTables[state.dataPresets[action.payload.params.dataset].geography][dataParams.denominator].file,
             }
 
             if (action.payload.params.variableName !== undefined && (dataParams.variableName !== state.dataParams.variable)){
@@ -972,7 +972,7 @@ var reducer = (state = INITIAL_STATE, action) => {
             let selectionKeys = [...state.selectionKeys];
             
             const properties = state.storedGeojson[state.currentData].properties
-            const geography = dataPresetsRedux[state.currentData].geography
+            const geography = state.dataPresets[state.currentData].geography
 
             if (!properties || !geography) return state;
 
@@ -991,7 +991,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                 selectionKeys.splice(selectionKeys.indexOf(action.payload.geoid), 1);
             }
 
-            const currCaseData = dataPresetsRedux[state.currentData].tables[state.chartParams.table]?.file||defaultTables[dataPresetsRedux[state.currentData].geography][state.chartParams.table].file;
+            const currCaseData = state.dataPresets[state.currentData].tables[state.chartParams.table]?.file||state.defaultTables[state.dataPresets[state.currentData].geography][state.chartParams.table].file;
 
             const additionalParams = {
                 geoid: selectionKeys,
@@ -1004,7 +1004,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                 selectionKeys,
                 selectionNames: additionalParams.name,
                 chartData: getDataForCharts(state.storedData[currCaseData], state.dates, additionalParams),
-                sidebarData: generateReport(selectionKeys, state, dataPresetsRedux, defaultTables),
+                sidebarData: generateReport(selectionKeys, state),
             }
         }
         case 'SET_ANCHOR_EL':

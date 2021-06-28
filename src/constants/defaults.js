@@ -1,4 +1,9 @@
-import { variablePresets } from '../config/index';
+import { 
+  variablePresets,
+  dataPresetsRedux, 
+  defaultTables,
+  defaultData
+} from '../config/index';
 
 // read in URL params
 let paramsDict = {}; 
@@ -18,11 +23,14 @@ export const INITIAL_STATE = {
   storedCartogramData: {},
   storedMobilityData: {},
   lazyFetched:false,
-  currentData: paramsDict.hasOwnProperty('src') ? `${paramsDict.src}.geojson` : 'cdc_h.geojson',
+  currentData: paramsDict.hasOwnProperty('src') ? `${paramsDict.src}.geojson` : defaultData,
   currentTable: {
     numerator: '',
     denominator: ''
   },
+  variablePresets,
+  defaultTables,
+  dataPresets: dataPresetsRedux,
   dotDensityData: [],
   chartData: [{}],
   selectionKeys: [],

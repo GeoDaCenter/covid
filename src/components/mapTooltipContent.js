@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { HoverDiv } from '../styled_components';
-import { dataPresetsRedux, defaultTables } from '../config';
 // This component handles and formats the map tooltip info. 
 // The props passed to this component should contain an object of the hovered object (from deck, info.object by default)
 export default function MapTooltipContent(){

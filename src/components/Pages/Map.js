@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 // Helper and Utility functions //
@@ -11,7 +11,7 @@ import { getDateLists } from '../../utils'; //getVarId
 // first row: data storage
 // second row: data and metadata handling 
 // third row: map and variable parameters
-import {  setDates, setNotification, setUrlParams, setPanelState } from '../../actions';
+import {  setDates, setNotification, setPanelState } from '../../actions';
 
 import { MapSection, NavBar, VariablePanel, Legend,  TopPanel, Preloader,
   DataPanel, MainLineChart, Scaleable, Draggable, InfoBox,
@@ -19,7 +19,7 @@ import { MapSection, NavBar, VariablePanel, Legend,  TopPanel, Preloader,
 import { ViewportProvider } from '../../contexts/ViewportContext';
 import {fitBounds} from '@math.gl/web-mercator';
   
-import { colorScales, fixedScales, dataPresets, defaultTables, dataPresetsRedux, variablePresets, colors } from '../../config';
+import { colors } from '../../config';
 
 import JsGeoDaWorker from '../../JsGeoDaWorker';
 

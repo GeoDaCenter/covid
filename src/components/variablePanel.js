@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import InputLabel from '@material-ui/core/InputLabel';
@@ -9,7 +9,6 @@ import Select from '@material-ui/core/Select';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Switch from '@material-ui/core/Switch';
-import Checkbox from '@material-ui/core/Checkbox';
 import Slider from '@material-ui/core/Slider';
 
 import styled from 'styled-components';
@@ -17,9 +16,10 @@ import styled from 'styled-components';
 import Tooltip from './tooltip';
 import { StyledDropDown, BinsContainer, Gutter } from '../styled_components';
 import { setVariableParams, setMapParams, setCurrentData, setPanelState, setParametersAndData, setNotification, changeDotDensityMode, toggleDotDensityRace, setDotDensityBgOpacity } from '../actions';
-import { fixedScales, colorScales, colors, variableTree, variablePresets, urlParamsTree, datasetTree, allGeographies, allDatasets } from '../config';
+import { fixedScales, colorScales, colors, variableTree, urlParamsTree, datasetTree, allGeographies, allDatasets } from '../config';
 import * as SVG from '../config/svg';
 
+/** STYLES */
 const VariablePanelContainer = styled.div`
   position:fixed;
   left:0;
@@ -279,6 +279,7 @@ const AcsRaceButton = styled.button`
   border-radius:0.5em;
   cursor:pointer;
 `
+/** END STYLES */
 
 const dotDensityAcsGroups = [
   {
@@ -314,23 +315,21 @@ const dotDensityAcsGroups = [
     'name': 'Two or more',
   }]
 
-const VariablePanel = (props) => {
-
+export default function VariablePanel(){
   const dispatch = useDispatch();    
-
+  
   const currentData = useSelector(state => state.currentData);
 
   const binMode = useSelector(state => state.mapParams.binMode);
-
   const mapType = useSelector(state => state.mapParams.mapType);
-  const vizType = useSelector(state => state.mapParams.vizType);
-  
+  const vizType = useSelector(state => state.mapParams.vizType);  
   const dotDensityParams = useSelector(state => state.mapParams.dotDensityParams);
+
   const overlay = useSelector(state => state.mapParams.overlay);
   const resource = useSelector(state => state.mapParams.resource);
-  const panelState = useSelector(state => state.panelState);
-  const urlParams = useSelector(state => state.urlParams);
-  
+
+  const panelState = useSelector(state => state.panelState);  
+
   const numerator = useSelector(state => state.dataParams.numerator);
   const variableName = useSelector(state => state.dataParams.variableName);
   const nType = useSelector(state => state.dataParams.nType);
@@ -338,6 +337,9 @@ const VariablePanel = (props) => {
   const dType = useSelector(state => state.dataParams.dType);
   const dRange = useSelector(state => state.dataParams.dRange);
   const rangeType = useSelector(state => state.dataParams.rangeType);
+
+  const variablePresets = useSelector(state => state.variablePresets);
+  const dataPresets = useSelector(state => state.dataPresets);
 
   const handleMapType = (event, newValue) => {
     let nBins = newValue === 'hinge15_breaks' ? 6 : 8
@@ -376,7 +378,6 @@ const VariablePanel = (props) => {
       )
     }
   }
-
   const handleMapOverlay = (event) =>{
     dispatch(
       setMapParams(
@@ -386,7 +387,6 @@ const VariablePanel = (props) => {
       )
     )
   }
-
   const handleMapResource = (event) =>{
     dispatch(
       setMapParams(
@@ -396,43 +396,12 @@ const VariablePanel = (props) => {
       )
     )
   }
-
-  const handleOpenClose = () => {
-    if (panelState.variables) {
-      dispatch(setPanelState({variables:false}))
-    } else {
-      dispatch(setPanelState({variables:true}))
-    }
-  }
-
+  const handleOpenClose = () => dispatch(setPanelState({variables:!panelState.variables}))
   const handleVizTypeButton = (vizType) => dispatch(setMapParams({vizType}))
-
-  const handleDotDensitySlider = (e, newValue) => dispatch(setDotDensityBgOpacity(newValue))
-
-  // const handleZSwitch = () => {
-  //   setBivariateZ(prev => !prev )
-  // }
-  
-  const [newVariable, setNewVariable] = useState("Percent Fully Vaccinated");
-  const [currentGeography, setCurrentGeography] = useState('County (Hybrid)');
-  const [currentDataset, setCurrentDataset] = useState(urlParamsTree[currentData].name);
-
-  useEffect(() => {
-    if (newVariable !== variableName) {
-      setNewVariable(variableName)
-      setCurrentGeography(urlParamsTree[currentData]['geography'])
-      if (variableName.indexOf('Dose') !== -1 || (variableName.indexOf('Test') !== -1 && currentData.indexOf('state') === -1)) {
-        setCurrentDataset('CDC')
-      } else {
-        setCurrentDataset(urlParamsTree[currentData]['name'])
-      }
-    }
-  }, [urlParams])
-  
-  const handleNewVariable = (e) => {
-    let tempGeography = currentGeography + '';
-    let tempDataset = currentDataset + '';
-    let conditionalParameters = {};
+  const handleDotDensitySlider = (e, newValue) => dispatch(setDotDensityBgOpacity(newValue))  
+  const handleVariable = (e) => {
+    let tempGeography = dataPresets[currentData].geography;
+    let tempDataset = urlParamsTree[currentData].name;
     if (mapType === 'lisa' && (variablePresets[e.target.value].numerator === 'vaccines_one_dose' || variablePresets[e.target.value].numerator === 'vaccines_fully_vaccinated')){
       dispatch(setNotification(`
                   <h2>Map Note</h2>
@@ -459,32 +428,25 @@ const VariablePanel = (props) => {
           customScale: variablePresets[e.target.value].colorScale || null
         }
       }))
-      setCurrentGeography(tempGeography)
-      setCurrentDataset(tempDataset)
     } else {
       dispatch(setVariableParams({
         ...variablePresets[e.target.value]
       }))
 
     }
-    
-    setNewVariable(e.target.value)
   }
 
   const handleGeography = (e) => {
-    setCurrentGeography(e.target.value) 
-    if (!variableTree[newVariable][e.target.value].indexOf(currentDataset) !== -1) {
-      let datasetWithGeography = variableTree[newVariable][e.target.value][0]
-      setCurrentDataset(datasetWithGeography)
+    if (!variableTree[variableName][e.target.value].indexOf(urlParamsTree[currentData].name) !== -1) {
+      let datasetWithGeography = variableTree[variableName][e.target.value][0]
       dispatch(setCurrentData(datasetTree[e.target.value][datasetWithGeography]))
     } else {
-      dispatch(setCurrentData(datasetTree[e.target.value][currentDataset]))
+      dispatch(setCurrentData(datasetTree[e.target.value][urlParamsTree[currentData].name]))
     }
   }
 
   const handleDataset = (e) => {
-    setCurrentDataset(e.target.value)
-    dispatch(setCurrentData(datasetTree[currentGeography][e.target.value]))
+    dispatch(setCurrentData(datasetTree[dataPresets[currentData].geography][e.target.value]))
   }
 
   
@@ -517,11 +479,11 @@ const VariablePanel = (props) => {
       {panelState.variables && <ControlsContainer>
         <h2>Data Sources &amp;<br/> Map Variables</h2>
         <Gutter h={20}/>
-        <StyledDropDown id="newVariableSelect">
-          <InputLabel htmlFor="newVariableSelect">Variable</InputLabel>
+        <StyledDropDown id="variableSelect">
+          <InputLabel htmlFor="variableSelect">Variable</InputLabel>
           <Select
-            value={newVariable}
-            onChange={handleNewVariable}
+            value={variableName}
+            onChange={handleVariable}
             MenuProps={{id:'variableMenu'}}
             >
             {Object.keys(variableTree).map(variable => {
@@ -576,14 +538,14 @@ const VariablePanel = (props) => {
         <StyledDropDown id="geographySelect" style={{marginRight:'20px'}}>
           <InputLabel htmlFor="geographySelect">Geography</InputLabel>
           <Select
-            value={currentGeography}
+            value={dataPresets[currentData].geography}
             onChange={handleGeography}
             >
             {allGeographies.map(geography => 
               <MenuItem 
               value={geography} 
               key={geography} 
-              disabled={!variableTree[newVariable].hasOwnProperty(geography)}
+              disabled={!variableTree[variableName].hasOwnProperty(geography)}
               >
                 {geography}
               </MenuItem>
@@ -593,14 +555,14 @@ const VariablePanel = (props) => {
         <StyledDropDown id="datasetSelect">
           <InputLabel htmlFor="datasetSelect">Data Source</InputLabel>
           <Select
-            value={currentDataset}
+            value={urlParamsTree[currentData].name}
             onChange={handleDataset}
             >
             {allDatasets.map(dataset => 
               <MenuItem 
               value={dataset}
               key={dataset} 
-              disabled={variableTree[newVariable][currentGeography] === undefined || variableTree[newVariable][currentGeography].indexOf(dataset) === -1}
+              disabled={variableTree[variableName][dataPresets[currentData].geography] === undefined || variableTree[variableName][dataPresets[currentData].geography].indexOf(dataset) === -1}
               >
                 {dataset}
               </MenuItem>
@@ -812,5 +774,3 @@ const VariablePanel = (props) => {
     </VariablePanelContainer>
   );
 }
-
-export default VariablePanel;

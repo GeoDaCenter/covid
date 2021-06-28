@@ -5,7 +5,7 @@ import { getDataForBins, findTableDetails, getParseCSV, getParsePbf, getDateList
 import { 
   storeLisaValues, storeCartogramData, setMapParams, updateMap, addTablesAndUpdate, setIsLoading } from '../actions';
 
-import { colorScales, fixedScales, dataPresetsRedux, defaultTables } from '../config';
+import { colorScales, fixedScales } from '../config';
 
 const dateLists = getDateLists();
 const handleLoadData = (fileInfo) => fileInfo.file.slice(-4,) === '.pbf' ? getParsePbf(fileInfo, dateLists[fileInfo.dates]) : getParseCSV(fileInfo, dateLists[fileInfo.dates])
@@ -20,6 +20,8 @@ export default function useUpdateData(gdaProxy){
     const storedData = useSelector(state => state.storedData);
     const storedGeojson = useSelector(state => state.storedGeojson);
     const storedLisaData = useSelector(state => state.storedLisaData);
+    const dataPresets = useSelector((state) => state.dataPresets);
+    const defaultTables = useSelector((state) => state.defaultTables);
     const shouldUpdate = useSelector(state => state.shouldUpdate);
     const [isCalculating, setIsCalculating] = useState(false);
     const [stingerTimeout, setStingerTimeout] = useState();
@@ -99,7 +101,7 @@ export default function useUpdateData(gdaProxy){
   const fetchMissingTables = async (
     currentTable, 
     defaultTables, 
-    dataPresetsRedux, 
+    dataPresets, 
     storedData
   ) => {
     let inProcessLoadPromises = []
@@ -112,7 +114,7 @@ export default function useUpdateData(gdaProxy){
           findTableDetails(
             currentTable.numerator, 
             defaultTables, 
-            dataPresetsRedux
+            dataPresets
           )
         )
       )
@@ -127,7 +129,7 @@ export default function useUpdateData(gdaProxy){
           findTableDetails(
             currentTable.denominator, 
             defaultTables, 
-            dataPresetsRedux
+            dataPresets
           )
         )
       )
@@ -171,10 +173,10 @@ export default function useUpdateData(gdaProxy){
     fetchMissingTables(
       currentTable, 
       defaultTables, 
-      dataPresetsRedux,
+      dataPresets,
       storedData
     )
-  },[currentTable.numerator, currentTable.denominator, dataPresetsRedux, defaultTables])
+  },[currentTable.numerator, currentTable.denominator, dataPresets, defaultTables])
 
   const binReady = () => (storedGeojson[currentData] && storedData[currentTable.numerator] && gdaProxy.ready && mapParams.mapType !== 'lisa')
   // Trigger on index change while dynamic bin mode
