@@ -1,3 +1,16 @@
+import { variablePresets } from '../config/index';
+
+// read in URL params
+let paramsDict = {}; 
+for (const [key, value] of new URLSearchParams(window.location.search) ) { paramsDict[key] = value; }
+const currVariable = paramsDict.hasOwnProperty('var') 
+  ? {
+      ...variablePresets[paramsDict.var.replace(/_/g, " ")],
+      [paramsDict.hasOwnProperty('date') && 'nIndex']: +paramsDict.date,
+      [paramsDict.hasOwnProperty('range') && 'nRange']: +paramsDict.range,
+    }
+  : {}
+
 export const INITIAL_STATE = {
   storedGeojson: {},
   storedData: {},
@@ -5,7 +18,7 @@ export const INITIAL_STATE = {
   storedCartogramData: {},
   storedMobilityData: {},
   lazyFetched:false,
-  currentData: 'cdc_h.geojson',
+  currentData: paramsDict.hasOwnProperty('src') ? `${paramsDict.src}.geojson` : 'cdc_h.geojson',
   currentTable: {
     numerator: '',
     denominator: ''
@@ -18,7 +31,7 @@ export const INITIAL_STATE = {
   dates: {},
   isPlaying:false,
   currentZVariable: null,
-  currentMethod: 'natural_breaks',
+  currentMethod: paramsDict.hasOwnProperty('mthd') ? paramsDict.mthd : 'natural_breaks',
   currentOverlay: '',
   currentResource: '',
   mapData : {
@@ -43,21 +56,26 @@ export const INITIAL_STATE = {
     dataNote: 'Texas reports only state-level vaccination rates to the CDC.',
     zAxisParams: null,
     fixedScale: null,
-    storedRange: null
+    storedRange: null,
+    ...currVariable
   },
   mapParams: {
-    mapType: 'natural_breaks',
+    mapType: paramsDict.hasOwnProperty('mthd') ? paramsDict.mthd : 'natural_breaks',
     bins: {
       bins: [],
       breaks: []
     },
-    binMode: '',
+    binMode: paramsDict.hasOwnProperty('dBin') && paramsDict.dBin ? 'dynamic' : '',
     fixedScale: null,
-    nBins: 8,
-    vizType: '2D',
+    nBins: paramsDict.hasOwnProperty('mthd') && paramsDict.mthd.includes === 'hinge15_breaks' 
+      ? 6
+      : paramsDict.hasOwnProperty('mthd') && paramsDict.mthd.includes === 'lisa'
+      ? 4
+      : 8,
+    vizType: paramsDict.hasOwnProperty('viz') ? paramsDict.viz : '2D',
     activeGeoid: '',
-    overlay: '',
-    resource: '',
+    overlay:  paramsDict.hasOwnProperty('ovr') ? paramsDict.ovr : '',
+    resource: paramsDict.hasOwnProperty('res') ? paramsDict.res : '',
     colorScale: [
       [240,240,240],
       [255,255,229],

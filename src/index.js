@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import { Provider } from 'react-redux';
 import './index.css';
-import WebFont from 'webfontloader';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import { createStore } from 'redux';
 import rootReducer from './reducers';
@@ -33,23 +32,16 @@ const store = createStore(
 // const persistor = persistStore(store)
 
 
-WebFont.load({
-  google: {
-    families: ['Lato:400,400i,700,900', 'Playfair Display:ital', 'sans-serif']
-  }
-});
-
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       {/* <PersistGate loading={null} persistor={persistor}> */}
         <App />
-        
       {/* </PersistGate> */}
     </Provider>
 
     <button id="new-content-button" className="hidden" onClick={() => window.location.reload(true)}>
-      <span>New data is available</span>
+      <span>New data or features are available</span>
       Click here to reload
     </button>
   </React.StrictMode>,

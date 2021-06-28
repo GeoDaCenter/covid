@@ -5,25 +5,20 @@ import { useSelector, useDispatch } from 'react-redux';
 // first row: data loading
 // second row: data parsing for specific outputs
 // third row: data accessing
-import { 
-  getParseCSV, getParsePbf, mergeData, getColumns, loadJson,
-  getDataForBins, getDataForCharts, getDataForLisa, getDateLists,
-  getLisaValues, getCartogramValues, getDateIndices } from '../../utils'; //getVarId
+import { getDateLists } from '../../utils'; //getVarId
 
 // Actions -- Redux state manipulation following Flux architecture //
 // first row: data storage
 // second row: data and metadata handling 
 // third row: map and variable parameters
-import { 
-  initialDataLoad, addTables, dataLoad, dataLoadExisting, storeLisaValues, storeCartogramData, setDates, setNotification,
-  setMapParams, setUrlParams, setPanelState, updateMap } from '../../actions';
+import {  setDates, setNotification, setUrlParams, setPanelState } from '../../actions';
 
 import { MapSection, NavBar, VariablePanel, Legend,  TopPanel, Preloader,
   DataPanel, MainLineChart, Scaleable, Draggable, InfoBox,
   NotificationBox, Popover, MapTooltipContent } from '../../components';  
+import { ViewportProvider } from '../../contexts/ViewportContext';
+import {fitBounds} from '@math.gl/web-mercator';
   
-import { HoverDiv } from '../../styled_components'; 
-
 import { colorScales, fixedScales, dataPresets, defaultTables, dataPresetsRedux, variablePresets, colors } from '../../config';
 
 import JsGeoDaWorker from '../../JsGeoDaWorker';
@@ -59,6 +54,26 @@ const getDefaultDimensions = () => ({
 })
 
 const dateLists = getDateLists()
+// US bounds
+
+let paramsDict = {};
+for (const [key, value] of new URLSearchParams(window.location.search) ) { paramsDict[key] = value; }
+
+const defaultViewport = paramsDict.hasOwnProperty('lat')
+  ? {
+    latitude: +paramsDict.lat,
+    longitude: +paramsDict.lon,
+    zoom: +paramsDict.z,
+    pitch: paramsDict.viz === '3D' ? 30 : 0,
+    bearing: paramsDict.viz === '3D' ? -30 : 0,
+  }
+  : fitBounds({
+    width: window.innerWidth,
+    height: window.innerHeight,
+    bounds: [[-130.14, 53.96],[-67.12, 19]]
+  })
+
+  console.log(defaultViewport)
 
 export default function Map() {
 
@@ -96,10 +111,6 @@ export default function Map() {
 
     if (!paramsDict.hasOwnProperty('v')) {
       // do nothing, most of the time
-    } else if (paramsDict['v'] === '2') {
-      dispatch(
-        setUrlParams(paramsDict, variablePresets)
-      );
     } else if (paramsDict['v'] === '1') {
       dispatch(setNotification(`
           <h2>Welcome to the Atlas v2!</h2>
@@ -147,56 +158,57 @@ export default function Map() {
       {/* <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
         <button onClick={() => console.log(fullState)}>Log state</button>
       </header> */}
-      <div id="mainContainer" className={isLoading ? 'loading' : ''}>
-        <MapSection />
-        <TopPanel />
-        <Legend 
-          variableName={variableName} 
-          colorScale={mapParams.colorScale}
-          bins={mapParams.bins.bins}
-          fixedScale={fixedScale}
-          resource={mapParams.resource}
-          note={dataNote}
-          />
-        <VariablePanel />
-        <DataPanel />
-        <Popover /> 
-        <NotificationBox />  
-        {panelState.lineChart && <Draggable 
-          z={9}
-          defaultX={defaultDimensions.defaultXLong}
-          defaultY={defaultDimensions.defaultY}
-          title="lineChart"
-          content={
-          <Scaleable 
-            content={
-              <MainLineChart />
-            } 
+        <div id="mainContainer" className={isLoading ? 'loading' : ''}>
+          <ViewportProvider defaultViewport={defaultViewport} >
+            <MapSection />
+          </ViewportProvider>
+          <TopPanel />
+          <Legend 
+            variableName={variableName} 
+            colorScale={mapParams.colorScale}
+            bins={mapParams.bins.bins}
+            fixedScale={fixedScale}
+            resource={mapParams.resource}
+            note={dataNote}
+            />
+          <VariablePanel />
+          <DataPanel />
+          <Popover /> 
+          <NotificationBox />  
+          {panelState.lineChart && <Draggable 
+            z={9}
+            defaultX={defaultDimensions.defaultXLong}
+            defaultY={defaultDimensions.defaultY}
             title="lineChart"
-            defaultWidth={defaultDimensions.defaultWidthLong}
-            defaultHeight={defaultDimensions.defaultHeight}
-            minHeight={defaultDimensions.minHeight}
-            minWidth={defaultDimensions.minWidth} />
-        }/>} 
-        {panelState.tutorial && <Draggable 
-          z={10}
-          defaultX={defaultDimensions.defaultXManual}
-          defaultY={defaultDimensions.defaultYManual}
-          title="tutorial"
-          content={
-          <Scaleable 
             content={
-              <InfoBox />
-            } 
+            <Scaleable 
+              content={
+                <MainLineChart />
+              } 
+              title="lineChart"
+              defaultWidth={defaultDimensions.defaultWidthLong}
+              defaultHeight={defaultDimensions.defaultHeight}
+              minHeight={defaultDimensions.minHeight}
+              minWidth={defaultDimensions.minWidth} />
+          }/>} 
+          {panelState.tutorial && <Draggable 
+            z={10}
+            defaultX={defaultDimensions.defaultXManual}
+            defaultY={defaultDimensions.defaultYManual}
             title="tutorial"
-            defaultWidth={defaultDimensions.defaultWidthManual}
-            defaultHeight={defaultDimensions.defaultHeightManual}
-            minHeight={defaultDimensions.minHeight}
-            minWidth={defaultDimensions.minWidth} />
-        }/>}
-        <MapTooltipContent />
-
-      </div>
+            content={
+            <Scaleable 
+              content={
+                <InfoBox />
+              } 
+              title="tutorial"
+              defaultWidth={defaultDimensions.defaultWidthManual}
+              defaultHeight={defaultDimensions.defaultHeightManual}
+              minHeight={defaultDimensions.minHeight}
+              minWidth={defaultDimensions.minWidth} />
+          }/>}
+          <MapTooltipContent />
+        </div>
     </div>
   );
 }

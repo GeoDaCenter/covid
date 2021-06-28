@@ -486,7 +486,6 @@ var reducer = (state = INITIAL_STATE, action) => {
             const additionalParams = {
                 populationData
             }
-
             return {
                 ...state,
                 chartData: getDataForCharts(state.storedData[currCaseData], state.dates, additionalParams)
@@ -613,7 +612,6 @@ var reducer = (state = INITIAL_STATE, action) => {
                 storedGeojson: geojsonObj
             };
         case 'SET_STORED_LISA_DATA':{
-            console.log(action.payload.data)
             return {
                 ...state,
                 storedLisaData: action.payload.data,
