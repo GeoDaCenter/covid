@@ -35,6 +35,10 @@ case $DATA_SOURCE in
 		export COMMAND="python ./data-scripts/hrsa/getVaccinationClinics.py"
 		;;
 
+	hybridUpdate)
+		export COMMAND="python ./data-scripts/cdc/hybrid_udapte.py"
+		;;
+
 	testing)
 		export COMMAND='bash ./data-scripts/testing/run_testing.sh'
 
@@ -44,11 +48,13 @@ esac
 if $COMMAND;
  		then
 		if [ "$DATA_SOURCE" = "lisa" ];
-	  	then exit 0;
+	  		then exit 0;
 		elif [ "$DATA_SOURCE" = "testing" ];
 			then exit 0;
+		elif [ "$DATA_SOURCE" = "hybridUpdate" ];
+			then git add . && git commit -m "Updated: `date +'%Y-%m-%d %H:%M:%S'`" && git push;
 		else
-			git add . && git commit -m "Updated: `date +'%Y-%m-%d %H:%M:%S'`"&& git push;
+			git add . && git commit -m "Updated: `date +'%Y-%m-%d %H:%M:%S'` [skip ci]" && git push;
 		fi
 else
 	echo "$DATA_SOURCE script failed.";
