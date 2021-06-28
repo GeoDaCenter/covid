@@ -443,7 +443,7 @@ export const defaultTables = {
     }
 }
 
-export const dataPresetsRedux = {
+export const dataPresets = {
     'county_usfacts.geojson': {
         plainName: 'USA Facts County', // Plain english name for dataset
         geojson: 'county_usfacts.geojson', // geospatial data to join to
