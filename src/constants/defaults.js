@@ -132,7 +132,8 @@ export const INITIAL_STATE = {
     tutorial:false,
     lineChart:true,
     context: false,
-    contextPos: {x:null,y:null}
+    contextPos: {x:null,y:null},
+    dataLoader:true
   },
   urlParams: {},
   tooltipContent: {

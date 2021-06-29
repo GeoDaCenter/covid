@@ -3,6 +3,7 @@ import BottomPanel from './bottomPanel';
 import ContextMenu from './contextMenu';
 import CsvDownloader from './csvDownloader';
 import DataDetails from './dataDetails';
+import DataLoader from './DataLoader';
 import DataPanel from './dataPanel';
 import DateSlider from './slider';
 import Dock from './dock';
@@ -52,6 +53,7 @@ export {
     ContextMenu,
     CsvDownloader,
     DataDetails,
+    DataLoader,
     DataPanel,
     DateSlider,
     Dock,

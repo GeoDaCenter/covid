@@ -15,7 +15,7 @@ import {  setDates, setNotification, setPanelState } from '../../actions';
 
 import { MapSection, NavBar, VariablePanel, Legend,  TopPanel, Preloader,
   DataPanel, MainLineChart, Scaleable, Draggable, InfoBox,
-  NotificationBox, Popover, MapTooltipContent } from '../../components';  
+  NotificationBox, Popover, MapTooltipContent, DataLoader } from '../../components';  
 import { ViewportProvider } from '../../contexts/ViewportContext';
 import {fitBounds} from '@math.gl/web-mercator';
   
@@ -174,7 +174,8 @@ export default function Map() {
           <VariablePanel />
           <DataPanel />
           <Popover /> 
-          <NotificationBox />  
+          <NotificationBox /> 
+          <DataLoader /> 
           {panelState.lineChart && <Draggable 
             z={9}
             defaultX={defaultDimensions.defaultXLong}
