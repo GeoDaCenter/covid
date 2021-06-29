@@ -28,13 +28,13 @@ case $DATA_SOURCE in
 		;;
 
 	cdc)
-		export COMMAND="python ./data-scripts/cdc/getCdcCountyData.py && python ./data-scripts/cdc/getCdcVaccinationData.py"
+		export COMMAND="python ./data-scripts/cdc/getCdcCountyData.py"
 		;;
 	
 	vax)
 		export COMMAND="python ./data-scripts/cdc/getCdcVaccinationData.py"
 		;;
-
+	
 	hrsa)
 		export COMMAND="python ./data-scripts/hrsa/getVaccinationClinics.py"
 		;;

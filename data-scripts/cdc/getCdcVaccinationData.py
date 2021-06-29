@@ -189,9 +189,7 @@ if __name__ == "__main__":
 
     ## Vaccination Data
     fileList = downloadCDCVaccinationData()
-    print(fileList)
     parsedData = parseVaccinationData(fileList)
-    print(parsedData)
 
     parsedData['vaccineDistributed'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_to_be_distributed_cdc.csv'), index=False)
     parsedData['vaccineAdministered1'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_one_or_more_doses_cdc.csv'), index=False)
