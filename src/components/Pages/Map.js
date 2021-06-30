@@ -165,53 +165,56 @@ export default function Map() {
           <GeoDaContext.Provider value={geoda}>
             <ViewportProvider defaultViewport={defaultViewport} >
               <MapSection />
-            </ViewportProvider>
-            <TopPanel />
-            <Legend 
-              variableName={variableName} 
-              colorScale={mapParams.colorScale}
-              bins={mapParams.bins}
-              fixedScale={fixedScale}
-              resource={mapParams.resource}
-              note={dataNote}
-              />
-            <VariablePanel />
-            <DataPanel />
-            <Popover /> 
-            <NotificationBox />  
-            {panelState.lineChart && <Draggable 
-              z={9}
-              defaultX={defaultDimensions.defaultXLong}
-              defaultY={defaultDimensions.defaultY}
-              title="lineChart"
-              content={
-              <Scaleable 
-                content={
-                  <MainLineChart />
-                } 
+              <TopPanel />
+              <Legend 
+                variableName={variableName} 
+                colorScale={mapParams.colorScale}
+                bins={mapParams.bins}
+                fixedScale={fixedScale}
+                resource={mapParams.resource}
+                note={dataNote}
+                />
+              <VariablePanel />
+              <DataPanel />
+              <Popover /> 
+              <NotificationBox />  
+              {panelState.lineChart && <Draggable 
+                z={9}
+                defaultX={defaultDimensions.defaultXLong}
+                defaultY={defaultDimensions.defaultY}
                 title="lineChart"
-                defaultWidth={defaultDimensions.defaultWidthLong}
-                defaultHeight={defaultDimensions.defaultHeight}
-                minHeight={defaultDimensions.minHeight}
-                minWidth={defaultDimensions.minWidth} />
-            }/>} 
-            {panelState.tutorial && <Draggable 
-              z={10}
-              defaultX={defaultDimensions.defaultXManual}
-              defaultY={defaultDimensions.defaultYManual}
-              title="tutorial"
-              content={
-              <Scaleable 
                 content={
-                  <InfoBox />
-                } 
+                <Scaleable 
+                  content={
+                    <MainLineChart />
+                  } 
+                  title="lineChart"
+                  defaultWidth={defaultDimensions.defaultWidthLong}
+                  defaultHeight={defaultDimensions.defaultHeight}
+                  minHeight={defaultDimensions.minHeight}
+                  minWidth={defaultDimensions.minWidth} />
+              }/>} 
+              {panelState.tutorial && <Draggable 
+                z={10}
+                defaultX={defaultDimensions.defaultXManual}
+                defaultY={defaultDimensions.defaultYManual}
                 title="tutorial"
-                defaultWidth={defaultDimensions.defaultWidthManual}
-                defaultHeight={defaultDimensions.defaultHeightManual}
-                minHeight={defaultDimensions.minHeight}
-                minWidth={defaultDimensions.minWidth} />
-            }/>}
-            <MapTooltipContent />
+                content={
+                <Scaleable 
+                  content={
+                    <InfoBox />
+                  } 
+                  title="tutorial"
+                  defaultWidth={defaultDimensions.defaultWidthManual}
+                  defaultHeight={defaultDimensions.defaultHeightManual}
+                  minHeight={defaultDimensions.minHeight}
+                  minWidth={defaultDimensions.minWidth} />
+              }/>}
+              <MapTooltipContent />
+              {panelState.dataLoader &&
+                <DataLoader/>
+              }
+            </ViewportProvider>
           </GeoDaContext.Provider>}
         </div>
     </div>
