@@ -26,6 +26,7 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",
+    "comlink": "^4.3.1",
     "d3-dsv": "^2.0.0",
     "d3-scale": "^3.2.0",
     "file-saver": "^2.0.5",

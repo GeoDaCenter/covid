@@ -17,16 +17,12 @@ import { MapSection, NavBar, VariablePanel, Legend,  TopPanel, Preloader,
   DataPanel, MainLineChart, Scaleable, Draggable, InfoBox,
   NotificationBox, Popover, MapTooltipContent } from '../../components';  
 import { ViewportProvider } from '../../contexts/ViewportContext';
+import { GeoDaContext } from "../../contexts/GeoDaContext";
+
 import {fitBounds} from '@math.gl/web-mercator';
   
 import { colors } from '../../config';
-
-import JsGeoDaWorker from '../../JsGeoDaWorker';
-
-import useLoadData from '../../hooks/useLoadData';
-import useUpdateData from '../../hooks/useUpdateData';
-
-const gdaProxy = new JsGeoDaWorker();
+import * as Comlink from "comlink";
 
 // Main function, App. This function does 2 things:
 // 1: App manages the majority of the side effects when the state changes.
@@ -73,8 +69,7 @@ const defaultViewport = paramsDict.hasOwnProperty('lat')
     bounds: [[-130.14, 53.96],[-67.12, 19]]
   })
 
-  console.log(defaultViewport)
-
+var geoda;
 export default function Map() {
 
   // These selectors access different pieces of the store. While App mainly
@@ -91,18 +86,25 @@ export default function Map() {
 
   const dispatch = useDispatch(); 
 
-  // gdaProxy is the WebGeoda proxy class. Generally, having a non-serializable
+  // geoda is the WebGeoda proxy class. Generally, having a non-serializable
   // data in the state is poor for performance, but the App component state only
-  // contains gdaProxy.
+  // contains geoda.
   const [defaultDimensions, setDefaultDimensions] = useState({...getDefaultDimensions()})
-  const [firstLoad, secondLoad, lazyFetchData] = useLoadData(gdaProxy)
-  const [] = useUpdateData(gdaProxy)
 
   // // Dispatch helper functions for side effects and data handling
   // Get centroid data for cartogram
-  // const getCentroids = (geojson, gdaProxy) =>  dispatch(setCentroids(gdaProxy.GetCentroids(geojson), geojson))
+  // const getCentroids = (geojson, geoda) =>  dispatch(setCentroids(geoda.GetCentroids(geojson), geojson))
 
-  // After runtime is initialized, this loads in gdaProxy to the state
+  const [geodaReady, setGeodaReady] = useState(false);
+
+
+  useEffect(() => {
+    let worker = Comlink.wrap(new Worker(`${process.env.PUBLIC_URL}/workers/worker.jsgeoda.js`))
+    worker.New()
+      .then(() => geoda = worker)
+      .then(() => setGeodaReady(true))
+  }, []);
+  // After runtime is initialized, this loads in geoda to the context
   useEffect(() => {
     let paramsDict = {}; 
     const queryString = window.location.search;
@@ -159,55 +161,58 @@ export default function Map() {
         <button onClick={() => console.log(fullState)}>Log state</button>
       </header> */}
         <div id="mainContainer" className={isLoading ? 'loading' : ''}>
-          <ViewportProvider defaultViewport={defaultViewport} >
-            <MapSection />
-          </ViewportProvider>
-          <TopPanel />
-          <Legend 
-            variableName={variableName} 
-            colorScale={mapParams.colorScale}
-            bins={mapParams.bins.bins}
-            fixedScale={fixedScale}
-            resource={mapParams.resource}
-            note={dataNote}
-            />
-          <VariablePanel />
-          <DataPanel />
-          <Popover /> 
-          <NotificationBox />  
-          {panelState.lineChart && <Draggable 
-            z={9}
-            defaultX={defaultDimensions.defaultXLong}
-            defaultY={defaultDimensions.defaultY}
-            title="lineChart"
-            content={
-            <Scaleable 
-              content={
-                <MainLineChart />
-              } 
+        {geodaReady && 
+          <GeoDaContext.Provider value={geoda}>
+            <ViewportProvider defaultViewport={defaultViewport} >
+              <MapSection />
+            </ViewportProvider>
+            <TopPanel />
+            <Legend 
+              variableName={variableName} 
+              colorScale={mapParams.colorScale}
+              bins={mapParams.bins}
+              fixedScale={fixedScale}
+              resource={mapParams.resource}
+              note={dataNote}
+              />
+            <VariablePanel />
+            <DataPanel />
+            <Popover /> 
+            <NotificationBox />  
+            {panelState.lineChart && <Draggable 
+              z={9}
+              defaultX={defaultDimensions.defaultXLong}
+              defaultY={defaultDimensions.defaultY}
               title="lineChart"
-              defaultWidth={defaultDimensions.defaultWidthLong}
-              defaultHeight={defaultDimensions.defaultHeight}
-              minHeight={defaultDimensions.minHeight}
-              minWidth={defaultDimensions.minWidth} />
-          }/>} 
-          {panelState.tutorial && <Draggable 
-            z={10}
-            defaultX={defaultDimensions.defaultXManual}
-            defaultY={defaultDimensions.defaultYManual}
-            title="tutorial"
-            content={
-            <Scaleable 
               content={
-                <InfoBox />
-              } 
+              <Scaleable 
+                content={
+                  <MainLineChart />
+                } 
+                title="lineChart"
+                defaultWidth={defaultDimensions.defaultWidthLong}
+                defaultHeight={defaultDimensions.defaultHeight}
+                minHeight={defaultDimensions.minHeight}
+                minWidth={defaultDimensions.minWidth} />
+            }/>} 
+            {panelState.tutorial && <Draggable 
+              z={10}
+              defaultX={defaultDimensions.defaultXManual}
+              defaultY={defaultDimensions.defaultYManual}
               title="tutorial"
-              defaultWidth={defaultDimensions.defaultWidthManual}
-              defaultHeight={defaultDimensions.defaultHeightManual}
-              minHeight={defaultDimensions.minHeight}
-              minWidth={defaultDimensions.minWidth} />
-          }/>}
-          <MapTooltipContent />
+              content={
+              <Scaleable 
+                content={
+                  <InfoBox />
+                } 
+                title="tutorial"
+                defaultWidth={defaultDimensions.defaultWidthManual}
+                defaultHeight={defaultDimensions.defaultHeightManual}
+                minHeight={defaultDimensions.minHeight}
+                minWidth={defaultDimensions.minWidth} />
+            }/>}
+            <MapTooltipContent />
+          </GeoDaContext.Provider>}
         </div>
     </div>
   );

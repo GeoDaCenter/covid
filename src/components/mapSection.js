@@ -19,6 +19,8 @@ import {getCSV, getCartogramCenter, parseMapboxLayers, shallowCompare } from '..
 import { colors, MAPBOX_ACCESS_TOKEN } from '../config';
 import MAP_STYLE from '../config/style.json';
 import { useViewport, useSetViewport } from '../contexts/ViewportContext';
+import useLoadData from '../hooks/useLoadData';
+import useUpdateData from '../hooks/useUpdateData';
 // PBF schemas
 import * as Schemas from '../schemas';
 
@@ -101,6 +103,8 @@ export default function MapSection(){
 
     const storedCartogramData = useSelector(state => state.storedCartogramData);
     const storedLisaData = useSelector(state => state.storedLisaData);
+    const [firstLoad, secondLoad, lazyFetchData] = useLoadData()
+    const [] = useUpdateData()
     const viewport = useViewport();
     const setViewport = useSetViewport();
     
