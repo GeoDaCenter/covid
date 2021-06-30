@@ -98,7 +98,7 @@ const BinLabels = styled.div`
     display: flex;
     margin-top:0px;
     box-sizing: border-box;
-    padding: 0 ${props => props.binLength > 6 ? 100/props.binLength/2-1 : 0}%;
+    padding: 0 ${props => props.binLength > 6 ? 100/props.binLength/2-2 : 0}%;
     .bin { 
         height:10px;
         display: inline;
@@ -108,6 +108,7 @@ const BinLabels = styled.div`
         font-size:10px;
         text-align: center;
         background:none;
+        text-align:center;
 
     }
     .bin:nth-of-type(1) {
@@ -200,12 +201,12 @@ const Legend =  (props) => {
 
                                         </button>)}
                                 </BinBars>
-                                <BinLabels firstBinZero={`${props.colorScale[0]}` === `240,240,240`} binLength={props.bins.length}>
+                                <BinLabels firstBinZero={`${props.colorScale[0]}` === `240,240,240`} binLength={props.bins.bins.length}>
                                     {(`${props.colorScale[0]}` === `240,240,240` && props.fixedScale === null) && <div className="bin firstBin">0</div>}
 
                                     {
                                         props.bins !== undefined && 
-                                        <BinsList data={props.bins} />
+                                        <BinsList data={props.bins.bins} />
                                     }
                                     
                                 </BinLabels>

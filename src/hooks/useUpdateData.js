@@ -1,35 +1,36 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { useState, useEffect} from 'react';
+import { useSelector, useDispatch} from 'react-redux';
+import { useState, useEffect, useContext} from 'react';
 import { getDataForBins, findTableDetails, getParseCSV, getParsePbf, getDateLists } from '../utils';
 
 import { 
   storeLisaValues, storeCartogramData, setMapParams, updateMap, addTablesAndUpdate, setIsLoading } from '../actions';
 
 import { colorScales, fixedScales } from '../config';
+import { GeoDaContext } from '../contexts/GeoDaContext';
 
 const dateLists = getDateLists();
 const handleLoadData = (fileInfo) => fileInfo.file.slice(-4,) === '.pbf' ? getParsePbf(fileInfo, dateLists[fileInfo.dates]) : getParseCSV(fileInfo, dateLists[fileInfo.dates])
 
-export default function useUpdateData(gdaProxy){
-
-    const dispatch = useDispatch();
-    const dataParams = useSelector(state => state.dataParams);
-    const mapParams = useSelector(state => state.mapParams);
-    const currentData = useSelector(state => state.currentData);
-    const currentTable = useSelector(state => state.currentTable);
-    const storedData = useSelector(state => state.storedData);
-    const storedGeojson = useSelector(state => state.storedGeojson);
-    const storedLisaData = useSelector(state => state.storedLisaData);
-    const dataPresets = useSelector((state) => state.dataPresets);
-    const defaultTables = useSelector((state) => state.defaultTables);
-    const shouldUpdate = useSelector(state => state.shouldUpdate);
-    const [isCalculating, setIsCalculating] = useState(false);
-    const [stingerTimeout, setStingerTimeout] = useState();
-    const [stinger, setStinger] = useState(false);
+export default function useUpdateData(){
+  const dispatch = useDispatch();
+  const dataParams = useSelector(state => state.dataParams);
+  const mapParams = useSelector(state => state.mapParams);
+  const currentData = useSelector(state => state.currentData);
+  const currentTable = useSelector(state => state.currentTable);
+  const storedData = useSelector(state => state.storedData);
+  const storedGeojson = useSelector(state => state.storedGeojson);
+  const storedLisaData = useSelector(state => state.storedLisaData);
+  const dataPresets = useSelector((state) => state.dataPresets);
+  const defaultTables = useSelector((state) => state.defaultTables);
+  const shouldUpdate = useSelector(state => state.shouldUpdate);
+  const [isCalculating, setIsCalculating] = useState(false);
+  const [stingerTimeout, setStingerTimeout] = useState();
+  const [stinger, setStinger] = useState(false);
+  const geoda = useContext(GeoDaContext);
 
   const updateBins =  async () => { 
     setIsCalculating(true)
-    if (gdaProxy.ready && (storedData[currentTable.numerator]||dataParams.numerator==='properties') && mapParams.mapType !== "lisa"){
+    if ((storedData[currentTable.numerator]||dataParams.numerator==='properties') && mapParams.mapType !== "lisa"){
       if (dataParams.fixedScale && mapParams.mapType === "natural_breaks") {
         dispatch(
           setMapParams({
@@ -50,13 +51,14 @@ export default function useUpdateData(gdaProxy){
         );
 
         let nb = mapParams.mapType === "natural_breaks" ? 
-          await gdaProxy.Bins.NaturalBreaks(mapParams.nBins, binData) :
-          await gdaProxy.Bins.Hinge15(mapParams.nBins, binData)
+          await geoda.naturalBreaks(mapParams.nBins, binData) :
+          await geoda.hinge15Breaks(binData)
+
         dispatch(
           setMapParams({
             bins: {
-              bins: mapParams.mapType === 'natural_breaks' ? nb.bins : ['Lower Outlier','< 25%','25-50%','50-75%','>75%','Upper Outlier'],
-              breaks: [-Math.pow(10, 12), ...nb.breaks.slice(1,-1), Math.pow(10, 12)]
+              bins: mapParams.mapType === 'natural_breaks' ? nb : ['Lower Outlier','< 25%','25-50%','50-75%','>75%','Upper Outlier'],
+              breaks: nb
             },
             colorScale: mapParams.mapType === 'natural_breaks' ? colorScales[dataParams.colorScale || mapParams.mapType] : colorScales[mapParams.mapType || dataParams.colorScale]
           })
@@ -74,8 +76,11 @@ export default function useUpdateData(gdaProxy){
       dataParams,
       Object.values(storedGeojson[currentData].indices.indexOrder)
     );
-    const weight_uid = 'Queen' in gdaProxy.geojsonMaps[currentData] ? gdaProxy.geojsonMaps[currentData].Queen : await gdaProxy.CreateWeights.Queen(currentData);
-    const lisaValues = await gdaProxy.Cluster.LocalMoran(currentData, weight_uid, dataForLisa);
+    const weights = storedGeojson[currentData]?.weights?.Queen !== undefined
+      ? storedGeojson[currentData].weights.Queen 
+      : await geoda.getQueenWeights(storedGeojson[currentData].mapId);
+
+    const lisaValues = await geoda.localMoran(weights, dataForLisa);
     dispatch(storeLisaValues(lisaValues.clusters));
     setIsCalculating(false)
   }
@@ -88,7 +93,7 @@ export default function useUpdateData(gdaProxy){
       dataParams,
       Object.values(storedGeojson[currentData].indices.indexOrder)
     );
-    const cartogramData = await gdaProxy.cartogram(currentData, dataForCartogram);
+    const cartogramData = await geoda.cartogram(currentData, dataForCartogram);
     let tempArray = new Array(cartogramData.length)
     for (let i=0; i<cartogramData.length; i++){
         cartogramData[i].value = dataForCartogram[i]
@@ -107,7 +112,6 @@ export default function useUpdateData(gdaProxy){
     let inProcessLoadPromises = []
     let filesFetched = []
     if (currentTable.numerator && !storedData.hasOwnProperty(currentTable.numerator) && currentTable.numerator !== 'properties') {
-      console.log(`fetching ${currentTable.numerator}`)
       filesFetched.push(currentTable.numerator)
       inProcessLoadPromises.push(
         handleLoadData(
@@ -122,7 +126,6 @@ export default function useUpdateData(gdaProxy){
     }
 
     if (currentTable.numerator && !storedData.hasOwnProperty(currentTable.denominator) && currentTable.denominator !== 'properties') {
-      console.log(`fetching ${currentTable.denominator}`)
       filesFetched.push(currentTable.denominator)
       inProcessLoadPromises.push(
         handleLoadData(
@@ -144,10 +147,10 @@ export default function useUpdateData(gdaProxy){
     dispatch(addTablesAndUpdate(dataObj))
   }
 
-  // This listens for gdaProxy events for LISA and Cartogram calculations
+  // This listens for geoda events for LISA and Cartogram calculations
   // Both of these are computationally heavy.
   useEffect(() => {
-    if (!isCalculating && gdaProxy.ready) {
+    if (!isCalculating) {
       if (mapParams.mapType === "lisa" && storedData[currentTable.numerator] !== undefined && storedGeojson[currentData] !== undefined) updateLisa()
       if (mapParams.vizType === 'cartogram' && storedData[currentTable.numerator] !== undefined && storedGeojson[currentData] !== undefined) {
         updateCartogram()
@@ -170,15 +173,17 @@ export default function useUpdateData(gdaProxy){
   },[stinger])
 
   useEffect(() => {
-    fetchMissingTables(
-      currentTable, 
-      defaultTables, 
-      dataPresets,
-      storedData
-    )
-  },[currentTable.numerator, currentTable.denominator, dataPresets, defaultTables])
+    if (geoda !== undefined) {
+      fetchMissingTables(
+        currentTable, 
+        defaultTables, 
+        dataPresets,
+        storedData
+      )
+    }
+  },[currentTable.numerator, currentTable.denominator, dataPresets, defaultTables, geoda])
 
-  const binReady = () => (storedGeojson[currentData] && storedData[currentTable.numerator] && gdaProxy.ready && mapParams.mapType !== 'lisa')
+  const binReady = () => (storedGeojson[currentData] && storedData[currentTable.numerator] && mapParams.mapType !== 'lisa')
   // Trigger on index change while dynamic bin mode
   useEffect(() => { 
     if (!isCalculating && binReady() && mapParams.binMode === 'dynamic') updateBins()
@@ -192,7 +197,6 @@ export default function useUpdateData(gdaProxy){
   
   useEffect(() => {
     if (binReady() && !isCalculating && shouldUpdate) {
-      console.log('Updating bins')
       updateBins()
     }
   }, [shouldUpdate])

@@ -529,3 +529,14 @@ export const setIsLoading = () => {
     }
 }
 
+
+export const addWeights = (file, weights) => {
+    return {
+        type: 'ADD_WEIGHTS',
+        payload: {
+            file,
+            weights
+        }
+    }
+}
+

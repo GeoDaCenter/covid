@@ -1,6 +1,6 @@
 
 import { useSelector, useDispatch } from 'react-redux';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useContext } from 'react';
 import { 
   getParseCSV, getParsePbf, getDataForBins, getDateLists } from '../utils'; //getVarId
 // Main data loader
@@ -8,15 +8,41 @@ import {
 //   then performs a join and loads the data into the store
 
 import { 
-  initialDataLoad, addTables, addGeojson, updateMap, updateChart, addTableAndChart, setIsLoading } from '../actions';
+  initialDataLoad, addWeights, addTables, addGeojson, updateMap, updateChart, addTableAndChart, setIsLoading } from '../actions';
 
 import { colorScales, fixedScales } from '../config';
+import { GeoDaContext } from '../contexts/GeoDaContext';
 
 const dateLists = getDateLists();
 const handleLoadData = (fileInfo) => fileInfo.file.slice(-4,) === '.pbf' ? getParsePbf(fileInfo, dateLists[fileInfo.dates]) : getParseCSV(fileInfo, dateLists[fileInfo.dates])
 
-export default function useLoadData(gdaProxy){
-  
+const getIdOrder = (features, idProp) => {
+  let geoidOrder = {};
+  let indexOrder = {}
+  for (let i=0; i<features.length; i++) {
+    geoidOrder[features[i].properties[idProp]] = i
+    indexOrder[i] = features[i].properties[idProp]
+  }
+  return { geoidOrder, indexOrder }
+};
+
+/**
+* Assign an array of geo objects (eg. Features of a GeoJSON) into an indexed object
+* based  on the provided key property
+* @param {Object} data Geojson-like object to be assigned
+* @param {String} key Key inside properties to index rows on
+* @returns {Object} Indexed geodata for faster access
+*/
+export const indexGeoProps = (data, key) => {
+let geoProperties = {};
+for (var i = 0; i < data.features.length; i++) {
+  geoProperties[data.features[i].properties[key]] =
+    data.features[i].properties;
+}
+return geoProperties;
+};
+
+export default function useLoadData(){
   const dataParams = useSelector(state => state.dataParams);
   const mapParams = useSelector(state => state.mapParams);
   const currentData = useSelector(state => state.currentData);
@@ -25,19 +51,20 @@ export default function useLoadData(gdaProxy){
   const chartParams = useSelector(state => state.chartParams);
   const dataPresets = useSelector((state) => state.dataPresets);
   const defaultTables = useSelector((state) => state.defaultTables);
+  const geoda = useContext(GeoDaContext);
 
   const dispatch = useDispatch();
 
   const [isInProcess, setIsInProcess] = useState(false);
 
-  const getLisaValues = async (currentData, dataForLisa) => {
-    const weight_uid = 'Queen' in gdaProxy.geojsonMaps[currentData] ? gdaProxy.geojsonMaps[currentData].Queen : await gdaProxy.CreateWeights.Queen(currentData);
-    const lisaValues = await gdaProxy.Cluster.LocalMoran(currentData, weight_uid, dataForLisa);  
+  const getLisaValues = async (currentData, dataForLisa, mapId) => {
+    const weights = storedGeojson[currentData] && 'Queen' in storedGeojson[currentData].weights ? storedGeojson[currentData].Weights.Queen : await geoda.getQueenWeights(mapId);
+    const lisaValues = await geoda.localMoran(weights, dataForLisa);  
     return lisaValues.clusters
   }
 
   const getCartogramValues = async (currentData, dataForCartogram) => {
-    let cartogramData = await gdaProxy.cartogram(currentData, dataForCartogram);
+    let cartogramData = await geoda.cartogram(currentData, dataForCartogram);
     let tempArray = new Array(cartogramData.length)
     for (let i=0; i<cartogramData.length; i++){
         cartogramData[i].value = dataForCartogram[i]
@@ -47,28 +74,46 @@ export default function useLoadData(gdaProxy){
   }
 
   const firstLoad = useMemo(() => async (datasetParams, defaultTables) => {
+    if (geoda === undefined) return;
     setIsInProcess(true)
-    if (!gdaProxy.ready) await gdaProxy.init()  
     const numeratorParams = datasetParams.tables[dataParams.numerator]||defaultTables[dataParams.numerator]
     const denominatorParams = dataParams.denominator !== 'properties' ? datasetParams.tables[dataParams.denominator]||defaultTables[dataParams.denominator] : null
 
     if ((storedData.hasOwnProperty(numeratorParams?.file)||dataParams.numerator === 'properties') && (storedData.hasOwnProperty(denominatorParams?.file)||dataParams.denominator !== 'properties')) return [numeratorParams.file, denominatorParams && denominatorParams.file]
     const firstLoadPromises = [
-      gdaProxy.LoadGeojson(`${process.env.PUBLIC_URL}/geojson/${datasetParams.geojson}`),
+      geoda.loadGeoJSON(`${process.env.PUBLIC_URL}/geojson/${datasetParams.geojson}`, datasetParams.id),
       numeratorParams && handleLoadData(numeratorParams),
       denominatorParams && handleLoadData(denominatorParams)
-    ] 
+    ];
 
-    let [geojsonData, numeratorData, denominatorData] = await Promise.all(firstLoadPromises)
+    const [
+      [mapId, geojsonData], 
+      numeratorData, 
+      denominatorData
+    ] = await Promise.all(firstLoadPromises);
 
+    const geojsonProperties = indexGeoProps(
+      geojsonData,
+      datasetParams.id
+    );
+
+    const geojsonOrder = getIdOrder(
+      geojsonData.features,
+      datasetParams.id
+    );
+    
     const dateIndices = numeratorData.dates
-    const binIndex = dateIndices !== null ? mapParams.binMode === 'dynamic' ? dataParams.nIndex : dateIndices.slice(-1)[0] : null;
+    const binIndex = dateIndices !== null 
+      ? mapParams.binMode === 'dynamic' && dateIndices?.indexOf(dataParams.nIndex) !== -1
+      ? dataParams.nIndex 
+      : dateIndices.slice(-1)[0] 
+      : null;
     
     let binData = getDataForBins(
       dataParams.numerator === 'properties' ? geojsonData.data.features : numeratorData.data, 
-      dataParams.denominator === 'properties' ? geojsonData.properties : denominatorData.data, 
+      dataParams.denominator === 'properties' ? geojsonProperties : denominatorData.data, 
       {...dataParams, nIndex: binIndex, dIndex: dataParams.dType === 'time-series' ? binIndex : null},
-      Object.values(geojsonData.indices.indexOrder)
+      Object.values(geojsonOrder.indexOrder)
     );
 
     let bins;
@@ -80,15 +125,16 @@ export default function useLoadData(gdaProxy){
     } else {
       // calculate breaks
       let nb = mapParams.mapType === "natural_breaks" ? 
-        await gdaProxy.Bins.NaturalBreaks(mapParams.nBins, binData) :
-        await gdaProxy.Bins.Hinge15(mapParams.nBins, binData)  
+        await geoda.naturalBreaks(mapParams.nBins, binData) :
+        await geoda.hinge15Breaks(binData)  
+        
       bins = {
-        bins: mapParams.mapType === "natural_breaks" ? nb.bins : ['Lower Outlier','< 25%','25-50%','50-75%','>75%','Upper Outlier'],
-        breaks: [-Math.pow(10, 12), ...nb.breaks.slice(1,-1), Math.pow(10, 12)]
+        bins: mapParams.mapType === "natural_breaks" ? nb : ['Lower Outlier','< 25%','25-50%','50-75%','>75%','Upper Outlier'],
+        breaks: nb
       }
     }
     
-    const lisaData = mapParams.mapType === 'lisa' ? await getLisaValues(datasetParams.geojson, binData) : null;  
+    const lisaData = mapParams.mapType === 'lisa' ? await getLisaValues(datasetParams.geojson, binData, mapId) : null;  
     const cartogramData = mapParams.vizType === 'cartogram' ? await getCartogramValues(datasetParams.geojson, binData) : null;
     
     dispatch(
@@ -103,7 +149,13 @@ export default function useLoadData(gdaProxy){
           denominator:dataParams.denominator === 'properties' ? 'properties' : denominatorParams.file
         },
         storedGeojson: {
-          [datasetParams.geojson]:geojsonData
+          [datasetParams.geojson]:{
+            weights:{},
+            properties: geojsonProperties,
+            indices: geojsonOrder,
+            mapId,
+            data: geojsonData
+          }
         },
         mapParams: {
           bins,
@@ -118,11 +170,12 @@ export default function useLoadData(gdaProxy){
       })
     )
     setIsInProcess(false)
-    return [numeratorParams.file, denominatorParams && denominatorParams.file]
+    return [numeratorParams.file, denominatorParams && denominatorParams.file, mapId]
   },[currentData])
 
 
-  const secondLoad = useMemo(() => async (datasetParams, defaultTables, loadedTables) => {
+  const secondLoad = useMemo(() => async (datasetParams, defaultTables, loadedTables, mapId) => {
+    if (geoda === undefined) return;
     setIsInProcess(true);
 
     const defaultChartTable = defaultTables[chartParams.table]
@@ -136,7 +189,7 @@ export default function useLoadData(gdaProxy){
         [currCaseData.file]: table
       }))
     }
-
+    
     const filesToLoad = [
       ...Object.values(datasetParams.tables),
       ...Object.values(defaultTables)
@@ -154,7 +207,7 @@ export default function useLoadData(gdaProxy){
     }
     dispatch(addTables(dataObj))
     setIsInProcess(false)
-    return filesToLoad.map(d => d.file)
+    return [datasetParams.geojson, mapId]
   }, [currentData])
   
   const lazyFetchData = useMemo(() => async (dataPresets, loadedTables) => {
@@ -165,7 +218,7 @@ export default function useLoadData(gdaProxy){
       if (isInProcess) return;
       const file = geojsonFiles[i];
       if (!loadedTables.includes(file) && !loadedGeojsons.includes(file) && !(currentData === file)){
-        const geojsonData = await gdaProxy.LoadGeojson(`${process.env.PUBLIC_URL}/geojson/${file}`)
+        const geojsonData = await geoda.loadGeoJSON(`${process.env.PUBLIC_URL}/geojson/${file}`)
         dispatch(addGeojson({[file]:geojsonData}))
       }
     }
@@ -190,41 +243,37 @@ export default function useLoadData(gdaProxy){
 
   }, [currentData])
 
-  const lazyGenerateWeights = useMemo(() => async (dataPresets) => {
-    const geojsonFiles = Object.keys(gdaProxy.geojsonMaps)
-
-    for (let i=0; i<geojsonFiles.length;i++){
-      if (isInProcess) return;
-      const file = geojsonFiles[i];
-      if ('Queen' in gdaProxy.geojsonMaps[file]){
-        continue
-      } else {
-        let weights = await gdaProxy.CreateWeights.Queen(file);
-      }
+  const lazyGenerateWeights = useMemo(() => async (geojsonFile, geojsonId) => {
+    if (storedGeojson[geojsonFile] && 'Queen' in storedGeojson[geojsonFile].weights){
+      return;
+    } else {
+      let weights = await geoda.getQueenWeights(geojsonId);
+      dispatch(addWeights(geojsonFile, weights))
     }
 
   }, [currentData])
 
-  // On initial load and after gdaProxy has been initialized, this loads in the default data sets (USA Facts)
+  // On initial load and after geoda has been initialized, this loads in the default data sets (USA Facts)
   // Otherwise, this side-effect loads the selected data.
-  // Each conditions checks to make sure gdaProxy is working.
+  // Each conditions checks to make sure geoda is working.
   useEffect(() => {
-    if (!storedGeojson[currentData]) {
-      dispatch(setIsLoading())
-      firstLoad(dataPresets[currentData], defaultTables[dataPresets[currentData]['geography']])
-        .then(primaryTables => {
-          dispatch(updateMap());
-          return primaryTables
-        }).then(primaryTables => {
-          return secondLoad(dataPresets[currentData], defaultTables[dataPresets[currentData]['geography']], [...Object.keys(storedData), ...primaryTables])
-        }).then(() => {
-          lazyGenerateWeights(dataPresets);
-
-        })
-    } else {
-      dispatch(updateChart());
+    if (geoda !== undefined){
+      if (!storedGeojson[currentData]) {
+        dispatch(setIsLoading())
+        firstLoad(dataPresets[currentData], defaultTables[dataPresets[currentData]['geography']])
+          .then(primaryTables => {
+            if (primaryTables !== undefined) dispatch(updateMap());
+            return primaryTables
+          }).then(primaryTables => {
+            return secondLoad(dataPresets[currentData], defaultTables[dataPresets[currentData]['geography']], [...Object.keys(storedData), ...primaryTables.slice(0,-1)], primaryTables.slice(-1,)[0])
+          }).then(geojsonToLoad => {
+            lazyGenerateWeights(geojsonToLoad[0], geojsonToLoad[1])
+          })
+      } else {
+        dispatch(updateChart());
+      }
     }
-  },[currentData])
+  },[currentData, geoda])
 
   return [
     firstLoad,

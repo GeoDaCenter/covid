@@ -447,6 +447,7 @@ export const dataPresets = {
     'county_usfacts.geojson': {
         plainName: 'USA Facts County', // Plain english name for dataset
         geojson: 'county_usfacts.geojson', // geospatial data to join to
+        id: 'GEOID',
         geography: 'County',
         tables: {
             'cases': {
@@ -464,6 +465,7 @@ export const dataPresets = {
     'county_1p3a.geojson': {
         plainName: '1Point3Acres County',
         geojson: 'county_1p3a.geojson',
+        id: 'GEOID',
         geography: 'County',
         tables: {
             'cases': {
@@ -483,6 +485,7 @@ export const dataPresets = {
     'county_nyt.geojson': {
         plainName: 'New York Times County', // Plain english name for dataset
         geojson: 'county_nyt.geojson', // geospatial data to join to
+        id: 'GEOID',
         geography: 'County',
         tables: {
             'cases': {
@@ -500,6 +503,7 @@ export const dataPresets = {
     'cdc.geojson': {
         plainName: 'CDC', // Plain english name for dataset
         geojson: 'cdc.geojson', // geospatial data to join to
+        id: 'GEOID',
         geography: 'County',
         tables: {
             'cases': {
@@ -519,6 +523,7 @@ export const dataPresets = {
     'cdc_h.geojson': {
         plainName: 'CDC', // Plain english name for dataset
         geojson: 'cdc_h.geojson', // geospatial data to join to
+        id: 'GEOID',
         geography: 'County (Hybrid)',
         tables: {
             'vaccines_fully_vaccinated':{
@@ -542,6 +547,7 @@ export const dataPresets = {
     'state_1p3a.geojson': {
         plainName: '1Point3Acres State',
         geojson: 'state_1p3a.geojson', 
+        id: 'GEOID',
         geography: 'State',
         tables: {
             'cases': {
@@ -563,6 +569,7 @@ export const dataPresets = {
     'state_usafacts.geojson': {
         plainName: 'USA Facts State',
         geojson: 'state_usafacts.geojson', 
+        id: 'GEOID',
         geography: 'State',
         tables: {
             'cases': {
@@ -582,6 +589,7 @@ export const dataPresets = {
     'state_nyt.geojson': {
         plainName: 'New York Times County', // Plain english name for dataset
         geojson: 'state_nyt.geojson', // geospatial data to join to
+        id: 'GEOID',
         geography: 'State',
         tables: {
             'cases': {
