@@ -511,11 +511,6 @@ export default function MapSection(){
             getRadius: d => currentMapData[d.properties.GEOID].radius,  
             onHover: handleMapHover,
             radiusScale: currentData.includes('state') ? 9 : 6,
-            transitions: {
-                getPosition: currentData.includes('state') ? 125 : 250,
-                getFillColor: currentData.includes('state') ? 125 : 250,
-                getRadius: currentData.includes('state') ? 125 : 250
-            },
             updateTriggers: {
                 data: currentMapGeography,
                 getPosition:  [currentMapID,storedLisaData,storedCartogramData],
@@ -539,15 +534,10 @@ export default function MapSection(){
             maxWidth: 500,
             wordBreak: 'break-word',
             getText: d => d.properties.NAME,
-            transitions: {
-                getPosition: currentData.includes('state') ? 125 : 250,
-                getFillColor: currentData.includes('state') ? 125 : 250,
-                getRadius: currentData.includes('state') ? 125 : 250
-            },
             updateTriggers: {
                 data: currentMapGeography,
-                getPosition: currentMapID,
-                getSize: currentMapID
+                getPosition: [currentMapID,storedLisaData,storedCartogramData],
+                getSize: [currentMapID,storedLisaData,storedCartogramData],
             },
         }),        
         dotDensity: [new ScatterplotLayer({

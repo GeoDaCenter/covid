@@ -93,7 +93,7 @@ export default function useUpdateData(){
       dataParams,
       Object.values(storedGeojson[currentData].indices.indexOrder)
     );
-    const cartogramData = await geoda.cartogram(currentData, dataForCartogram);
+    const cartogramData = await geoda.cartogram(storedGeojson[currentData].mapId, dataForCartogram);
     let tempArray = new Array(cartogramData.length)
     for (let i=0; i<cartogramData.length; i++){
         cartogramData[i].value = dataForCartogram[i]
