@@ -54,7 +54,6 @@ export default function useUpdateData(){
           await geoda.naturalBreaks(mapParams.nBins, binData) :
           await geoda.hinge15Breaks(binData)
 
-        console.log(nb)
         dispatch(
           setMapParams({
             bins: {
@@ -77,8 +76,11 @@ export default function useUpdateData(){
       dataParams,
       Object.values(storedGeojson[currentData].indices.indexOrder)
     );
-    const weight_uid = 'Queen' in geoda.geojsonMaps[currentData] ? geoda.geojsonMaps[currentData].Queen : await geoda.getQueenWeights(currentData);
-    const lisaValues = await geoda.localMoran(weight_uid, dataForLisa);
+    const weights = storedGeojson[currentData]?.weights?.Queen !== undefined
+      ? storedGeojson[currentData].weights.Queen 
+      : await geoda.getQueenWeights(storedGeojson[currentData].mapId);
+
+    const lisaValues = await geoda.localMoran(weights, dataForLisa);
     dispatch(storeLisaValues(lisaValues.clusters));
     setIsCalculating(false)
   }
@@ -110,7 +112,6 @@ export default function useUpdateData(){
     let inProcessLoadPromises = []
     let filesFetched = []
     if (currentTable.numerator && !storedData.hasOwnProperty(currentTable.numerator) && currentTable.numerator !== 'properties') {
-      console.log(`fetching ${currentTable.numerator}`)
       filesFetched.push(currentTable.numerator)
       inProcessLoadPromises.push(
         handleLoadData(
@@ -125,7 +126,6 @@ export default function useUpdateData(){
     }
 
     if (currentTable.numerator && !storedData.hasOwnProperty(currentTable.denominator) && currentTable.denominator !== 'properties') {
-      console.log(`fetching ${currentTable.denominator}`)
       filesFetched.push(currentTable.denominator)
       inProcessLoadPromises.push(
         handleLoadData(
@@ -197,7 +197,6 @@ export default function useUpdateData(){
   
   useEffect(() => {
     if (binReady() && !isCalculating && shouldUpdate) {
-      console.log('Updating bins')
       updateBins()
     }
   }, [shouldUpdate])

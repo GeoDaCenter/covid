@@ -1145,6 +1145,21 @@ var reducer = (state = INITIAL_STATE, action) => {
                 colorFilter: action.payload
             }
         }
+        case 'ADD_WEIGHTS':{
+            const storedGeojson = {
+                ...state.storedGeojson,
+                [action.payload.file]: {
+                    ...state.storedGeojson[action.payload.file],
+                    weights: {
+                        'Queen': action.payload.weights
+                    }
+                }
+            }
+            return {
+                ...state,
+                storedGeojson
+            }
+        }
         default:
             return state;
     }

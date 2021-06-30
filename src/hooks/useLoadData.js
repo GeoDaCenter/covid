@@ -8,7 +8,7 @@ import {
 //   then performs a join and loads the data into the store
 
 import { 
-  initialDataLoad, addTables, addGeojson, updateMap, updateChart, addTableAndChart, setIsLoading } from '../actions';
+  initialDataLoad, addWeights, addTables, addGeojson, updateMap, updateChart, addTableAndChart, setIsLoading } from '../actions';
 
 import { colorScales, fixedScales } from '../config';
 import { GeoDaContext } from '../contexts/GeoDaContext';
@@ -57,9 +57,9 @@ export default function useLoadData(){
 
   const [isInProcess, setIsInProcess] = useState(false);
 
-  const getLisaValues = async (currentData, dataForLisa) => {
-    const weights = 'Queen' in geoda.geojsonMaps[currentData] ? geoda.geojsonMaps[currentData].Queen : await geoda.getQueenWeights(currentData);
-     const lisaValues = await geoda.localMoran(weights, dataForLisa);  
+  const getLisaValues = async (currentData, dataForLisa, mapId) => {
+    const weights = storedGeojson[currentData] && 'Queen' in storedGeojson[currentData].weights ? storedGeojson[currentData].Weights.Queen : await geoda.getQueenWeights(mapId);
+    const lisaValues = await geoda.localMoran(weights, dataForLisa);  
     return lisaValues.clusters
   }
 
@@ -103,7 +103,11 @@ export default function useLoadData(){
     );
     
     const dateIndices = numeratorData.dates
-    const binIndex = dateIndices !== null ? mapParams.binMode === 'dynamic' ? dataParams.nIndex : dateIndices.slice(-1)[0] : null;
+    const binIndex = dateIndices !== null 
+      ? mapParams.binMode === 'dynamic' && dateIndices?.indexOf(dataParams.nIndex) !== -1
+      ? dataParams.nIndex 
+      : dateIndices.slice(-1)[0] 
+      : null;
     
     let binData = getDataForBins(
       dataParams.numerator === 'properties' ? geojsonData.data.features : numeratorData.data, 
@@ -123,13 +127,14 @@ export default function useLoadData(){
       let nb = mapParams.mapType === "natural_breaks" ? 
         await geoda.naturalBreaks(mapParams.nBins, binData) :
         await geoda.hinge15Breaks(binData)  
+        
       bins = {
         bins: mapParams.mapType === "natural_breaks" ? nb : ['Lower Outlier','< 25%','25-50%','50-75%','>75%','Upper Outlier'],
         breaks: nb
       }
     }
     
-    const lisaData = mapParams.mapType === 'lisa' ? await getLisaValues(datasetParams.geojson, binData) : null;  
+    const lisaData = mapParams.mapType === 'lisa' ? await getLisaValues(datasetParams.geojson, binData, mapId) : null;  
     const cartogramData = mapParams.vizType === 'cartogram' ? await getCartogramValues(datasetParams.geojson, binData) : null;
     
     dispatch(
@@ -165,11 +170,11 @@ export default function useLoadData(){
       })
     )
     setIsInProcess(false)
-    return [numeratorParams.file, denominatorParams && denominatorParams.file]
+    return [numeratorParams.file, denominatorParams && denominatorParams.file, mapId]
   },[currentData])
 
 
-  const secondLoad = useMemo(() => async (datasetParams, defaultTables, loadedTables) => {
+  const secondLoad = useMemo(() => async (datasetParams, defaultTables, loadedTables, mapId) => {
     if (geoda === undefined) return;
     setIsInProcess(true);
 
@@ -184,7 +189,7 @@ export default function useLoadData(){
         [currCaseData.file]: table
       }))
     }
-
+    
     const filesToLoad = [
       ...Object.values(datasetParams.tables),
       ...Object.values(defaultTables)
@@ -202,7 +207,7 @@ export default function useLoadData(){
     }
     dispatch(addTables(dataObj))
     setIsInProcess(false)
-    return filesToLoad.map(d => d.file)
+    return [datasetParams.geojson, mapId]
   }, [currentData])
   
   const lazyFetchData = useMemo(() => async (dataPresets, loadedTables) => {
@@ -238,19 +243,12 @@ export default function useLoadData(){
 
   }, [currentData])
 
-  const lazyGenerateWeights = useMemo(() => async (dataPresets) => {
-    const geojsonFiles = Object.keys(storedGeojson)
-
-    for (let i=0; i<geojsonFiles.length;i++){
-      if (isInProcess) return;
-      const file = geojsonFiles[i];
-      console.log(file)
-      if ('Queen' in storedGeojson[file].weights){
-        continue
-      } else {
-        let weights = await geoda.getQueenWeights(storedGeojson[file].mapId);
-        console.log(weights)
-      }
+  const lazyGenerateWeights = useMemo(() => async (geojsonFile, geojsonId) => {
+    if (storedGeojson[geojsonFile] && 'Queen' in storedGeojson[geojsonFile].weights){
+      return;
+    } else {
+      let weights = await geoda.getQueenWeights(geojsonId);
+      dispatch(addWeights(geojsonFile, weights))
     }
 
   }, [currentData])
@@ -266,11 +264,11 @@ export default function useLoadData(){
           .then(primaryTables => {
             if (primaryTables !== undefined) dispatch(updateMap());
             return primaryTables
-          }).then(primaryTables => 
-            secondLoad(dataPresets[currentData], defaultTables[dataPresets[currentData]['geography']], [...Object.keys(storedData), ...primaryTables])
-          ).then(() => 
-              lazyGenerateWeights(dataPresets)
-          )
+          }).then(primaryTables => {
+            return secondLoad(dataPresets[currentData], defaultTables[dataPresets[currentData]['geography']], [...Object.keys(storedData), ...primaryTables.slice(0,-1)], primaryTables.slice(-1,)[0])
+          }).then(geojsonToLoad => {
+            lazyGenerateWeights(geojsonToLoad[0], geojsonToLoad[1])
+          })
       } else {
         dispatch(updateChart());
       }
