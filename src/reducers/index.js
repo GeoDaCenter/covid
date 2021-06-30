@@ -114,7 +114,7 @@ const parseTooltipData = (geoid, state) => {
 
     tooltipData = {
         population: properties.population,
-        name: geography === 'County' ? properties.NAME + ', ' + properties.state_abbr : properties.NAME
+        name: ['County', 'County (Hybrid)'].includes(geography) ? properties.NAME + ', ' + properties.state_abbr : properties.NAME
     }
     
     const currentTables = {
@@ -242,10 +242,12 @@ const generateReport = (geoids, state) => {
 
     report.name = 
         geoids.length > 3 
-            ? 
-        geography === "County" ? 'Selected Counties' : 'Selected States'
-            :
-        geography === "County" ? geoids.map(key => properties[key].NAME + ', ' + properties[key].state_abbr).join(", ") : geoids.map(key => properties[key].name).join(", ")
+        ? ['County', 'County (Hybrid)'].includes(geography) 
+            ? 'Selected Counties' 
+            : 'Selected States'
+        : ['County', 'County (Hybrid)'].includes(geography) 
+            ? geoids.map(key => properties[key].NAME + ', ' + properties[key].state_abbr).join(", ") 
+            : geoids.map(key => properties[key].name).join(", ")
 
     report.population = aggregateProperty(properties, properties, geoids, 'population', 'sum')
     report.date = state.dates[state.dataParams.nIndex]
@@ -996,7 +998,7 @@ var reducer = (state = INITIAL_STATE, action) => {
             const additionalParams = {
                 geoid: selectionKeys,
                 populationData: state.chartParams.populationNormalized ? selectionKeys.map(key => properties[key].population) : [],
-                name: geography === 'County' ? selectionKeys.map(key => properties[key].NAME + ', ' + properties[key].state_abbr) : selectionKeys.map(key => properties[key].name)
+                name: ['County', 'County (Hybrid)'].includes(geography) ? selectionKeys.map(key => properties[key].NAME + ', ' + properties[key].state_abbr) : selectionKeys.map(key => properties[key].name)
             };
             
             return {
