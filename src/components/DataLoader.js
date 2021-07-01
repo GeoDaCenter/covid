@@ -20,6 +20,7 @@ const DataLoaderContainer = styled.div`
     display:flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 `
 const Shade = styled.button`
     position:absolute;
@@ -35,15 +36,13 @@ const Shade = styled.button`
 
 const Modal = styled.div`
     display:block;
-    max-width:50%;
-    height:50%;
-    flex:1;
     background:${colors.gray};
     box-shadow: 0px 0px 5px rgba(0,0,0,0.7);
     border-radius: 1em;
     z-index:1;
     padding:1rem;
     color:white;
+    margin:auto;
     input[type=submit]{
         padding:0.5em;
         border:1px solid ${colors.yellow};
@@ -68,6 +67,10 @@ const Modal = styled.div`
     input[type=text] {
         padding:0.5em;
     }
+    a {
+        color:${colors.yellow};
+    }
+    transition:250ms all;
 `
 
 const HelperText = styled.p`
@@ -87,6 +90,12 @@ const FormButton = styled.button`
 const MessageText = styled.p`
     color: ${props => props.type === 'error' ? colors.red : colors.lightblue};
     padding:0.5em;
+`
+
+const FileForm = styled.form`
+    opacity: ${props => props.complete ? 0.5 : 1};
+    transition:250ms all;
+    transition-delay:3s all;
 `
 
 const FileUploader = ({onFileSelectSuccess, onFileSelectError}) => {
@@ -124,6 +133,7 @@ export default function DataLoader(){
     const [uploadTab, setUploadTab] = useState(true);
     const [selectedFile, setSelectedFile] = useState('');
     const [fileMessage, setFileMessage] = useState(false);
+    const [idMessage, setIdMessage] = useState(false);
 
     const [currentGeojson, setCurrentGeojson] = useState({});
     const geoda = useContext(GeoDaContext);
@@ -132,10 +142,10 @@ export default function DataLoader(){
 
     let fileReader;
     
-    const loadArrayBuffer = async (ab) => {
-        console.log(ab)
-        const mapId = await geoda.readGeoJSON('custom-user-data', ab)
-        console.log(mapId)
+    const loadArrayBuffer = async (content) => {
+        const enc = new TextEncoder()
+        const ab = enc.encode(JSON.stringify(content))
+        const mapId = await geoda.readGeoJSON(ab)
         setCurrentGeojson(prev => { return {
             ...prev,
             mapId
@@ -147,16 +157,16 @@ export default function DataLoader(){
         const [error, validGeojson] = validateGeojson(content)
         if (validGeojson) {
             setCurrentGeojson({
-                data: {...content}
+                data: {...content},
+                columns: Object.keys(content.features[0].properties)
             })
-            console.log(content)
 
             setFileMessage({
                 type: 'validation',
                 body:`Basic validation complete. Please select define your variables.`
             });
 
-            loadArrayBuffer(new Uint8Array(JSON.parse(fileReader.result)).buffer)
+            loadArrayBuffer(content)
 
         } else {
             setFileMessage({
@@ -167,7 +177,6 @@ export default function DataLoader(){
     }
     const handleFileSubmission = (e) => {
         e.preventDefault();
-        console.log(e)
         fileReader = new FileReader();
         fileReader.onloadend = handleFileRead;
         fileReader.readAsText(selectedFile)
@@ -178,6 +187,7 @@ export default function DataLoader(){
         setUploadTab(e.target.getAttribute('data-id') === 'file-upload');
     }
 
+    const handleIdColumnSelect = () => {}
     return (
         <DataLoaderContainer>
             <Modal>
@@ -185,7 +195,7 @@ export default function DataLoader(){
                 <br/>
                 <hr/>
                 <br/>
-                <form onSubmit={handleFileSubmission}>
+                <FileForm complete={undefined !== currentGeojson.mapId} onSubmit={handleFileSubmission}>
 
                     <label for="filename">{uploadTab ? 'Select your GeoJSON for Upload' : 'Enter a valid GeoJSON URL'}</label>
                     <HelperText>For more information on formatting your data, click <a href="#">here</a></HelperText>
@@ -210,7 +220,17 @@ export default function DataLoader(){
                     {!uploadTab && <input type="text" name="filename" placeholder="eg https://raw.githubusercontent.com/..."/>}
                     <input type="submit"/>
                     {fileMessage && <MessageText type={fileMessage.type}>{fileMessage.body}</MessageText>}
-                </form>
+                </FileForm>
+
+                {currentGeojson.columns && 
+                <FileForm complete={undefined !== currentGeojson.idColumn} onSubmit={handleIdColumnSelect}>
+                    <label for="idcolumn">Select your data's ID column</label>
+                    <HelperText>For more information on formatting your data, click <a href="#">here</a></HelperText>
+                    {currentGeojson.columns.map(col => <p>{col}</p>)}
+                     <input type="submit"/>
+                    {idMessage && <MessageText type={idMessage.type}>{idMessage.body}</MessageText>}
+                </FileForm>
+                }
             </Modal>
             <Shade 
                 aria-label="Exit Data Loader"
