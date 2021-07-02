@@ -2,7 +2,10 @@ import {
   variablePresets,
   dataPresets, 
   defaultTables,
-  defaultData
+  defaultData,
+  datasetTree,
+  variableTree,
+  urlParamsTree
 } from '../config/index';
 
 // read in URL params
@@ -23,6 +26,9 @@ export const INITIAL_STATE = {
   dataPresets,
   defaultTables,
   variablePresets,
+  datasetTree,
+  variableTree,
+  urlParamsTree,
   // Large data storage
   lazyFetched:false,
   storedGeojson: {},
@@ -133,7 +139,7 @@ export const INITIAL_STATE = {
     lineChart:true,
     context: false,
     contextPos: {x:null,y:null},
-    dataLoader:true
+    dataLoader:false
   },
   urlParams: {},
   tooltipContent: {

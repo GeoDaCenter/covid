@@ -1,26 +1,57 @@
 // Library import
 import React, {useState, useRef, useContext} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
+import styled, {keyframes} from 'styled-components';
 import { GeoDaContext } from '../contexts/GeoDaContext';
 
-import { setPanelState } from '../actions'
+import { setPanelState, addCustomData } from '../actions';
+import { colorScales } from '../config';
 
 import Select from '@material-ui/core/Select';
+import { StyledDropDown, BinsContainer, Gutter } from '../styled_components';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+
+import Stepper from '@material-ui/core/Stepper';
+import Step from '@material-ui/core/Step';
+import StepLabel from '@material-ui/core/StepLabel';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
+
 
 // Config/component import
 import { colors } from '../config';
 import { prop } from 'ramda';
+import { current } from 'immer';
+
+
+const fadeIn = keyframes`
+  from {opacity:0;}
+  to {opacity:1;}
+}`
 
 const DataLoaderContainer = styled.div`
-    z-index:50;
+    z-index:${props => props.zIndex||50};
     position:fixed;
+    left:0;
+    top:0;
     width:100vw;
     height:100%;
     display:flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    text-align:center;
+    font-family: 'Lato', sans-serif;
+    opacity:0;
+    animation-name: ${fadeIn};
+    animation-duration: 1;
+    animation-iteration-count:1;
+    animation-fill-mode:forwards;
+
 `
 const Shade = styled.button`
     position:absolute;
@@ -28,7 +59,7 @@ const Shade = styled.button`
     top:0;
     width:100vw;
     height:100%;
-    background:rgba(0,0,0,0.75);
+    background:${props => props.transparent ? 'rgba(0,0,0,.25)' : 'rgba(0,0,0,0.75)'};
     border:none;
     z-index:0;
     cursor:pointer;
@@ -36,13 +67,14 @@ const Shade = styled.button`
 
 const Modal = styled.div`
     display:block;
-    background:${colors.gray};
+    background:${props => props.dark ? colors.darkgray : colors.gray};
     box-shadow: 0px 0px 5px rgba(0,0,0,0.7);
     border-radius: 1em;
     z-index:1;
     padding:1rem;
     color:white;
     margin:auto;
+    min-width:${props => props.fullwidth ? '300px' : 'initial'};
     input[type=submit]{
         padding:0.5em;
         border:1px solid ${colors.yellow};
@@ -71,6 +103,9 @@ const Modal = styled.div`
         color:${colors.yellow};
     }
     transition:250ms all;
+    div.MuiFormControl-root {
+        width: ${props => props.fullwidth ? '100%' : 'auto'};
+    }
 `
 
 const HelperText = styled.p`
@@ -82,13 +117,19 @@ const FormButton = styled.button`
     border:1px solid ${colors.white};
     background: ${props => props.active ? colors.white : colors.gray};
     color: ${props => props.active ? colors.gray : colors.white};
-    cursor:pointer;
+    cursor:${props => props.disabled ? 'not-allowed' : 'pointer'};
     margin:0.5em 0.5em 0.5em 0;
+    opacity:${props => props.disabled ? 0.25 : 1};
+
     
 `
 
 const MessageText = styled.p`
-    color: ${props => props.type === 'error' ? colors.red : colors.lightblue};
+    color: ${props => props.type === 'error' 
+        ? colors.red 
+        : props.type === 'wait'
+        ? colors.yellow
+        : colors.lightblue};
     padding:0.5em;
 `
 
@@ -98,9 +139,40 @@ const FileForm = styled.form`
     transition-delay:3s all;
 `
 
-const FileUploader = ({onFileSelectSuccess, onFileSelectError}) => {
-    const fileInput = useRef(null)
+const StyledStepper = styled(Stepper)`
+    &.MuiPaper-root {
+        background:none;
+        .MuiSvgIcon-root {
+            
+            circle {
+                color:${colors.darkgray};
+            }
+        }
 
+        .MuiStepIcon-active {
+            circle {
+                color:${colors.yellow};
+            }
+            text {
+                fill: ${colors.darkgray};
+            }
+        }
+        .MuiStepLabel-label {
+            color:${colors.white};
+        }
+        .MuiStepIcon-completed, .MuiStepLabel-completed {
+            color:${colors.skyblue};
+        }
+    }
+`
+
+const StepperButton = styled(FormButton)`
+    color:${props => props.back ? colors.yellow : colors.darkgray};
+    background: ${props => props.back ? colors.gray : colors.yellow};
+    border:1px solid ${colors.yellow};
+`
+
+const FileUploader = ({onFileSelectSuccess, onFileSelectError}) => {
     const handleFileInput = (e) => {
         // handle validations
         const file = e.target.files[0];
@@ -125,6 +197,241 @@ const validateGeojson = (content) => {
     return [false, true]
 }
 
+const steps = ['Load your GeoJSON', 'Select ID', 'Configure Variables']
+
+const Steps = ({activeStep, steps}) => <>
+    <StyledStepper activeStep={activeStep}>
+        {steps.map((label) => {
+        return (
+            <Step key={label}>
+            <StepLabel>{label}</StepLabel>
+            </Step>
+        );
+        })}
+    </StyledStepper>
+</>
+
+const StepButtons = ({activeStep, setActiveStep, currentGeojson}) => <><StepperButton 
+        onClick={() => setActiveStep(prev => prev-1)} 
+        back 
+        disabled={activeStep===0}
+        >
+            Back
+    </StepperButton>
+    <StepperButton 
+        onClick={() => setActiveStep(prev => prev+1)} 
+        disabled={activeStep===steps.length-1 || currentGeojson.columns === undefined}
+        >
+            Next
+    </StepperButton></>
+
+const FormDropDownContainer = styled.div`
+    min-width:100px;
+    margin:0 auto;
+    display:flex;
+    justify-content:center;
+    .MuiFormControl-root {
+        min-width:100px;
+    }
+`
+
+const CardContainer = styled(Grid)``
+
+const VariableCard = styled(Card)`
+    &.MuiPaper-root {
+        background-color:${colors.lightgray};
+        button {
+            font-size:1rem;
+            background:${colors.lightgray};
+            color:${colors.darkgray};
+            border:1px solid ${colors.darkgray};
+            padding:0.5em;
+            font-family: 'Lato', sans-serif;
+            cursor:pointer;
+            margin:0 auto;
+        }
+        p {
+            font-size:1rem;
+        }
+    }
+`
+
+const ColorBarContainer = styled.span`
+    display:flex;
+    width:100%;
+    span {
+        height:10px;
+        flex:1;
+    }
+`
+
+const VariableTextField = styled(TextField)`
+    &.MuiFormControl-root {
+        margin-top: -1em;
+        border-bottom:1px solid white;
+    }
+    label {
+        visibility: hidden;
+        display:none;
+        text-align:center;
+    }
+    input {
+        color:white;
+        text-align:center;
+    }
+`
+
+const VariableLabel = styled.p`
+    color:white;
+    margin-bottom:0;
+`
+
+const ColorBar = ({colors}) => <ColorBarContainer>
+    {colors.map(color => <span style={{background:`rgb(${color.join(',')})`}}>&nbsp;</span>)}
+</ColorBarContainer>
+
+const VariableEditor = ({columns, variables, setVariables, handleClose, idx}) => {
+    const [variableInfo, setVariableInfo] = useState(idx !== false ? variables[idx] : {
+        nProperty: columns[0],
+        dProperty: 'NULL'
+    })
+
+    const handleProperty = (property, value) => {
+        setVariableInfo(prev => {
+            return {
+                ...prev,
+                [property]:value
+            }
+        })
+    }
+
+    const handleSave = () => {
+        const fullSpec = {
+            variableName:variableInfo.variableName,
+            numerator: 'properties',
+            nType: 'characteristic',
+            nRange: null,
+            nIndex: null,
+            nProperty: variableInfo.nProperty,
+            denominator: 'properties',
+            dType: variableInfo.dProperty === 'NULL' ? null : 'characteristic',
+            dProperty: variableInfo.dProperty === 'NULL' ? null : variableInfo.dProperty,
+            dRange:null,
+            dIndex:null,
+            scale:1 || variableInfo.scale,
+            scale3D: 1000 || variableInfo.scale3D,
+            fixedScale: null,
+            colorScale: null || variableInfo.colorScale,
+            dataNote: null,
+        }
+        if (idx) {
+            setVariables(prev => {
+                prev[idx] = fullSpec
+                return prev
+            })
+            handleClose()
+        } else {
+            setVariables(prev => {
+                let newArray = [...prev]
+                newArray.unshift(fullSpec)
+                return newArray
+            })
+            handleClose()
+        }
+    }
+
+    const colors8 = ['natural_breaks','mobilityWork','BuPu8','purpleSingleHue8','YlGnBu8','YlGn8','greenSingleHue8','mobilityDivergingHome','mobilityDivergingWork']
+
+    return <DataLoaderContainer zIndex={51}>
+        <Modal dark fullwidth>
+            <h3>Variable Editor</h3>
+            <Gutter h={30} />
+            
+            <VariableLabel htmlFor="variableName">Variable Name</VariableLabel>
+            <VariableTextField 
+                id="variableName" 
+                label="Variable Name" 
+                onChange={(event) => handleProperty('variableName', event.target.value)}
+                aria-describedby="variable-name-helper"
+                value={variableInfo.variableName}
+            />
+            <HelperText id="variable-name-helper">What your variable should be called.</HelperText>
+            <Gutter h={30} />
+
+            <StyledDropDown id="numerSelect">
+                <InputLabel htmlFor="numerSelect">Numerator Column</InputLabel>
+                <Select
+                    value={variableInfo.nProperty}
+                    onChange={(event) => handleProperty('nProperty', event.target.value)}
+                    aria-describedby="numer-name-helper"
+                    >
+                    {columns.map(col =>  <MenuItem value={col} key={'numer-select-'+col}>{col}</MenuItem> )}
+                                
+                </Select>
+            </StyledDropDown>
+            <HelperText id="numer-name-helper">Your variable value, or if normalizing,<br/> the top of your expression.</HelperText>
+            <Gutter h={30} />
+
+            <StyledDropDown id="denomSelect">
+                <InputLabel htmlFor="denomSelect">Denominator Column</InputLabel>
+                <Select
+                    value={variableInfo.dProperty}
+                    onChange={(event) => handleProperty('dProperty', event.target.value)}
+                    aria-describedby="denom-name-helper"
+                    >
+                    <MenuItem value={'NULL'} key={'denom-select-null'}>No denominator</MenuItem>
+                    {columns.map(col =>  <MenuItem value={col} key={'denom-select-'+col}>{col}</MenuItem> )}         
+                </Select>
+            </StyledDropDown>
+            <HelperText id="denom-name-helper">If normalizing,<br/> the bottom of your expression.</HelperText>
+            
+            <Gutter h={30} />
+            
+            
+            <StyledDropDown id="colorScaleSelect">
+                <InputLabel htmlFor="colorScaleSelect">Color Scale</InputLabel>
+                <Select
+                    value={variableInfo.colorScale}
+                    onChange={(event) => handleProperty('colorScale', event.target.value)}
+                    >
+                    {colors8.map(scheme =>  <MenuItem value={scheme} key={'color-select-'+scheme}>
+                        <ColorBar colors={colorScales[scheme].slice(1,)}/>
+                    </MenuItem> )}         
+                </Select>
+            </StyledDropDown>
+            <Gutter h={30} />
+
+            <VariableLabel htmlFor="colorScaleSelect">Variable Scale</VariableLabel>
+            <VariableTextField 
+                id="standard-basic" 
+                label="Variable Scale" 
+                onChange={(event) => handleProperty('scale', event.target.value)}
+                type="number"
+                value={variableInfo.scale}
+            />
+            <Gutter h={30} />
+
+            <VariableLabel htmlFor="colorScaleSelect">3D Scale</VariableLabel>
+            <VariableTextField 
+                id="standard-basic" 
+                label="Variable Scale" 
+                onChange={(event) => handleProperty('scale3D', event.target.value)}
+                type="number"
+                value={variableInfo.scale3D}
+            />
+            <Gutter h={30} />
+            
+            <FormButton onClick={handleSave}>Save Variable</FormButton>
+            
+        </Modal>
+        <Shade 
+            aria-label="Exit Variable Panel"
+            onClick={handleClose}
+            transparent
+            />
+    </DataLoaderContainer>
+}
+
 // DataLoader component
 export default function DataLoader(){
     const dispatch = useDispatch()
@@ -132,8 +439,12 @@ export default function DataLoader(){
 
     const [uploadTab, setUploadTab] = useState(true);
     const [selectedFile, setSelectedFile] = useState('');
+    const [remoteUrl, setRemoteUrl] = useState('');
     const [fileMessage, setFileMessage] = useState(false);
-    const [idMessage, setIdMessage] = useState(false);
+    const [activeStep, setActiveStep] = useState(0);
+    const [selectedId, setSelectedId] = useState('');
+    const [variables, setVariables] = useState([])
+    const [editor, setEditor] = useState({open:false, idx:false})
 
     const [currentGeojson, setCurrentGeojson] = useState({});
     const geoda = useContext(GeoDaContext);
@@ -143,8 +454,7 @@ export default function DataLoader(){
     let fileReader;
     
     const loadArrayBuffer = async (content) => {
-        const enc = new TextEncoder()
-        const ab = enc.encode(JSON.stringify(content))
+        const ab = new TextEncoder().encode(JSON.stringify(content))
         const mapId = await geoda.readGeoJSON(ab)
         setCurrentGeojson(prev => { return {
             ...prev,
@@ -152,14 +462,15 @@ export default function DataLoader(){
         }})
     }
 
-    const handleFileRead = () => {
-        const content = JSON.parse(fileReader.result);
+    const handleFileRead = (data=false) => {
+        const content = data ? data : JSON.parse(fileReader.result);
         const [error, validGeojson] = validateGeojson(content)
         if (validGeojson) {
             setCurrentGeojson({
                 data: {...content},
                 columns: Object.keys(content.features[0].properties)
             })
+            setSelectedId(Object.keys(content.features[0].properties)[0])
 
             setFileMessage({
                 type: 'validation',
@@ -175,11 +486,43 @@ export default function DataLoader(){
             })
         }
     }
+
+    const fetchRemoteData = async (url) => {
+        const data = await fetch(url)
+            .then(response => {
+                setFileMessage({
+                    type: 'wait',
+                    body:`Data loaded, validating...`
+                });
+                return response.json();
+            }).catch(error => {
+                console.log(error)
+                return false;
+            })
+        if (data) {
+            handleFileRead(data)
+        } else {
+            setFileMessage({
+                type: 'error',
+                body:`Error! Unable to fetch data. Please ensure your data source allows remote access.`
+            })
+        }
+            
+    }
+
     const handleFileSubmission = (e) => {
         e.preventDefault();
-        fileReader = new FileReader();
-        fileReader.onloadend = handleFileRead;
-        fileReader.readAsText(selectedFile)
+        if (uploadTab){
+            fileReader = new FileReader();
+            fileReader.onloadend = () => handleFileRead();
+            fileReader.readAsText(selectedFile)
+        } else {
+            setFileMessage({
+                type: 'wait',
+                body:`Please wait, fetching your data...`
+            });
+            fetchRemoteData(remoteUrl)
+        }
     }
 
     const handleUploadTab = (e) => {
@@ -187,25 +530,45 @@ export default function DataLoader(){
         setUploadTab(e.target.getAttribute('data-id') === 'file-upload');
     }
 
-    const handleIdColumnSelect = () => {}
+    const handleOpenEditor = (idx) => {
+        console.log(idx)
+        console.log(variables[idx])
+        setEditor({open:true, idx:idx})
+    }
+
+    const handleClose = () => setEditor({open:false, idx:false})
+
+    const handleLoadData = () => {
+        dispatch(addCustomData(
+            currentGeojson,
+            selectedId,
+            variables 
+        ))
+        closePanel()
+        handleClose()
+    }
     return (
         <DataLoaderContainer>
             <Modal>
-                <h2>Data Loader</h2>
-                <br/>
-                <hr/>
-                <br/>
-                <FileForm complete={undefined !== currentGeojson.mapId} onSubmit={handleFileSubmission}>
+                <Gutter h={15}/>
+                <h2>Atlas Data Loader</h2>
+                <Steps
+                    activeStep={activeStep}
+                    setActiveStep={setActiveStep}
+                    steps={steps}
+                    currentGeojson={currentGeojson}
+                />
+                {activeStep === 0 && <FileForm onSubmit={handleFileSubmission}>
 
                     <label for="filename">{uploadTab ? 'Select your GeoJSON for Upload' : 'Enter a valid GeoJSON URL'}</label>
+                    <Gutter h={15}/>
                     <HelperText>For more information on formatting your data, click <a href="#">here</a></HelperText>
-
-                    <br/>
+                    <HelperText>You can load your file directly, or select a remote link to fetch data from.</HelperText>
+                    <Gutter h={15}/>
+                    
                     <FormButton onClick={handleUploadTab} data-id={"file-upload"} active={uploadTab}>File Upload</FormButton> 
                     <FormButton onClick={handleUploadTab} data-id={"file-link"} active={!uploadTab}>File Link</FormButton>
-
-                    <br/>
-                    
+                    <Gutter h={15}/>                    
                     {uploadTab && <FileUploader
                         onFileSelectSuccess={(file) => {
                             setFileMessage(false)
@@ -217,20 +580,84 @@ export default function DataLoader(){
                         })}
 
                         />}
-                    {!uploadTab && <input type="text" name="filename" placeholder="eg https://raw.githubusercontent.com/..."/>}
-                    <input type="submit"/>
+                    {!uploadTab && <VariableTextField 
+                        id="remoteUrl" 
+                        label="Remote Data URL" 
+                        onChange={(event) => setRemoteUrl(event.target.value)}
+                        aria-describedby="remote-data-helper"
+                        value={remoteUrl}
+                        placeholder="eg https://raw.githubusercontent.com/..."
+                    />}
+                    
+                    <input type="submit" value="Validate" />
                     {fileMessage && <MessageText type={fileMessage.type}>{fileMessage.body}</MessageText>}
-                </FileForm>
+                </FileForm>}
 
-                {currentGeojson.columns && 
-                <FileForm complete={undefined !== currentGeojson.idColumn} onSubmit={handleIdColumnSelect}>
-                    <label for="idcolumn">Select your data's ID column</label>
-                    <HelperText>For more information on formatting your data, click <a href="#">here</a></HelperText>
-                    {currentGeojson.columns.map(col => <p>{col}</p>)}
-                     <input type="submit"/>
-                    {idMessage && <MessageText type={idMessage.type}>{idMessage.body}</MessageText>}
-                </FileForm>
-                }
+                {activeStep === 1 && <>
+                    <label for="idSelect">Select your data's ID column</label>
+                    <Gutter h={15}/>
+                    <HelperText>Choose a column that represents your data's featured ID, <br/>such as GEOID or FIPS code, ZIP code, or other geographic identifier.</HelperText>                   
+                    <Gutter h={15}/>
+                    <FormDropDownContainer>
+                        <StyledDropDown id="idSelect">
+                            <InputLabel htmlFor="idSelect">ID Column</InputLabel>
+                            <Select
+                                value={selectedId}
+                                onChange={(event) => setSelectedId(event.target.value)}
+                                >
+                                {currentGeojson.columns.map(col =>  <MenuItem value={col} key={'id-col-select-'+col}>{col}</MenuItem> )}
+                                
+                            </Select>
+                        </StyledDropDown>
+                    </FormDropDownContainer>
+                </>}
+
+                {activeStep === 2 && <>
+                    <label for="idSelect">Configure your variables</label>
+                    <Gutter h={15}/>
+                    <CardContainer 
+                        container 
+                        spacing={2} 
+                        justify="center"
+                        alignItems="flex-start"
+                    >
+                        {variables.map((variable, idx) => <Grid item xs={12} md={6} lg={4}>
+                            <VariableCard>
+                                <CardContent>
+                                    <p>{variable.variableName}</p>
+                                </CardContent>
+                                <CardActions>
+                                    <button onClick={() => handleOpenEditor(idx)}>Edit</button>
+                                </CardActions>
+                            </VariableCard>
+                        </Grid>)}
+                        <Grid item xs={12} md={6} lg={4}>
+                            <VariableCard>
+                                <CardActions><button onClick={() => setEditor({open:true, idx:false})}>Add a variable</button></CardActions>
+                            </VariableCard>
+                        </Grid>
+                    </CardContainer>   
+                    {editor.open && <VariableEditor 
+                        columns={currentGeojson.columns}
+                        idx={editor.idx}
+                        variables={variables}
+                        setVariables={setVariables}
+                        handleClose={handleClose}
+                    />} 
+                    {variables.length && <FormButton 
+                        onClick={handleLoadData} 
+                        >
+                            Load Data
+                        </FormButton> 
+                    }                
+                </>}
+                <Gutter h={30}/>
+                <StepButtons
+                    activeStep={activeStep}
+                    setActiveStep={setActiveStep}
+                    currentGeojson={currentGeojson}
+                />
+                <Gutter h={15}/>
             </Modal>
             <Shade 
                 aria-label="Exit Data Loader"

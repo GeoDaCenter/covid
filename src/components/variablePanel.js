@@ -14,10 +14,10 @@ import Slider from '@material-ui/core/Slider';
 import styled from 'styled-components';
 
 import Tooltip from './tooltip';
+import { Icon } from '../components';
 import { StyledDropDown, BinsContainer, Gutter } from '../styled_components';
 import { setVariableParams, setMapParams, setCurrentData, setPanelState, setParametersAndData, setNotification, changeDotDensityMode, toggleDotDensityRace, setDotDensityBgOpacity } from '../actions';
-import { fixedScales, colorScales, colors, variableTree, urlParamsTree, datasetTree, allGeographies, allDatasets } from '../config';
-import * as SVG from '../config/svg';
+import { fixedScales, colorScales, colors } from '../config';
 
 /** STYLES */
 const VariablePanelContainer = styled.div`
@@ -314,6 +314,7 @@ const dotDensityAcsGroups = [
     'idx':7,
     'name': 'Two or more',
   }]
+const onlyUnique = (value, index, self) => self.indexOf(value) === index;
 
 export default function VariablePanel(){
   const dispatch = useDispatch();    
@@ -340,7 +341,13 @@ export default function VariablePanel(){
 
   const variablePresets = useSelector(state => state.variablePresets);
   const dataPresets = useSelector(state => state.dataPresets);
-
+  const variableTree = useSelector(state => state.variableTree);
+  const datasetTree = useSelector(state => state.datasetTree);
+  const urlParamsTree = useSelector(state => state.urlParamsTree);
+  const allGeographies = Object.values(variableTree).flatMap(o => Object.keys(o)).filter(onlyUnique)
+  const allDatasets = Object.values(variableTree).flatMap(o => Object.values(o)).flatMap(o => o).filter(onlyUnique)
+  
+  
   const handleMapType = (event, newValue) => {
     let nBins = newValue === 'hinge15_breaks' ? 6 : 8
     if (newValue === 'lisa') {
@@ -478,6 +485,9 @@ export default function VariablePanel(){
     <VariablePanelContainer className={panelState.variables ? '' : 'hidden'} otherPanels={panelState.info} id="variablePanel">
       {panelState.variables && <ControlsContainer>
         <h2>Data Sources &amp;<br/> Map Variables</h2>
+        <button Title="Add Custom Data" onClick={() => dispatch(setPanelState({dataLoader: true}))} style={{background:'none', outline:'none', border:'none', display:'inline-block', width:'20px', fill:'white', cursor: 'pointer'}}>
+          <Icon symbol="addData" />
+        </button>
         <Gutter h={20}/>
         <StyledDropDown id="variableSelect">
           <InputLabel htmlFor="variableSelect">Variable</InputLabel>
@@ -769,7 +779,9 @@ export default function VariablePanel(){
             </a>
         </div> 
       </div>
-      <button onClick={handleOpenClose} id="showHideLeft" className={panelState.variables ? 'active' : 'hidden'}>{SVG.settings}</button>
+      <button onClick={handleOpenClose} id="showHideLeft" className={panelState.variables ? 'active' : 'hidden'}>
+        <Icon symbol="settings" />
+      </button>
 
     </VariablePanelContainer>
   );

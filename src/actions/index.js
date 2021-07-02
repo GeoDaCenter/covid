@@ -540,3 +540,18 @@ export const addWeights = (file, weights) => {
     }
 }
 
+export const addCustomData = (geojson, idCol, variables) => {
+    return {
+        type:'ADD_CUSTOM_DATA',
+        payload: {
+            geojson,
+            idCol,
+            variables
+        }
+    }
+}
+export const mapDidPan = () => {
+    return {
+        type: 'MAP_DID_PAN'
+    }
+}

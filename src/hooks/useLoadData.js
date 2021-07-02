@@ -16,7 +16,7 @@ import { GeoDaContext } from '../contexts/GeoDaContext';
 const dateLists = getDateLists();
 const handleLoadData = (fileInfo) => fileInfo.file.slice(-4,) === '.pbf' ? getParsePbf(fileInfo, dateLists[fileInfo.dates]) : getParseCSV(fileInfo, dateLists[fileInfo.dates])
 
-const getIdOrder = (features, idProp) => {
+export const getIdOrder = (features, idProp) => {
   let geoidOrder = {};
   let indexOrder = {}
   for (let i=0; i<features.length; i++) {
@@ -34,12 +34,12 @@ const getIdOrder = (features, idProp) => {
 * @returns {Object} Indexed geodata for faster access
 */
 export const indexGeoProps = (data, key) => {
-let geoProperties = {};
-for (var i = 0; i < data.features.length; i++) {
-  geoProperties[data.features[i].properties[key]] =
-    data.features[i].properties;
-}
-return geoProperties;
+  let geoProperties = {};
+  for (var i = 0; i < data.features.length; i++) {
+    geoProperties[data.features[i].properties[key]] =
+      data.features[i].properties;
+  }
+  return geoProperties;
 };
 
 export default function useLoadData(){

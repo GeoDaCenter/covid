@@ -10,6 +10,7 @@ import Dock from './dock';
 import Draggable from './draggable';
 import Footer from './Footer';
 import HeroMap from './heroMap';
+import Icon from './Icon';
 import InfoBox from './infoBox';
 import Legend from './legend';
 import MapButtons  from './MapButtons';
@@ -61,6 +62,7 @@ export {
     Geocoder,
     Footer,
     HeroMap,
+    Icon,
     InfoBox,
     Legend,
     MapButtons,

@@ -1,7 +1,7 @@
 import { INITIAL_STATE } from '../constants/defaults';
 import { mapFnNb, mapFnTesting, mapFnHinge, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, getURLParams } from '../utils';
 import { tooltipTables } from '../config';
-
+import { indexGeoProps, getIdOrder } from '../hooks/useLoadData';
 // utils
 const getSimpleColor = (value, bins, colorScale, mapType, numerator, storedLisaData, storedGeojson, currentData, GEOID, mapFn) => mapFn(value, bins, colorScale, mapType, numerator);
 const getLisaColor = (value, bins, colorScale, mapType, numerator, storedLisaData, storedGeojson, currentData, GEOID) => colorScale[storedLisaData[storedGeojson[currentData].indices['geoidOrder'][GEOID]]]||[240,240,240]
@@ -16,6 +16,7 @@ const generateMapData = (state) => {
 
     let returnObj = {};
     let i = 0;
+    const currIdCol = state.dataPresets[state.currentData].id
 
     const getTable = (i, predicate) => {
         if (state.dataParams[predicate] === 'properties' ) {
@@ -76,18 +77,18 @@ const generateMapData = (state) => {
             state.storedLisaData, 
             state.storedGeojson, 
             state.currentData, 
-            state.storedGeojson[state.currentData].data.features[i].properties.GEOID,
+            state.storedGeojson[state.currentData].data.features[i].properties[currIdCol],
             mapFn
         );
 
         const height = getHeight(tempVal, state.dataParams);
 
         if (color === null) {
-            returnObj[state.storedGeojson[state.currentData].data.features[i].properties.GEOID] = {color:[0,0,0,0],height:0}
+            returnObj[state.storedGeojson[state.currentData].data.features[i].properties[currIdCol]] = {color:[0,0,0,0],height:0}
             continue;
         }
 
-        returnObj[state.storedGeojson[state.currentData].data.features[i].properties.GEOID] = {color,height}
+        returnObj[state.storedGeojson[state.currentData].data.features[i].properties[currIdCol]] = {color,height}
     }
 
     return {
@@ -473,8 +474,16 @@ var reducer = (state = INITIAL_STATE, action) => {
             }
         }
         case 'UPDATE_CHART': {
-            const currCaseData = state.dataPresets[state.currentData].tables[state.chartParams.table]?.file||state.defaultTables[state.dataPresets[state.currentData].geography][state.chartParams.table].file
-            
+            let currCaseData;
+            try {
+                currCaseData = 
+                    state.dataPresets[state.currentData].tables[state.chartParams.table]?.file
+                    ||state.defaultTables[state.dataPresets[state.currentData].geography][state.chartParams.table].file
+            } catch {
+                return {
+                    ...state
+                }
+            }
             let populationData = [];
 
             if (state.chartParams.populationNormalized){
@@ -1158,6 +1167,103 @@ var reducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 storedGeojson
+            }
+        }
+        case 'ADD_CUSTOM_DATA': {
+            const storedGeojson = {
+                ...state.storedGeojson,
+                '⚙️ Custom Data': {
+                    ...action.payload.geojson,
+                    weights: {},
+                    dateIndices: [],
+                    properties: indexGeoProps(
+                        action.payload.geojson.data, 
+                        action.payload.idCol
+                    ),
+                    indices: getIdOrder(
+                        action.payload.geojson.data.features,
+                        action.payload.idCol
+                    )
+                }
+            }
+            console.log(storedGeojson)
+
+            let variablePresets = {
+                ...state.variablePresets
+            }
+
+            const datasetTree = {
+                ...state.datasetTree,
+                '⚙️ Custom Data': {
+                    '⚙️ Custom Data':'⚙️ Custom Data',
+                }
+            }
+
+            const defaultTables = {
+                ...state.defaultTables,
+                '⚙️ Custom Data': {}
+            }
+
+            const dataPresets = {
+                ...state.dataPresets,
+                '⚙️ Custom Data': {
+                    plainName:'⚙️ Custom Data',
+                    geojson:'⚙️ Custom Data',
+                    id: action.payload.idCol,
+                    geography: '⚙️ Custom Data',
+                    tables: {}
+                }
+            }
+
+            let variableTree = {
+                "HEADER:⚙️ Custom Data":{},
+            }
+
+            for (let i=0; i<action.payload.variables.length; i++){
+                let currVariable = action.payload.variables[i].variableName
+                variablePresets[currVariable] = action.payload.variables[i]
+                variableTree[currVariable] = {
+                    '⚙️ Custom Data': ['⚙️ Custom Data']
+                }
+            }
+            variableTree = {
+                ...variableTree,
+                ...state.variableTree
+            }
+
+            const urlParamsTree = {
+                ...state.urlParamsTree,
+                '⚙️ Custom Data':{
+                    name: '⚙️ Custom Data',
+                    geography: '⚙️ Custom Data'
+                }
+            }
+
+            return {
+                ...state,
+                dataPresets,
+                datasetTree,
+                defaultTables,
+                storedGeojson,
+                urlParamsTree,
+                variableTree,
+                variablePresets,
+                shouldPanMap: true,
+                currentData: '⚙️ Custom Data',
+                dataParams: {
+                    ...action.payload.variables[0]
+                },
+                currentTable: {
+                    numerator: "properties",
+                    denominator: "properties"
+                },
+                shouldPanMap: true
+            }
+        }
+        case 'MAP_DID_PAN':{
+            return {
+                ...state,
+                shouldPanMap: false
             }
         }
         default:

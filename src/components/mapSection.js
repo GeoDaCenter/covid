@@ -14,13 +14,14 @@ import MapboxGLMap from 'react-map-gl';
 
 // component, action, util, and config import
 import { Geocoder, MapButtons } from '../components';
-import { setMapLoaded, openContextMenu, setNotification, setTooltipContent, setDotDensityData, updateSelectionKeys} from '../actions';
+import { setMapLoaded, openContextMenu, setNotification, setTooltipContent, setDotDensityData, updateSelectionKeys, mapDidPan} from '../actions';
 import {getCSV, getCartogramCenter, parseMapboxLayers, shallowCompare } from '../utils';
 import { colors, MAPBOX_ACCESS_TOKEN } from '../config';
 import MAP_STYLE from '../config/style.json';
 import { useViewport, useSetViewport } from '../contexts/ViewportContext';
 import useLoadData from '../hooks/useLoadData';
 import useUpdateData from '../hooks/useUpdateData';
+import useFindViewport from '../hooks/useFindViewport';
 // PBF schemas
 import * as Schemas from '../schemas';
 
@@ -98,16 +99,19 @@ export default function MapSection(){
     const currentMapData = useSelector(state => state.mapData.data);
     const currentMapID = useSelector(state => state.mapData.params);
     const storedGeojson = useSelector(state => state.storedGeojson);
+    const dataPresets = useSelector(state => state.dataPresets);
     const currentMapGeography = storedGeojson[currentData]?.data||[]
     const colorFilter = useSelector(state => state.colorFilter);
-
+    const currIdCol = dataPresets[currentData].id
     const storedCartogramData = useSelector(state => state.storedCartogramData);
     const storedLisaData = useSelector(state => state.storedLisaData);
+    const shouldPanMap = useSelector(state => state.shouldPanMap);
+
     const [firstLoad, secondLoad, lazyFetchData] = useLoadData()
     const [] = useUpdateData()
     const viewport = useViewport();
     const setViewport = useSetViewport();
-    
+    const currMapViewport = useFindViewport(storedGeojson[currentData]?.mapId)
     // component state elements
     // hover and highlight geographibes
     const [hoverGeog, setHoverGeog] = useState(null);
@@ -284,6 +288,13 @@ export default function MapSection(){
     useEffect(() => {
         forceUpdate()
     }, [currentMapID, storedCartogramData, storedLisaData])
+
+    useEffect(() => {
+        if (shouldPanMap) {
+            setViewport(currMapViewport)
+            dispatch(mapDidPan())
+        }
+    }, [currMapViewport])
     
     const mapRef = useRef();
     const deckRef = useRef();
@@ -303,9 +314,9 @@ export default function MapSection(){
     }
 
     const handleMapHover = ({x, y, object, layer}) => {
-        dispatch(setTooltipContent(x, y, Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : object?.properties?.GEOID));
-        if (object && object?.properties?.GEOID) {
-            if (object?.properties?.GEOID !== hoverGeog) setHoverGeog(object?.properties?.GEOID)
+        dispatch(setTooltipContent(x, y, Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : object?.properties[currIdCol]));
+        if (object && object?.properties[currIdCol]) {
+            if (object?.properties[currIdCol] !== hoverGeog) setHoverGeog(object?.properties[currIdCol])
         } else {
             setHoverGeog(null)
         }
@@ -316,7 +327,7 @@ export default function MapSection(){
     const handleMapClick = (info, e) => {
 
         if (e.rightButton) return;
-        const objectID = +info.object?.properties?.GEOID
+        const objectID = +info.object?.properties[currIdCol]
         if (!objectID) return;
 
         if (multipleSelect) {
@@ -379,10 +390,10 @@ export default function MapSection(){
         choropleth: new GeoJsonLayer({
             id: 'choropleth',
             data: currentMapGeography,
-            getFillColor: d => !colorFilter || currentMapData[d.properties.GEOID].color.length === 4 
-                ? currentMapData[d.properties.GEOID].color
-                : [...currentMapData[d.properties.GEOID].color, 25+(!colorFilter || colorFilter===currentMapData[d.properties.GEOID].color)*225],
-            getElevation: d => currentMapData[d.properties.GEOID].height,
+            getFillColor: d => !colorFilter || currentMapData[d.properties[currIdCol]].color.length === 4 
+                ? currentMapData[d.properties[currIdCol]].color
+                : [...currentMapData[d.properties[currIdCol]].color, 25+(!colorFilter || colorFilter===currentMapData[d.properties[currIdCol]].color)*225],
+            getElevation: d => currentMapData[d.properties[currIdCol]].height,
             pickable: true,
             stroked: false,
             filled: true,
@@ -405,7 +416,7 @@ export default function MapSection(){
         choroplethHighlight:  new GeoJsonLayer({
             id: 'highlightLayer',
             data: currentMapGeography,
-            getLineColor: d => highlightGeog.indexOf(d.properties.GEOID)!==-1 ? mapParams.vizType === 'dotDensity' ? [240,240,240] : [0, 104, 109] : [0, 104, 109, 0], 
+            getLineColor: d => highlightGeog.indexOf(d.properties[currIdCol])!==-1 ? mapParams.vizType === 'dotDensity' ? [240,240,240] : [0, 104, 109] : [0, 104, 109, 0], 
             opacity: 0.8,
             material:false,
             pickable: false,
@@ -422,8 +433,8 @@ export default function MapSection(){
         choroplethHover: new GeoJsonLayer({
             id: 'hoverHighlightlayer',    
             data: currentMapGeography,
-            getLineColor: d => hoverGeog === d.properties.GEOID ? mapParams.vizType === 'dotDensity' ? [200,200,200] : [50, 50, 50] : [50, 50, 50, 0], 
-            getElevation: d => currentMapData[d.properties.GEOID].height,
+            getLineColor: d => hoverGeog === d.properties[currIdCol] ? mapParams.vizType === 'dotDensity' ? [200,200,200] : [50, 50, 50] : [50, 50, 50, 0], 
+            getElevation: d => currentMapData[d.properties[currIdCol]].height,
             pickable: false,
             stroked: true,
             filled:false,
@@ -506,9 +517,9 @@ export default function MapSection(){
             id: 'cartogram layer',
             data: currentMapGeography.features,
             pickable:true,
-            getPosition: d => currentMapData[d.properties.GEOID].position,
-            getFillColor: d => currentMapData[d.properties.GEOID].color,
-            getRadius: d => currentMapData[d.properties.GEOID].radius,  
+            getPosition: d => currentMapData[d.properties[currIdCol]].position,
+            getFillColor: d => currentMapData[d.properties[currIdCol]].color,
+            getRadius: d => currentMapData[d.properties[currIdCol]].radius,  
             onHover: handleMapHover,
             radiusScale: currentData.includes('state') ? 9 : 6,
             transitions: {
@@ -527,8 +538,8 @@ export default function MapSection(){
         cartogramText: new TextLayer({
             id: 'cartogram text layer',
             data: currentMapGeography.features,
-            getPosition: d => currentMapData[d.properties.GEOID].position,
-            getSize: d => currentMapData[d.properties.GEOID].radius,  
+            getPosition: d => currentMapData[d.properties[currIdCol]].position,
+            getSize: d => currentMapData[d.properties[currIdCol]].radius,  
             sizeScale: 4,
             backgroundColor: [240,240,240],
             pickable:false,
@@ -689,7 +700,7 @@ export default function MapSection(){
 
                 let GeoidList = [];
                 for (let i=0; i<features.length; i++) {
-                    const objectID = features[i].object?.properties?.GEOID
+                    const objectID = features[i].object?.properties[currIdCol]
                     if (!objectID || GeoidList.indexOf(objectID) !== -1) continue
                     GeoidList.push(objectID)
                 }
