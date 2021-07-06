@@ -1,9 +1,13 @@
 # %%
 import os
 import pandas as pd
-import datetime
 import google.protobuf
 import flatData_pb2
+import os
+import pandas as pd
+
+dir_path = os.path.dirname(os.path.realpath(__file__))
+repo_root = os.path.abspath(os.path.join(dir_path, '..', '..'))
 
 # %%
 
@@ -88,7 +92,7 @@ fileList = [
 
 # %%
 for fileInfo in fileList:
-    csvData = pd.read_csv(f'../../public/csv/{fileInfo["fileName"]}.csv')
+    csvData = pd.read_csv(os.path.join(repo_root, f'public/csv/{fileInfo["fileName"]}.csv'))
     dataOut = flatData_pb2.Rows()
     dataOut.dates.extend(list(csvData.columns[fileInfo['dateIndex']:]))
 
@@ -105,7 +109,7 @@ for fileInfo in fileList:
 
         rowObj[i].vals.extend(cleanVals)
 
-    f = open(f'../../public/pbf/{fileInfo["fileName"]}.pbf', "wb")
+    f = open(os.path.join(repo_root, f'public/pbf/{fileInfo["fileName"]}.pbf'), "wb")
     f.write(dataOut.SerializeToString())
     f.close()
 

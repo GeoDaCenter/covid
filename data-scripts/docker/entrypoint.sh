@@ -39,6 +39,10 @@ case $DATA_SOURCE in
 		export COMMAND="python ./data-scripts/hrsa/getVaccinationClinics.py"
 		;;
 
+	pbf)
+		export COMMAND="python ./data-scripts/pbf/CsvToPbf.py"
+		;;
+
 	hybridUpdate)
 		export COMMAND="python ./data-scripts/cdc/hybrid_update.py"
 		;;
@@ -55,7 +59,7 @@ if $COMMAND;
 	  		then exit 0;
 		elif [ "$DATA_SOURCE" = "testing" ];
 			then exit 0;
-		elif [ "$DATA_SOURCE" = "hybridUpdate" ];
+		elif [ "$CI_SKIP" = "false" ];
 			then git add . && git commit -m "Updated: `date +'%Y-%m-%d %H:%M:%S'`" && git push;
 		else
 			git add . && git commit -m "Updated: `date +'%Y-%m-%d %H:%M:%S'` [skip ci]" && git push;
