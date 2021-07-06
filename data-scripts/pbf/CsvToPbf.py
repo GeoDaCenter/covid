@@ -1,10 +1,7 @@
 # %%
 import os
 import pandas as pd
-import google.protobuf
 import flatData_pb2
-import os
-import pandas as pd
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 repo_root = os.path.abspath(os.path.join(dir_path, '..', '..'))
