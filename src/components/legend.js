@@ -6,7 +6,6 @@ import { colors } from '../config';
 import { Gutter } from '../styled_components';
 import Tooltip from './tooltip';
 import { alert } from '../config/svg';
-import { useDispatch, useSelector } from 'react-redux';
 
 const BottomPanel = styled.div`
     position: fixed;
@@ -98,7 +97,7 @@ const BinLabels = styled.div`
     display: flex;
     margin-top:0px;
     box-sizing: border-box;
-    padding: 0 ${props => props.binLength > 6 ? 100/props.binLength/2-2 : 0}%;
+    padding: 0 ${props => props.binLength > 6 ? 100/props.binLength/2-1 : 0}%;
     .bin { 
         height:10px;
         display: inline;
@@ -107,9 +106,6 @@ const BinLabels = styled.div`
         flex:2;
         font-size:10px;
         text-align: center;
-        background:none;
-        text-align:center;
-
     }
     .bin:nth-of-type(1) {
         transform: ${props => props.firstBinZero ? 'translateX(-45%)' : 'none'};
@@ -125,25 +121,11 @@ const BinBars = styled.div`
     margin-top:3px;
     box-sizing: border-box;
     .bin { 
-        height:45px;
+        height:5px;
         display: inline;
         flex:1;
         border:0;
-        padding:20px 0;
-        margin:-20px 0;
-        background:none;
-        transition:125ms padding, 125ms margin;
-        &.active {
-            padding-top:10px;
-            span {
-                box-shadow: 0px 0px 5px rgba(0,0,0,0.7);
-            }
-        }
-        span {
-            width:100%;
-            height:100%;
-            display:block;
-        }
+        margin:0;
     }
     .bin:nth-of-type(1) {
         transform: ${props => props.firstBinZero ? 'scaleX(0.35)' : 'none'};
@@ -165,15 +147,7 @@ const DataNote = styled.p`
 
 
 const Legend =  (props) => {
-    const dispatch = useDispatch()
-    const colorFilter = useSelector(state => state.colorFilter)
-    const handleHover = (color) => {
-        dispatch({
-            type: "SET_COLOR_FILTER",
-            payload: color
-        })
-    }
-
+    
     return (
         <BottomPanel id="bottomPanel">
             <LegendContainer>
@@ -186,27 +160,15 @@ const Legend =  (props) => {
                     <Grid item xs={12}>
                         {props.colorScale !== undefined &&  
                             <span>
-                                <BinBars 
-                                    firstBinZero={`${props.colorScale[0]}` === `240,240,240` && props.fixedScale === null}
-                                >
-                                    {props.colorScale.map(color => <button
-                                        onMouseEnter={() => handleHover(color)} 
-                                        onMouseLeave={() => handleHover(null)} 
-                                        onFocus={() => handleHover(color)}
-                                        onBlur={() => handleHover(null)}
-                                        className={`bin color ${colorFilter === color && 'active'}`}
-                                        key={`${color[0]}${color[1]}`}
-                                        >
-                                            <span style={{backgroundColor:`rgb(${color[0]},${color[1]},${color[2]})`}}></span>
-
-                                        </button>)}
+                                <BinBars firstBinZero={`${props.colorScale[0]}` === `240,240,240` && props.fixedScale === null}>
+                                    {props.colorScale.map(color => <div className="bin color" key={`${color[0]}${color[1]}`}style={{backgroundColor:`rgb(${color[0]},${color[1]},${color[2]})`}}></div>)}
                                 </BinBars>
-                                <BinLabels firstBinZero={`${props.colorScale[0]}` === `240,240,240`} binLength={props.bins.bins.length}>
+                                <BinLabels firstBinZero={`${props.colorScale[0]}` === `240,240,240`} binLength={props.bins.length}>
                                     {(`${props.colorScale[0]}` === `240,240,240` && props.fixedScale === null) && <div className="bin firstBin">0</div>}
 
                                     {
                                         props.bins !== undefined && 
-                                        <BinsList data={props.bins.bins} />
+                                        <BinsList data={props.bins} />
                                     }
                                     
                                 </BinLabels>

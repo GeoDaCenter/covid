@@ -41,7 +41,7 @@ const Preloader = ( props ) => {
 
     return (
         <PreloaderContainer className={props.loaded ? 'fadeOut' : ''} style={{display: (isHidden ? 'none' : 'initial')}} id="preloaderContainer">
-            <img src={`${process.env.PUBLIC_URL}/assets/img/animated_cluster.svg`} alt="Preloader" />
+            <img src={`${process.env.PUBLIC_URL}/assets/img/preloader.gif`} alt="Preloader" />
         </PreloaderContainer>
     );
 };

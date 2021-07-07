@@ -5,7 +5,6 @@ import colLookup from './colLookup.js';
 import dataFn from './dataFunction.js';
 import findDates from './findDates';
 import { findDateIndices, getDateIndices } from './findDateIndices';
-import findTableDetails from './findTableDetails';
 import geojsonArrayBuffer from './geojsonArrayBuffer';
 import getArrayCSV from './getArrayCSV';
 import getCartogramValues from './getCartogramValues';
@@ -29,10 +28,10 @@ import getURLParams from './getURLParams';
 import getVarId from './getVarId';
 import loadGeojsonToGeoda from './loadGeojsonToGeoda';
 import loadJson from './loadJson';
-import { mapFn, mapFnNb, mapFnTesting, mapFnHinge} from './mapFunction.js';
+import mapFn from './mapFunction.js';
+import mergeData from './mergeData.js';
 import parseBinPairs from './parseBinPairs';
-import parseMapboxLayers from './parseMapboxLayers';
-import shallowCompare from './shallowCompare';
+import parseMobilityData from './parseMobilityData';
 
 export {
     addSelectedChartData,
@@ -41,7 +40,6 @@ export {
     dataFn,
     findDates,
     findDateIndices,
-    findTableDetails,
     getDateIndices,
     geojsonArrayBuffer,
     getArrayCSV,
@@ -67,10 +65,7 @@ export {
     loadGeojsonToGeoda,
     loadJson,
     mapFn,
-    mapFnNb, 
-    mapFnTesting, 
-    mapFnHinge,
+    mergeData,
     parseBinPairs,
-    parseMapboxLayers,
-    shallowCompare
+    parseMobilityData
 }
