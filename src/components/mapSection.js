@@ -2,6 +2,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
+import {fromJS} from 'immutable';
+import { find, findIndex } from 'lodash';
 import * as Pbf from 'pbf';
 
 // deck GL and helper function import
@@ -13,14 +15,13 @@ import {fitBounds} from '@math.gl/web-mercator';
 import MapboxGLMap from 'react-map-gl';
 
 // component, action, util, and config import
-import { Geocoder, MapButtons } from '../components';
-import { setMapLoaded, openContextMenu, setNotification, setTooltipContent, setDotDensityData, updateSelectionKeys} from '../actions';
-import {getCSV, getCartogramCenter, parseMapboxLayers, shallowCompare } from '../utils';
-import { colors, MAPBOX_ACCESS_TOKEN } from '../config';
+import { Geocoder } from '../components';
+import { setMapLoaded, setSelectionData, appendSelectionData, removeSelectionData, openContextMenu, setNotification, setTooltipContent, setDotDensityData} from '../actions';
+import { mapFn, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, getURLParams } from '../utils';
+import { colors, colorScales, MAPBOX_ACCESS_TOKEN } from '../config';
 import MAP_STYLE from '../config/style.json';
-import { useViewport, useSetViewport } from '../contexts/ViewportContext';
-import useLoadData from '../hooks/useLoadData';
-import useUpdateData from '../hooks/useUpdateData';
+import * as SVG from '../config/svg'; 
+
 // PBF schemas
 import * as Schemas from '../schemas';
 
@@ -31,7 +32,18 @@ const bounds = fitBounds({
     bounds: [[-130.14, 53.96],[-67.12, 19]]
 })
 
-const view = new MapView({repeat: true});
+// Inset map bounds
+// const hawaiiBounds = fitBounds({
+//     width: window.innerWidth*.15,
+//     height: window.innerHeight*.12,
+//     bounds: [[-161.13, 23.23],[-152.75, 17.67]]
+// })
+
+// const alaskaBounds = fitBounds({
+//     width: window.innerWidth*.15,
+//     height: window.innerHeight*.12,
+//     bounds: [[-167.75, 73.59],[-132.70, 50.09]]
+// })
 
 // hospital and clinic icon mapping
 const ICON_MAPPING = {
@@ -40,8 +52,10 @@ const ICON_MAPPING = {
     invitedVaccineSite: {x: 0, y: 128, width: 128, height: 128},
     participatingVaccineSite: {x: 128, y: 128, width: 128, height: 128},
     megaSite: {x: 256, y: 128, width: 128, height: 128},
-};
+  };
 
+// mapbox default style from Json
+const defaultMapStyle = fromJS(MAP_STYLE);
 
 // component styling
 const MapContainer = styled.div`
@@ -58,12 +72,75 @@ const MapContainer = styled.div`
         }
     }
 `
+
+const MapButtonContainer = styled.div`
+    position: absolute;
+    right: ${props => props.infoPanel ? 317 : 10}px;
+    bottom: 30px;
+    z-index: 10;
+    transition: 250ms all;
+    @media (max-width:768px) {
+        bottom:100px;
+    }
+    @media (max-width: 400px) {
+        transform:scale(0.75) translate(20%, 20%);
+    }
+`
+
+const NavInlineButtonGroup = styled.div`
+    margin-bottom:10px;
+    border-radius:4px;
+    overflow:hidden;
+    -moz-box-shadow: 0 0 2px rgba(0,0,0,.1);
+    -webkit-box-shadow: 0 0 2px rgba(0,0,0,.1);
+    box-shadow: 0 0 0 2px rgba(0,0,0,.1);
+`
+
+const NavInlineButton = styled.button`
+    width:29px;
+    height:29px;
+    padding:5px;
+    display:block;
+    fill:rgb(60,60,60);
+    background-color: ${props => props.isActive ? colors.lightblue : colors.buttongray};
+    outline:none;
+    border:none;
+    transition:250ms all;
+    cursor:pointer;
+    :after {
+        opacity: ${props => props.shareNotification ? 1 : 0};
+        content:'Map Link Copied to Clipboard!';
+        background:${colors.buttongray};
+        -moz-box-shadow: 0 0 2px rgba(0,0,0,.1);
+        -webkit-box-shadow: 0 0 2px rgba(0,0,0,.1);
+        box-shadow: 0 0 0 2px rgba(0,0,0,.1);
+        border-radius: 4px;
+        position: absolute;
+        transform:translate(-120%, -25%);
+        padding:5px;
+        width:150px;
+        pointer-events:none;
+        max-width:50vw;
+        transition:250ms all;
+    }
+    svg {
+        transition:250ms all;
+        transform:${props => props.tilted ? 'rotate(30deg)' : 'none' };
+    }
+`
+
+const ShareURL = styled.input`
+    position:fixed;
+    left:110%;
+`
+
 const IndicatorBox = styled.div`
     position:fixed;
     border:1px dashed #FFCE00;
     background:rgba(0,0,0,0.25);
     z-index:5;
 `
+
 const GeocoderContainer = styled.div`
     position:fixed;
     right:7px;
@@ -90,31 +167,44 @@ const chunkArray = (data, chunk) => {
     return tempArray
 };
 
-export default function MapSection(){ 
+function MapSection(props){ 
     // fetch pieces of state from store    
     const storedData = useSelector(state => state.storedData);
     const storedGeojson = useSelector(state => state.storedGeojson);
     const currentData = useSelector(state => state.currentData);
-    const mapParams = useSelector(state => state.mapParams);
-    const dotDensityData = useSelector(state => state.dotDensityData);
-    const currentMapData = useSelector(state => state.mapData.data);
-    const currentMapID = useSelector(state => state.mapData.params);
-    const storedGeojson = useSelector(state => state.storedGeojson);
-    const currentMapGeography = storedGeojson[currentData]?.data||[]
-    const colorFilter = useSelector(state => state.colorFilter);
-
-    const storedCartogramData = useSelector(state => state.storedCartogramData);
     const storedLisaData = useSelector(state => state.storedLisaData);
-    const [firstLoad, secondLoad, lazyFetchData] = useLoadData()
-    const [] = useUpdateData()
-    const viewport = useViewport();
-    const setViewport = useSetViewport();
+    const dateIndices = useSelector(state => state.dateIndices);
+    const storedCartogramData = useSelector(state => state.storedCartogramData);
+    const panelState = useSelector(state => state.panelState);
+    const dates = useSelector(state => state.dates);
+    const dataParams = useSelector(state => state.dataParams);
+    const mapParams = useSelector(state => state.mapParams);
+    const urlParams = useSelector(state => state.urlParams);
+    const dotDensityData = useSelector(state => state.dotDensityData);
     
     // component state elements
     // hover and highlight geographibes
     const [hoverGeog, setHoverGeog] = useState({x:null, y:null, object:null});
     const [highlightGeog, setHighlightGeog] = useState([]);
-    const [mapStyle, setMapStyle] = useState(MAP_STYLE);
+
+    // mapstyle and global map mode (WIP)
+    // const [globalMap, setGlobalMap] = useState(false);
+    const globalMap = false;
+    const [mapStyle, setMapStyle] = useState(defaultMapStyle);
+
+    // map view location
+    const [viewState, setViewState] = useState({
+        latitude: +urlParams.lat || bounds.latitude,
+        longitude: +urlParams.lon || bounds.longitude,
+        zoom: +urlParams.z || bounds.zoom,
+        bearing:0,
+        pitch:0
+    })
+    
+    const [currentZoom, setCurrentZoom] = useState(Math.round(+urlParams.z || bounds.zoom))
+    
+    // locally stored data and color values
+    // const [currVarId, setCurrVarId] = useState(null);
     
     // async fetched data and cartogram center
     const [resourceLayerData, setResourceLayerData] = useState({
@@ -123,12 +213,16 @@ export default function MapSection(){
         vaccineSites: []
     });
     const [storedCenter, setStoredCenter] = useState(null);
+    // share button notification
+    const [shared, setShared] = useState(false);
     
     // interaction states
     const [multipleSelect, setMultipleSelect] = useState(false);
     const [boxSelect, setBoxSelect] = useState(false);
     const [boxSelectDims, setBoxSelectDims] = useState({});
     const forceUpdate = useForceUpdate();
+    // const [resetSelect, setResetSelect] = useState(null);
+    // const [mobilityData, setMobilityData] = useState([]);
 
     // local data store for parsed data
     const [currentMapData, setCurrentMapData] = useState({
@@ -171,8 +265,6 @@ export default function MapSection(){
         }
     }
 
-    // fix for alt-tabbing sleep
-    let hidden = null;
     let visibilityChange = null;
     if (typeof hidden !== 'undefined') {
         visibilityChange = 'visibilitychange';
@@ -190,20 +282,27 @@ export default function MapSection(){
         });
 
         window.addEventListener('storage', () => {
-            // When local storage changes, dump the list to the console.
+            // When local storage changes, dump the list to
+            // the console.
             const SHARED_GEOID =  localStorage.getItem('SHARED_GEOID').split(',').map(d => parseInt(d))
+            
             if (SHARED_GEOID !== null) {
                 setHighlightGeog(SHARED_GEOID); 
             }
+            
             const SHARED_VIEW =  JSON.parse(localStorage.getItem('SHARED_VIEW'));
-            if (!document.hasFocus() && SHARED_VIEW !== null && shallowCompare(SHARED_VIEW, viewport) && SHARED_VIEW.hasOwnProperty('latitude')) {
-                setViewport({
-                    longitude: SHARED_VIEW.longitude,
-                    latitude: SHARED_VIEW.latitude,
-                    zoom: SHARED_VIEW.zoom
-                })
+            
+            if (SHARED_VIEW !== null && SHARED_VIEW.hasOwnProperty('latitude')) {
+                setViewState({
+                        longitude: SHARED_VIEW.longitude,
+                        latitude: SHARED_VIEW.latitude,
+                        zoom: SHARED_VIEW.zoom,
+                        transitionDuration: 1000,
+                        transitionInterpolator: new FlyToInterpolator()
+                    })
             }
         });
+
         window.addEventListener('contextmenu', (e) => {
             dispatch(openContextMenu({
                 x:e.pageX,
@@ -220,27 +319,43 @@ export default function MapSection(){
 
     // change map center on viztype change
     useEffect(() => {
+        const currMapView = GetMapView();
         switch(mapParams.vizType) {
-            case '3D':{
-                setViewport((viewState) => {
-                    return {
-                        ...viewState,
-                    bearing:-30,
-                    pitch:30
-                }});
-                setStoredCenter(null)
-                break
-            }
-            default:{
-                setViewport((viewState) => {
-                    return {
-                        ...viewState,
+            case '2D': 
+                setViewState({
+                    ...currMapView,
+                    latitude: +urlParams.lat || bounds.latitude,
+                    longitude: +urlParams.lon || bounds.longitude,
+                    zoom: +urlParams.z || bounds.zoom,
                     bearing:0,
                     pitch:0
-                }});
+                });
                 setStoredCenter(null)
                 break
-            }
+            case 'dotDensity': 
+                setViewState({
+                    ...currMapView,
+                    latitude: +urlParams.lat || bounds.latitude,
+                    longitude: +urlParams.lon || bounds.longitude,
+                    zoom: +urlParams.z || bounds.zoom,
+                    bearing:0,
+                    pitch:0
+                });
+                setStoredCenter(null)
+                break
+            case '3D':
+                setViewState({
+                    ...currMapView,
+                    latitude: +urlParams.lat || bounds.latitude,
+                    longitude: +urlParams.lon || bounds.longitude,
+                    zoom: +urlParams.z || bounds.zoom,
+                    bearing:-30,
+                    pitch:30
+                });
+                setStoredCenter(null)
+                break
+            default:
+                //
         }
     }, [mapParams.vizType])
     
@@ -255,7 +370,7 @@ export default function MapSection(){
             if (isNaN(center[0])) return;
             let roundedCenter = [Math.floor(center[0]),Math.floor(center[1])];
             if ((storedCenter === null || roundedCenter[0] !== storedCenter[0]) && center) {
-                setViewport({
+                setViewState({
                     latitude: center[1],
                     longitude: center[0],
                     zoom: currentData.includes('state') ? 6 : 5,
@@ -282,13 +397,44 @@ export default function MapSection(){
                 getDotDensityData();
             }
         }
-
-        setMapStyle(prev => { 
-            return {
-                ...prev, 
-                layers: parseMapboxLayers(MAP_STYLE.layers, mapParams)
-            }
-        });
+        
+        const defaultLayers = defaultMapStyle.get('layers');
+        let tempLayers;
+        if (mapParams.vizType === 'cartogram' || globalMap) {
+            tempLayers = defaultLayers.map(layer => {
+                return layer.setIn(['layout', 'visibility'], 'none');
+            });
+        } else if (mapParams.vizType === '3D') {
+            tempLayers = defaultLayers.map(layer => {
+                if ((layer.get('id').includes('label')) && !(layer.get('id').includes('water'))) return layer;
+                return layer.setIn(['layout', 'visibility'], 'none');
+            });
+        } else if (mapParams.vizType === 'dotDensity') {
+            tempLayers = defaultLayers.map(layer => {
+                if (mapParams.resource.includes(layer.get('id')) || mapParams.overlay.includes(layer.get('id'))) {
+                    return layer.setIn(['layout', 'visibility'], 'visible');
+                } else if (layer.get('id').includes('admin')) {
+                    return layer.setIn(['paint','line-color'], 'hsl(0,0%,80%)')
+                } else if (layer.get('id').includes('settlement-')) {
+                    
+                    return layer.get('id').includes('major') ? 
+                        layer.setIn(['paint','text-halo-blur'], 0).setIn(['paint','text-halo-width'], 2)
+                        :
+                        layer.setIn(['paint','text-halo-blur'], 0)
+                } else {
+                    return layer;
+                }
+            });
+        } else {
+            tempLayers = defaultLayers.map(layer => {
+                if (mapParams.resource.includes(layer.get('id')) || mapParams.overlay.includes(layer.get('id'))) {
+                    return layer.setIn(['layout', 'visibility'], 'visible');
+                } else {
+                    return layer;
+                }
+            });
+        }
+        setMapStyle(defaultMapStyle.set('layers', tempLayers));
 
     }, [mapParams.overlay, mapParams.mapType, mapParams.vizType])
     
@@ -327,11 +473,146 @@ export default function MapSection(){
     },[mapParams.resource, resourceLayerData.clinics[0], resourceLayerData.hospitals[0], resourceLayerData.vaccineSites[0]])
 
     useEffect(() => {
+        setViewState(view => ({
+            ...view,
+            latitude: +urlParams.lat || bounds.latitude,
+            longitude: +urlParams.lon || bounds.longitude,
+            zoom: +urlParams.z || bounds.zoom,
+            bearing:0,
+            pitch:0
+        }));
+    }, [urlParams])
+
+    // clean and set map data after parameter change
+    // TODO: swap
+    useEffect(() => {
+        if (mapParams.binMode !== 'dynamic') updateMap();
+    },[mapParams.mapType, mapParams.vizType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, storedGeojson[currentData], storedCartogramData, mapParams.overlay])
+    
+    useEffect(() => {
+        if (mapParams.binMode === 'dynamic') updateMap();
+    },[mapParams.bins.bins, mapParams.binMode])
+    
+    useEffect(() => {
         forceUpdate()
-    }, [currentMapID, storedCartogramData, storedLisaData])
+    }, [currentMapData, dataParams.numerator, dataParams.variableName, dataParams.denominator, dataParams.nIndex, mapParams.overlay, storedLisaData])
+
+    const GetFillColor = (f, bins, mapType, varID) => {
+        if (!f[dataParams.numerator] || (!f[dataParams.numerator][dataParams.nIndex] && !f[dataParams.numerator][dataParams.nProperty])) {
+            return null
+        } else if (mapType === 'lisa') {
+            return colorScales.lisa[storedLisaData[storedGeojson[currentData]['geoidOrder'][f.properties.GEOID]]]||[240,240,240]
+        } else {
+            return mapFn(dataFn(f[dataParams.numerator], f[dataParams.denominator], dataParams), bins.breaks, mapParams.colorScale, mapParams.mapType, dataParams.numerator);
+        }
+    }
+
+    const GetSimpleFillColor = (value, geoid, bins, mapType) => {
+        if (value===null) {
+            return [240,240,240,120]
+        } else if (mapType === 'lisa') {
+            return colorScales.lisa[storedLisaData[storedGeojson[currentData]['geoidOrder'][geoid]]]
+        } else {
+            return mapFn(value, bins, mapParams.colorScale, mapParams.mapType, dataParams.numerator);
+        }
+    }
+    
+    const cleanData = ( parameters ) => {
+        const {data, bins, mapType, varID, vizType} = parameters; //dataName, dataType, params, colorScale
+        if (!bins.hasOwnProperty("bins")) {
+            return []
+        };
+
+        if ((data === undefined) || (mapType !== 'lisa' && bins.breaks === undefined)) {
+            return []
+        }
+
+        let returnArray = [];
+        let returnObj = {};
+        let i = 0;
+
+        switch(vizType) {
+            case 'cartogram':
+                if (storedGeojson[currentData] === undefined) break;
+                while (i < data.length) {
+                    const tempGeoid = storedGeojson[currentData]['indexOrder'][data[i].properties?.id]
+                    const tempColor = GetSimpleFillColor(data[i].value, tempGeoid, bins.breaks, mapType);
+                    returnArray.push({
+                        GEOID: tempGeoid,
+                        position: data[i].position,
+                        color: tempColor,
+                        radius: data[i].radius
+                    })
+                    i++;
+                }
+                break
+            default:
+                while (i < data.length) {
+                    let tempColor = GetFillColor(data[i], bins, mapType, varID);
+                    if (tempColor === null) {
+                        i++;
+                        continue;
+                    }
+                    let tempHeight = GetHeight(data[i]);
+                    for (let n=0; n<data[i].geometry.coordinates.length; n++) {
+                        returnArray.push({
+                            GEOID: data[i].properties.GEOID,
+                            geom: data[i].geometry.coordinates[n],
+                            color: tempColor,
+                            height: tempHeight
+                        })
+                        returnObj[+data[i].properties.GEOID] = tempColor
+                    }
+                    i++;
+                }
+        }
+
+        return {choropleth: returnArray, dot: returnObj}
+    }
+
+    const GetHeight = (f) => dataFn(f[dataParams.numerator], f[dataParams.denominator], dataParams)*(dataParams.scale3D/((dataParams.nType === "time-series" && dataParams.nRange === null) ? (dataParams.nIndex)/10 : 1))
+
+    const GetMapView = () => {
+        try {
+            const currView = deckRef.current.deck.viewState.MapView
+            return currView || {...viewState}
+        } catch {
+            return {...viewState}
+        }
+    }
     
     const mapRef = useRef();
-    const deckRef = useRef();
+    const deckRef = useRef({
+        deck: {
+            viewState: {
+                MapView: {
+                    ...viewState
+                }
+            }
+        }
+    });
+
+    const handleShare = async (params) => {
+        const shareData = {
+            title: 'The US Covid Atlas',
+            text: 'Near Real-Time Exploration of the COVID-19 Pandemic.',
+            url: `${window.location.href.split('?')[0]}${getURLParams(params)}`,
+        }
+
+        try {
+            await navigator.share(shareData)
+          } catch(err) {
+            let copyText = document.querySelector("#share-url");
+            copyText.value = `${shareData.url}`;
+            copyText.style.display = 'block'
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            copyText.style.display = 'none';
+            setShared(true)
+            setTimeout(() => setShared(false), 5000);
+        }
+    }
 
     const handleKeyDown = (e) => {
         if (e.target.selectionStart === undefined){
@@ -380,7 +661,7 @@ export default function MapSection(){
                         })
                     );
                     window.localStorage.setItem('SHARED_GEOID', GeoidList);
-                    window.localStorage.setItem('SHARED_VIEW', JSON.stringify(viewport));
+                    window.localStorage.setItem('SHARED_VIEW', JSON.stringify(GetMapView()));
                 } else {
                     if (highlightGeog.length > 1) {
                         let tempArray = [...highlightGeog];
@@ -394,20 +675,64 @@ export default function MapSection(){
                             })
                         )
                         window.localStorage.setItem('SHARED_GEOID', tempArray);
-                        window.localStorage.setItem('SHARED_VIEW', JSON.stringify(viewport));
+                        window.localStorage.setItem('SHARED_VIEW', JSON.stringify(GetMapView()));
                     }
                 }
             } catch {}
         } else {
             try {
-                setHighlightGeog([objectID]); 
-                dispatch(updateSelectionKeys(objectID, 'update'))
-                window.localStorage.setItem('SHARED_GEOID', objectID);
-                window.localStorage.setItem('SHARED_VIEW', JSON.stringify(viewport));
+                setHighlightGeog([info.object?.GEOID]); 
+                dispatch(
+                    setSelectionData({
+                        values: getDataForCharts(
+                            [tempData], 
+                            'cases', 
+                            dateIndices[currentData]['cases'], 
+                            dates, 
+                            dataName
+                        ),
+                        name: dataName,
+                        index: findIndex(storedData[currentData], o => o.properties.GEOID === info.object?.GEOID)
+                    })
+                );
+                window.localStorage.setItem('SHARED_GEOID', info.object?.GEOID);
+                window.localStorage.setItem('SHARED_VIEW', JSON.stringify(GetMapView()));
             } catch {}
         }
     }
 
+    const handleGeolocate = async () => {
+        navigator.geolocation.getCurrentPosition( position => {
+            setViewState({
+                    longitude: position.coords.longitude,
+                    latitude: position.coords.latitude,
+                    zoom:7,
+                    transitionDuration: 1000,
+                    transitionInterpolator: new FlyToInterpolator()
+                })
+        }) 
+    }
+
+    const handleZoom = (zoom) => {
+        const currMapView = GetMapView()
+        setViewState({
+                ...currMapView,
+                zoom: currMapView.zoom + zoom,
+                transitionDuration: 250,
+                transitionInterpolator: new FlyToInterpolator()
+            })
+    }
+    
+    const resetTilt = () => {
+        const currMapView = GetMapView()
+        setViewState({
+                ...currMapView,
+                bearing:0,
+                pitch:0,
+                transitionDuration: 250,
+                transitionInterpolator: new FlyToInterpolator()
+            })
+    }
     const handleGeocoder = useCallback(location => {
         if (location.center !== undefined) {
             let center = location.center;
@@ -423,7 +748,7 @@ export default function MapSection(){
                 zoom = bounds.zoom*.9;
             };
 
-            setViewport({
+            setViewState({
                 longitude: center[0],
                 latitude: center[1],
                 zoom: zoom,
@@ -442,11 +767,10 @@ export default function MapSection(){
     const FullLayers = {
         choropleth: new PolygonLayer({
             id: 'choropleth',
-            data: currentMapGeography,
-            getFillColor: d => !colorFilter || currentMapData[d.properties.GEOID].color.length === 4 
-                ? currentMapData[d.properties.GEOID].color
-                : [...currentMapData[d.properties.GEOID].color, 25+(!colorFilter || colorFilter===currentMapData[d.properties.GEOID].color)*225],
-            getElevation: d => currentMapData[d.properties.GEOID].height,
+            data: currentMapData.data,
+            getFillColor: d => d.color,
+            getPolygon: d => d.geom,
+            getElevation: d => d.height,
             pickable: true,
             stroked: false,
             filled: true,
@@ -455,16 +779,13 @@ export default function MapSection(){
             opacity: mapParams.vizType === 'dotDensity' ? mapParams.dotDensityParams.backgroundTransparency : 0.8,
             material:false,
             onHover: handleMapHover,
-            onClick: handleMapClick,     
-            transitions: {
-                getFillColor: colorFilter ? 250 : 0
-            },      
+            onClick: handleMapClick,           
             updateTriggers: {
-                transitions: colorFilter,
                 opacity: mapParams.overlay,
-                getElevation: currentMapID,
-                getFillColor: [currentMapID,colorFilter]
-            },
+                getPolygon: [currentMapData.params, dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
+                getElevation: [currentMapData.params, dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
+                getFillColor: [currentMapData.params, dataParams.variableName, mapParams.mapType, mapParams.bins.bins, mapParams.bins.breaks, mapParams.binMode, mapParams.fixedScale, mapParams.vizType, mapParams.colorScale, mapParams.customScale, dataParams.nIndex, dataParams.nRange, storedLisaData, currentData],
+            }
         }),
         choroplethHighlight:  new PolygonLayer({
             id: 'highlightLayer',
@@ -600,11 +921,12 @@ export default function MapSection(){
             getAlignmentBaseline: 'center',
             maxWidth: 500,
             wordBreak: 'break-word',
-            getText: d => d.properties.NAME,
+            getText: f => find(storedData[currentData], o => o.properties.GEOID === f.GEOID)?.properties?.NAME,
             updateTriggers: {
-                data: currentMapGeography,
-                getPosition: [currentMapID,storedLisaData,storedCartogramData],
-                getSize: [currentMapID,storedLisaData,storedCartogramData],
+                getPosition: [storedCartogramData, mapParams.vizType],
+                getFillColor: [storedCartogramData, mapParams.vizType],
+                getize: [storedCartogramData, mapParams.vizType],
+                getRadius: [storedCartogramData, mapParams.vizType]
             },
         }),        
         dotDensity: [new ScatterplotLayer({
@@ -615,7 +937,7 @@ export default function MapSection(){
             getPosition: f => [f[1]/1e5, f[2]/1e5],
             getFillColor: f => mapParams.dotDensityParams.colorCOVID ? currentMapData.dots[f[3]]||[0,0,0,0] : colors.dotDensity[f[0]],
             getRadius: 100,  
-            radiusMinPixels: Math.sqrt(viewport.zoom)-1.5,
+            radiusMinPixels: Math.sqrt(currentZoom)-1.5,
             getFilterValue: f => (f[0]===8 && mapParams.dotDensityParams.raceCodes[f[0]]) ? 1 : 0,
             filterRange: [1, 1], 
             // Define extensions
@@ -625,7 +947,7 @@ export default function MapSection(){
                 getFillColor: [mapParams.dotDensityParams.colorCOVID, currentMapData.dots, dotDensityData],
                 data: dotDensityData,
                 getFilterValue: [dotDensityData.length, mapParams.dotDensityParams.raceCodes[8]],
-                radiusMinPixels: viewport.zoom
+                radiusMinPixels: currentZoom
             }
           }),    
           new ScatterplotLayer({
@@ -636,7 +958,7 @@ export default function MapSection(){
             getPosition: f => [f[1]/1e5, f[2]/1e5],
             getFillColor: f => mapParams.dotDensityParams.colorCOVID ? currentMapData.dots[f[3]]||[0,0,0,0] : colors.dotDensity[f[0]],
             getRadius: 100,  
-            radiusMinPixels: Math.sqrt(viewport.zoom)-1.5,
+            radiusMinPixels: Math.sqrt(currentZoom)-1.5,
             getFilterValue: f => (f[0]!==8 && mapParams.dotDensityParams.raceCodes[f[0]]) ? 1 : 0,
             filterRange: [1, 1], 
             // Define extensions
@@ -649,7 +971,7 @@ export default function MapSection(){
                     mapParams.dotDensityParams.raceCodes[1],mapParams.dotDensityParams.raceCodes[2],mapParams.dotDensityParams.raceCodes[3],mapParams.dotDensityParams.raceCodes[4],
                     mapParams.dotDensityParams.raceCodes[5],mapParams.dotDensityParams.raceCodes[6],mapParams.dotDensityParams.raceCodes[7]
                 ],
-                radiusMinPixels: viewport.zoom
+                radiusMinPixels: currentZoom
             }
           })
         ],
@@ -684,17 +1006,36 @@ export default function MapSection(){
 
     })
 
+    const view = new MapView({repeat: true});
+    const handleSelectionBoxStart = () => {
+        setBoxSelect(true)
+    }
+
     const listener = (e) => {
+
         setBoxSelectDims(prev => {
-            const [left, width] = e.clientX < prev.oLeft
-                ? [e.clientX, prev.oLeft - e.clientX]
-                : [prev.left, e.clientX - prev.left]
+            let x;
+            let y;
+            let width;
+            let height;
 
-            const [top, height] = e.clientY < prev.oTop
-                ? [e.clientY, prev.oTop - e.clientY]
-                : [prev.top, e.clientY - prev.top]
+            if (e.clientX < prev.ox) {
+                x = e.clientX;
+                width = prev.ox - e.clientX
+            } else {
+                x = prev.x;
+                width = e.clientX - prev.x
+            }
 
-            return { ...prev, left, top, width, height }
+            if (e.clientY < prev.oy) {
+                y = e.clientY;
+                height = prev.oy - e.clientY
+            } else {
+                y = prev.y;
+                height = e.clientY - prev.y
+            }
+
+            return { ...prev, x, y, width, height }
         })
     }
     
@@ -710,10 +1051,10 @@ export default function MapSection(){
         window.removeEventListener('mousemove', listener)
         window.removeEventListener('mouseup', removeListeners)
         setBoxSelectDims({
-            left:-50,
-            top:-50,
-            oLeft:0,
-            oTop:0,
+            x:-50,
+            y:-50,
+            ox:0,
+            oy:0,
             width:0,
             height:0
         })
@@ -724,10 +1065,10 @@ export default function MapSection(){
         try {
             if (e.type === 'mousedown') {
                 setBoxSelectDims({
-                    left:e.pageX,
-                    top:e.pageY,
-                    oLeft:e.pageX,
-                    oTop:e.pageY,
+                    x:e.pageX,
+                    y:e.pageY,
+                    ox:e.pageX,
+                    oy:e.pageY,
                     width:0,
                     height:0
                 });
@@ -736,11 +1077,16 @@ export default function MapSection(){
                 window.addEventListener('mousemove', listener);
                 window.addEventListener('mouseup', removeListeners);
             } else {
-                const {left, top, width, height } = boxSelectDims;
+    
+                const {x, y, width, height } = boxSelectDims;
     
                 let layerIds = ['choropleth'];
-                let features = deckRef.current.pickObjects({x: left, y: top-50, width, height, layerIds})
-
+    
+                let features = deckRef.current.pickObjects(
+                        {
+                            x, y: y-50, width, height, layerIds
+                        }
+                    )
                 let GeoidList = [];
                 for (let i=0; i<features.length; i++) {
                     if (GeoidList.indexOf(features[i].object?.GEOID) !== -1) continue
@@ -781,8 +1127,7 @@ export default function MapSection(){
                 }
                 setHighlightGeog(GeoidList); 
                 window.localStorage.setItem('SHARED_GEOID', GeoidList);
-                window.localStorage.setItem('SHARED_VIEW', JSON.stringify(viewport));
-
+                window.localStorage.setItem('SHARED_VIEW', JSON.stringify(GetMapView()));
                 setBoxSelectDims({});
                 removeListeners();
                 setBoxSelect(false)
@@ -790,43 +1135,122 @@ export default function MapSection(){
         } catch {
             console.log('bad selection')
         }
-        console.log('did box select')
     }
     
     return (
         <MapContainer
             onKeyDown={handleKeyDown}
             onKeyUp={handleKeyUp}
-            onMouseDown={e => {
-                boxSelect && handleBoxSelect(e);
-                dispatch(setTooltipContent(null,null,null));
-            }}
-            onMouseUp={e => boxSelect && handleBoxSelect(e)}
-            >
-            <IndicatorBox style={{...boxSelectDims}} />
+            onMouseDown={e => boxSelect ? handleBoxSelect(e) : null}
+            onMouseUp={e => boxSelect ? handleBoxSelect(e) : null}
+        >
+            {
+                // boxSelectDims.hasOwnProperty('x') && 
+                true && 
+                <IndicatorBox style={{
+                    left:boxSelectDims.x, 
+                    top:boxSelectDims.y, 
+                    width: boxSelectDims.width,
+                    height: boxSelectDims.height}}
+                    />
+            }
             <DeckGL
                 layers={getLayers(FullLayers, mapParams.vizType, mapParams.overlay, mapParams.resource, currentData)}
                 ref={deckRef}
+
+                initialViewState={viewState}
+                controller={
+                    {
+                        dragRotate: !boxSelect, 
+                        dragPan: !boxSelect, 
+                        doubleClickZoom: !boxSelect, 
+                        touchZoom: !boxSelect, 
+                        touchRotate: !boxSelect, 
+                        keyboard: true, 
+                        scrollZoom: true,
+                        // inertia: 50
+                    }
+                }
                 views={view}
-                viewState={viewport} 
-                onViewStateChange={({viewState}) => boxSelect ? null : setViewport(viewState)}
-                controller={true}
                 pickingRadius={20}
-                >
+                onViewStateChange={viewState => {
+                    let zoom = Math.round(viewState.viewState.zoom);
+                    if (zoom !== currentZoom) setTimeout(() => setCurrentZoom(zoom), 1000);
+                }}
+                // onAfterRender={() => isPlaying && handleIncrement(1000) }
+            >
                 <MapboxGLMap
                     reuseMaps
                     ref={mapRef}
-                    mapStyle={mapStyle}
+                    mapStyle={mapStyle} //{globalMap || mapParams.vizType === 'cartogram' ? 'mapbox://styles/lixun910/ckhtcdx4b0xyc19qzlt4b5c0d' : 'mapbox://styles/lixun910/ckhkoo8ix29s119ruodgwfxec'}
                     preventStyleDiffing={true}
                     mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
-                    onLoad={() => dispatch(setMapLoaded(true))}
+                    onLoad={() => {
+                        dispatch(setMapLoaded(true))
+                    }}
                     >
                 </MapboxGLMap >
             </DeckGL>
-            <MapButtons 
-                boxSelect={boxSelect}
-                setBoxSelect={setBoxSelect}
-            />
+            <MapButtonContainer 
+                infoPanel={panelState.info}
+            >
+                <NavInlineButtonGroup>
+                    <NavInlineButton
+                        title="Selection Box"
+                        id="boxSelect"
+                        isActive={boxSelect}
+                        onClick={() => handleSelectionBoxStart()}
+                    >
+                        {SVG.selectRect}
+                    </NavInlineButton>
+                </NavInlineButtonGroup>
+                <NavInlineButtonGroup>
+                    <NavInlineButton
+                        title="Geolocate"
+                        id="geolocate"
+                        onClick={() => handleGeolocate()}
+                    >
+                        {SVG.locate}
+                    </NavInlineButton>
+                </NavInlineButtonGroup>
+                
+                <NavInlineButtonGroup>
+                    <NavInlineButton
+                    
+                        title="Zoom In"
+                        id="zoomIn"
+                        onClick={() => handleZoom(0.5)}
+                    >
+                        {SVG.plus}
+                    </NavInlineButton>
+                    <NavInlineButton
+                        title="Zoom Out"
+                        id="zoomOut"
+                        onClick={() => handleZoom(-0.5)}
+                    >
+                        {SVG.minus}
+                    </NavInlineButton>
+                    <NavInlineButton
+                        title="Reset Tilt"
+                        id="resetTilt"
+                        tilted={deckRef.current?.deck.viewState?.MapView?.bearing !== 0 || deckRef.current?.deck.viewState?.MapView?.pitch !== 0}
+                        onClick={() => resetTilt()}
+                    >
+                        {SVG.compass}
+                    </NavInlineButton>
+                </NavInlineButtonGroup>
+                <NavInlineButtonGroup>
+                    <NavInlineButton
+                        title="Share this Map"
+                        id="shareButton"
+                        shareNotification={shared}
+                        onClick={() => handleShare({mapParams, dataParams, currentData, coords: GetMapView(), lastDateIndex: dateIndices[currentData][dataParams.numerator]})}
+                    >
+                        {SVG.share}
+                    </NavInlineButton>
+                </NavInlineButtonGroup>
+                <ShareURL type="text" value="" id="share-url" />
+            </MapButtonContainer>
             <GeocoderContainer>
                 <Geocoder 
                     id="Geocoder"
