@@ -11,6 +11,7 @@ import Footer from './Footer';
 import HeroMap from './heroMap';
 import InfoBox from './infoBox';
 import Legend from './legend';
+import MapButtons  from './MapButtons';
 import MainLineChart from './mainLineChart';
 import MapSection from './mapSection';
 import MapTooltipContent from './mapTooltipContent';
@@ -24,6 +25,7 @@ import StaticNavbar from './staticNavbar';
 import Tooltip from './tooltip';
 import TopPanel from './topPanel';
 import Geocoder from './geocoder';
+import ShareButton from './ShareButton';
 
 
 // pages
@@ -58,6 +60,7 @@ export {
     HeroMap,
     InfoBox,
     Legend,
+    MapButtons,
     MainLineChart,
     MapSection,
     MapTooltipContent,
@@ -70,6 +73,7 @@ export {
     StaticNavbar,
     Tooltip, 
     TopPanel,
+    ShareButton,
 
     About,
     Api,
