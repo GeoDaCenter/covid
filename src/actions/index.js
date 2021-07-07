@@ -291,6 +291,16 @@ export const setSelectionData = ( data ) => {
     }
 }
 
+export const updateSelectionKeys  = ( geoid, type) => {
+    return {
+        type: 'UPDATE_SELECTION',
+        payload: {
+            geoid,
+            type
+        }
+    }
+}
+
 // adds to current chart data from current data
 export const appendSelectionData = ( data ) => {
     return {
@@ -438,3 +448,95 @@ export const stopPlaying = () => {
         type: 'SET_STOP_PLAYING'
     }
 }
+
+export const lazyFetchData = (dataPresets) => {
+    return {
+        type: 'LAZY_LOAD_DATA',
+        payload: {
+            dataPresets
+        }
+    }
+}
+
+export const initialDataLoad = (data) => {
+    return {
+        type: 'INITIAL_LOAD',
+        payload: {
+            data
+        }
+    }
+}
+
+export const addTables = ( data ) => {
+    return {
+        type:'ADD_TABLES',
+        payload: {
+            data
+        }
+    }
+}
+
+export const updateMap = () => {
+    return {
+        type: 'UPDATE_MAP'
+    }
+}
+
+export const setChartParams = ( params ) => {
+    return {
+        type: 'SET_CHART_PARAMS',
+        payload: {
+            params
+        }
+    }
+}
+
+export const updateChart = () => {
+    return {
+        type: 'UPDATE_CHART'
+    }
+}
+
+export const addGeojson = ( data ) => {
+    return {
+        type: 'ADD_GEOJSON',
+        payload: {
+            data
+        }
+    }
+}
+
+export const addTableAndChart = ( data ) => {
+    return {
+        type: 'ADD_TABLE_AND_CHART',
+        payload: {
+            data
+        }
+    }
+}
+export const addTablesAndUpdate = ( data ) => {
+    return {
+        type: 'ADD_TABLES_AND_UPDATE',
+        payload: {
+            data
+        }
+    }
+}
+
+export const setIsLoading = () => {
+    return {
+        type: 'SET_IS_LOADING'
+    }
+}
+
+
+export const addWeights = (file, weights) => {
+    return {
+        type: 'ADD_WEIGHTS',
+        payload: {
+            file,
+            weights
+        }
+    }
+}
+

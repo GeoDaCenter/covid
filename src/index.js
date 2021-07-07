@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import { Provider } from 'react-redux';
 import './index.css';
-import WebFont from 'webfontloader';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import { createStore } from 'redux';
 import rootReducer from './reducers';
@@ -21,17 +20,17 @@ import rootReducer from './reducers';
 
 // const persistedReducer = persistReducer(persistConfig, rootReducer)
 const store = createStore(
-  rootReducer
-  // ,window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  rootReducer,
+  (
+    typeof window === 'object' 
+    && window.__REDUX_DEVTOOLS_EXTENSION__ 
+    && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+  ) && window.__REDUX_DEVTOOLS_EXTENSION__({
+    stateSanitizer: (state) => state.storedGeojson ? { ...state, storedData: '<<EXCLUDED>>', storedGeojson: '<<EXCLUDED>>' } : state
+  })
 );
 // const persistor = persistStore(store)
 
-
-WebFont.load({
-  google: {
-    families: ['Lato:400,400i,700,900', 'Playfair Display:ital', 'sans-serif']
-  }
-});
 
 ReactDOM.render(
   <React.StrictMode>
@@ -40,6 +39,11 @@ ReactDOM.render(
         <App />
       {/* </PersistGate> */}
     </Provider>
+
+    <button id="new-content-button" className="hidden" onClick={() => window.location.reload(true)}>
+      <span>New data or features are available</span>
+      Click here to reload
+    </button>
   </React.StrictMode>,
   document.getElementById('root')
 );

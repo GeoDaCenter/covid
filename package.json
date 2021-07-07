@@ -16,18 +16,20 @@
   "dependencies": {
     "@deck.gl/core": "^8.3.11",
     "@deck.gl/extensions": "^8.4.12",
-    "@deck.gl/geo-layers": "^8.3.12",
+    "@deck.gl/geo-layers": "^8.4.18",
     "@deck.gl/layers": "^8.3.11",
+    "@deck.gl/mapbox": "^8.4.18",
+    "@deck.gl/mesh-layers": "^8.4.18",
     "@deck.gl/react": "^8.3.11",
     "@material-ui/core": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",
+    "comlink": "^4.3.1",
     "d3-dsv": "^2.0.0",
     "d3-scale": "^3.2.0",
     "file-saver": "^2.0.5",
-    "immutable": "^4.0.0-rc.12",
     "jszip": "^3.6.0",
     "lodash": "^4.17.20",
     "pbf": "^3.2.1",
@@ -44,7 +46,6 @@
     "remark-gfm": "^1.0.0",
     "styled-components": "^5.2.1",
     "web-vitals": "^0.2.4",
-    "webfontloader": "^1.6.28",
     "workbox-build": "^6.1.5"
   },
   "scripts": {
@@ -60,14 +61,6 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ],
-    "overrides": [
-      {
-        "files": ["**/*.js?(x)"],
-        "rules": {
-          "react-hooks/exhaustive-deps": "off"
-        }
-      }
     ]
   },
   "browserslist": {

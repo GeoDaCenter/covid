@@ -106,8 +106,10 @@ def unique(list):
         if el not in uniqueList:
             uniqueList.append(el)
     return uniqueList
-    
-     
+
+def reconcileDf(extantDf, newDf):
+    extantDf = extantDf[["fips_code"] + [column for column in list(extantDf.columns) if column not in list(newDf.columns)]]
+    return extantDf.merge(newDf, on="fips_code")
 
 if __name__ == "__main__":
 
@@ -172,12 +174,15 @@ if __name__ == "__main__":
     # output CSV to this folder and docs
     for entry in colsToParse:
         tempDf = parseCsvOutput(raw, entry['column'], entry['operation']).replace([np.inf, -np.inf], np.nan).round(entry['roundTo'])
+        tempDf = reconcileDf(pd.read_csv(os.path.join(repo_root, f'public/csv/{entry["csv"]}.csv')), tempDf)
         tempDf.to_csv(os.path.join(repo_root, f'public/csv/{entry["csv"]}.csv'), index=False)
 
     for entry in colsToCalculate:
         tempDf = parseNewMeasure(raw, entry['numerator'], entry['denominator'], 1).replace([np.inf, -np.inf], np.nan).round(entry['roundTo'])
+        tempDf = reconcileDf(pd.read_csv(os.path.join(repo_root, f'public/csv/{entry["csv"]}.csv')), tempDf)
         tempDf.to_csv(os.path.join(repo_root, f'public/csv/{entry["csv"]}.csv'), index=False)
 
     for entry in colsToNormalize:
         tempDf = parsePopulationNormalized(raw, entry['column']).replace([np.inf, -np.inf], np.nan).round(entry['roundTo'])
+        tempDf = reconcileDf(pd.read_csv(os.path.join(repo_root, f'public/csv/{entry["csv"]}.csv')), tempDf)
         tempDf.to_csv(os.path.join(repo_root, f'public/csv/{entry["csv"]}.csv'), index=False)

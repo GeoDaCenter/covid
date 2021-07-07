@@ -26,17 +26,18 @@
             "Point of interest labels, poi-labels": {
                 "name": "Point of interest labels, poi-labels",
                 "collapsed": true
-            }
+            },
+            "bedb775d0e55b2c07e35fe626e8855d8": {"name": "Group"}
         },
         "mapbox:uiParadigm": "layers"
     },
-    "center": [-106.41142047413177, 43.731407729117365],
-    "zoom": 5.054700049834795,
+    "center": [-90.24791041669256, 33.22752144142228],
+    "zoom": 5.691721245819905,
     "bearing": 0,
     "pitch": 0,
     "sources": {
         "composite": {
-            "url": "mapbox://lixun910.5k6jyt33,lixun910.7s0ljdc6,mapbox.mapbox-streets-v8,lixun910.5bmq1hai,lixun910.c1k7tmzy,lixun910.62ab73ca,mapbox.mapbox-terrain-v2",
+            "url": "mapbox://lixun910.5k6jyt33,lixun910.7s0ljdc6,mapbox.mapbox-streets-v8,lixun910.405bjdze,lixun910.5bmq1hai,lixun910.3iql0bc1,lixun910.c1k7tmzy,lixun910.62ab73ca,mapbox.mapbox-terrain-v2",
             "type": "vector"
         }
     },
@@ -44,7 +45,7 @@
     "glyphs": "mapbox://fonts/lixun910/{fontstack}/{range}.pbf",
     "layers": [
         {
-            "id": "blackbelt",
+            "id": "blackbelt-geom",
             "type": "fill",
             "source": "composite",
             "source-layer": "blackbelt-highlight-3vhzb8",
@@ -55,7 +56,7 @@
             }
         },
         {
-            "id": "segregated_cities",
+            "id": "segregated_cities-geom",
             "type": "fill",
             "source": "composite",
             "source-layer": "segregated_cities-9w47nz",
@@ -66,7 +67,7 @@
             }
         },
         {
-            "id": "native_american_reservations",
+            "id": "native_american_reservations-geom",
             "type": "fill",
             "source": "composite",
             "source-layer": "nativeamericanreservations-hi-4aqk3l",
@@ -77,7 +78,7 @@
             }
         },
         {
-            "id": "uscongress-districts",
+            "id": "uscongress-districts-geom",
             "type": "line",
             "source": "composite",
             "source-layer": "US_Congressional_Districts-4jecfj",
@@ -1242,7 +1243,7 @@
             }
         },
         {
-            "id": "uscongress",
+            "id": "uscongress-label",
             "type": "symbol",
             "source": "composite",
             "source-layer": "district_centroids-c05zce",
@@ -1253,10 +1254,7 @@
                     "-",
                     ["get", "District"]
                 ],
-                "text-font": [
-                    "Open Sans Condensed Bold",
-                    "Arial Unicode MS Regular"
-                ],
+                "text-font": ["Lato Bold", "Arial Unicode MS Regular"],
                 "text-size": [
                     "interpolate",
                     ["linear"],
@@ -1268,11 +1266,50 @@
                 ],
                 "visibility": "none"
             },
-            "paint": {"text-color": "hsl(0, 0%, 100%)"}
+            "paint": {
+                "text-halo-width": 1,
+                "text-halo-blur": 1,
+                "text-halo-color": "hsl(0, 0%, 100%)"
+            }
+        },
+        {
+            "id": "segregated_cities-label",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "segregated_cities_names-1zlyqc",
+            "layout": {
+                "text-field": ["to-string", ["get", "NAMELSAD"]],
+                "text-font": ["Lato Bold", "Arial Unicode MS Regular"],
+                "text-size": ["interpolate", ["linear"], ["zoom"], 4, 8, 9, 24],
+                "visibility": "none"
+            },
+            "paint": {
+                "text-halo-width": 1,
+                "text-halo-blur": 1,
+                "text-halo-color": "hsl(0, 0%, 100%)"
+            }
+        },
+        {
+            "id": "native_american_reservations-label",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "am_in_centroids-079med",
+            "layout": {
+                "text-field": ["to-string", ["get", "IND_NAME"]],
+                "text-font": ["Lato Bold", "Arial Unicode MS Regular"],
+                "text-size": ["interpolate", ["linear"], ["zoom"], 4, 8, 9, 24],
+                "symbol-sort-key": ["*", ["get", "AREA"], ["-", 1]],
+                "visibility": "none"
+            },
+            "paint": {
+                "text-halo-color": "hsl(0, 0%, 100%)",
+                "text-halo-width": 1,
+                "text-halo-blur": 1
+            }
         }
     ],
     "created": "2020-11-25T16:18:56.139Z",
-    "modified": "2021-01-04T19:30:35.587Z",
+    "modified": "2021-05-28T19:14:15.241Z",
     "id": "ckhxm4ot50yk919pj8witkk2d",
     "owner": "lixun910",
     "visibility": "private",

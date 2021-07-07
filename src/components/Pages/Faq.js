@@ -189,7 +189,7 @@ const faqQuestions = [
             are sourced from Safegraph’s <a href="https://docs.safegraph.com/docs/social-distancing-metrics" target="_blank" rel="noopener noreferrer">Social Distancing Metrics</a>. 
             <br/><br/>
             We have also added an <i>Essential Workers</i> data layer to contextualize these mobility metrics. This variable (found under 
-            Variables {'>'} Community Health Information) estimates the percentage of adult workers in essential occupations, based on 
+            Variables > Community Health Information) estimates the percentage of adult workers in essential occupations, based on 
             2019 American Community Survey county-level estimates. 
             <br/><br/>
             More about Safegraph’s mobility data: Safegraph provides U.S. Census block group level data that reports mobile phone 
@@ -277,6 +277,8 @@ const faqQuestions = [
         </p>
     }
 ]   
+
+{/* <a href="" target="_blank" rel="noopener noreferrer"></a> */}
 
 const Faq = () => {
 

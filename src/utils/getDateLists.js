@@ -1,7 +1,7 @@
 export const getDateLists = () => {
     const stripLeadingZero = ( str ) => str[0] !== '0' ? str : str.slice(1,)
     const isoToUsDate = (date) => stripLeadingZero(date.slice(5,7)) + '/'+ stripLeadingZero(date.slice(8,10)) + '/' + date.slice(2,4)
-    /* eslint no-extend-native: "off" */ 
+
     Date.prototype.addDays = function(days) {
         var date = new Date(this.valueOf());
         date.setDate(date.getDate() + days);

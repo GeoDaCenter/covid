@@ -15,7 +15,7 @@ const CsvDownloaderContainer = styled.div`
     .inset {
         margin: 0 0 20px 20px;
     }
-    button {
+    a {
         font-size: 16px;
         font-weight: 700;
         letter-spacing: 1.75px;
@@ -41,7 +41,7 @@ const CsvDownloaderContainer = styled.div`
         color:${colors.blue};
     }
     &.passive {
-        background:${colors.gray} url('${process.env.PUBLIC_URL}/assets/img/preloader.gif') ;
+        background:${colors.gray} url('${process.env.PUBLIC_URL}/assets/img/animated_cluster.svg') ;
         background-repeat:no-repeat;
         background-position:center center;
         opacity:0.5;
@@ -124,15 +124,11 @@ const checkboxSets = [
         name: 'vaccination',
         subset: [
             {
-                label: 'County - Complete Series Administered - CDC',
-                name: 'vaccine_fully_vaccinated_cdc_h'
-            },
-            {
                 label: 'State - First Doses Administered - CDC',
                 name: 'vaccine_admin1_cdc'
             },
             {
-                label: 'State - Complete Series Administered - CDC',
+                label: 'State - Second Doses Administered - CDC',
                 name: 'vaccine_admin2_cdc'
             },
             {
@@ -149,7 +145,7 @@ const checkboxSets = [
                 name: 'covid_testing_cdc'
             },
             {
-                label: 'County - Testing Capacity Per 100k - CDC',
+                label: 'County - Tests Performed Per 100k - CDC',
                 name: 'covid_tcap_cdc'
             },
             {
@@ -165,7 +161,7 @@ const checkboxSets = [
                 name: 'covid_testing_cdc_state'
             },
             {
-                label: 'State - Testing Capacity Per 100k - HHS',
+                label: 'State - Tests Performed Per 100k - HHS',
                 name: 'covid_tcap_cdc_state'
             },
             {
@@ -279,7 +275,6 @@ const CsvDownloader = () => {
             covid_ccpt_cdc: false,
             covid_ccpt_cdc_state: false,
         vaccination:false,
-            vaccine_fully_vaccinated_cdc_h: false,
             vaccine_admin1_cdc: false,
             vaccine_admin2_cdc: false,
             vaccine_dist_cdc: false,
@@ -359,7 +354,7 @@ const CsvDownloader = () => {
                     </p>
                 </Grid>
                 <Grid item xs={12} md={4}>
-                    <button onClick={() => GetFiles(checkboxes)} ping="https://theuscovidatlas.org/trackdownloads.html">Download Data</button>
+                    <a onClick={() => GetFiles(checkboxes)} ping="https://theuscovidatlas.org/trackdownloads.html">Download Data</a>
                 </Grid>
             </Grid>
             <Gutter h={20}/>

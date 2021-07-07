@@ -3,9 +3,9 @@ import * as Pbf from 'pbf';
 // PBF schemas
 import * as Schemas from '../schemas';
 
-export default async function getParsePbf(url, accumulate, dateList){
+export default async function getParsePbf(fileInfo, dateList){
     
-    const pbfData = await fetch(`${process.env.PUBLIC_URL}/pbf/${url}`)
+    const pbfData = await fetch(`${process.env.PUBLIC_URL}/pbf/${fileInfo.file}`)
         .then(r => r.arrayBuffer())
         .then(ab => new Pbf(ab))
         .then(pbf => Schemas.Rows.read(pbf))
@@ -14,6 +14,9 @@ export default async function getParsePbf(url, accumulate, dateList){
     let dateIndices = [];
     let constructorIndices = [];
     let columnNames = ['geoid', ...pbfData.dates]
+    
+    // embedded scientific scale exponent in file name
+    const scale = (/.e-[0-9]/g).exec(fileInfo.file) ? 10 ** -+(/.e-[0-9]/g).exec(fileInfo.file)[0]?.split('-')[1] : 1
 
     for (let i=0; i<dateList.length; i++) {
         if (pbfData.dates.indexOf(dateList[i]) !== -1){
@@ -24,11 +27,16 @@ export default async function getParsePbf(url, accumulate, dateList){
         }
     }
 
-    if (accumulate) {
+    if (fileInfo.accumulate) {
         for (let i=0; i<pbfData.row.length; i++){
             returnData[pbfData.row[i].geoid] = []
-            for (let n=0; n<pbfData.row[i].vals.length; n++) {
-                returnData[pbfData.row[i].geoid].push(((pbfData.row[i].vals[n]||0)+(pbfData.row[i].vals[n-1]||0))||null)
+            for (let n=0, j=0; n<constructorIndices.length; n++) {
+                if (constructorIndices[n]) {
+                    returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j] === -999 ? null : ((pbfData.row[i].vals[j]*scale||0)+(returnData[pbfData.row[i].geoid][n-1]||0))||null)
+                    j++;
+                } else {
+                    returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j] === -999 ? null : pbfData.row[i].vals[j-1]*scale||null)
+                }
             }
         }
     } else {
@@ -36,18 +44,15 @@ export default async function getParsePbf(url, accumulate, dateList){
             returnData[pbfData.row[i].geoid] = []
             for (let n=0, j=0; n<constructorIndices.length; n++) {
                 if (constructorIndices[n]) {
-                    returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j])
+                    returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j] === -999 ? null : pbfData.row[i].vals[j]*scale)
                     j++;
                 } else {
-                    returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j-1]||null)
+                    returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j-1]*scale||null)
                 }
-                
             }
         }
     }
-
-    return [returnData, columnNames, dateIndices]
-
+    return {data: returnData, columns: columnNames, dates: dateIndices}
 
 //       return response.ok ? response.text() : Promise.reject(response.status);
 //     }).then(text => {
