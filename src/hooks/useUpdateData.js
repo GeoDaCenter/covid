@@ -19,7 +19,6 @@ export default function useUpdateData(){
   const currentTable = useSelector(state => state.currentTable);
   const storedData = useSelector(state => state.storedData);
   const storedGeojson = useSelector(state => state.storedGeojson);
-  const storedLisaData = useSelector(state => state.storedLisaData);
   const dataPresets = useSelector((state) => state.dataPresets);
   const defaultTables = useSelector((state) => state.defaultTables);
   const shouldUpdate = useSelector(state => state.shouldUpdate);

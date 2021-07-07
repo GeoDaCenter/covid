@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import {
@@ -129,7 +129,6 @@ const CustomTooltip = props => {
 
 const MainLineChart = () => {
     const chartData = useSelector(state => state.chartData.data);
-    const columns = useSelector(state => state.chartData.columns);
     const maximums = useSelector(state => state.chartData.maximums);
     const dataParams = useSelector(state => state.dataParams);
     const nType = useSelector(state => state.dataParams.nType);

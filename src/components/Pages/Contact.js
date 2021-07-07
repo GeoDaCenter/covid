@@ -272,7 +272,7 @@ export default function Contact(){
                 'Message': false})
             
             const submissionURL = await generateURL(formData, url);
-            const response = await fetch(submissionURL, { method: 'GET' });
+            await fetch(submissionURL, { method: 'GET' });
     
             setIsSubmitting(false)
             setSubmitted(true)

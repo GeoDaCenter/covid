@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Slider from '@material-ui/core/Slider';
 import Button from '@material-ui/core/Button';
 import styled from 'styled-components';
-import { setVariableParams, incrementDate } from '../actions';
+import { setVariableParams } from '../actions';
 import useTickUpdate from '../hooks/useTickUpdate';
 import { colors } from '../config';
 
@@ -227,17 +227,6 @@ const DateSelectorContainer = styled(Grid)`
     }
 `
 
-const TickMarks = styled.div`
-    width:100%;
-    height:10px;
-    display:flex;
-    div {
-        width:1px;
-        height:10px;
-        display:inline-block;
-    }
-`
-
 const valuetext = (dates, value) => {
     const fullDate = dates[value]?.split('-')
 
@@ -336,7 +325,7 @@ function DateSlider(){
             case 3:
                 dispatch(setVariableParams({dIndex: val}))
                 break
-            case 4:
+            default:
                 dispatch(setVariableParams({nIndex: val}))
                 break
         }

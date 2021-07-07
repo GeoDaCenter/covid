@@ -50,7 +50,6 @@ export const INITIAL_STATE = {
     fixedScale: null,
     dataNote: 'Texas reports only state-level vaccination rates to the CDC.',
     zAxisParams: null,
-    fixedScale: null,
     storedRange: null,
     ...currVariable
   },

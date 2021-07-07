@@ -363,11 +363,6 @@ export const defaultTables = {
             'dates':'isoDateList',
             'type':'time-series',
             'join':'county'
-        },
-        'essential_workers': {
-            'file':'context_essential_workers_acs',
-            'type':'characteristic',
-            'join':'fips'
         }
     },
     'County (Hybrid)':{

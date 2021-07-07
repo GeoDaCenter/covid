@@ -335,7 +335,6 @@ export default function VariablePanel(){
   const nType = useSelector(state => state.dataParams.nType);
   const nRange = useSelector(state => state.dataParams.nRange);
   const dType = useSelector(state => state.dataParams.dType);
-  const dRange = useSelector(state => state.dataParams.dRange);
   const rangeType = useSelector(state => state.dataParams.rangeType);
 
   const variablePresets = useSelector(state => state.variablePresets);

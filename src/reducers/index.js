@@ -1,5 +1,5 @@
 import { INITIAL_STATE } from '../constants/defaults';
-import { mapFnNb, mapFnTesting, mapFnHinge, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, getURLParams } from '../utils';
+import { mapFnNb, mapFnTesting, mapFnHinge, dataFn, getVarId, getDataForCharts } from '../utils';
 import { tooltipTables } from '../config';
 
 // utils
@@ -15,7 +15,6 @@ const generateMapData = (state) => {
     };
 
     let returnObj = {};
-    let i = 0;
 
     const getTable = (i, predicate) => {
         if (state.dataParams[predicate] === 'properties' ) {
@@ -98,7 +97,7 @@ const generateMapData = (state) => {
 
 const shallowEqual = (object1, object2) => { // Thanks @Dmitri Pavlutin
     const keys = Object.keys(object1);
-    if (keys.length !== keys.length) return false; 
+    if (keys.length !== Object.keys(object2).length) return false; 
     for (let i=0; i<keys.length; i++) {
         if (object1[keys[i]] !== object2[keys[i]]) {
             if (keys[i] !== 'nIndex' && keys[i] !== 'dIndex') return false;  
@@ -214,24 +213,24 @@ const aggregate2WeekTimeSeries = (table, geoids, endIndex) => {
 }
 
 // // For more complete data functions (like population normalized)
-const aggregateDataFunction = (numeratorTable, denominatorTable, properties, geoids, operation, params) => {
-    let dataArray = []; 
-    let totalPopulation = 0;
+// const aggregateDataFunction = (numeratorTable, denominatorTable, properties, geoids, operation, params) => {
+//     let dataArray = []; 
+//     let totalPopulation = 0;
     
-    if (operation === 'weighted_average') {
-        for (let i=0; i<geoids.length; i++){
-            let selectionPop = properties[geoids[i]].population;
-            totalPopulation+=selectionPop;
-            dataArray.push(dataFn(numeratorTable[geoids[i]], denominatorTable[geoids[i]], params)*selectionPop)
-        }
-    } else {
-        for (let i=0; i<geoids.length; i++){
-            dataArray.push(dataFn(numeratorTable[geoids[i]], denominatorTable[geoids[i]], params))
-        }
-    }
+//     if (operation === 'weighted_average') {
+//         for (let i=0; i<geoids.length; i++){
+//             let selectionPop = properties[geoids[i]].population;
+//             totalPopulation+=selectionPop;
+//             dataArray.push(dataFn(numeratorTable[geoids[i]], denominatorTable[geoids[i]], params)*selectionPop)
+//         }
+//     } else {
+//         for (let i=0; i<geoids.length; i++){
+//             dataArray.push(dataFn(numeratorTable[geoids[i]], denominatorTable[geoids[i]], params))
+//         }
+//     }
 
-    return performOperation(dataArray, operation, totalPopulation);
-}
+//     return performOperation(dataArray, operation, totalPopulation);
+// }
 
 const generateReport = (geoids, state) => {
     let report = {}

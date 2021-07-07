@@ -154,6 +154,7 @@ export default function Map() {
           <img
             src={`${process.env.PUBLIC_URL}/assets/img/animated_cluster.svg`}
             role="presentation"
+            alt=""
           />
         </div>
       }

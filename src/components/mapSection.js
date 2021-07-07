@@ -24,13 +24,6 @@ import useUpdateData from '../hooks/useUpdateData';
 // PBF schemas
 import * as Schemas from '../schemas';
 
-// US bounds
-const bounds = fitBounds({
-    width: window.innerWidth,
-    height: window.innerHeight,
-    bounds: [[-130.14, 53.96],[-67.12, 19]]
-})
-
 const view = new MapView({repeat: true});
 
 // hospital and clinic icon mapping
@@ -103,8 +96,10 @@ export default function MapSection(){
 
     const storedCartogramData = useSelector(state => state.storedCartogramData);
     const storedLisaData = useSelector(state => state.storedLisaData);
-    const [firstLoad, secondLoad, lazyFetchData] = useLoadData()
-    const [] = useUpdateData()
+    // eslint-disable-next-line no-empty-pattern
+    const [] = useLoadData();
+    // eslint-disable-next-line no-empty-pattern
+    const [] = useUpdateData();
     const viewport = useViewport();
     const setViewport = useSetViewport();
     
@@ -131,16 +126,12 @@ export default function MapSection(){
     const dispatch = useDispatch();
 
     // fix for alt-tabbing sleep
-    let hidden = null;
     let visibilityChange = null;
     if (typeof document.hidden !== 'undefined') { // Opera 12.10 and Firefox 18 and later support 
-        hidden = 'hidden';
         visibilityChange = 'visibilitychange';
     } else if (typeof document.msHidden !== 'undefined') {
-        hidden = 'msHidden';
         visibilityChange = 'msvisibilitychange';
     } else if (typeof document.webkitHidden !== 'undefined') {
-        hidden = 'webkitHidden';
         visibilityChange = 'webkitvisibilitychange';
     }
 
@@ -189,16 +180,30 @@ export default function MapSection(){
             }
             default:{
                 setViewport((viewState) => {
-                    return {
-                        ...viewState,
-                    bearing:0,
-                    pitch:0
-                }});
+                    if (mapParams.vizType !== "cartogram" && viewState.latitude < 15 && viewState.longitude > -30) {
+                        return {
+                            ...fitBounds({
+                                width: window.innerWidth,
+                                height: window.innerHeight,
+                                bounds: [[-130.14, 53.96],[-67.12, 19]]
+                              }),
+                            bearing:0,
+                            pitch:0
+                        }
+                    } else {
+                        return {
+                            ...viewState,
+                            bearing:0,
+                            pitch:0
+                        }
+                    }
+                });
                 setStoredCenter(null)
                 break
             }
         }
     }, [mapParams.vizType])
+
     
     // recenter on cartogram 
     // needs a separate rule from the above effect due to state and county cartograms
@@ -697,7 +702,6 @@ export default function MapSection(){
         } catch {
             console.log('bad selection')
         }
-        console.log('did box select')
     }
     
     return (

@@ -5,7 +5,7 @@ import {share} from '../config/svg';
 import { useSelector } from 'react-redux';
 import { getURLParams } from '../utils';
 
-export default function(){
+export default function ShareButton(){
     const viewport = useViewport(); 
     const currentData = useSelector((state) => state.currentData);
     const mapParams = useSelector((state) => state.mapParams);
