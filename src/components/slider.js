@@ -28,6 +28,13 @@ const PlayPauseButton = styled(Button)`
     position:absolute;
     left:-25px;
     bottom:-25px;
+    @media (max-width: 600px) {
+        bottom:-18px;
+    }
+    
+    @media (hover:none){
+        bottom:-33px;
+    }
     svg {
         width: 24px;
         height:24px;
@@ -58,6 +65,9 @@ const LineSlider = styled(Slider)`
             margin-top:0;
             width:68%;
             margin-left:24%;
+        }
+        @media (hover:none){
+            margin-top:0;
         }
     }
     span.MuiSlider-rail {
@@ -396,7 +406,7 @@ function DateSlider(){
                         }
                     </PlayPauseButton>
                 </PlayPauseContainer>}
-                <Grid container spacing={2} style={{display:'flex', padding: '0 0 10px 0'}}>
+                <Grid container spacing={2}>
                         {rangeType !== 'custom' && <DateTitle/> }
                     <Grid item xs={11}> {/* Sliders Grid Item */}
                         {/* Main Slider for changing date */}

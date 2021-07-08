@@ -3,19 +3,22 @@ import styled from 'styled-components';
 
 const TickMarks = styled.div`
     width:55.25%;
-    margin:-20px 22.5% 23px 25.5%;
+    margin:-12px 22.5% 23px 25.5%;
     transform:scaleX(.984) translateX(1px);
     height:3px;
     display:flex;
-    div {
+    span {
         width:1px;
         height:3px;
         display:inline-block;
     }
     @media (min-width:600px){
         width:60.25%;
-        margin:-23px 20% 23px 23%;
+        margin:-13px 20% 23px 23%;
         transform:none;
+    }
+    @media (hover:none){
+        margin-top:-20px;
     }
 `
 
@@ -31,7 +34,7 @@ export default function Ticks(){
     const items = []
 
     for (let i=0; i<length;i++) {
-        items.push(<div key={i} style={{background: dateIndices.includes(i) ? "white" : "black"}}/>)
+        items.push(<span key={i} style={{background: dateIndices.includes(i) ? "white" : "black"}}/>)
     }
     
     return  <TickMarks> {items} </TickMarks>
