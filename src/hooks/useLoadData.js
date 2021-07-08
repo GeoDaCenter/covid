@@ -1,6 +1,6 @@
 
 import { useSelector, useDispatch } from 'react-redux';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useMemo, useContext } from 'react';
 import { 
   getParseCSV, getParsePbf, getDataForBins, getDateLists } from '../utils'; //getVarId
 // Main data loader
@@ -73,7 +73,7 @@ export default function useLoadData(){
     return tempArray
   }
 
-  const firstLoad = async (datasetParams, defaultTables) => {
+  const firstLoad = useMemo(() => async (datasetParams, defaultTables) => {
     if (geoda === undefined) return;
     setIsInProcess(true)
     const numeratorParams = datasetParams.tables[dataParams.numerator]||defaultTables[dataParams.numerator]
@@ -171,10 +171,10 @@ export default function useLoadData(){
     )
     setIsInProcess(false)
     return [numeratorParams.file, denominatorParams && denominatorParams.file, mapId]
-  }
+  },[currentData])
 
 
-  const secondLoad = async (datasetParams, defaultTables, loadedTables, mapId) => {
+  const secondLoad = useMemo(() => async (datasetParams, defaultTables, loadedTables, mapId) => {
     if (geoda === undefined) return;
     setIsInProcess(true);
 
@@ -208,9 +208,9 @@ export default function useLoadData(){
     dispatch(addTables(dataObj))
     setIsInProcess(false)
     return [datasetParams.geojson, mapId]
-  }
+  }, [currentData])
   
-  const lazyFetchData = async (dataPresets, loadedTables) => {
+  const lazyFetchData = useMemo(() => async (dataPresets, loadedTables) => {
     const loadedGeojsons = Object.keys(storedGeojson)
     const geojsonFiles = Object.keys(dataPresets)
 
@@ -241,9 +241,9 @@ export default function useLoadData(){
     }
     return true
 
-  }
+  }, [currentData])
 
-  const lazyGenerateWeights = async (geojsonFile, geojsonId) => {
+  const lazyGenerateWeights = useMemo(() => async (geojsonFile, geojsonId) => {
     if (storedGeojson[geojsonFile] && 'Queen' in storedGeojson[geojsonFile].weights){
       return;
     } else {
@@ -251,7 +251,7 @@ export default function useLoadData(){
       dispatch(addWeights(geojsonFile, weights))
     }
 
-  }
+  }, [currentData])
 
   // On initial load and after geoda has been initialized, this loads in the default data sets (USA Facts)
   // Otherwise, this side-effect loads the selected data.
