@@ -44,15 +44,13 @@ class GeodaWorkerProxy {
    * @returns {String} A unique id of the geoda object.
    * @returns {GeoJson} Fetched geodata
    */
-  async loadGeoJSON(url, geoIdColumn) {
+   async loadGeoJSON(url, geoIdColumn) {
     if (this.geoda === null) await this.New();
     var response = await fetch(url);
-    var responseClone = response.clone();
-    var [geojsonData, ab] = await Promise.all([
-      response.json(),
-      responseClone.arrayBuffer(),
-    ]);
-
+    var responseClone = await response.clone();
+    var geojsonData = await response.json();
+    var ab = await responseClone.arrayBuffer();
+    
     if (
       !(isNaN(+geojsonData.features[0].properties[geoIdColumn])) 
       && "number" !== typeof geojsonData.features[0].properties[geoIdColumn])
@@ -61,8 +59,11 @@ class GeodaWorkerProxy {
         geojsonData.features[i].properties[geoIdColumn] = +geojsonData.features[i].properties[geoIdColumn]
       }
     }
-
-    var id = this.readGeoJSON(ab);
+    try {
+      var id = this.readGeoJSON(ab);
+    } catch {
+      return [null, geojsonData]
+    }
     return [id, geojsonData];
   }
 
