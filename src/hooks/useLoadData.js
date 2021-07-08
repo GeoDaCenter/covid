@@ -271,6 +271,7 @@ export default function useLoadData(){
           })
       } else {
         dispatch(updateChart());
+        dispatch(updateMap());
       }
     }
   },[currentData, geoda])
