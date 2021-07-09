@@ -1016,7 +1016,7 @@ export const variablePresets = {
         scale3D: 1000,
         colorScale: 'YlGnBu8',
         fixedScale: null,
-        dataNote: 'Data prior to 2/28/21 include any doses administered in the state and may include residents of other states.'
+        dataNote: 'TX & HI report only state-level vaccination rates to the CDC.'
     },
     "Percent Fully Vaccinated": {
         variableName:"Percent Fully Vaccinated",
