@@ -226,7 +226,7 @@ export default function Insights(){
                                 <h2>{entry.title}</h2>
                             </a>
                             {entry.description}
-                            <a href={entry.link}>Read more</a>
+                            <a href={entry.link} target="_blank" rel="noopeener noreferrer">Read more</a>
                         </Grid>
                     </ProductCard>)}
             </TabPanel>        
