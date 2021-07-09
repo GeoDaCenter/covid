@@ -48,7 +48,7 @@ export const INITIAL_STATE = {
     scale3D: 500_000,
     colorScale: 'YlGn8',
     fixedScale: null,
-    dataNote: 'Texas reports only state-level vaccination rates to the CDC.',
+    dataNote: 'TX & HI report only state-level vaccination rates to the CDC.',
     zAxisParams: null,
     storedRange: null,
     ...currVariable

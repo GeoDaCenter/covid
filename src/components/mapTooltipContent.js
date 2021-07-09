@@ -14,14 +14,16 @@ export default function MapTooltipContent(){
             <hr/>
         </>}
         {tooltipContent.data.vaccines_fully_vaccinated !== undefined && <>
-            Fully Vaccinated: {Math.round((tooltipContent.data.vaccines_fully_vaccinated/tooltipContent.data.population)*1000)/10}%
-            <br/><br/>
+            Fully Vaccinated: {Math.round((tooltipContent.data.vaccines_fully_vaccinated/tooltipContent.data.population)*1000)/10}%<br/>
+        </>}
+        {tooltipContent.data.vaccines_one_dose !== undefined && <>
+            At least one dose: {Math.round((tooltipContent.data.vaccines_one_dose/tooltipContent.data.population)*1000)/10}%
         </>}
         {/* {tooltipContent.data.hasOwnProperty(vaccines_one_dose) && <>
             At Least One Dose: {Math.round((vaccines_one_dose[nIndex]/properties.population)*1000)/10}%<br/>
             Doses to be Administered per 100 People: {(Math.round((vaccines_dist[nIndex]/properties.population)*1000)/10)?.toLocaleString()}<br/>
         </>} */}
-        {tooltipContent.data.hasOwnProperty('cases') && <>Cases: {tooltipContent.data.cases?.toLocaleString('en')||0}<br/></>}
+        {tooltipContent.data.hasOwnProperty('cases') && <><br/><br/>Cases: {tooltipContent.data.cases?.toLocaleString('en')||0}<br/></>}
         {tooltipContent.data.hasOwnProperty('deaths') && <>Deaths: {tooltipContent.data.deaths?.toLocaleString('en')||0}<br/></>}
         {tooltipContent.data.hasOwnProperty('daily_cases') && <>Daily New Cases: {tooltipContent.data.daily_cases?.toLocaleString('en')||0}<br/></>}
         {tooltipContent.data.hasOwnProperty('daily_deaths') && <>Daily New Deaths: {tooltipContent.data.daily_deaths?.toLocaleString('en')||0}<br/></>}

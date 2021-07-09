@@ -5,8 +5,8 @@ warnings.simplefilter(action='ignore')
 import pandas as pd
 import requests, json, os
 from glob import glob
-from bs4 import BeautifulSoup
 import numpy as np
+import dateutil.parser as parser
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 repo_root = os.path.abspath(os.path.join(dir_path, '..', '..'))
@@ -113,30 +113,30 @@ def parseVaccinationData(vaccinationDataList):
 
     return { 'vaccineAdministered1': vaccineAdministered1, 'vaccineAdministered2': vaccineAdministered2, 'vaccineDistributed': vaccineDistributed }
 
-def parseCountyVaccinationData(vaccinationDataList):
-    for idx, file in enumerate(vaccinationDataList):
-        with open(file) as f:
-            data = json.load(f)
-            if (type(data)==dict):
-                data = data['vaccination_county_condensed_data']
-
-        # Try to load in JSON to dataframe, pass iteration if fail
-
-        # on first iteration, define new data frames
-        # After that, define temporary dataframe sna dmerge below
-        if idx == 0:
-            vaccineAdministered2 = pd.DataFrame(data)[['Date','FIPS','Series_Complete_Yes']]
-        else:
-            dailyVaccineAdministered2 = pd.DataFrame(data)[['Date','FIPS','Series_Complete_Yes']]
-            # Merge
-            vaccineAdministered2 = pd.concat([vaccineAdministered2,dailyVaccineAdministered2])
+def parseCountyVaccinationData():
+    raw = pd.read_csv('https://data.cdc.gov/api/views/8xkx-amqh/rows.csv?accessType=DOWNLOAD')
+    raw = raw[(raw.Recip_State != 'HI')&(raw.Recip_State != 'TX')&(raw.FIPS != 'UNK')]
     
-    vaccineAdministered2 = vaccineAdministered2.pivot_table(index='FIPS', columns='Date').swaplevel(0, 1, 1).sort_index(1).reset_index()
-    vaccineAdministered2.columns = ['fips'] + [column[0] for column in list(vaccineAdministered2.columns)[1:]]
+    vaccineAdministered1 = raw[['Date','FIPS','Administered_Dose1_Recip']].pivot_table(index='FIPS', columns='Date').swaplevel(0, 1, 1).sort_index(1).reset_index()
+    dates = [parser.parse(column[0]).isoformat()[0:10] for column in list(vaccineAdministered1.columns)[1:]]
+    vaccineAdministered1.columns = ['fips'] + dates
+    dates.sort()
+    vaccineAdministered1 = vaccineAdministered1[['fips'] + dates]
+    vaccineAdministered1 = vaccineAdministered1[vaccineAdministered1['fips'].str.isnumeric()]
+    vaccineAdministered1['fips'] = vaccineAdministered1['fips'].astype(int)
+
+    vaccineAdministered2 = raw[['Date','FIPS','Series_Complete_Yes']].pivot_table(index='FIPS', columns='Date').swaplevel(0, 1, 1).sort_index(1).reset_index()
+    dates = [parser.parse(column[0]).isoformat()[0:10] for column in list(vaccineAdministered2.columns)[1:]]
+    vaccineAdministered2.columns = ['fips'] + dates
+    dates.sort()
+    vaccineAdministered2 = vaccineAdministered2[['fips'] + dates]
     vaccineAdministered2 = vaccineAdministered2[vaccineAdministered2['fips'].str.isnumeric()]
     vaccineAdministered2['fips'] = vaccineAdministered2['fips'].astype(int)
 
-    return vaccineAdministered2
+    return { 
+        'vaccineAdministered1': vaccineAdministered1,
+        'vaccineAdministered2': vaccineAdministered2
+    }
 
 
 def getCdcData():
@@ -191,14 +191,15 @@ if __name__ == "__main__":
     fileList = downloadCDCVaccinationData()
     parsedData = parseVaccinationData(fileList)
 
-    parsedData['vaccineDistributed'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_to_be_distributed_cdc.csv'), index=False)
-    parsedData['vaccineAdministered1'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_one_or_more_doses_cdc.csv'), index=False)
-    parsedData['vaccineAdministered2'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_fully_vaccinated_cdc.csv'), index=False)
+    parsedData['vaccineDistributed'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_to_be_distributed_cdc_state.csv'), index=False)
+    parsedData['vaccineAdministered1'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_one_or_more_doses_cdc_state.csv'), index=False)
+    parsedData['vaccineAdministered2'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_fully_vaccinated_cdc_state.csv'), index=False)
 
     ## County Vaccination Data
     countyFileList = downloadCDCCountyVaccinationData()
-    parsedCountyData = parseCountyVaccinationData(countyFileList)
-    parsedCountyData.to_csv(os.path.join(repo_root, 'public/csv/vaccine_fully_vaccinated_cdc.csv'),index=False)
+    parsedCountyData = parseCountyVaccinationData()
+    parsedCountyData['vaccineAdministered1'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_one_or_more_doses_cdc.csv'),index=False)
+    parsedCountyData['vaccineAdministered2'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_fully_vaccinated_cdc.csv'),index=False)
 
     ## Demographic Data
     downloadCDCDemographicVaccinationData()

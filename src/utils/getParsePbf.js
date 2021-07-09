@@ -9,17 +9,16 @@ export default async function getParsePbf(fileInfo, dateList){
         .then(r => r.arrayBuffer())
         .then(ab => new Pbf(ab))
         .then(pbf => Schemas.Rows.read(pbf))
-        
+    
     let returnData = {};
     let dateIndices = [];
     let constructorIndices = [];
     let columnNames = ['geoid', ...pbfData.dates]
-    
     // embedded scientific scale exponent in file name
     const scale = (/.e-[0-9]/g).exec(fileInfo.file) ? 10 ** -+(/.e-[0-9]/g).exec(fileInfo.file)[0]?.split('-')[1] : 1
 
     for (let i=0; i<dateList.length; i++) {
-        if (pbfData.dates.indexOf(dateList[i]) !== -1){
+        if (pbfData.dates.includes(dateList[i])){
             dateIndices.push(i);
             constructorIndices.push(true)
         } else {

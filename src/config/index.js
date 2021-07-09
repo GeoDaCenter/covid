@@ -334,10 +334,16 @@ export const defaultTables = {
             'type':'characteristic',
             'join':'fips'
         },
-        'vaccines_fully_vaccinated':{
-            'file':'vaccine_fully_vaccinated_cdc',
+        'vaccines_one_dose':{
+            'file':'vaccination_one_or_more_doses_cdc.pbf',
             'dates':'isoDateList',
-            'type':'time-series-cumulative',
+            'type':'time-series',
+            'join':'fips'
+        },
+        'vaccines_fully_vaccinated':{
+            'file':'vaccination_fully_vaccinated_cdc.pbf',
+            'dates':'isoDateList',
+            'type':'time-series',
             'join':'fips'
         },
         'testing':{
@@ -366,6 +372,18 @@ export const defaultTables = {
         }
     },
     'County (Hybrid)':{
+        'vaccines_one_dose':{
+            'file':'vaccination_one_or_more_doses_cdc_h.pbf',
+            'dates':'isoDateList',
+            'type':'time-series',
+            'join':'fips'
+        },
+        'vaccines_fully_vaccinated':{
+            'file':'vaccination_fully_vaccinated_cdc_h.pbf',
+            'dates':'isoDateList',
+            'type':'time-series',
+            'join':'fips'
+        },
     },
     'State': {
         'cases': {
@@ -418,19 +436,19 @@ export const defaultTables = {
             'join':'state_fips'
         },
         'vaccines_one_dose':{
-            'file':'vaccination_one_or_more_doses_cdc',
+            'file':'vaccination_one_or_more_doses_cdc_state',
             'dates':'isoDateList',
             'type':'time-series',
             'join':'fips'
         },
         'vaccines_fully_vaccinated':{
-            'file':'vaccination_fully_vaccinated_cdc',
+            'file':'vaccination_fully_vaccinated_cdc_state',
             'dates':'isoDateList',
             'type':'time-series',
             'join':'fips'
         },
         'vaccines_dist':{
-            'file':'vaccination_to_be_distributed_cdc',
+            'file':'vaccination_to_be_distributed_cdc_state',
             'dates':'isoDateList',
             'type':'time-series',
             'join':'fips'
@@ -522,7 +540,13 @@ export const dataPresets = {
         geography: 'County (Hybrid)',
         tables: {
             'vaccines_fully_vaccinated':{
-                'file':'vaccine_fully_vaccinated_cdc_h',
+                'file':'vaccination_fully_vaccinated_cdc_h.pbf',
+                'dates':'isoDateList',
+                'type':'time-series-cumulative',
+                'join':'fips'
+            },
+            'vaccines_one_dose':{
+                'file':'vaccination_one_or_more_doses_cdc_h.pbf',
                 'dates':'isoDateList',
                 'type':'time-series-cumulative',
                 'join':'fips'
@@ -602,7 +626,7 @@ export const dataPresets = {
         }
     }, 
 }
-export const tooltipTables = ['cases','deaths','testing_wk_pos','testing_tcap','vaccines_fully_vaccinated']
+export const tooltipTables = ['cases','deaths','testing_wk_pos','testing_tcap','vaccines_fully_vaccinated','vaccines_one_dose']
 
 export const tooltipInfo = {
     Choropleth: <p>A thematic map used to represent data through various shading patterns on predetermined geographic areas (counties, state).</p>,
@@ -1009,7 +1033,7 @@ export const variablePresets = {
         scale3D: 500_000,
         colorScale: 'YlGn8',
         fixedScale: null,
-        dataNote: 'Texas reports only state-level vaccination rates to the CDC.'
+        dataNote: 'TX & HI report only state-level vaccination rates to the CDC.'
     },
     "Doses to be Administered per 100 People": {
         variableName:"Doses to be Administered per 100 People",
@@ -1159,6 +1183,8 @@ export const variableTree = {
         "State": ["CDC"]
     },
     "Percent Received At Least One Dose":{
+        "County (Hybrid)": ["CDC"],
+        "County": ["CDC"],
         "State": ["CDC"]
     },
     'Doses to be Administered per 100 People': {

@@ -99,6 +99,26 @@ fileList = [
         "fileName":'covid_deaths_usafacts_h',
         'joinColumn':'countyFIPS',
         'dateIndex':4,
+    },
+    {
+        'fileName':'vaccination_fully_vaccinated_cdc',
+        'joinColumn':'fips',
+        'dateIndex':1
+    },
+    {
+        'fileName':'vaccination_fully_vaccinated_cdc_h',
+        'joinColumn':'fips',
+        'dateIndex':1
+    },
+    {
+        'fileName':'vaccination_one_or_more_doses_cdc',
+        'joinColumn':'fips',
+        'dateIndex':1
+    },
+    {
+        'fileName':'vaccination_one_or_more_doses_cdc_h',
+        'joinColumn':'fips',
+        'dateIndex':1
     }
 ]
 
