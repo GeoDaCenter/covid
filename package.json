@@ -26,12 +26,16 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",
+    "axios": "^0.21.1",
     "comlink": "^4.3.1",
+    "cors-anywhere": "^0.4.4",
     "d3-dsv": "^2.0.0",
     "d3-scale": "^3.2.0",
     "file-saver": "^2.0.5",
+    "jsgeoda": "^0.2.3",
     "jszip": "^3.6.0",
     "lodash": "^4.17.20",
+    "node-fetch": "^2.6.1",
     "pbf": "^3.2.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
@@ -64,7 +68,9 @@
     ],
     "overrides": [
       {
-        "files": ["**/*.js?(x)"],
+        "files": [
+          "**/*.js?(x)"
+        ],
         "rules": {
           "react-hooks/exhaustive-deps": "off"
         }
