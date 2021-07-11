@@ -10,7 +10,8 @@ const buildSW = () => {
     globPatterns: [
       '**\/{csv,pbf,geojson}/{county_usfacts,covid_confirmed_usafacts}.{csv,pbf,geojson}',
       '**\/static/{js,css}/*.{css,js,map}',
-      '**\/workers/*.{js}'
+      '**\/workers/*.{js}',
+      'index.html'
     ]
   }).then(({count, size, warnings}) => {
     // Optionally, log any warnings and details.
