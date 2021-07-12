@@ -185,27 +185,25 @@ export default function Insights(){
             </TabBar>
             <TabPanel display={tabValue===0}>
                 <Gutter h={20}/>
-                {
-                    rssFeed.items.map(article => 
-                        <ArticleCard container spacing={0}>
-                            <Grid item xs={12} md={4} lg={2}>
-                                <a href={article.link} target="_blank" rel="noopener noreferrer">
-                                    <div className="thumbnailContainer">
-                                        <img src={article.thumbnail} alt={`Thumbnail for ${article.title}`} />
-                                    </div>
-                                </a>
-                            </Grid>
-                            <Grid item xs={12} md={8} lg={10}>
-                                <a href={article.link} target="_blank" rel="noopener noreferrer">
-                                    <h2 className="cardTitle" dangerouslySetInnerHTML={{__html:article.title}}></h2>
-                                    <p className="date">{article.pubDate?.split(' ')[0]}</p>
-                                    
-                                </a>
+                {rssFeed.items.map(article => 
+                    <ArticleCard container spacing={0}>
+                        <Grid item xs={12} md={4} lg={2}>
+                            <a href={article.link} target="_blank" rel="noopener noreferrer">
+                                <div className="thumbnailContainer">
+                                    <img src={article.thumbnail} alt={`Thumbnail for ${article.title}`} />
+                                </div>
+                            </a>
+                        </Grid>
+                        <Grid item xs={12} md={8} lg={10}>
+                            <a href={article.link} target="_blank" rel="noopener noreferrer">
+                                <h2 className="cardTitle" dangerouslySetInnerHTML={{__html:article.title}}></h2>
+                                <p className="date">{article.pubDate?.split(' ')[0]}</p>
                                 
-                            </Grid>
-                        </ArticleCard>
-                    )
-                }  
+                            </a>
+                            
+                        </Grid>
+                    </ArticleCard>
+                )}  
                 <hr/>
                 <p>Read more at <a href="https://medium.com/covidatlas" target="_blank" rel="noopener noreferrer">Medium.com/CovidAtlas</a></p>
             </TabPanel>      
