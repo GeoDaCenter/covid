@@ -122,7 +122,8 @@ def parseCountyVaccinationData():
     vaccineAdministered1.columns = ['fips'] + dates
     dates.sort()
     vaccineAdministered1 = vaccineAdministered1[['fips'] + dates]
-    vaccineAdministered1 = vaccineAdministered1[vaccineAdministered1['fips'].str.isnumeric()]
+    # print(vaccineAdministered1)
+    # vaccineAdministered1 = vaccineAdministered1[vaccineAdministered1['fips'].str.isnumeric()]
     vaccineAdministered1['fips'] = vaccineAdministered1['fips'].astype(int)
 
     vaccineAdministered2 = raw[['Date','FIPS','Series_Complete_Yes']].pivot_table(index='FIPS', columns='Date').swaplevel(0, 1, 1).sort_index(1).reset_index()
@@ -130,7 +131,7 @@ def parseCountyVaccinationData():
     vaccineAdministered2.columns = ['fips'] + dates
     dates.sort()
     vaccineAdministered2 = vaccineAdministered2[['fips'] + dates]
-    vaccineAdministered2 = vaccineAdministered2[vaccineAdministered2['fips'].str.isnumeric()]
+    # vaccineAdministered2 = vaccineAdministered2[vaccineAdministered2['fips'].str.isnumeric()]
     vaccineAdministered2['fips'] = vaccineAdministered2['fips'].astype(int)
 
     return { 
