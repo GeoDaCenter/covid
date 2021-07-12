@@ -50,7 +50,8 @@ class App extends Component {
                 <Route path="/faq.html" component={Faq}/>
                 <Route path="/conduct" component={CodeOfConduct}/>
                 <Route path="/conduct.html" component={CodeOfConduct}/>
-                <Route exact path="/500000-deaths" render={() => {window.location.href=`${process.env.PUBLIC_URL}/500000-deaths/index.html`}} />
+                <Route exact path="/500000" render={() => {window.location.href=`${process.env.PUBLIC_URL}/500000-deaths/viz.html`}} />
+                <Route exact path="/500000/index.html" render={() => {window.location.href=`${process.env.PUBLIC_URL}/500000-deaths/viz.html`}} />
                 <Route component={ErrorPage} />
                 <Route />
             </Switch>
