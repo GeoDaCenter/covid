@@ -50,6 +50,8 @@ class App extends Component {
                 <Route path="/faq.html" component={Faq}/>
                 <Route path="/conduct" component={CodeOfConduct}/>
                 <Route path="/conduct.html" component={CodeOfConduct}/>
+                <Route path="/500000" component={() => window.location.href = `${process.env.PUBLIC_URL}/500000/viz.html`}/>
+                <Route path="/500000-deaths" component={() => window.location.href = `${process.env.PUBLIC_URL}/500000/viz.html`}/>
                 <Route component={ErrorPage} />
                 <Route />
             </Switch>
