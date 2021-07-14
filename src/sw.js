@@ -9,9 +9,10 @@ if ('function' === typeof importScripts) {
 
     const handler = workbox.precaching.createHandlerBoundToURL('/index.html');
     const navigationRoute = new workbox.routing.NavigationRoute(handler, {
-      blacklist: [/^\/_/, /\/[^\/]+\.[^\/]+$/],
+      blacklist: [/^\/_/, /\/[^\/]+\.[^\/]+$/, /^\/'500000'/],
     });
     workbox.routing.registerRoute(navigationRoute);
+
 
     workbox.routing.registerRoute(
       /\.(?:png|gif|jpg|jpeg)$/,
