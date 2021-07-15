@@ -26,7 +26,7 @@ def parseStateCases():
     tempData['County Name'] = 'Hawaii'
     tempData['StateFIPS'] = 15
 
-    merged = pd.concat([countyData, tempData], sort=True)
+    merged = pd.concat([merged, tempData], sort=True)
     
     return merged[list(countyData.columns)] 
 
@@ -53,7 +53,7 @@ def parseStateDeaths():
     tempData['County Name'] = 'Hawaii'
     tempData['StateFIPS'] = 15
 
-    merged = pd.concat([countyData, tempData], sort=True)
+    merged = pd.concat([merged, tempData], sort=True)
     
     return merged[list(countyData.columns)] 
 
