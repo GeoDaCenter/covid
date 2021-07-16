@@ -12,8 +12,8 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
 // Import config and sub-components
-import Tooltip from './tooltip';
-import TwoWeekChart from './twoWeekLineChart';
+import Tooltip from './Tooltip';
+import TwoWeekChart from './TwoWeekLineChart';
 import { setPanelState } from '../actions';
 import { colors } from '../config';
 import { report } from '../config/svg';

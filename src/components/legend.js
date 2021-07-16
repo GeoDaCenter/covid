@@ -1,10 +1,10 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import styled from 'styled-components';
-import BinsList from './binsList';
+import BinsList from './BinsList';
 import { colors } from '../config';
 import { Gutter } from '../styled_components';
-import Tooltip from './tooltip';
+import Tooltip from './Tooltip';
 import { alert } from '../config/svg';
 import { useDispatch, useSelector } from 'react-redux';
 
