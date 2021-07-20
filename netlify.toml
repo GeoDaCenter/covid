@@ -1,2 +1,7 @@
 [functions]
   directory = "functions/"
+
+
+[build.environment]
+  NODE_VERSION = "16.5.0"
+  AWS_LAMBDA_JS_RUNTIME = "16.5.0"
