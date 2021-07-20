@@ -1,5 +1,6 @@
 const cors_proxy = require('cors-anywhere');
 const fetch = require('node-fetch');
+const createHttpTerminator = require('http-terminator');
 
 const handleResponse = async (response, type) => {
   if (type === "json") {
@@ -22,7 +23,6 @@ const handleResponse = async (response, type) => {
 }
 
 exports.handler = async (event) => {
-  console.log(event)
   try {
     if (!event.queryStringParameters.url) return { statusCode: 500, body: JSON.stringify({ error: 'No URL Supplied' })}
     if (!event.queryStringParameters.type) return { statusCode: 500, body: JSON.stringify({ error: 'No Data Type Supplied' })}
@@ -30,22 +30,27 @@ exports.handler = async (event) => {
     const port = 8080;
     const cors_api_url = `http://localhost:${port}/${event.queryStringParameters.url}`;
     
-    cors_proxy.createServer({
+    const server = cors_proxy.createServer({
         originWhitelist: [], // Allow all origins
         requireHeader: [],
         removeHeaders: ['cookie', 'cookie2']
-    }).listen(port, '0.0.0.0', function() {
-        console.log('Running CORS Anywhere on ' + '0.0.0.0' + ':' + port);
+    })
+    server.listen(port, '0.0.0.0', function() {});
+
+    const httpTerminator = createHttpTerminator({
+      server,
     });
     
     const response = await fetch(cors_api_url, {
       method: 'GET'
-    }).then(r => r.json())
+    }).then(r => {
+      httpTerminator.terminate()
+      return r
+    }).then( r => r.json());
 
     return { statusCode: 200, body: JSON.stringify({ data: response }) };
 
   } catch (error) {
-    console.log(error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: 'Failed fetching data' }),
