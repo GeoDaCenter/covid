@@ -59,12 +59,14 @@ class GeodaWorkerProxy {
         geojsonData.features[i].properties[geoIdColumn] = +geojsonData.features[i].properties[geoIdColumn]
       }
     }
-    try {
-      var id = this.readGeoJSON(ab);
-    } catch {
-      return [null, geojsonData]
+    for (var i=0; i<10; i++){
+      try {
+        var id = this.readGeoJSON(ab);
+        console.log(i);
+        return [id, geojsonData];
+      } catch {}
     }
-    return [id, geojsonData];
+    return [null, geojsonData]
   }
 
   /**
