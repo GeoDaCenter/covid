@@ -473,6 +473,19 @@ export default function VariablePanel(){
 
   const handleSwitch = () => dispatch(setMapParams({binMode: binMode === 'dynamic' ? '' : 'dynamic'}))
 
+  const availableData = allDatasets.filter(dataset => variableTree[variableName][dataPresets[currentData].geography].indexOf(dataset) !== -1)
+  const dataName = availableData.includes(urlParamsTree[currentData].name)
+    ? urlParamsTree[currentData].name
+    : availableData[0]
+
+  console.log(dataName)
+  // const textDataset = Object.keys(
+  //   urlParamsTree
+  //   )[Object.values(
+  //     urlParamsTree
+  //   ).findIndex(o => o.name == dataName)]
+  //   console.log(textDataset)
+
   return (
     <VariablePanelContainer className={panelState.variables ? '' : 'hidden'} otherPanels={panelState.info} id="variablePanel">
       {panelState.variables && <ControlsContainer>
@@ -554,14 +567,14 @@ export default function VariablePanel(){
         <StyledDropDown id="datasetSelect">
           <InputLabel htmlFor="datasetSelect">Data Source</InputLabel>
           <Select
-            value={urlParamsTree[currentData].name}
+            value={dataName}
             onChange={handleDataset}
             >
             {allDatasets.map(dataset => 
               <MenuItem 
-              value={dataset}
-              key={dataset} 
-              disabled={variableTree[variableName][dataPresets[currentData].geography] === undefined || variableTree[variableName][dataPresets[currentData].geography].indexOf(dataset) === -1}
+                value={dataset}
+                key={dataset} 
+                disabled={variableTree[variableName][dataPresets[currentData].geography] === undefined || variableTree[variableName][dataPresets[currentData].geography].indexOf(dataset) === -1}
               >
                 {dataset}
               </MenuItem>
