@@ -8,10 +8,8 @@ client = bigquery.Client()
 
 '''
 TODO: 
-- Probably we could import this module when scraping data to dataframes so no csv write/read time
-- All data could be stored in county level--can be group by state fips code in SQL (example code needed)
-- Probably we could unify the column name of fips_code (not necessary because we may have to change frontend code too?)
-- The path of local table needs no be specified in future (now this script runs in the same directory of data)
+- Probably could import this module when scraping data to dataframes so no csv write/read time
+- All data could be stored in county level--can be group by state fips code in SQL (example needed)
 
 '''
 
@@ -66,10 +64,13 @@ CDC_testing_lst = ['covid_testing_cdc.csv','covid_wk_pos_cdc.csv',
                     'covid_ccpt_cdc.csv','covid_tcap_cdc.csv']
 
 CDC_vaccination_lst = ['vaccination_fully_vaccinated_cdc.csv',
-                            'vaccination_one_or_more_doses_cdc.csv', 
-                            'vaccination_to_be_distributed_cdc_state.csv',
-                            'vaccination_one_or_more_doses_cdc_state.csv',
-                            'vaccination_fully_vaccinated_cdc_state.csv']
+                       'vaccination_one_or_more_doses_cdc.csv', 
+                       'vaccination_to_be_distributed_cdc.csv',
+                       'vaccine_admin1_cdc.csv',
+                       'vaccine_admin2_cdc.csv',
+                       'vaccine_dist_cdc.csv',
+                       'vaccine_fully_vaccinated_cdc.csv',
+                       'vaccine_fully_vaccinated_cdc_h.csv']
 
 # from covid/data-scripts/cdc/_1P3A.py
 _1P3A_county_lst = ['covid_deaths_1p3a.csv', 'covid_confirmed_1p3a.csv']
