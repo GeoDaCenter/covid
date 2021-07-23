@@ -51,6 +51,7 @@ const getDefaultDimensions = () => ({
 
 const dateLists = getDateLists()
 // US bounds
+console.log(dateLists)
 
 let paramsDict = {};
 for (const [key, value] of new URLSearchParams(window.location.search) ) { paramsDict[key] = value; }

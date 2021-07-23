@@ -477,15 +477,7 @@ export default function VariablePanel(){
   const dataName = availableData.includes(urlParamsTree[currentData].name)
     ? urlParamsTree[currentData].name
     : availableData[0]
-
-  console.log(dataName)
-  // const textDataset = Object.keys(
-  //   urlParamsTree
-  //   )[Object.values(
-  //     urlParamsTree
-  //   ).findIndex(o => o.name == dataName)]
-  //   console.log(textDataset)
-
+    
   return (
     <VariablePanelContainer className={panelState.variables ? '' : 'hidden'} otherPanels={panelState.info} id="variablePanel">
       {panelState.variables && <ControlsContainer>

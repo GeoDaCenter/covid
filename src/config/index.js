@@ -276,7 +276,7 @@ export const colors = {
     ]
 }
 
-export const defaultData = 'cdc_h.geojson';
+export const defaultData = 'jhu.geojson';
 export const defaultTables = {
     'County': {
         'predictions':{
@@ -572,6 +572,26 @@ export const dataPresets = {
                 'file':'covid_deaths_nyt.pbf',
                 'dates':'isoDateList',
                 'type':'time-series-cumulative'
+            }
+        }
+    },
+    'jhu.geojson': {
+        plainName: 'Johns Hopkins University', // Plain english name for dataset
+        geojson: 'jhu.geojson', // geospatial data to join to
+        id: 'GEOID',
+        geography: 'County',
+        tables: {
+            'cases': {
+                'file':'covid_confirmed_jhu',
+                'dates':'usDateList',
+                'type':'time-series',
+                'join':'FIPS'
+            },
+            'deaths': {
+                'file':'covid_deaths_jhu',
+                'dates':'usDateList',
+                'type':'time-series',
+                'join':'FIPS'
             }
         }
     },
@@ -1205,28 +1225,28 @@ export const variablePresets = {
 export const variableTree = {
     "HEADER:cases":{},
     "Confirmed Count": {
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
+        "County": ["Johns Hopkins University", "CDC","USA Facts","1point3acres","New York Times"],
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "Confirmed Count per 100K Population":{
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
+        "County": ["Johns Hopkins University", "CDC","USA Facts","1point3acres","New York Times"],
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "Confirmed Count per Licensed Bed":{
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
+        "County": ["Johns Hopkins University", "CDC","USA Facts","1point3acres","New York Times"],
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "HEADER:deaths":{},
     "Death Count":{
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
+        "County": ["Johns Hopkins University", "CDC","USA Facts","1point3acres","New York Times"],
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "Death Count per 100K Population": {
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
+        "County": ["Johns Hopkins University", "CDC","USA Facts","1point3acres","New York Times"],
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "Death Count / Confirmed Count": {
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
+        "County": ["Johns Hopkins University", "CDC","USA Facts","1point3acres","New York Times"],
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "HEADER:testing":{},
@@ -1294,25 +1314,30 @@ export const datasetTree = {
         'CDC':'cdc_h.geojson',
     },
     'County': {
-      '1point3acres':'county_1p3a.geojson',
-      'New York Times':'county_nyt.geojson',
-      'USA Facts':'county_usfacts.geojson',
-      'CDC':'cdc.geojson',
-      'Yu Group at Berkeley':'cdc.geojson',
-      'County Health Rankings':'cdc.geojson',
-      'ACS':'cdc.geojson',   
-      'Safegraph':'cdc.geojson'
+        'Johns Hopkins University': 'jhu.geojson',
+        '1point3acres':'county_1p3a.geojson',
+        'New York Times':'county_nyt.geojson',
+        'USA Facts':'county_usfacts.geojson',
+        'CDC':'cdc.geojson',
+        'Yu Group at Berkeley':'cdc.geojson',
+        'County Health Rankings':'cdc.geojson',
+        'ACS':'cdc.geojson',   
+        'Safegraph':'cdc.geojson'
     }, 
     'State': {
-      '1point3acres':'state_1p3a.geojson',
-      'New York Times':'state_nyt.geojson',
-      'USA Facts':'state_usafacts.geojson',
-      'CDC':'state_1p3a.geojson',
-      'County Health Rankings':'state_1p3a.geojson'
+        '1point3acres':'state_1p3a.geojson',
+        'New York Times':'state_nyt.geojson',
+        'USA Facts':'state_usafacts.geojson',
+        'CDC':'state_1p3a.geojson',
+        'County Health Rankings':'state_1p3a.geojson'
     }
   }
 
 export const urlParamsTree = {
+    'jhu.geojson': {
+        name: 'Johns Hopkins University',
+        geography: 'County'
+    },
     'county_usfacts.geojson': {
         name: 'USA Facts',
         geography: 'County'

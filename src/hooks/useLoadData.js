@@ -109,13 +109,16 @@ export default function useLoadData(){
       : dateIndices.slice(-1)[0] 
       : null;
     
+    console.log(dataParams)
+    console.log(geojsonProperties)
+
     let binData = getDataForBins(
-      dataParams.numerator === 'properties' ? geojsonData.data.features : numeratorData.data, 
+      dataParams.numerator === 'properties' ? geojsonProperties : numeratorData.data, 
       dataParams.denominator === 'properties' ? geojsonProperties : denominatorData.data, 
       {...dataParams, nIndex: binIndex, dIndex: dataParams.dType === 'time-series' ? binIndex : null},
       Object.values(geojsonOrder.indexOrder)
     );
-
+    
     let bins;
     
     if (mapParams.mapType === 'lisa') {
