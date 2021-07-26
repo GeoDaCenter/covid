@@ -1203,28 +1203,28 @@ export const variablePresets = {
 export const variableTree = {
     "HEADER:cases":{},
     "Confirmed Count": {
-        "County": ["USA Facts","CDC","1point3acres","New York Times"],
+        "County": ["USA Facts","1point3acres","New York Times"],//"CDC",
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "Confirmed Count per 100K Population":{
-        "County": ["USA Facts","CDC","1point3acres","New York Times"],
+        "County": ["USA Facts","1point3acres","New York Times"],//"CDC",
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "Confirmed Count per Licensed Bed":{
-        "County": ["USA Facts","CDC","1point3acres","New York Times"],
+        "County": ["USA Facts","1point3acres","New York Times"],//"CDC",
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "HEADER:deaths":{},
     "Death Count":{
-        "County": ["USA Facts","CDC","1point3acres","New York Times"],
+        "County": ["USA Facts","1point3acres","New York Times"],//"CDC",
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "Death Count per 100K Population": {
-        "County": ["USA Facts","CDC","1point3acres","New York Times"],
+        "County": ["USA Facts","1point3acres","New York Times"],//"CDC",
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "Death Count / Confirmed Count": {
-        "County": ["USA Facts","CDC","1point3acres","New York Times"],
+        "County": ["USA Facts","1point3acres","New York Times"],//"CDC",
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "HEADER:testing":{},
