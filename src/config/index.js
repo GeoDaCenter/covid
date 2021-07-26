@@ -276,7 +276,7 @@ export const colors = {
     ]
 }
 
-export const defaultData = 'cdc_h.geojson';
+export const defaultData = 'county_usfacts.geojson';
 export const defaultTables = {
     'County': {
         'predictions':{
@@ -285,16 +285,14 @@ export const defaultTables = {
             'join':'fips'
         },
         'cases': {
-            'file':'covid_confirmed_cdc.e-2.pbf',
+            'file':'covid_confirmed_usafacts.pbf',
             'dates':'isoDateList',
-            'type':'time-series-cumulative',
-            'accumulate':true
+            'type':'time-series-cumulative'
         },
         'deaths': {
-            'file':'covid_deaths_cdc.e-2.pbf',
+            'file':'covid_deaths_usafacts.pbf',
             'dates':'isoDateList',
-            'type':'time-series-cumulative',
-            'accumulate':true
+            'type':'time-series-cumulative' 
         },
         'chr_health_context':{
             'file':'chr_health_context',
@@ -1205,28 +1203,28 @@ export const variablePresets = {
 export const variableTree = {
     "HEADER:cases":{},
     "Confirmed Count": {
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
+        "County": ["USA Facts","CDC","1point3acres","New York Times"],
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "Confirmed Count per 100K Population":{
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
+        "County": ["USA Facts","CDC","1point3acres","New York Times"],
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "Confirmed Count per Licensed Bed":{
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
+        "County": ["USA Facts","CDC","1point3acres","New York Times"],
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "HEADER:deaths":{},
     "Death Count":{
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
+        "County": ["USA Facts","CDC","1point3acres","New York Times"],
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "Death Count per 100K Population": {
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
+        "County": ["USA Facts","CDC","1point3acres","New York Times"],
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "Death Count / Confirmed Count": {
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
+        "County": ["USA Facts","CDC","1point3acres","New York Times"],
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "HEADER:testing":{},

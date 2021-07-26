@@ -31,14 +31,27 @@ def getCdcCountyData(columns):
     # return sorted DF
     return parsed
 
+def shouldBeNan(x):
+    try:
+        float(x)
+        return False
+    except:
+        return True
+
+# replace null or suppressed values with NAN
+def cleanDf(df, colName):
+    df.loc[df[[colName]].apply(lambda x: shouldBeNan(x), axis=1), colName] = np.nan
+    df.loc[:, colName] = df[colName].astype(float)
+    return df
+
 # preps specific time-series DF for CSV output
 def parseCsvOutput(df, colName, operation=None):
+    tempDf = cleanDf(df[['fips_code','date',colName]], colName)
     # thanks to @piRSquared on stackoverflow for this nifty pivot expressions
     # https://stackoverflow.com/questions/54915215/expressing-time-series-data-in-the-columns-rather-than-the-rows-of-a-dataframe
-    tempDf = df[['fips_code','date',colName]]
-    tempDf = tempDf.pivot_table(index='fips_code', columns='date').swaplevel(0, 1, 1).sort_index(1).reset_index()
-    tempDf.columns = [column[0] for column in list(tempDf.columns)]
+    tempDf = tempDf.pivot_table(index='fips_code', columns='date').swaplevel(0, 1, 1).reset_index() #.sort_index(1)
 
+    tempDf.columns = [column[0] for column in list(tempDf.columns)]
     if operation != None:
         if operation['operator'] == 'divide':
             for column in tempDf.columns[operation['dateIndex']:]:
@@ -49,21 +62,23 @@ def parseCsvOutput(df, colName, operation=None):
 # calculates numerator and denominator time series DF and returns DF
 # for CSV output
 def parseNewMeasure(df, colName1, colName2, dateIndex):
-    tempDf = df[['fips_code','date',colName1]]
+    tempDf = cleanDf(df[['fips_code','date',colName1]], colName1)
+
     tempDf = tempDf.pivot_table(index='fips_code', columns='date').swaplevel(0, 1, 1).sort_index(1).reset_index()
     tempDf.columns = [column[0] for column in list(tempDf.columns)]
-
-    tempDf2 = df[['fips_code','date',colName2]]
+    
+    tempDf2 = cleanDf(df[['fips_code','date',colName2]], colName2)
     tempDf2 = tempDf2.pivot_table(index='fips_code', columns='date').swaplevel(0, 1, 1).sort_index(1).reset_index()
     tempDf2.columns = [column[0] for column in list(tempDf2.columns)]
 
+    tempDf[[col for col in list(tempDf.columns) if col in list(tempDf2.columns)]]
     for column in tempDf.columns[dateIndex:]:
         tempDf[column] = tempDf[column] / tempDf2[column]
 
     return tempDf
 
 def parsePopulationNormalized(df, colName):
-    tempDf = df[['fips_code','date',colName]]
+    tempDf = cleanDf(df[['fips_code','date',colName]], colName)
     tempDf = tempDf.pivot_table(index='fips_code', columns='date').swaplevel(0, 1, 1).sort_index(1).reset_index()
     tempDf.columns = [column[0] for column in list(tempDf.columns)]
     outputColumns = list(tempDf.columns).copy()
@@ -169,7 +184,7 @@ if __name__ == "__main__":
     
     # fetch data
     raw = getCdcCountyData(allNeededColumns)
-
+    
     # loop through list of column parsing entries
     # output CSV to this folder and docs
     for entry in colsToParse:
