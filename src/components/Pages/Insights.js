@@ -146,7 +146,7 @@ const research = [
         </p>,
         'thumbnail':`${process.env.PUBLIC_URL}/research/transaction_gis.jpg`,
         'alt':'A diagram of the US Covid Atlas web systems, which uses the C++ library "libgeoda" in WebAssembly (WASM) to integrate spatial statistics, weights, clustering, and regression into the javascript "jsgeoda" package.',
-        'link':'https://onlinelibrary-wiley-com.proxy.uchicago.edu/doi/pdfdirect/10.1111/tgis.12786',
+        'link':'https://onlinelibrary.wiley.com/doi/10.1111/tgis.12786',
     }
 ]
   
