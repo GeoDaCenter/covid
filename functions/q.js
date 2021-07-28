@@ -7,7 +7,7 @@ const options = {
       "type": "service_account",
       "project_id": process.env.project_id,
       "private_key_id": process.env.SK_ID,
-      "private_key": process.env.SK,
+      "private_key": process.env.SK.replace(/\\n/gm, '\n'),
       "client_email": process.env.CLIENT_EMAIL,
       "client_id": process.env.CLIENT_ID,
       "auth_uri": "https://accounts.google.com/o/oauth2/auth",
@@ -70,7 +70,7 @@ const constructTimeQuery = (
     to, 
     dataset,
     columns
-    )=> {
+    ) => {
         const t0 = dayjs(from);
         const t1 = dayjs(to);
         const range = (t1 - t0)/8.64e7;
