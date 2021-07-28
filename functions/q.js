@@ -48,7 +48,7 @@ const constructTimeQuery = (
             
         const tailFormat = array 
             ? (queryString, dataset) => queryString.slice(0,-10) + ') as data FROM `covid-atlas.wide_format.' + dataset + '`'
-            : (queryString, dataset) => queryString.slice(0,-2) + 'FROM `covid-atlas.wide_format.' + dataset + '`'
+            : (queryString, dataset) => queryString.slice(0,-2) + ' FROM `covid-atlas.wide_format.' + dataset + '`'
 
         for (let i=0; i<range;i++){
             const currDate = t0.add(i, 'day')
@@ -61,7 +61,7 @@ const constructTimeQuery = (
         if (!dateRange.length) return 'ERROR: No Date Range Available'
 
         return {
-            query: tailFormat(queryString, dataset),
+            queryString: tailFormat(queryString, dataset),
             dateRange
         }   
     }
