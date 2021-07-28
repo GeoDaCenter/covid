@@ -1,6 +1,6 @@
 const {BigQuery} = require('@google-cloud/bigquery');
-const fs = require('fs')
-const dayjs = require('dayjs')
+const dayjs = require('dayjs');
+const columns = require('./meta/columns.json');
 
 const options = {
   credentials: {
@@ -27,42 +27,6 @@ async function query(query, bigquery) {
   return await job.getQueryResults();
 };
 
-async function getColumns(bigquery){
-    const queryResult = await query(
-        'SELECT DISTINCT column_name,table_name FROM `covid-atlas.wide_format`.INFORMATION_SCHEMA.COLUMNS',
-        bigquery
-    )
-    let availableColumns={}
-    for (let i=0; i<queryResult[0].length;i++){
-        if (queryResult[0][i]['table_name'] in availableColumns) {
-            availableColumns[queryResult[0][i]['table_name']].push(queryResult[0][i]['column_name'])
-        } else {
-            availableColumns[queryResult[0][i]['table_name']] = [queryResult[0][i]['column_name']]
-        }
-    }
-    return {
-        availableColumns,
-        lastUpdated: Date.now()
-    }
-}
-
-async function checkCachedColumns(bigquery){
-    try {
-        const raw = fs.readFileSync('./columns.json', 'utf8')
-        const columns = JSON.parse(raw)
-        if ((Date.now() - columns.lastUpdated) < 8.64e7) {
-            return columns.availableColumns
-        } else {
-            throw 'Old data'
-        }
-    } catch (err) {
-        const columns = await getColumns(bigquery); 
-        console.log('got new columns')
-        let raw = JSON.stringify(columns);
-        fs.writeFileSync('./columns.json', raw);
-        return columns.availableColumns
-    }
-}
 const pad = (x) => `${x}`.length === 2 ? x : '0'+ x
 
 const constructTimeQuery = (
@@ -101,7 +65,14 @@ exports.handler = async (event) => {
         } = event.queryStringParameters;
         
         const bigquery = new BigQuery(options);
-        const columns = await checkCachedColumns(bigquery);
+
+        if (columns === null) {
+            return { 
+                statusCode: 500, 
+                body: JSON.stringify({ message: 'Missing column validation' }) 
+            };
+        }
+
         const {
             queryString,
             dateRange
@@ -109,8 +80,9 @@ exports.handler = async (event) => {
             from,
             to,
             dataset,
-            columns
+            columns.availableColumns
         )
+
         const result = await query(queryString, bigquery)
         
         return { 
