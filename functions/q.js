@@ -33,25 +33,35 @@ const constructTimeQuery = (
     from, 
     to, 
     dataset,
-    columns
+    columns,
+    array
     ) => {
         const t0 = dayjs(from);
         const t1 = dayjs(to);
         const range = (t1 - t0)/8.64e7;
-        let queryString = 'SELECT fips_code as fips, ARRAY ('
+        let queryString = 'SELECT fips_code as fips, ' 
+        if (array) queryString += 'ARRAY ('
         let dateRange = []
+        const format = array 
+            ? (datestring) => `SELECT IFNULL(${datestring},-999) UNION ALL `
+            : (datestring) => `${datestring}, `
+            
+        const tailFormat = array 
+            ? (queryString, dataset) => queryString.slice(0,-10) + ') as data FROM `covid-atlas.wide_format.' + dataset + '`'
+            : (queryString, dataset) => queryString.slice(0,-2) + 'FROM `covid-atlas.wide_format.' + dataset + '`'
+
         for (let i=0; i<range;i++){
             const currDate = t0.add(i, 'day')
             const datestring = `_${currDate['$y']}_${pad(currDate['$m']+1)}_${pad(currDate['$D'])}`
             if (columns[dataset].includes(datestring)) {
-                queryString += `SELECT IFNULL(${datestring},-999) UNION ALL `
+                queryString += format(datestring)
                 dateRange.push(currDate.toISOString())
             }
         }
         if (!dateRange.length) return 'ERROR: No Date Range Available'
-        queryString = queryString.slice(0,-10) + ') as data FROM `covid-atlas.wide_format.' + dataset + '`'
+
         return {
-            queryString,
+            query: tailFormat(queryString, dataset),
             dateRange
         }   
     }
@@ -61,7 +71,8 @@ exports.handler = async (event) => {
         const {
             dataset,
             from,
-            to
+            to,
+            array
         } = event.queryStringParameters;
         
         const bigquery = new BigQuery(options);
@@ -80,7 +91,8 @@ exports.handler = async (event) => {
             from,
             to,
             dataset,
-            columns.availableColumns
+            columns.availableColumns,
+            array
         )
 
         const result = await query(queryString, bigquery)
