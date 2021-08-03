@@ -3,6 +3,7 @@ import pandas as pd
 import regex as re
 from google.cloud import bigquery
 import pandas_gbq
+import json
 
 '''
 Destination table on Bigquery
@@ -25,7 +26,10 @@ repo_root = os.path.abspath(os.path.join(dir_path, '..', '..')) # /home/jinfei/c
 print('dir_path: ', dir_path)
 print('repo_root: ', repo_root)
 
-def write_table_to_bq(table, project_id, dataset_id):
+def write_table_to_bq(table, project_id, dataset_id, columns_dic):
+    '''
+    Write table to bigquery and append columns to a dictionary
+    '''
     table_id = dataset_id + '.' + table[:-4]
     input_file = os.path.join(repo_root, 'public/csv', table)
     print('writing: ', input_file)
@@ -39,11 +43,12 @@ def write_table_to_bq(table, project_id, dataset_id):
             new_col = re.sub(r'(\d{4})_(\d{2})_(\d{2})',r'_\1_\2_\3', new_col)
         df.rename(columns={col:new_col},inplace=True)
 
-    # df['date'] = pd.to_datetime(df['date'])
-    pandas_gbq.to_gbq(df, table_id, 
-                    project_id=project_id, 
-                    if_exists='replace'
-                    )
+    columns_dic[table_id] = list(df.columns)
+
+    # pandas_gbq.to_gbq(df, table_id, 
+    #                 project_id=project_id, 
+    #                 if_exists='replace'
+    #                 )
 
 berkeley_predictions_lst = ['berkeley_predictions.csv']
 
@@ -98,9 +103,12 @@ safegraph_lst = ['mobility_fulltime_workdays_safegraph.csv',
                  'mobility_home_workdays_safegraph.csv',
                  'mobility_parttime_workdays_safegraph.csv']
 
+
+
 if __name__ == "__main__":
 
     project_id = 'covid-atlas'
+    columns_dic = {}
 
     public_lst = berkeley_predictions_lst + chr_health_lst + context_lst \
                 + covid_confirmed_lst + covid_deaths_lst \
@@ -108,12 +116,15 @@ if __name__ == "__main__":
 
     for table in public_lst:
         dataset_id = 'public'
-        write_table_to_bq(table, project_id, dataset_id)
+        write_table_to_bq(table, project_id, dataset_id, columns_dic)
 
     for table in _1P3A_lst:
         dataset_id = '1P3A'
-        write_table_to_bq(table, project_id, dataset_id)
+        write_table_to_bq(table, project_id, dataset_id, columns_dic)
 
     for table in safegraph_lst:
         dataset_id = 'safegraph'
-        write_table_to_bq(table, project_id, dataset_id)
+        write_table_to_bq(table, project_id, dataset_id, columns_dic)
+
+    with open("../../functions/meta/columns.json", "w") as write_file:
+        json.dump(columns_dic, write_file, indent=4)
