@@ -4,6 +4,7 @@ import regex as re
 from google.cloud import bigquery
 import pandas_gbq
 import json
+import time
 
 '''
 Destination table on Bigquery
@@ -16,6 +17,7 @@ If any data file's name/path is updated, please make change here accordingly.
 Local: run `export GOOGLE_APPLICATION_CREDENTIALS="/home/jinfei/covid-atlas-2b0ac2954a13.json" ` 
        before running this script
 '''
+
 
 # Construct a BigQuery client object.
 client = bigquery.Client()
@@ -45,10 +47,10 @@ def write_table_to_bq(table, project_id, dataset_id, columns_dic):
 
     columns_dic[table_id] = list(df.columns)
 
-    # pandas_gbq.to_gbq(df, table_id, 
-    #                 project_id=project_id, 
-    #                 if_exists='replace'
-    #                 )
+    pandas_gbq.to_gbq(df, table_id, 
+                    project_id=project_id, 
+                    if_exists='replace'
+                    )
 
 berkeley_predictions_lst = ['berkeley_predictions.csv']
 
@@ -107,10 +109,15 @@ safegraph_lst = ['mobility_fulltime_workdays_safegraph.csv',
 
 if __name__ == "__main__":
 
-    project_id = 'covid-atlas'
-    columns_dic = {}
+    t0 = time.time()
 
-    public_lst = berkeley_predictions_lst + chr_health_lst + context_lst \
+    project_id = 'covid-atlas'
+
+    with open('../../functions/meta/columns.json') as json_file:
+        columns_dic = json.load(json_file)
+
+    #chr_health_lst and context_lst are static data, would not be updated daily
+    public_lst = berkeley_predictions_lst \
                 + covid_confirmed_lst + covid_deaths_lst \
                 + covid_testing_lst + covid_vaccination_lst
 
@@ -126,5 +133,7 @@ if __name__ == "__main__":
         dataset_id = 'safegraph'
         write_table_to_bq(table, project_id, dataset_id, columns_dic)
 
-    with open("../../functions/meta/columns.json", "w") as write_file:
+    with open('../../functions/meta/columns.json', 'w') as write_file:
         json.dump(columns_dic, write_file, indent=4)
+
+    print('Updating all data costs: ', time.time() - t0)
