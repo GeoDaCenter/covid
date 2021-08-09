@@ -69,6 +69,8 @@ body {
   width: 100%; 
   height:  calc(100% - 50px);
   overflow:hidden;
+  z-index: 1;
+
 }
 
 #mainContainer.loading {

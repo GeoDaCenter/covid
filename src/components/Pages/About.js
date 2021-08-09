@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { ContentContainer, Gutter } from '../../styled_components';
 import Grid from '@material-ui/core/Grid';
-import { StaticNavbar, Footer } from '../../components';
+import { NavBar, Footer } from '../../components';
 
 const AboutPage = styled.div`
     background:white;
@@ -300,7 +300,7 @@ const formatBio = (person) =>
 const about = () => {
     return (
        <AboutPage>
-           <StaticNavbar/>
+           <NavBar light/>
            <ContentContainer>
                <h1>About Us</h1>
                <hr/>

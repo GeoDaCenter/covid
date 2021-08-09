@@ -216,7 +216,7 @@ export const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqM
 
 export const colors = {
     white: '#ffffff',
-    black: '#00000',
+    black: '#000000',
     darkgray:'#1a1a1a',
     gray:'#2b2b2b',
     buttongray: '#f5f5f5',

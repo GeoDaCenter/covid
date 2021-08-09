@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ContentContainer, Gutter } from '../../styled_components';
-import { StaticNavbar, Footer } from '../';
+import { NavBar, Footer } from '../';
 // import { colors } from '../../config';
 
 const MethodsPage = styled.div`
@@ -30,7 +30,7 @@ const Methodology = () => {
 
     return (
        <MethodsPage>
-           <StaticNavbar/>
+           <NavBar light/>
            <ContentContainer>
                 <h1>Methodology</h1>
                 <hr/>

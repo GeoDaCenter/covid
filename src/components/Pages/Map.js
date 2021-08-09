@@ -147,9 +147,9 @@ export default function Map() {
   }, [window.innerHeight, window.innerWidth])
 
   return (
+    <>
     <div className="Map-App" style={{overflow:'hidden'}}>
       <Preloader loaded={mapLoaded} />
-      <NavBar />
       {isLoading && <div id="loadingIcon">
           <img
             src={`${process.env.PUBLIC_URL}/assets/img/animated_cluster.svg`}
@@ -216,5 +216,7 @@ export default function Map() {
           </GeoDaContext.Provider>}
         </div>
     </div>
+    <NavBar />
+    </>
   );
 }

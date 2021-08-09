@@ -9,7 +9,7 @@ import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 
 import { ContentContainer, Gutter } from '../../styled_components';
-import { StaticNavbar, Footer } from '../';
+import { NavBar, Footer } from '../';
 import { colors } from '../../config';
 
 const FaqPage = styled.div`
@@ -288,9 +288,9 @@ export default function Faq(){
 
     const goTo = (page) => window.location.href = page;
     return (
-       <FaqPage>
-           <StaticNavbar/>
-           <ContentContainer>
+         <FaqPage>
+            <NavBar light/>
+            <ContentContainer>
                <h1>Help</h1>
                <hr/>
                <ButtonContainer container spacing={2}>

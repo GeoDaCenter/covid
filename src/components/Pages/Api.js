@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ContentContainer, Gutter } from '../../styled_components';
-import { StaticNavbar, Footer } from '../';
+import { NavBar, Footer } from '../';
 import { colors } from '../../config';
 
 const ApiPage = styled.div`
@@ -27,7 +27,7 @@ const Insights = () => {
 
     return (
        <ApiPage>
-           <StaticNavbar/>
+           <NavBar light/>
            <ContentContainer>
                 <h1>API</h1>
                 <hr/>

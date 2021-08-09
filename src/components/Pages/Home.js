@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import Grid from '@material-ui/core/Grid';
 
-import { StaticNavbar, Footer } from '../../components';
+import { NavBar, Footer } from '../../components';
 import { colors } from '../../config';
 import { Gutter } from '../../styled_components';
 
@@ -225,8 +225,8 @@ const Usage = styled.span`
 const home = () => {
     return (
        <HomePage>
-           <StaticNavbar/>
-           <HomePageContent>
+            <NavBar light/>
+            <HomePageContent>
                 <Hero>
                     <h1>Near Real-Time Exploration of the <NoBreak>COVID-19</NoBreak> Pandemic</h1>
                     <p>

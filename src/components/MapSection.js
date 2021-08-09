@@ -63,6 +63,9 @@ const GeocoderContainer = styled.div`
     top:7px;
     z-index:500;
     width:250px;
+    @media (max-width:1024px){
+        right:57px;
+    }
     @media (max-width:600px) {
         display:none;
     }

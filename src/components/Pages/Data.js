@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { ContentContainer, Gutter } from '../../styled_components';
-import { StaticNavbar, Footer, DataDetails, CsvDownloader } from '../'; 
+import { NavBar, Footer, DataDetails, CsvDownloader } from '../'; 
 import { colors } from '../../config';
 
 const DataPage = styled.div`
@@ -25,8 +25,8 @@ const SectionTitle = styled.h3`
 function Data(){
     return (
        <DataPage>
-           <StaticNavbar/>
-           <ContentContainer>
+            <NavBar light/>
+            <ContentContainer>
                 <h1>Data</h1>
                 <Gutter h={10}/>
                 <p>
