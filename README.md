@@ -10,7 +10,7 @@ The current Atlas is available here: [https://USCovidAtlas.org](https://USCovidA
 
 ## DATA
 
-For more information about additional datasets used in the Atlas, see our Data page.
+For more information about additional datasets used in the Atlas, see our Data page. Detailed data documentations about different variables and data sources are available at the [data-docs](https://github.com/GeoDaCenter/covid/tree/master/data-docs) folder. 
 
 ### Current Release
 Because there is no one single validated source for county-level COVID cases and deaths for real-time analysis, we incorporate multiple datasets from multiple projects to allow for comparisons. For now, two datasets are available. More will be incorporated later. 
