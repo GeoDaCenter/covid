@@ -298,6 +298,7 @@ export default function NavBar(props){
 
   const listener = (e) => {
     setCurrentDropdown(false)
+    setNavOpen(false)
     document.removeEventListener('scroll', listener);
   }
   const handleOpenDropdown = (page) => {
@@ -308,6 +309,7 @@ export default function NavBar(props){
   const toggleNavOpen = () => navOpen ? setNavOpen(false) : setNavOpen(true)
   const handleResize = () => {
     setCurrentDropdown(false)
+    setNavOpen(false)
     setDims({
       height: window.innerHeight,
       width: window.innerWidth

@@ -293,6 +293,25 @@ export default function About(){
                 <ContributorsContainer>
                     {contributors.map(bio => <Contributor bio={bio} active={bio.hasOwnProperty(phases[phaseIndex])} />)}
                 </ContributorsContainer>
+                <hr/>
+                <h2>User Feedback</h2>
+                <p>
+                    <i>
+                        We are grateful to the invaluable feedback provided in multiple user 
+                        group meetings throughout the Atlas’s development, including representatives
+                        from the Cincinnati Children's Hospital, Stanford University’s Clinical Excellence 
+                        Research Center, Apple, Harvard T.H. Chan School of PH, Henry Ford Health System, Indian 
+                        Health Service, National Association Community Health Centers, and more. Thank you:
+                    </i>
+                </p>
+                <p>
+                    Andy Beck, David Hartley, Cole Brokamp, Robert Jahn, Bela Patel, Nirav Shah, 
+                    Elijah Meeks, John Brownstein, Don Goldmann, Maureen Bisognano, Don Berwick, Kathy Reims, 
+                    Roger Chaufournier, Wes Luckey, Annette Phillips, Richard Davis, Juliana Sadovich, Bruce Finke, 
+                    Jeffrey McCollum, Don Goldman, Kathy McNamara, Julia Skapik, Ron Yee, Caroline Tiller, 
+                    John Schapman, Linda Parlette, Wendy Brzezny, Sahuara Suval, Christal Eshelman, Laura Sisulak, 
+                    Carly Hood-Ronick, Barry Kling, Barbara West, Kim Lepin, Joshua Austin, Jeff Coben, Kathleen Clark
+                </p>
             </ContentContainer>
            <Footer/>
        </AboutPage>
