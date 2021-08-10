@@ -27,12 +27,12 @@ const NavbarContainer  = styled.nav`
     list-style: none;
     margin:0;
     order: ${props => props.light ? '1' : 'initial'};
-    @media (min-width:1025px){
+    @media (min-width:1024px){
       display:flex;
       margin: ${props => props.light ? '0 0 0 auto' : '0px'};
     }
     li {
-      @media (min-width:1025px){
+      @media (min-width:1024px){
         height:50px;
         display: flex;
       }
@@ -96,7 +96,7 @@ const NavLogo = styled.div`
 `
 
 const NavItems = styled.div`
-  @media (max-width:1025px){
+  @media (max-width:1024px){
     position:absolute;
     top:50px;
     width:100%;

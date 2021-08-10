@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
-import { ContentContainer, Gutter } from '../../styled_components';
+import { ContentContainer } from '../../styled_components';
 import Grid from '@material-ui/core/Grid';
 import { NavBar, Footer } from '../../components';
 import { contributors } from '../../meta/contributors';
 import { coreTeam } from '../../meta/coreTeam';
 import { colors } from '../../config';
 
-const phases = ['alpha', 'beta', 'v1', 'v2', 'v3']
-const phasesPlain = ['Alpha', 'Beta', 'Version 1', 'Version 2', 'Version 3']
+const phases = ['alpha', 'beta', 'v2', 'v3']
 const timelineText = [
     <p>
         Kolak, Li, and Lin begin development of the Atlas on March 14, 
@@ -23,9 +22,6 @@ const timelineText = [
         Graphic design, UI/UX, and help guides developed with support by Studio Akemi, 
         Burness Communications, and the UChicago Libraries. A new Insights blog is launched
         in Medium to synthesize Atlas findings and share COVID experiences from multiple views.
-    </p>,
-    <p>
-        V1 Text.
     </p>,
     <p>
         Halpern and Paykin join the Atlas team. The Atlas infrastructure is optimized and 
@@ -114,6 +110,15 @@ const ContributorBio = styled.div`
     overflow:hidden;
     position:relative;  
     width:12.5%;
+    @media (max-width:1024px){
+        width:20%;
+    }
+    @media (max-width:768px){
+        width:25%;
+    }
+    @media (max-width:540px){
+        width:33%;
+    }
     aspect-ratio:1;
     display: inline-block;
     background:${props => props.bg};
@@ -168,43 +173,63 @@ const Timeline = styled.div`
 `
 
 const TimelineButton = styled.button`
-    background: ${props => props.active ? colors.yellow : colors.orange}99;
+    background: ${props => props.active ? colors.yellow : colors.white};
     display:inline-block;
     padding:0.25em 0.5em;
     transition:250ms all;
     cursor:pointer;
-    border:none;
+    border-width:2px;
+    border-color:${props => props.active ? colors.yellow : colors.orange};
+    border-radius:0.5em;
+    border-style:solid;
+    box-shadow: 3px 5px 8px -5px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 3px 5px 8px -5px rgba(0,0,0,0.5);
+    -moz-box-shadow: 3px 5px 8px -5px rgba(0,0,0,0.5);
     
 `
 
 const TimelineDescription = styled.span`
+    width:100%;
     p {
-        border:2px solid ${colors.orange};
+        border:2px solid ${colors.yellow};
         padding:1em;
+        margin-top:1em;
+        width:50ch;
+        transition:250ms all;
+        margin-left: ${props => props.index === 0
+            ? 0
+            : `calc(${100*(props.index/3)}% - ${50*(props.index/3)}ch)`
+        };
+        @media (max-width: 960px){
+            margin:1em auto;
+            width:100%;
+        }
     }
 `
 
 export default function About(){
     const [phaseIndex, setPhaseIndex] = useState(0);
-    
+    const teamRef = useRef(null)
+    useEffect(() => {
+        if (window.location.hash === '#team') teamRef.current.scrollIntoView()    
+    },[])
+
     return (
        <AboutPage>
            <NavBar light/>
            <ContentContainer>
-               <h1>About Us</h1>
+               <h1>About the US COVID Atlas</h1>
                <hr/>
-               {/* <h2>
-                    The US COVID Atlas Project is a coalition of research partners and 
-                    contributors that have been integral to developing and expanding the 
-                    Covid Atlas to meet the needs of health practitioners, planners, researchers, 
-                    and the public. The Atlas team leads from The Center for Spatial Data Science 
-                    have directed development of the Atlas since its first launch in March of 2020.
-                </h2> */}
+               <h2>
+                   [Brief description]
+                   <br/>
+                   [Program groups]
+               </h2>
            </ContentContainer>
 
            <CoreTeamContainer>
                 <CoreTeam>
-                <h2>Atlas Team</h2>
+                <h2 ref={teamRef}>Atlas Team</h2>
                 <p>
                     The US COVID Atlas Project is a coalition of research partners and 
                     contributors that have been integral to developing and expanding the 
@@ -227,14 +252,14 @@ export default function About(){
                 </p>
                 <Timeline>
                     <Grid container spacing={0}>
-                        <Grid item xs={12} md={3}>March-April 2020</Grid>
-                        <Grid item xs={12} md={3}>May-October 2020</Grid>
-                        <Grid item xs={12} md={3}>November 2021- May 2021</Grid>
-                        <Grid item xs={12} md={3}>June 2021 +</Grid>
+                        <Grid item xs={3}>March to April 2020</Grid>
+                        <Grid item xs={3}>May to October 2020</Grid>
+                        <Grid item xs={3}>November to May 2021</Grid>
+                        <Grid item xs={3}>June 2021 onward</Grid>
                         <Grid item xs={12}>
                             <hr/>
                         </Grid>
-                        <Grid item xs={12} md={3}>
+                        <Grid item xs={3}>
                             <TimelineButton
                                 active={phaseIndex === 0}
                                 onClick={() => setPhaseIndex(0)}
@@ -242,27 +267,27 @@ export default function About(){
                                 Alpha
                             </TimelineButton>
                         </Grid>
-                        <Grid item xs={12} md={3}>
+                        <Grid item xs={3}>
                             <TimelineButton
                                 active={phaseIndex === 1}
                                 onClick={() => setPhaseIndex(1)}
                             >Beta</TimelineButton>
                         </Grid>
-                        <Grid item xs={12} md={3}>
+                        <Grid item xs={3}>
                             <TimelineButton
                                 active={phaseIndex === 2}
                                 onClick={() => setPhaseIndex(2)}
-                            >Version 2</TimelineButton>
+                            >v2</TimelineButton>
                         </Grid>
-                        <Grid item xs={12} md={3}>
+                        <Grid item xs={3}>
                             <TimelineButton
                                 active={phaseIndex === 3}
                                 onClick={() => setPhaseIndex(3)}
-                            >Version 3</TimelineButton>
+                            >v3</TimelineButton>
                         </Grid>
                     </Grid>
                 </Timeline>
-                <TimelineDescription>
+                <TimelineDescription index={phaseIndex}>
                     {timelineText[phaseIndex]}
                 </TimelineDescription>
                 <ContributorsContainer>
