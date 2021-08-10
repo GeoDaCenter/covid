@@ -9,6 +9,7 @@ const Choropleth = React.lazy(() => import('./components/Pages/Choropleth'));
 const CodeOfConduct = React.lazy(() => import('./components/Pages/CodeOfConduct'));
 const Contact = React.lazy(() => import('./components/Pages/Contact'));
 const Data = React.lazy(() => import('./components/Pages/Data'));
+const Download = React.lazy(() => import('./components/Pages/Download'));
 const Faq = React.lazy(() => import('./components/Pages/Faq'));
 const Hotspots = React.lazy(() => import('./components/Pages/Hotspots'));
 const Insights = React.lazy(() => import('./components/Pages/Insights'));
@@ -36,6 +37,10 @@ class App extends Component {
                 <Route path="/api.html" component={Api}/>
                 <Route path="/data" component={Data}/>
                 <Route path="/data.html" component={Data}/>
+                <Route path="/docs" component={Data}/>
+                <Route path="/docs.html" component={Data}/>
+                <Route path="/download" component={Download}/>
+                <Route path="/download.html" component={Download}/>
                 <Route path="/methods" component={Methodology}/>
                 <Route path="/methods.html" component={Methodology}/>
                 <Route path="/time" component={Time}/>

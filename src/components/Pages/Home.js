@@ -9,6 +9,12 @@ import { colors } from '../../config';
 import { Gutter } from '../../styled_components';
 
 const HomePage = styled.div`
+`
+
+const HomePageContent = styled.div`
+    width:100%;
+    margin:0 auto;
+
     h1 {    
         font-family: 'Playfair Display', serif;
         font-size: 49px;
@@ -37,11 +43,6 @@ const HomePage = styled.div`
         line-height: 1.5;
         color: #212529;
     }
-`
-
-const HomePageContent = styled.div`
-    width:100%;
-    margin:0 auto;
 `
 
 const Hero = styled.div`

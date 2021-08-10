@@ -14,9 +14,6 @@ import { colors } from '../../config';
 
 const FaqPage = styled.div`
     background:white;
-    ul li {
-        margin-bottom:16px;
-    }
 `
 
 const ButtonContainer = styled(Grid)`

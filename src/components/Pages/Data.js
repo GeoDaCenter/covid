@@ -27,7 +27,7 @@ function Data(){
        <DataPage>
             <NavBar light/>
             <ContentContainer>
-                <h1>Data</h1>
+                <h1>Data Documentation</h1>
                 <Gutter h={10}/>
                 <p>
                     Below is a high-level description of the currently available datasets in the US Covid Atlas. For further documentation, please see the detailed data descriptions menu below. For data access, see our <NavLink to="/api">API</NavLink> or use the bulk CSV downloader at the bottom of this page.
@@ -109,12 +109,10 @@ function Data(){
                     staying completely home, full time work (at a workplace outside of home for 6-8 hours), part time work (at a workplace outside of home for 3-6 hours), and delivery (multiple, short visits). Access to the data consortium is available <a href="https://www.safegraph.com/covid-19-data-consortium" target="_blank" rel="noopener noreferrer">here</a>.
                 </BlockIndent>
                 
+                <Gutter h={20}/>
                 <h2>Detailed Data Descriptions</h2>
                 <hr />
                 <DataDetails />
-                <Gutter h={40}/>
-                <CsvDownloader/>
-               
             </ContentContainer>
             <Footer/>
        </DataPage>
