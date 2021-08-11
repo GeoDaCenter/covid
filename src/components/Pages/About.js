@@ -109,7 +109,7 @@ const ContributorsContainer = styled.div``
 const ContributorBio = styled.div`
     overflow:hidden;
     position:relative;  
-    width:12.5%;
+    width:11.11%;
     @media (max-width:1024px){
         width:20%;
     }
