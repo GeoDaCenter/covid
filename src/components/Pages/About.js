@@ -124,7 +124,7 @@ const ContributorBio = styled.div`
     background:${props => props.bg};
     background-size:cover;
     margin-bottom:-3px;
-    filter: ${props => props.active ? 'grayscale(0)' : 'grayscale(1)'};
+    filter: ${props => props.active ? 'grayscale(0) brightness(100%);' : 'grayscale(1) brightness(75%);'};
     transition:500ms all;
     a {
         opacity:0;
