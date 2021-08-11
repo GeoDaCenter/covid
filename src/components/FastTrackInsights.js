@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import { colors } from '../config';
 import {arrow} from '../config/svg'
 import { summary } from '../meta/summary';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, Tooltip } from 'recharts';
 
 const Container = styled.div`
     width:100%;
@@ -336,7 +336,7 @@ export default function FastTrackInsights(){
                         </Grid>
                     </SummaryItem>}
                 <GoToMap 
-                    href={activeButton === 0 ? 'map' : activeButton === 1 ? 'map?src=cdc_h&var=Percent_Fully_Vaccinated&v=2' : 'map?src=cdc&var=Percent_Essential_Workers&v=2'}
+                    href={activeButton === 0 ? 'map?src=county_usfacts&var=Confirmed_Count_per_100K_Population&mthd=lisa&v=2' : activeButton === 1 ? 'map?src=cdc_h&var=Percent_Fully_Vaccinated&v=2' : 'map?src=cdc&var=Percent_Essential_Workers&v=2'}
                 > Go To Map {arrow} </GoToMap>
             </SummaryContainer>
         </Container>

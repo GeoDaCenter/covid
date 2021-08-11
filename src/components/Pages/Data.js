@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { ContentContainer, Gutter } from '../../styled_components';
-import { NavBar, Footer, DataDetails, CsvDownloader } from '../'; 
+import { NavBar, Footer, DataDetails } from '../'; 
 import { colors } from '../../config';
 
 const DataPage = styled.div`
