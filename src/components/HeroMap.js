@@ -10,7 +10,6 @@ import { fitBounds } from '@math.gl/web-mercator';
 import { getCSV } from '../utils';
 
 const MapContainer = styled.div`
-    width:600px;
     height:400px;
     position:relative;
     pointer-events:none;
@@ -33,9 +32,9 @@ const MapContainer = styled.div`
 `
 // US bounds
 const bounds = fitBounds({
-    width: 600,
+    width: window.innerWidth > 1140 ? 650 : window.innerWidth/12*7,
     height: 400,
-    bounds: [[-130.14, 53.96],[-67.12, 19]]
+    bounds: [[-130, 54],[-80, 23]]
 })
 
 const colorscale = [

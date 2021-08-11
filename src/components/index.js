@@ -8,6 +8,7 @@ import DateSlider from './Slider';
 import Dock from './Dock';
 import Draggable from './Draggable';
 import Footer from './Footer';
+import FastTrackInsights from './FastTrackInsights';
 import HeroMap from './HeroMap';
 import InfoBox from './InfoBox';
 import Legend from './Legend';
@@ -57,6 +58,7 @@ export {
     Dock,
     Draggable,
     Geocoder,
+    FastTrackInsights,
     Footer,
     HeroMap,
     InfoBox,

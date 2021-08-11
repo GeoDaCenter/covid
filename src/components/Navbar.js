@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { NavLink } from 'react-router-dom';
 import styled, {keyframes} from 'styled-components';
 import { colors } from '../config';
-import { hamburger } from '../config/svg';
+import { hamburger, close } from '../config/svg';
 
 const NavBarOuterContainer = styled.div`
   width:100%;
@@ -27,7 +27,7 @@ const NavbarContainer  = styled.nav`
     list-style: none;
     margin:0;
     order: ${props => props.light ? '1' : 'initial'};
-    @media (min-width:1024px){
+    @media (min-width:1025px){
       display:flex;
       margin: ${props => props.light ? '0 0 0 auto' : '0px'};
     }
@@ -96,7 +96,7 @@ const NavLogo = styled.div`
 `
 
 const NavItems = styled.div`
-  @media (max-width:1024px){
+  @media (max-width:1025px){
     position:absolute;
     top:50px;
     width:100%;
@@ -345,7 +345,7 @@ export default function NavBar(props){
             </ul>
           </NavItems>}
           {dims.width <= 1024 && <NavHamburger onClick={toggleNavOpen} light={props.light}>
-            {hamburger}
+            {navOpen ? close : hamburger}
           </NavHamburger>}
         </NavbarContainer>   
       </NavBarOuterContainer> 

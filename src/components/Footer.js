@@ -78,6 +78,7 @@ const SignupForm = styled.div`
     h1.signup {
         width:100%;
         font-size:2rem;
+        text-align:center;
     }
     h2 {
         color: ${colors.lightgray};
