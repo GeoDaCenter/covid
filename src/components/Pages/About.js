@@ -164,7 +164,7 @@ const Contributor = ({bio, active}) =>
     <ContributorBio active={active} bg={`url(${process.env.PUBLIC_URL}/img/people/${bio.img})`} active={active}>
         <a href={bio.link} target="_blank" rel="noopener noreferrer">
             {bio.name}<br/>
-            {bio.title},{bio.affiliation}
+            {bio.title} {bio.affiliation}
         </a>
     </ContributorBio>
 
