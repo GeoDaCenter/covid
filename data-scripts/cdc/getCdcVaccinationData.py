@@ -190,6 +190,7 @@ if __name__ == "__main__":
 
     ## Vaccination Data
     fileList = downloadCDCVaccinationData()
+    fileList.sort()
     parsedData = parseVaccinationData(fileList)
 
     parsedData['vaccineDistributed'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_to_be_distributed_cdc_state.csv'), index=False)
