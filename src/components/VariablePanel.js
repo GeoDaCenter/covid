@@ -477,8 +477,6 @@ export default function VariablePanel(){
   const dataName = availableData.includes(urlParamsTree[currentData].name)
     ? urlParamsTree[currentData].name
     : availableData[0]
-
-  console.log(dataName)
   // const textDataset = Object.keys(
   //   urlParamsTree
   //   )[Object.values(

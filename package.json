@@ -35,6 +35,7 @@
     "pbf": "^3.2.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-ga": "^3.3.0",
     "react-map-gl": "^5.2.11",
     "react-markdown": "^5.0.3",
     "react-redux": "^7.2.2",
@@ -64,7 +65,9 @@
     ],
     "overrides": [
       {
-        "files": ["**/*.js?(x)"],
+        "files": [
+          "**/*.js?(x)"
+        ],
         "rules": {
           "react-hooks/exhaustive-deps": "off"
         }
