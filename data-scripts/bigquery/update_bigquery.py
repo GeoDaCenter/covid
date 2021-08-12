@@ -14,7 +14,7 @@ All other public datasets: public
 Source: https://github.com/GeoDaCenter/covid/tree/master/public/csv
 If any data file's name/path is updated, please make change here accordingly.
 
-Local: run `export GOOGLE_APPLICATION_CREDENTIALS="/home/jinfei/covid-atlas-2b0ac2954a13.json" ` 
+Local: run `export GOOGLE_APPLICATION_CREDENTIALS="/path-to-credentials/credentials.json" ` 
        before running this script
 '''
 
@@ -22,8 +22,8 @@ Local: run `export GOOGLE_APPLICATION_CREDENTIALS="/home/jinfei/covid-atlas-2b0a
 # Construct a BigQuery client object.
 client = bigquery.Client()
 
-dir_path = os.path.dirname(os.path.realpath(__file__)) # /home/jinfei/covid/data-scripts/bigquery
-repo_root = os.path.abspath(os.path.join(dir_path, '..', '..')) # /home/jinfei/covid/
+dir_path = os.path.dirname(os.path.realpath(__file__)) # /path-to-repo/covid/data-scripts/bigquery
+repo_root = os.path.abspath(os.path.join(dir_path, '..', '..')) # /path-to-repo/covid/
 
 print('dir_path: ', dir_path)
 print('repo_root: ', repo_root)
@@ -113,7 +113,7 @@ if __name__ == "__main__":
 
     project_id = 'covid-atlas'
 
-    with open('../../functions/meta/columns.json') as json_file:
+    with open(os.path.join(repo_root,'functions/meta/columns.json')) as json_file:
         columns_dic = json.load(json_file)
 
     #chr_health_lst and context_lst are static data, would not be updated daily
@@ -133,7 +133,7 @@ if __name__ == "__main__":
         dataset_id = 'safegraph'
         write_table_to_bq(table, project_id, dataset_id, columns_dic)
 
-    with open('../../functions/meta/columns.json', 'w') as write_file:
+    with open(os.path.join(repo_root,'functions/meta/columns.json'), 'w') as write_file:
         json.dump(columns_dic, write_file, indent=4)
 
     print('Updating all data costs: ', time.time() - t0)
