@@ -6,12 +6,19 @@ ReactGA.initialize('UA-72724100-4');
 ReactGA.pageview(window.location.pathname + window.location.search);
 
 export default function useTrackUserActions(){
-    const currentData = useSelector((state) => state.currentData);
+    // What dataset is being viewed?
+    const currentData = useSelector((state) => state.currentData); 
+    // What variable is being selected?
     const variableName = useSelector((state) => state.dataParams.variableName);
+    // What overlay layer is being used?
     const overlay = useSelector((state) => state.mapParams.overlay);
+    // What resource layer is being used?
     const resource = useSelector((state) => state.mapParams.resource);
+    // What vizType (2d, 3d) is being used?
     const vizType = useSelector((state) => state.mapParams.vizType);
+    // What map mode (lisa, natural breaks) is being used?
     const mapType = useSelector((state) => state.mapParams.mapType);
+    // What counties or states are being selected?
     const selectionKeys = useSelector(state => state.selectionKeys);
     
     const [hasLogged, setHasLogged] = useState({
@@ -25,7 +32,18 @@ export default function useTrackUserActions(){
     })
 
     const checkToLog = (variable, val) => {
-        if (hasLogged[variable].indexOf(val) === -1 && val.length) {
+        if (variable === 'selectionKeys' && val.length && window.location.pathname.includes('map')){
+            for (let i=0;i<val.length;i++) {
+                if (hasLogged[variable].indexOf(val[i]) === -1){
+                    ReactGA.event({
+                        category: 'Map Interaction',
+                        action: variable,
+                        value: val[i]
+                    })
+                }
+            }
+            return [variable, val]            
+        } else if (hasLogged[variable].indexOf(val) === -1 && val.length && window.location.pathname.includes('map')) {
             ReactGA.event({
                 category: 'Map Interaction',
                 action: variable,
@@ -51,7 +69,9 @@ export default function useTrackUserActions(){
             setHasLogged(prev => {
                 let prevCopy = {...prev}
                 toLog.forEach(entry => {
-                    prevCopy[entry[0]] = [...prevCopy[entry[0]], entry[1]]
+                    prevCopy[entry[0]] = entry[1] === 'selectionKeys' 
+                        ? [...prevCopy[entry[0]], ...entry[1]]
+                        : [...prevCopy[entry[0]], entry[1]]
                 })
 
                 return prevCopy
