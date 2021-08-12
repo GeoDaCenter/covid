@@ -578,20 +578,7 @@ export const dataPresets = {
         geojson: 'cdc.geojson', // geospatial data to join to
         id: 'GEOID',
         geography: 'County',
-        tables: {
-            // 'cases': {
-            //     'file':'covid_confirmed_cdc.e-2.pbf',
-            //     'dates':'isoDateList',
-            //     'type':'time-series',
-            //     'accumulate':true
-            // },
-            // 'deaths': {
-            //     'file':'covid_deaths_cdc.e-2.pbf',
-            //     'dates':'isoDateList',
-            //     'type':'time-series',
-            //     'accumulate':true
-            // }
-        }
+        tables: {}
     },
     'cdc_h.geojson': {
         plainName: 'CDC', // Plain english name for dataset
