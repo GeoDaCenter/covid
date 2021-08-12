@@ -15,11 +15,12 @@ const Hotspots = React.lazy(() => import('./components/Pages/Hotspots'));
 const Insights = React.lazy(() => import('./components/Pages/Insights'));
 const Map = React.lazy(() => import('./components/Pages/Map'));
 const Methodology = React.lazy(() => import('./components/Pages/Methodology'));
+const PrivacyPolicy = React.lazy(() => import('./components/Pages/PrivacyPolicy'));
 const Time = React.lazy(() => import('./components/Pages/Time'));
 const Trends = React.lazy(() => import('./components/Pages/Trends'));
 
 export default function App(){
-  const gaLog = useTrackUserActions()
+  useTrackUserActions()
   return (     
       <Router basename={process.env.PUBLIC_URL}>
       <div>
@@ -55,6 +56,7 @@ export default function App(){
               <Route path="/faq.html" component={Faq}/>
               <Route path="/conduct" component={CodeOfConduct}/>
               <Route path="/conduct.html" component={CodeOfConduct}/>
+              <Route path="/privacy" component={PrivacyPolicy}/>
               <Route path="/500000" exact component={() => {
                 window.location.href = `/500000/index.html`
                 return null;  
