@@ -66,14 +66,11 @@ const CTAButton = styled.button`
     }
     &.active {
         border-color:${colors.teal};
-        span.progressBar {
-            background: ${colors.teal};
-            animation: ${fillBar} 10s linear 1;
-        }
-    }
-    &.subtleActive {
         background:${colors.teal};
-        border:1px solid rgba(0,0,0,0);
+        // span.progressBar {
+        //     background: ${colors.teal};
+        //     animation: ${fillBar} 10s linear 1;
+        // }
     }
 `
 
@@ -190,31 +187,25 @@ export default function FastTrackInsights(){
             <h2>Fast-track your COVID Insights</h2>
             <ButtonContainer>
                 <CTAButton 
-                    className={activeButton===0 && passiveAnimation 
-                        ? 'active' : activeButton===0 ? 'subtleActive' : ''}
+                    className={activeButton===0 ? 'active' : ''}
                     onMouseEnter={() => handleButton(0)}
                     onClick={() => handleButton(0)}
                 >
                     <span className="text">Case Hotspots</span>
-                    <span className="progressBar"></span>
                 </CTAButton>
                 <CTAButton                     
-                    className={activeButton===1 && passiveAnimation 
-                        ? 'active' : activeButton===1 ? 'subtleActive' : ''}
+                    className={activeButton===1 ? 'active' : ''}
                     onMouseEnter={() => handleButton(1)}
                     onClick={() => handleButton(1)}
                 >
                     <span className="text">Vaccination Progress</span>
-                    <span className="progressBar"></span>
                 </CTAButton>
                 <CTAButton 
-                    className={activeButton===2 && passiveAnimation 
-                        ? 'active' : activeButton===2 ? 'subtleActive' : ''}
+                    className={activeButton===2 ? 'active' : ''}
                     onMouseEnter={() => handleButton(2)}
                     onClick={() => handleButton(2)}
                 >
                     <span className="text">Health Inequities</span>
-                    <span className="progressBar"></span>
                 </CTAButton>
             </ButtonContainer>
             <SummaryContainer buttonIndex={activeButton}>
@@ -337,7 +328,7 @@ export default function FastTrackInsights(){
                     </SummaryItem>}
                 <GoToMap 
                     href={activeButton === 0 ? 'map?src=county_usfacts&var=Confirmed_Count_per_100K_Population&mthd=lisa&v=2' : activeButton === 1 ? 'map?src=cdc_h&var=Percent_Fully_Vaccinated&v=2' : 'map?src=cdc&var=Percent_Essential_Workers&v=2'}
-                > Go To Map {arrow} </GoToMap>
+                > {['See Current Hotspots','Map Vaccine Rates', "Explore COVID-19's Unequal Impact"][activeButton]} {arrow} </GoToMap>
             </SummaryContainer>
         </Container>
     )
