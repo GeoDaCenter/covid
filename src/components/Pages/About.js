@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
-import { ContentContainer } from '../../styled_components';
+import { ContentContainer, Gutter } from '../../styled_components';
 import Grid from '@material-ui/core/Grid';
 import { NavBar, Footer } from '../../components';
 import { contributors } from '../../meta/contributors';
@@ -44,6 +44,8 @@ const AboutPage = styled.div`
         border-bottom:1px solid ${colors.darkgray};
         display:table;
         margin-bottom:1em;
+        padding-bottom:1em;
+        font-size:1.5rem;
     }
     p {
         max-width:75ch;
@@ -207,6 +209,19 @@ const TimelineDescription = styled.span`
     }
 `
 
+const ProgramArea = styled(Grid)`
+    padding-top:1em;
+    text-align:center;
+    h4 {
+        font-size:1rem;
+        padding:1em 0;
+    }
+    img {
+        margin:0 auto;
+        display:block;
+    }
+`
+
 export default function About(){
     const [phaseIndex, setPhaseIndex] = useState(0);
     const teamRef = useRef(null)
@@ -221,10 +236,26 @@ export default function About(){
                <h1>About the US COVID Atlas</h1>
                <hr/>
                <h2>
-                   [Brief description]
-                   <br/>
-                   [Program groups]
+                    The US Covid Atlas project works to understand, archive, and represent <br/> the often unequal impact of the COVID-19 pandemic in the United States.
                </h2>
+               <Gutter h={20} />
+               <Grid container>
+                   <ProgramArea item xs={12} md={4}>
+                       <img alt="" src={`${process.env.PUBLIC_URL}/icons/regional-hot-spots.png`} />
+                       <h4>Analytics &amp; Spatial Statistics</h4>
+                       <p>Placeholder Text</p>
+                   </ProgramArea>
+                   <ProgramArea item xs={12} md={4}>
+                       <img alt="" src={`${process.env.PUBLIC_URL}/icons/spread-over-time-2.png`} />
+                       <h4>Community-Engaged Tool Building</h4>
+                       <p>Placeholder Text</p>
+                   </ProgramArea>
+                   <ProgramArea item xs={12} md={4}>
+                       <img alt="" src={`${process.env.PUBLIC_URL}/icons/county-level-data.png`} />
+                       <h4>Public Health Communication</h4>
+                       <p>Placeholder Text</p>
+                   </ProgramArea>
+               </Grid>
            </ContentContainer>
 
            <CoreTeamContainer>
