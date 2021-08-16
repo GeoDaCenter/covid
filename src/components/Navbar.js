@@ -222,7 +222,7 @@ const pageDropDowns = {
     {
       header: 'Blog',
       desc: "Snapshots and short-form articles of what we're seeing and how we're working.",
-      link: '/insights'
+      link: '/insights#blog'
     },
     {
       header: 'Stories',

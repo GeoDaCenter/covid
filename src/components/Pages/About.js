@@ -225,15 +225,23 @@ const ProgramArea = styled(Grid)`
 export default function About(){
     const [phaseIndex, setPhaseIndex] = useState(0);
     const teamRef = useRef(null)
+    const topRef = useRef(null)
+
+    const handleHashChange = () => {
+        if (window.location.hash === '#team') teamRef.current.scrollIntoView()
+        if (window.location.hash === '') topRef.current.scrollIntoView()
+    }
+    
     useEffect(() => {
         if (window.location.hash === '#team') teamRef.current.scrollIntoView()    
+        window.addEventListener("hashchange", handleHashChange, false);
     },[])
 
     return (
        <AboutPage>
            <NavBar light/>
            <ContentContainer>
-               <h1>About the US COVID Atlas</h1>
+               <h1 ref={topRef}>About the US COVID Atlas</h1>
                <hr/>
                <h2>
                     The US Covid Atlas project works to understand, archive, and represent <br/> the often unequal impact of the COVID-19 pandemic in the United States.

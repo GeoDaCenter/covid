@@ -157,8 +157,7 @@ function a11yProps(index) {
     };
 }
 
-export default function Insights(){
-
+export default function Insights(){ 
     const [ rssFeed, setRssFeed] = useState({
         feed: {},
         items: []
@@ -170,13 +169,20 @@ export default function Insights(){
         : 0
     );
 
+    const handleHashChange = () => {
+        setTabValue(['#blog','#research','#stories'].indexOf(window.location.hash))
+    }
+
     useEffect(() => {
         fetch('https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/covidatlas')
             .then(r => r.json())
             .then(r => {
                 setRssFeed(r)
             })
+        window.addEventListener("hashchange", handleHashChange, false);
     }, [])
+
+    
 
     return (
        <InsightsPage>

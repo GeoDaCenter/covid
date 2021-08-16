@@ -67,6 +67,9 @@ const Hero = styled.div`
     color: ${colors.lightgray};
     margin:0 auto;
     padding:50px 10px 0 10px;
+    @media (max-width:960px){
+        padding-top:10px;
+    }
     z-index:0;
     p {
         
@@ -118,7 +121,7 @@ const Hero = styled.div`
             margin:0 auto;
         }
         @media (max-width:600px){
-            max-width:85%;
+            max-width:75%;
             margin:0 auto;
         }
     }

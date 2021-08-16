@@ -14,9 +14,12 @@ const Container = styled.div`
     h2 {
         text-align:center;
         color:white;
-        font-size:3.5rem;
+        font-size:1.5rem;
         font-weight:bold;
         padding:0 0 20px 0;
+    }
+    @media (max-width:960px){
+        padding-bottom:0;
     }
 `
 
@@ -25,11 +28,6 @@ const ButtonContainer = styled.div`
     display:block;
     margin: 0 auto;
 `
-
-const fillBar = keyframes`  
-  from { width: 0; }
-  to { width: 100%; }
-`; 
 
 const CTAButton = styled.button`
     width:32%;
@@ -43,14 +41,6 @@ const CTAButton = styled.button`
     transition:250ms all;
     &:nth-of-type(2) {
         margin:0 2%;
-    }
-
-    span.progressBar {
-        position:absolute;
-        left:0;
-        top:0;
-        height:100%;
-        z-index:0;
     }
     span.text {
         position:absolute;
@@ -67,10 +57,13 @@ const CTAButton = styled.button`
     &.active {
         border-color:${colors.teal};
         background:${colors.teal};
-        // span.progressBar {
-        //     background: ${colors.teal};
-        //     animation: ${fillBar} 10s linear 1;
-        // }
+    }
+    @media(max-width:960px){
+        width:75%;
+        margin:1em auto 0 auto !important;
+        display:block;
+        border:none;
+        background:${colors.white}22;
     }
 `
 
@@ -82,6 +75,11 @@ const SummaryContainer = styled.div`
     display:block;
     margin:20px auto;
     position:relative;
+    @media (max-width:960px){
+        border:none;
+        padding-bottom:2em;
+        margin-bottom:0;
+    }
 `
 const SummaryItem = styled.div`
     color:white;
@@ -95,9 +93,18 @@ const SummaryItem = styled.div`
         font-size:3.5rem;
         padding-left:10px;
     }
+    @media (max-width:960px){
+        text-align:center;
+    }
 `
 const TextContainer = styled.div`
     display:block;
+    
+    @media (max-width:960px){
+        div.recharts-wrapper {
+            margin:0 auto;
+        }
+    }
 `
 
 const GoToMap = styled.a`
@@ -125,6 +132,17 @@ const GoToMap = styled.a`
         svg {
             fill:${colors.yellow};
         }
+    }
+    @media (max-width:960px){
+        position: initial;
+        margin: 2em auto 0 auto;
+        display: block;
+        transform: none;
+        width:auto;
+        text-align:center;
+        border: 1px solid ${colors.yellow};
+        border-radius:0.25em;
+        padding:0.5em 0;
     }
 `
 
