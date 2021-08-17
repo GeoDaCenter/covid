@@ -38,7 +38,7 @@ exports.handler = async (event) => {
           bigquery);
       return { 
         statusCode: 200, 
-        body: JSON.stringify({ data: result[0] }) 
+        body: JSON.stringify({ data: result[0], date: columns['public.covid_confirmed_nyt'].slice(-1,)[0] }) 
       };
     } catch (error) {
         console.log(error);

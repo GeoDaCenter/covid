@@ -44,31 +44,38 @@ const colors = [
 const maskStatus = [
     {
         name: 'Schools in Michigan - mask policies fall 2021 Decision not announced',
-        color: [153,153,153]
+        cleanName: 'To Be Announced',
+        color: [189,189,189]
     },
     {
         name: 'Schools in Michigan - mask policies fall 2021 Masks not encouraged or just "permitted"',
-        color: [255,127,0]
+        cleanName: 'Not Encouraged or just "permitted"',
+        color: [0,0,0]
     },
     {
         name: 'Schools in Michigan - mask policies fall 2021 Masks recommended/not required',
-        color: [240,240,240]
+        cleanName: "Recommend, not required",
+        color: [194,24,91]
     },
     {
         name: 'Schools in Michigan - mask policies fall 2021 Partial requirement - higher education (see notes on pin)',
-        color: [247,129,191]
+        cleanName: "Partial Requirement - See Note (Higher Education)",
+        color: [255,234,0]
     },
     {
         name: 'Schools in Michigan - mask policies fall 2021 Partial requirement K-12 (see notes on each pin)',
-        color: [152,78,163]
+        cleanName: "Partial Requirement - See Note (K-12)",
+        color: [251,192,45]
     },
     {
         name: 'Schools in Michigan - mask policies fall 2021 Masks required - higher education',
-        color: [77,175,74]
+        cleanName: "Required (Higher Education)",
+        color: [15,157,88]
     },
     {
         name: 'Schools in Michigan - mask policies fall 2021 Masks required - public, private & charter K-12 schools',
-        color: [55,126,184]
+        cleanName: "Required (K-12)",
+        color: [9,113,56]
     },
 ]
 const Legend = styled.ul`
@@ -82,6 +89,7 @@ const LegendLi = styled.li`
         width:20px;
         height:20px;
         margin-right:10px;
+        transform:translateY(5px);
         display:inline;
         rect {
             stroke:black;
@@ -92,7 +100,6 @@ const LegendLi = styled.li`
     }
     p {
         display:inline;
-
     }
 `
 
@@ -110,14 +117,15 @@ export default function MichiganMasks(){
     const [geoData, setGeoData] = useState({});
     const [maskData, setMaskData] = useState({});
     const [bins, setBins] = useState([]);
+    const [date, setDate] = useState('')
     const [activeSchool, setActiveSchool] = useState([]);
     const deckRef = useRef();
     const mapRef= useRef();
 
     const getData = async() => {
-        const [geo, data, masks] = await Promise.all([
+        const [geo, {data, date}, masks] = await Promise.all([
             fetch(`${process.env.PUBLIC_URL}/geojson/county_nyt.geojson`).then(r => r.json()),
-            fetch(`${process.env.PUBLIC_URL}/.netlify/functions/michiganQuery`).then(r => r.json()).then(r => r.data),
+            fetch(`${process.env.PUBLIC_URL}/.netlify/functions/michiganQuery`).then(r => r.json()),
             fetch(`${process.env.PUBLIC_URL}/csv/michigan-schools.csv`).then(r => r.text()).then(text => d3.csvParse(text, d3.autoType))
         ])
         let weeklyAverages = []
@@ -145,15 +153,17 @@ export default function MichiganMasks(){
         return {
             geo,
             masks,
-            bins
+            bins,
+            date
         }
     }
     useEffect(() => {
         try {
-            getData().then(({geo, masks, bins}) => {
+            getData().then(({geo, masks, bins, date}) => {
                 setGeoData(geo)
                 setMaskData(masks)
                 setBins(bins)
+                setDate(date)
             })
         } catch(e) {
             console.log(e)
@@ -194,7 +204,24 @@ export default function MichiganMasks(){
             updateTriggers: {
                 getRadius: activeSchool.Name
             }
-        })
+        }),
+        new ScatterplotLayer({
+            id: 'masks',
+            data: maskData,
+            getPosition: d => [d.x, d.y],
+            pickable: false,
+            opacity: 0.8,
+            stroked: false,
+            filled: true,
+            radiusScale: 2,
+            radiusMinPixels:3,
+            radiusMaxPixels: 100,
+            getRadius: d => 5,
+            getFillColor: d => [255,255,255],
+            updateTriggers: {
+                getRadius: activeSchool.Name
+            }
+        }),
     ]
     const fitMichigan = {
         ...fitBounds({
@@ -211,6 +238,8 @@ export default function MichiganMasks(){
             <StaticNavbar/>
             <ContentContainer>
                 <h1>What are mask rules in Michigan schools?</h1>
+                <h2>A Community Driven Collaboration with 
+                    Michigan Health Lab <a href="https://twitter.com/karag" target="_blank" rel="noopener noreferrer">@karag</a></h2>
                 <p>
                     <i>
                         Click dots for more details. Scroll of pinch to zoom, touch or drag to pan.
@@ -253,6 +282,7 @@ export default function MichiganMasks(){
                 <Grid item xs={12} md={4}>
                     <h3>Background map</h3>
                     <p>7-day average of new cases per 100k people</p>
+                    <p>Data via NYT as of {date?.slice(1,).replace(/_/g, "-")}</p>
                     <Legend>
                         <LegendLi>
                             <svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
@@ -286,7 +316,7 @@ export default function MichiganMasks(){
                                 <svg viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
                                     <circle cx="5" cy="5" r="4" fill={`rgb(${entry.color.join(',')})`}/>
                                 </svg>
-                                <p>{entry.name.split('- ')[1]}</p>
+                                <p>{entry.cleanName}</p>
                             </LegendLi>
                         )}
                     </Legend>
@@ -295,7 +325,7 @@ export default function MichiganMasks(){
             <h6>Data Sources</h6>
             <p>COVID-19 case data via <a href="https://github.com/nytimes/covid-19-data" target="_blank" rel="noopener noreferrer">New York Times</a></p>
             <p>School District Policy Data via <a href="https://twitter.com/karag" target="_blank" rel="noopener noreferrer">Kara Gavin</a> - see also
-            <a href="https://www.google.com/maps/d/u/0/viewer?mid=1acVTJdJqc8hvWscbB69AbWeCSjzdfENW&ll=42.54227340000005%2C-83.48006870000002&z=8" target="_blank" rel="noopener noreferrer">Google Map</a>
+                 original <a href="https://www.google.com/maps/d/u/0/viewer?mid=1acVTJdJqc8hvWscbB69AbWeCSjzdfENW&ll=42.54227340000005%2C-83.48006870000002&z=8" target="_blank" rel="noopener noreferrer">Google Map</a>
             </p>
             </ContentContainer>
             <Footer/>
