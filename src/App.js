@@ -13,6 +13,7 @@ const Faq = React.lazy(() => import('./components/Pages/Faq'));
 const Hotspots = React.lazy(() => import('./components/Pages/Hotspots'));
 const Insights = React.lazy(() => import('./components/Pages/Insights'));
 const Map = React.lazy(() => import('./components/Pages/Map'));
+const MichiganMasks = React.lazy(() => import('./components/Pages/MichiganMasks'));
 const Methodology = React.lazy(() => import('./components/Pages/Methodology'));
 const Time = React.lazy(() => import('./components/Pages/Time'));
 const Trends = React.lazy(() => import('./components/Pages/Trends'));
@@ -50,6 +51,7 @@ class App extends Component {
                 <Route path="/faq.html" component={Faq}/>
                 <Route path="/conduct" component={CodeOfConduct}/>
                 <Route path="/conduct.html" component={CodeOfConduct}/>
+                <Route path="/michigan-masks" component={MichiganMasks}/>
                 <Route path="/500000" exact component={() => {
                   window.location.href = `/500000/index.html`
                   return null;  
