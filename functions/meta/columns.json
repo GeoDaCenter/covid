@@ -1,6 +1,6 @@
 {
     "public.berkeley_predictions": [
-        "fips",
+        "fips_code",
         "severity_index",
         "deaths_2020_06_21",
         "deaths_intervals_2020_06_21",
@@ -1080,7 +1080,7 @@
         "_2021_02_01"
     ],
     "public.covid_confirmed_nyt": [
-        "fips",
+        "fips_code",
         "_2020_01_21",
         "_2020_01_22",
         "_2020_01_23",
@@ -1658,7 +1658,7 @@
         "_2021_08_17"
     ],
     "public.covid_confirmed_nyt_state": [
-        "fips",
+        "fips_code",
         "_2020_01_21",
         "_2020_01_22",
         "_2020_01_23",
@@ -2236,7 +2236,7 @@
         "_2021_08_17"
     ],
     "public.covid_confirmed_usafacts": [
-        "countyFIPS",
+        "fips_code",
         "County_Name",
         "State",
         "StateFIPS",
@@ -2814,7 +2814,7 @@
         "_2021_08_15"
     ],
     "public.covid_confirmed_usafacts_h": [
-        "countyFIPS",
+        "fips_code",
         "County_Name",
         "State",
         "StateFIPS",
@@ -4912,7 +4912,7 @@
         "_2021_02_01"
     ],
     "public.covid_deaths_nyt": [
-        "fips",
+        "fips_code",
         "_2020_01_21",
         "_2020_01_22",
         "_2020_01_23",
@@ -5490,7 +5490,7 @@
         "_2021_08_17"
     ],
     "public.covid_deaths_nyt_state": [
-        "fips",
+        "fips_code",
         "_2020_01_21",
         "_2020_01_22",
         "_2020_01_23",
@@ -6068,7 +6068,7 @@
         "_2021_08_17"
     ],
     "public.covid_deaths_usafacts": [
-        "countyFIPS",
+        "fips_code",
         "County_Name",
         "State",
         "StateFIPS",
@@ -6646,7 +6646,7 @@
         "_2021_08_15"
     ],
     "public.covid_deaths_usafacts_h": [
-        "countyFIPS",
+        "fips_code",
         "County_Name",
         "State",
         "StateFIPS",
@@ -9464,7 +9464,7 @@
         "_2021_08_04"
     ],
     "public.covid_tcap_cdc_state": [
-        "state_fips",
+        "fips_code",
         "_2020_03_01",
         "_2020_03_02",
         "_2020_03_03",
@@ -10564,7 +10564,7 @@
         "_2021_08_04"
     ],
     "public.covid_testing_cdc_state": [
-        "state_fips",
+        "fips_code",
         "_2020_03_01",
         "_2020_03_02",
         "_2020_03_03",
@@ -11664,7 +11664,7 @@
         "_2021_08_04"
     ],
     "public.covid_wk_pos_cdc_state": [
-        "state_fips",
+        "fips_code",
         "_2020_03_01",
         "_2020_03_02",
         "_2020_03_03",
@@ -12200,7 +12200,7 @@
         "_2021_08_15"
     ],
     "public.vaccination_fully_vaccinated_cdc": [
-        "fips",
+        "fips_code",
         "_2020_12_13",
         "_2020_12_14",
         "_2020_12_15",
@@ -12451,7 +12451,7 @@
         "_2021_08_17"
     ],
     "public.vaccination_fully_vaccinated_cdc_h": [
-        "fips",
+        "fips_code",
         "_2020_12_23",
         "_2020_12_24",
         "_2020_12_25",
@@ -12692,7 +12692,7 @@
         "_2021_08_17"
     ],
     "public.vaccination_fully_vaccinated_cdc_state": [
-        "fips",
+        "fips_code",
         "_2021_01_14",
         "_2021_01_15",
         "_2021_01_19",
@@ -12902,7 +12902,7 @@
         "_2021_08_17"
     ],
     "public.vaccination_one_or_more_doses_cdc": [
-        "fips",
+        "fips_code",
         "_2020_12_23",
         "_2020_12_24",
         "_2020_12_25",
@@ -13143,7 +13143,7 @@
         "_2021_08_17"
     ],
     "public.vaccination_one_or_more_doses_cdc_h": [
-        "fips",
+        "fips_code",
         "_2020_12_23",
         "_2020_12_24",
         "_2020_12_25",
@@ -13384,7 +13384,7 @@
         "_2021_08_17"
     ],
     "public.vaccination_one_or_more_doses_cdc_state": [
-        "fips",
+        "fips_code",
         "_2021_01_14",
         "_2021_01_15",
         "_2021_01_19",
@@ -13594,7 +13594,7 @@
         "_2021_08_17"
     ],
     "public.vaccination_to_be_distributed_cdc": [
-        "fips",
+        "fips_code",
         "_2021_02_27",
         "_2021_04_19",
         "_2021_04_11",
@@ -13765,7 +13765,7 @@
         "_2021_06_03"
     ],
     "public.vaccination_to_be_distributed_cdc_state": [
-        "fips",
+        "fips_code",
         "_2021_01_14",
         "_2021_01_15",
         "_2021_01_19",
@@ -13975,7 +13975,7 @@
         "_2021_08_17"
     ],
     "public.vaccine_fully_vaccinated_cdc": [
-        "fips",
+        "fips_code",
         "_2021_03_26",
         "_2021_03_27",
         "_2021_03_28",
@@ -14081,7 +14081,7 @@
         "_2021_07_08"
     ],
     "public.vaccine_fully_vaccinated_cdc_h": [
-        "fips",
+        "fips_code",
         "_2021_03_26",
         "_2021_03_27",
         "_2021_03_28",
@@ -14191,7 +14191,7 @@
         "COUNTYFP",
         "COUNTYNS",
         "AFFGEOID",
-        "GEOID",
+        "fips_code",
         "NAME",
         "LSAD",
         "_2020_01_21",
@@ -14751,7 +14751,7 @@
         "_2021_08_17"
     ],
     "1P3A.covid_confirmed_1p3a_state": [
-        "GEOID",
+        "fips_code",
         "NAME",
         "_2020_01_21",
         "_2020_01_24",
@@ -15314,7 +15314,7 @@
         "COUNTYFP",
         "COUNTYNS",
         "AFFGEOID",
-        "GEOID",
+        "fips_code",
         "NAME",
         "LSAD",
         "_2020_01_21",
@@ -15874,7 +15874,7 @@
         "_2021_08_17"
     ],
     "1P3A.covid_deaths_1p3a_state": [
-        "GEOID",
+        "fips_code",
         "NAME",
         "_2020_01_21",
         "_2020_01_24",
@@ -16433,7 +16433,7 @@
         "_2021_08_17"
     ],
     "safegraph.mobility_fulltime_workdays_safegraph": [
-        "county",
+        "fips_code",
         "_2020_01_02",
         "_2020_01_03",
         "_2020_01_06",
@@ -16751,7 +16751,7 @@
         "_2021_04_09"
     ],
     "safegraph.mobility_home_workdays_safegraph": [
-        "county",
+        "fips_code",
         "_2020_01_02",
         "_2020_01_03",
         "_2020_01_06",
@@ -17069,7 +17069,7 @@
         "_2021_04_09"
     ],
     "safegraph.mobility_parttime_workdays_safegraph": [
-        "county",
+        "fips_code",
         "_2020_01_02",
         "_2020_01_03",
         "_2020_01_06",
