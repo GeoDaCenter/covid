@@ -31,9 +31,9 @@ exports.handler = async (event) => {
     try {
       const bigquery = new BigQuery(options);
       const result = await query(
-        `SELECT fips, ${columns['public.covid_confirmed_nyt'].slice(-1,)[0]} - ${columns['public.covid_confirmed_nyt'].slice(-7,)[0]} as weeklyAverage
+        `SELECT fips_code, ${columns['public.covid_confirmed_nyt'].slice(-1,)[0]} - ${columns['public.covid_confirmed_nyt'].slice(-7,)[0]} as weeklyAverage
             FROM covid-atlas.public.covid_confirmed_nyt
-            WHERE fips >= 26000 AND fips < 27000
+            WHERE fips_code >= 26000 AND fips_code < 27000
         `,
           bigquery);
       return { 
