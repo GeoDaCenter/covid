@@ -21,6 +21,13 @@ const MethodsPage = styled.div`
         margin-bottom:0;
     }
 
+    img.half-width {
+        width:100%;
+        max-width:600px;
+        margin:0 auto;
+        display:block;
+    }
+
     p.caption {
         text-align:center;
         opacity:0.7;
@@ -188,7 +195,7 @@ export default function Methodology(){
                             <RenderJenksEx fills={[colors.yellow, colors.yellow, colors.lightblue]}/>
                             <code>Sum of squares:</code>
                                 <br/>
-                                <StyledEq color={colors.yellow}>1<sup>2</sup>+1<sup>2</sup>) - ((1+1)<sup>2</sup> / 2) = <b>0</b></StyledEq>
+                                <StyledEq color={colors.yellow}>(1<sup>2</sup>+1<sup>2</sup>) - ((1+1)<sup>2</sup> / 2) = <b>0</b></StyledEq>
                                 <br/>
                                 <StyledEq color={colors.lightblue}>(4<sup>2</sup>) - ((4)<sup>2</sup> / 1) = <b>0</b></StyledEq>
                                 <br/>
@@ -200,7 +207,7 @@ export default function Methodology(){
                                 <br/>
                                 <StyledEq color={colors.yellow}>(1<sup>2</sup>) - ((1)<sup>2</sup> / 1) = <b>0</b></StyledEq>
                                 <br/>
-                                <StyledEq color={colors.lightblue}>1<sup>2</sup>+4<sup>2</sup>) - ((1+4)<sup>2</sup> / 2) = <b>4.5</b></StyledEq>
+                                <StyledEq color={colors.lightblue}>(1<sup>2</sup>+4<sup>2</sup>) - ((1+4)<sup>2</sup> / 2) = <b>4.5</b></StyledEq>
                                 <br/>
                                 <code>0 + 4.5 = 4.5</code>
                             <br/><br/> 
@@ -208,7 +215,7 @@ export default function Methodology(){
                             <RenderJenksEx fills={[colors.lightblue, colors.yellow, colors.yellow]}/>
                             <code>Sum of squares: </code>
                                 <br/>
-                                <StyledEq color={colors.yellow}>1<sup>2</sup>+4<sup>2</sup>) - ((1+4)<sup>2</sup> / 2) = <b>4.5</b></StyledEq>
+                                <StyledEq color={colors.yellow}>(1<sup>2</sup>+4<sup>2</sup>) - ((1+4)<sup>2</sup> / 2) = <b>4.5</b></StyledEq>
                                 <br/>
                                 <StyledEq color={colors.lightblue}>(1<sup>2</sup>) - ((1)<sup>2</sup> / 1) = <b>0</b></StyledEq>
                                 <br/>
@@ -348,7 +355,13 @@ export default function Methodology(){
                     </p>
                 </TabPanel>
                 <TabPanel display={tabValue===1}>
-                    Notes on data infrastructure
+                    <h2>Data Infrastructure: How the Atlas Manages Data</h2>
+                    <p>
+                        The US COVID Atlas uses novel analytics-in-the-browser infrastructure combined with simple static data files and serverless SQL-based data warehousing. 
+                        Our data is stored in Google BigQuery and accessed via serverless AWS Lambda functions as a proxy for direct access. Our API uses a similar structure, 
+                        enabling users to query our data tables with a familiar REST API format. Below is an overview of our current infrastructure:
+                    </p>
+                    <img className="half-width" src={`${process.env.PUBLIC_URL}/img/data-infrastructure.jpg`} alt="A diagram of how data is managed in the US COVID Atlas website" />
                 </TabPanel>
                 <TabPanel display={tabValue===2}>
                     Notes on data collection
