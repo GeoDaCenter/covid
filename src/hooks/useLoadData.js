@@ -1,8 +1,8 @@
 
 import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect, useMemo, useContext } from 'react';
-import { 
-  getParseCSV, getParsePbf, getDataForBins, getDateLists } from '../utils'; //getVarId
+import { getParseCSV, getParsePbf, getDataForBins, getDateLists } from '../utils'; //getVarId
+import useBigQuery from './useBigQuery';
 // Main data loader
 // This functions asynchronously accesses the Geojson data and CSVs
 //   then performs a join and loads the data into the store
@@ -52,6 +52,7 @@ export default function useLoadData(){
   const dataPresets = useSelector((state) => state.dataPresets);
   const defaultTables = useSelector((state) => state.defaultTables);
   const geoda = useContext(GeoDaContext);
+  const { getRecentSnapshot } = useBigQuery()
 
   const dispatch = useDispatch();
 
@@ -78,12 +79,13 @@ export default function useLoadData(){
     setIsInProcess(true)
     const numeratorParams = datasetParams.tables[dataParams.numerator]||defaultTables[dataParams.numerator]
     const denominatorParams = dataParams.denominator !== 'properties' ? datasetParams.tables[dataParams.denominator]||defaultTables[dataParams.denominator] : null
-
+    
+    
     if ((storedData.hasOwnProperty(numeratorParams?.file)||dataParams.numerator === 'properties') && (storedData.hasOwnProperty(denominatorParams?.file)||dataParams.denominator !== 'properties')) return [numeratorParams.file, denominatorParams && denominatorParams.file]
     const firstLoadPromises = [
       geoda.loadGeoJSON(`${process.env.PUBLIC_URL}/geojson/${datasetParams.geojson}`, datasetParams.id),
-      numeratorParams && handleLoadData(numeratorParams),
-      denominatorParams && handleLoadData(denominatorParams)
+      numeratorParams ? numeratorParams.bigQuery !== undefined ? getRecentSnapshot([numeratorParams.bigQuery]) : handleLoadData(numeratorParams) : () => {},
+      denominatorParams ? denominatorParams.bigQuery !== undefined ? getRecentSnapshot([denominatorParams.bigQuery]) : handleLoadData(denominatorParams) : () => {}
     ];
 
     const [

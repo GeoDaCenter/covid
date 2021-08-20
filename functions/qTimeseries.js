@@ -105,10 +105,9 @@ exports.handler = async (event) => {
             dataset,
             geoid
         } = event.queryStringParameters;
-        const idArray = geoid ? JSON.parse(geoid) : false;
-
         const bigquery = new BigQuery(options);
 
+        const idArray = geoid ? JSON.parse(geoid) : false;
         const {
             queryString,
             dateRange

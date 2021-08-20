@@ -525,11 +525,13 @@ export const dataPresets = {
         tables: {
             'cases': {
                 'file':'covid_confirmed_usafacts.pbf',
+                'bigQuery':'public.covid_confirmed_usafacts',
                 'dates':'isoDateList',
                 'type':'time-series-cumulative'
             },
             'deaths': {
                 'file':'covid_deaths_usafacts.pbf',
+                'bigQuery':'public.covid_deaths_usafacts',
                 'dates':'isoDateList',
                 'type':'time-series-cumulative'
             }
