@@ -16,10 +16,10 @@ def usafacts():
     working_dir = os.path.join(dir_path, '_working')
     os.makedirs(working_dir, exist_ok=True)
 
-    cases_url = 'https://usafactsstatic.blob.core.windows.net/public/data/covid-19/covid_confirmed_usafacts.csv'
+    cases_url = 'https://static.usafacts.org/public/data/covid-19/covid_confirmed_usafacts.csv'
     download_data(cases_url, working_dir, 'cases_raw.csv')
 
-    deaths_url = 'https://usafactsstatic.blob.core.windows.net/public/data/covid-19/covid_deaths_usafacts.csv'
+    deaths_url = 'https://static.usafacts.org/public/data/covid-19/covid_deaths_usafacts.csv'
     download_data(deaths_url, working_dir, 'deaths_raw.csv')
 
     validate_and_process()
