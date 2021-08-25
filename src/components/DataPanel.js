@@ -355,8 +355,8 @@ export default function DataPanel(){
               </div>
               <p>Total Number<br className="bigOnly"/>  Received At Least One Dose</p>
               <h3>{sidebarData.one_dose?.toLocaleString('en')}</h3>
-              <p>Doses to be Administered<br className="bigOnly"/>  Per 100 People</p>
-              <h3>{sidebarData.doses_dist100?.toFixed(2).toLocaleString('en')}</h3>
+              {sidebarData.hasOwnProperty('doses_dist100') && <><p>Doses to be Administered<br className="bigOnly"/>  Per 100 People</p>
+              <h3>{sidebarData.doses_dist100?.toFixed(2).toLocaleString('en')}</h3></>}
             </ReportSection>
           }
           {sidebarData.hasOwnProperty('testing') &&
