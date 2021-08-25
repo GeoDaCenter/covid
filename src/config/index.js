@@ -279,11 +279,11 @@ export const colors = {
 export const defaultData = 'county_usfacts.geojson';
 export const defaultTables = {
     'County': {
-        'predictions':{
-            'file':'berkeley_predictions',
-            'type':'characteristic',
-            'join':'fips'
-        },
+        // 'predictions':{
+        //     'file':'berkeley_predictions',
+        //     'type':'characteristic',
+        //     'join':'fips'
+        // },
         'cases': {
             'file':'covid_confirmed_usafacts.pbf',
             'dates':'isoDateList',
@@ -718,7 +718,7 @@ export const tooltipInfo = {
     DrOverdMrtRt: <p>Number of drug poisoning deaths per 100,000 population</p>,
     LfExpRt: <p>Average number of years a person can expect to live</p>,
     SlfHlthPrc: <p>Percentage of adults reporting fair or poor health</p>,
-    SeverityIndex: <p>Indicates the severity of the local covid-19 outbreak, based on cumulative and predicted deaths</p>,
+    // SeverityIndex: <p>Indicates the severity of the local covid-19 outbreak, based on cumulative and predicted deaths</p>,
     PredictedDeaths: <p>Predicted number of deaths for a county</p>,
     PredictedDeathsInterval: <p>Margin of error for predicted death counts for a county </p>,
     healthfactor:<p>Health factors represent those things we can modify to improve community conditions and the length and quality of life for residents</p>,
@@ -1113,23 +1113,23 @@ export const variablePresets = {
         dataNote: null,
     },
 
-    "Forecasting (5-Day Severity Index)": {
-      variableName:"Forecasting (5-Day Severity Index)",
-      numerator: 'predictions',
-      nType: 'characteristic',
-      nProperty: 'severity_index',
-      nRange: null,
-      denominator: 'properties',
-      dType: null,
-      dProperty: null,
-      dRange:null,
-      dIndex:null,
-      scale:1,
-      colorScale: 'forecasting',
-      fixedScale: 'forecasting',
-      scale3D: 50000,
-      dataNote: null,
-    },
+    // "Forecasting (5-Day Severity Index)": {
+    //   variableName:"Forecasting (5-Day Severity Index)",
+    //   numerator: 'predictions',
+    //   nType: 'characteristic',
+    //   nProperty: 'severity_index',
+    //   nRange: null,
+    //   denominator: 'properties',
+    //   dType: null,
+    //   dProperty: null,
+    //   dRange:null,
+    //   dIndex:null,
+    //   scale:1,
+    //   colorScale: 'forecasting',
+    //   fixedScale: 'forecasting',
+    //   scale3D: 50000,
+    //   dataNote: null,
+    // },
     "Percent Essential Workers":{
       variableName:"Percent Essential Workers",
       numerator: 'essential_workers',
@@ -1250,10 +1250,10 @@ export const variableTree = {
     'Doses to be Administered per 100 People': {
         "State": ["CDC"]
     },
-    "HEADER:forecasting":{},
-    "Forecasting (5-Day Severity Index)":{
-        "County": ["Yu Group at Berkeley"]
-    },
+    // "HEADER:forecasting":{},
+    // "Forecasting (5-Day Severity Index)":{
+    //     "County": ["Yu Group at Berkeley"]
+    // },
     "HEADER:community health information":{},
     "Uninsured Percent": {
         "County": ["County Health Rankings"],
@@ -1296,7 +1296,7 @@ export const datasetTree = {
       'New York Times':'county_nyt.geojson',
       'USA Facts':'county_usfacts.geojson',
       'CDC':'cdc.geojson',
-      'Yu Group at Berkeley':'cdc.geojson',
+    //   'Yu Group at Berkeley':'cdc.geojson',
       'County Health Rankings':'cdc.geojson',
       'ACS':'cdc.geojson',   
       'Safegraph':'cdc.geojson'
