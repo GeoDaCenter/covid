@@ -125,7 +125,7 @@ fileList = [
 
 # %%
 for fileInfo in fileList:
-    csvData = pd.read_csv(os.path.join(repo_root, f'public/csv/{fileInfo["fileName"]}.csv'))
+    csvData = pd.read_csv(os.path.join(repo_root, f'public/csv/{fileInfo["fileName"]}.csv'), low_memory=False).replace('suppressed', -9999)
 
     try:
         multiplier = 10**fileInfo['decimals']

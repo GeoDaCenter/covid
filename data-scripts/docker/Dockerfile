@@ -24,7 +24,7 @@ RUN wget http://download.osgeo.org/libspatialindex/spatialindex-src-1.8.5.tar.gz
 
 
 # Install geopandas
-RUN pip install rtree geopandas pandas boto3 requests pytz us lxml
+RUN pip install rtree geopandas pandas boto3 requests grequests pytz us lxml
 RUN pip install bs4 protobuf pandas_gbq google-cloud-bigquery regex
 
 # Move entrypoint script to container and deploy key and gbq key to ssh folder
