@@ -34,12 +34,11 @@ const getIdOrder = (features, idProp) => {
 * @returns {Object} Indexed geodata for faster access
 */
 export const indexGeoProps = (data, key) => {
-let geoProperties = {};
-for (var i = 0; i < data.features.length; i++) {
-  geoProperties[data.features[i].properties[key]] =
-    data.features[i].properties;
-}
-return geoProperties;
+  let geoProperties = {};
+  for (var i = 0; i < data.features.length; i++) {
+    geoProperties[data.features[i].properties[key]] = data.features[i].properties;
+  }
+  return geoProperties;
 };
 
 export default function useLoadData(){
@@ -54,7 +53,7 @@ export default function useLoadData(){
   const shouldLoadTimeseries = useSelector((state)=>state.shouldLoadTimeseries);
   const shouldAlwaysLoadTimeseries = useSelector((state)=>state.shouldAlwaysLoadTimeseries);
   const geoda = useContext(GeoDaContext);
-  const { getRecentSnapshot } = useBigQuery()
+  const { getRecentSnapshot, getTimeSeries } = useBigQuery()
 
   const dispatch = useDispatch();
 
@@ -76,6 +75,14 @@ export default function useLoadData(){
     return tempArray
   }
 
+  const getTimeSeriesData = async (dataset) => {
+    const data = await getTimeSeries(dataset.bigQuery)
+    dispatch({
+      type:'SET_CHART_DATA',
+      payload: data
+    })
+  }
+
   const firstLoad = useMemo(() => async (datasetParams, defaultTables) => {
     if (geoda === undefined) return;
     setIsInProcess(true)
@@ -86,8 +93,8 @@ export default function useLoadData(){
     if ((storedData.hasOwnProperty(numeratorParams?.file)||dataParams.numerator === 'properties') && (storedData.hasOwnProperty(denominatorParams?.file)||dataParams.denominator !== 'properties')) return [numeratorParams.file, denominatorParams && denominatorParams.file]
     const firstLoadPromises = [
       geoda.loadGeoJSON(`${process.env.PUBLIC_URL}/geojson/${datasetParams.geojson}`, datasetParams.id),
-      numeratorParams ? numeratorParams.bigQuery !== undefined ? getRecentSnapshot([numeratorParams.bigQuery]) : handleLoadData(numeratorParams) : () => {},
-      denominatorParams ? denominatorParams.bigQuery !== undefined ? getRecentSnapshot([denominatorParams.bigQuery]) : handleLoadData(denominatorParams) : () => {}
+      numeratorParams ? numeratorParams.bigQuery !== undefined ? getRecentSnapshot([numeratorParams.bigQuery], 15) : handleLoadData(numeratorParams) : () => {},
+      denominatorParams ? denominatorParams.bigQuery !== undefined ? getRecentSnapshot([denominatorParams.bigQuery], 15) : handleLoadData(denominatorParams) : () => {}
     ];
 
     const [
@@ -184,15 +191,10 @@ export default function useLoadData(){
 
     const defaultChartTable = defaultTables[chartParams.table]
     const currCaseData = dataPresets[currentData].hasOwnProperty('tables') ? dataPresets[currentData].tables[chartParams.table]||defaultChartTable : defaultChartTable;
-
-    // if (storedData.hasOwnProperty(currCaseData?.file) || loadedTables.indexOf(currCaseData?.file) !== -1){
-    //   dispatch(updateChart());
-    // } else {
-    //   const table = await handleLoadData(currCaseData);
-    //   dispatch(addTableAndChart({
-    //     [currCaseData.file]: table
-    //   }))
-    // }
+    
+    if (!shouldAlwaysLoadTimeseries && !shouldLoadTimeseries) {
+      getTimeSeriesData(currCaseData.bigQuery)
+    }
     
     const filesToLoad = [
       ...Object.values(datasetParams.tables),
@@ -229,7 +231,7 @@ export default function useLoadData(){
 
     const dataToFetch = [
       ...tablePromises,
-      getRecentSnapshot(queriesToExecute)
+      getRecentSnapshot(queriesToExecute, 15)
     ]
 
     tableNames = [
@@ -316,7 +318,7 @@ export default function useLoadData(){
             lazyGenerateWeights(geojsonToLoad[0], geojsonToLoad[1])
           })
       } else {
-        dispatch(updateChart());
+        // dispatch(updateChart());
         dispatch(updateMap());
       }
     }

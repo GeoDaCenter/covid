@@ -8,7 +8,8 @@ const buildSW = () => {
     globDirectory: 'build',
     maximumFileSizeToCacheInBytes: 5000000,
     globPatterns: [
-      '**\/{csv,pbf,geojson}/{county_usfacts,covid_confirmed_usafacts}.{csv,pbf,geojson}',
+      // '**\/{csv,pbf,geojson}/{county_usfacts,covid_confirmed_usafacts}.{csv,pbf,geojson}',
+      '**\/{csv,pbf,geojson}/{county_usfacts}.{geojson}',
       '**\/static/{js,css}/*.{css,js,map}',
       '**\/workers/*.{js}',
       'index.html'

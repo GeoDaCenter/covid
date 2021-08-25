@@ -158,13 +158,13 @@ exports.handler = async (event) => {
                 queryString,
                 dateRange
             } = constructTimeQuery(
-                'public.' + dataset,
+                datasets,
                 idArray
             )
             if (idArray && idArray.length > 1) {
                 
                 const indQuery = constructTimeQuery(
-                    'public.' + dataset,
+                    dataset,
                     idArray,
                     true
                 )

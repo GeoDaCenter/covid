@@ -18,8 +18,8 @@ const parseData = (data, dates, dummyArray) => {
 
 export default function useBigQuery(){
     const dates = useSelector((state) => state.dates);
-    const getRecentSnapshot = async (datasets) => {
-        const response = await fetch(`${process.env.PUBLIC_URL}/.netlify/functions/query?type=snapshot&datasets=${JSON.stringify(datasets)}`).then(r => r.json())
+    const getRecentSnapshot = async (datasets, days=30) => {
+        const response = await fetch(`${process.env.PUBLIC_URL}/.netlify/functions/query?type=snapshot&datasets=${JSON.stringify(datasets)}&days=${days}`).then(r => r.json())
         const dummyArray = new Array(dates.length).fill(null)
         if (response.data.length === 1){
             return parseData(response.data[0],dates, dummyArray)   
@@ -29,7 +29,10 @@ export default function useBigQuery(){
         }     
     }
 
+    const getTimeSeries = async (dataset, geoid=[]) => await fetch(`${process.env.PUBLIC_URL}/.netlify/functions/query?type=timeseries&datasets=${dataset}${geoid.length ? '&geoid=' + geoid : ''}`).then(r => r.json())
+
     return {
-        getRecentSnapshot
+        getRecentSnapshot,
+        getTimeSeries
     }
 } 
