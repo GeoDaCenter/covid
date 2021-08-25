@@ -13,7 +13,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['shouldLoadTimeseries','shouldAlwaysLoadTimeseries'] // only navigation will be persisted 'dataParams', 'mapParams', 'currentData'
+  whitelist: ['shouldAlwaysLoadTimeseries']
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

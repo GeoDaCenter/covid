@@ -51,6 +51,8 @@ export default function useLoadData(){
   const chartParams = useSelector(state => state.chartParams);
   const dataPresets = useSelector((state) => state.dataPresets);
   const defaultTables = useSelector((state) => state.defaultTables);
+  const shouldLoadTimeseries = useSelector((state)=>state.shouldLoadTimeseries);
+  const shouldAlwaysLoadTimeseries = useSelector((state)=>state.shouldAlwaysLoadTimeseries);
   const geoda = useContext(GeoDaContext);
   const { getRecentSnapshot } = useBigQuery()
 
@@ -178,34 +180,75 @@ export default function useLoadData(){
 
   const secondLoad = useMemo(() => async (datasetParams, defaultTables, loadedTables, mapId) => {
     if (geoda === undefined) return;
-    console.log(loadedTables)
     setIsInProcess(true);
 
     const defaultChartTable = defaultTables[chartParams.table]
     const currCaseData = dataPresets[currentData].hasOwnProperty('tables') ? dataPresets[currentData].tables[chartParams.table]||defaultChartTable : defaultChartTable;
 
-    if (storedData.hasOwnProperty(currCaseData?.file) || loadedTables.indexOf(currCaseData?.file) !== -1){
-      dispatch(updateChart());
-    } else {
-      const table = await handleLoadData(currCaseData);
-      dispatch(addTableAndChart({
-        [currCaseData.file]: table
-      }))
-    }
+    // if (storedData.hasOwnProperty(currCaseData?.file) || loadedTables.indexOf(currCaseData?.file) !== -1){
+    //   dispatch(updateChart());
+    // } else {
+    //   const table = await handleLoadData(currCaseData);
+    //   dispatch(addTableAndChart({
+    //     [currCaseData.file]: table
+    //   }))
+    // }
     
     const filesToLoad = [
       ...Object.values(datasetParams.tables),
       ...Object.values(defaultTables)
     ]
 
-    const tablePromises = filesToLoad.map(table => Object.keys(storedData).includes(table.file) ? null : handleLoadData(table))
-    const fetchedData = await Promise.all(tablePromises)
+    let tablePromises = []
+    let queriesToExecute = []
+    let tableNames = {
+      files: [],
+      queries: []
+    }
+    for (let i=0;i<filesToLoad.length;i++){
+      if (
+        Object.keys(storedData).includes(filesToLoad[i].file) 
+        && 
+        (
+          (!shouldAlwaysLoadTimeseries && !shouldLoadTimeseries)
+          ||
+          storedData[filesToLoad[i].file].complete 
+        )
+      ) {
+        continue
+      }
+
+      if (shouldAlwaysLoadTimeseries || shouldLoadTimeseries || filesToLoad[i].bigQuery === undefined) {
+        tablePromises.push(handleLoadData(filesToLoad[i]))
+        tableNames.files.push(filesToLoad[i].file)
+      } else if (filesToLoad[i].bigQuery !== undefined) {
+        queriesToExecute.push(filesToLoad[i].bigQuery)
+        tableNames.queries.push(filesToLoad[i].file)
+      }
+    }
+
+    const dataToFetch = [
+      ...tablePromises,
+      getRecentSnapshot(queriesToExecute)
+    ]
+
+    tableNames = [
+      ...tableNames.files,
+      ...tableNames.queries
+    ]
+
+    let fetchedData = await Promise.all(dataToFetch)
+    fetchedData = [
+      ...fetchedData.slice(0,-1),
+      ...fetchedData.slice(-1,)[0]
+    ]
+    
     let dataObj = {}
     for (let i=0; i<filesToLoad.length; i++){
-      if (loadedTables.includes(filesToLoad[i].file)) {
+      if (loadedTables.includes(tableNames[i])) {
         continue
       } else {
-        dataObj[filesToLoad[i].file] = fetchedData[i]
+        dataObj[tableNames[i]] = fetchedData[i]
       }
     }
     dispatch(addTables(dataObj))

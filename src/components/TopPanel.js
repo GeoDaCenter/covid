@@ -41,13 +41,14 @@ const TopDrawer = styled.div`
 `
 export default function TopPanel(){
     const shouldLoadTimeseries = useSelector((state)=>state.shouldLoadTimeseries)
+    const shouldAlwaysLoadTimeseries = useSelector((state)=>state.shouldAlwaysLoadTimeseries)
     
     return (
         <TopDrawer id="timelinePanel">
-            {!shouldLoadTimeseries && <SliderPlaceholder />}
-            {shouldLoadTimeseries && <DateSlider />}
+            {(!shouldLoadTimeseries && !shouldAlwaysLoadTimeseries) && <SliderPlaceholder />}
+            {(shouldLoadTimeseries || shouldAlwaysLoadTimeseries) && <DateSlider />}
             <Dock />
-            {shouldLoadTimeseries && <Ticks />}
+            {(shouldLoadTimeseries || shouldAlwaysLoadTimeseries) && <Ticks />}
         </TopDrawer>
     )
 }

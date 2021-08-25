@@ -286,11 +286,13 @@ export const defaultTables = {
         },
         'cases': {
             'file':'covid_confirmed_usafacts.pbf',
+            'bigQuery':'public.covid_confirmed_usafacts',
             'dates':'isoDateList',
             'type':'time-series-cumulative'
         },
         'deaths': {
             'file':'covid_deaths_usafacts.pbf',
+            'bigQuery':'public.covid_deaths_usafacts',
             'dates':'isoDateList',
             'type':'time-series-cumulative' 
         },
@@ -334,36 +336,42 @@ export const defaultTables = {
         },
         'vaccines_one_dose':{
             'file':'vaccination_one_or_more_doses_cdc.pbf',
+            'bigQuery':'public.vaccination_one_or_more_doses_cdc',
             'dates':'isoDateList',
             'type':'time-series',
             'join':'fips'
         },
         'vaccines_fully_vaccinated':{
             'file':'vaccination_fully_vaccinated_cdc.pbf',
+            'bigQuery':'public.vaccination_fully_vaccinated_cdc',
             'dates':'isoDateList',
             'type':'time-series',
             'join':'fips'
         },
         'testing':{
             'file':'covid_testing_cdc.e-2.pbf',
+            'bigQuery':'public.covid_testing_cdc',
             'dates':'isoDateList',
             'type':'time-series',
             'join':'county'
         },
         'testing_wk_pos':{
             'file':'covid_wk_pos_cdc.e-4.pbf',
+            'bigQuery':'public.covid_wk_pos_cdc',
             'dates':'isoDateList',
             'type':'time-series',
             'join':'county'
         },
         'testing_tcap':{
             'file':'covid_tcap_cdc.e-2.pbf',
+            'bigQuery':'public.covid_tcap_cdc',
             'dates':'isoDateList',
             'type':'time-series',
             'join':'county'
         },
         'testing_ccpt':{
             'file':'covid_ccpt_cdc.e-4.pbf',
+            'bigQuery':'public.covid_ccpt_cdc',
             'dates':'isoDateList',
             'type':'time-series',
             'join':'county'
