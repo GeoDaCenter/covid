@@ -140,5 +140,7 @@ export const INITIAL_STATE = {
     data: null
   },
   shouldUpdate:true,
-  isLoading: true
+  isLoading: true,
+  shouldLoadTimeseries:false,
+  shouldAlwaysLoadTimeseries: false
 };

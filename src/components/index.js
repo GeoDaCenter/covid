@@ -4,7 +4,7 @@ import ContextMenu from './ContextMenu';
 import CsvDownloader from './CsvDownloader';
 import DataDetails from './DataDetails';
 import DataPanel from './DataPanel';
-import DateSlider from './Slider';
+import DateSlider, {DateTitle} from './Slider';
 import Dock from './Dock';
 import Draggable from './Draggable';
 import Footer from './Footer';
@@ -21,6 +21,7 @@ import VariablePanel from './VariablePanel';
 import Popover from './TooltipPopper';
 import Preloader from './Preloader';
 import Scaleable from './Scaleable';
+import SliderPlaceholder from './SliderPlaceholder';
 import StaticNavbar from './StaticNavbar';
 import Ticks from './Ticks';
 import Tooltip from './Tooltip';
@@ -53,6 +54,7 @@ export {
     CsvDownloader,
     DataDetails,
     DataPanel,
+    DateTitle,
     DateSlider,
     Dock,
     Draggable,
@@ -76,6 +78,7 @@ export {
     Tooltip, 
     TopPanel,
     ShareButton,
+    SliderPlaceholder,
 
     About,
     Api,

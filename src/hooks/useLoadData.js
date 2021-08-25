@@ -178,6 +178,7 @@ export default function useLoadData(){
 
   const secondLoad = useMemo(() => async (datasetParams, defaultTables, loadedTables, mapId) => {
     if (geoda === undefined) return;
+    console.log(loadedTables)
     setIsInProcess(true);
 
     const defaultChartTable = defaultTables[chartParams.table]

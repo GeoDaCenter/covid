@@ -253,7 +253,7 @@ const formatDate = (date) => {
     return rawDate.toLocaleDateString('en-US', options);
 }
 
-function DateTitle(){
+export function DateTitle(){
     const nType = useSelector(state => state.dataParams.nType);
     const nIndex = useSelector(state => state.dataParams.nIndex);
     const dates = useSelector(state => state.dates);

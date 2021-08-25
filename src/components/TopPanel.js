@@ -1,9 +1,10 @@
 // this components houses the slider, legend, and bottom dock chart
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import styled from 'styled-components';
 
-import { DateSlider, Dock, Ticks } from '../components';
+import { DateSlider, Dock, Ticks, SliderPlaceholder } from '../components';
 import { colors } from '../config';
 
 // Styled components
@@ -20,6 +21,7 @@ const TopDrawer = styled.div`
     box-shadow: 0px 0px 5px rgba(0,0,0,0.7);
     border-radius:0 0 0.5vh 0.5vh ;
     transition:250ms all;
+    color:white;
     hr {
         opacity:0.5;
     }
@@ -37,16 +39,15 @@ const TopDrawer = styled.div`
         // bottom all the way down for landscape phone
     }
 `
-const TopPanel = () => {
+export default function TopPanel(){
+    const shouldLoadTimeseries = useSelector((state)=>state.shouldLoadTimeseries)
     
     return (
         <TopDrawer id="timelinePanel">
-            <DateSlider />
+            {!shouldLoadTimeseries && <SliderPlaceholder />}
+            {shouldLoadTimeseries && <DateSlider />}
             <Dock />
-            <Ticks />
+            {shouldLoadTimeseries && <Ticks />}
         </TopDrawer>
     )
-
 }
-
-export default TopPanel
