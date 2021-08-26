@@ -89,7 +89,8 @@ export default function useLoadData(){
 
   const firstLoad = useMemo(() => async (datasetParams, defaultTables) => {
     if (geoda === undefined) return;
-    setIsInProcess(true)
+    setIsInProcess(true);
+    getTimeSeriesData();
     const numeratorParams = datasetParams.tables[dataParams.numerator]||defaultTables[dataParams.numerator]
     const denominatorParams = dataParams.denominator !== 'properties' ? datasetParams.tables[dataParams.denominator]||defaultTables[dataParams.denominator] : null
     
@@ -197,7 +198,6 @@ export default function useLoadData(){
   const secondLoad = useMemo(() => async (datasetParams, defaultTables, loadedTables, mapId) => {
     if (geoda === undefined) return;
     setIsInProcess(true);
-    getTimeSeriesData();
     
     const filesToLoad = [
       ...Object.values(datasetParams.tables),
@@ -256,7 +256,7 @@ export default function useLoadData(){
         dataObj[tableNames[i]] = fetchedData[i]
       }
     }
-    dispatch(addTables(dataObj))
+    dispatch(reconcileTables(dataObj))
     setIsInProcess(false)
     return [datasetParams.geojson, mapId]
   }, [currentData])

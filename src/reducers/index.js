@@ -46,18 +46,36 @@ var reducer = (state = INITIAL_STATE, action) => {
                 storedData
             }
         }
+        // This action takes partially loaded tables from big query already in the state
+        // and reconciles those with the full time-series fetched from static files
         case 'RECONCILE_TABLES': {
             let storedData = {
                 ...state.storedData
             }
             const datasets = Object.keys(action.payload.data)
             for (let i=0; i<datasets.length;i++){
-                if (!datasets[i] || !action.payload.data[datasets[i]]) continue
-                
+                // null or undefined key name sometimes in place for incomplete data
+                // So, this check makes sure the key and data are not falsy
+                if (!datasets[i] || !action.payload.data[datasets[i]]) {
+                    continue
+                }
+
+                // If the data doesn't exist, easy. Just plug in the full dataset
+                // and move on to the next
+                if (!storedData.hasOwnProperty(datasets[i])){
+                    storedData[datasets[i]] = action.payload.data[datasets[i]];
+                    continue
+                }
+
+                // Otherwise, we need to reconcile based on keys present in the 'dates' 
+                // property, using the big query data as the most up-to-date vs the
+                // static fetched data, which may have been cached client-side
                 let currentStaticData = action.payload.data[datasets[i]];
                 const datasetKeys = Object.keys(storedData[datasets[i]].data)
                 const gbqIndices = storedData[datasets[i]].dates
 
+                // Loop through row (features) and date, using big query values as insertions
+                // and static as base, to reduce loop iterations 
                 for (let x=0; x<datasetKeys.length;x++){
                     let tempValues = currentStaticData.data[datasetKeys[x]]
                     for (let n=0;n<gbqIndices.length;n++){
@@ -65,13 +83,15 @@ var reducer = (state = INITIAL_STATE, action) => {
                     }
                     storedData[datasets[i]].data[datasetKeys[x]] = tempValues
                 }
+
+                // Reconcile and sort date indices
                 let reconciledDates = currentStaticData.dates
                 for (let n=0; n<storedData[datasets[i]].dates;n++){
                     if (reconciledDates.indexOf(storedData[datasets[i]].dates[n]) === -1) reconciledDates.push(storedData[datasets[i]].dates[n])
                 }
                 storedData[datasets[i]].dates = reconciledDates.sort((a,b) => a-b)
             }
-            console.log(storedData)
+            
             return {
                 ...state,
                 storedData
