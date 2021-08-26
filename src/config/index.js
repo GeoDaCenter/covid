@@ -555,12 +555,14 @@ export const dataPresets = {
                 'file':'covid_confirmed_1p3a.pbf',
                 'dates':'isoDateList',
                 'type':'time-series-cumulative',
+                'bigQuery':'public.covid_confirmed_1p3a',
                 'accumulate':true
             },
             'deaths': {
                 'file':'covid_deaths_1p3a.pbf',
                 'dates':'isoDateList',
                 'type':'time-series-cumulative',
+                'bigQuery':'public.covid_deaths_1p3a',
                 'accumulate':true
             }
         }
@@ -574,12 +576,14 @@ export const dataPresets = {
             'cases': {
                 'file':'covid_confirmed_nyt.pbf',
                 'dates':'isoDateList',
-                'type':'time-series-cumulative'
+                'type':'time-series-cumulative',
+                'bigQuery':'public.covid_confirmed_nyt',
             },
             'deaths': {
                 'file':'covid_deaths_nyt.pbf',
                 'dates':'isoDateList',
-                'type':'time-series-cumulative'
+                'type':'time-series-cumulative',
+                'bigQuery':'public.covid_confirmed_nyt',
             }
         }
     },
@@ -589,18 +593,18 @@ export const dataPresets = {
         id: 'GEOID',
         geography: 'County',
         tables: {
-            'cases': {
-                'file':'covid_confirmed_cdc.e-2.pbf',
-                'dates':'isoDateList',
-                'type':'time-series',
-                'accumulate':true
-            },
-            'deaths': {
-                'file':'covid_deaths_cdc.e-2.pbf',
-                'dates':'isoDateList',
-                'type':'time-series',
-                'accumulate':true
-            }
+            // 'cases': {
+            //     'file':'covid_confirmed_cdc.e-2.pbf',
+            //     'dates':'isoDateList',
+            //     'type':'time-series',
+            //     'accumulate':true
+            // },
+            // 'deaths': {
+            //     'file':'covid_deaths_cdc.e-2.pbf',
+            //     'dates':'isoDateList',
+            //     'type':'time-series',
+            //     'accumulate':true
+            // }
         }
     },
     'cdc_h.geojson': {

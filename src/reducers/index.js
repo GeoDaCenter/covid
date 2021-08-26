@@ -1,5 +1,5 @@
 import { INITIAL_STATE } from '../constants/defaults';
-import { getDataForCharts, generateMapData, generateReport, shallowEqual, parseTooltipData  } from '../utils';
+import { getDataForCharts, generateMapData, generateReport, shallowEqual, parseTooltipData, findChartMax  } from '../utils';
 
 var reducer = (state = INITIAL_STATE, action) => {
     switch(action.type) {
@@ -206,6 +206,15 @@ var reducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 chartParams,
                 chartData
+            }
+        }
+        case 'SET_CHART_DATA':{
+            return {
+                ...state,
+                chartData: {
+                    data: action.payload.data,
+                    maximums: findChartMax(action.payload.data)
+                }
             }
         }
         case 'DATA_LOAD_EXISTING':
@@ -661,7 +670,9 @@ var reducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 selectionKeys,
                 selectionNames: additionalParams.name,
-                chartData: getDataForCharts(state.storedData[currCaseData], state.dates, additionalParams),
+                chartData: state.shouldLoadTimeseries || state.shouldAlwaysLoadTimeseries 
+                    ? getDataForCharts(state.storedData[currCaseData], state.dates, additionalParams)
+                    : state.chartData,
                 sidebarData: generateReport(selectionKeys, state),
             }
         }
@@ -816,6 +827,15 @@ var reducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 storedGeojson
+            }
+        }
+        case 'SET_LOAD_TIMESERIES': {
+            return {
+                ...state,
+                shouldLoadTimeseries:true,
+                shouldAlwaysLoadTimeseries: action.payload === 'always' 
+                    ? true 
+                    : state.shouldAlwaysLoadTimeseries
             }
         }
         default:

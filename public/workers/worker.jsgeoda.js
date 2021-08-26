@@ -62,7 +62,6 @@ class GeodaWorkerProxy {
     for (var i=0; i<10; i++){
       try {
         var id = this.readGeoJSON(ab);
-        console.log(i);
         return [id, geojsonData];
       } catch {}
     }

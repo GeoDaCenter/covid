@@ -1,11 +1,12 @@
 // this components houses the slider, legend, and bottom dock chart
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, {useState} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import styled from 'styled-components';
 
 import { DateSlider, Dock, Ticks, SliderPlaceholder } from '../components';
 import { colors } from '../config';
+import { OutlineButton } from '../styled_components';
 
 // Styled components
 const TopDrawer = styled.div`
@@ -39,16 +40,35 @@ const TopDrawer = styled.div`
         // bottom all the way down for landscape phone
     }
 `
+
+const PreferenceContainer = styled.div`
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+`
+
+const DismissButton = styled(OutlineButton)`
+    border:none;
+`
+
 export default function TopPanel(){
     const shouldLoadTimeseries = useSelector((state)=>state.shouldLoadTimeseries)
     const shouldAlwaysLoadTimeseries = useSelector((state)=>state.shouldAlwaysLoadTimeseries)
-    
+    const dispatch = useDispatch();
+    const [showPrefButton, setShowPrefButton] = useState(true)
+
     return (
         <TopDrawer id="timelinePanel">
-            {(!shouldLoadTimeseries && !shouldAlwaysLoadTimeseries) && <SliderPlaceholder />}
+            {(!shouldLoadTimeseries && !shouldAlwaysLoadTimeseries) && <SliderPlaceholder setHistoric={() => dispatch({type:'SET_LOAD_TIMESERIES'})} />}
             {(shouldLoadTimeseries || shouldAlwaysLoadTimeseries) && <DateSlider />}
             <Dock />
             {(shouldLoadTimeseries || shouldAlwaysLoadTimeseries) && <Ticks />}
+            {(shouldLoadTimeseries && !shouldAlwaysLoadTimeseries && showPrefButton) &&
+                <PreferenceContainer> 
+                    <OutlineButton onClick={() => dispatch({type:'SET_LOAD_TIMESERIES',payload:'always'})}>Always show time-series?</OutlineButton>
+                    <DismissButton onClick={() => setShowPrefButton(false)}>×</DismissButton>
+                </PreferenceContainer>
+            }
         </TopDrawer>
     )
 }

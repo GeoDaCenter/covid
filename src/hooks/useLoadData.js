@@ -75,8 +75,11 @@ export default function useLoadData(){
     return tempArray
   }
 
-  const getTimeSeriesData = async (dataset) => {
-    const data = await getTimeSeries(dataset.bigQuery)
+  const getTimeSeriesData = async () => {
+    const defaultChartTable = defaultTables[chartParams.table]
+    const currCaseData = dataPresets[currentData].hasOwnProperty('tables') ? dataPresets[currentData].tables[chartParams.table]||defaultChartTable : defaultChartTable;
+    if (!currCaseData.hasOwnProperty('bigQuery')) return;
+    const data = await getTimeSeries(currCaseData.bigQuery)
     dispatch({
       type:'SET_CHART_DATA',
       payload: data
@@ -113,8 +116,11 @@ export default function useLoadData(){
       datasetParams.id
     );
     
-    const dateIndices = numeratorData.dates
-    const binIndex = dateIndices !== null 
+    const dateIndices = numeratorData.dates;
+
+    const binIndex = (!shouldLoadTimeseries && !shouldAlwaysLoadTimeseries)
+      ? dateIndices.slice(-1)[0] 
+      : dateIndices !== null 
       ? mapParams.binMode === 'dynamic' && dateIndices?.indexOf(dataParams.nIndex) !== -1
       ? dataParams.nIndex 
       : dateIndices.slice(-1)[0] 
@@ -188,13 +194,7 @@ export default function useLoadData(){
   const secondLoad = useMemo(() => async (datasetParams, defaultTables, loadedTables, mapId) => {
     if (geoda === undefined) return;
     setIsInProcess(true);
-
-    const defaultChartTable = defaultTables[chartParams.table]
-    const currCaseData = dataPresets[currentData].hasOwnProperty('tables') ? dataPresets[currentData].tables[chartParams.table]||defaultChartTable : defaultChartTable;
-    
-    if (!shouldAlwaysLoadTimeseries && !shouldLoadTimeseries) {
-      getTimeSeriesData(currCaseData.bigQuery)
-    }
+    getTimeSeriesData();
     
     const filesToLoad = [
       ...Object.values(datasetParams.tables),
@@ -318,7 +318,9 @@ export default function useLoadData(){
             lazyGenerateWeights(geojsonToLoad[0], geojsonToLoad[1])
           })
       } else {
-        // dispatch(updateChart());
+        if (!shouldAlwaysLoadTimeseries && !shouldLoadTimeseries) {
+          getTimeSeriesData()
+        }
         dispatch(updateMap());
       }
     }

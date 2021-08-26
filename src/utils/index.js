@@ -3,6 +3,7 @@ import addSelectedChartData from './addSelectedChartData';
 import colIndex from './colIndex.js';
 import colLookup from './colLookup.js';
 import dataFn from './dataFunction.js';
+import {findChartMax} from './findChartMax';
 import findDates from './findDates';
 import { findDateIndices, getDateIndices } from './findDateIndices';
 import findTableDetails from './findTableDetails';
@@ -37,11 +38,13 @@ import parseMapboxLayers from './parseMapboxLayers';
 import { parseTooltipData } from './parseTooltipData';
 import shallowCompare from './shallowCompare';
 import { shallowEqual } from './shallowEqual';
+
 export {
     addSelectedChartData,
     colIndex,
     colLookup,
     dataFn,
+    findChartMax,
     findDates,
     findDateIndices,
     findTableDetails,

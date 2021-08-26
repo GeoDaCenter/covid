@@ -24,13 +24,15 @@ export default function useBigQuery(){
         if (response.data.length === 1){
             return parseData(response.data[0],dates, dummyArray)   
         } else {
-            console.log(response.data.map(data => parseData(data, dates, dummyArray)))
             return response.data.map(data => parseData(data, dates, dummyArray))
-        }     
+        }
     }
 
-    const getTimeSeries = async (dataset, geoid=[]) => await fetch(`${process.env.PUBLIC_URL}/.netlify/functions/query?type=timeseries&datasets=${dataset}${geoid.length ? '&geoid=' + geoid : ''}`).then(r => r.json())
-
+    const getTimeSeries = async (dataset, geoid=[]) => {
+        const data = await fetch(`${process.env.PUBLIC_URL}/.netlify/functions/query?type=timeseries&datasets=${dataset}${geoid.length ? '&geoid=' + geoid : ''}`).then(r => r.json())
+        return data
+    }
+    
     return {
         getRecentSnapshot,
         getTimeSeries

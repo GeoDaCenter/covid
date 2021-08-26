@@ -339,6 +339,8 @@ export default function VariablePanel(){
 
   const variablePresets = useSelector(state => state.variablePresets);
   const dataPresets = useSelector(state => state.dataPresets);
+  const shouldLoadTimeseries = useSelector((state)=>state.shouldLoadTimeseries);
+  const shouldAlwaysLoadTimeseries = useSelector((state)=>state.shouldAlwaysLoadTimeseries);
 
   const handleMapType = (event, newValue) => {
     let nBins = newValue === 'hinge15_breaks' ? 6 : 8
@@ -532,17 +534,17 @@ export default function VariablePanel(){
                   <MenuItem value={null} key={'cumulative'} disabled={variableName.indexOf('Testing') !== -1 || variableName.indexOf('Workdays') !== -1}>Cumulative</MenuItem>
                   <MenuItem value={1} key={'daily'} disabled={variableName.indexOf('Testing') !== -1 || variableName.indexOf('Workdays') !== -1}>Daily New</MenuItem>
                   <MenuItem value={7} key={'7-day-ave'} disabled={variableName.indexOf('Testing') !== -1 || variableName.indexOf('Workdays') !== -1}>7-Day Average</MenuItem>
-                  <MenuItem value={'custom'} key={'customRange'} disabled={variableName.indexOf('Testing') !== -1 || variableName.indexOf('Workdays') !== -1}>Custom Range</MenuItem>
+                  {(shouldLoadTimeseries||shouldAlwaysLoadTimeseries) && <MenuItem value={'custom'} key={'customRange'} disabled={variableName.indexOf('Testing') !== -1 || variableName.indexOf('Workdays') !== -1}>Custom Range</MenuItem>}
               </Select>
           </StyledDropDown>
-          <BinsContainer id="binModeSwitch" disabled={variableName.indexOf('Testing') !== -1 || nType === "characteristic" || mapType === 'lisa'}>
+          {(shouldLoadTimeseries||shouldAlwaysLoadTimeseries) && <BinsContainer id="binModeSwitch" disabled={variableName.indexOf('Testing') !== -1 || nType === "characteristic" || mapType === 'lisa'}>
             <Switch
                 checked={binMode === 'dynamic'}
                 onChange={handleSwitch}
                 name="bin chart switch"
             />
             <p>{binMode === 'dynamic' ? 'Dynamic' : 'Fixed Bins'}<Tooltip id="BinModes"/></p>
-          </BinsContainer> 
+          </BinsContainer>}
         </DateSelectorContainer> 
         <Gutter h={35}/>
         

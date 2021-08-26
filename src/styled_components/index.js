@@ -193,3 +193,22 @@ export const HoverDiv = styled.div`
   max-width:50ch;
   line-height:1.25;
 `
+
+export const OutlineButton = styled.button`
+    border:none;
+    padding:0.25em 0.5em;
+    border-radius:0.125em;
+    margin:0.5em;
+    font-weight:bold;
+    cursor:pointer;
+    transition:250ms all;
+    color:white;
+    border-width:1px;
+    border-style:solid;
+    background:none;
+    font-family:'Lato', Arial, sans-serif;
+    &:hover {
+        border-color:${colors.yellow};
+        color:${colors.yellow};
+    }
+`

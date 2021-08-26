@@ -128,8 +128,8 @@ const CustomTooltip = props => {
 };
 
 const MainLineChart = () => {
-    const chartData = useSelector(state => state.chartData.data);
-    const maximums = useSelector(state => state.chartData.maximums);
+    const { data, maximums } = useSelector(state => state.chartData);
+    
     const dataParams = useSelector(state => state.dataParams);
     const nType = useSelector(state => state.dataParams.nType);
     const dType = useSelector(state => state.dataParams.dType);
@@ -140,6 +140,9 @@ const MainLineChart = () => {
     const storedData = useSelector(state => state.storedData);
     const currentTable = useSelector(state => state.currentTable);
     const populationNormalized = useSelector(state => state.chartParams.populationNormalized);
+
+    const shouldLoadTimeseries = useSelector((state)=>state.shouldLoadTimeseries);
+    const shouldAlwaysLoadTimeseries = useSelector((state)=>state.shouldAlwaysLoadTimeseries);
 
     const [logChart, setLogChart] = useState(false);
     const [showSummarized, setShowSummarized] = useState(true);
@@ -189,7 +192,7 @@ const MainLineChart = () => {
         setActiveLine(false)
     }
 
-    if (maximums && chartData) {
+    if (maximums && data) {
         return (
             <ChartContainer id="lineChart">
                 {(selectionNames.length < 2) ?
@@ -199,14 +202,14 @@ const MainLineChart = () => {
                 }
                 <ResponsiveContainer width="100%" height="80%">
                     <LineChart
-                        data={chartData}
+                        data={data}
                         margin={{
                             top: 0, right: 10, left: 10, bottom: 20,
                         }}
-                        onClick={nType === 'characteristic' ? '' : chartSetDate}
+                        onClick={nType === 'characteristic' || (!shouldLoadTimeseries&&!shouldAlwaysLoadTimeseries) ? null : chartSetDate}
                     >
                         <XAxis 
-                            dataKey="date"
+                            dataKey="d"
                             ticks={dateRange}
                             tick={
                                 <CustomTick
@@ -266,14 +269,14 @@ const MainLineChart = () => {
                             fillOpacity={0.15}
                             isAnimationActive={false}
                         />
-                        {selectionKeys.length < 2 && <Line type="monotone" yAxisId="left" dataKey={"sum"} name="Total Cases" stroke={colors.lightgray} dot={false} isAnimationActive={false} /> }
-                        {selectionKeys.length < 2 && <Line type="monotone" yAxisId="right" dataKey={selectionKeys.length > 0 ? selectionNames[0] : "count"} name="7-Day Average New Cases" stroke={colors.yellow} dot={false} isAnimationActive={false} /> }
+                        {selectionKeys.length < 2 && <Line type="monotone" yAxisId="left" dataKey={"v"} name="Total Cases" stroke={colors.lightgray} dot={false} isAnimationActive={false} /> }
+                        {selectionKeys.length < 2 && <Line type="monotone" yAxisId="right" dataKey={selectionKeys.length > 0 ? selectionNames[0] : "a"} name="7-Day Average New Cases" stroke={colors.yellow} dot={false} isAnimationActive={false} /> }
                         
                         {(selectionKeys.length > 1 && showSummarized) &&
                                 <Line 
                                     type='monotone'
                                     yAxisId='right'
-                                    dataKey='sum'
+                                    dataKey='v'
                                     name='Total For Selection' 
                                     stroke={colors.lightgray}
                                     strokeWidth={3} 
