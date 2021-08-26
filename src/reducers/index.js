@@ -886,7 +886,17 @@ var reducer = (state = INITIAL_STATE, action) => {
                 shouldLoadTimeseries:true,
                 shouldAlwaysLoadTimeseries: action.payload === 'always' 
                     ? true 
+                    : action.payload === 'toggle'
+                    ? !state.shouldAlwaysLoadTimeseries
                     : state.shouldAlwaysLoadTimeseries
+            }
+        }
+        case 'SET_PREFERENCE':{
+            return {
+                ...state,
+                [action.payload.pref]: action.payload.value === 'toggle'
+                    ? !state[action.payload.pref]
+                    : action.payload.value
             }
         }
         default:

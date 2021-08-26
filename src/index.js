@@ -13,7 +13,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['shouldAlwaysLoadTimeseries']
+  whitelist: ['shouldAlwaysLoadTimeseries','snapshotDaysToLoad','savedLocation','shouldSaveLocation']
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

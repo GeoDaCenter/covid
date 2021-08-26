@@ -1,6 +1,7 @@
 // ViewportContext.js
-import React, { useState, useContext} from 'react';
+import React, { useState, useContext, useEffect} from 'react';
 import throttle from 'lodash/throttle';
+import { useDispatch, useSelector } from 'react-redux';
 
 const ViewportContext = React.createContext();
 const SetViewportContext = React.createContext();
@@ -11,9 +12,27 @@ const updateSharedView = throttle((viewport) => {
 
 /* Wrap your app in this bad boy */
 export const ViewportProvider = ({defaultViewport = {}, children}) => {
-  const [viewport, setViewport] = useState(defaultViewport);
-  document.hasFocus() && updateSharedView(viewport) 
+  const savedLocation = useSelector((state) => state.savedLocation);
+  const shouldSaveLocation = useSelector((state) => state.shouldSaveLocation);
+  const dispatch = useDispatch();
+
+  const [viewport, setViewport] = useState(shouldSaveLocation && savedLocation.length ? JSON.parse(savedLocation) : defaultViewport);
   
+  document.hasFocus() && updateSharedView(viewport)
+ 
+  useEffect(() => {
+    if (shouldSaveLocation && document.hasFocus()){
+      console.log( JSON.stringify(viewport))
+      dispatch({
+        type: 'SET_PREFERENCE',
+        payload: {
+          pref: 'savedLocation',
+          value: JSON.stringify(viewport)
+        }
+      })
+    }
+  },[viewport])
+
   return (
     <ViewportContext.Provider value={viewport}>
       <SetViewportContext.Provider value={setViewport}>

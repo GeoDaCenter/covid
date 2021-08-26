@@ -52,6 +52,7 @@ export default function useLoadData(){
   const defaultTables = useSelector((state) => state.defaultTables);
   const shouldLoadTimeseries = useSelector((state)=>state.shouldLoadTimeseries);
   const shouldAlwaysLoadTimeseries = useSelector((state)=>state.shouldAlwaysLoadTimeseries);
+  const snapshotDaysToLoad = useSelector((state)=>state.snapshotDaysToLoad);
   const geoda = useContext(GeoDaContext);
   const currentTable = useSelector((state) => state.currentTable);
   const { getRecentSnapshot, getTimeSeries } = useBigQuery()
@@ -98,8 +99,8 @@ export default function useLoadData(){
     if ((storedData.hasOwnProperty(numeratorParams?.file)||dataParams.numerator === 'properties') && (storedData.hasOwnProperty(denominatorParams?.file)||dataParams.denominator !== 'properties')) return [numeratorParams.file, denominatorParams && denominatorParams.file]
     const firstLoadPromises = [
       geoda.loadGeoJSON(`${process.env.PUBLIC_URL}/geojson/${datasetParams.geojson}`, datasetParams.id),
-      numeratorParams ? numeratorParams.bigQuery !== undefined && (!shouldLoadTimeseries && !shouldAlwaysLoadTimeseries) ? getRecentSnapshot([numeratorParams.bigQuery], 15) : handleLoadData(numeratorParams) : false,
-      denominatorParams ? denominatorParams.bigQuery !== undefined && (!shouldLoadTimeseries && !shouldAlwaysLoadTimeseries) ? getRecentSnapshot([denominatorParams.bigQuery], 15) : handleLoadData(denominatorParams) : false
+      numeratorParams ? numeratorParams.bigQuery !== undefined && (!shouldLoadTimeseries && !shouldAlwaysLoadTimeseries) ? getRecentSnapshot([numeratorParams.bigQuery], snapshotDaysToLoad) : handleLoadData(numeratorParams) : false,
+      denominatorParams ? denominatorParams.bigQuery !== undefined && (!shouldLoadTimeseries && !shouldAlwaysLoadTimeseries) ? getRecentSnapshot([denominatorParams.bigQuery], snapshotDaysToLoad) : handleLoadData(denominatorParams) : false
     ];
 
     const [
@@ -234,7 +235,7 @@ export default function useLoadData(){
 
     const dataToFetch = [
       ...tablePromises,
-      getRecentSnapshot(queriesToExecute, 15)
+      getRecentSnapshot(queriesToExecute, snapshotDaysToLoad)
     ]
 
     tableNames = [

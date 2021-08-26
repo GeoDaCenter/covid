@@ -275,9 +275,16 @@ function DateSlider(){
     const rangeType = useSelector(state => state.dataParams.rangeType);
     const variableName = useSelector(state => state.dataParams.variableName);
     const currTable = useSelector(state => state.storedData[state.currentTable.numerator]);
-    const dateIndices = currTable !== undefined && currTable.dates;
+    const shouldLoadTimeseries = useSelector((state)=>state.shouldLoadTimeseries)
+    const shouldAlwaysLoadTimeseries = useSelector((state)=>state.shouldAlwaysLoadTimeseries)
+    const dateIndices = currTable !== undefined 
+        ? !shouldLoadTimeseries && !shouldAlwaysLoadTimeseries 
+            ? currTable.dates.slice(nRange,)
+            : currTable.dates
+        : undefined;
+        
     const dates = useSelector(state => state.dates);
-
+    
     const [timeCase, setTimeCase] = useState(0);
     const [dRange, setDRange] = useState(false);
 
