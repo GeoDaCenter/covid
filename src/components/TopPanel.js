@@ -43,9 +43,15 @@ const TopDrawer = styled.div`
 
 const PreferenceContainer = styled.div`
     position:absolute;
-    left:50%;
-    transform:translateX(-50%);
+    width:90vw;
+    max-width: 450px;
+    display:flex;
+    div {
+        display:block;
+        margin:0 auto
+    }
 `
+
 
 const DismissButton = styled(OutlineButton)`
     border:none;
@@ -65,8 +71,10 @@ export default function TopPanel(){
             {(shouldLoadTimeseries || shouldAlwaysLoadTimeseries) && <Ticks />}
             {(shouldLoadTimeseries && !shouldAlwaysLoadTimeseries && showPrefButton) &&
                 <PreferenceContainer> 
-                    <OutlineButton onClick={() => dispatch({type:'SET_LOAD_TIMESERIES',payload:'always'})}>Always show time-series?</OutlineButton>
-                    <DismissButton onClick={() => setShowPrefButton(false)}>×</DismissButton>
+                    <div>
+                        <OutlineButton onClick={() => dispatch({type:'SET_LOAD_TIMESERIES',payload:'always'})}>Remember my preference</OutlineButton>
+                        <DismissButton onClick={() => setShowPrefButton(false)}>Dismiss</DismissButton>
+                    </div>
                 </PreferenceContainer>
             }
         </TopDrawer>

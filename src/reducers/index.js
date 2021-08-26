@@ -46,6 +46,37 @@ var reducer = (state = INITIAL_STATE, action) => {
                 storedData
             }
         }
+        case 'RECONCILE_TABLES': {
+            let storedData = {
+                ...state.storedData
+            }
+            const datasets = Object.keys(action.payload.data)
+            for (let i=0; i<datasets.length;i++){
+                if (!datasets[i] || !action.payload.data[datasets[i]]) continue
+                
+                let currentStaticData = action.payload.data[datasets[i]];
+                const datasetKeys = Object.keys(storedData[datasets[i]].data)
+                const gbqIndices = storedData[datasets[i]].dates
+
+                for (let x=0; x<datasetKeys.length;x++){
+                    let tempValues = currentStaticData.data[datasetKeys[x]]
+                    for (let n=0;n<gbqIndices.length;n++){
+                        tempValues[gbqIndices[n]] = storedData[datasets[i]].data[datasetKeys[x]][gbqIndices[n]]
+                    }
+                    storedData[datasets[i]].data[datasetKeys[x]] = tempValues
+                }
+                let reconciledDates = currentStaticData.dates
+                for (let n=0; n<storedData[datasets[i]].dates;n++){
+                    if (reconciledDates.indexOf(storedData[datasets[i]].dates[n]) === -1) reconciledDates.push(storedData[datasets[i]].dates[n])
+                }
+                storedData[datasets[i]].dates = reconciledDates.sort((a,b) => a-b)
+            }
+            console.log(storedData)
+            return {
+                ...state,
+                storedData
+            }
+        }
         case 'ADD_TABLES_AND_UPDATE': {
             const storedData = {
                 ...state.storedData,

@@ -8,7 +8,7 @@ import useBigQuery from './useBigQuery';
 //   then performs a join and loads the data into the store
 
 import { 
-  initialDataLoad, addWeights, addTables, addGeojson, updateMap, updateChart, addTableAndChart, setIsLoading } from '../actions';
+  initialDataLoad, addWeights, addTables, addGeojson, updateMap, reconcileTables, updateChart, addTableAndChart, setIsLoading } from '../actions';
 
 import { colorScales, fixedScales } from '../config';
 import { GeoDaContext } from '../contexts/GeoDaContext';
@@ -53,6 +53,7 @@ export default function useLoadData(){
   const shouldLoadTimeseries = useSelector((state)=>state.shouldLoadTimeseries);
   const shouldAlwaysLoadTimeseries = useSelector((state)=>state.shouldAlwaysLoadTimeseries);
   const geoda = useContext(GeoDaContext);
+  const currentTable = useSelector((state) => state.currentTable);
   const { getRecentSnapshot, getTimeSeries } = useBigQuery()
 
   const dispatch = useDispatch();
@@ -96,8 +97,8 @@ export default function useLoadData(){
     if ((storedData.hasOwnProperty(numeratorParams?.file)||dataParams.numerator === 'properties') && (storedData.hasOwnProperty(denominatorParams?.file)||dataParams.denominator !== 'properties')) return [numeratorParams.file, denominatorParams && denominatorParams.file]
     const firstLoadPromises = [
       geoda.loadGeoJSON(`${process.env.PUBLIC_URL}/geojson/${datasetParams.geojson}`, datasetParams.id),
-      numeratorParams ? numeratorParams.bigQuery !== undefined ? getRecentSnapshot([numeratorParams.bigQuery], 15) : handleLoadData(numeratorParams) : () => {},
-      denominatorParams ? denominatorParams.bigQuery !== undefined ? getRecentSnapshot([denominatorParams.bigQuery], 15) : handleLoadData(denominatorParams) : () => {}
+      numeratorParams ? numeratorParams.bigQuery !== undefined && (!shouldLoadTimeseries && !shouldAlwaysLoadTimeseries) ? getRecentSnapshot([numeratorParams.bigQuery], 15) : handleLoadData(numeratorParams) : false,
+      denominatorParams ? denominatorParams.bigQuery !== undefined && (!shouldLoadTimeseries && !shouldAlwaysLoadTimeseries) ? getRecentSnapshot([denominatorParams.bigQuery], 15) : handleLoadData(denominatorParams) : false
     ];
 
     const [
@@ -125,7 +126,7 @@ export default function useLoadData(){
       ? dataParams.nIndex 
       : dateIndices.slice(-1)[0] 
       : null;
-    
+
     let binData = getDataForBins(
       dataParams.numerator === 'properties' ? geojsonData.data.features : numeratorData.data, 
       dataParams.denominator === 'properties' ? geojsonProperties : denominatorData.data, 
@@ -179,7 +180,9 @@ export default function useLoadData(){
           colorScale: mapParams.mapType === 'natural_breaks' ? colorScales[dataParams.colorScale || mapParams.mapType] : colorScales[mapParams.mapType || dataParams.colorScale ]
         },
         variableParams: {
-          nIndex: dateIndices?.indexOf(dataParams.nIndex) === -1 ? binIndex : dataParams.nIndex,
+          nIndex: dateIndices?.indexOf(dataParams.nIndex) === -1 || (!shouldLoadTimeseries && !shouldAlwaysLoadTimeseries)
+          ? binIndex 
+          : dataParams.nIndex,
         },
         dates: dateLists.isoDateList,
         storedLisaData: lisaData,
@@ -325,6 +328,29 @@ export default function useLoadData(){
       }
     }
   },[currentData, geoda])
+
+  const loadFullTimeseries = async (datasetParams, defaultTables) => {
+    const numeratorParams = datasetParams.tables[dataParams.numerator]||defaultTables[dataParams.numerator]
+    const denominatorParams = dataParams.denominator !== 'properties' ? datasetParams.tables[dataParams.denominator]||defaultTables[dataParams.denominator] : null
+    
+    const firstLoadPromises = await Promise.all([
+      numeratorParams ?  handleLoadData(numeratorParams) : false,
+      denominatorParams ? handleLoadData(denominatorParams) : false
+    ]);
+
+    dispatch(reconcileTables({
+      [numeratorParams.file]: firstLoadPromises[0],
+      [denominatorParams && denominatorParams.file]: firstLoadPromises[1],
+    }))
+
+    return true
+  }
+
+  useEffect(() => {
+    if (shouldLoadTimeseries){
+      loadFullTimeseries(dataPresets[currentData], defaultTables[dataPresets[currentData]['geography']])
+    }
+  },[shouldLoadTimeseries])
 
   return [
     firstLoad,

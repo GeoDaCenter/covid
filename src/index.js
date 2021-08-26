@@ -29,7 +29,7 @@ const store = createStore(
 );
 const persistor = persistStore(store)
 document.onkeydown = (e) => {
-  if (e.ctrlKey && e.altKey && e.key === 'x'){
+  if (e.key === 'x'){
     persistor.purge();
     alert('Reload to clear saved preferences.')
   }

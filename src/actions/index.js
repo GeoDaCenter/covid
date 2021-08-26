@@ -476,6 +476,16 @@ export const addTables = ( data ) => {
     }
 }
 
+
+export const reconcileTables = ( data ) => {
+    return {
+        type:'RECONCILE_TABLES',
+        payload: {
+            data
+        }
+    }
+}
+
 export const updateMap = () => {
     return {
         type: 'UPDATE_MAP'

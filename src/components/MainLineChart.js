@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import {
-  LineChart, Line, XAxis, YAxis, ReferenceArea, 
+  LineChart, Line, XAxis, YAxis, ReferenceArea, ReferenceLine, 
   Tooltip, Label, ResponsiveContainer, Legend
 } from 'recharts';
 
@@ -110,7 +110,7 @@ const CustomTooltip = props => {
                         boxShadow: '0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12)'
                 
                 }}> 
-                <p style={{color:'white', padding:'5px 0 0 0',}}>{data[0].payload.date}</p>
+                <p style={{color:'white', padding:'5px 0 0 0',}}>{data[0].payload.d}</p>
                     {data.map(data => 
                         <p style={{color: data.color, padding:'5px 0 0 0', textShadow: `2px 2px 4px ${colors.black}`, fontWeight:600}}>{data.name}: {Number.isInteger(Math.floor(data.payload[data.dataKey])) ? 
                             Math.floor(data.payload[data.dataKey]).toLocaleString('en') 
@@ -210,6 +210,7 @@ const MainLineChart = () => {
                     >
                         <XAxis 
                             dataKey="d"
+                            type="category"
                             ticks={dateRange}
                             tick={
                                 <CustomTick
@@ -259,16 +260,6 @@ const MainLineChart = () => {
                         <Tooltip
                             content={CustomTooltip}
                         />
-                        <ReferenceArea 
-                            yAxisId="left"
-                            x1={dataParams.nRange === null ? 
-                                dataParams.variableName.indexOf('Testing') !== -1 ? dataParams.nIndex - 7 : 0
-                                : dataParams.nIndex-dataParams.nRange}
-                            x2={dataParams.nIndex}
-                            fill="white" 
-                            fillOpacity={0.15}
-                            isAnimationActive={false}
-                        />
                         {selectionKeys.length < 2 && <Line type="monotone" yAxisId="left" dataKey={"v"} name="Total Cases" stroke={colors.lightgray} dot={false} isAnimationActive={false} /> }
                         {selectionKeys.length < 2 && <Line type="monotone" yAxisId="right" dataKey={selectionKeys.length > 0 ? selectionNames[0] : "a"} name="7-Day Average New Cases" stroke={colors.yellow} dot={false} isAnimationActive={false} /> }
                         
@@ -303,6 +294,17 @@ const MainLineChart = () => {
                             onMouseEnter={handleLegendHover} 
                             onMouseLeave={handleLegendLeave}
                         />}
+                        <ReferenceArea 
+                            yAxisId="left"
+                            x2={200}
+                            x1={100}
+                            // x1={dataParams.nRange === null ? 
+                            //     dataParams.variableName.indexOf('Testing') !== -1 ? dataParams.nIndex - 7 : 0
+                            //     : dataParams.nIndex-dataParams.nRange}
+                            // x2={dataParams.nIndex}
+                            fill="white" 
+                            fillOpacity={1}
+                        />
                     </LineChart>
                 </ResponsiveContainer>
                 <SwitchesContainer>
