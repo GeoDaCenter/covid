@@ -210,7 +210,6 @@ const MainLineChart = () => {
                     >
                         <XAxis 
                             dataKey="d"
-                            type="category"
                             ticks={dateRange}
                             tick={
                                 <CustomTick
@@ -224,6 +223,10 @@ const MainLineChart = () => {
                                 labelFormatter={dateFormatter}
                                 />
                             }
+                        />
+                        <XAxis
+                            xAxisId="sub"
+                            hide={true}
                         />
                         <YAxis yAxisId="left" type="number" scale={logChart ? "log" : "linear"} domain={[0.01, 'dataMax']} allowDataOverflow 
                             ticks={selectionKeys.length === 0 ? rangeIncrement({maximum: maximums.sum}) : []} 
@@ -296,14 +299,13 @@ const MainLineChart = () => {
                         />}
                         <ReferenceArea 
                             yAxisId="left"
-                            x2={200}
-                            x1={100}
-                            // x1={dataParams.nRange === null ? 
-                            //     dataParams.variableName.indexOf('Testing') !== -1 ? dataParams.nIndex - 7 : 0
-                            //     : dataParams.nIndex-dataParams.nRange}
-                            // x2={dataParams.nIndex}
+                            xAxisId="sub"
+                            x1={dataParams.nRange === null ? 
+                                dataParams.variableName.indexOf('Testing') !== -1 ? dataParams.nIndex - 7 : 0
+                                : dataParams.nIndex-dataParams.nRange}
+                            x2={dataParams.nIndex-1}
                             fill="white" 
-                            fillOpacity={1}
+                            fillOpacity={.15}
                         />
                     </LineChart>
                 </ResponsiveContainer>

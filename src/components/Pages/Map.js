@@ -37,7 +37,7 @@ import * as Comlink from "comlink";
 const getDefaultDimensions = () => ({
   defaultX: window.innerWidth <= 1024 ? window.innerWidth*.1 : window.innerWidth <= 1400 ? window.innerWidth-400 : window.innerWidth -500, 
   defaultXLong: window.innerWidth <= 1024 ? window.innerWidth*.1 : window.innerWidth <= 1400 ? window.innerWidth-450 : window.innerWidth -550,
-  defaultY: window.innerWidth <= 1024 ? window.innerHeight*.25 : 75,
+  defaultY: window.innerWidth <= 1024 ? window.innerHeight*.25 : 110,
   defaultWidth: window.innerWidth <= 1024 ? window.innerWidth*.8 : 300,
   defaultWidthLong: window.innerWidth <= 1024 ? window.innerWidth*.8 : window.innerWidth <= 1400 ? 400 : 500,
   defaultHeight: window.innerWidth <= 1024 ? window.innerHeight*.4 : 300,
