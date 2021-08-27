@@ -616,7 +616,7 @@ export default function MapSection(){
             LayerArray.push(layers['choroplethHighlight'])
             LayerArray.push(layers['choroplethHover'])
         }
-
+        
         if (resources && resources.includes('hospital')) LayerArray.push(layers['hospitals'])
         if (resources && resources.includes('clinic')) LayerArray.push(layers['clinic'])
         if (resources && resources.includes('vaccinationSites')) LayerArray.push(layers['vaccinationSites'])

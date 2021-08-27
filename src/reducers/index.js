@@ -895,7 +895,9 @@ var reducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 [action.payload.pref]: action.payload.value === 'toggle'
-                    ? !state[action.payload.pref]
+                    ? 'string' === typeof(state[action.payload.pref])
+                        ? false
+                        : !state[action.payload.pref]
                     : action.payload.value
             }
         }

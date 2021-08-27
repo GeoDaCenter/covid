@@ -145,5 +145,7 @@ export const INITIAL_STATE = {
   shouldAlwaysLoadTimeseries: false,
   snapshotDaysToLoad: 90,
   savedLocation: '',
-  shouldSaveLocation: false
+  shouldSaveLocation: false,
+  shouldSaveOverlay:false,
+  shouldSaveResource:false
 };

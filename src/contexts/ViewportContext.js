@@ -22,7 +22,6 @@ export const ViewportProvider = ({defaultViewport = {}, children}) => {
  
   useEffect(() => {
     if (shouldSaveLocation && document.hasFocus()){
-      console.log( JSON.stringify(viewport))
       dispatch({
         type: 'SET_PREFERENCE',
         payload: {

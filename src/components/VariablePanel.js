@@ -18,6 +18,7 @@ import { StyledDropDown, BinsContainer, Gutter } from '../styled_components';
 import { setVariableParams, setMapParams, setCurrentData, setPanelState, setParametersAndData, setNotification, changeDotDensityMode, toggleDotDensityRace, setDotDensityBgOpacity } from '../actions';
 import { fixedScales, colorScales, colors, variableTree, urlParamsTree, datasetTree, allGeographies, allDatasets } from '../config';
 import * as SVG from '../config/svg';
+import { useEffect } from 'react/cjs/react.development';
 
 /** STYLES */
 const VariablePanelContainer = styled.div`
@@ -341,7 +342,9 @@ export default function VariablePanel(){
   const dataPresets = useSelector(state => state.dataPresets);
   const shouldLoadTimeseries = useSelector((state)=>state.shouldLoadTimeseries);
   const shouldAlwaysLoadTimeseries = useSelector((state)=>state.shouldAlwaysLoadTimeseries);
-
+  const shouldSaveOverlay = useSelector((state)=>state.shouldSaveOverlay);
+  const shouldSaveResource = useSelector((state)=>state.shouldSaveResource);
+  
   const handleMapType = (event, newValue) => {
     let nBins = newValue === 'hinge15_breaks' ? 6 : 8
     if (newValue === 'lisa') {
@@ -387,6 +390,7 @@ export default function VariablePanel(){
         }
       )
     )
+    shouldSaveOverlay !== false && dispatch({type:'SET_PREFERENCE', payload:{pref:'shouldSaveOverlay',value:event.target.value}})
   }
   const handleMapResource = (event) =>{
     dispatch(
@@ -396,7 +400,19 @@ export default function VariablePanel(){
         }
       )
     )
+    shouldSaveResource !== false && dispatch({type:'SET_PREFERENCE', payload:{pref:'shouldSaveResource',value:event.target.value}})
   }
+
+  useEffect(() => {
+    if (shouldSaveOverlay !== false) {
+      handleMapOverlay({target:{value:shouldSaveOverlay}})
+    }
+
+    if (shouldSaveResource !== false) {
+      handleMapResource({target:{value:shouldSaveResource}})
+    }
+  },[])
+
   const handleOpenClose = () => dispatch(setPanelState({variables:!panelState.variables}))
   const handleVizTypeButton = (vizType) => dispatch(setMapParams({vizType}))
   const handleDotDensitySlider = (e, newValue) => dispatch(setDotDensityBgOpacity(newValue))  

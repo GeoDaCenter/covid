@@ -24,7 +24,6 @@ export default function parseMapboxLayers(defaultLayers, mapParams, globalMap=fa
         : ['native_american_reservations','segregated_cities','uscongress-districts'].includes(mapParams.overlay)
         ? defaultLayers.map(layer => {
             if (mapParams.resource.includes(layer.id.split('-')[0]) || mapParams.overlay.includes(layer.id.split('-')[0])) {
-                console.log(layer)
                 return {...layer, layout: {...layer.layout, visibility: "visible"}}
             } else if (layer.id.includes('label')){
                 return {...layer, layout: {...layer.layout, visibility: "none"}}

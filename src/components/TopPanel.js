@@ -7,11 +7,15 @@ import styled from 'styled-components';
 import { DateSlider, Dock, Ticks, SliderPlaceholder } from '../components';
 import { colors } from '../config';
 import * as SVG from '../config/svg';
-import { OutlineButton } from '../styled_components';
+import { OutlineButton, StyledDropDown } from '../styled_components';
+// MUI import
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Slider from '@material-ui/core/Slider';
+
+import { range } from 'lodash';
 
 // Styled components
 const TopDrawer = styled.div`
@@ -77,6 +81,7 @@ const PreferenceButton = styled.button`
 
 const DismissButton = styled(OutlineButton)`
     border:none;
+    font-weight:normal;
     &.topRight {
         position:absolute;
         top:0;
@@ -109,48 +114,92 @@ const PreferencePanelContainer = styled.div`
     }
 `
 
-function PreferncePanel({closePanel}){
+const SnapshotSelect = styled.p`
+    &.disabled {
+        opacity:0.5;
+        pointer-events:none;
+    }
+`
+
+const DaysDropdown = styled(StyledDropDown)`
+    transform:translateY(-6px);
+`
+
+function PreferencePanel({closePanel}){
     const shouldAlwaysLoadTimeseries = useSelector((state)=>state.shouldAlwaysLoadTimeseries)
     const snapshotDaysToLoad = useSelector((state) => state.snapshotDaysToLoad);
     const shouldSaveLocation = useSelector((state) => state.shouldSaveLocation);
+    const shouldSaveOverlay = useSelector((state) => state.shouldSaveOverlay);
+    const shouldSaveResource = useSelector((state) => state.shouldSaveResource);
+    const mapParams = useSelector((state) => state.mapParams);
+
     const dispatch = useDispatch();
 
     return <PreferencePanelContainer>
         <h3>Atlas Preferences</h3>
+        <br/>
         <FormGroup row>
+            <SnapshotSelect id="snapshot-slider-label" className={shouldAlwaysLoadTimeseries ? 'disabled' : ''}>
+                Only load the most recent {
+                    <DaysDropdown>
+                        <Select 
+                            value={snapshotDaysToLoad} 
+                            id="snapshotDaysToLoad-select"
+                            onChange={(e, newVal) => dispatch({type:'SET_PREFERENCE', payload:{pref:'snapshotDaysToLoad',value:newVal}})}
+                        >
+                        {range(1,13).map(i => <MenuItem 
+                            value={i*15} 
+                            key={`snapshot-${i}`}
+                            >{i*15} days</MenuItem>)}
+                    </Select>
+                    </DaysDropdown>
+                } of data
+            </SnapshotSelect>
             <FormControlLabel
                 control={<Checkbox 
                     checked={shouldAlwaysLoadTimeseries} 
                     onChange={() => dispatch({type:'SET_LOAD_TIMESERIES',payload:'toggle'})} 
                     name="checkedA" 
                 />}
-                label="Always load historic time-series data"
+                label="Always load all historic time-series data"
             />
-            {!shouldAlwaysLoadTimeseries && <><p id="snapshot-slider-label">
-                Number of days to load: {snapshotDaysToLoad} days
-            </p>
-            <Slider min={15} max={180} step={15} 
-                value={snapshotDaysToLoad} 
-                onChange={(e, value) => dispatch({type:'SET_PREFERENCE',payload:{pref:'snapshotDaysToLoad', value}})}
-                aria-labelledby="snapshot-slider-label" /></>}
             <FormControlLabel
-                control={<Checkbox checked={shouldSaveLocation} onChange={() => dispatch({type:'SET_PREFERENCE', payload:{pref:'shouldSaveLocation',value:'toggle'}})} name="checkedA" />}
+                control={
+                    <Checkbox 
+                        checked={shouldSaveLocation} 
+                        onChange={() => dispatch({type:'SET_PREFERENCE', payload:{pref:'shouldSaveLocation',value:'toggle'}})} 
+                        name="saveLocation" 
+                    />}
                 label="Save map location"
             />
+            <br/>
             <FormControlLabel
-                control={<Checkbox checked={false} onChange={(e) => console.log(e)} name="checkedA" />}
-                label="Save variable settings (requires historic time-series data enabled)"
+                control={
+                    <Checkbox 
+                        checked={false} 
+                        onChange={(e) => console.log(e)} 
+                        name="saveVariable" 
+                    />}
+                label="Save variable settings"
                 disabled
             />
             <FormControlLabel
-                control={<Checkbox checked={false} onChange={(e) => console.log(e)} name="checkedA" />}
-                label="Save overlay displayed"
-                disabled
+                control={
+                    <Checkbox 
+                        checked={shouldSaveOverlay !== false} 
+                        onChange={()=> dispatch({type:'SET_PREFERENCE', payload:{pref:'shouldSaveOverlay',value:shouldSaveOverlay === false ? mapParams.overlay : 'toggle'}})} 
+                        name="saveOverlay" 
+                    />}
+                label="Save overlay layer"
             />
             <FormControlLabel
-                control={<Checkbox checked={false} onChange={(e) => console.log(e)} name="checkedA" />}
-                label="Save resource displayed"
-                disabled
+                control={
+                    <Checkbox 
+                        checked={shouldSaveResource !== false} 
+                        onChange={()=> dispatch({type:'SET_PREFERENCE', payload:{pref:'shouldSaveResource',value:shouldSaveResource === false ? mapParams.resource : 'toggle'}})} 
+                        name="saveResource" 
+                    />}
+                label="Save resource layer"
             />
         </FormGroup>
         <DismissButton onClick={closePanel} className="topRight">×</DismissButton>
@@ -180,7 +229,7 @@ export default function TopPanel(){
                 </PreferenceContainer>
             }
             <PreferenceButton onClick={() => setShowPreferenceMenu(prev => !prev)}>{SVG.sliders}</PreferenceButton>
-            {showPreferenceMenu && <PreferncePanel closePanel={() => setShowPreferenceMenu(false)} />}
+            {showPreferenceMenu && <PreferencePanel closePanel={() => setShowPreferenceMenu(false)} />}
         </TopDrawer>
     )
 }
