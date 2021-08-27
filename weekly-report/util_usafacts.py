@@ -135,11 +135,12 @@ def rolling_sum(gdf, fourteen_dates , seven_dates, adjusted_population):
 
 
 def calculate_lisa(lisa_dic, k, seven_dates):
-	
+
 	'''Calculate lisa'''
 
 	df = lisa_dic[k]
-
+	print(help(pygeoda))
+	print(help(pygeoda.geopds))
 	counties = pygeoda.geopds.geopandas_to_geoda(df)
 	w = pygeoda.weights.queen(counties)
 
