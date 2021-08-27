@@ -5,10 +5,13 @@ import pandas as pd
 import numpy as np
 import re
 import pytz
-from jinja2 import Environment, FileSystemLoader
+# from jinja2 import Environment, FileSystemLoader
 import geopandas
 import pygeoda
+import os
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+repo_root = os.path.abspath(os.path.join(dir_path, '..'))
 
 ##### Generate HTML #####
 
@@ -28,7 +31,7 @@ def generate_tables(output):
 		df = pd.DataFrame(v)
 		df = df.sort_values(by="average", ascending=False)
 		if not df.empty:
-			with open('number_county.json') as f:
+			with open(os.path.join(repo_root, 'weekly-report/number_county.json')) as f:
 				number_county = json.load(f)
 			df_pivot = pd.pivot_table(df, index=["state_name"], values=["GEOID"],
 								aggfunc=[np.count_nonzero], fill_value=0)
@@ -43,8 +46,8 @@ def generate_tables(output):
 		html_var["full_{}".format(i+1)] = df.to_html()
 		html_var["pivot_{}".format(i+1)] = df_pivot.to_html()
 
-		df.to_csv(f'./csvs/full_data_{k}.csv')
-		df_pivot.to_csv(f'./csvs/pivot_data_{k}.csv')
+		df.to_csv(os.path.join(repo_root, f'weekly-report/csvs/full_data_{k}.csv'))
+		df_pivot.to_csv(os.path.join(repo_root, f'weekly-report/csvs/pivot_data_{k}.csv'))
 
 		i += 1
 
@@ -55,17 +58,17 @@ def generate_tables(output):
 
 
 
-def generate_html(template_vars):
+# def generate_html(template_vars):
 
-	'''Generate HTML page'''
+# 	'''Generate HTML page'''
 
-	env = Environment(loader=FileSystemLoader('.'))
-	template = env.get_template("report_template.html")
-	html_out = template.render(template_vars)
+# 	env = Environment(loader=FileSystemLoader('.'))
+# 	template = env.get_template("report_template.html")
+# 	html_out = template.render(template_vars)
 
-	html_file = open('report.html', 'w')
-	html_file.write(html_out)
-	html_file.close()
+# 	html_file = open('report.html', 'w')
+# 	html_file.write(html_out)
+# 	html_file.close()
 
 
 ##### Helper Functions #####
@@ -164,9 +167,9 @@ def get_high_high_county(data, date_list):
 
 
 def get_number_of_county():
-	gdf = geopandas.read_file("../download/usafacts_confirmed_11.29.geojson")
+	gdf = geopandas.read_file(os.path.join(repo_root, 'public/geojson/county_usfacts.geojson'))
 	count = gdf.groupby("state_name")["GEOID"].count().to_dict()
-	with open('number_county.json', 'w') as fp:
+	with open(os.path.join(repo_root, 'weekly-report/number_county.json'), 'w') as fp:
 		json.dump(count, fp)
 	return
 

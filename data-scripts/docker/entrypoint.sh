@@ -36,10 +36,6 @@ case $DATA_SOURCE in
 		export COMMAND="python ./data-scripts/lisa/update_lisa_json.py"
 		;;
 
-	usafacts)
-	  export COMMAND="python ./data-scripts/usafacts/usafacts.py"
-		;;
-
 	nyt)
 		export COMMAND="python ./data-scripts/nyt/nyt.py"
 		;;
@@ -52,8 +48,19 @@ case $DATA_SOURCE in
 		export COMMAND='bash ./data-scripts/testing/run_testing.sh'
 		;;
 
+	usafacts)
+	  export COMMAND="python ./data-scripts/usafacts/usafacts.py"
+		;;
+		
 	vax)
 		export COMMAND="python ./data-scripts/cdc/getCdcVaccinationData.py"
+		;;
+
+	weekly_report)
+		export COMMAND="python ./weekly-report/create_report_usafacts.py"
+		;;
+
+
 	
 esac
 
