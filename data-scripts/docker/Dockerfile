@@ -33,4 +33,4 @@ COPY id_rsa /root/.ssh/id_rsa
 COPY gbq-credentials.json /root/.ssh/gbq-credentials.json
 
 # Run git clone, get data, git push
-CMD "./entrypoint.sh"
+ENTRYPOINT ["sh", "entrypoint.sh"]

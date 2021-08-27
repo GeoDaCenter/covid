@@ -1,3 +1,4 @@
+#!/bin/bash
 export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 export GOOGLE_APPLICATION_CREDENTIALS="/root/.ssh/gbq-credentials.json"
 git config --global user.email "theuscovidatlas@gmail.com"
@@ -58,9 +59,6 @@ case $DATA_SOURCE in
 
 	weekly_report)
 		export COMMAND="python ./weekly-report/create_report_usafacts.py"
-		;;
-
-
 	
 esac
 

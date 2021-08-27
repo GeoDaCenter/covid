@@ -95,7 +95,7 @@ def rolling_average(gdf, fourteen_dates , seven_dates, adjusted_population):
 	new_df = df.diff(periods=-7, axis=1).iloc[:,:-7].div(7)
 	# new_df = df.rolling(window=7, axis=1).mean().shift(-6,axis=1).dropna(1).reset_index()
 	new_df = pd.merge(new_df, gdf.loc[:,["GEOID", "population", "geometry", "NAME", "state_name", 
-		"state_abbr"]], left_on = "GEOID", right_on = "GEOID")
+		"state_abbr"]], on = "GEOID")
 
 	if not adjusted_population:
 		new_df["average"] = new_df.loc[:, seven_dates].mean(axis=1).round(3)

@@ -19,7 +19,7 @@ def calculate_seven_day_lisa():
 	fourteen_dates = util.get_date(ndays = 14, date = util.check_latest_date(df))
 	seven_dates = util.get_date(ndays = 7, date = util.check_latest_date(df))
 
-	gdf = gdf.merge(df.loc[:, fourteen_dates+["GEOID", "County Name"]], left_index = True, right_index = False, on="GEOID")
+	gdf = gdf.merge(df.loc[:, fourteen_dates+["GEOID", "County Name"]], on="GEOID")
 
 	# Select informational columns and calculate 7-day average for last 7 days
 	emerging_hotspot  = util.rolling_average(gdf, fourteen_dates , seven_dates, adjusted_population=False)
