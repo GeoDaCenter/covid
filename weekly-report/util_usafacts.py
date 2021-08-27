@@ -90,8 +90,9 @@ def get_date(ndays = 7, date = None):
 def rolling_average(gdf, fourteen_dates , seven_dates, adjusted_population):
 
 	'''Calculate 7-day rolling average'''
+	df = pd.DataFrame(gdf)
+	df = df.loc[:,fourteen_dates+["GEOID"]].set_index("GEOID")
 
-	df = gdf.loc[:,fourteen_dates+["GEOID"]].set_index("GEOID")
 	new_df = df.diff(periods=-7, axis=1).iloc[:,:-7].div(7)
 	# new_df = df.rolling(window=7, axis=1).mean().shift(-6,axis=1).dropna(1).reset_index()
 	new_df = pd.merge(new_df, gdf.loc[:,["GEOID", "population", "geometry", "NAME", "state_name", 
