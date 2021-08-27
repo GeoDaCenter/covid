@@ -404,12 +404,16 @@ export default function VariablePanel(){
   }
 
   useEffect(() => {
-    if (shouldSaveOverlay !== false) {
-      handleMapOverlay({target:{value:shouldSaveOverlay}})
-    }
-
-    if (shouldSaveResource !== false) {
-      handleMapResource({target:{value:shouldSaveResource}})
+    try {
+      if (shouldSaveOverlay !== false) {
+        handleMapOverlay({target:{value:shouldSaveOverlay}})
+      }
+  
+      if (shouldSaveResource !== false) {
+        handleMapResource({target:{value:shouldSaveResource}})
+      }
+    } catch {
+      console.log('Could not load preferences.')
     }
   },[])
 
