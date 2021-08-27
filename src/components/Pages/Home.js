@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -146,117 +146,117 @@ const Hero = styled.div`
 
 `
 
-// const Features = styled.div`
-//     max-width:1140px;
-//     width:100%;
-//     margin: 0 auto 60px auto;
-//     h2 {
-//         font-family: 'Playfair Display', serif;
-//         font-size: 28px;
-//         text-align:center;
-//         font-weight: normal;
-//         font-stretch: normal;
-//         font-style: italic;
-//         line-height: 1.5;
-//         letter-spacing: normal;
-//         text-align: center;
-//         color: ${colors.skyblue};
-//         margin-bottom:40px;
-//     }
-// `
+const Features = styled.div`
+    max-width:1140px;
+    width:100%;
+    margin: 60px auto 60px auto;
+    h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 28px;
+        text-align:center;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: italic;
+        line-height: 1.5;
+        letter-spacing: normal;
+        text-align: center;
+        color: ${colors.skyblue};
+        margin-bottom:40px;
+    }
+`
 
-// const Feature = styled(Grid)`
-//     text-align:center;
-//     h5 {
-//         font-family: 'Playfair Display', serif;
-//         font-size: 19px;
-//         font-weight: normal;
-//         font-stretch: normal;
-//         font-style: normal;
-//         line-height: normal;
-//         letter-spacing: normal;
-//         color: ${colors.skyblue};
-//         margin-bottom:20px;
-//     }
-//     img {
-//         margin:20px auto;
-//         width:100%;
-//         max-width:130px;
-//     }
-//     p {
-//         color:white;
-//         font-family: Lato;
-//         font-size: 16px;
-//         font-weight: 300;
-//         font-stretch: normal;
-//         font-style: normal;
-//         line-height: 1.63;
-//         letter-spacing: normal;
-//         color: ${colors.white};
-//         @media(max-width:960px) {
-//             max-width:400px;
-//             margin:0 auto 40px auto;
-//         }
-//     }
-// `
+const Feature = styled(Grid)`
+    text-align:center;
+    h5 {
+        font-family: 'Playfair Display', serif;
+        font-size: 19px;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: normal;
+        color: ${colors.skyblue};
+        margin-bottom:20px;
+    }
+    img {
+        margin:20px auto;
+        width:100%;
+        max-width:130px;
+    }
+    p {
+        color:white;
+        font-family: Lato;
+        font-size: 16px;
+        font-weight: 300;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.63;
+        letter-spacing: normal;
+        color: ${colors.white};
+        @media(max-width:960px) {
+            max-width:400px;
+            margin:0 auto 40px auto;
+        }
+    }
+`
 
-// const BreakQuestion = styled.div`
-//     width:100%;
-//     background-color:${colors.skyblue};
-//     padding:20px;
-//     h3 {
-//         font-family: 'Playfair Display', serif;
-//         font-size: 28px;
-//         font-weight: normal;
-//         font-stretch: normal;
-//         font-style: italic;
-//         line-height: 1.5;
-//         letter-spacing: normal;
-//         text-align: center;
-//         color: ${colors.gray};
-//     }
-// `
+const BreakQuestion = styled.div`
+    width:100%;
+    background-color:${colors.skyblue};
+    padding:20px;
+    h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 28px;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: italic;
+        line-height: 1.5;
+        letter-spacing: normal;
+        text-align: center;
+        color: ${colors.gray};
+    }
+`
 
-// const Arrow = styled.div`
-//     width: 35px;
-//     height: 35px;
-//     background-color: ${colors.skyblue};
-//     position:absolute;
-//     left:50%;
-//     transform: translate(-50%, 0px) rotate(-45deg);
-// `
+const Arrow = styled.div`
+    width: 35px;
+    height: 35px;
+    background-color: ${colors.skyblue};
+    position:absolute;
+    left:50%;
+    transform: translate(-50%, 0px) rotate(-45deg);
+`
 
-// const UseCasesContainer = styled.div`
-//     background:white;
-//     width:100%;
-//     padding: 40px 20px;
-//     padding-top:40px;
-// `
-// const UseCases = styled.div`
-//     width:100%;
-//     max-width:1140px;
-//     margin:0 auto;
-//     @media (max-width:960px){
-//         text-align:center;
-//     }
-//     video, img {
-//         width:100%;
-//         max-width:400px;
-//         margin:0 auto;
-//         display:block;
-//     }
-//     h5 {
-//         font-size:1.5rem;
-//     }
-//     p {
-//         max-width:600px;
-//         font-size:16px;
-//         line-height:1.7;
-//         @media (max-width:960px){
-//             margin: 0 auto;
-//         }
-//     }
-// `
+const UseCasesContainer = styled.div`
+    background:white;
+    width:100%;
+    padding: 40px 20px;
+    padding-top:40px;
+`
+const UseCases = styled.div`
+    width:100%;
+    max-width:1140px;
+    margin:0 auto;
+    @media (max-width:960px){
+        text-align:center;
+    }
+    video, img {
+        width:100%;
+        max-width:400px;
+        margin:0 auto;
+        display:block;
+    }
+    h5 {
+        font-size:1.5rem;
+    }
+    p {
+        max-width:600px;
+        font-size:16px;
+        line-height:1.7;
+        @media (max-width:960px){
+            margin: 0 auto;
+        }
+    }
+`
 
 const NoBreak = styled.span`
     white-space: nowrap;
@@ -283,8 +283,30 @@ const MapWrapper = styled.div`
     z-index:0;
 `
 
-function Home(){
+const ExploreButton = styled(NavLink)`
+    position:fixed;
+    right:1em;
+    bottom:1em;
+    padding:1em;
+    background:${colors.orange};
+    font-size:1.5rem;
+    border-radius:0.5em;
+    -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.43), -4px -7px 15px 5px rgba(0,0,0,0.12); 
+    box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.43), -4px -7px 15px 5px rgba(0,0,0,0.12);
+    color:black;
+    font-weight:bold;
+    text-decoration:none;
+    opacity:${props => props.active ? 1 : 0};
+    transition:250ms all;
+    z-index:50000;
+    @media(max-width:960px){
+        right:50%;
+        transform:translateX(50%);
+    }
+`
 
+function Home(){
+    const [ctaActive, setCtaActive] = useState(false)
     const handleGeocoder = (e) => {
         let url = '';
         
@@ -296,12 +318,18 @@ function Home(){
         url += `map?lat=${e.center[1]}&lon=${e.center[0]}&z=6.5&v=2`
         window.location.href = url        
     }
+    useEffect(() => {
+        document.addEventListener('scroll', () => {
+            if (window.pageYOffset > 0 && !ctaActive) setCtaActive(true)
+            if (window.pageYOffset === 0 && ctaActive) setCtaActive(false)
+        })
+    },[])
 
     return (
         <>
             <NavBar light/>
             <HomePage>
-            <HomePageContent>
+                <HomePageContent>
                     <Hero>
                         <Gutter vh={5}/>
                         <Grid container spacing={1}>
@@ -363,7 +391,7 @@ function Home(){
                         <Gutter h={20}/>
                     </Hero>
                     <FastTrackInsights />
-                    {/* <Features>
+                    <Features>
                         <Grid container spacing={1}>
                             <Grid item xs={12}>
                                 <h2>Atlas Features</h2>
@@ -399,14 +427,14 @@ function Home(){
                                 
                             </Feature>
                         </Grid>
-                    </Features> */}
-                    {/* <BreakQuestion>
+                    </Features>
+                    <BreakQuestion>
                         <h3>
                             How can the Atlas better equip you to respond to the pandemic?
                         </h3>
                         <Arrow/>
-                    </BreakQuestion> */}
-                    {/* <UseCasesContainer>
+                    </BreakQuestion>
+                    <UseCasesContainer>
                         <UseCases>
                             <Grid container spacing={5}>
                                 <Grid item xs={12} md={6}>
@@ -480,9 +508,11 @@ function Home(){
                                 </Grid>
                             </Grid>
                         </UseCases>
-                    </UseCasesContainer> */}
+                    </UseCasesContainer>
             </HomePageContent>
             <Footer signUp={true} />
+            <ExploreButton to="/map" id="floating-cta" active={ctaActive}>Explore the Atlas</ExploreButton>
+        
         </HomePage>
     </>
     );
