@@ -144,9 +144,9 @@ export default function MapSection(){
 
         window.addEventListener('storage', () => {
             // When local storage changes, dump the list to the console.
-            const SHARED_GEOID =  localStorage.getItem('SHARED_GEOID').split(',').map(d => parseInt(d))
+            const SHARED_GEOID =  localStorage.getItem('SHARED_GEOID')
             if (SHARED_GEOID !== null) {
-                setHighlightGeog(SHARED_GEOID); 
+                setHighlightGeog(SHARED_GEOID.split(',').map(d => parseInt(d))); 
             }
             const SHARED_VIEW =  JSON.parse(localStorage.getItem('SHARED_VIEW'));
             if (!document.hasFocus() && SHARED_VIEW !== null && shallowCompare(SHARED_VIEW, viewport) && SHARED_VIEW.hasOwnProperty('latitude')) {

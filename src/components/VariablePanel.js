@@ -478,7 +478,7 @@ export default function VariablePanel(){
     ? urlParamsTree[currentData].name
     : availableData[0]
 
-  console.log(dataName)
+  // console.log(dataName)
   // const textDataset = Object.keys(
   //   urlParamsTree
   //   )[Object.values(
