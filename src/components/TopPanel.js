@@ -228,7 +228,13 @@ export default function TopPanel(){
                     </div>
                 </PreferenceContainer>
             }
-            <PreferenceButton onClick={() => setShowPreferenceMenu(prev => !prev)}>{SVG.sliders}</PreferenceButton>
+            <PreferenceButton 
+                onClick={() => setShowPreferenceMenu(prev => !prev)}
+                title="Advanced Preferences"
+                id="showAdvancedSettings"
+                >
+                    {SVG.sliders}
+            </PreferenceButton>
             {showPreferenceMenu && <PreferencePanel closePanel={() => setShowPreferenceMenu(false)} />}
         </TopDrawer>
     )
