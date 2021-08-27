@@ -140,7 +140,7 @@ def calculate_lisa(lisa_dic, k, seven_dates):
 
 	df = lisa_dic[k]
 	counties = pygeoda.open(df)
-	w = pygeoda.weights.queen(counties)
+	w = pygeoda.queen_weights(counties)
 
 	int_data = [df[c].tolist() for c in seven_dates]
 
