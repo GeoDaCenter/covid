@@ -90,8 +90,7 @@ def get_date(ndays = 7, date = None):
 def rolling_average(gdf, fourteen_dates , seven_dates, adjusted_population):
 
 	'''Calculate 7-day rolling average'''
-	df = pd.DataFrame(gdf)
-	df = df.loc[:,fourteen_dates+["GEOID"]].set_index("GEOID")
+	df = gdf.loc[:,fourteen_dates+["GEOID"]].set_index("GEOID")
 
 	new_df = df.diff(periods=-7, axis=1).iloc[:,:-7].div(7)
 	# new_df = df.rolling(window=7, axis=1).mean().shift(-6,axis=1).dropna(1).reset_index()
@@ -139,8 +138,8 @@ def calculate_lisa(lisa_dic, k, seven_dates):
 	'''Calculate lisa'''
 
 	df = lisa_dic[k]
-	counties = pygeoda.open(df)
-	w = pygeoda.queen_weights(counties)
+	counties = pygeoda.geopandas_to_geoda(df)
+	w = pygeoda.weights.queen(counties)
 
 	int_data = [df[c].tolist() for c in seven_dates]
 

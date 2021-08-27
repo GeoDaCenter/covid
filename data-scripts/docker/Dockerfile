@@ -17,7 +17,7 @@ RUN wget http://download.osgeo.org/libspatialindex/spatialindex-src-1.8.5.tar.gz
   cd - && \
   rm -rf spatialindex-src-1.8.5* && \
   ldconfig && \
-  pip install pygeoda && \
+  pip install pygeoda==0.0.4 && \
   apt-get install -y --no-install-recommends r-base && \
   apt-get install -y libudunits2-dev gfortran libgdal-dev && \
   Rscript -e "install.packages(c('dplyr', 'classInt', 'sf'))"
