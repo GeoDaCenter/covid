@@ -247,23 +247,23 @@ const pageDropDowns = {
       link: '/api'
     }
   ],
-  'METHODS':[
-    {
-      header: 'Mapping',
-      desc: 'How we use spatial statistics, cartography, and geographic information science to produce the Atlas.',
-      link: '/methods#mapping'
-    },
-    {
-      header: 'Infrastructure',
-      desc: 'The data and statistical backbone of the Atlas.',
-      link: '/methods#infrastructure'
-    },
-    {
-      header: 'Data Collection',
-      desc: 'Our structure for daily data updates, scraping, collection, and aggregation.',
-      link: '/methods#data'
-    },
-  ],
+  // 'METHODS':[
+  //   {
+  //     header: 'Mapping',
+  //     desc: 'How we use spatial statistics, cartography, and geographic information science to produce the Atlas.',
+  //     link: '/methods#mapping'
+  //   },
+  //   {
+  //     header: 'Infrastructure',
+  //     desc: 'The data and statistical backbone of the Atlas.',
+  //     link: '/methods#infrastructure'
+  //   },
+  //   {
+  //     header: 'Data Collection',
+  //     desc: 'Our structure for daily data updates, scraping, collection, and aggregation.',
+  //     link: '/methods#data'
+  //   },
+  // ],
   'ABOUT': [
     {
       header: 'Overview',
@@ -280,11 +280,11 @@ const pageDropDowns = {
       desc: 'The community advisory board driving engagement from 2021 onward.',
       link: '/cab'
     },
-    {
-      header: 'FAQ',
-      desc: 'Frequently asked questions on data, maps, and the project.',
-      link: '/faq'
-    },
+    // {
+    //   header: 'FAQ',
+    //   desc: 'Frequently asked questions on data, maps, and the project.',
+    //   link: '/faq'
+    // },
   ]
 }
 
@@ -339,8 +339,10 @@ export default function NavBar(props){
               <li><a href="/map">MAP</a></li>
               <li>{dims.width > 1024 ? <NavButton page="INSIGHTS" /> : <a href="/insights">INSIGHTS</a>}</li>
               <li>{dims.width > 1024 ? <NavButton page="DATA" /> : <a href="/data">DATA</a>}</li>
-              <li>{dims.width > 1024 ? <NavButton page="METHODS" /> : <a href="/methods">METHODS</a>}</li>
+              {/* <li>{dims.width > 1024 ? <NavButton page="METHODS" /> : <a href="/methods">METHODS</a>}</li> */}
               <li>{dims.width > 1024 ? <NavButton page="ABOUT" /> : <a href="/about">ABOUT</a>}</li>
+              <li><a href="/methods">METHODS</a></li>
+              <li><a href="/faq">FAQ</a></li>
               <li><a href="/contact">CONTACT</a></li>
             </ul>
           </NavItems>}
