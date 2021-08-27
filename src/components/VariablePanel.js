@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import InputLabel from '@material-ui/core/InputLabel';
@@ -18,7 +18,6 @@ import { StyledDropDown, BinsContainer, Gutter } from '../styled_components';
 import { setVariableParams, setMapParams, setCurrentData, setPanelState, setParametersAndData, setNotification, changeDotDensityMode, toggleDotDensityRace, setDotDensityBgOpacity } from '../actions';
 import { fixedScales, colorScales, colors, variableTree, urlParamsTree, datasetTree, allGeographies, allDatasets } from '../config';
 import * as SVG from '../config/svg';
-import { useEffect } from 'react/cjs/react.development';
 
 /** STYLES */
 const VariablePanelContainer = styled.div`
@@ -404,16 +403,12 @@ export default function VariablePanel(){
   }
 
   useEffect(() => {
-    try {
-      if (shouldSaveOverlay !== false) {
-        handleMapOverlay({target:{value:shouldSaveOverlay}})
-      }
-  
-      if (shouldSaveResource !== false) {
-        handleMapResource({target:{value:shouldSaveResource}})
-      }
-    } catch {
-      console.log('Could not load preferences.')
+    if (shouldSaveOverlay !== false) {
+      handleMapOverlay({target:{value:shouldSaveOverlay}})
+    }
+
+    if (shouldSaveResource !== false) {
+      handleMapResource({target:{value:shouldSaveResource}})
     }
   },[])
 
