@@ -145,7 +145,7 @@ function PreferencePanel({closePanel}){
                         <Select 
                             value={snapshotDaysToLoad} 
                             id="snapshotDaysToLoad-select"
-                            onChange={(e, newVal) => dispatch({type:'SET_PREFERENCE', payload:{pref:'snapshotDaysToLoad',value:newVal}})}
+                            onChange={(e) => dispatch({type:'SET_PREFERENCE', payload:{pref:'snapshotDaysToLoad',value:e.target.value}})}
                         >
                         {range(1,13).map(i => <MenuItem 
                             value={i*15} 
