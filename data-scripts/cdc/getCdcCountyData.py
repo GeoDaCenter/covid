@@ -130,7 +130,18 @@ def unique(list):
 
 def reconcileDf(extantDf, newDf):
     extantDf = extantDf[["fips_code"] + [column for column in list(extantDf.columns) if column not in list(newDf.columns)]]
-    return extantDf.merge(newDf, on="fips_code")
+    return cleanTail0Vals(extantDf.merge(newDf, on="fips_code"))
+
+def cleanTail0Vals(df):
+    zeroCount = list(df.fillna(0).astype(bool).sum(axis=0))
+    cols = list(df.columns)
+    dfLen = len(df)
+    for i in range(len(cols)-1, 0, -1):
+        if zeroCount[i] > dfLen/2:
+            break
+        else:
+            df = df.drop(cols[i],axis=1)
+    return df
 
 if __name__ == "__main__":
 
@@ -189,7 +200,6 @@ if __name__ == "__main__":
     allNeededColumns = unique(allNeededColumns)
     # fetch data
     raw = getCdcCountyData(list(fipsList.fips_code), allNeededColumns).reset_index()
-    raw.to_csv('debug_cdc.csv',index=False)
     # loop through list of column parsing entries
     # output CSV to this folder and docs
     for entry in colsToParse:

@@ -126,7 +126,7 @@ fileList = [
 # %%
 for fileInfo in fileList:
     csvData = pd.read_csv(os.path.join(repo_root, f'public/csv/{fileInfo["fileName"]}.csv'), low_memory=False).replace('suppressed', -9999)
-
+    print(fileInfo['fileName'])
     try:
         multiplier = 10**fileInfo['decimals']
         suffix = f".e-{fileInfo['decimals']}"
@@ -143,10 +143,13 @@ for fileInfo in fileList:
         rowObj[i].geoid = int(csvData.iloc[i][fileInfo['joinColumn']])
         cleanVals = []
         for val in list(csvData.iloc[i].values)[fileInfo['dateIndex']:]:
-            try: 
-                cleanVals.append(int(val*multiplier))
-            except:
-                cleanVals.append(int(-999))
+            if val == -9999:
+                cleanVals.append(int(-9999))
+            else:
+                try: 
+                    cleanVals.append(int(val*multiplier))
+                except:
+                    cleanVals.append(int(-999))
 
         rowObj[i].vals.extend(cleanVals)
 

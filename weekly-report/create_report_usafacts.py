@@ -1,22 +1,19 @@
-
-
 import geopandas
 import pandas as pd
-import json
-import re
-from datetime import datetime
 import util_usafacts as util
+import os
 
-
+dir_path = os.path.dirname(os.path.realpath(__file__))
+repo_root = os.path.abspath(os.path.join(dir_path, '..'))
 
 ##### USAFacts #####
 
 
 def calculate_seven_day_lisa():
-	df = pd.read_csv("../public/csv/covid_confirmed_usafacts.csv")
+	df = pd.read_csv(os.path.join(repo_root, 'public/csv/covid_confirmed_usafacts.csv'))
 	df = df.rename(columns={"countyFIPS": "GEOID"})
 	df["GEOID"] = df["GEOID"].astype('str').str.zfill(5)
-	gdf = geopandas.read_file("../data/county_usfacts.geojson")
+	gdf = geopandas.read_file(os.path.join(repo_root, 'public/geojson/county_usfacts.geojson'))
 	gdf["GEOID"] = gdf["GEOID"].astype('str')
 
 	fourteen_dates = util.get_date(ndays = 14, date = util.check_latest_date(df))
@@ -65,7 +62,7 @@ if __name__ == '__main__':
 	lisa = get_high_high_county(lisa)
 
 	template_vars = util.generate_tables(lisa)
-	util.generate_html(template_vars)
+	# util.generate_html(template_vars)
 
 
 

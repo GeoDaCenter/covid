@@ -579,18 +579,18 @@ export const dataPresets = {
         id: 'GEOID',
         geography: 'County',
         tables: {
-            'cases': {
-                'file':'covid_confirmed_cdc.e-2.pbf',
-                'dates':'isoDateList',
-                'type':'time-series',
-                'accumulate':true
-            },
-            'deaths': {
-                'file':'covid_deaths_cdc.e-2.pbf',
-                'dates':'isoDateList',
-                'type':'time-series',
-                'accumulate':true
-            }
+            // 'cases': {
+            //     'file':'covid_confirmed_cdc.e-2.pbf',
+            //     'dates':'isoDateList',
+            //     'type':'time-series',
+            //     'accumulate':true
+            // },
+            // 'deaths': {
+            //     'file':'covid_deaths_cdc.e-2.pbf',
+            //     'dates':'isoDateList',
+            //     'type':'time-series',
+            //     'accumulate':true
+            // }
         }
     },
     'cdc_h.geojson': {
