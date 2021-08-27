@@ -98,12 +98,14 @@ def rolling_average(gdf, fourteen_dates , seven_dates, adjusted_population):
 		"state_abbr"]], left_on = "GEOID", right_on = "GEOID")
 
 	if not adjusted_population:
-		new_df["average"] = new_df.loc[:, seven_dates].mean(axis=1)
+		new_df["average"] = new_df.loc[:, seven_dates].mean(axis=1).round(3)
 		return new_df
 
 	for day in seven_dates:
 		new_df.loc[:,day] = new_df.loc[:,day]/new_df['population']
-	new_df["average"] = new_df.loc[:, seven_dates].mean(axis=1)
+	new_df["average"] = new_df.loc[:, seven_dates].mean(axis=1)*100000
+	new_df['average'] = new_df['average'].round(3)
+
 	return new_df
 
 
