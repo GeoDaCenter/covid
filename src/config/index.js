@@ -449,12 +449,14 @@ export const defaultTables = {
         'cases': {
             'file':'covid_confirmed_usafacts_state',
             'dates':'isoDateList',
-            'type':'time-series-cumulative'
+            'type':'time-series-cumulative',
+            'join':'StateFIPS'
         },
         'deaths': {
             'file':'covid_deaths_usafacts_state',
             'dates':'isoDateList',
-            'type':'time-series-cumulative'
+            'type':'time-series-cumulative',
+            'join':'StateFIPS'
         },
         'chr_health_context':{
             'file':'chr_health_context_state',
