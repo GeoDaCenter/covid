@@ -546,14 +546,12 @@ export const dataPresets = {
             'cases': {
                 'file':'covid_confirmed_1p3a.pbf',
                 'dates':'isoDateList',
-                'type':'time-series-cumulative',
-                'accumulate':true
+                'type':'time-series-cumulative'
             },
             'deaths': {
                 'file':'covid_deaths_1p3a.pbf',
                 'dates':'isoDateList',
-                'type':'time-series-cumulative',
-                'accumulate':true
+                'type':'time-series-cumulative'
             }
         }
     },
@@ -635,15 +633,13 @@ export const dataPresets = {
                 'file':'covid_confirmed_1p3a_state',
                 'dates':'isoDateList',
                 'type':'time-series-cumulative',
-                'join':'GEOID',
-                'accumulate':true
+                'join':'GEOID'
             },
             'deaths': {
                 'file':'covid_deaths_1p3a_state',
                 'dates':'isoDateList',
                 'type':'time-series-cumulative',
-                'join':'GEOID',
-                'accumulate':true
+                'join':'GEOID'
             }
         }
     },
