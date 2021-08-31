@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { ContentContainer, Gutter } from '../../styled_components';
 import { StaticNavbar, Footer } from '../';
 import { colors } from '../../config';
-
+import { alert } from '../../config/svg'
 const ApiPage = styled.div`
     background:white;
 `
@@ -23,6 +23,18 @@ const CodeBlock = styled.div`
     background:${colors.lightgray}55;
 `
 
+const AlertContainer = styled.div`
+    display:flex;
+    color:red;
+    align-items:center;
+    svg {
+        width:4em;
+        height:4em;
+        fill:red;
+        margin-right:1em;
+    }
+`
+
 const Insights = () => {
 
     return (
@@ -30,6 +42,17 @@ const Insights = () => {
            <StaticNavbar/>
            <ContentContainer>
                 <h1>API</h1>
+                <h2>
+                    <AlertContainer>
+                        {alert}
+                        <span>
+                            Alert: The US Covid Atlas API is currently down for repairs. 
+                            Check back for updates on future ways to access data. <br/>
+                            The documentation below is available for reference and archive.
+                        </span>
+                    </AlertContainer>
+                    
+                </h2>
                 <hr/>
                 <p>
                     The Covid Atlas’ public data API provides access to state-level and county-level USAFacts confirmed and death count data, 
