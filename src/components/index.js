@@ -21,6 +21,7 @@ import NotificationBox from './NotificationBox';
 import VariablePanel from './VariablePanel';
 import Popover from './TooltipPopper';
 import Preloader from './Preloader';
+import PrintLayout from './PrintLayout';
 import Scaleable from './Scaleable';
 import StaticNavbar from './StaticNavbar';
 import Ticks from './Ticks';
@@ -72,6 +73,7 @@ export {
     VariablePanel,
     Popover,
     Preloader,
+    PrintLayout,
     Scaleable,
     StaticNavbar,
     Ticks,
