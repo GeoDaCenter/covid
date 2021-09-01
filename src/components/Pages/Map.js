@@ -15,7 +15,7 @@ import {  setDates, setNotification, setPanelState } from '../../actions';
 
 import { MapSection, NavBar, VariablePanel, Legend,  TopPanel, Preloader,
   DataPanel, MainLineChart, Scaleable, Draggable, InfoBox,
-  NotificationBox, Popover, MapTooltipContent } from '../../components';  
+  NotificationBox, Popover, MapTooltipContent, PrintLayout } from '../../components';  
 import { ViewportProvider } from '../../contexts/ViewportContext';
 import { GeoDaContext } from "../../contexts/GeoDaContext";
 
@@ -166,6 +166,7 @@ export default function Map() {
           <GeoDaContext.Provider value={geoda}>
             <ViewportProvider defaultViewport={defaultViewport} >
               <MapSection />
+              <PrintLayout />
             </ViewportProvider>
             <TopPanel />
             <Legend 

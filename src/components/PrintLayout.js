@@ -63,9 +63,9 @@ const LogoImage = styled.img`
     width:20vw;
 `
 
-const PrintLayout = () => {
+export default function PrintLayout(){
     const [printing, setPrinting] = useState(false)
-
+    console.log(printing)
     useEffect(() => {
         window.addEventListener("beforeprint", () => setPrinting(true));
         window.addEventListener("afterprint", () => setPrinting(false));
@@ -121,5 +121,3 @@ const PrintLayout = () => {
         )    
     }
 }
-
-export default PrintLayout
