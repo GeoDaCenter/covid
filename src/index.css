@@ -16,10 +16,6 @@ body {
   }
 }
 
-div#view-default-view, div#view-MapView {
-    z-index:500;
-}
-
 /* bottom drawer */
 #bottom-drawer.hidden {
     bottom:-266px;
@@ -179,16 +175,6 @@ body {
 button.mapboxgl-ctrl-attrib-button {
   display:none;
 }
-
-#view-main {
-  z-index:0;
-  clip-path:url(#window);
-}
-/* 
-#view-alaskaMap, #view-hawaiiMap {
-  border:1px solid white;
-  z-index:1;
-} */
 
 .highlighted {
   animation: highlightedShadow 1.5s linear infinite;

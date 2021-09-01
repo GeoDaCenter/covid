@@ -20,7 +20,7 @@ const Time = React.lazy(() => import('./components/Pages/Time'));
 const Trends = React.lazy(() => import('./components/Pages/Trends'));
 
 export default function App(){
-  useTrackUserActions()
+  // useTrackUserActions()
   return (     
       <Router basename={process.env.PUBLIC_URL}>
       <div>

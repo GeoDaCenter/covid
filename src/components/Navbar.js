@@ -10,6 +10,9 @@ const NavBarOuterContainer = styled.div`
   z-index:1;
   position:relative;
   pointer-events:none;
+  @media print{
+    display:none;
+  }
 `
 
 const NavbarContainer  = styled.nav`
@@ -323,7 +326,7 @@ export default function NavBar(props){
   const NavButton = ({page=''}) => <button 
     className={currentDropdown === page ? 'active' : ''}
     onClick={() => handleOpenDropdown(page)}
-    onHover={() => handleOpenDropdown(page)}
+    onMouseOver={() => handleOpenDropdown(page)}
     >{page}</button>
 
   return (
@@ -365,7 +368,7 @@ export default function NavBar(props){
           }
         </SuperDropdown>
       }
-      {currentDropdown && <Shade onClick={() => setCurrentDropdown(false)}/>}  
+      {currentDropdown && <Shade onClick={() => setCurrentDropdown(false)} onMouseOver={() => setCurrentDropdown(false)} />}  
     </>
   )
 }

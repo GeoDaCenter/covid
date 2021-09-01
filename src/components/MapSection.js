@@ -11,6 +11,7 @@ import { PolygonLayer, ScatterplotLayer, IconLayer, TextLayer, GeoJsonLayer } fr
 import {DataFilterExtension} from '@deck.gl/extensions';
 import {fitBounds} from '@math.gl/web-mercator';
 import MapboxGLMap from 'react-map-gl';
+import {MapboxLayer} from '@deck.gl/mapbox';
 
 // component, action, util, and config import
 import { Geocoder, MapButtons } from '../components';
@@ -111,6 +112,7 @@ export default function MapSection(){
     const [hoverGeog, setHoverGeog] = useState(null);
     const [highlightGeog, setHighlightGeog] = useState([]);
     const [mapStyle, setMapStyle] = useState(MAP_STYLE);
+    const [glContext, setGLContext] = useState();
     
     // async fetched data and cartogram center
     const [resourceLayerData, setResourceLayerData] = useState({
@@ -252,6 +254,7 @@ export default function MapSection(){
                 layers: parseMapboxLayers(MAP_STYLE.layers, mapParams)
             }
         });
+        onMapLoad()
 
     }, [mapParams.overlay, mapParams.mapType, mapParams.vizType])
     
@@ -322,7 +325,6 @@ export default function MapSection(){
     const getScatterColor = (geoid) => currentMapData[geoid]?.color;
 
     const handleMapClick = (info, e) => {
-
         if (e.rightButton) return;
         const objectID = +info.object?.properties?.GEOID
         if (!objectID) return;
@@ -382,15 +384,15 @@ export default function MapSection(){
             })
         }  
     }, []);
-
+    
     const FullLayers = {
         choropleth: new GeoJsonLayer({
             id: 'choropleth',
             data: currentMapGeography,
-            getFillColor: d => !colorFilter || currentMapData[d.properties.GEOID].color.length === 4 
-                ? currentMapData[d.properties.GEOID].color
-                : [...currentMapData[d.properties.GEOID].color, 25+(!colorFilter || colorFilter===currentMapData[d.properties.GEOID].color)*225],
-            getElevation: d => currentMapData[d.properties.GEOID].height,
+            getFillColor: d => !colorFilter || currentMapData[d.properties.GEOID]?.color?.length === 4 
+                ? currentMapData[d.properties.GEOID]?.color
+                : [...(currentMapData[d.properties.GEOID]?.color||[0,0,0]), 25+(!colorFilter || colorFilter===currentMapData[d.properties.GEOID]?.color)*225],
+            getElevation: d => currentMapData[d.properties.GEOID]?.height||0,
             pickable: true,
             stroked: false,
             filled: true,
@@ -431,7 +433,7 @@ export default function MapSection(){
             id: 'hoverHighlightlayer',    
             data: currentMapGeography,
             getLineColor: d => hoverGeog === d.properties.GEOID ? mapParams.vizType === 'dotDensity' ? [200,200,200] : [50, 50, 50] : [50, 50, 50, 0], 
-            getElevation: d => currentMapData[d.properties.GEOID].height,
+            getElevation: d => currentMapData[d.properties.GEOID]?.height||0,
             pickable: false,
             stroked: true,
             filled:false,
@@ -547,8 +549,8 @@ export default function MapSection(){
                 getPosition: [currentMapID,storedLisaData,storedCartogramData],
                 getSize: [currentMapID,storedLisaData,storedCartogramData],
             },
-        }),        
-        dotDensity: [new ScatterplotLayer({
+        }),
+        dotDensityWhite:new ScatterplotLayer({
             id: 'dot density layer white',
             data: dotDensityData,
             pickable:false,
@@ -568,7 +570,8 @@ export default function MapSection(){
                 getFilterValue: [dotDensityData.length, mapParams.dotDensityParams.raceCodes[8]],
                 radiusMinPixels: viewport.zoom
             }
-          }),    
+        }), 
+        dotDensity:    
           new ScatterplotLayer({
             id: 'dot density layer',
             data: dotDensityData,
@@ -592,13 +595,12 @@ export default function MapSection(){
                 ],
                 radiusMinPixels: viewport.zoom
             }
-          })
-        ],
+        }) 
     }
     
     const getLayers = useCallback((layers, vizType, overlays, resources, currData) => {
         var LayerArray = []
-
+        
         if (vizType === 'cartogram') {
             LayerArray.push(layers['cartogramBackground'])
             LayerArray.push(layers['cartogram'])
@@ -615,7 +617,8 @@ export default function MapSection(){
             LayerArray.push(layers['choroplethHover'])
         } else if (vizType === 'dotDensity') {            
             LayerArray.push(layers['choropleth'])
-            LayerArray.push(...layers['dotDensity'])
+            LayerArray.push(layers['dotDensity'])
+            LayerArray.push(layers['dotDensityWhite'])
             LayerArray.push(layers['choroplethHighlight'])
             LayerArray.push(layers['choroplethHover'])
         }
@@ -623,6 +626,7 @@ export default function MapSection(){
         if (resources && resources.includes('hospital')) LayerArray.push(layers['hospitals'])
         if (resources && resources.includes('clinic')) LayerArray.push(layers['clinic'])
         if (resources && resources.includes('vaccinationSites')) LayerArray.push(layers['vaccinationSites'])
+        
         return LayerArray
 
     })
@@ -707,6 +711,20 @@ export default function MapSection(){
         }
     }
     
+    const onMapLoad = useCallback(() => {
+        if (mapRef.current === undefined) return;
+        const map = mapRef.current.getMap();
+        const deck = deckRef.current.deck;
+        const layerKeys = Object.keys(FullLayers).reverse()
+        console.log(map)
+        for (let i=0; i<layerKeys.length;i++){
+            map.addLayer(
+                new MapboxLayer({ id: FullLayers[layerKeys[i]].props.id, deck }),
+                i === 0 ? 'water' : FullLayers[layerKeys[i-1]].props.id
+            );
+        }
+    }, []);
+    
     return (
         <MapContainer
             onKeyDown={handleKeyDown}
@@ -726,15 +744,17 @@ export default function MapSection(){
                 onViewStateChange={({viewState}) => boxSelect ? null : setViewport(viewState)}
                 controller={true}
                 pickingRadius={20}
+                onWebGLInitialized={setGLContext}
+                glOptions={{stencil: true}}
                 >
                 <MapboxGLMap
                     reuseMaps
                     ref={mapRef}
                     mapStyle={mapStyle}
+                    gl={glContext}
                     preventStyleDiffing={true}
                     mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
-                    onLoad={() => dispatch(setMapLoaded(true))}
-                    >
+                    onLoad={() => {onMapLoad(); dispatch(setMapLoaded(true))}}>
                 </MapboxGLMap >
             </DeckGL>
             <MapButtons 

@@ -75,6 +75,7 @@ export default function PrintLayout(){
     const dataParams = useSelector(state => state.dataParams);
     const mapParams = useSelector(state => state.mapParams);
     const dates = useSelector(state => state.dates);
+    
     if (!printing) {
         return <div></div>
     } else {
@@ -91,13 +92,15 @@ export default function PrintLayout(){
                     <Grid item xs={12} sm={6}>
                         <MapContainer>
                             <ScreenshotImage src={mapScreenshotData.deck}/>
-                            <ScreenshotImage src={mapScreenshotData.mapbox} overlay/>
-                                <Legend 
+                            <ScreenshotImage src={mapScreenshotData.mapbox} overlay/> 
+                            <Legend 
                                 variableName={dataParams.variableName} 
                                 colorScale={mapParams.colorScale}
-                                bins={mapParams.bins.bins}
+                                bins={mapParams.bins}
                                 fixedScale={dataParams.fixedScale}
-                                />
+                                resource={mapParams.resource}
+                                note={dataParams.dataNote}
+                            />
                         </MapContainer>
                     </Grid>
                     <Grid item xs={6}>
