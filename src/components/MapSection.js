@@ -247,15 +247,7 @@ export default function MapSection(){
                 getDotDensityData();
             }
         }
-
-        setMapStyle(prev => { 
-            return {
-                ...prev, 
-                layers: parseMapboxLayers(MAP_STYLE.layers, mapParams)
-            }
-        });
-        onMapLoad()
-
+        parseMapboxLayers(MAP_STYLE.layers, mapParams, mapRef)
     }, [mapParams.overlay, mapParams.mapType, mapParams.vizType])
     
     // load in Hospital and clinic data when called
@@ -399,7 +391,7 @@ export default function MapSection(){
             wireframe: mapParams.vizType === '3D',
             extruded: mapParams.vizType === '3D',
             opacity: mapParams.vizType === 'dotDensity' ? mapParams.dotDensityParams.backgroundTransparency : 0.8,
-            material:false,
+            material:true,
             onHover: handleMapHover,
             onClick: handleMapClick,     
             transitions: {
