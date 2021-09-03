@@ -5,6 +5,7 @@ import useTrackUserActions from './hooks/useTrackUserActions.js';
 
 const About = React.lazy(() => import('./components/Pages/About'));
 const Api = React.lazy(() => import('./components/Pages/Api'));
+const Cab = React.lazy(() => import('./components/Pages/Cab'));
 const Choropleth = React.lazy(() => import('./components/Pages/Choropleth'));
 const CodeOfConduct = React.lazy(() => import('./components/Pages/CodeOfConduct'));
 const Contact = React.lazy(() => import('./components/Pages/Contact'));
@@ -31,6 +32,7 @@ export default function App(){
               <Route path="/map.html" component={Map}/>
               <Route path="/about" component={About}/>
               <Route path="/about.html" component={About}/>
+              <Route path="/cab" component={Cab}/>
               <Route path="/contact" component={Contact}/>
               <Route path="/contact.html" component={Contact}/>
               <Route path="/insights" component={Insights}/>

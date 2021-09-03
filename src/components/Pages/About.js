@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { ContentContainer, Gutter } from '../../styled_components';
 import Grid from '@material-ui/core/Grid';
-import { NavBar, Footer } from '../../components';
+import { MemberGrid, NavBar, Footer } from '../../components';
 import { contributors } from '../../meta/contributors';
 import { coreTeam } from '../../meta/coreTeam';
 import { colors } from '../../config';
@@ -34,6 +34,45 @@ const timelineText = [
         A Community Advisory Board is launched. Read more about our next 
         phase <a href="https://www.rwjf.org/" target="_blank" rel="noopener noreferrer">here.</a>
     </p>
+]
+
+const coalitionPartners = [
+    {
+        name:'University of Chicago',
+        img:'uc.jpg',
+        alt:'The Wordmark logo for the University of Chicago',
+        link:'https://www.uchicago.edu/'
+    },
+    {
+        name:'County Health Rankings and Roadmaps',
+        img:'chrr.jpg',
+        alt:'The Wordmark logo for the University of Chicago',
+        link:'https://www.countyhealthrankings.org/'
+    },
+    {
+        name:'Uiversity of Wisconsin Madison',
+        img:'uw-m.jpg',
+        alt:'The Wordmark logo for the University of Wisconsin Madison',
+        link:'https://www.wisc.edu/'
+    },
+    {
+        name:'University of California Berkeley',
+        img:'uc-berkeley.jpg',
+        alt:'The Wordmark logo for the University of California Berkeley',
+        link:'https://www.berkeley.edu/'
+    },
+    {
+        name:'CSI Solutions',
+        img:'csi.jpg',
+        alt:'The Wordmark logo for the CSI Solutions',
+        link:'https://www.spreadinnovation.com/'
+    },
+    {
+        name:'Robert Wood Johnson Foundation',
+        img:'rwjf.jpg',
+        alt:'The Wordmark logo for the Robert Wood Johnson Foundation',
+        link:'https://www.rwjf.org/'
+    },
 ]
 
 const AboutPage = styled.div`
@@ -85,28 +124,7 @@ const CoreTeam = styled.div`
     padding:20px;
 `
 
-const TeamBio = styled(Grid)`
-    display:flex;
-    img {
-        max-width:10em;
-        padding-bottom:2em;
-    }
-    span {
-        padding-left:1em;
-    }
-`
-
-const CoreMemberBio = ({member}) => 
-    <TeamBio item xs={12} md={4}>
-        <img src={`${process.env.PUBLIC_URL}/img/people/${member.img}`} alt={`Team photo of ${member.name}`}/>
-        <span>
-            <h4>{member.name}</h4>
-            <h5>{member.title}</h5>
-        </span>
-    </TeamBio>
-
 const ContributorsContainer = styled.div``
-
 
 const ContributorBio = styled.div`
     overflow:hidden;
@@ -222,6 +240,22 @@ const ProgramArea = styled(Grid)`
     }
 `
 
+const LogoGrid = styled.div`
+    display:block;
+    margin:0 auto; 
+    span {
+        margin:0.5em 1em;
+        display:inline-block;
+    }
+    img {
+        max-width:100%;
+        height:55px;
+        display:inline-block;
+        margin:0 auto;
+    }
+
+`
+
 export default function About(){
     const [phaseIndex, setPhaseIndex] = useState(0);
     const teamRef = useRef(null)
@@ -246,7 +280,7 @@ export default function About(){
                <h2>
                     The US Covid Atlas project works to understand, archive, and represent <br/> the often unequal impact of the COVID-19 pandemic in the United States.
                </h2>
-               <Gutter h={20} />
+               {/* <Gutter h={20} />
                <Grid container>
                    <ProgramArea item xs={12} md={4}>
                        <img alt="" src={`${process.env.PUBLIC_URL}/icons/regional-hot-spots.png`} />
@@ -263,7 +297,7 @@ export default function About(){
                        <h4>Public Health Communication</h4>
                        <p>Placeholder Text</p>
                    </ProgramArea>
-               </Grid>
+               </Grid> */}
            </ContentContainer>
 
            <CoreTeamContainer>
@@ -276,9 +310,7 @@ export default function About(){
                     and the public. The Atlas team leads from The Center for Spatial Data Science 
                     have directed development of the Atlas since its first launch in March of 2020.
                 </p>
-                <Grid container spacing={2}>
-                    {coreTeam.map(member => <CoreMemberBio member={member} />)}
-                </Grid>
+                <MemberGrid members={coreTeam} columns={{md:4}}/>
                 </CoreTeam>
             </CoreTeamContainer>
             <ContentContainer>
@@ -332,6 +364,25 @@ export default function About(){
                 <ContributorsContainer>
                     {contributors.map(bio => <Contributor bio={bio} active={bio.hasOwnProperty(phases[phaseIndex])} />)}
                 </ContributorsContainer>
+                <hr/>
+                <h2>Research Coalition Partners</h2>
+                <LogoGrid container spacing={2}>
+                    {coalitionPartners.map(
+                        partner => 
+                            <span>
+                                <a 
+                                    href={`${partner.link}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    <img 
+                                        src={`${process.env.PUBLIC_URL}/img/coalition-partners/${partner.img}`} 
+                                        alt={partner.alt}
+                                    />
+                                </a>
+                            </span>)
+                    }
+                </LogoGrid>
                 <hr/>
                 <h2>User Feedback</h2>
                 <p>

@@ -16,6 +16,7 @@ import MapButtons  from './MapButtons';
 import MainLineChart from './MainLineChart';
 import MapSection from './MapSection';
 import MapTooltipContent from './MapTooltipContent';
+import MemberGrid from './MemberGrid';
 import NavBar from './Navbar';
 import NotificationBox from './NotificationBox';
 import VariablePanel from './VariablePanel';
@@ -68,6 +69,7 @@ export {
     MainLineChart,
     MapSection,
     MapTooltipContent,
+    MemberGrid,
     NavBar,
     NotificationBox,
     VariablePanel,
