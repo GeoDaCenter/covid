@@ -247,6 +247,7 @@ export default function MapSection(){
                 getDotDensityData();
             }
         }
+        console.log(MAP_STYLE.layers, mapParams, mapRef)
         parseMapboxLayers(MAP_STYLE.layers, mapParams, mapRef)
     }, [mapParams.overlay, mapParams.mapType, mapParams.vizType])
     
