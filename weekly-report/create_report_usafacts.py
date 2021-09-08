@@ -1,3 +1,4 @@
+import fiona
 import geopandas
 import pandas as pd
 import util_usafacts as util
@@ -26,14 +27,14 @@ def calculate_seven_day_lisa():
 	emerging_hotspot_adjusted  = util.rolling_average(gdf, fourteen_dates , seven_dates, adjusted_population=True)
 	stable_hotspot = util.rolling_sum(gdf, fourteen_dates , seven_dates, adjusted_population=False)
 	stable_hotspot_adjusted  = util.rolling_sum(gdf, fourteen_dates , seven_dates, adjusted_population=True)
-
+	
 
 	# Calculate LISA
 	lisa = {
-	"emerging_hotspot" : emerging_hotspot,
-	"emerging_hotspot_adjusted": emerging_hotspot_adjusted,
-	"stable_hotspot": stable_hotspot,
-	"stable_hotspot_adjusted": stable_hotspot_adjusted
+		"emerging_hotspot" : emerging_hotspot,
+		"emerging_hotspot_adjusted": emerging_hotspot_adjusted,
+		"stable_hotspot": stable_hotspot,
+		"stable_hotspot_adjusted": stable_hotspot_adjusted
 	}
 
 	for k in lisa.keys():
@@ -61,7 +62,7 @@ if __name__ == '__main__':
 	lisa = calculate_seven_day_lisa()
 	lisa = get_high_high_county(lisa)
 
-	template_vars = util.generate_tables(lisa)
+	# template_vars = util.generate_tables(lisa)
 	# util.generate_html(template_vars)
 
 
