@@ -6,6 +6,11 @@
   AWS_LAMBDA_JS_RUNTIME = "16.5.0"
 
 [[headers]]
-  for = "/[csv,geojson]/*"
+  for = "/csv/*"
+    [headers.values]
+    Access-Control-Allow-Origin = "*"
+
+[[headers]]
+  for = "/geojson/*"
     [headers.values]
     Access-Control-Allow-Origin = "*"
