@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 import boto3
 import requests
 import pandas as pd
+import fiona
 import geopandas as gpd
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
