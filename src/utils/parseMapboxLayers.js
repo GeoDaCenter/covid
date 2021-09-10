@@ -1,30 +1,39 @@
 const resourceOverlayCheck = (mapParams, property, value) => {
-    console.log(value)
-    console.log(mapParams)
-    if (mapParams.vizType === '3D') return [['setLayoutProperty', 'visiblity', 'none']]
-    if (mapParams[property] === value) return [['setLayoutProperty', 'visiblity', 'visible']]
-    return [['setLayoutProperty', 'visiblity', 'none']]
+    if (mapParams.vizType === '3D') return [['setLayoutProperty', 'visibility', 'none']]
+    if (mapParams[property] === value) return [['setLayoutProperty', 'visibility', 'visible']]
+    return [['setLayoutProperty', 'visibility', 'none']]
 }
 
 const check3d = (mapParams) => {
-    if (mapParams.vizType === '3D') return [['setLayoutProperty', 'visiblity', 'none']]
-    return [['setLayoutProperty', 'visiblity', 'visible']]
+    if (mapParams.vizType === '3D') return [['setLayoutProperty', 'visibility', 'none']]
+    return [['setLayoutProperty', 'visibility', 'visible']]
 }
 
 const checkAdmin = (mapParams) => {
-    if (mapParams.vizType === '3D') return [['setLayoutProperty', 'visiblity', 'none']]
+    if (mapParams.vizType === '3D') return [['setLayoutProperty', 'visibility', 'none']]
     if (mapParams.vizType === 'dotDensity') {
         return [
-            ['setLayoutProperty', 'visiblity', 'visible'],
+            ['setLayoutProperty', 'visibility', 'visible'],
             ['setPaintProperty', 'line-color', "hsl(0,0%,80%)"]
         ]
     }
-    return [['setLayoutProperty', 'visiblity', 'visible']]
+    return [
+        ['setLayoutProperty', 'visibility', 'visible'],
+        ['setPaintProperty', 'line-color', [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                8,
+                "hsl(216, 36%, 16%)",
+                16,
+                "rgb(52, 52, 52)"
+            ]]
+    ]
 }
 
 const checkLabel = (mapParams) => {
-    if (mapParams.overlay.length) return [['setLayoutProperty', 'visiblity', 'none']]
-    return [['setLayoutProperty', 'visiblity', 'visible']]
+    if (mapParams.overlay.length && !(mapParams.overlay.includes('blackbelt'))) return [['setLayoutProperty', 'visibility', 'none']]
+    return [['setLayoutProperty', 'visibility', 'visible']]
 }
 
 const layerDictionary = {
@@ -48,24 +57,20 @@ const layerDictionary = {
     'settlement-minor-label':  checkLabel,
     'settlement-major-label':  checkLabel,
     'state-label':  checkLabel,
-    'uscongress-label':  (mapParams) => resourceOverlayCheck(mapParams, 'overlay', 'segregated_cities'),
-    'segregated_cities-label':  (mapParams) => resourceOverlayCheck(mapParams, 'overlay', 'uscongress-districts'),
+    'uscongress-label':  (mapParams) => resourceOverlayCheck(mapParams, 'overlay', 'uscongress-districts'),
+    'segregated_cities-label':  (mapParams) => resourceOverlayCheck(mapParams, 'overlay', 'segregated_cities'),
     'native_american_reservations-label':  (mapParams) => resourceOverlayCheck(mapParams, 'overlay', 'native_american_reservations')
 }
 
 export default function parseMapboxLayers(defaultLayers, mapParams, mapRef, globalMap=false){
-    console.log(mapRef)
-
     if (mapRef !== undefined && mapRef.current === undefined) return;
     const map = mapRef.current.getMap();
-    console.log(map)
-    // if (mapParams.vizType === 'cartogram' || globalMap){
-    //     defaultLayers.forEach(({id}) => map.setLayoutProperty(id, 'visibility', 'none'))
-    // } else {
-    //     defaultLayers.forEach(({id}) => {
-    //         const ops = layerDictionary[id](mapParams)
-    //         console.log(ops)
-    //         ops.forEach(op => map[op[0]](id, op[1], op[2]))
-    //     })
-    // }
+    if (mapParams.vizType === 'cartogram' || globalMap){
+        defaultLayers.forEach(({id}) => map.setLayoutProperty(id, 'visibility', 'none'))
+    } else {
+        defaultLayers.forEach(({id}) => {
+            const ops = layerDictionary[id](mapParams)
+            ops.forEach(op => { try { map[op[0]](id, op[1], op[2]) } catch(e) { console.log(e)}})
+        })
+    }
 }

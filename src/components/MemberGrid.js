@@ -14,7 +14,7 @@ const TeamBio = styled(Grid)`
 
 const CoreMemberBio = ({member, columns}) => 
     <TeamBio item xs={12} {...columns}>
-        <img src={`${process.env.PUBLIC_URL}/img/people/${member.img}`} alt={`Team photo of ${member.name}`}/>
+        <img src={`${process.env.PUBLIC_URL}/img/people/${member.img}`} alt={`${member.name}`}/>
         <span>
             <h4>{member.name}</h4>
             <h5>{member.title}</h5>

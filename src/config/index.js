@@ -224,7 +224,6 @@ export const colors = {
     yellow: '#FFCE00',
     red: '#EC1E24',
     lightblue: '#A1E1E3',
-    red: '#EC1E24',
     strongOrange: '#F16622',
     orange:'#F37E44',
     skyblue: '#c1ebeb',

@@ -320,8 +320,8 @@ function Home(){
     }
     useEffect(() => {
         document.addEventListener('scroll', () => {
-            if (window.pageYOffset > 0 && !ctaActive) setCtaActive(true)
-            if (window.pageYOffset === 0 && ctaActive) setCtaActive(false)
+            if (window.pageYOffset > window.innerHeight && !ctaActive) setCtaActive(true)
+            if (window.pageYOffset < window.innerHeight && ctaActive) setCtaActive(false)
         })
     },[])
 

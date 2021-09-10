@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import { NavLink } from 'react-router-dom';
 import styled, {keyframes} from 'styled-components';
 import { colors } from '../config';
 import { hamburger, close } from '../config/svg';

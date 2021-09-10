@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import Grid from '@material-ui/core/Grid';
 import { colors } from '../config';
 import {arrow} from '../config/svg'

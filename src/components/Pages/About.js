@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
-import { ContentContainer, Gutter } from '../../styled_components';
+import { ContentContainer } from '../../styled_components';
 import Grid from '@material-ui/core/Grid';
 import { MemberGrid, NavBar, Footer } from '../../components';
 import { contributors } from '../../meta/contributors';
@@ -91,24 +91,24 @@ const AboutPage = styled.div`
         margin-bottom:2em;
     }
 `
-const BioSection = styled.div`
-    padding:40px 0;
-    text-align:center;
-    img {
-        width:100%;
-        max-width:200px;
-        display:block;
-        border-radius:50%;
-        margin:40px auto 10px auto;
-    }
-    p.affiliation {
-        display:inline;
-    } 
-    p {
-        max-width: 400px;
-        margin:0 auto;
-    }
-`
+// const BioSection = styled.div`
+//     padding:40px 0;
+//     text-align:center;
+//     img {
+//         width:100%;
+//         max-width:200px;
+//         display:block;
+//         border-radius:50%;
+//         margin:40px auto 10px auto;
+//     }
+//     p.affiliation {
+//         display:inline;
+//     } 
+//     p {
+//         max-width: 400px;
+//         margin:0 auto;
+//     }
+// `
 
 const CoreTeamContainer = styled(ContentContainer)`
     width:100%;
@@ -181,7 +181,7 @@ const ContributorBio = styled.div`
 `
 
 const Contributor = ({bio, active}) => 
-    <ContributorBio active={active} bg={`url(${process.env.PUBLIC_URL}/img/people/${bio.img})`} active={active}>
+    <ContributorBio bg={`url(${process.env.PUBLIC_URL}/img/people/${bio.img})`} active={active}>
         <a href={bio.link} target="_blank" rel="noopener noreferrer">
             {bio.name}<br/>
             {bio.title} {bio.affiliation}
@@ -227,18 +227,18 @@ const TimelineDescription = styled.span`
     }
 `
 
-const ProgramArea = styled(Grid)`
-    padding-top:1em;
-    text-align:center;
-    h4 {
-        font-size:1rem;
-        padding:1em 0;
-    }
-    img {
-        margin:0 auto;
-        display:block;
-    }
-`
+// const ProgramArea = styled(Grid)`
+//     padding-top:1em;
+//     text-align:center;
+//     h4 {
+//         font-size:1rem;
+//         padding:1em 0;
+//     }
+//     img {
+//         margin:0 auto;
+//         display:block;
+//     }
+// `
 
 const LogoGrid = styled.div`
     display:block;

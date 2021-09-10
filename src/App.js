@@ -1,7 +1,7 @@
-import React, { Component, Suspense  } from 'react';
+import React, { Suspense  } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import {Home, LoadingMessage, ErrorPage} from './components/';
-import useTrackUserActions from './hooks/useTrackUserActions.js';
+// import useTrackUserActions from './hooks/useTrackUserActions.js';
 
 const About = React.lazy(() => import('./components/Pages/About'));
 const Api = React.lazy(() => import('./components/Pages/Api'));

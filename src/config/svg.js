@@ -120,7 +120,7 @@ export const facebook = <svg viewBox="0 0 1024 1024">
         C836.8,979.4,1024,767.6,1024,512z"/>
     </svg>
 
-export const hamburger = <svg height='100px' width='100px' viewBox="0 0 32 32" x="0px" y="0px"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(6.000000, 9.000000)" fill-rule="nonzero"><path d="M0,8 L0,6 L20,6 L20,8 L0,8 Z M0,14 L0,12 L20,12 L20,14 L0,14 Z M0,2 L0,0 L20,0 L20,2 L0,2 Z"></path></g></g></svg>
+export const hamburger = <svg height='100px' width='100px' viewBox="0 0 32 32" x="0px" y="0px"><g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd"><g transform="translate(6.000000, 9.000000)" fill-rule="nonzero"><path d="M0,8 L0,6 L20,6 L20,8 L0,8 Z M0,14 L0,12 L20,12 L20,14 L0,14 Z M0,2 L0,0 L20,0 L20,2 L0,2 Z"></path></g></g></svg>
 export const close = <svg height='100px' width='100px' viewBox="0 0 100 100" x="0px" y="0px"><g><g><polygon points="75 31 69 25 50 44 31 25 25 31 44 50 25 69 31 75 50 56 69 75 75 69 56 50"></polygon></g><g fill="#000000"><polygon points="75 31 69 25 50 44 31 25 25 31 44 50 25 69 31 75 50 56 69 75 75 69 56 50"></polygon></g></g></svg>
 export const embed = <svg viewBox="0 0 512 512"><path d="M288 368l48 48 160-160-160-160-48 48 112 112z"></path><path d="M224 144l-48-48-160 160 160 160 48-48-112-112z"></path></svg>
 export const alert = <svg viewBox="0 0 24 24" x="0px" y="0px"><path d="M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Zm0,18a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z"></path><path d="M12,6a1,1,0,0,0-1,1v6a1,1,0,0,0,2,0V7A1,1,0,0,0,12,6Z"></path><path d="M12.71,16.29a1,1,0,0,0-1.42,0,1,1,0,0,0-.21.33A1,1,0,0,0,11,17a1,1,0,0,0,.29.71,1,1,0,0,0,1.42,0A1,1,0,0,0,13,17a1,1,0,0,0-.08-.38A1,1,0,0,0,12.71,16.29Z"></path></svg>

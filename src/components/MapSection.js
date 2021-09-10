@@ -111,7 +111,6 @@ export default function MapSection(){
     // hover and highlight geographibes
     const [hoverGeog, setHoverGeog] = useState(null);
     const [highlightGeog, setHighlightGeog] = useState([]);
-    const [mapStyle, setMapStyle] = useState(MAP_STYLE);
     const [glContext, setGLContext] = useState();
     
     // async fetched data and cartogram center
@@ -247,7 +246,6 @@ export default function MapSection(){
                 getDotDensityData();
             }
         }
-        console.log(MAP_STYLE.layers, mapParams, mapRef)
         parseMapboxLayers(MAP_STYLE.layers, mapParams, mapRef)
     }, [mapParams.overlay, mapParams.mapType, mapParams.vizType])
     
@@ -384,15 +382,15 @@ export default function MapSection(){
             data: currentMapGeography,
             getFillColor: d => !colorFilter || currentMapData[d.properties.GEOID]?.color?.length === 4 
                 ? currentMapData[d.properties.GEOID]?.color
-                : [...(currentMapData[d.properties.GEOID]?.color||[0,0,0]), 25+(!colorFilter || colorFilter===currentMapData[d.properties.GEOID]?.color)*225],
+                : [...(currentMapData[d.properties.GEOID]?.color||[0,0,0]), 0+(!colorFilter || colorFilter===currentMapData[d.properties.GEOID]?.color)*225],
             getElevation: d => currentMapData[d.properties.GEOID]?.height||0,
             pickable: true,
             stroked: false,
             filled: true,
-            wireframe: mapParams.vizType === '3D',
+            wireframe: false,
             extruded: mapParams.vizType === '3D',
             opacity: mapParams.vizType === 'dotDensity' ? mapParams.dotDensityParams.backgroundTransparency : 0.8,
-            material:true,
+            material:false,
             onHover: handleMapHover,
             onClick: handleMapClick,     
             transitions: {
@@ -408,24 +406,25 @@ export default function MapSection(){
         choroplethHighlight:  new GeoJsonLayer({
             id: 'highlightLayer',
             data: currentMapGeography,
-            getLineColor: d => highlightGeog.indexOf(d.properties.GEOID)!==-1 ? mapParams.vizType === 'dotDensity' ? [240,240,240] : [0, 104, 109] : [0, 104, 109, 0], 
+            getLineColor: () => mapParams.vizType === 'dotDensity' ? [240,240,240] : [0, 104, 109], 
             opacity: 0.8,
             material:false,
             pickable: false,
             stroked: true,
             filled:false,
             lineWidthScale: 500,
-            getLineWidth:  5, 
-            lineWidthMinPixels: 1,
+            getLineWidth: d => highlightGeog.indexOf(d.properties.GEOID)!==-1 ? 5 : 0, 
+            lineWidthMinPixels: 0,
             lineWidthMaxPixels: 10,
             updateTriggers: {
-                getLineColor: highlightGeog
+                getLineColor: mapParams.vizType,
+                getLineWidth: highlightGeog
             }
         }),
         choroplethHover: new GeoJsonLayer({
             id: 'hoverHighlightlayer',    
             data: currentMapGeography,
-            getLineColor: d => hoverGeog === d.properties.GEOID ? mapParams.vizType === 'dotDensity' ? [200,200,200] : [50, 50, 50] : [50, 50, 50, 0], 
+            getLineColor: () => mapParams.vizType === 'dotDensity' ? [200,200,200] : [50, 50, 50], 
             getElevation: d => currentMapData[d.properties.GEOID]?.height||0,
             pickable: false,
             stroked: true,
@@ -433,12 +432,13 @@ export default function MapSection(){
             wireframe: mapParams.vizType === '3D',
             extruded: mapParams.vizType === '3D',
             lineWidthScale: 500,
-            getLineWidth: 5,
-            lineWidthMinPixels: 2,
+            getLineWidth: d => hoverGeog === d.properties.GEOID ? 8 : 0,
+            lineWidthMinPixels: 0,
             lineWidthMaxPixels: 10,
             updateTriggers: {
-                getLineColor: hoverGeog,
+                getLineColor: mapParams.vizType,
                 getElevation: currentMapID,
+                getLineWidth: hoverGeog,
                 extruded: mapParams.vizType
             }
         }),
@@ -493,18 +493,6 @@ export default function MapSection(){
             },
             onHover: handleMapHover,
         }),
-        cartogramBackground: new PolygonLayer({
-            id: 'background',
-            data: [
-                // prettier-ignore
-                [[-180, 90], [0, 90], [180, 90], [180, -90], [0, -90], [-180, -90]]
-            ],
-            opacity: 1,
-            getPolygon: d => d,
-            stroked: false,
-            filled: true,
-            getFillColor: [10,10,10],
-        }),
         cartogram: new ScatterplotLayer({
             id: 'cartogram layer',
             data: currentMapGeography.features,
@@ -543,27 +531,18 @@ export default function MapSection(){
                 getSize: [currentMapID,storedLisaData,storedCartogramData],
             },
         }),
-        dotDensityWhite:new ScatterplotLayer({
-            id: 'dot density layer white',
-            data: dotDensityData,
-            pickable:false,
-            filled:true,
-            getPosition: f => [f[1]/1e5, f[2]/1e5],
-            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? getScatterColor(f[3]) : colors.dotDensity[f[0]],
-            getRadius: 100,  
-            radiusMinPixels: Math.sqrt(viewport.zoom)-1.5,
-            getFilterValue: f => (f[0]===8 && mapParams.dotDensityParams.raceCodes[f[0]]) ? 1 : 0,
-            filterRange: [1, 1], 
-            // Define extensions
-            extensions: [new DataFilterExtension({filterSize: 1})],
-            updateTriggers: {
-                getPosition: dotDensityData.length,
-                getFillColor: [mapParams.dotDensityParams.colorCOVID, currentMapID, dotDensityData],
-                data: dotDensityData,
-                getFilterValue: [dotDensityData.length, mapParams.dotDensityParams.raceCodes[8]],
-                radiusMinPixels: viewport.zoom
-            }
-        }), 
+        cartogramBackground: new PolygonLayer({
+            id: 'background',
+            data: [
+                // prettier-ignore
+                [[-180, 90], [0, 90], [180, 90], [180, -90], [0, -90], [-180, -90]]
+            ],
+            opacity: 1,
+            getPolygon: d => d,
+            stroked: false,
+            filled: true,
+            getFillColor: [10,10,10],
+        }),
         dotDensity:    
           new ScatterplotLayer({
             id: 'dot density layer',
@@ -588,7 +567,28 @@ export default function MapSection(){
                 ],
                 radiusMinPixels: viewport.zoom
             }
-        }) 
+        }),
+        dotDensityWhite:new ScatterplotLayer({
+            id: 'dot density layer white',
+            data: dotDensityData,
+            pickable:false,
+            filled:true,
+            getPosition: f => [f[1]/1e5, f[2]/1e5],
+            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? getScatterColor(f[3]) : colors.dotDensity[f[0]],
+            getRadius: 100,  
+            radiusMinPixels: Math.sqrt(viewport.zoom)-1.5,
+            getFilterValue: f => (f[0]===8 && mapParams.dotDensityParams.raceCodes[f[0]]) ? 1 : 0,
+            filterRange: [1, 1], 
+            // Define extensions
+            extensions: [new DataFilterExtension({filterSize: 1})],
+            updateTriggers: {
+                getPosition: dotDensityData.length,
+                getFillColor: [mapParams.dotDensityParams.colorCOVID, currentMapID, dotDensityData],
+                data: dotDensityData,
+                getFilterValue: [dotDensityData.length, mapParams.dotDensityParams.raceCodes[8]],
+                radiusMinPixels: viewport.zoom
+            }
+        })
     }
     
     const getLayers = useCallback((layers, vizType, overlays, resources, currData) => {
@@ -708,8 +708,7 @@ export default function MapSection(){
         if (mapRef.current === undefined) return;
         const map = mapRef.current.getMap();
         const deck = deckRef.current.deck;
-        const layerKeys = Object.keys(FullLayers).reverse()
-        console.log(map)
+        const layerKeys = Object.keys(FullLayers)
         for (let i=0; i<layerKeys.length;i++){
             map.addLayer(
                 new MapboxLayer({ id: FullLayers[layerKeys[i]].props.id, deck }),
@@ -743,7 +742,7 @@ export default function MapSection(){
                 <MapboxGLMap
                     reuseMaps
                     ref={mapRef}
-                    mapStyle={mapStyle}
+                    mapStyle={MAP_STYLE}
                     gl={glContext}
                     preventStyleDiffing={true}
                     mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}

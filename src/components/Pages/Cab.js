@@ -1,9 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { ContentContainer, Gutter } from '../../styled_components';
-import Grid from '@material-ui/core/Grid';
+import { ContentContainer } from '../../styled_components';
 import { MemberGrid, NavBar, Footer } from '../../components';
-import { coreTeam } from '../../meta/coreTeam';
 import { colors } from '../../config';
 
 const CabPage = styled.div`
