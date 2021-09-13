@@ -14,3 +14,8 @@
   for = "/geojson/*"
     [headers.values]
     Access-Control-Allow-Origin = "*"
+
+[[headers]]
+  for = "/pbf/*"
+    [headers.values]
+    Access-Control-Allow-Origin = "*"
