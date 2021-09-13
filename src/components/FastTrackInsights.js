@@ -249,7 +249,7 @@ export default function FastTrackInsights(){
                                 </TextContainer>
                                 <TextContainer>
                                     <h4>
-                                        {summary.cases.summary.WoW > 0 ? '+' : '-'}{summary.cases.summary.WoW}%
+                                        {summary.cases.summary.WoW > 0 ? '+' : ''}{summary.cases.summary.WoW}%
                                     </h4>
                                 </TextContainer>
                             </Grid>
