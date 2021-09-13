@@ -1,70 +1,70 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { useSelector } from 'react-redux';
-import Grid from '@material-ui/core/Grid';
+// import React, { useState, useEffect } from 'react';
+// import styled from 'styled-components';
+// import { useSelector } from 'react-redux';
+// import Grid from '@material-ui/core/Grid';
 
-import { MainLineChart, Legend } from '.';
+// import { MainLineChart, Legend } from '.';
 
-const PrintContainer = styled.div`
-    background:white;
-    h1, h2 {
-        display:inline-block;
-        margin-bottom:20px;
-    }
-    h2 {
-        font-weight:normal;
-        margin-left:20px;
-    }
-`
-const MapContainer = styled.div`
-    max-width:100vw;
-    position:relative;
-    overflow: hidden;
-    height: 0;
-    padding-top: 56.25%;
-    #bottomPanel {
-        position:absolute;
-        width:50%;
-        left:50%;
-        transform:translateX(-50%);
-        bottom:0px;
-        background:white;
-        box-shadow:none;
-        border:1px solid black;
-        h3, span div {
-            color:black;
-        }
-        div div.bin {
-            height:3px;
-        }
-    }
-`
-const ScreenshotImage = styled.img`
-    position:absolute;
-    left:0;
-    top:0;
-    max-width:100%;
-`
+// const PrintContainer = styled.div`
+//     background:white;
+//     h1, h2 {
+//         display:inline-block;
+//         margin-bottom:20px;
+//     }
+//     h2 {
+//         font-weight:normal;
+//         margin-left:20px;
+//     }
+// `
+// const MapContainer = styled.div`
+//     max-width:100vw;
+//     position:relative;
+//     overflow: hidden;
+//     height: 0;
+//     padding-top: 56.25%;
+//     #bottomPanel {
+//         position:absolute;
+//         width:50%;
+//         left:50%;
+//         transform:translateX(-50%);
+//         bottom:0px;
+//         background:white;
+//         box-shadow:none;
+//         border:1px solid black;
+//         h3, span div {
+//             color:black;
+//         }
+//         div div.bin {
+//             height:3px;
+//         }
+//     }
+// `
+// const ScreenshotImage = styled.img`
+//     position:absolute;
+//     left:0;
+//     top:0;
+//     max-width:100%;
+// `
 
-const LineChartContainer = styled.div`
-    position:relative;
-    width:100%;
-    height:300px;
-    color:black;
-    #linearLogSwitch {
-        display:none;
-    }
-`
+// const LineChartContainer = styled.div`
+//     position:relative;
+//     width:100%;
+//     height:300px;
+//     color:black;
+//     #linearLogSwitch {
+//         display:none;
+//     }
+// `
 
-const LogoImage = styled.img`
-    position:absolute;
-    left:0;
-    bottom:0;
-    width:20vw;
-`
+// const LogoImage = styled.img`
+//     position:absolute;
+//     left:0;
+//     bottom:0;
+//     width:20vw;
+// `
 
 export default function PrintLayout(){
-    const [printing, setPrinting] = useState(false)
+    // const [printing, setPrinting] = useState(false)
     // console.log(printing)
     // useEffect(() => {
     //     window.addEventListener("beforeprint", () => setPrinting(true));
@@ -76,9 +76,9 @@ export default function PrintLayout(){
     // const mapParams = useSelector(state => state.mapParams);
     // const dates = useSelector(state => state.dates);
     
-    if (!printing) {
+    // if (!printing) {
         return <div></div>
-    } //else {
+    // } //else {
         
         // return (
         //     <PrintContainer id="printContainer">

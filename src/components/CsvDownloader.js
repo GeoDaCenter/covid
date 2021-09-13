@@ -61,10 +61,10 @@ const checkboxSets = [
             //     label: 'County - 1point3acres',
             //     name: 'covid_confirmed_1p3a'
             // },
-            {
-                label: 'County - CDC',
-                name: 'covid_confirmed_cdc'
-            },
+            // {
+            //     label: 'County - CDC',
+            //     name: 'covid_confirmed_cdc'
+            // },
             {
                 label: 'County - New York Times',
                 name: 'covid_confirmed_nyt'
@@ -94,10 +94,10 @@ const checkboxSets = [
             //     label: 'County - 1point3acres',
             //     name: 'covid_deaths_1p3a'
             // },
-            {
-                label: 'County - CDC',
-                name: 'covid_deaths_cdc'
-            },
+            // {
+            //     label: 'County - CDC',
+            //     name: 'covid_deaths_cdc'
+            // },
             {
                 label: 'County - NYT',
                 name: 'covid_deaths_nyt'
@@ -124,17 +124,34 @@ const checkboxSets = [
         name: 'vaccination',
         subset: [
             {
-                label: 'State - First Doses Administered - CDC',
-                name: 'vaccine_admin1_cdc'
+                label: 'County - One or More Doses Administered - CDC',
+                name: 'vaccination_one_or_more_doses_cdc'
             },
             {
-                label: 'State - Second Doses Administered - CDC',
-                name: 'vaccine_admin2_cdc'
+                label: 'County - Vaccine Series Complete Administered - CDC',
+                name: 'vaccination_fully_vaccinated_cdc'
+            },
+            {
+                label: 'Hybrid - One or More Doses Administered - CDC',
+                name: 'vaccination_one_or_more_doses_cdc_h'
+            },
+            {
+                label: 'Hybrid - Vaccine Series Complete Administered - CDC',
+                name: 'vaccination_fully_vaccinated_cdc_h'
+            },
+            {
+                label: 'State - One or More Doses Administered - CDC',
+                name: 'vaccination_one_or_more_doses_cdc_state'
+            },
+            {
+                label: 'State - Vaccine Series Complete Administered - CDC',
+                name: 'vaccination_fully_vaccinated_cdc_state'
             },
             {
                 label: 'State - Doses Distributed but not Administered - CDC',
                 name: 'vaccine_dist_cdc'
-            }]
+            }
+        ]
     },
     {
         label: 'Testing Data',
