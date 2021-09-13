@@ -531,18 +531,18 @@ export default function MapSection(){
                 getSize: [currentMapID,storedLisaData,storedCartogramData],
             },
         }),
-        cartogramBackground: new PolygonLayer({
-            id: 'background',
-            data: [
-                // prettier-ignore
-                [[-180, 90], [0, 90], [180, 90], [180, -90], [0, -90], [-180, -90]]
-            ],
-            opacity: 1,
-            getPolygon: d => d,
-            stroked: false,
-            filled: true,
-            getFillColor: [10,10,10],
-        }),
+        // cartogramBackground: new PolygonLayer({
+        //     id: 'background',
+        //     data: [
+        //         // prettier-ignore
+        //         [[-180, 90], [0, 90], [180, 90], [180, -90], [0, -90], [-180, -90]]
+        //     ],
+        //     opacity: 1,
+        //     getPolygon: d => d,
+        //     stroked: false,
+        //     filled: true,
+        //     getFillColor: [10,10,10],
+        // }),
         dotDensity:    
           new ScatterplotLayer({
             id: 'dot density layer',
@@ -595,7 +595,7 @@ export default function MapSection(){
         var LayerArray = []
         
         if (vizType === 'cartogram') {
-            LayerArray.push(layers['cartogramBackground'])
+            // LayerArray.push(layers['cartogramBackground'])
             LayerArray.push(layers['cartogram'])
             if (currentData.includes('state')) {
                 LayerArray.push(layers['cartogramText'])
