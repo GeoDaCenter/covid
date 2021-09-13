@@ -105,6 +105,11 @@ def create_state_files(raw_data):
     states_deaths_final = pd.merge(states, state_deaths, left_on='STUSPS', right_on='state_name', how='left').fillna(0).drop(columns=['STUSPS','state_name'])
     states_confir_final = pd.merge(states, state_confir, left_on='STUSPS', right_on='state_name', how='left').fillna(0).drop(columns=['STUSPS','state_name'])
 
+    states_cols = list(states_confir_final.columns)
+    for i in range(8, len(states_cols)):
+        states_confir_final[states_cols[i]] = states_confir_final[states_cols[i]] + states_confir_final[states_cols[i-1]]
+        states_deaths_final[states_cols[i]] = states_deaths_final[states_cols[i]] + states_deaths_final[states_cols[i-1]]
+
     states_deaths_final.to_csv(os.path.join(repo_root, 'public/csv/covid_deaths_1p3a_state.csv'), index=False)
     states_confir_final.to_csv(os.path.join(repo_root, 'public/csv/covid_confirmed_1p3a_state.csv'), index=False)
 
@@ -132,6 +137,11 @@ def create_county_files(raw_data):
 
     county_deaths_final = pd.merge(counties, county_deaths, left_on='name_merge', right_on='name_merge',how='left').drop(columns=['name_merge']).fillna(0).drop(columns=['state_abbr'])
     county_confir_final = pd.merge(counties, county_confir, left_on='name_merge', right_on='name_merge',how='left').drop(columns=['name_merge']).fillna(0).drop(columns=['state_abbr'])
+
+    county_cols = list(county_confir_final.columns)
+    for i in range(8, len(county_cols)):
+        county_confir_final[county_cols[i]] = county_confir_final[county_cols[i]] + county_confir_final[county_cols[i-1]]
+        county_deaths_final[county_cols[i]] = county_deaths_final[county_cols[i]] + county_deaths_final[county_cols[i-1]]
 
     county_deaths_final.to_csv(os.path.join(repo_root, 'public/csv/covid_deaths_1p3a.csv'), index=False)
     county_confir_final.to_csv(os.path.join(repo_root, 'public/csv/covid_confirmed_1p3a.csv'), index=False)
@@ -162,13 +172,13 @@ if __name__ == '__main__':
     create_state_files(raw_data)
     create_county_files(raw_data)
 
-    try:
-        print('Writing to S3...')
-        s3 = boto3.resource('s3')
-        s3.Object('geoda-covid-atlas', 'covid_confirmed_1p3a_state.csv').put(Body=open(os.path.join(repo_root, 'public/csv/covid_confirmed_1p3a_state.csv'), 'rb'))
-        s3.Object('geoda-covid-atlas', 'covid_deaths_1p3a_state.csv').put(Body=open(os.path.join(repo_root, 'public/csv/covid_deaths_1p3a_state.csv'), 'rb'))
-        s3.Object('geoda-covid-atlas', 'covid_confirmed_1p3a.csv').put(Body=open(os.path.join(repo_root, 'public/csv/covid_confirmed_1p3a.csv'), 'rb'))
-        s3.Object('geoda-covid-atlas', 'covid_deaths_1p3a.csv').put(Body=open(os.path.join(repo_root, 'public/csv/covid_deaths_1p3a.csv'), 'rb'))
-        print('Write to S3 complete.')
-    except Exception as e:
-        print(e)
+    # try:
+    #     print('Writing to S3...')
+    #     s3 = boto3.resource('s3')
+    #     s3.Object('geoda-covid-atlas', 'covid_confirmed_1p3a_state.csv').put(Body=open(os.path.join(repo_root, 'public/csv/covid_confirmed_1p3a_state.csv'), 'rb'))
+    #     s3.Object('geoda-covid-atlas', 'covid_deaths_1p3a_state.csv').put(Body=open(os.path.join(repo_root, 'public/csv/covid_deaths_1p3a_state.csv'), 'rb'))
+    #     s3.Object('geoda-covid-atlas', 'covid_confirmed_1p3a.csv').put(Body=open(os.path.join(repo_root, 'public/csv/covid_confirmed_1p3a.csv'), 'rb'))
+    #     s3.Object('geoda-covid-atlas', 'covid_deaths_1p3a.csv').put(Body=open(os.path.join(repo_root, 'public/csv/covid_deaths_1p3a.csv'), 'rb'))
+    #     print('Write to S3 complete.')
+    # except Exception as e:
+    #     print(e)

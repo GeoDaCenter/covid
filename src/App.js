@@ -15,6 +15,7 @@ const Faq = React.lazy(() => import('./components/Pages/Faq'));
 const Hotspots = React.lazy(() => import('./components/Pages/Hotspots'));
 const Insights = React.lazy(() => import('./components/Pages/Insights'));
 const Map = React.lazy(() => import('./components/Pages/Map'));
+const MichiganMasks = React.lazy(() => import('./components/Pages/MichiganMasks'));
 const Methodology = React.lazy(() => import('./components/Pages/Methodology'));
 const PrivacyPolicy = React.lazy(() => import('./components/Pages/PrivacyPolicy'));
 const Time = React.lazy(() => import('./components/Pages/Time'));

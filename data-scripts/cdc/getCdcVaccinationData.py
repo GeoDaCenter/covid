@@ -116,24 +116,27 @@ def parseVaccinationData(vaccinationDataList):
 def parseCountyVaccinationData():
     raw = pd.read_csv('https://data.cdc.gov/api/views/8xkx-amqh/rows.csv?accessType=DOWNLOAD')
     raw = raw[(raw.Recip_State != 'HI')&(raw.Recip_State != 'TX')&(raw.FIPS != 'UNK')]
-    
-    vaccineAdministered1 = raw[['Date','FIPS','Administered_Dose1_Recip']].pivot_table(index='FIPS', columns='Date').swaplevel(0, 1, 1).sort_index(1).reset_index()
-    dates = [parser.parse(column[0]).isoformat()[0:10] for column in list(vaccineAdministered1.columns)[1:]]
+    raw['Date'] = pd.to_datetime(raw['Date'], format='%m/%d/%Y')
+    raw = raw.sort_values('Date')
+
+    vaccineAdministered1 = raw[['Date','FIPS','Administered_Dose1_Recip']].pivot(index='FIPS', columns='Date').swaplevel(0, 1, 1).sort_index(1).reset_index()
+    vaccineAdministered1.columns = [col[0] for col in vaccineAdministered1.columns]
+    dates = [str(column)[0:10] for column in list(vaccineAdministered1.columns)[1:]]
     vaccineAdministered1.columns = ['fips'] + dates
     dates.sort()
     vaccineAdministered1 = vaccineAdministered1[['fips'] + dates]
-    # print(vaccineAdministered1)
-    # vaccineAdministered1 = vaccineAdministered1[vaccineAdministered1['fips'].str.isnumeric()]
+    vaccineAdministered1 = vaccineAdministered1[(vaccineAdministered1['fips'].duplicated())|(vaccineAdministered1[list(vaccineAdministered1.columns)[-1]].notnull())]
     vaccineAdministered1['fips'] = vaccineAdministered1['fips'].astype(int)
-
-    vaccineAdministered2 = raw[['Date','FIPS','Series_Complete_Yes']].pivot_table(index='FIPS', columns='Date').swaplevel(0, 1, 1).sort_index(1).reset_index()
-    dates = [parser.parse(column[0]).isoformat()[0:10] for column in list(vaccineAdministered2.columns)[1:]]
+    
+    vaccineAdministered2 = raw[['Date','FIPS','Series_Complete_Yes']].pivot(index='FIPS', columns='Date').swaplevel(0, 1, 1).sort_index(1).reset_index()
+    vaccineAdministered2.columns = [col[0] for col in vaccineAdministered2.columns]
+    dates = [str(column)[0:10] for column in list(vaccineAdministered1.columns)[1:]]
     vaccineAdministered2.columns = ['fips'] + dates
     dates.sort()
     vaccineAdministered2 = vaccineAdministered2[['fips'] + dates]
-    # vaccineAdministered2 = vaccineAdministered2[vaccineAdministered2['fips'].str.isnumeric()]
+    vaccineAdministered2 = vaccineAdministered2[(vaccineAdministered2['fips'].duplicated())|(vaccineAdministered2[list(vaccineAdministered2.columns)[-1]].notnull())]
     vaccineAdministered2['fips'] = vaccineAdministered2['fips'].astype(int)
-
+    
     return { 
         'vaccineAdministered1': vaccineAdministered1,
         'vaccineAdministered2': vaccineAdministered2
@@ -154,7 +157,7 @@ def parseCsvOutput(df, colName, operation=None):
     # thanks to @piRSquared on stackoverflow for this nifty pivot expressions
     # https://stackoverflow.com/questions/54915215/expressing-time-series-data-in-the-columns-rather-than-the-rows-of-a-dataframe
     tempDf = df[['state_fips','date',colName]]
-    tempDf = tempDf.pivot_table(index='state_fips', columns='date').swaplevel(0, 1, 1).sort_index(1).reset_index()
+    tempDf = tempDf.pivot(index='state_fips', columns='date').swaplevel(0, 1, 1).sort_index(1).reset_index()
     tempDf.columns = [column[0].replace('/','-') for column in list(tempDf.columns)]
 
     return tempDf
@@ -190,6 +193,7 @@ if __name__ == "__main__":
 
     ## Vaccination Data
     fileList = downloadCDCVaccinationData()
+    fileList.sort()
     parsedData = parseVaccinationData(fileList)
 
     parsedData['vaccineDistributed'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_to_be_distributed_cdc_state.csv'), index=False)

@@ -26,7 +26,7 @@ export default function useUpdateData(){
   const [stingerTimeout, setStingerTimeout] = useState();
   const [stinger, setStinger] = useState(false);
   const geoda = useContext(GeoDaContext);
-
+  
   const updateBins =  async () => { 
     setIsCalculating(true)
     if ((storedData[currentTable.numerator]||dataParams.numerator==='properties') && mapParams.mapType !== "lisa"){

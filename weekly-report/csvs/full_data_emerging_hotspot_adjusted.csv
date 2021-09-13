@@ -1,129 +1,372 @@
 ,GEOID,NAME,state_name,state_abbr,average
-90,26063,Huron,Michigan,MI,0.0008216836492070752
-35,26113,Missaukee,Michigan,MI,0.0007765601242496198
-31,26165,Wexford,Michigan,MI,0.000695865915451983
-62,01127,Walker,Alabama,AL,0.0006733842654020038
-68,16019,Bonneville,Idaho,ID,0.0006538412583820507
-127,36085,Richmond,New York,NY,0.0005877073726088418
-1,01059,Franklin,Alabama,AL,0.0005836079914179863
-32,26147,St. Clair,Michigan,MI,0.0005750291543362391
-10,26151,Sanilac,Michigan,MI,0.0005410807014221002
-70,36071,Orange,New York,NY,0.0005286750646396725
-64,36087,Rockland,New York,NY,0.0005209129987023201
-44,27155,Traverse,Minnesota,MN,0.0005137206216019522
-76,01123,Tallapoosa,Alabama,AL,0.0005037254590782075
-125,36081,Queens,New York,NY,0.0005005809567901917
-89,01133,Winston,Alabama,AL,0.0005000534245111658
-97,01093,Marion,Alabama,AL,0.00047947094739781446
-69,36059,Nassau,New York,NY,0.00047320935503979464
-41,16065,Madison,Idaho,ID,0.00046980166566045096
-124,36047,Kings,New York,NY,0.0004612724964114117
-126,36005,Bronx,New York,NY,0.0004495305193638763
-50,16051,Jefferson,Idaho,ID,0.0004458288732204241
-21,50019,Orleans,Vermont,VT,0.0004421225217819282
-48,36103,Suffolk,New York,NY,0.0004349093392748083
-28,27043,Faribault,Minnesota,MN,0.0004303102933746901
-57,21121,Knox,Kentucky,KY,0.0004267509272752861
-75,36027,Dutchess,New York,NY,0.00041726831123202414
-22,01037,Coosa,Alabama,AL,0.000411735398903919
-65,02170,Matanuska-Susitna,Alaska,AK,0.00040534655058961644
-102,01095,Marshall,Alabama,AL,0.00040089187180468916
-73,36119,Westchester,New York,NY,0.0003966132831956397
-5,27009,Benton,Minnesota,MN,0.0003832398491461242
-86,26157,Tuscola,Michigan,MI,0.00037098783175241925
-54,36061,New York,New York,NY,0.0003652387153038222
-55,34031,Passaic,New Jersey,NJ,0.0003624583665833145
-47,36079,Putnam,New York,NY,0.0003613194546012612
-118,34037,Sussex,New Jersey,NJ,0.0003608409027218246
-81,26099,Macomb,Michigan,MI,0.000359531590291106
-4,26087,Lapeer,Michigan,MI,0.0003574818285854965
-87,34003,Bergen,New Jersey,NJ,0.0003550365897913737
-119,50009,Essex,Vermont,VT,0.000351751525352409
-108,36111,Ulster,New York,NY,0.0003501085325068829
-77,08037,Eagle,Colorado,CO,0.0003499164443082824
-114,27095,Mille Lacs,Minnesota,MN,0.00034188115544725353
-92,42095,Northampton,Pennsylvania,PA,0.00033562988118986245
-113,42089,Monroe,Pennsylvania,PA,0.0003329390185776076
-63,21051,Clay,Kentucky,KY,0.00033253202352664067
-0,01043,Cullman,Alabama,AL,0.00032876003170575634
-53,42103,Pike,Pennsylvania,PA,0.0003250714679183144
-105,21235,Whitley,Kentucky,KY,0.00032289786983540124
-52,34039,Union,New Jersey,NJ,0.00031848433485851083
-96,50011,Franklin,Vermont,VT,0.00031678964293519547
-15,27013,Blue Earth,Minnesota,MN,0.0003166370133590664
-24,36025,Delaware,New York,NY,0.0003153034762320383
-122,34023,Middlesex,New Jersey,NJ,0.00031403516749521496
-71,36105,Sullivan,New York,NY,0.000311233240686949
-67,38077,Richland,North Dakota,ND,0.00030196263181107413
-120,27141,Sherburne,Minnesota,MN,0.0002985780984208852
-13,26049,Genesee,Michigan,MI,0.00029857384996596735
-117,01051,Elmore,Alabama,AL,0.0002980357783659195
-109,26133,Osceola,Michigan,MI,0.0002934024849609265
-40,26045,Eaton,Michigan,MI,0.00029147841629437263
-30,26009,Antrim,Michigan,MI,0.00029057660083492344
-74,34041,Warren,New Jersey,NJ,0.00028492670529305114
-7,01073,Jefferson,Alabama,AL,0.0002803798320986848
-95,37101,Johnston,North Carolina,NC,0.00027478193587396663
-106,26075,Jackson,Michigan,MI,0.0002726430852872005
-43,09001,Fairfield,Connecticut,CT,0.00027052462413760826
-79,51083,Halifax,Virginia,VA,0.0002699259640024387
-18,26065,Ingham,Michigan,MI,0.0002686657124758151
-29,26125,Oakland,Michigan,MI,0.0002629573554370443
-98,50015,Lamoille,Vermont,VT,0.0002624922060006526
-116,42077,Lehigh,Pennsylvania,PA,0.00026164961272874434
-46,01121,Talladega,Alabama,AL,0.0002601524691053111
-3,19141,O'Brien,Iowa,IA,0.0002596682408136859
-66,09005,Litchfield,Connecticut,CT,0.00025634109711982546
-59,27011,Big Stone,Minnesota,MN,0.0002522540116525079
-111,42017,Bucks,Pennsylvania,PA,0.0002504876657305961
-6,26149,St. Joseph,Michigan,MI,0.00024028528599478612
-112,27103,Nicollet,Minnesota,MN,0.00023740958953513024
-38,44003,Kent,Rhode Island,RI,0.00023713478409836912
-121,21013,Bell,Kentucky,KY,0.00023569822220487432
-20,19149,Plymouth,Iowa,IA,0.00023473585288582465
-60,01115,St. Clair,Alabama,AL,0.00023375441854289655
-12,19063,Emmet,Iowa,IA,0.00023290648056940288
-37,44001,Bristol,Rhode Island,RI,0.00023162639288844378
-94,26163,Wayne,Michigan,MI,0.00023142773859459475
-107,45087,Union,South Carolina,SC,0.00022959552798112442
-2,45039,Fairfield,South Carolina,SC,0.0002282350065774813
-23,26055,Grand Traverse,Michigan,MI,0.00022778060279111319
-45,01009,Blount,Alabama,AL,0.00022728841731852774
-27,26077,Kalamazoo,Michigan,MI,0.00022688480376610048
-36,36039,Greene,New York,NY,0.0002250096754160429
-58,21125,Laurel,Kentucky,KY,0.0002248356969906607
-34,26159,Van Buren,Michigan,MI,0.00022232296043085104
-100,47165,Sumner,Tennessee,TN,0.00022128278746265856
-101,46083,Lincoln,South Dakota,SD,0.00021963842535229486
-110,44005,Newport,Rhode Island,RI,0.0002191282772513158
-78,01103,Morgan,Alabama,AL,0.00021877759347388323
-8,26079,Kalkaska,Michigan,MI,0.00021853785321034443
-16,37077,Granville,North Carolina,NC,0.00021561092419438815
-17,54005,Boone,West Virginia,WV,0.0002128738597161264
-123,01033,Colbert,Alabama,AL,0.000211590278831048
-84,45057,Lancaster,South Carolina,SC,0.00021149772753896413
-25,26039,Crawford,Michigan,MI,0.00021092565386952695
-103,42025,Carbon,Pennsylvania,PA,0.000206536447617792
-83,25021,Norfolk,Massachusetts,MA,0.00020576251364163087
-93,01117,Shelby,Alabama,AL,0.00020566493385829252
-56,25005,Bristol,Massachusetts,MA,0.0002055769033801334
-39,47037,Davidson,Tennessee,TN,0.00020491196169996137
-82,27145,Stearns,Minnesota,MN,0.0001992417880434365
-51,26155,Shiawassee,Michigan,MI,0.0001969514537013614
-115,48477,Washington,Texas,TX,0.00019472095080128843
-91,42091,Montgomery,Pennsylvania,PA,0.00019275043187452545
-33,27143,Sibley,Minnesota,MN,0.00019160024524831392
-26,47089,Jefferson,Tennessee,TN,0.00018818728122270377
-88,42127,Wayne,Pennsylvania,PA,0.00018691115067573133
-85,12021,Collier,Florida,FL,0.00018365675802473484
-11,16081,Teton,Idaho,ID,0.00018234730715390848
-99,48201,Harris,Texas,TX,0.00017834938420886607
-42,27053,Hennepin,Minnesota,MN,0.00017686288552417172
-14,26015,Barry,Michigan,MI,0.00017500381440352752
-72,51069,Frederick,Virginia,VA,0.00017136021907265602
-19,27059,Isanti,Minnesota,MN,0.0001633742222706294
-49,45059,Laurens,South Carolina,SC,0.0001596921184903282
-104,01021,Chilton,Alabama,AL,0.00015795072866387622
-9,01079,Lawrence,Alabama,AL,0.0001556560039227774
-80,16043,Fremont,Idaho,ID,0.00015111327986651657
-61,46051,Grant,South Dakota,SD,0.00013856172925038105
+322,21189,Owsley,Kentucky,KY,258.817
+3,12123,Taylor,Florida,FL,258.127
+211,21051,Clay,Kentucky,KY,235.247
+361,21193,Perry,Kentucky,KY,234.735
+349,21013,Bell,Kentucky,KY,229.693
+270,21131,Leslie,Kentucky,KY,225.09
+46,12049,Hardee,Florida,FL,222.01
+274,47115,Marion,Tennessee,TN,215.737
+297,21235,Whitley,Kentucky,KY,215.001
+229,48199,Hardin,Texas,TX,209.515
+365,45035,Dorchester,South Carolina,SC,208.014
+18,47007,Bledsoe,Tennessee,TN,193.152
+17,28155,Webster,Mississippi,MS,193.118
+92,21123,Larue,Kentucky,KY,191.453
+245,13127,Glynn,Georgia,GA,191.167
+37,21237,Wolfe,Kentucky,KY,190.152
+57,12093,Okeechobee,Florida,FL,185.058
+64,12121,Suwannee,Florida,FL,184.502
+39,47101,Lewis,Tennessee,TN,179.229
+15,13305,Wayne,Georgia,GA,177.844
+99,12113,Santa Rosa,Florida,FL,176.013
+296,12047,Hamilton,Florida,FL,174.776
+207,47153,Sequatchie,Tennessee,TN,173.878
+101,21197,Powell,Kentucky,KY,173.753
+100,28039,George,Mississippi,MS,172.837
+31,28153,Wayne,Mississippi,MS,172.683
+180,21125,Laurel,Kentucky,KY,169.729
+220,47033,Crockett,Tennessee,TN,169.47
+9,47117,Marshall,Tennessee,TN,169.43
+97,13191,McIntosh,Georgia,GA,167.226
+88,12041,Gilchrist,Florida,FL,166.718
+282,47097,Lauderdale,Tennessee,TN,165.845
+351,12079,Madison,Florida,FL,165.373
+179,21121,Knox,Kentucky,KY,164.604
+195,47045,Dyer,Tennessee,TN,161.034
+249,12051,Hendry,Florida,FL,160.256
+226,48301,Loving,Texas,TX,160.064
+265,21085,Grayson,Kentucky,KY,159.972
+140,21027,Breckinridge,Kentucky,KY,159.464
+93,12055,Highlands,Florida,FL,158.986
+56,21071,Floyd,Kentucky,KY,158.784
+122,28095,Monroe,Mississippi,MS,158.755
+189,12077,Liberty,Florida,FL,158.581
+294,47123,Monroe,Tennessee,TN,158.324
+191,12131,Walton,Florida,FL,157.947
+330,21025,Breathitt,Kentucky,KY,157.776
+73,12007,Bradford,Florida,FL,157.643
+213,12075,Levy,Florida,FL,156.939
+242,12105,Polk,Florida,FL,156.607
+293,47053,Gibson,Tennessee,TN,154.177
+356,12023,Columbia,Florida,FL,153.921
+111,12071,Lee,Florida,FL,152.777
+190,12129,Wakulla,Florida,FL,152.563
+127,12037,Franklin,Florida,FL,151.983
+129,21045,Casey,Kentucky,KY,150.645
+125,47133,Overton,Tennessee,TN,150.158
+38,47067,Hancock,Tennessee,TN,150.001
+32,21171,Monroe,Kentucky,KY,149.309
+184,47071,Hardin,Tennessee,TN,149.274
+206,47041,DeKalb,Tennessee,TN,149.201
+357,21043,Carter,Kentucky,KY,149.116
+344,12013,Calhoun,Florida,FL,148.921
+26,21217,Taylor,Kentucky,KY,148.219
+35,47111,Macon,Tennessee,TN,147.541
+23,21087,Green,Kentucky,KY,146.447
+271,47143,Rhea,Tennessee,TN,144.924
+69,12027,DeSoto,Florida,FL,144.038
+240,37075,Graham,North Carolina,NC,142.621
+123,21041,Carroll,Kentucky,KY,142.139
+71,28057,Itawamba,Mississippi,MS,142.11
+118,21003,Allen,Kentucky,KY,141.917
+130,21153,Magoffin,Kentucky,KY,141.468
+144,47177,Warren,Tennessee,TN,141.052
+142,12133,Washington,Florida,FL,140.396
+61,47099,Lawrence,Tennessee,TN,140.262
+85,17047,Edwards,Illinois,IL,139.881
+325,54001,Barbour,West Virginia,WV,139.795
+167,54083,Randolph,West Virginia,WV,139.729
+174,21195,Pike,Kentucky,KY,139.321
+338,37039,Cherokee,North Carolina,NC,138.818
+214,21155,Marion,Kentucky,KY,138.587
+178,17193,White,Illinois,IL,138.528
+225,21109,Jackson,Kentucky,KY,137.957
+202,17025,Clay,Illinois,IL,137.86
+152,12059,Holmes,Florida,FL,137.7
+55,12029,Dixie,Florida,FL,137.073
+139,12033,Escambia,Florida,FL,136.964
+314,47081,Hickman,Tennessee,TN,136.948
+158,28111,Perry,Mississippi,MS,136.586
+25,28045,Hancock,Mississippi,MS,136.571
+5,28115,Pontotoc,Mississippi,MS,135.49
+308,12067,Lafayette,Florida,FL,135.37
+334,12065,Jefferson,Florida,FL,134.27
+318,28013,Calhoun,Mississippi,MS,134.178
+333,54013,Calhoun,West Virginia,WV,133.553
+135,28131,Stone,Mississippi,MS,132.834
+340,21181,Nicholas,Kentucky,KY,132.797
+257,47171,Unicoi,Tennessee,TN,132.573
+359,45029,Colleton,South Carolina,SC,132.494
+203,21203,Rockcastle,Kentucky,KY,132.198
+291,21177,Muhlenberg,Kentucky,KY,132.11
+234,13115,Floyd,Georgia,GA,131.229
+288,12083,Marion,Florida,FL,130.918
+217,13025,Brantley,Georgia,GA,130.843
+218,12081,Manatee,Florida,FL,130.816
+102,28067,Jones,Mississippi,MS,130.7
+360,28117,Prentiss,Mississippi,MS,130.689
+247,45049,Hampton,South Carolina,SC,130.339
+236,48457,Tyler,Texas,TX,129.877
+59,12091,Okaloosa,Florida,FL,128.862
+366,47057,Grainger,Tennessee,TN,127.967
+300,47017,Carroll,Tennessee,TN,127.688
+22,28141,Tishomingo,Mississippi,MS,126.778
+219,13029,Bryan,Georgia,GA,126.652
+222,28023,Clarke,Mississippi,MS,126.206
+176,21095,Harlan,Kentucky,KY,125.906
+277,54015,Clay,West Virginia,WV,125.446
+132,21065,Estill,Kentucky,KY,124.904
+94,45015,Berkeley,South Carolina,SC,124.754
+168,47039,Decatur,Tennessee,TN,124.723
+49,47159,Smith,Tennessee,TN,124.391
+84,47031,Coffee,Tennessee,TN,124.063
+159,47059,Greene,Tennessee,TN,123.247
+243,13103,Effingham,Georgia,GA,123.133
+72,45077,Pickens,South Carolina,SC,122.869
+299,45005,Allendale,South Carolina,SC,122.484
+148,17165,Saline,Illinois,IL,122.208
+62,28047,Harrison,Mississippi,MS,122.192
+67,28059,Jackson,Mississippi,MS,121.977
+230,13291,Union,Georgia,GA,121.956
+196,21183,Ohio,Kentucky,KY,121.833
+45,17191,Wayne,Illinois,IL,121.803
+343,18051,Gibson,Indiana,IN,121.613
+50,21141,Logan,Kentucky,KY,121.541
+11,28087,Lowndes,Mississippi,MS,120.828
+347,12101,Pasco,Florida,FL,120.528
+285,47051,Franklin,Tennessee,TN,120.349
+6,12061,Indian River,Florida,FL,120.151
+250,12057,Hillsborough,Florida,FL,120.065
+91,21225,Union,Kentucky,KY,119.813
+14,47181,Wayne,Tennessee,TN,119.637
+352,45007,Anderson,South Carolina,SC,119.526
+228,21093,Hardin,Kentucky,KY,119.453
+8,28019,Choctaw,Mississippi,MS,118.461
+346,47107,McMinn,Tennessee,TN,118.103
+305,47121,Meigs,Tennessee,TN,118.061
+278,47083,Houston,Tennessee,TN,117.816
+107,47131,Obion,Tennessee,TN,117.354
+109,12107,Putnam,Florida,FL,117.149
+113,21229,Washington,Kentucky,KY,116.992
+145,47035,Cumberland,Tennessee,TN,116.913
+321,45053,Jasper,South Carolina,SC,116.817
+301,47079,Henry,Tennessee,TN,116.775
+295,47021,Cheatham,Tennessee,TN,116.738
+204,21179,Nelson,Kentucky,KY,116.681
+83,28025,Clay,Mississippi,MS,116.218
+137,37047,Columbus,North Carolina,NC,116.156
+336,21021,Boyle,Kentucky,KY,116.119
+58,21227,Warren,Kentucky,KY,115.837
+117,21089,Greenup,Kentucky,KY,115.436
+287,17059,Gallatin,Illinois,IL,114.764
+317,21103,Henry,Kentucky,KY,114.727
+339,28035,Forrest,Mississippi,MS,114.692
+354,12115,Sarasota,Florida,FL,114.35
+47,13187,Lumpkin,Georgia,GA,114.269
+79,21129,Lee,Kentucky,KY,113.966
+316,47023,Chester,Tennessee,TN,113.881
+332,28091,Marion,Mississippi,MS,113.775
+149,12003,Baker,Florida,FL,113.04
+53,47029,Cocke,Tennessee,TN,113.026
+307,45051,Horry,South Carolina,SC,112.866
+30,17087,Johnson,Illinois,IL,112.389
+208,47011,Bradley,Tennessee,TN,112.115
+353,18079,Jennings,Indiana,IN,111.657
+367,47063,Hamblen,Tennessee,TN,111.23
+156,21031,Butler,Kentucky,KY,110.968
+20,13171,Lamar,Georgia,GA,110.788
+263,45075,Orangeburg,South Carolina,SC,110.7
+221,12063,Jackson,Florida,FL,110.52
+197,17159,Richland,Illinois,IL,110.387
+238,54093,Tucker,West Virginia,WV,110.361
+210,47069,Hardeman,Tennessee,TN,110.256
+185,21009,Barren,Kentucky,KY,110.217
+290,12017,Citrus,Florida,FL,110.051
+182,21135,Lewis,Kentucky,KY,109.983
+42,47135,Perry,Tennessee,TN,109.366
+82,47089,Jefferson,Tennessee,TN,108.888
+183,54097,Upshur,West Virginia,WV,108.075
+262,12111,St. Lucie,Florida,FL,107.366
+10,28081,Lee,Mississippi,MS,107.358
+186,37155,Robeson,North Carolina,NC,107.316
+36,21223,Trimble,Kentucky,KY,107.038
+269,12069,Lake,Florida,FL,106.787
+19,47109,McNairy,Tennessee,TN,106.756
+341,12097,Osceola,Florida,FL,106.591
+369,28145,Union,Mississippi,MS,106.302
+13,21069,Fleming,Kentucky,KY,106.276
+315,28139,Tippah,Mississippi,MS,105.799
+96,12125,Union,Florida,FL,105.797
+251,21101,Henderson,Kentucky,KY,105.763
+273,21187,Owen,Kentucky,KY,105.451
+40,47113,Madison,Tennessee,TN,105.402
+65,47145,Roane,Tennessee,TN,105.326
+345,12015,Charlotte,Florida,FL,105.285
+161,47087,Jackson,Tennessee,TN,104.896
+286,13229,Pierce,Georgia,GA,104.575
+51,17065,Hamilton,Illinois,IL,104.511
+181,21133,Letcher,Kentucky,KY,104.489
+298,47061,Grundy,Tennessee,TN,103.794
+24,21019,Boyd,Kentucky,KY,103.418
+233,41029,Jackson,Oregon,OR,103.314
+151,47103,Lincoln,Tennessee,TN,102.795
+28,56009,Converse,Wyoming,WY,102.5
+231,21099,Hart,Kentucky,KY,102.112
+163,47119,Maury,Tennessee,TN,102.091
+194,21165,Menifee,Kentucky,KY,101.961
+160,45019,Charleston,South Carolina,SC,101.93
+355,47167,Tipton,Tennessee,TN,101.3
+272,48423,Smith,Texas,TX,101.272
+175,17055,Franklin,Illinois,IL,100.562
+348,21115,Johnson,Kentucky,KY,100.509
+252,47025,Claiborne,Tennessee,TN,100.256
+310,21119,Knott,Kentucky,KY,100.245
+60,28061,Jasper,Mississippi,MS,100.01
+43,47147,Robertson,Tennessee,TN,99.828
+323,47073,Hawkins,Tennessee,TN,99.758
+303,17079,Jasper,Illinois,IL,99.723
+138,21029,Bullitt,Kentucky,KY,98.772
+187,17127,Massac,Illinois,IL,98.576
+162,47141,Putnam,Tennessee,TN,98.41
+320,28041,Greene,Mississippi,MS,97.175
+66,37045,Cleveland,North Carolina,NC,96.959
+331,47055,Giles,Tennessee,TN,96.769
+80,47183,Weakley,Tennessee,TN,96.439
+103,47149,Rutherford,Tennessee,TN,96.417
+54,47043,Dickson,Tennessee,TN,96.372
+266,18163,Vanderburgh,Indiana,IN,95.674
+34,47075,Haywood,Tennessee,TN,95.389
+201,12095,Orange,Florida,FL,95.317
+89,21169,Metcalfe,Kentucky,KY,95.064
+283,18173,Warrick,Indiana,IN,94.712
+370,45013,Beaufort,South Carolina,SC,94.355
+114,28017,Chickasaw,Mississippi,MS,94.133
+1,48459,Upshur,Texas,TX,94.009
+200,17185,Wabash,Illinois,IL,93.814
+133,47185,White,Tennessee,TN,93.672
+192,21149,McLean,Kentucky,KY,93.391
+143,21151,Madison,Kentucky,KY,93.077
+98,28097,Montgomery,Mississippi,MS,93.055
+131,21137,Lincoln,Kentucky,KY,93.037
+327,45045,Greenville,South Carolina,SC,92.991
+276,47015,Cannon,Tennessee,TN,92.579
+216,39001,Adams,Ohio,OH,92.458
+267,28003,Alcorn,Mississippi,MS,92.051
+90,47189,Wilson,Tennessee,TN,92.008
+95,21079,Garrard,Kentucky,KY,91.865
+44,47155,Sevier,Tennessee,TN,91.711
+292,47165,Sumner,Tennessee,TN,91.708
+258,47179,Washington,Tennessee,TN,91.701
+256,45091,York,South Carolina,SC,91.538
+248,47125,Montgomery,Tennessee,TN,91.095
+12,47139,Polk,Tennessee,TN,90.476
+0,37167,Stanly,North Carolina,NC,90.43
+115,21001,Adair,Kentucky,KY,90.368
+29,28129,Smith,Mississippi,MS,89.952
+188,13295,Walker,Georgia,GA,89.937
+146,54067,Nicholas,West Virginia,WV,89.372
+153,45059,Laurens,South Carolina,SC,89.116
+7,12073,Leon,Florida,FL,89.02
+244,12021,Collier,Florida,FL,88.738
+76,54007,Braxton,West Virginia,WV,88.309
+16,47169,Trousdale,Tennessee,TN,88.258
+126,45033,Dillon,South Carolina,SC,88.254
+193,21159,Martin,Kentucky,KY,87.838
+141,45069,Marlboro,South Carolina,SC,87.632
+41,48255,Karnes,Texas,TX,87.405
+241,48373,Polk,Texas,TX,87.372
+116,28065,Jefferson Davis,Mississippi,MS,87.172
+260,47093,Knox,Tennessee,TN,87.107
+368,47077,Henderson,Tennessee,TN,87.1
+239,39145,Scioto,Ohio,OH,86.975
+121,48485,Wichita,Texas,TX,86.916
+223,56013,Fremont,Wyoming,WY,86.774
+21,21049,Clark,Kentucky,KY,86.76
+177,47137,Pickett,Tennessee,TN,86.638
+337,47129,Morgan,Tennessee,TN,86.373
+289,12005,Bay,Florida,FL,86.025
+77,21077,Gallatin,Kentucky,KY,85.825
+311,13111,Fannin,Georgia,GA,85.808
+205,28073,Lamar,Mississippi,MS,85.502
+212,12045,Gulf,Florida,FL,85.166
+74,18137,Ripley,Indiana,IN,85.151
+306,47085,Humphreys,Tennessee,TN,85.118
+150,41015,Curry,Oregon,OR,84.6
+154,47049,Fentress,Tennessee,TN,84.495
+358,13039,Camden,Georgia,GA,84.36
+235,12011,Broward,Florida,FL,84.208
+106,21147,McCreary,Kentucky,KY,84.017
+328,47009,Blount,Tennessee,TN,83.877
+52,48009,Archer,Texas,TX,83.36
+169,47001,Anderson,Tennessee,TN,83.168
+128,13083,Dade,Georgia,GA,82.754
+48,13183,Long,Georgia,GA,82.73
+264,12099,Palm Beach,Florida,FL,82.598
+136,12001,Alachua,Florida,FL,82.331
+164,48343,Morris,Texas,TX,82.132
+173,21059,Daviess,Kentucky,KY,81.97
+172,21201,Robertson,Kentucky,KY,81.899
+319,28085,Lincoln,Mississippi,MS,81.853
+362,28009,Benton,Mississippi,MS,81.85
+105,28105,Oktibbeha,Mississippi,MS,81.623
+70,21145,McCracken,Kentucky,KY,81.496
+108,12019,Clay,Florida,FL,81.489
+227,18037,Dubois,Indiana,IN,81.213
+165,54101,Webster,West Virginia,WV,80.502
+63,47173,Union,Tennessee,TN,80.499
+324,21061,Edmonson,Kentucky,KY,79.801
+198,47105,Loudon,Tennessee,TN,79.64
+280,45043,Georgetown,South Carolina,SC,79.638
+259,45067,Marion,South Carolina,SC,79.274
+155,47047,Fayette,Tennessee,TN,78.461
+134,18077,Jefferson,Indiana,IN,78.374
+342,13051,Chatham,Georgia,GA,78.149
+120,37019,Brunswick,North Carolina,NC,77.991
+335,18129,Posey,Indiana,IN,77.361
+232,13313,Whitfield,Georgia,GA,77.349
+199,21091,Hancock,Kentucky,KY,76.773
+254,13213,Murray,Georgia,GA,76.769
+104,17081,Jefferson,Illinois,IL,76.726
+81,13267,Tattnall,Georgia,GA,76.632
+237,41059,Umatilla,Oregon,OR,76.46
+171,21199,Pulaski,Kentucky,KY,75.594
+2,54023,Grant,West Virginia,WV,75.56
+68,48155,Foard,Texas,TX,75.371
+170,47187,Williamson,Tennessee,TN,75.053
+78,18175,Washington,Indiana,IN,74.88
+261,48245,Jefferson,Texas,TX,74.808
+363,17049,Effingham,Illinois,IL,74.469
+112,37115,Madison,North Carolina,NC,74.463
+209,48291,Liberty,Texas,TX,74.316
+275,21173,Montgomery,Kentucky,KY,74.254
+166,47065,Hamilton,Tennessee,TN,74.173
+281,47013,Campbell,Tennessee,TN,74.152
+246,13139,Hall,Georgia,GA,74.119
+312,21011,Bath,Kentucky,KY,73.861
+268,45089,Williamsburg,South Carolina,SC,73.496
+224,37161,Rutherford,North Carolina,NC,73.25
+309,47005,Benton,Tennessee,TN,72.832
+255,13251,Screven,Georgia,GA,72.063
+350,56043,Washakie,Wyoming,WY,71.048
+313,45009,Bamberg,South Carolina,SC,71.009
+157,17033,Crawford,Illinois,IL,70.992
+253,21005,Anderson,Kentucky,KY,70.74
+119,21111,Jefferson,Kentucky,KY,70.361
+284,47003,Bedford,Tennessee,TN,70.204
+364,21213,Simpson,Kentucky,KY,68.92
+124,12119,Sumter,Florida,FL,68.764
+86,21163,Meade,Kentucky,KY,68.661
+279,48241,Jasper,Texas,TX,68.23
+75,54033,Harrison,West Virginia,WV,68.128
+304,18123,Perry,Indiana,IN,67.917
+4,17023,Clark,Illinois,IL,67.529
+27,47175,Van Buren,Tennessee,TN,66.906
+87,17151,Pope,Illinois,IL,66.282
+33,21063,Elliott,Kentucky,KY,64.615
+326,37113,Macon,North Carolina,NC,63.994
+302,18167,Vigo,Indiana,IN,63.332
+215,21057,Cumberland,Kentucky,KY,62.93
+329,51105,Lee,Virginia,VA,61.899
+110,47037,Davidson,Tennessee,TN,61.002
+147,21035,Calloway,Kentucky,KY,59.157
