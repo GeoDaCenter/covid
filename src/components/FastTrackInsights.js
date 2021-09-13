@@ -114,24 +114,23 @@ const GoToMap = styled.a`
     transform:translateY(-50%);
     text-decoration:none;
     text-transform:uppercase;
-    color:${colors.white};
+    color:${colors.darkgray};
     font-family:"Lato", arial, sans-serif;
     font-weight:bold;
     transition:250ms all;
     font-size:1rem;
+    background:${colors.white};
+    padding:0.25em 0.5em;
     svg {
         display:inline-block;
-        fill:white;
+        fill:${colors.darkgray};
         height:1rem;
         width:1rem;
         transform:translateY(2px);
         transition:250ms all;
     }
     &:hover {
-        color:${colors.yellow};
-        svg {
-            fill:${colors.yellow};
-        }
+        background:${colors.yellow};
     }
     @media (max-width:960px){
         position: initial;
@@ -263,7 +262,7 @@ export default function FastTrackInsights(){
                                 </TextContainer>
                                 <TextContainer>
                                     <LineChart width={200} height={75} data={summary.cases['14-day']}>
-                                        <Line type="monotone" dataKey="dailyNew" stroke={colors.yellow} strokeWidth={2} dot={false} />
+                                        <Line type="monotone" dataKey="dailyNew" stroke={colors.yellow} strokeWidth={2} dot={false} isAnimationActive={false}  />
                                         <Tooltip content={CustomTooltip}/>
                                     </LineChart>
                                 </TextContainer>
@@ -308,7 +307,7 @@ export default function FastTrackInsights(){
                                 </TextContainer>
                                 <TextContainer>
                                     <LineChart width={200} height={75} data={summary.vaccination['14-day']}>
-                                        <Line type="monotone" dataKey="dailyFull" stroke={colors.skyblue} strokeWidth={2} dot={false}/>
+                                        <Line type="monotone" dataKey="dailyFull" stroke={colors.skyblue} strokeWidth={2} dot={false} isAnimationActive={false} />
                                         <Tooltip content={CustomTooltip}/>
                                     </LineChart>
                                 </TextContainer>

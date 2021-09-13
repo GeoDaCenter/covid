@@ -80,6 +80,11 @@ def getEquitySummary(counties):
         'quartileEssentialPct': round((nationalEssential-national)/nationalEssential*100)
     }
 
+def getCasesExtract():
+    data = pd.read_csv(os.path.join(repo_root, 'public/csv/covid_confirmed_usafacts.csv'))
+    data = data[['countyFIPS']+[col for col in list( data.columns)[-90:]]]
+    return data
+
 if __name__ == "__main__":
     with open(os.path.join(repo_root, 'public/geojson/county_usfacts.geojson')) as f:
         data = json.load(f)
@@ -101,3 +106,5 @@ if __name__ == "__main__":
         f.seek(0, 0)
         f.write('export const summary = ' + content)
     
+    data = getCasesExtract()
+    data.to_csv(os.path.join(repo_root, 'public/csv/covid_confirmed_usafacts_extract.csv'), index=False)
