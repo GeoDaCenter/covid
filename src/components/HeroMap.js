@@ -10,7 +10,6 @@ import { fitBounds } from '@math.gl/web-mercator';
 import { getCSV } from '../utils';
 
 const MapContainer = styled.div`
-    width:600px;
     height:400px;
     position:relative;
     pointer-events:none;
@@ -33,9 +32,9 @@ const MapContainer = styled.div`
 `
 // US bounds
 const bounds = fitBounds({
-    width: 600,
+    width: window.innerWidth > 1140 ? 650 : window.innerWidth/12*7,
     height: 400,
-    bounds: [[-130.14, 53.96],[-67.12, 19]]
+    bounds: [[-130, 54],[-80, 23]]
 })
 
 const colorscale = [
@@ -50,6 +49,8 @@ const colorscale = [
 ]
 
 const getColor = (val, bins, colors) => {
+    if (isNaN(val)) return [0,0,0,0]
+    console.log(val)
     for (let i = 0; i < bins.length; i++) {
         if (val < bins[i]) return colors[i]
     }
@@ -65,6 +66,10 @@ export default function HeroMap(){
         current:'2020-01-30',
         previous:'2020-01-23'
     });
+    const [initialDates, setInitialDates] = useState({
+        current:'2020-01-30',
+        previous:'2020-01-23'
+    })
     const [intervalFn, setIntervalFn] = useState(null);
 
 
@@ -77,100 +82,105 @@ export default function HeroMap(){
         pitch:45
     }
 
-    useEffect(() => {
-        const getGeoData = async () => {
-            const data = await fetch(`${process.env.PUBLIC_URL}/geojson/county_usfacts.geojson`)
-                .then(r => r.json())
-                .then(r => {
-                    let returnArray = [];
+    const getGeoData = async () => {
+        const data = await fetch(`${process.env.PUBLIC_URL}/geojson/county_usfacts.geojson`)
+            .then(r => r.json())
+            .then(r => {
+                let returnArray = [];
 
-                    for ( let i = 0; i < r.features.length; i++ ) {
-                        for ( let n = 0; n < r.features[i].geometry.coordinates.length; n++) {
-                            returnArray.push({
-                                geom: r.features[i].geometry.coordinates[n],
-                                GEOID: r.features[i].properties.GEOID,
-                                population: r.features[i].properties.population
-                            })
-                        }
+                for ( let i = 0; i < r.features.length; i++ ) {
+                    for ( let n = 0; n < r.features[i].geometry.coordinates.length; n++) {
+                        returnArray.push({
+                            geom: r.features[i].geometry.coordinates[n],
+                            GEOID: r.features[i].properties.GEOID,
+                            population: r.features[i].properties.population
+                        })
                     }
-
-                    return returnArray
-                })
-            return data
-        }
-
-        const formatData = async (data) => {
-            let returnObj = {}
-
-            for (let i = 0; i < data.length; i++) {
-                returnObj[data[i].countyFIPS] = data[i]
-            }
-
-            return returnObj;
-        }
-
-        const getDates = async (data) => {
-
-            const keys = Object.keys(data);
-
-            for (let i = 0; i < keys.length; i++) {
-                if (!Number.isNaN(Date.parse(keys[i]))) {
-                    return(keys.slice(i,))
                 }
-            }
+
+                return returnArray
+            })
+        return data
+    }
+
+    const formatData = (data) => {
+        let returnObj = {}
+
+        for (let i = 0; i < data.length; i++) {
+            returnObj[data[i].countyFIPS] = data[i]
         }
 
-        const getBins = async (data, dates, geoData) => {
-            const finalDate = dates.slice(-1,)[0];
-            const weekBefore = dates.slice(-7,)[0];
-            let populations = {};
-            const values = Object.values(data)
+        return returnObj;
+    }
 
-            for (let i=0; i<geoData.length; i++){
-                populations[geoData[i].GEOID] = geoData[i].population;
-            };
+    const getDates = (data) => {
 
-            const valArray = values.map(d => (((d[finalDate]-d[weekBefore])/7)/populations[d.countyFIPS])*100000);
+        const keys = Object.keys(data);
 
-            valArray.sort(function(a, b) {
-                return a - b;
-            });
-
-            let quantileArray = []
-
-            for (let i=0; i<8; i++){
-                quantileArray.push(
-                    valArray[
-                        Math.round(
-                            (valArray.length/100)*(12.5*i)
-                        )
-                    ]
-                )
+        for (let i = 0; i < keys.length; i++) {
+            if (!Number.isNaN(Date.parse(keys[i]))) {
+                return(keys.slice(i,))
             }
-            
-            return quantileArray;
+        }
+    }
+
+    const getBins = (data, dates, geoData) => {
+        const finalDate = dates.slice(-1,)[0];
+        const weekBefore = dates.slice(-7,)[0];
+        let populations = {};
+        const values = Object.values(data)
+
+        for (let i=0; i<geoData.length; i++){
+            populations[geoData[i].GEOID] = geoData[i].population;
         };
 
-        const joinData = async (geoData, data) => {
-            for (let i=0; i<geoData.length; i++) {
-                geoData[i]['data'] = data[geoData[i].GEOID]
-            }
-            return geoData
-        }
+        const valArray = values.map(d => (((d[finalDate]-d[weekBefore])/7)/populations[d.countyFIPS])*100000);
 
-        const handleInitialDataLoad = async () => {
-            const data = await getCSV(`${process.env.PUBLIC_URL}/csv/covid_confirmed_usafacts.csv`);
-            const dates = await getDates(data[0]);
-            const geoData = await getGeoData();
-            const formattedData = await formatData(data);
-            const bins = await getBins(formattedData, dates, geoData);
-            const joinedData = await joinData(geoData, formattedData);
-            
-            setDataBins(bins);
-            setGeoData(joinedData);
-            setDateList(dates);
-        }
+        valArray.sort(function(a, b) {
+            return a - b;
+        });
 
+        let quantileArray = []
+
+        for (let i=0; i<8; i++){
+            quantileArray.push(
+                valArray[
+                    Math.round(
+                        (valArray.length/100)*(12.5*i)
+                    )
+                ]
+            )
+        }
+        
+        return quantileArray;
+    };
+
+    const joinData = (geoData, data) => {
+        for (let i=0; i<geoData.length; i++) {
+            geoData[i]['data'] = data[geoData[i].GEOID]
+        }
+        return geoData
+    }
+
+    const handleInitialDataLoad = async () => {
+        const [data,geoData] = await Promise.all([
+            getCSV(`${process.env.PUBLIC_URL}/csv/covid_confirmed_usafacts_extract.csv`),
+            getGeoData()
+        ]);
+        const dates = getDates(data[0])
+        const formattedData = formatData(data);
+        const bins = getBins(formattedData, dates, geoData);
+        const joinedData = joinData(geoData, formattedData);
+        setDataBins(bins);
+        setGeoData(joinedData);
+        setDateList(dates);
+        setInitialDates({
+            current:dates[7],
+            previous:dates[0]
+        })
+    }
+
+    useEffect(() => {
         handleInitialDataLoad()
     },[])
 
@@ -184,12 +194,11 @@ export default function HeroMap(){
                 }
             } else {
                 return {
-                    current: '2020-01-30',
-                    previous: '2020-01-23'
+                    ...initialDates
                 }
             }
         }
-        ), 125));
+        ), 250));
     }, [dateList])
 
     const layer = new PolygonLayer({

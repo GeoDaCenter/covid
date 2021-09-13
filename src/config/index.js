@@ -216,14 +216,14 @@ export const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqM
 
 export const colors = {
     white: '#ffffff',
-    black: '#00000',
+    black: '#000000',
     darkgray:'#1a1a1a',
     gray:'#2b2b2b',
     buttongray: '#f5f5f5',
     lightgray: '#d8d8d8',
     yellow: '#FFCE00',
-    lightblue: '#A1E1E3',
     red: '#EC1E24',
+    lightblue: '#A1E1E3',
     strongOrange: '#F16622',
     orange:'#F37E44',
     skyblue: '#c1ebeb',
@@ -578,20 +578,7 @@ export const dataPresets = {
         geojson: 'cdc.geojson', // geospatial data to join to
         id: 'GEOID',
         geography: 'County',
-        tables: {
-            // 'cases': {
-            //     'file':'covid_confirmed_cdc.e-2.pbf',
-            //     'dates':'isoDateList',
-            //     'type':'time-series',
-            //     'accumulate':true
-            // },
-            // 'deaths': {
-            //     'file':'covid_deaths_cdc.e-2.pbf',
-            //     'dates':'isoDateList',
-            //     'type':'time-series',
-            //     'accumulate':true
-            // }
-        }
+        tables: {}
     },
     'cdc_h.geojson': {
         plainName: 'CDC', // Plain english name for dataset

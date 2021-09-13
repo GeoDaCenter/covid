@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { ContentContainer } from '../../styled_components';
-import { StaticNavbar, Footer } from '../';
+import { NavBar, Footer } from '../';
 
 const ErrorPage = styled.div`
     background:white;
@@ -17,7 +17,7 @@ const Error = () => {
 
     return (
        <ErrorPage >
-            <StaticNavbar/>
+            <NavBar light/>
             <ContentContainer>
                 <h1>Error 404</h1>
                 <img className="errorImg" src={`${process.env.PUBLIC_URL}/icons/regional-hot-spots@3x.png`} alt="Error Page Missing"/>

@@ -78,6 +78,7 @@ const SignupForm = styled.div`
     h1.signup {
         width:100%;
         font-size:2rem;
+        text-align:center;
     }
     h2 {
         color: ${colors.lightgray};
@@ -158,6 +159,7 @@ const Footer = ( props ) => {
                                 <li><a href="https://geodacenter.github.io/" target="_blank" rel="noopener noreferrer">GeoDa Open Software</a></li>
                                 <li><a href="https://covidatlas.healthcarecommunities.org" target="_blank" rel="noopener noreferrer">Learning Community</a></li>
                                 <li><NavLink to="/conduct">Code of Conduct</NavLink></li>
+                                <li><NavLink to="/privacy">Privacy Policy</NavLink></li>
                             </ul>
                         </p>
                     </Grid>

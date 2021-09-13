@@ -15,7 +15,7 @@ import {  setDates, setNotification, setPanelState } from '../../actions';
 
 import { MapSection, NavBar, VariablePanel, Legend,  TopPanel, Preloader,
   DataPanel, MainLineChart, Scaleable, Draggable, InfoBox,
-  NotificationBox, Popover, MapTooltipContent } from '../../components';  
+  NotificationBox, Popover, MapTooltipContent, PrintLayout } from '../../components';  
 import { ViewportProvider } from '../../contexts/ViewportContext';
 import { GeoDaContext } from "../../contexts/GeoDaContext";
 
@@ -147,9 +147,9 @@ export default function Map() {
   }, [window.innerHeight, window.innerWidth])
 
   return (
+    <>
     <div className="Map-App" style={{overflow:'hidden'}}>
       <Preloader loaded={mapLoaded} />
-      <NavBar />
       {isLoading && <div id="loadingIcon">
           <img
             src={`${process.env.PUBLIC_URL}/assets/img/animated_cluster.svg`}
@@ -166,6 +166,7 @@ export default function Map() {
           <GeoDaContext.Provider value={geoda}>
             <ViewportProvider defaultViewport={defaultViewport} >
               <MapSection />
+              <PrintLayout />
             </ViewportProvider>
             <TopPanel />
             <Legend 
@@ -216,5 +217,7 @@ export default function Map() {
           </GeoDaContext.Provider>}
         </div>
     </div>
+    <NavBar />
+    </>
   );
 }

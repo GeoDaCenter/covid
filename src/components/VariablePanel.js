@@ -477,8 +477,6 @@ export default function VariablePanel(){
   const dataName = availableData.includes(urlParamsTree[currentData].name)
     ? urlParamsTree[currentData].name
     : availableData[0]
-
-  // console.log(dataName)
   // const textDataset = Object.keys(
   //   urlParamsTree
   //   )[Object.values(
@@ -710,6 +708,7 @@ export default function VariablePanel(){
                 <AcsRaceButton 
                   active={dotDensityParams.raceCodes[group.idx]} 
                   bgColor={colors.dotDensity[group.idx]}
+                  key={group.name + 'dd-button'}
                   onClick={() => dispatch(toggleDotDensityRace(group.idx))}>
                     {group.name}
                   </AcsRaceButton>

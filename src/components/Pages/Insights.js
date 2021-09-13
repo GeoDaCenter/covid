@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Grid from '@material-ui/core/Grid';
 
 import { ContentContainer, Gutter } from '../../styled_components';
-import { StaticNavbar, Footer } from '../';
+import { NavBar, Footer } from '../';
 import { colors } from '../../config';
 
 const InsightsPage = styled.div`
@@ -157,14 +157,21 @@ function a11yProps(index) {
     };
 }
 
-export default function Insights(){
-
+export default function Insights(){ 
     const [ rssFeed, setRssFeed] = useState({
         feed: {},
         items: []
     })
 
-    const [tabValue, setTabValue] = useState(0);
+    const [tabValue, setTabValue] = useState(
+        window.location.hash.length 
+        ? ['#blog','#research','#stories'].indexOf(window.location.hash) 
+        : 0
+    );
+
+    const handleHashChange = () => {
+        setTabValue(['#blog','#research','#stories'].indexOf(window.location.hash))
+    }
 
     useEffect(() => {
         fetch('https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/covidatlas')
@@ -172,13 +179,17 @@ export default function Insights(){
             .then(r => {
                 setRssFeed(r)
             })
+        window.addEventListener("hashchange", handleHashChange, false);
     }, [])
+
+    
 
     return (
        <InsightsPage>
-           <StaticNavbar/>
-           <ContentContainer>
-           <TabBar position="static">
+           
+            <NavBar light/>
+            <ContentContainer>
+            <TabBar position="static">
                 <Tab {...a11yProps(0)} active={tabValue === 0} onClick={() => setTabValue(0)}>Blog</Tab>
                 <Tab {...a11yProps(1)} active={tabValue === 1} onClick={() => setTabValue(1)}>Research</Tab>
                 <Tab {...a11yProps(2)} active={tabValue === 2} onClick={() => setTabValue(2)}>Stories</Tab>

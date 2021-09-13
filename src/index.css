@@ -10,9 +10,10 @@ body {
   background:rgb(15,15,15);
   font-family: 'Lato', sans-serif;
 }
-
-div#view-default-view, div#view-MapView {
-    z-index:500;
+@media print{
+  body {
+    background:white;
+  }
 }
 
 /* bottom drawer */
@@ -69,6 +70,8 @@ body {
   width: 100%; 
   height:  calc(100% - 50px);
   overflow:hidden;
+  z-index: 1;
+
 }
 
 #mainContainer.loading {
@@ -101,6 +104,14 @@ body {
 }
 
 
+@media print {
+  #mainContainer {
+    display:none;
+  }
+  .navbar {
+    display:none;
+  }
+}
 @media only screen and (max-width: 600px) {
   .navbar ul{
     display: none !important;
@@ -164,16 +175,6 @@ body {
 button.mapboxgl-ctrl-attrib-button {
   display:none;
 }
-
-#view-main {
-  z-index:0;
-  clip-path:url(#window);
-}
-/* 
-#view-alaskaMap, #view-hawaiiMap {
-  border:1px solid white;
-  z-index:1;
-} */
 
 .highlighted {
   animation: highlightedShadow 1.5s linear infinite;

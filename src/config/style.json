@@ -45,6 +45,36 @@
     "glyphs": "mapbox://fonts/lixun910/{fontstack}/{range}.pbf",
     "layers": [
         {
+            "id": "hillshade",
+            "type": "fill",
+            "source": "composite",
+            "source-layer": "hillshade",
+            "layout": {},
+            "paint": {
+                "fill-color": "hsl(0, 0%, 10%)",
+                "fill-outline-color": "hsla(0, 0%, 0%, 0)",
+                "fill-opacity": 0.1
+            }
+        },
+        {
+            "id": "water",
+            "type": "fill",
+            "source": "composite",
+            "source-layer": "water",
+            "layout": {},
+            "paint": {
+                "fill-color": [
+                    "case",
+                    ["==", ["id"], 0],
+                    "hsl(0, 0%, 7%)",
+                    "hsl(0, 0%, 7%)"
+                ],
+                "fill-outline-color": "hsla(0, 0%, 0%, 0)",
+                "fill-antialias": false
+            }
+        },
+
+        {
             "id": "blackbelt-geom",
             "type": "fill",
             "source": "composite",
@@ -84,35 +114,6 @@
             "source-layer": "US_Congressional_Districts-4jecfj",
             "layout": {"visibility": "none"},
             "paint": {"line-color": "hsl(0, 0%, 12%)"}
-        },
-        {
-            "id": "hillshade",
-            "type": "fill",
-            "source": "composite",
-            "source-layer": "hillshade",
-            "layout": {},
-            "paint": {
-                "fill-color": "hsl(0, 0%, 10%)",
-                "fill-outline-color": "hsla(0, 0%, 0%, 0)",
-                "fill-opacity": 0.1
-            }
-        },
-        {
-            "id": "water",
-            "type": "fill",
-            "source": "composite",
-            "source-layer": "water",
-            "layout": {},
-            "paint": {
-                "fill-color": [
-                    "case",
-                    ["==", ["id"], 0],
-                    "hsl(0, 0%, 7%)",
-                    "hsl(0, 0%, 7%)"
-                ],
-                "fill-outline-color": "hsla(0, 0%, 0%, 0)",
-                "fill-antialias": false
-            }
         },
         {
             "id": "admin-1-boundary-bg",

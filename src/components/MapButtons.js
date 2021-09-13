@@ -169,6 +169,6 @@ export default function MapButtons({
             <NavInlineButtonGroup>
                 <ShareButton />
             </NavInlineButtonGroup>
-            <ShareURL type="text" value="" id="share-url" />
+            <ShareURL type="text" value="" id="share-url" readOnly />
         </MapButtonContainer>
 }

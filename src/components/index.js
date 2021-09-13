@@ -8,6 +8,7 @@ import DateSlider from './Slider';
 import Dock from './Dock';
 import Draggable from './Draggable';
 import Footer from './Footer';
+import FastTrackInsights from './FastTrackInsights';
 import HeroMap from './HeroMap';
 import InfoBox from './InfoBox';
 import Legend from './Legend';
@@ -15,11 +16,13 @@ import MapButtons  from './MapButtons';
 import MainLineChart from './MainLineChart';
 import MapSection from './MapSection';
 import MapTooltipContent from './MapTooltipContent';
+import MemberGrid from './MemberGrid';
 import NavBar from './Navbar';
 import NotificationBox from './NotificationBox';
 import VariablePanel from './VariablePanel';
 import Popover from './TooltipPopper';
 import Preloader from './Preloader';
+import PrintLayout from './PrintLayout';
 import Scaleable from './Scaleable';
 import StaticNavbar from './StaticNavbar';
 import Ticks from './Ticks';
@@ -57,6 +60,7 @@ export {
     Dock,
     Draggable,
     Geocoder,
+    FastTrackInsights,
     Footer,
     HeroMap,
     InfoBox,
@@ -65,11 +69,13 @@ export {
     MainLineChart,
     MapSection,
     MapTooltipContent,
+    MemberGrid,
     NavBar,
     NotificationBox,
     VariablePanel,
     Popover,
     Preloader,
+    PrintLayout,
     Scaleable,
     StaticNavbar,
     Ticks,

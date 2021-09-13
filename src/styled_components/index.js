@@ -137,7 +137,7 @@ export const ContentContainer = styled.div`
     letter-spacing: 1.75px;
     font-weight: 700;
     font-stretch: normal;
-    margin-bottom:20px;
+    margin:20px 0;
   }
   h3 {
     font-family: 'Playfair Display', serif;

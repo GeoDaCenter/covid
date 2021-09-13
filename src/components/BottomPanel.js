@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 
 import styled from 'styled-components';
 
-// import { Legend } from '../components';
 import { colors } from '../config';
 
 // helper function to get dock offset

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { ContentContainer, Gutter } from '../../styled_components';
-import { StaticNavbar, Footer } from '../';
+import { NavBar, Footer } from '../';
 import { colors } from '../../config';
 
 const InsightsPage = styled.div`
@@ -30,7 +30,7 @@ const Time = () => {
 
     return (
        <InsightsPage>
-           <StaticNavbar/>
+           <NavBar light/>
            <ContentContainer>
 
                 <h1>Change Over Time</h1>
