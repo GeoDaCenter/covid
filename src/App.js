@@ -45,6 +45,8 @@ export default function App(){
               <Route path="/docs.html" component={Data}/>
               <Route path="/download" component={Download}/>
               <Route path="/download.html" component={Download}/>
+              <Route path="/michigan-masks" component={MichiganMasks}/>
+              <Route path="/michigan-masks.html" component={MichiganMasks}/>
               <Route path="/methods" component={Methodology}/>
               <Route path="/methods.html" component={Methodology}/>
               <Route path="/time" component={Time}/>
