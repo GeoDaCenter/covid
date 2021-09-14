@@ -18,12 +18,12 @@ def getCaseSummary(counties):
             casesSummary['WoW'] = round(((casesSummary['weeklyAverage']-casesSummary['lastWeeklyAverage'])/casesSummary['weeklyAverage'])*1000)/10
             cases14.insert(0,{
                 'date': keys[i],
-                'dailyNew': str(summedCases[keys[i]]-summedCases[keys[i-1]]),
+                'dailyNew': int(summedCases[keys[i]]-summedCases[keys[i-1]]),
             })
         else:
             cases14.insert(0,{
                 'date': keys[i],
-                'dailyNew': str(summedCases[keys[i]]-summedCases[keys[i-1]])
+                'dailyNew': int(summedCases[keys[i]]-summedCases[keys[i-1]])
             })
 
     return {
