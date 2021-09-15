@@ -1,413 +1,583 @@
-,GEOID,NAME,state_name,state_abbr,average
-50,48127,Dimmit,Texas,TX,0.328157446979542
-23,47169,Trousdale,Tennessee,TN,0.29057915864559547
-100,47095,Lake,Tennessee,TN,0.24410614631183325
-346,12067,Lafayette,Florida,FL,0.23042739511175014
-32,19021,Buena Vista,Iowa,IA,0.22286701452545482
-103,38027,Eddy,North Dakota,ND,0.20826385028719657
-214,48279,Lamb,Texas,TX,0.2078117930930478
-350,48323,Maverick,Texas,TX,0.20659947263362824
-21,47181,Wayne,Tennessee,TN,0.2063787614871764
-294,28099,Neshoba,Mississippi,MS,0.20427754435107381
-238,21051,Clay,Kentucky,KY,0.20269212384046775
-265,48189,Hale,Texas,TX,0.20133924645401208
-107,28031,Covington,Mississippi,MS,0.20053577976159298
-247,47033,Crockett,Tennessee,TN,0.19854571251219294
-287,48479,Webb,Texas,TX,0.19586572154270357
-366,22035,East Carroll,Louisiana,LA,0.19533366287691548
-171,12003,Baker,Florida,FL,0.19440602586184735
-219,12077,Liberty,Florida,FL,0.19183673469387758
-90,47127,Moore,Tennessee,TN,0.1911239661951462
-37,47111,Macon,Tennessee,TN,0.1896793971132967
-25,47007,Bledsoe,Tennessee,TN,0.18961199052967306
-392,12023,Columbia,Florida,FL,0.18926685065169982
-286,48463,Uvalde,Texas,TX,0.18913801219699253
-61,48303,Lubbock,Texas,TX,0.18783960405235955
-33,28153,Wayne,Mississippi,MS,0.18724204989017443
-158,38059,Morton,North Dakota,ND,0.1860126842774826
-167,22041,Franklin,Louisiana,LA,0.18591392860657693
-409,28145,Union,Mississippi,MS,0.18497470930818372
-101,38031,Foster,North Dakota,ND,0.1834563612679114
-35,47075,Haywood,Tennessee,TN,0.1822615766594618
-377,12013,Calhoun,Florida,FL,0.1822605530719627
-60,48507,Zavala,Texas,TX,0.1819659196627295
-251,12063,Jackson,Florida,FL,0.18177799259660957
-46,12049,Hardee,Florida,FL,0.1816197611702239
-188,20179,Sheridan,Kansas,KS,0.18070915517044808
-352,28139,Tippah,Mississippi,MS,0.1805041252517378
-223,47045,Dyer,Tennessee,TN,0.18036588704036013
-194,47119,Maury,Tennessee,TN,0.18006244112330375
-218,40035,Craig,Oklahoma,OK,0.18002779667031374
-121,12125,Union,Florida,FL,0.17922060877635393
-332,47053,Gibson,Tennessee,TN,0.17861863606652625
-74,12121,Suwannee,Florida,FL,0.17859744753925613
-136,47131,Obion,Tennessee,TN,0.17741527803782065
-193,47141,Putnam,Tennessee,TN,0.1773360992748748
-222,46003,Aurora,South Dakota,SD,0.17728990835188732
-248,22083,Richland,Louisiana,LA,0.177200351665527
-41,47101,Lewis,Tennessee,TN,0.1770778569038857
-211,21125,Laurel,Kentucky,KY,0.1766557470445805
-68,28061,Jasper,Mississippi,MS,0.17630484948532016
-387,48163,Frio,Texas,TX,0.17582020949041674
-126,28067,Jones,Mississippi,MS,0.17563410674112753
-215,47071,Hardin,Tennessee,TN,0.17552398321479848
-385,17001,Adams,Illinois,IL,0.17527081285793858
-129,38093,Stutsman,North Dakota,ND,0.17499728717920895
-10,28115,Pontotoc,Mississippi,MS,0.1747131680390502
-24,28155,Webster,Mississippi,MS,0.17435606721321004
-403,46085,Lyman,South Dakota,SD,0.17435291511280138
-161,28131,Stone,Mississippi,MS,0.17423517978620023
-48,47159,Smith,Tennessee,TN,0.17420671629737308
-88,12007,Bradford,Florida,FL,0.17402953620011336
-231,47041,DeKalb,Tennessee,TN,0.17381037410627737
-4,12123,Taylor,Florida,FL,0.17342228773127497
-70,47099,Lawrence,Tennessee,TN,0.17341686657195426
-233,47011,Bradley,Tennessee,TN,0.1733053331129022
-142,48153,Floyd,Texas,TX,0.1731704943557805
-3,22073,Ouachita,Louisiana,LA,0.173121896524107
-390,17027,Clinton,Illinois,IL,0.17260702516363194
-114,47189,Wilson,Tennessee,TN,0.1724638477086409
-113,46107,Potter,South Dakota,SD,0.17239896818572656
-15,47117,Marshall,Tennessee,TN,0.17115055139164967
-30,47175,Van Buren,Tennessee,TN,0.17093267882187937
-125,28039,George,Mississippi,MS,0.17078387660420558
-208,47137,Pickett,Tennessee,TN,0.17062556154537287
-253,38063,Nelson,North Dakota,ND,0.1700587084148728
-234,47069,Hardeman,Tennessee,TN,0.170034761420412
-258,47151,Scott,Tennessee,TN,0.16946472494436418
-197,47039,Decatur,Tennessee,TN,0.16903681784277522
-44,47147,Robertson,Tennessee,TN,0.16879614674665436
-240,12045,Gulf,Florida,FL,0.16875027806201895
-274,12011,Broward,Florida,FL,0.16871403646362776
-87,28057,Itawamba,Mississippi,MS,0.16861766853248966
-373,22065,Madison,Louisiana,LA,0.1683726838015541
-290,40115,Ottawa,Oklahoma,OK,0.1682687520931201
-405,47063,Hamblen,Tennessee,TN,0.16818324443049892
-305,47143,Rhea,Tennessee,TN,0.16816406592059407
-149,45033,Dillon,South Carolina,SC,0.1678644312507809
-73,46035,Davison,South Dakota,SD,0.1678092271027299
-269,22057,Lafourche,Louisiana,LA,0.1678012154217176
-127,47149,Rutherford,Tennessee,TN,0.167028079497799
-148,47133,Overton,Tennessee,TN,0.16692419560079985
-64,19149,Plymouth,Iowa,IA,0.1669224581082083
-239,12039,Gadsden,Florida,FL,0.16689794765288604
-410,38005,Benson,North Dakota,ND,0.1668602962532675
-220,12129,Wakulla,Florida,FL,0.16658674637781834
-159,40099,Murray,Oklahoma,OK,0.16654826254826255
-268,22047,Iberville,Louisiana,LA,0.1662519723267387
-257,22005,Ascension,Louisiana,LA,0.16589211442152618
-77,29127,Marion,Missouri,MO,0.16522341358418366
-330,46083,Lincoln,South Dakota,SD,0.16507109818469395
-151,12037,Franklin,Florida,FL,0.16443908851884312
-353,47023,Chester,Tennessee,TN,0.1642982090795502
-329,47165,Sumner,Tennessee,TN,0.1638392086036021
-150,28107,Panola,Mississippi,MS,0.16371229156323922
-86,28161,Yalobusha,Mississippi,MS,0.16346739968026497
-43,47135,Perry,Tennessee,TN,0.16340459338437094
-336,21235,Whitley,Kentucky,KY,0.1633778397058067
-375,18051,Gibson,Indiana,IN,0.1632889969894375
-174,12059,Holmes,Florida,FL,0.1632821116094405
-317,47097,Lauderdale,Tennessee,TN,0.16323969600008695
-52,17051,Fayette,Illinois,IL,0.16267722334744983
-278,12105,Polk,Florida,FL,0.16263838483883916
-364,47055,Giles,Tennessee,TN,0.16247324520372827
-339,20021,Cherokee,Kansas,KS,0.16244721291202033
-358,28013,Calhoun,Mississippi,MS,0.16229889114385718
-381,20099,Labette,Kansas,KS,0.16229334567823298
-210,21121,Knox,Kentucky,KY,0.16227884995165004
-169,47177,Warren,Tennessee,TN,0.1621559584430994
-160,47185,White,Tennessee,TN,0.16206062560464368
-397,12031,Duval,Florida,FL,0.16198691017053132
-386,21013,Bell,Kentucky,KY,0.16198322789465938
-348,46043,Douglas,South Dakota,SD,0.1615309605070697
-147,28095,Monroe,Mississippi,MS,0.16149952168367346
-243,22105,Tangipahoa,Louisiana,LA,0.16141486632046306
-217,37155,Robeson,North Carolina,NC,0.16134029337518493
-337,47061,Grundy,Tennessee,TN,0.16113891359559349
-172,47103,Lincoln,Tennessee,TN,0.16097331519597247
-370,28035,Forrest,Mississippi,MS,0.16087957489231375
-338,47017,Carroll,Tennessee,TN,0.1608557763886481
-311,47015,Cannon,Tennessee,TN,0.1608062801537329
-166,22121,West Baton Rouge,Louisiana,LA,0.16051265053585237
-331,19197,Wright,Iowa,IA,0.16040746195385375
-319,47003,Bedford,Tennessee,TN,0.160348566862718
-245,22025,Catahoula,Louisiana,LA,0.16027205383315768
-271,48139,Ellis,Texas,TX,0.15996483526897295
-55,47043,Dickson,Tennessee,TN,0.15990228514272525
-209,17193,White,Illinois,IL,0.1597249809014515
-408,47077,Henderson,Tennessee,TN,0.1597175572910524
-354,22013,Bienville,Louisiana,LA,0.1596220577783352
-270,28079,Leake,Mississippi,MS,0.15959147979261662
-326,46023,Charles Mix,South Dakota,SD,0.15946061643835613
-165,12133,Washington,Florida,FL,0.1593607890115258
-56,45041,Florence,South Carolina,SC,0.1593398266055074
-314,22109,Terrebonne,Louisiana,LA,0.1590465278280035
-344,45051,Horry,South Carolina,SC,0.15886716776360452
-389,22103,St. Tammany,Louisiana,LA,0.15874470362694945
-252,28023,Clarke,Mississippi,MS,0.158696276099591
-135,20037,Crawford,Kansas,KS,0.1586814535571823
-388,12079,Madison,Florida,FL,0.15833835970243898
-361,47027,Clay,Tennessee,TN,0.15824690531950483
-152,22059,LaSalle,Louisiana,LA,0.15818544957617806
-177,47049,Fentress,Tennessee,TN,0.15749694342558632
-325,12005,Bay,Florida,FL,0.15720219763358265
-298,22127,Winn,Louisiana,LA,0.15707977685347632
-178,47047,Fayette,Tennessee,TN,0.1568110162537251
-17,28081,Lee,Mississippi,MS,0.1567584391113803
-237,19193,Woodbury,Iowa,IA,0.15671344027366607
-34,21171,Monroe,Kentucky,KY,0.1567075955829012
-393,40019,Carter,Oklahoma,OK,0.1566069141369724
-102,28007,Attala,Mississippi,MS,0.15625024026078865
-399,28117,Prentiss,Mississippi,MS,0.15607818837314105
-307,47115,Marion,Tennessee,TN,0.15604844182808078
-118,19109,Kossuth,Iowa,IA,0.15598199478796496
-249,22021,Caldwell,Louisiana,LA,0.15594809352312358
-111,22049,Jackson,Louisiana,LA,0.1559085771694085
-263,22045,Iberia,Louisiana,LA,0.15590061257337814
-355,28101,Newton,Mississippi,MS,0.15578623198024794
-241,21155,Marion,Kentucky,KY,0.15559632754932257
-401,28009,Benton,Mississippi,MS,0.1555624794447041
-221,12131,Walton,Florida,FL,0.15550339908808128
-226,17185,Wabash,Illinois,IL,0.15527520953944524
-321,47051,Franklin,Tennessee,TN,0.15527007681083613
-116,19025,Calhoun,Iowa,IA,0.1548933683903009
-157,22009,Avoyelles,Louisiana,LA,0.1548568353519188
-228,28073,Lamar,Mississippi,MS,0.1546430963153437
-199,47187,Williamson,Tennessee,TN,0.15460531473941153
-261,48219,Hockley,Texas,TX,0.15454500598270568
-75,22067,Morehouse,Louisiana,LA,0.15454205689662753
-124,28097,Montgomery,Mississippi,MS,0.1545120892051663
-379,47107,McMinn,Tennessee,TN,0.15444856812601682
-207,17055,Franklin,Illinois,IL,0.15444577912950136
-98,47031,Coffee,Tennessee,TN,0.15440496493475533
-318,18173,Warrick,Indiana,IN,0.15434052448004135
-272,17121,Marion,Illinois,IL,0.15430176902186146
-59,38071,Ramsey,North Dakota,ND,0.15403157022954547
-356,22117,Washington,Louisiana,LA,0.15397956328278992
-195,46127,Union,South Dakota,SD,0.15397358785380133
-164,28093,Marshall,Mississippi,MS,0.15393858104898425
-362,21189,Owsley,Kentucky,KY,0.1539323325117634
-391,47167,Tipton,Tennessee,TN,0.1537261521149813
-6,38095,Towner,North Dakota,ND,0.1529703600050884
-283,48395,Robertson,Texas,TX,0.15279539879895118
-16,48381,Randall,Texas,TX,0.1525851238778206
-168,28159,Winston,Mississippi,MS,0.15249871601326007
-232,47153,Sequatchie,Tennessee,TN,0.1524973329453981
-91,28043,Grenada,Mississippi,MS,0.15246465161870745
-156,22039,Evangeline,Louisiana,LA,0.15236651207040078
-180,19167,Sioux,Iowa,IA,0.15222643831401905
-328,49035,Salt Lake,Utah,UT,0.1518426488104532
-139,47037,Davidson,Tennessee,TN,0.1515854138128146
-11,12073,Leon,Florida,FL,0.15152421215898734
-202,22101,St. Mary,Louisiana,LA,0.15129039206048525
-143,28017,Chickasaw,Mississippi,MS,0.15117442312303123
-297,18163,Vanderburgh,Indiana,IN,0.1511395841918198
-190,40069,Johnston,Oklahoma,OK,0.15113796628152212
-299,28027,Coahoma,Mississippi,MS,0.15101372033562604
-187,22051,Jefferson,Louisiana,LA,0.1509464736963014
-155,22001,Acadia,Louisiana,LA,0.15081876632509544
-42,47113,Madison,Tennessee,TN,0.15081445038857869
-320,17149,Pike,Illinois,IL,0.15059213986470557
-282,40123,Pontotoc,Oklahoma,OK,0.15050687880345318
-27,28141,Tishomingo,Mississippi,MS,0.15044079034221758
-144,22043,Grant,Louisiana,LA,0.15043851798818686
-227,17025,Clay,Illinois,IL,0.15040807146070306
-196,47065,Hamilton,Tennessee,TN,0.15037425753809103
-18,47139,Polk,Tennessee,TN,0.15031411205883854
-288,12057,Hillsborough,Florida,FL,0.15019838521469916
-396,22097,St. Landry,Louisiana,LA,0.15018925160448723
-83,37109,Lincoln,North Carolina,NC,0.14995956757477366
-402,40021,Cherokee,Oklahoma,OK,0.1498766876449545
-230,40049,Garvin,Oklahoma,OK,0.14976304290900128
-163,45069,Marlboro,South Carolina,SC,0.1496495837655397
-277,48177,Gonzales,Texas,TX,0.14951371752068512
-85,28059,Jackson,Mississippi,MS,0.1494128345495112
-300,48311,McMullen,Texas,TX,0.14911523521795425
-212,48131,Duval,Texas,TX,0.14888343712650184
-351,47081,Hickman,Tennessee,TN,0.1488717539045767
-280,48013,Atascosa,Texas,TX,0.1485798546501422
-79,47145,Roane,Tennessee,TN,0.14851773932629178
-333,46125,Turner,South Dakota,SD,0.14837159452357904
-291,45091,York,South Carolina,SC,0.14831865680339046
-7,19141,O'Brien,Iowa,IA,0.14827936781786252
-82,37045,Cleveland,North Carolina,NC,0.14788424864691602
-49,21141,Logan,Kentucky,KY,0.14782673470147864
-292,55083,Oconto,Wisconsin,WI,0.14772986625686593
-62,19035,Cherokee,Iowa,IA,0.14759081169963625
-335,48069,Castro,Texas,TX,0.14751692381074685
-259,22007,Assumption,Louisiana,LA,0.14746097435187863
-93,47183,Weakley,Tennessee,TN,0.1474454291322191
-365,28091,Marion,Mississippi,MS,0.1474259412518281
-183,28111,Perry,Mississippi,MS,0.1473704213976911
-229,28133,Sunflower,Mississippi,MS,0.14734229286468095
-78,48107,Crosby,Texas,TX,0.14726887171862432
-244,12081,Manatee,Florida,FL,0.14723166592216727
-264,38039,Griggs,North Dakota,ND,0.14720716177026857
-309,45031,Darlington,South Carolina,SC,0.14708849950400513
-310,28015,Carroll,Mississippi,MS,0.1470459642046176
-170,47035,Cumberland,Tennessee,TN,0.14697225890390264
-9,19081,Hancock,Iowa,IA,0.14685892725936808
-266,40131,Rogers,Oklahoma,OK,0.1468511777605089
-363,46111,Sanborn,South Dakota,SD,0.14674563292653744
-12,17009,Brown,Illinois,IL,0.14662386302835742
-303,40095,Marshall,Oklahoma,OK,0.14639891129876473
-205,22055,Lafayette,Louisiana,LA,0.14639568211338916
-94,40041,Delaware,Oklahoma,OK,0.14638175749023016
-342,47121,Meigs,Tennessee,TN,0.14609358205746772
-65,28123,Scott,Mississippi,MS,0.1460043739473618
-96,47089,Jefferson,Tennessee,TN,0.1458834702961133
-58,22093,St. James,Louisiana,LA,0.14586050742814333
-57,12029,Dixie,Florida,FL,0.14585560451594398
-122,19093,Ida,Iowa,IA,0.14562505164008924
-104,12041,Gilchrist,Florida,FL,0.14544422367300594
-71,28047,Harrison,Mississippi,MS,0.14543331768169646
-256,48283,La Salle,Texas,TX,0.14538302836318762
-184,47059,Greene,Tennessee,TN,0.14515179442584825
-254,21109,Jackson,Kentucky,KY,0.14482272382519149
-275,22123,West Carroll,Louisiana,LA,0.14465882954255044
-76,48247,Jim Hogg,Texas,TX,0.144425812733272
-276,45057,Lancaster,South Carolina,SC,0.1444237758087623
-216,28127,Simpson,Mississippi,MS,0.14441378073040617
-200,48369,Parmer,Texas,TX,0.14423467316280955
-371,29111,Lewis,Missouri,MO,0.14421063129550213
-106,48399,Runnels,Texas,TX,0.1441041984203963
-26,47109,McNairy,Tennessee,TN,0.14374507089636612
-204,38029,Emmons,North Dakota,ND,0.14358165700647801
-179,17033,Crawford,Illinois,IL,0.14357561968626512
-359,46129,Walworth,South Dakota,SD,0.14353124189784805
-47,27133,Rock,Minnesota,MN,0.14346420603724333
-398,28135,Tallahatchie,Mississippi,MS,0.14323515075551843
-72,29115,Linn,Missouri,MO,0.14310332700288386
-130,17081,Jefferson,Illinois,IL,0.14298065370925547
-89,22099,St. Martin,Louisiana,LA,0.1428784045244828
-140,22079,Rapides,Louisiana,LA,0.1428734326503928
-260,19091,Humboldt,Iowa,IA,0.14249873062333862
-45,17191,Wayne,Illinois,IL,0.14212929667530264
-31,28129,Smith,Mississippi,MS,0.14199446820999456
-357,28005,Amite,Mississippi,MS,0.14178009991291993
-138,12019,Clay,Florida,FL,0.14155118029381744
-374,19119,Lyon,Iowa,IA,0.1415340543558744
-341,48041,Brazos,Texas,TX,0.1413568342576112
-289,21101,Henderson,Kentucky,KY,0.1413523078780898
-267,28083,Leflore,Mississippi,MS,0.14120827501581762
-181,28109,Pearl River,Mississippi,MS,0.14112158490116383
-285,48251,Johnson,Texas,TX,0.14095383741507003
-306,22069,Natchitoches,Louisiana,LA,0.1409359062260533
-20,40105,Nowata,Oklahoma,OK,0.1409033997881152
-40,46073,Jerauld,South Dakota,SD,0.14067450538618603
-185,47087,Jackson,Tennessee,TN,0.14033577270770553
-225,47105,Loudon,Tennessee,TN,0.14017217039887064
-235,48061,Cameron,Texas,TX,0.14005453467694134
-382,19161,Sac,Iowa,IA,0.14003416526724188
-128,28071,Lafayette,Mississippi,MS,0.1398347999668638
-8,18125,Pike,Indiana,IN,0.13982987442015724
-404,21213,Simpson,Kentucky,KY,0.13975688265673317
-224,17159,Richland,Illinois,IL,0.13964575818363364
-369,47129,Morgan,Tennessee,TN,0.13945704230942238
-340,17079,Jasper,Illinois,IL,0.13941892656208138
-39,46015,Brule,South Dakota,SD,0.13924222657099367
-334,47021,Cheatham,Tennessee,TN,0.13924000815733642
-191,28055,Issaquena,Mississippi,MS,0.139092082616179
-28,28045,Hancock,Mississippi,MS,0.13906317462358875
-383,48505,Zapata,Texas,TX,0.1389598639929213
-108,55115,Shawano,Wisconsin,WI,0.13889982338371717
-349,20135,Ness,Kansas,KS,0.1386511965192168
-132,21147,McCreary,Kentucky,KY,0.1385232289683665
-376,17005,Bond,Illinois,IL,0.13830951241195377
-38,19041,Clay,Iowa,IA,0.13812822376544562
-407,46057,Hamlin,South Dakota,SD,0.13811904761904764
-295,45067,Marion,South Carolina,SC,0.13754786497324994
-1,46055,Haakon,South Dakota,SD,0.13750514615067927
-146,21003,Allen,Kentucky,KY,0.13718242899737562
-411,37023,Burke,North Carolina,NC,0.13707833320594154
-133,40093,Major,Oklahoma,OK,0.13702661681412656
-384,28075,Lauderdale,Mississippi,MS,0.13702446693924003
-360,28041,Greene,Mississippi,MS,0.13697160357507446
-255,29157,Perry,Missouri,MO,0.13689543507782304
-95,28137,Tate,Mississippi,MS,0.1368105449458764
-312,40047,Garfield,Oklahoma,OK,0.13664576298440262
-198,47001,Anderson,Tennessee,TN,0.1364490738558703
-213,22081,Red River,Louisiana,LA,0.13634253887212805
-81,38045,LaMoure,North Dakota,ND,0.13634146341463416
-327,17189,Washington,Illinois,IL,0.1359438865620427
-304,21131,Leslie,Kentucky,KY,0.1355996944232238
-84,40097,Mayes,Oklahoma,OK,0.13557484487206303
-308,48113,Dallas,Texas,TX,0.13556464358729306
-176,46031,Corson,South Dakota,SD,0.1353852481491637
-324,28143,Tunica,Mississippi,MS,0.13532799550498667
-115,21123,Larue,Kentucky,KY,0.13530860210713277
-395,22095,St. John the Baptist,Louisiana,LA,0.1350740821117841
-246,37097,Iredell,North Carolina,NC,0.13473575258244147
-296,47093,Knox,Tennessee,TN,0.1346114280077475
-250,40125,Pottawatomie,Oklahoma,OK,0.13443849206349207
-29,18157,Tippecanoe,Indiana,IN,0.134359401626193
-279,12021,Collier,Florida,FL,0.13431999164656164
-97,28025,Clay,Mississippi,MS,0.13426753981075468
-315,40135,Sequoyah,Oklahoma,OK,0.13396980446473908
-182,28151,Washington,Mississippi,MS,0.13391909029678217
-145,28065,Jefferson Davis,Mississippi,MS,0.13374759212079784
-120,27101,Murray,Minnesota,MN,0.13351918044842742
-123,19143,Osceola,Iowa,IA,0.13348907837869406
-105,18103,Miami,Indiana,IN,0.1333389042087964
-153,18083,Knox,Indiana,IN,0.13324906535096598
-368,17137,Morgan,Illinois,IL,0.13323401747848387
-53,17065,Hamilton,Illinois,IL,0.13295219559664276
-380,22053,Jefferson Davis,Louisiana,LA,0.13260150089209105
-189,22033,East Baton Rouge,Louisiana,LA,0.1325324303927933
-323,40145,Wagoner,Oklahoma,OK,0.1324103128727406
-343,47085,Humphreys,Tennessee,TN,0.13236005178356966
-206,47157,Shelby,Tennessee,TN,0.13227159178141296
-69,46045,Edmunds,South Dakota,SD,0.13226976069615662
-13,28019,Choctaw,Mississippi,MS,0.13222998609370437
-134,19147,Palo Alto,Iowa,IA,0.13219215902816125
-0,45021,Cherokee,South Carolina,SC,0.131506359310489
-313,45043,Georgetown,South Carolina,SC,0.1311952879520447
-281,28119,Quitman,Mississippi,MS,0.1309394620572049
-112,27063,Jackson,Minnesota,MN,0.13081374681852437
-284,47125,Montgomery,Tennessee,TN,0.13046251970417014
-345,45087,Union,South Carolina,SC,0.1303150257353701
-378,19151,Pocahontas,Iowa,IA,0.13024479145093817
-110,48437,Swisher,Texas,TX,0.1297434526990914
-162,12001,Alachua,Florida,FL,0.12944643861466335
-175,45059,Laurens,South Carolina,SC,0.1293873268090027
-262,28147,Walthall,Mississippi,MS,0.12898333773616288
-36,17169,Schuyler,Illinois,IL,0.12878175052580487
-63,37119,Mecklenburg,North Carolina,NC,0.12875806313055557
-99,17047,Edwards,Illinois,IL,0.12874047728819515
-154,21045,Casey,Kentucky,KY,0.12862207430452552
-192,46067,Hutchinson,South Dakota,SD,0.12852260521433453
-347,47005,Benton,Tennessee,TN,0.1282983401900979
-66,13253,Seminole,Georgia,GA,0.12822770449889093
-302,22061,Lincoln,Louisiana,LA,0.12818107224307074
-367,18129,Posey,Indiana,IN,0.12800701194151504
-22,46025,Clark,South Dakota,SD,0.12792190113181126
-92,48079,Cochran,Texas,TX,0.12785320739866193
-54,48017,Bailey,Texas,TX,0.1276488598823624
-141,28089,Madison,Mississippi,MS,0.12761461229064466
-372,29019,Boone,Missouri,MO,0.12749624677789423
-2,45039,Fairfield,South Carolina,SC,0.12740275751018973
-131,28105,Oktibbeha,Mississippi,MS,0.1270011288604284
-322,28069,Kemper,Mississippi,MS,0.1266166306237544
-394,40051,Grady,Oklahoma,OK,0.1256437093317951
-80,29145,Newton,Missouri,MO,0.12541297059011228
-406,45025,Chesterfield,South Carolina,SC,0.12532281294231581
-316,47013,Campbell,Tennessee,TN,0.12494915571489763
-137,45061,Lee,South Carolina,SC,0.12452735268820696
-173,48215,Hidalgo,Texas,TX,0.12447552635734964
-109,48493,Wilson,Texas,TX,0.1242464121214277
-14,40011,Blaine,Oklahoma,OK,0.12418814318336845
-273,46137,Ziebach,South Dakota,SD,0.1240227434257285
-67,28113,Pike,Mississippi,MS,0.1239614752713376
-201,40111,Okmulgee,Oklahoma,OK,0.12392780918585133
-117,12055,Highlands,Florida,FL,0.12385914787458356
-301,28003,Alcorn,Mississippi,MS,0.12379159302236224
-293,46117,Stanley,South Dakota,SD,0.12321845655178988
-186,18171,Warren,Indiana,IN,0.1231443468620624
-19,16081,Teton,Idaho,ID,0.12292418772563175
-203,17173,Shelby,Illinois,IL,0.12133565408574572
-236,20083,Hodgeman,Kansas,KS,0.12098650535132623
-242,21057,Cumberland,Kentucky,KY,0.1206401225766636
-5,38019,Cavalier,North Dakota,ND,0.11932157800358635
-51,48325,Medina,Texas,TX,0.11930630281057977
-400,21231,Wayne,Kentucky,KY,0.11920589478937774
-119,45015,Berkeley,South Carolina,SC,0.11806171013116222
+GEOID,NAME,average,state_abbr,state_name
+37167,Stanly County ,84.39,NC,North Carolina
+37199,Yancey County ,101.88,NC,North Carolina
+37045,Cleveland County ,93.15,NC,North Carolina
+37115,Madison County ,93.77,NC,North Carolina
+37173,Swain County ,73.16,NC,North Carolina
+37097,Iredell County ,84.87,NC,North Carolina
+37161,Rutherford County ,77.08,NC,North Carolina
+37075,Graham County ,164.44,NC,North Carolina
+37121,Mitchell County ,58.42,NC,North Carolina
+37059,Davie County ,63.62,NC,North Carolina
+37113,Macon County ,64.97,NC,North Carolina
+37039,Cherokee County ,106.36,NC,North Carolina
+48459,Upshur County ,96.54,TX,Texas
+48103,Crane County ,59.04,TX,Texas
+48221,Hood County ,91.76,TX,Texas
+48325,Medina County ,64.0,TX,Texas
+48137,Edwards County ,90.37,TX,Texas
+48009,Archer County ,64.2,TX,Texas
+48507,Zavala County ,83.02,TX,Texas
+48143,Erath County ,84.37,TX,Texas
+48081,Coke County ,102.51,TX,Texas
+48467,Van Zandt County ,91.83,TX,Texas
+48063,Camp County ,98.11,TX,Texas
+48213,Henderson County ,89.31,TX,Texas
+48379,Rains County ,102.1,TX,Texas
+48493,Wilson County ,103.15,TX,Texas
+48367,Parker County ,89.75,TX,Texas
+48271,Kinney County ,116.62,TX,Texas
+48297,Live Oak County ,71.29,TX,Texas
+48315,Marion County ,103.43,TX,Texas
+48099,Coryell County ,108.58,TX,Texas
+48333,Mills County ,58.29,TX,Texas
+48019,Bandera County ,73.85,TX,Texas
+48183,Gregg County ,130.31,TX,Texas
+48407,San Jacinto County ,80.11,TX,Texas
+48193,Hamilton County ,118.34,TX,Texas
+48343,Morris County ,100.61,TX,Texas
+48133,Eastland County ,63.73,TX,Texas
+48291,Liberty County ,123.73,TX,Texas
+48223,Hopkins County ,84.16,TX,Texas
+48257,Kaufman County ,101.88,TX,Texas
+48203,Harrison County ,92.6,TX,Texas
+48199,Hardin County ,137.97,TX,Texas
+48401,Rusk County ,159.0,TX,Texas
+48457,Tyler County ,117.3,TX,Texas
+48409,San Patricio County ,68.82,TX,Texas
+48373,Polk County ,69.13,TX,Texas
+48177,Gonzales County ,77.76,TX,Texas
+48321,Matagorda County ,99.53,TX,Texas
+48037,Bowie County ,101.45,TX,Texas
+48245,Jefferson County ,70.03,TX,Texas
+48423,Smith County ,125.67,TX,Texas
+48277,Lamar County ,98.64,TX,Texas
+48007,Aransas County ,103.26,TX,Texas
+48057,Calhoun County ,121.19,TX,Texas
+48159,Franklin County ,76.92,TX,Texas
+48385,Real County ,99.06,TX,Texas
+48387,Red River County ,82.05,TX,Texas
+48073,Cherokee County ,82.02,TX,Texas
+48499,Wood County ,130.91,TX,Texas
+48231,Hunt County ,92.94,TX,Texas
+45021,Cherokee County ,128.22,SC,South Carolina
+45083,Spartanburg County ,112.49,SC,South Carolina
+45081,Saluda County ,66.15,SC,South Carolina
+45003,Aiken County ,90.2,SC,South Carolina
+45077,Pickens County ,105.44,SC,South Carolina
+45015,Berkeley County ,112.3,SC,South Carolina
+45047,Greenwood County ,89.76,SC,South Carolina
+45033,Dillon County ,97.64,SC,South Carolina
+45069,Marlboro County ,79.25,SC,South Carolina
+45059,Laurens County ,106.43,SC,South Carolina
+45019,Charleston County ,85.47,SC,South Carolina
+45073,Oconee County ,123.77,SC,South Carolina
+45057,Lancaster County ,101.07,SC,South Carolina
+45049,Hampton County ,127.66,SC,South Carolina
+45091,York County ,104.25,SC,South Carolina
+45063,Lexington County ,122.32,SC,South Carolina
+45067,Marion County ,93.24,SC,South Carolina
+45075,Orangeburg County ,110.39,SC,South Carolina
+45089,Williamsburg County ,76.61,SC,South Carolina
+45043,Georgetown County ,77.34,SC,South Carolina
+45005,Allendale County ,100.0,SC,South Carolina
+45051,Horry County ,110.49,SC,South Carolina
+45009,Bamberg County ,85.62,SC,South Carolina
+45053,Jasper County ,90.37,SC,South Carolina
+45045,Greenville County ,97.25,SC,South Carolina
+45001,Abbeville County ,84.01,SC,South Carolina
+45007,Anderson County ,119.68,SC,South Carolina
+45029,Colleton County ,94.5,SC,South Carolina
+45035,Dorchester County ,198.79,SC,South Carolina
+45025,Chesterfield County ,90.79,SC,South Carolina
+45013,Beaufort County ,83.14,SC,South Carolina
+1043,Cullman County ,106.48,AL,Alabama
+1059,Franklin County ,86.73,AL,Alabama
+1109,Pike County ,83.4,AL,Alabama
+1075,Lamar County ,59.98,AL,Alabama
+1073,Jefferson County ,86.49,AL,Alabama
+1079,Lawrence County ,62.02,AL,Alabama
+1053,Escambia County ,100.84,AL,Alabama
+1045,Dale County ,110.21,AL,Alabama
+1083,Limestone County ,93.57,AL,Alabama
+1037,Coosa County ,110.55,AL,Alabama
+1089,Madison County ,75.97,AL,Alabama
+1027,Clay County ,117.46,AL,Alabama
+1009,Blount County ,84.51,AL,Alabama
+1121,Talladega County ,115.61,AL,Alabama
+1111,Randolph County ,129.73,AL,Alabama
+1031,Coffee County ,81.61,AL,Alabama
+1055,Etowah County ,82.57,AL,Alabama
+1015,Calhoun County ,107.49,AL,Alabama
+1035,Conecuh County ,94.75,AL,Alabama
+1039,Covington County ,87.78,AL,Alabama
+1115,St. Clair County ,120.51,AL,Alabama
+1077,Lauderdale County ,67.66,AL,Alabama
+1127,Walker County ,89.49,AL,Alabama
+1071,Jackson County ,88.99,AL,Alabama
+1061,Geneva County ,123.22,AL,Alabama
+1019,Cherokee County ,90.07,AL,Alabama
+1123,Tallapoosa County ,108.1,AL,Alabama
+1013,Butler County ,77.4,AL,Alabama
+1103,Morgan County ,99.0,AL,Alabama
+1003,Baldwin County ,91.71,AL,Alabama
+1099,Monroe County ,110.24,AL,Alabama
+1133,Winston County ,119.07,AL,Alabama
+1117,Shelby County ,94.8,AL,Alabama
+1097,Mobile County ,108.39,AL,Alabama
+1069,Houston County ,83.51,AL,Alabama
+1093,Marion County ,86.29,AL,Alabama
+1095,Marshall County ,108.41,AL,Alabama
+1021,Chilton County ,80.65,AL,Alabama
+1049,DeKalb County ,81.56,AL,Alabama
+1029,Cleburne County ,89.42,AL,Alabama
+1051,Elmore County ,83.82,AL,Alabama
+1129,Washington County ,63.52,AL,Alabama
+54023,Grant County ,130.7,WV,West Virginia
+54095,Tyler County ,121.87,WV,West Virginia
+54105,Wirt County ,103.5,WV,West Virginia
+54005,Boone County ,90.16,WV,West Virginia
+54045,Logan County ,101.65,WV,West Virginia
+54073,Pleasants County ,99.91,WV,West Virginia
+54033,Harrison County ,82.0,WV,West Virginia
+54021,Gilmer County ,71.39,WV,West Virginia
+54007,Braxton County ,115.03,WV,West Virginia
+54019,Fayette County ,79.48,WV,West Virginia
+54011,Cabell County ,89.18,WV,West Virginia
+54059,Mingo County ,125.59,WV,West Virginia
+54055,Mercer County ,85.03,WV,West Virginia
+54103,Wetzel County ,107.05,WV,West Virginia
+54067,Nicholas County ,108.59,WV,West Virginia
+54101,Webster County ,84.69,WV,West Virginia
+54083,Randolph County ,137.62,WV,West Virginia
+54025,Greenbrier County ,109.12,WV,West Virginia
+54097,Upshur County ,146.31,WV,West Virginia
+54087,Roane County ,84.48,WV,West Virginia
+54089,Summers County ,64.75,WV,West Virginia
+54071,Pendleton County ,124.51,WV,West Virginia
+54093,Tucker County ,126.04,WV,West Virginia
+54043,Lincoln County ,73.54,WV,West Virginia
+54099,Wayne County ,79.84,WV,West Virginia
+54085,Ritchie County ,118.66,WV,West Virginia
+54017,Doddridge County ,130.54,WV,West Virginia
+54041,Lewis County ,148.33,WV,West Virginia
+54015,Clay County ,164.24,WV,West Virginia
+54039,Kanawha County ,73.19,WV,West Virginia
+54107,Wood County ,89.92,WV,West Virginia
+54035,Jackson County ,71.63,WV,West Virginia
+54075,Pocahontas County ,78.7,WV,West Virginia
+54001,Barbour County ,111.01,WV,West Virginia
+54013,Calhoun County ,225.99,WV,West Virginia
+54109,Wyoming County ,99.36,WV,West Virginia
+22073,Ouachita Parish ,91.49,LA,Louisiana
+22067,Morehouse Parish ,62.93,LA,Louisiana
+22079,Rapides Parish ,73.9,LA,Louisiana
+22043,Grant Parish ,79.27,LA,Louisiana
+22059,LaSalle Parish ,85.05,LA,Louisiana
+22041,Franklin Parish ,91.74,LA,Louisiana
+22025,Catahoula Parish ,66.43,LA,Louisiana
+22083,Richland Parish ,124.9,LA,Louisiana
+22021,Caldwell Parish ,197.94,LA,Louisiana
+22127,Winn Parish ,120.25,LA,Louisiana
+22069,Natchitoches Parish ,103.76,LA,Louisiana
+22115,Vernon Parish ,93.4,LA,Louisiana
+12123,Taylor County ,154.83,FL,Florida
+12061,Indian River County ,85.49,FL,Florida
+12073,Leon County ,85.66,FL,Florida
+12049,Hardee County ,157.4,FL,Florida
+12029,Dixie County ,129.06,FL,Florida
+12093,Okeechobee County ,150.0,FL,Florida
+12091,Okaloosa County ,112.83,FL,Florida
+12121,Suwannee County ,140.01,FL,Florida
+12027,DeSoto County ,146.39,FL,Florida
+12007,Bradford County ,94.52,FL,Florida
+12041,Gilchrist County ,143.95,FL,Florida
+12055,Highlands County ,127.6,FL,Florida
+12125,Union County ,90.93,FL,Florida
+12113,Santa Rosa County ,146.55,FL,Florida
+12019,Clay County ,76.08,FL,Florida
+12107,Putnam County ,118.19,FL,Florida
+12071,Lee County ,124.6,FL,Florida
+12119,Sumter County ,59.68,FL,Florida
+12037,Franklin County ,116.86,FL,Florida
+12001,Alachua County ,74.78,FL,Florida
+12033,Escambia County ,97.42,FL,Florida
+12133,Washington County ,123.28,FL,Florida
+12059,Holmes County ,140.06,FL,Florida
+12085,Martin County ,71.21,FL,Florida
+12077,Liberty County ,93.93,FL,Florida
+12129,Wakulla County ,144.3,FL,Florida
+12131,Walton County ,100.97,FL,Florida
+12045,Gulf County ,66.29,FL,Florida
+12075,Levy County ,133.88,FL,Florida
+12081,Manatee County ,105.56,FL,Florida
+12063,Jackson County ,92.4,FL,Florida
+12011,Broward County ,59.5,FL,Florida
+12105,Polk County ,117.07,FL,Florida
+12021,Collier County ,77.57,FL,Florida
+12051,Hendry County ,174.27,FL,Florida
+12057,Hillsborough County ,92.13,FL,Florida
+12111,St. Lucie County ,92.54,FL,Florida
+12099,Palm Beach County ,61.49,FL,Florida
+12083,Marion County ,105.94,FL,Florida
+12005,Bay County ,57.46,FL,Florida
+12017,Citrus County ,99.19,FL,Florida
+12047,Hamilton County ,108.13,FL,Florida
+12067,Lafayette County ,89.04,FL,Florida
+12065,Jefferson County ,95.2,FL,Florida
+12097,Osceola County ,88.93,FL,Florida
+12015,Charlotte County ,92.44,FL,Florida
+12101,Pasco County ,99.49,FL,Florida
+12079,Madison County ,160.46,FL,Florida
+12115,Sarasota County ,86.76,FL,Florida
+12023,Columbia County ,108.74,FL,Florida
+17023,Clark County ,83.9,IL,Illinois
+17087,Johnson County ,91.26,IL,Illinois
+17191,Wayne County ,120.44,IL,Illinois
+17199,Williamson County ,99.45,IL,Illinois
+17051,Fayette County ,99.96,IL,Illinois
+17065,Hamilton County ,148.57,IL,Illinois
+17047,Edwards County ,118.55,IL,Illinois
+17151,Pope County ,75.65,IL,Illinois
+17081,Jefferson County ,83.46,IL,Illinois
+17165,Saline County ,140.32,IL,Illinois
+17033,Crawford County ,68.11,IL,Illinois
+17173,Shelby County ,90.3,IL,Illinois
+17055,Franklin County ,96.21,IL,Illinois
+17193,White County ,164.5,IL,Illinois
+17159,Richland County ,134.93,IL,Illinois
+17185,Wabash County ,74.68,IL,Illinois
+17025,Clay County ,149.95,IL,Illinois
+17029,Coles County ,70.96,IL,Illinois
+17035,Cumberland County ,163.7,IL,Illinois
+17121,Marion County ,95.47,IL,Illinois
+17059,Gallatin County ,92.8,IL,Illinois
+17079,Jasper County ,96.0,IL,Illinois
+17049,Effingham County ,107.64,IL,Illinois
+18125,Pike County ,147.33,IN,Indiana
+18031,Decatur County ,87.97,IN,Indiana
+18139,Rush County ,93.22,IN,Indiana
+18021,Clay County ,85.38,IN,Indiana
+18137,Ripley County ,87.45,IN,Indiana
+18175,Washington County ,69.31,IN,Indiana
+18027,Daviess County ,80.02,IN,Indiana
+18117,Orange County ,91.72,IN,Indiana
+18041,Fayette County ,122.84,IN,Indiana
+18147,Spencer County ,97.09,IN,Indiana
+18165,Vermillion County ,63.81,IN,Indiana
+18083,Knox County ,58.43,IN,Indiana
+18065,Henry County ,79.85,IN,Indiana
+18077,Jefferson County ,86.86,IN,Indiana
+18171,Warren County ,81.41,IN,Indiana
+18047,Franklin County ,76.61,IN,Indiana
+18037,Dubois County ,87.73,IN,Indiana
+18161,Union County ,66.9,IN,Indiana
+18121,Parke County ,94.14,IN,Indiana
+18163,Vanderburgh County ,88.84,IN,Indiana
+18173,Warrick County ,100.12,IN,Indiana
+18167,Vigo County ,72.36,IN,Indiana
+18123,Perry County ,64.93,IN,Indiana
+18129,Posey County ,70.34,IN,Indiana
+18155,Switzerland County ,107.53,IN,Indiana
+18051,Gibson County ,124.59,IN,Indiana
+18079,Jennings County ,105.88,IN,Indiana
+21215,Spencer County ,105.7,KY,Kentucky
+21067,Fayette County ,69.81,KY,Kentucky
+21049,Clark County ,84.83,KY,Kentucky
+21087,Green County ,121.82,KY,Kentucky
+21019,Boyd County ,102.34,KY,Kentucky
+21217,Taylor County ,122.69,KY,Kentucky
+21171,Monroe County ,153.15,KY,Kentucky
+21063,Elliott County ,57.96,KY,Kentucky
+21223,Trimble County ,90.14,KY,Kentucky
+21237,Wolfe County ,169.1,KY,Kentucky
+21141,Logan County ,116.52,KY,Kentucky
+21071,Floyd County ,144.11,KY,Kentucky
+21227,Warren County ,111.7,KY,Kentucky
+21145,McCracken County ,62.15,KY,Kentucky
+21077,Gallatin County ,90.28,KY,Kentucky
+21129,Lee County ,130.14,KY,Kentucky
+21163,Meade County ,69.35,KY,Kentucky
+21169,Metcalfe County ,142.09,KY,Kentucky
+21123,LaRue County ,141.28,KY,Kentucky
+21047,Christian County ,63.26,KY,Kentucky
+21079,Garrard County ,105.53,KY,Kentucky
+21197,Powell County ,171.6,KY,Kentucky
+21147,McCreary County ,88.3,KY,Kentucky
+21211,Shelby County ,61.98,KY,Kentucky
+21229,Washington County ,116.48,KY,Kentucky
+21001,Adair County ,87.24,KY,Kentucky
+21089,Greenup County ,120.63,KY,Kentucky
+21003,Allen County ,137.75,KY,Kentucky
+21111,Jefferson County ,66.2,KY,Kentucky
+21041,Carroll County ,140.04,KY,Kentucky
+21045,Casey County ,125.71,KY,Kentucky
+21153,Magoffin County ,128.01,KY,Kentucky
+21137,Lincoln County ,99.59,KY,Kentucky
+21065,Estill County ,108.79,KY,Kentucky
+21029,Bullitt County ,99.59,KY,Kentucky
+21027,Breckinridge County ,111.7,KY,Kentucky
+21151,Madison County ,101.69,KY,Kentucky
+21035,Calloway County ,62.08,KY,Kentucky
+21031,Butler County ,123.3,KY,Kentucky
+21199,Pulaski County ,80.51,KY,Kentucky
+21201,Robertson County ,79.99,KY,Kentucky
+21059,Daviess County ,81.98,KY,Kentucky
+21195,Pike County ,139.0,KY,Kentucky
+21095,Harlan County ,140.57,KY,Kentucky
+21121,Knox County ,170.25,KY,Kentucky
+21125,Laurel County ,145.28,KY,Kentucky
+21127,Lawrence County ,124.46,KY,Kentucky
+21133,Letcher County ,98.28,KY,Kentucky
+21135,Lewis County ,110.13,KY,Kentucky
+21017,Bourbon County ,121.98,KY,Kentucky
+21009,Barren County ,139.98,KY,Kentucky
+21149,McLean County ,75.78,KY,Kentucky
+21159,Martin County ,114.46,KY,Kentucky
+21165,Menifee County ,80.29,KY,Kentucky
+21183,Ohio County ,109.79,KY,Kentucky
+21091,Hancock County ,100.77,KY,Kentucky
+21239,Woodford County ,81.29,KY,Kentucky
+21113,Jessamine County ,87.48,KY,Kentucky
+21203,Rockcastle County ,167.67,KY,Kentucky
+21179,Nelson County ,106.38,KY,Kentucky
+21051,Clay County ,204.72,KY,Kentucky
+21155,Marion County ,149.3,KY,Kentucky
+21057,Cumberland County ,124.49,KY,Kentucky
+21105,Hickman County ,68.8,KY,Kentucky
+21167,Mercer County ,142.75,KY,Kentucky
+21073,Franklin County ,84.36,KY,Kentucky
+21109,Jackson County ,120.18,KY,Kentucky
+21093,Hardin County ,129.19,KY,Kentucky
+21099,Hart County ,117.72,KY,Kentucky
+21101,Henderson County ,100.17,KY,Kentucky
+21005,Anderson County ,89.71,KY,Kentucky
+21085,Grayson County ,166.44,KY,Kentucky
+21053,Clinton County ,60.16,KY,Kentucky
+21131,Leslie County ,233.28,KY,Kentucky
+21187,Owen County ,93.77,KY,Kentucky
+21173,Montgomery County ,76.42,KY,Kentucky
+21177,Muhlenberg County ,112.38,KY,Kentucky
+21023,Bracken County ,62.78,KY,Kentucky
+21235,Whitley County ,192.38,KY,Kentucky
+21097,Harrison County ,125.5,KY,Kentucky
+21119,Knott County ,117.41,KY,Kentucky
+21011,Bath County ,66.96,KY,Kentucky
+21103,Henry County ,114.27,KY,Kentucky
+21107,Hopkins County ,100.89,KY,Kentucky
+21189,Owsley County ,198.46,KY,Kentucky
+21061,Edmonson County ,83.08,KY,Kentucky
+21025,Breathitt County ,161.74,KY,Kentucky
+21207,Russell County ,184.6,KY,Kentucky
+21021,Boyle County ,116.53,KY,Kentucky
+21181,Nicholas County ,125.75,KY,Kentucky
+21115,Johnson County ,120.7,KY,Kentucky
+21013,Bell County ,190.74,KY,Kentucky
+21043,Carter County ,152.33,KY,Kentucky
+21193,Perry County ,242.28,KY,Kentucky
+21213,Simpson County ,73.95,KY,Kentucky
+28019,Choctaw County ,127.05,MS,Mississippi
+28081,Lee County ,89.0,MS,Mississippi
+28155,Webster County ,137.36,MS,Mississippi
+28141,Tishomingo County ,97.91,MS,Mississippi
+28061,Jasper County ,79.08,MS,Mississippi
+28047,Harrison County ,87.11,MS,Mississippi
+28059,Jackson County ,82.69,MS,Mississippi
+28057,Itawamba County ,115.9,MS,Mississippi
+28025,Clay County ,65.99,MS,Mississippi
+28097,Montgomery County ,75.65,MS,Mississippi
+28039,George County ,130.14,MS,Mississippi
+28067,Jones County ,106.95,MS,Mississippi
+28071,Lafayette County ,65.07,MS,Mississippi
+28105,Oktibbeha County ,70.88,MS,Mississippi
+28017,Chickasaw County ,73.17,MS,Mississippi
+28095,Monroe County ,109.61,MS,Mississippi
+28131,Stone County ,90.96,MS,Mississippi
+28159,Winston County ,75.09,MS,Mississippi
+28111,Perry County ,111.05,MS,Mississippi
+28077,Lawrence County ,77.48,MS,Mississippi
+28003,Alcorn County ,84.34,MS,Mississippi
+28139,Tippah County ,118.24,MS,Mississippi
+28013,Calhoun County ,102.45,MS,Mississippi
+28041,Greene County ,75.52,MS,Mississippi
+28035,Forrest County ,75.29,MS,Mississippi
+28117,Prentiss County ,85.34,MS,Mississippi
+28009,Benton County ,74.43,MS,Mississippi
+28145,Union County ,91.44,MS,Mississippi
+47117,Marshall County ,157.38,TN,Tennessee
+47139,Polk County ,123.86,TN,Tennessee
+47181,Wayne County ,112.4,TN,Tennessee
+47169,Trousdale County ,93.27,TN,Tennessee
+47007,Bledsoe County ,187.35,TN,Tennessee
+47109,McNairy County ,94.86,TN,Tennessee
+47175,Van Buren County ,102.68,TN,Tennessee
+47075,Haywood County ,109.28,TN,Tennessee
+47111,Macon County ,135.64,TN,Tennessee
+47067,Hancock County ,177.89,TN,Tennessee
+47101,Lewis County ,162.5,TN,Tennessee
+47113,Madison County ,105.66,TN,Tennessee
+47135,Perry County ,112.85,TN,Tennessee
+47147,Robertson County ,106.3,TN,Tennessee
+47155,Sevier County ,107.79,TN,Tennessee
+47159,Smith County ,141.33,TN,Tennessee
+47029,Cocke County ,119.06,TN,Tennessee
+47043,Dickson County ,123.52,TN,Tennessee
+47099,Lawrence County ,157.71,TN,Tennessee
+47173,Union County ,117.36,TN,Tennessee
+47145,Roane County ,122.07,TN,Tennessee
+47127,Moore County ,79.09,TN,Tennessee
+47183,Weakley County ,118.11,TN,Tennessee
+47089,Jefferson County ,134.01,TN,Tennessee
+47031,Coffee County ,117.5,TN,Tennessee
+47189,Wilson County ,102.52,TN,Tennessee
+47149,Rutherford County ,114.96,TN,Tennessee
+47131,Obion County ,120.76,TN,Tennessee
+47037,Davidson County ,71.97,TN,Tennessee
+47163,Sullivan County ,99.39,TN,Tennessee
+47133,Overton County ,169.45,TN,Tennessee
+47185,White County ,159.09,TN,Tennessee
+47177,Warren County ,183.28,TN,Tennessee
+47035,Cumberland County ,135.71,TN,Tennessee
+47103,Lincoln County ,107.21,TN,Tennessee
+47049,Fentress County ,124.64,TN,Tennessee
+47047,Fayette County ,83.14,TN,Tennessee
+47059,Greene County ,154.78,TN,Tennessee
+47087,Jackson County ,110.69,TN,Tennessee
+47141,Putnam County ,127.74,TN,Tennessee
+47119,Maury County ,120.86,TN,Tennessee
+47065,Hamilton County ,81.59,TN,Tennessee
+47039,Decatur County ,129.61,TN,Tennessee
+47001,Anderson County ,93.51,TN,Tennessee
+47187,Williamson County ,83.89,TN,Tennessee
+47157,Shelby County ,72.5,TN,Tennessee
+47137,Pickett County ,95.46,TN,Tennessee
+47071,Hardin County ,131.93,TN,Tennessee
+47045,Dyer County ,152.07,TN,Tennessee
+47105,Loudon County ,115.01,TN,Tennessee
+47041,DeKalb County ,169.09,TN,Tennessee
+47153,Sequatchie County ,194.45,TN,Tennessee
+47011,Bradley County ,136.63,TN,Tennessee
+47069,Hardeman County ,102.83,TN,Tennessee
+47033,Crockett County ,123.65,TN,Tennessee
+47151,Scott County ,149.34,TN,Tennessee
+47125,Montgomery County ,121.63,TN,Tennessee
+47025,Claiborne County ,122.69,TN,Tennessee
+47171,Unicoi County ,124.14,TN,Tennessee
+47179,Washington County ,94.95,TN,Tennessee
+47093,Knox County ,107.12,TN,Tennessee
+47143,Rhea County ,145.8,TN,Tennessee
+47115,Marion County ,203.1,TN,Tennessee
+47015,Cannon County ,125.21,TN,Tennessee
+47083,Houston County ,124.06,TN,Tennessee
+47013,Campbell County ,102.77,TN,Tennessee
+47097,Lauderdale County ,149.94,TN,Tennessee
+47003,Bedford County ,82.76,TN,Tennessee
+47051,Franklin County ,117.87,TN,Tennessee
+47165,Sumner County ,90.26,TN,Tennessee
+47053,Gibson County ,138.57,TN,Tennessee
+47123,Monroe County ,176.56,TN,Tennessee
+47021,Cheatham County ,132.91,TN,Tennessee
+47061,Grundy County ,131.27,TN,Tennessee
+47017,Carroll County ,117.02,TN,Tennessee
+47079,Henry County ,108.87,TN,Tennessee
+47121,Meigs County ,112.26,TN,Tennessee
+47085,Humphreys County ,102.94,TN,Tennessee
+47005,Benton County ,106.84,TN,Tennessee
+47081,Hickman County ,155.43,TN,Tennessee
+47023,Chester County ,124.95,TN,Tennessee
+47161,Stewart County ,122.98,TN,Tennessee
+47027,Clay County ,82.71,TN,Tennessee
+47019,Carter County ,116.91,TN,Tennessee
+47073,Hawkins County ,126.14,TN,Tennessee
+47009,Blount County ,98.04,TN,Tennessee
+47055,Giles County ,116.57,TN,Tennessee
+47129,Morgan County ,81.36,TN,Tennessee
+47107,McMinn County ,158.09,TN,Tennessee
+47167,Tipton County ,108.46,TN,Tennessee
+47057,Grainger County ,136.88,TN,Tennessee
+47063,Hamblen County ,129.32,TN,Tennessee
+47077,Henderson County ,122.56,TN,Tennessee
+13305,Wayne County ,119.02,GA,Georgia
+13187,Lumpkin County ,112.67,GA,Georgia
+13059,Clarke County ,68.68,GA,Georgia
+13191,McIntosh County ,83.97,GA,Georgia
+13055,Chattooga County ,141.03,GA,Georgia
+13083,Dade County ,58.98,GA,Georgia
+13257,Stephens County ,102.1,GA,Georgia
+13015,Bartow County ,77.27,GA,Georgia
+13011,Banks County ,81.42,GA,Georgia
+13295,Walker County ,78.15,GA,Georgia
+13129,Gordon County ,78.36,GA,Georgia
+13291,Union County ,103.18,GA,Georgia
+13313,Whitfield County ,80.06,GA,Georgia
+13115,Floyd County ,135.74,GA,Georgia
+13281,Towns County ,61.31,GA,Georgia
+13119,Franklin County ,79.0,GA,Georgia
+13139,Hall County ,85.77,GA,Georgia
+13213,Murray County ,83.97,GA,Georgia
+13229,Pierce County ,84.61,GA,Georgia
+13311,White County ,120.25,GA,Georgia
+13137,Habersham County ,86.12,GA,Georgia
+13111,Fannin County ,75.37,GA,Georgia
+13051,Chatham County ,62.31,GA,Georgia
+13233,Polk County ,143.64,GA,Georgia
+56031,Platte County ,97.18,WY,Wyoming
+56009,Converse County ,119.41,WY,Wyoming
+56025,Natrona County ,113.07,WY,Wyoming
+56017,Hot Springs County ,384.62,WY,Wyoming
+56029,Park County ,86.58,WY,Wyoming
+56019,Johnson County ,71.3,WY,Wyoming
+56013,Fremont County ,108.37,WY,Wyoming
+56007,Carbon County ,93.69,WY,Wyoming
+56043,Washakie County ,90.5,WY,Wyoming
+40001,Adair County ,115.96,OK,Oklahoma
+40097,Mayes County ,81.22,OK,Oklahoma
+40147,Washington County ,88.19,OK,Oklahoma
+40063,Hughes County ,58.37,OK,Oklahoma
+40069,Johnston County ,81.51,OK,Oklahoma
+40121,Pittsburg County ,92.86,OK,Oklahoma
+40089,McCurtain County ,95.12,OK,Oklahoma
+40079,Le Flore County ,71.42,OK,Oklahoma
+40143,Tulsa County ,63.95,OK,Oklahoma
+40005,Atoka County ,109.15,OK,Oklahoma
+40013,Bryan County ,64.62,OK,Oklahoma
+40061,Haskell County ,67.47,OK,Oklahoma
+40101,Muskogee County ,74.75,OK,Oklahoma
+40135,Sequoyah County ,87.39,OK,Oklahoma
+40023,Choctaw County ,132.91,OK,Oklahoma
+40145,Wagoner County ,100.01,OK,Oklahoma
+40127,Pushmataha County ,121.41,OK,Oklahoma
+40021,Cherokee County ,134.78,OK,Oklahoma
+39141,Ross County ,89.37,OH,Ohio
+39071,Highland County ,106.63,OH,Ohio
+39111,Monroe County ,111.53,OH,Ohio
+39131,Pike County ,165.32,OH,Ohio
+39053,Gallia County ,68.6,OH,Ohio
+39105,Meigs County ,65.38,OH,Ohio
+39073,Hocking County ,60.41,OH,Ohio
+39087,Lawrence County ,117.0,OH,Ohio
+39001,Adams County ,98.13,OH,Ohio
+39079,Jackson County ,89.6,OH,Ohio
+39145,Scioto County ,112.97,OH,Ohio
+39009,Athens County ,83.74,OH,Ohio
+39167,Washington County ,89.0,OH,Ohio
+39115,Morgan County ,105.43,OH,Ohio
+46081,Lawrence County ,101.62,SD,South Dakota
+5097,Montgomery County ,70.69,AR,Arkansas
+5067,Jackson County ,66.35,AR,Arkansas
+5093,Mississippi County ,94.89,AR,Arkansas
+5031,Craighead County ,87.85,AR,Arkansas
+5047,Franklin County ,91.19,AR,Arkansas
+5131,Sebastian County ,72.4,AR,Arkansas
+5083,Logan County ,86.34,AR,Arkansas
+5113,Polk County ,66.25,AR,Arkansas
+5033,Crawford County ,91.81,AR,Arkansas
+41015,Curry County ,65.69,OR,Oregon
+41045,Malheur County ,99.05,OR,Oregon
+41001,Baker County ,79.1,OR,Oregon
+53025,Grant County ,83.66,WA,Washington
+16075,Payette County ,79.36,ID,Idaho
+51169,Scott County ,64.58,VA,Virginia
+51105,Lee County ,71.33,VA,Virginia
+51071,Giles County ,94.73,VA,Virginia
+2188,Northwest Arctic Borough ,82.2,AK,Alaska
