@@ -141,5 +141,6 @@ export const INITIAL_STATE = {
   },
   shouldUpdate:true,
   isLoading: true,
-  mapScreenshotData: {}
+  mapScreenshotData: {},
+  printData: ''
 };

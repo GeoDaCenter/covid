@@ -818,6 +818,12 @@ var reducer = (state = INITIAL_STATE, action) => {
                 storedGeojson
             }
         }
+        case 'SET_IMAGE_DATA':{
+            return {
+                ...state,
+                printData: action.payload
+            }
+        }
         default:
             return state;
     }

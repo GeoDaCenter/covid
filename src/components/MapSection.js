@@ -24,6 +24,7 @@ import useLoadData from '../hooks/useLoadData';
 import useUpdateData from '../hooks/useUpdateData';
 // PBF schemas
 import * as Schemas from '../schemas';
+import { set } from 'lodash';
 
 const view = new MapView({repeat: true});
 
@@ -97,6 +98,8 @@ export default function MapSection(){
     const storedGeojson = useSelector(state => state.storedGeojson);
     const currentMapGeography = storedGeojson[currentData]?.data||[]
     const colorFilter = useSelector(state => state.colorFilter);
+    // const isPrinting = useSelector(state => state.print.isPrinting)
+
 
     const storedCartogramData = useSelector(state => state.storedCartogramData);
     const storedLisaData = useSelector(state => state.storedLisaData);
@@ -112,6 +115,13 @@ export default function MapSection(){
     const [hoverGeog, setHoverGeog] = useState(null);
     const [highlightGeog, setHighlightGeog] = useState([]);
     const [glContext, setGLContext] = useState();
+    const [preserveDrawingBuffer, setPreserveDrawingBuffer] = useState(false);
+    const [printing, setPrinting] = useState(false)
+
+    useEffect(() => {
+        window.addEventListener("beforeprint", () => dispatch({type:'SET_IMAGE_DATA', payload: deckRef.current.deck.canvas.toDataURL()}));
+    }, [])
+
     
     // async fetched data and cartogram center
     const [resourceLayerData, setResourceLayerData] = useState({
@@ -737,7 +747,10 @@ export default function MapSection(){
                 controller={true}
                 pickingRadius={20}
                 onWebGLInitialized={setGLContext}
-                glOptions={{stencil: true}}
+                glOptions={{
+                    stencil: true,
+                    preserveDrawingBuffer: true
+                }} 
                 >
                 <MapboxGLMap
                     reuseMaps
