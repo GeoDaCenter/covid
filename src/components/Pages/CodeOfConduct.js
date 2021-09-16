@@ -31,7 +31,6 @@ const CodeOfConduct = () => {
 
     useEffect(() => {
         fetch(`${process.env.PUBLIC_URL}/code-of-conduct.md`).then(r => r.text()).then(text => {
-            console.log(text)
             setCodeText(text)
         })
     }, [])

@@ -285,7 +285,8 @@ const MapWrapper = styled.div`
 
 const ExploreButton = styled(NavLink)`
     position:fixed;
-    right:1em;
+    right:50%;
+    transform:translateX(50%);
     bottom:1em;
     padding:1em;
     background:${colors.orange};
@@ -299,10 +300,6 @@ const ExploreButton = styled(NavLink)`
     opacity:${props => props.active ? 1 : 0};
     transition:250ms all;
     z-index:50000;
-    @media(max-width:960px){
-        right:50%;
-        transform:translateX(50%);
-    }
 `
 
 function Home(){
