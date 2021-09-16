@@ -50,7 +50,6 @@ const colorscale = [
 
 const getColor = (val, bins, colors) => {
     if (isNaN(val)) return [0,0,0,0]
-    console.log(val)
     for (let i = 0; i < bins.length; i++) {
         if (val < bins[i]) return colors[i]
     }
