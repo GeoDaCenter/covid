@@ -442,57 +442,6 @@ export default function MapSection(){
                 extruded: mapParams.vizType
             }
         }),
-        hospitals: new IconLayer({
-            id: 'hospital-layer',
-            data: resourceLayerData.hospitals,
-            pickable:true,
-            iconAtlas: `${process.env.PUBLIC_URL}/assets/img/icon_atlas.png`,
-            iconMapping: ICON_MAPPING,
-            getIcon: d => 'hospital',
-            getPosition: d => [d.Longitude, d.Latitude],
-            sizeUnits: 'meters',
-            getSize: 20000,
-            sizeMinPixels:12,
-            sizeMaxPixels:24,
-            updateTriggers: {
-                data: [mapParams.resource, resourceLayerData]
-            },
-            onHover: handleMapHover,
-        }),
-        clinic: new IconLayer({
-            id: 'clinics-layer',
-            data: resourceLayerData.clinics,
-            pickable:true,
-            iconAtlas: `${process.env.PUBLIC_URL}/assets/img/icon_atlas.png`,
-            iconMapping: ICON_MAPPING,
-            getIcon:  d => 'clinic',
-            getSize: 20000,
-            getPosition: d => [d.lon, d.lat],
-            sizeUnits: 'meters',
-            sizeMinPixels:7,
-            sizeMaxPixels:20,
-            updateTriggers: {
-                data: [mapParams.resource, resourceLayerData.clinics]
-            },
-            onHover: handleMapHover,
-        }),
-        vaccinationSites: new IconLayer({
-            id: 'vaccine-sites-layer',
-            data: resourceLayerData.vaccineSites,
-            pickable:true,
-            iconAtlas: `${process.env.PUBLIC_URL}/assets/img/icon_atlas.png`,
-            iconMapping: ICON_MAPPING,
-            getIcon: d => d.type === 0 ? 'invitedVaccineSite' : d.type === 1 ? 'participatingVaccineSite' : d.type === 3 ? 'megaSite' : '',
-            getSize: d => d.type === 3 ? 200000 : 1000,
-            getPosition: d => [d.lon, d.lat],
-            sizeUnits: 'meters',
-            sizeMinPixels:20,
-            sizeMaxPixels:60,
-            updateTriggers: {
-                data: resourceLayerData.vaccineSites
-            },
-            onHover: handleMapHover,
-        }),
         cartogram: new ScatterplotLayer({
             id: 'cartogram layer',
             data: currentMapGeography.features,
@@ -543,13 +492,35 @@ export default function MapSection(){
         //     filled: true,
         //     getFillColor: [10,10,10],
         // }),
+
+        dotDensityWhite:new ScatterplotLayer({
+            id: 'dot density layer white',
+            data: dotDensityData,
+            pickable:false,
+            filled:true,
+            getPosition: f => [f[1]/1e5, f[2]/1e5, 10000],
+            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? getScatterColor(f[3]) : colors.dotDensity[f[0]],
+            getRadius: 100,  
+            radiusMinPixels: Math.sqrt(viewport.zoom)-1.5,
+            getFilterValue: f => (f[0]===8 && mapParams.dotDensityParams.raceCodes[f[0]]) ? 1 : 0,
+            filterRange: [1, 1], 
+            // Define extensions
+            extensions: [new DataFilterExtension({filterSize: 1})],
+            updateTriggers: {
+                getPosition: dotDensityData.length,
+                getFillColor: [mapParams.dotDensityParams.colorCOVID, currentMapID, dotDensityData],
+                data: dotDensityData,
+                getFilterValue: [dotDensityData.length, mapParams.dotDensityParams.raceCodes[8]],
+                radiusMinPixels: viewport.zoom
+            }
+        }),
         dotDensity:    
           new ScatterplotLayer({
             id: 'dot density layer',
             data: dotDensityData,
             pickable:false,
             filled:true,
-            getPosition: f => [f[1]/1e5, f[2]/1e5],
+            getPosition: f => [f[1]/1e5, f[2]/1e5, 10000],
             getFillColor: f => mapParams.dotDensityParams.colorCOVID ? getScatterColor(f[3]) : colors.dotDensity[f[0]],
             getRadius: 100,  
             radiusMinPixels: Math.sqrt(viewport.zoom)-1.5,
@@ -568,26 +539,57 @@ export default function MapSection(){
                 radiusMinPixels: viewport.zoom
             }
         }),
-        dotDensityWhite:new ScatterplotLayer({
-            id: 'dot density layer white',
-            data: dotDensityData,
-            pickable:false,
-            filled:true,
-            getPosition: f => [f[1]/1e5, f[2]/1e5],
-            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? getScatterColor(f[3]) : colors.dotDensity[f[0]],
-            getRadius: 100,  
-            radiusMinPixels: Math.sqrt(viewport.zoom)-1.5,
-            getFilterValue: f => (f[0]===8 && mapParams.dotDensityParams.raceCodes[f[0]]) ? 1 : 0,
-            filterRange: [1, 1], 
-            // Define extensions
-            extensions: [new DataFilterExtension({filterSize: 1})],
+
+        hospitals: new IconLayer({
+            id: 'hospital-layer',
+            data: resourceLayerData.hospitals,
+            pickable:true,
+            iconAtlas: `${process.env.PUBLIC_URL}/assets/img/icon_atlas.png`,
+            iconMapping: ICON_MAPPING,
+            getIcon: d => 'hospital',
+            getPosition: d => [d.Longitude, d.Latitude, 10000],
+            sizeUnits: 'meters',
+            getSize: 20000,
+            sizeMinPixels:12,
+            sizeMaxPixels:24,
             updateTriggers: {
-                getPosition: dotDensityData.length,
-                getFillColor: [mapParams.dotDensityParams.colorCOVID, currentMapID, dotDensityData],
-                data: dotDensityData,
-                getFilterValue: [dotDensityData.length, mapParams.dotDensityParams.raceCodes[8]],
-                radiusMinPixels: viewport.zoom
-            }
+                data: [mapParams.resource, resourceLayerData]
+            },
+            onHover: handleMapHover,
+        }),
+        clinic: new IconLayer({
+            id: 'clinics-layer',
+            data: resourceLayerData.clinics,
+            pickable:true,
+            iconAtlas: `${process.env.PUBLIC_URL}/assets/img/icon_atlas.png`,
+            iconMapping: ICON_MAPPING,
+            getIcon:  d => 'clinic',
+            getSize: 20000,
+            getPosition: d => [d.lon, d.lat, 10000],
+            sizeUnits: 'meters',
+            sizeMinPixels:7,
+            sizeMaxPixels:20,
+            updateTriggers: {
+                data: [mapParams.resource, resourceLayerData.clinics]
+            },
+            onHover: handleMapHover,
+        }),
+        vaccinationSites: new IconLayer({
+            id: 'vaccine-sites-layer',
+            data: resourceLayerData.vaccineSites,
+            pickable:true,
+            iconAtlas: `${process.env.PUBLIC_URL}/assets/img/icon_atlas.png`,
+            iconMapping: ICON_MAPPING,
+            getIcon: d => d.type === 0 ? 'invitedVaccineSite' : d.type === 1 ? 'participatingVaccineSite' : d.type === 3 ? 'megaSite' : '',
+            getSize: d => d.type === 3 ? 200000 : 1000,
+            getPosition: d => [d.lon, d.lat, 10000],
+            sizeUnits: 'meters',
+            sizeMinPixels:20,
+            sizeMaxPixels:60,
+            updateTriggers: {
+                data: resourceLayerData.vaccineSites
+            },
+            onHover: handleMapHover,
         })
     }
     
@@ -712,7 +714,10 @@ export default function MapSection(){
         for (let i=0; i<layerKeys.length;i++){
             map.addLayer(
                 new MapboxLayer({ id: FullLayers[layerKeys[i]].props.id, deck }),
-                i === 0 ? 'water' : FullLayers[layerKeys[i-1]].props.id
+                    ['dotDensityWhite', 'dotDensity','vaccinationSites','hospitals','clinic'].includes(layerKeys[i])
+                    ? 'state-label'
+                    : 'water'
+                    
             );
         }
     }, []);
