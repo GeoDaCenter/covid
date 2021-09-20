@@ -57,6 +57,7 @@ def getCdcCountyData(fipsList, columns):
     
     # return sorted DF
     return parsed
+
 def shouldBeNan(x):
     try:
         float(x)
@@ -64,11 +65,41 @@ def shouldBeNan(x):
     except:
         return True
 
+
+def reconcileCol(x, col):
+    if (x[f"{col}_x"] > 0 or x[f"{col}_x"] < 0):
+        return x[f"{col}_x"]
+    elif (x[f"{col}_x"] >= 0 or x[f"{col}_x"] < 0):
+        return x[f"{col}_y"]
+    else:
+        return x[f"{col}_x"]
+
+# This is weird.
+# CDC Has started reported partial, duplicate columns
+# As part of cleaning, we need to merge duplicates and merge partially complete rows
+# This is weird.
+def reconcileDfCols(df, cols):
+    df['combo-id'] = df['fips_code'].astype(str) + df['date'].astype('str')
+    merged = df[~df['combo-id'].duplicated()].merge(
+        df[df['combo-id'].duplicated()],
+        how="outer",
+        on="combo-id"
+    )
+
+    reconciled = merged[['fips_code_x','date_x']]
+    reconciled.columns = ['fips_code', 'date']
+    
+    for col in cols:
+        reconciled[col] = merged.apply(lambda x: reconcileCol(x, col), axis = 1)
+    
+    return reconciled
+
 # replace null or suppressed values with NAN
 def cleanDf(df, colName):
     df = df.replace('suppressed', -9999)
     df.loc[df[[colName]].apply(lambda x: shouldBeNan(x), axis=1), colName] = np.nan
     df.loc[:, colName] = df[colName].astype(float)
+    df = reconcileDfCols(df, [colName])
     return df
 
 # preps specific time-series DF for CSV output
@@ -200,6 +231,7 @@ if __name__ == "__main__":
     allNeededColumns = unique(allNeededColumns)
     # fetch data
     raw = getCdcCountyData(list(fipsList.fips_code), allNeededColumns).reset_index()
+    
     # loop through list of column parsing entries
     # output CSV to this folder and docs
     for entry in colsToParse:
