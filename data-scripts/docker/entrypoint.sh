@@ -4,7 +4,6 @@ export GOOGLE_APPLICATION_CREDENTIALS="/root/.ssh/gbq-credentials.json"
 git config --global user.email "theuscovidatlas@gmail.com"
 git config --global user.name "theuscovidatlas"
 
-
 git clone --depth 1 git@github.com:GeoDaCenter/covid.git && cd covid
 
 case $DATA_SOURCE in
@@ -45,6 +44,10 @@ case $DATA_SOURCE in
 		export COMMAND="python ./data-scripts/pbf/CsvToPbf.py"
 		;;
 		
+	dailySummary)
+		export COMMAND='bash ./data-scripts/summary/summarize.py'
+		;;
+
 	testing)
 		export COMMAND='bash ./data-scripts/testing/run_testing.sh'
 		;;
@@ -62,7 +65,6 @@ case $DATA_SOURCE in
 	
 esac
 
-
 if $COMMAND;
  		then
 		if [ "$DATA_SOURCE" = "lisa" ];
@@ -70,9 +72,9 @@ if $COMMAND;
 		elif [ "$DATA_SOURCE" = "testing" ];
 			then exit 0;
 		elif [ "$DATA_SOURCE" = "hybridUpdate" ];
-			then git add . && git commit -m "Updated: `date +'%Y-%m-%d %H:%M:%S'`" && git push;
+			then git pull && git add . && git commit -m "Updated: `date +'%Y-%m-%d %H:%M:%S'`" && git push;
 		else
-			git add . && git commit -m "Updated: `date +'%Y-%m-%d %H:%M:%S'` [skip ci]" && git push;
+			git pull && git add . && git commit -m "Updated: `date +'%Y-%m-%d %H:%M:%S'` [skip ci]" && git push;
 		fi
 else
 	echo "$DATA_SOURCE script failed.";
