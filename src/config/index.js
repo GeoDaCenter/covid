@@ -367,6 +367,11 @@ export const defaultTables = {
             'dates':'isoDateList',
             'type':'time-series',
             'join':'county'
+        },
+        'acp_types':{
+            'file':'acp_types',
+            'type':'characteristic',
+            'join':'FIPS'
         }
     },
     'County (Hybrid)':{
@@ -443,6 +448,11 @@ export const defaultTables = {
             'dates':'isoDateList',
             'type':'time-series',
             'join':'county'
+        },
+        'acp_types':{
+            'file':'acp_types',
+            'type':'characteristic',
+            'join':'FIPS'
         }
     },
     'State': {
@@ -721,7 +731,8 @@ export const tooltipInfo = {
     vaccinationSites: <p>The White House is supporting large vaccine centers to conduct high-volume vaccinations, and HRSA is partnering with Federally Qualified Health Clinics (FQHCs) to reach disproportionately impacted or hard to reach communities.</p>,
     vaccineCenter: <p>High-volume federally-supported vaccination site.</p>,
     vaccineClinic: <p>Vaccine clinic to assist disproportionately impact or hard to reach communities.</p>,
-    vaccineClinicInvited: <p>Invited, but not yet active vaccine clinic to assist disproportionately impact or hard to reach communities.</p>
+    vaccineClinicInvited: <p>Invited, but not yet active vaccine clinic to assist disproportionately impact or hard to reach communities.</p>,
+    acpType: <p>The American Communities Project uses data and reporting to study the cultural, socioeconomic and political changes that are remaking the country at the local level using 15 types of counties.</p>
 };
 
 export const variablePresets = {

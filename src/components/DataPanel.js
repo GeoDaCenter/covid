@@ -264,6 +264,8 @@ const ExpandSelect = styled(FormControl)`
   }
 
 `
+const acpKeys = [{"Key":"1","New Names":"Exurbs","Color":"#fcb93a"},{"Key":"2","New Names":"Graying America","Color":"#2e547a"},{"Key":"3","New Names":"African American South","Color":"#457a59"},{"Key":"4","New Names":"Evangelical Hubs","Color":"#82477f"},{"Key":"5","New Names":"Working Class Country","Color":"#86563e"},{"Key":"6","New Names":"Military Posts","Color":"#abbf48 "},{"Key":"7","New Names":"Urban Suburbs","Color":"#f08031"},{"Key":"8","New Names":"Hispanic Centers","Color":"#1f8fba"},{"Key":"9","New Names":"Native American Lands","Color":"#eacd3f"},{"Key":"10","New Names":"Rural Middle America","Color":"#3a9c9b "},{"Key":"11","New Names":"College Towns","Color":"#c44244"},{"Key":"12","New Names":"LDS Enclaves","Color":"#3a2c70 "},{"Key":"13","New Names":"Aging Farmlands","Color":"#7a3842"},{"Key":"14","New Names":"Big Cities","Color":"#c43b82"},{"Key":"15","New Names":"Middle Suburbs","Color":"#699246 "}]
+
 
 // DataPanel Function Component
 export default function DataPanel(){
@@ -412,6 +414,24 @@ export default function DataPanel(){
               <h3>{Math.round(sidebarData.EssentialPct*100)}%</h3>
             </ReportSection>
           }
+          {sidebarData.hasOwnProperty('acpType') &&
+            <ReportSection expanded={expanded}>
+              <h2>County Typology<Tooltip id="acpType"/></h2>
+              <h6>Source: <a href="https://www.americancommunities.org/" target="_blank" rel="noopener noreferrer">American Communities Project</a></h6>
+              {sidebarData.acpType.length > 1 
+                ? <p>Counties in different typologies:</p>
+                : <p>County Typology:</p>
+              }
+              {sidebarData.acpType.length > 1 
+                ? <ul>{sidebarData.acpType.map(acp => 
+                    <li key={'li'}>
+                      {acpKeys.find(f => + f.Key === acp['Type Number'])['New Names']}: {acp.count}
+                    </li>
+                )}</ul>
+                : <h3>{acpKeys.find(f => + f.Key === sidebarData.acpType[0]['Type Number'])['New Names']}</h3>
+              }
+            </ReportSection>
+          }
           {sidebarData.hasOwnProperty('Over65YearsPrc') && 
               <ReportSection>
                 <h2>Community Health Context<Tooltip id="healthcontext"/></h2>
@@ -431,16 +451,16 @@ export default function DataPanel(){
 
               </ReportSection>
             }
-          {sidebarData.hasOwnProperty('LfExpRt') &&
-              <ReportSection expanded={expanded}>
-                <h2>Length &amp; Quality of Life<Tooltip id="healthlife"/></h2>
-                <h6>Source: <a href="https://www.countyhealthrankings.org/" target="_blank" rel="noopener noreferrer">County Health Rankings</a></h6>
-                <p>Life expectancy<Tooltip id="LfExpRt"/></p>
-                <h3>{sidebarData.LfExpRt}</h3>
-                <p>Self-rated health<Tooltip id="SlfHlthPrc"/></p>
-                <h3>{sidebarData.SlfHlthPrc}%</h3>
-              </ReportSection>
-            }
+            {sidebarData.hasOwnProperty('LfExpRt') &&
+                <ReportSection expanded={expanded}>
+                  <h2>Length &amp; Quality of Life<Tooltip id="healthlife"/></h2>
+                  <h6>Source: <a href="https://www.countyhealthrankings.org/" target="_blank" rel="noopener noreferrer">County Health Rankings</a></h6>
+                  <p>Life expectancy<Tooltip id="LfExpRt"/></p>
+                  <h3>{sidebarData.LfExpRt}</h3>
+                  <p>Self-rated health<Tooltip id="SlfHlthPrc"/></p>
+                  <h3>{sidebarData.SlfHlthPrc}%</h3>
+                </ReportSection>
+              }
           {sidebarData.hasOwnProperty('severity_index') && 
               <ReportSection>
                 <h2>Forecasting</h2><br/>            

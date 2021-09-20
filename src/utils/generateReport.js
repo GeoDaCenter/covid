@@ -20,6 +20,24 @@ const performOperation = (dataArray, operation, totalPopulation) => {
             return null
     }
 } 
+
+const aggregateQualitative = (table, geoids, prop) => {
+    let returnObj = []
+    for (let i=0; i<geoids.length; i++){
+        const val = table[geoids[i]][prop]
+        if (returnObj.find(f => f[prop] === val)) {
+            returnObj.find(f => f[prop] === val).count += 1
+        } else {
+            returnObj.push({
+                [prop]: val,
+                count:1
+            })
+        }
+    }
+    console.log(returnObj)
+    return returnObj
+}
+
 // Prepares data for the previous operation
 const aggregateProperty = (table, properties, geoids, prop, operation, specialCase=null) => {
     let dataArray = []
@@ -202,6 +220,13 @@ export const generateReport = (geoids, state) => {
         if (state.storedData.hasOwnProperty(currentTables.chr_life?.file)){
             report.LfExpRt = aggregateProperty(state.storedData[currentTables.chr_life.file].data, properties, geoids, 'LfExpRt', 'weighted_average')
             report.SlfHlthPrc = aggregateProperty(state.storedData[currentTables.chr_life.file].data, properties, geoids, 'SlfHlthPrc', 'weighted_average')
+        }
+    } catch {}
+
+    try {
+        if (state.storedData.hasOwnProperty(currentTables.acp_types?.file)){
+            report.acpType = aggregateQualitative(state.storedData[currentTables.acp_types.file].data, geoids, 'Type Number')
+            console.log(report.acpType)
         }
     } catch {}
 
