@@ -7,7 +7,7 @@ import * as Pbf from 'pbf';
 // deck GL and helper function import
 import DeckGL from '@deck.gl/react';
 import {MapView, FlyToInterpolator} from '@deck.gl/core';
-import { PolygonLayer, ScatterplotLayer, IconLayer, TextLayer, GeoJsonLayer } from '@deck.gl/layers';
+import { ScatterplotLayer, IconLayer, TextLayer, GeoJsonLayer } from '@deck.gl/layers';
 import {DataFilterExtension} from '@deck.gl/extensions';
 import {fitBounds} from '@math.gl/web-mercator';
 import MapboxGLMap from 'react-map-gl';
