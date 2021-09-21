@@ -157,7 +157,9 @@ export default function MapSection(){
                 setViewport({
                     longitude: SHARED_VIEW.longitude,
                     latitude: SHARED_VIEW.latitude,
-                    zoom: SHARED_VIEW.zoom
+                    zoom: SHARED_VIEW.zoom,
+                    bearing: SHARED_VIEW.bearing||0,
+                    pitch: SHARED_VIEW.pitch||0
                 })
             }
         });
@@ -709,6 +711,7 @@ export default function MapSection(){
     const onMapLoad = useCallback(() => {
         if (mapRef.current === undefined) return;
         const map = mapRef.current.getMap();
+        parseMapboxLayers(MAP_STYLE.layers, mapParams, mapRef)
         const deck = deckRef.current.deck;
         const layerKeys = Object.keys(FullLayers)
         for (let i=0; i<layerKeys.length;i++){
