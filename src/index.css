@@ -105,10 +105,7 @@ body {
 
 
 @media print {
-  #mainContainer {
-    display:none;
-  }
-  .navbar {
+  .navbar, #variablePanel, #timelinePanel, #bottomPanel, #line-chart-container, #tutorial-container {
     display:none;
   }
 }

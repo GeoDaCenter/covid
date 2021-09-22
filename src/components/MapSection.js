@@ -52,6 +52,9 @@ const MapContainer = styled.div`
             display:none;
         }
     }
+    @media print {
+        display:none;
+    }
 `
 const IndicatorBox = styled.div`
     position:fixed;

@@ -186,6 +186,7 @@ export default function Map() {
               defaultX={defaultDimensions.defaultXLong}
               defaultY={defaultDimensions.defaultY}
               title="lineChart"
+              id="line-chart-container"
               content={
               <Scaleable 
                 content={
@@ -202,6 +203,7 @@ export default function Map() {
               defaultX={defaultDimensions.defaultXManual}
               defaultY={defaultDimensions.defaultYManual}
               title="tutorial"
+              id="tutorial-container"
               content={
               <Scaleable 
                 content={

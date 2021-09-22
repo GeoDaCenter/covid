@@ -17,6 +17,7 @@ const ChartContainer = styled.span`
         color:white;
     }
     user-select: none;
+    max-width:100%;
 `
 const SwitchesContainer = styled.div`
     display:flex;
@@ -43,6 +44,9 @@ const StyledSwitch = styled.div`
     }
     .MuiSwitch-colorSecondary:hover {
         background-color:${colors.lightblue}55;
+    }
+    @media print{
+        display:none;
     }
 `
 const ChartTitle = styled.h3`
@@ -127,7 +131,7 @@ const CustomTooltip = props => {
     return null;
 };
 
-const MainLineChart = () => {
+const MainLineChart = ({printing}) => {
     const chartData = useSelector(state => state.chartData.data);
     const maximums = useSelector(state => state.chartData.maximums);
     const dataParams = useSelector(state => state.dataParams);
@@ -145,6 +149,8 @@ const MainLineChart = () => {
     const [showSummarized, setShowSummarized] = useState(true);
     const [activeLine, setActiveLine] = useState(false);
 
+    const CHART_PRIMARY = printing ? colors.red : colors.yellow;
+    const CHART_SECONDARY = printing ? colors.darkgray : colors.white;
     const dispatch = useDispatch();
 
     const handleSwitch = () => setLogChart(prev => !prev)
@@ -197,7 +203,7 @@ const MainLineChart = () => {
                     : 
                     <ChartTitle>7-Day Average New Cases</ChartTitle>
                 }
-                <ResponsiveContainer width="100%" height="80%">
+                <ResponsiveContainer width={printing ? "100%" : "100%"} height="80%">
                     <LineChart
                         data={chartData}
                         margin={{
@@ -211,7 +217,7 @@ const MainLineChart = () => {
                             tick={
                                 <CustomTick
                                 style={{
-                                    fill: `${colors.white}88`,
+                                    fill: `${CHART_SECONDARY}88`,
                                     fontSize: "10px",
                                     fontFamily: "Lato",
                                     fontWeight: 600,
@@ -226,7 +232,7 @@ const MainLineChart = () => {
                             tick={
                                 <CustomTick
                                 style={{
-                                    fill: colors.lightgray,
+                                    fill: CHART_SECONDARY,
                                     fontSize: "10px",
                                     fontFamily: "Lato",
                                     fontWeight: 600
@@ -235,14 +241,14 @@ const MainLineChart = () => {
                                 />
                             }
                             >
-                            <Label value="Total Cases" position='insideLeft' style={{marginTop:10, fill:colors.lightgray, fontFamily: 'Lato', fontWeight: 600}} angle={-90}  />
+                            <Label value="Total Cases" position='insideLeft' style={{marginTop:10, fill:CHART_SECONDARY, fontFamily: 'Lato', fontWeight: 600}} angle={-90}  />
                         </YAxis>
                         <YAxis yAxisId="right" orientation="right" scale={logChart ? "log" : "linear"} domain={[0.01, 'dataMax']} allowDataOverflow 
                             ticks={selectionKeys.length === 0 ? rangeIncrement({maximum: maximums.count}) : []}
                             tick={
                                 <CustomTick
                                     style={{
-                                        fill: colors.yellow,
+                                        fill: CHART_PRIMARY,
                                         fontSize: "10px",
                                         fontFamily: "Lato",
                                         fontWeight: 600,
@@ -251,7 +257,7 @@ const MainLineChart = () => {
                                 />
                             }
                             >
-                            <Label value="7-Day Average New Cases" position='insideTopRight' style={{marginTop:10, fill:(selectionKeys.length < 2 ? colors.yellow : colors.lightgray), fontFamily: 'Lato', fontWeight: 600}} angle={-90}  />
+                            <Label value="7-Day Average New Cases" position='insideTopRight' style={{marginTop:10, fill:(selectionKeys.length < 2 ? CHART_PRIMARY : CHART_SECONDARY), fontFamily: 'Lato', fontWeight: 600}} angle={-90}  />
                         </YAxis>
                         <Tooltip
                             content={CustomTooltip}
@@ -266,8 +272,8 @@ const MainLineChart = () => {
                             fillOpacity={0.15}
                             isAnimationActive={false}
                         />
-                        {selectionKeys.length < 2 && <Line type="monotone" yAxisId="left" dataKey={"sum"} name="Total Cases" stroke={colors.lightgray} dot={false} isAnimationActive={false} /> }
-                        {selectionKeys.length < 2 && <Line type="monotone" yAxisId="right" dataKey={selectionKeys.length > 0 ? selectionNames[0] : "count"} name="7-Day Average New Cases" stroke={colors.yellow} dot={false} isAnimationActive={false} /> }
+                        {selectionKeys.length < 2 && <Line type="monotone" yAxisId="left" dataKey={"sum"} name="Total Cases" stroke={CHART_SECONDARY} dot={false} isAnimationActive={false} /> }
+                        {selectionKeys.length < 2 && <Line type="monotone" yAxisId="right" dataKey={selectionKeys.length > 0 ? selectionNames[0] : "count"} name="7-Day Average New Cases" stroke={CHART_PRIMARY} dot={false} isAnimationActive={false} /> }
                         
                         {(selectionKeys.length > 1 && showSummarized) &&
                                 <Line 
@@ -275,7 +281,7 @@ const MainLineChart = () => {
                                     yAxisId='right'
                                     dataKey='sum'
                                     name='Total For Selection' 
-                                    stroke={colors.lightgray}
+                                    stroke={CHART_SECONDARY}
                                     strokeWidth={3} 
                                     dot={false} 
                                     isAnimationActive={false}  
@@ -288,7 +294,7 @@ const MainLineChart = () => {
                                     yAxisId='left' 
                                     dataKey={key} 
                                     name={key + ' 7-Day Ave'} 
-                                    stroke={selectionKeys.length > colors.qualtitiveScale.length ? 'white' : colors.qualtitiveScale[index]} 
+                                    stroke={selectionKeys.length > colors.qualtitiveScale.length ? CHART_PRIMARY : colors.qualtitiveScale[index]} 
                                     dot={false} 
                                     isAnimationActive={false}  
                                     strokeOpacity={activeLine === key ? 1 : 0.7}

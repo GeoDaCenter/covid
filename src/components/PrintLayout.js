@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
 
-import { MainLineChart, Legend } from '.';
+import { MainLineChart, Legend, DataReport } from '../components';
 
 const PrintContainer = styled.div`
-    background:red;
+    background:white;
     h1, h2 {
         display:inline-block;
         margin-bottom:20px;
@@ -24,6 +24,7 @@ const MapContainer = styled.div`
     padding-top: 56.25%;
     #bottomPanel {
         position:absolute;
+        display:initial !important;
         width:50%;
         left:50%;
         transform:translateX(-50%);
@@ -48,9 +49,15 @@ const ScreenshotImage = styled.img`
 
 const LineChartContainer = styled.div`
     position:relative;
-    width:100%;
     height:300px;
     color:black;
+    max-width:100%;
+    .recharts-wrapper {
+        width:100% !important;
+        svg.recharts-surface {
+            width:100% !important;
+        }
+    }
     #linearLogSwitch {
         display:none;
     }
@@ -72,13 +79,12 @@ export default function PrintLayout(){
     console.log(printing)
 
     const printData = useSelector(state => state.printData);
-    
     const dataParams = useSelector(state => state.dataParams);
     const mapParams = useSelector(state => state.mapParams);
     const dates = useSelector(state => state.dates);
     
     if (!printing) {
-        return <div id='print layout'>xx</div>
+        return null
     } else {
         return (
             <PrintContainer id="printContainer">
@@ -89,9 +95,9 @@ export default function PrintLayout(){
                             <h2>{dataParams.nType !== 'characteristic' ? `${dates[dataParams.nIndex]}` : 'Characteristic Data'}</h2>
                         } 
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12}>
                         <MapContainer>
-                            <ScreenshotImage src={printData} />
+                            <ScreenshotImage src={printData}/>
                             <Legend 
                                 variableName={dataParams.variableName} 
                                 colorScale={mapParams.colorScale}
@@ -103,19 +109,12 @@ export default function PrintLayout(){
                         </MapContainer>
                     </Grid>
                     <Grid item xs={6}>
-                        <h4>7-Day Average Cases</h4>
-                        <h4>7-Day Average Deaths</h4>
-                        <h4>7-Day Average Cases Per 100K</h4>
-                        <h4>7-Day Average Deaths Per 100K</h4>
-                        <h4>Cumulative Cases</h4>
-                        <h4>Cumulative Deaths</h4>
-                        <h4>Cumulative Cases Per 100K</h4>
-                        <h4>Cumulative Deaths Per 100K</h4>
-                    </Grid>
-                    <Grid item xs={6}>
                         <LineChartContainer>
                             <MainLineChart printing={true} />
                         </LineChartContainer>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <DataReport expanded={false} />
                     </Grid>
                 </Grid>
                 <LogoImage src={`${process.env.PUBLIC_URL}/img/us-covid-atlas-cluster-logo.svg`} />

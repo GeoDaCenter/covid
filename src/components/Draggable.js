@@ -121,7 +121,7 @@ const Draggable = (props) => {
 
     // Component return
     return (
-        <DragContainer style={{left:`${X}px`, top: `${Y}px`, zIndex: props.z || 1}} className={open ? '' : 'collapsed'} isDragging={isDragging}>
+        <DragContainer style={{left:`${X}px`, top: `${Y}px`, zIndex: props.z || 1}} className={open ? '' : 'collapsed'} isDragging={isDragging} id={props.id||''}>
             {props.content}
             <DragButton 
                 id="resize"

@@ -4,6 +4,7 @@ import ContextMenu from './ContextMenu';
 import CsvDownloader from './CsvDownloader';
 import DataDetails from './DataDetails';
 import DataPanel from './DataPanel';
+import DataReport from './DataReport';
 import DateSlider from './Slider';
 import Dock from './Dock';
 import Draggable from './Draggable';
@@ -57,6 +58,7 @@ export {
     DataDetails,
     DataPanel,
     DateSlider,
+    DataReport,
     Dock,
     Draggable,
     Geocoder,
