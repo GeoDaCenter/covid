@@ -133,7 +133,7 @@ export const generateReport = (geoids, state) => {
     report.casesPerBed = report.cases7d / report.beds
     try {
         if (state.storedData.hasOwnProperty(currentTables.vaccines_fully_vaccinated?.file)){
-            report.fully_vaccinated = aggregateTimeseries(state.storedData[currentTables.vaccines_fully_vaccinated?.file].data, properties, geoids, state.dataParams.nIndex, 'weighted_average')
+            report.fully_vaccinated = aggregateTimeseries(state.storedData[currentTables.vaccines_fully_vaccinated?.file].data, properties, geoids, state.dataParams.nIndex, 'sum')
             report.fully_vaccinated14 = aggregate2WeekTimeSeries(state.storedData[currentTables.vaccines_fully_vaccinated?.file].data, geoids, state.dataParams.nIndex)
             report.fully_vaccinatedPc = report.fully_vaccinated / report.population
         }
@@ -141,7 +141,7 @@ export const generateReport = (geoids, state) => {
     
     try {
         if (state.storedData.hasOwnProperty(currentTables.vaccines_one_dose?.file)){
-            report.one_dose = aggregateTimeseries(state.storedData[currentTables.vaccines_one_dose?.file].data, properties, geoids, state.dataParams.nIndex, 'weighted_average')
+            report.one_dose = aggregateTimeseries(state.storedData[currentTables.vaccines_one_dose?.file].data, properties, geoids, state.dataParams.nIndex, 'sum')
             report.one_dose14 = aggregate2WeekTimeSeries(state.storedData[currentTables.vaccines_one_dose?.file].data, geoids, state.dataParams.nIndex)
             report.one_dosePc = report.one_dose / report.population
         }
