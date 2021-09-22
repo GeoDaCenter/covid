@@ -145,6 +145,9 @@ export default function MapSection(){
             setBoxSelect(false);
             setMultipleSelect(false);
         });
+        document.addEventListener('contextmenu', e => {
+            e.preventDefault();
+          });
 
         window.addEventListener('storage', () => {
             // When local storage changes, dump the list to the console.
