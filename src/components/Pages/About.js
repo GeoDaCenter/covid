@@ -384,6 +384,20 @@ export default function About(){
                     }
                 </LogoGrid>
                 <hr/>
+                <h2>Awards and Recognition</h2>
+                <ul>
+                    <li>
+                        <a href="https://www.fastcompany.com/90667101/pandemic-response-innovation-by-design-2021" target="_blank" rel="noopener noreferrer">
+                            Fast Company Innovation By Design Pandemic Response - Honorable Mention
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://aag-hmgsg.org/awards/health-data-visualization-award/" target="_blank" rel="noopener noreferrer">
+                            American Association of Geographers Health Data Visualization (Dynamic) - Winner
+                        </a>
+                    </li>
+                </ul>
+                <hr/>
                 <h2>User Feedback</h2>
                 <p>
                     <i>
