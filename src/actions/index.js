@@ -540,10 +540,11 @@ export const addWeights = (file, weights) => {
     }
 }
 
-export const addCustomData = (geojson, idCol, variables) => {
+export const addCustomData = (selectedFile, geojson, idCol, variables) => {
     return {
         type:'ADD_CUSTOM_DATA',
         payload: {
+            selectedFile,
             geojson,
             idCol,
             variables

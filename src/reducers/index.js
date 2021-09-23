@@ -1170,9 +1170,19 @@ var reducer = (state = INITIAL_STATE, action) => {
             }
         }
         case 'ADD_CUSTOM_DATA': {
+            const rootName = action.payload.selectedFile?.name.split('.geojson')[0];
+            let dataName = action.payload.selectedFile?.name.split('.geojson')[0]
+            if (state.storedGeojson.hasOwnProperty(dataName)){
+                let i=2;
+                while (state.storedGeojson.hasOwnProperty(dataName)) {
+                    dataName = `${rootName}-${i}`
+                    i++;
+                }
+            }
+
             const storedGeojson = {
                 ...state.storedGeojson,
-                '⚙️ Custom Data': {
+                [dataName]: {
                     ...action.payload.geojson,
                     weights: {},
                     dateIndices: [],
@@ -1186,7 +1196,6 @@ var reducer = (state = INITIAL_STATE, action) => {
                     )
                 }
             }
-            console.log(storedGeojson)
 
             let variablePresets = {
                 ...state.variablePresets
@@ -1194,36 +1203,36 @@ var reducer = (state = INITIAL_STATE, action) => {
 
             const datasetTree = {
                 ...state.datasetTree,
-                '⚙️ Custom Data': {
-                    '⚙️ Custom Data':'⚙️ Custom Data',
+                [dataName]: {
+                    [dataName]:dataName,
                 }
             }
 
             const defaultTables = {
                 ...state.defaultTables,
-                '⚙️ Custom Data': {}
+                [dataName]: {}
             }
 
             const dataPresets = {
                 ...state.dataPresets,
-                '⚙️ Custom Data': {
-                    plainName:'⚙️ Custom Data',
-                    geojson:'⚙️ Custom Data',
+                [dataName]: {
+                    plainName: dataName,
+                    geojson: dataName,
                     id: action.payload.idCol,
-                    geography: '⚙️ Custom Data',
+                    geography: dataName,
                     tables: {}
                 }
             }
 
             let variableTree = {
-                "HEADER:⚙️ Custom Data":{},
+                [`HEADER: ${dataName}`]:{},
             }
 
             for (let i=0; i<action.payload.variables.length; i++){
                 let currVariable = action.payload.variables[i].variableName
                 variablePresets[currVariable] = action.payload.variables[i]
                 variableTree[currVariable] = {
-                    '⚙️ Custom Data': ['⚙️ Custom Data']
+                    [dataName]: [dataName]
                 }
             }
             variableTree = {
@@ -1233,9 +1242,9 @@ var reducer = (state = INITIAL_STATE, action) => {
 
             const urlParamsTree = {
                 ...state.urlParamsTree,
-                '⚙️ Custom Data':{
-                    name: '⚙️ Custom Data',
-                    geography: '⚙️ Custom Data'
+                [dataName]:{
+                    name: dataName,
+                    geography: dataName
                 }
             }
 
@@ -1249,7 +1258,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                 variableTree,
                 variablePresets,
                 shouldPanMap: true,
-                currentData: '⚙️ Custom Data',
+                currentData: dataName,
                 dataParams: {
                     ...action.payload.variables[0]
                 },

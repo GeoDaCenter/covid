@@ -290,7 +290,7 @@ const ColorBar = ({colors}) => <ColorBarContainer>
     {colors.map(color => <span style={{background:`rgb(${color.join(',')})`}}>&nbsp;</span>)}
 </ColorBarContainer>
 
-const VariableEditor = ({columns, variables, setVariables, handleClose, idx}) => {
+const VariableEditor = ({fileName, columns, variables, setVariables, handleClose, idx}) => {
     const [variableInfo, setVariableInfo] = useState(idx !== false ? variables[idx] : {
         nProperty: columns[0],
         dProperty: 'NULL'
@@ -307,7 +307,7 @@ const VariableEditor = ({columns, variables, setVariables, handleClose, idx}) =>
 
     const handleSave = () => {
         const fullSpec = {
-            variableName:variableInfo.variableName,
+            variableName:variableInfo.variableName||`${fileName}-${variables.length+1}`,
             numerator: 'properties',
             nType: 'characteristic',
             nRange: null,
@@ -531,8 +531,6 @@ export default function DataLoader(){
     }
 
     const handleOpenEditor = (idx) => {
-        console.log(idx)
-        console.log(variables[idx])
         setEditor({open:true, idx:idx})
     }
 
@@ -540,6 +538,7 @@ export default function DataLoader(){
 
     const handleLoadData = () => {
         dispatch(addCustomData(
+            selectedFile,
             currentGeojson,
             selectedId,
             variables 
@@ -637,14 +636,15 @@ export default function DataLoader(){
                             </VariableCard>
                         </Grid>
                     </CardContainer>   
-                    {editor.open && <VariableEditor 
+                    {!!editor.open && <VariableEditor 
+                        fileName={selectedFile.name}
                         columns={currentGeojson.columns}
                         idx={editor.idx}
                         variables={variables}
                         setVariables={setVariables}
                         handleClose={handleClose}
                     />} 
-                    {variables.length && <FormButton 
+                    {!!variables.length && <FormButton 
                         onClick={handleLoadData} 
                         >
                             Load Data
