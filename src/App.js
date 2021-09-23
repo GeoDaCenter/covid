@@ -1,7 +1,7 @@
 import React, { Suspense  } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import {Home, LoadingMessage, ErrorPage} from './components/';
-// import useTrackUserActions from './hooks/useTrackUserActions.js';
+import useTrackUserActions from './hooks/useTrackUserActions.js';
 
 const About = React.lazy(() => import('./components/Pages/About'));
 const Api = React.lazy(() => import('./components/Pages/Api'));
@@ -22,7 +22,7 @@ const Time = React.lazy(() => import('./components/Pages/Time'));
 const Trends = React.lazy(() => import('./components/Pages/Trends'));
 
 export default function App(){
-  // useTrackUserActions()
+  useTrackUserActions()
   return (     
       <Router basename={process.env.PUBLIC_URL}>
       <div>
