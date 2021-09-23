@@ -321,14 +321,14 @@ export default function DataPanel(){
                 <h3>{sidebarData.deaths?.toLocaleString('en')}</h3>
                 {expanded && <TwoWeekChart data={sidebarData.deaths14} schema='cases/deaths'/>}
               </div>
-              <p>Cases per 100k Population</p>
-              <h3>{sidebarData.cases100k?.toFixed(2).toLocaleString('en')}</h3>
-              <p>7-Day Average New Cases per 100k Population</p>
+              <p>7-Day Daily Average of New Cases</p>
               <h3>{sidebarData.cases7d?.toFixed(2).toLocaleString('en')}</h3>
-              <p>Deaths per 100k Population</p>
-              <h3>{sidebarData.deaths100k?.toFixed(2).toLocaleString('en')}</h3>
-              <p>7-Day Average New Deaths per 100k Population</p>
+              <p>7-Day Daily Average of New Cases per 100k Population</p>
+              <h3>{sidebarData.cases100k?.toFixed(2).toLocaleString('en')}</h3>
+              <p>7-Day Average New Deaths</p>
               <h3>{sidebarData.deaths7d?.toFixed(2).toLocaleString('en')}</h3>
+              <p>7-Day Daily Average of New Deaths per 100k Population</p>
+              <h3>{sidebarData.deaths100k?.toFixed(2).toLocaleString('en')}</h3>
               <p>Licensed Hospital Beds</p>
               <h3>{sidebarData.beds.toLocaleString('en')}</h3>
             </ReportSection>
