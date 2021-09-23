@@ -64,7 +64,7 @@ periodsToCalculate = [
 ]
 
 if __name__ == '__main__':
-
+	print(pygeoda.__version__)
 	for config in periodsToCalculate:
 		data = getDataFromPeriod(csvFilePath, config['days'], config['normalized'])
 		lisaGdf = calculateLisa(data)
