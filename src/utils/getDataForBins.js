@@ -18,11 +18,11 @@ const getDataForBins = (numeratorData, denominatorData, dataParams, fixedOrder=f
         let tempDIndex = dType === 'time-series' ? denominatorData.length-1 : dIndex;
         // loop through, do appropriate calculation. add returned value to rtn array
         for (let i=0; i<n; i++){
-            rtn[keys[i]] = dataFn(numeratorData[keys[i]], denominatorData[keys[i]], {...dataParams, nIndex:tempIndex, dIndex: tempDIndex})||0
+            rtn[keys[i]] = dataFn(numeratorData[keys[i]], denominatorData[keys[i]], {...dataParams, nIndex:tempIndex, dIndex: tempDIndex})||NaN
         }
     } else {
         for (let i=0; i<n; i++){
-            rtn[i] = dataFn(numeratorData[keys[i]], denominatorData[keys[i]], dataParams)||0
+            rtn[i] = dataFn(numeratorData[keys[i]], denominatorData[keys[i]], dataParams)||NaN
         }
     }
 
