@@ -7,35 +7,72 @@ import requests, json, os
 from glob import glob
 import numpy as np
 import dateutil.parser as parser
+import urllib.request, json 
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 repo_root = os.path.abspath(os.path.join(dir_path, '..', '..'))
 # %%
-def downloadCDCVaccinationData():
-    raw = requests.get('https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_data')
-    loadedJson = raw.json()['vaccination_data']
-    outputDate = loadedJson[0]["Date"].replace('/','-')
-    with open(os.path.join(repo_root, f'data-scripts/cdc/vaccination_state/cdc_vaccine_data_{outputDate}.json'), 'w') as outfile:
-        json.dump(loadedJson, outfile)
+# def downloadCDCVaccinationData():
+#     raw = requests.get('https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_data')
+#     loadedJson = raw.json()['vaccination_data']
+#     outputDate = loadedJson[0]["Date"].replace('/','-')
+#     with open(os.path.join(repo_root, f'data-scripts/cdc/vaccination_state/cdc_vaccine_data_{outputDate}.json'), 'w') as outfile:
+#         json.dump(loadedJson, outfile)
 
-    return glob(os.path.join(repo_root, 'data-scripts/cdc/vaccination_state/*.json'))
+#     return glob(os.path.join(repo_root, 'data-scripts/cdc/vaccination_state/*.json'))
 
-def downloadCDCCountyVaccinationData():
-    raw = requests.get('https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_county_condensed_data')
-    loadedJson = raw.json()['vaccination_county_condensed_data']
-    outputDate = loadedJson[0]["Date"].replace('/','-')
-    with open(os.path.join(repo_root, f'data-scripts/cdc/vaccination_county/vaccination_county_condensed_data_{outputDate}.json'), 'w') as outfile:
-        json.dump(loadedJson, outfile)
-    return glob(os.path.join(repo_root, 'data-scripts/cdc/vaccination_county/*.json'))
+# def downloadCDCCountyVaccinationData():
+#     raw = requests.get('https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_county_condensed_data')
+#     loadedJson = raw.json()['vaccination_county_condensed_data']
+#     outputDate = loadedJson[0]["Date"].replace('/','-')
+#     with open(os.path.join(repo_root, f'data-scripts/cdc/vaccination_county/vaccination_county_condensed_data_{outputDate}.json'), 'w') as outfile:
+#         json.dump(loadedJson, outfile)
+#     return glob(os.path.join(repo_root, 'data-scripts/cdc/vaccination_county/*.json'))
 
-def downloadCDCDemographicVaccinationData():
-    raw = requests.get('https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_demographics_data')
-    loadedJson = raw.json()['vaccination_demographics_data']
-    vaccinationData = pd.DataFrame(loadedJson)
-    outputDate = loadedJson[0]["Date"].replace('/','-')
-    with open(os.path.join(repo_root, f'data-scripts/cdc/vaccination_demographics/vaccine_demographics_{outputDate}.json'), 'w') as outfile:
-        json.dump(loadedJson, outfile)
-    return True
+# def downloadCDCDemographicVaccinationData():
+#     raw = requests.get('https://covid.cdc.gov/covid-data-tracker/COVIDData/getAjaxData?id=vaccination_demographics_data')
+#     loadedJson = raw.json()['vaccination_demographics_data']
+#     vaccinationData = pd.DataFrame(loadedJson)
+#     outputDate = loadedJson[0]["Date"].replace('/','-')
+#     with open(os.path.join(repo_root, f'data-scripts/cdc/vaccination_demographics/vaccine_demographics_{outputDate}.json'), 'w') as outfile:
+#         json.dump(loadedJson, outfile)
+#     return True
+def getStateJoinDf():
+    with urllib.request.urlopen("https://raw.githubusercontent.com/GeoDaCenter/covid/master/public/geojson/state_nyt.geojson") as url:
+        stateJoin = pd.DataFrame([row['properties'] for row in json.loads(url.read().decode())['features']])[['GEOID','STUSPS']]
+    return stateJoin
+
+def getStateVaxData():
+    statesVaxData = pd.read_csv('https://data.cdc.gov/api/views/unsk-b7fc/rows.csv?accessType=DOWNLOAD')
+    statesVaxData['Date'] = pd.to_datetime(statesVaxData['Date'], format='%m/%d/%Y')
+    statesVaxData = statesVaxData.sort_values('Date')
+    return statesVaxData
+
+def parseStateVaxData(statesVaxData,stateJoin):
+    seriesCompleteDf = statesVaxData[['Date','Location','Series_Complete_Yes']].pivot(index='Location', columns='Date').swaplevel(0, 1, 1).sort_index(1).reset_index()
+    seriesCompleteDf.columns = [str(col[0])[:10] if str(col[0])[0:2] == '20' else col[0] for col in seriesCompleteDf ]
+    seriesCompleteDf = stateJoin.merge(seriesCompleteDf, how="left", left_on="STUSPS", right_on="Location").drop(columns=["STUSPS","Location"]).fillna(0)
+
+    oneDoseDf = statesVaxData[['Date','Location','Administered_Dose1_Recip']].pivot(index='Location', columns='Date').swaplevel(0, 1, 1).sort_index(1).reset_index()
+    oneDoseDf.columns = [str(col[0])[:10] if str(col[0])[0:2] == '20' else col[0] for col in oneDoseDf ]
+    oneDoseDf = stateJoin.merge(oneDoseDf, how="left", left_on="STUSPS", right_on="Location").drop(columns=["STUSPS","Location"]).fillna(0)
+
+    distributedDf = statesVaxData[['Date','Location','Distributed']].pivot(index='Location', columns='Date').swaplevel(0, 1, 1).sort_index(1).reset_index()
+    distributedDf.columns = [str(col[0])[:10] if str(col[0])[0:2] == '20' else col[0] for col in distributedDf ]
+    distributedDf = stateJoin.merge(distributedDf, how="left", left_on="STUSPS", right_on="Location").drop(columns=["STUSPS","Location"]).fillna(0)
+
+    adminDf = statesVaxData[['Date','Location','Administered']].pivot(index='Location', columns='Date').swaplevel(0, 1, 1).sort_index(1).reset_index()
+    adminDf.columns = [str(col[0])[:10] if str(col[0])[0:2] == '20' else col[0] for col in adminDf ]
+    adminDf = stateJoin.merge(adminDf, how="left", left_on="STUSPS", right_on="Location").drop(columns=["STUSPS","Location"]).fillna(0)
+
+    for col in list(distributedDf.columns)[1:]:
+        distributedDf[col] = distributedDf[col] - adminDf[col]
+
+    return {
+        'vaccineAdministered2': seriesCompleteDf,
+        'vaccineAdministered1':oneDoseDf,
+        'vaccineDistributed':distributedDf
+    }
 
 def parseVaccinationData(vaccinationDataList):
     geoidTable = pd.read_csv(os.path.join(repo_root,'data-scripts/cdc/statename_geoid.csv'))
@@ -118,6 +155,9 @@ def parseCountyVaccinationData():
     raw = raw[(raw.Recip_State != 'HI')&(raw.Recip_State != 'TX')&(raw.FIPS != 'UNK')]
     raw['Date'] = pd.to_datetime(raw['Date'], format='%m/%d/%Y')
     raw = raw.sort_values('Date')
+    
+    raw['fips-date'] = raw['Date'].astype(str) + raw['FIPS'].astype(str)
+    raw = raw[~raw['fips-date'].duplicated()]
 
     vaccineAdministered1 = raw[['Date','FIPS','Administered_Dose1_Recip']].pivot(index='FIPS', columns='Date').swaplevel(0, 1, 1).sort_index(1).reset_index()
     vaccineAdministered1.columns = [col[0] for col in vaccineAdministered1.columns]
@@ -192,22 +232,19 @@ def parse7dayRolling(df, colName, preLoaded=False, normalize=False):
 if __name__ == "__main__":
 
     ## Vaccination Data
-    fileList = downloadCDCVaccinationData()
-    fileList.sort()
-    parsedData = parseVaccinationData(fileList)
 
-    parsedData['vaccineDistributed'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_to_be_distributed_cdc_state.csv'), index=False)
-    parsedData['vaccineAdministered1'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_one_or_more_doses_cdc_state.csv'), index=False)
-    parsedData['vaccineAdministered2'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_fully_vaccinated_cdc_state.csv'), index=False)
+    stateJoin = getStateJoinDf()
+    stateVaxData = getStateVaxData()
+    parsedStateData = parseStateVaxData(stateVaxData, stateJoin)
+
+    parsedStateData['vaccineDistributed'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_to_be_distributed_cdc_state.csv'), index=False)
+    parsedStateData['vaccineAdministered1'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_one_or_more_doses_cdc_state.csv'), index=False)
+    parsedStateData['vaccineAdministered2'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_fully_vaccinated_cdc_state.csv'), index=False)
 
     ## County Vaccination Data
-    countyFileList = downloadCDCCountyVaccinationData()
     parsedCountyData = parseCountyVaccinationData()
     parsedCountyData['vaccineAdministered1'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_one_or_more_doses_cdc.csv'),index=False)
     parsedCountyData['vaccineAdministered2'].to_csv(os.path.join(repo_root, 'public/csv/vaccination_fully_vaccinated_cdc.csv'),index=False)
-
-    ## Demographic Data
-    downloadCDCDemographicVaccinationData()
 
 # %%
     ## State Testing Data
@@ -221,11 +258,12 @@ if __name__ == "__main__":
 
     testingPositivityRolling = positiveTestsRolling.div(testingRolling, axis='columns').round(2).replace([np.inf, -np.inf], np.nan)
     testingPositivityRolling['state_fips'] = positiveTestsRolling['state_fips']
-   
-    casesRolling = parse7dayRolling(pd.read_csv(os.path.join(repo_root, 'public/csv/covid_confirmed_1p3a_state.csv'))\
-                                .rename(columns={"GEOID":"state_fips"})\
-                                [testingRolling.columns], '', preLoaded=True)\
-                                .sort_values('state_fips')
+
+    caseData = pd.read_csv(os.path.join(repo_root, 'public/csv/covid_confirmed_1p3a_state.csv'))
+    casesRolling = parse7dayRolling(caseData.rename(columns={"GEOID":"state_fips"})[['state_fips'] + [col for col in testingRolling.columns if col in caseData.columns]], 
+        '', 
+        preLoaded=True).sort_values('state_fips')
+
     casesRolling = casesRolling[casesRolling.state_fips.isin(testingRolling.state_fips)].reset_index().drop(columns=['index'])
                                     
 
