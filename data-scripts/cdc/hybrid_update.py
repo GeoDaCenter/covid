@@ -59,8 +59,8 @@ def parseStateDeaths():
 
 def parseStateVaccine():
     countyData = pd.read_csv(os.path.join(repo_root, 'public/csv/vaccination_fully_vaccinated_cdc.csv'))
-    stateData = pd.read_csv(os.path.join(repo_root, 'public/csv/vaccination_fully_vaccinated_cdc_state.csv'))
-    
+    stateData = pd.read_csv(os.path.join(repo_root, 'public/csv/vaccination_fully_vaccinated_cdc_state.csv')).rename(columns={'GEOID': 'fips'})
+
     tempData = stateData[stateData.fips == 48][[column for column in countyData.columns if column in stateData.columns]]
     mergedFullyVaccinated = pd.concat([countyData, tempData], sort=True)
 
@@ -68,7 +68,7 @@ def parseStateVaccine():
     mergedFullyVaccinated = pd.concat([mergedFullyVaccinated, tempData], sort=True)
 
     countyData = pd.read_csv(os.path.join(repo_root, 'public/csv/vaccination_one_or_more_doses_cdc.csv'))
-    stateData = pd.read_csv(os.path.join(repo_root, 'public/csv/vaccination_one_or_more_doses_cdc_state.csv'))
+    stateData = pd.read_csv(os.path.join(repo_root, 'public/csv/vaccination_one_or_more_doses_cdc_state.csv')).rename(columns={'GEOID': 'fips'})
     
     tempData = stateData[stateData.fips == 48][[column for column in countyData.columns if column in stateData.columns]]
     mergedOneDose = pd.concat([countyData, tempData], sort=True)

@@ -139,8 +139,14 @@ for fileInfo in fileList:
 
     rowObj = {}
     for i in range(0, len(csvData)):
+        try:
+            id = int(csvData.iloc[i][fileInfo['joinColumn']])
+        except:
+            print(f'ERROR - GEOID {csvData.iloc[i][fileInfo["joinColumn"]]}')
+            continue
+
         rowObj[i] = dataOut.row.add()
-        rowObj[i].geoid = int(csvData.iloc[i][fileInfo['joinColumn']])
+        rowObj[i].geoid = id
         cleanVals = []
         for val in list(csvData.iloc[i].values)[fileInfo['dateIndex']:]:
             if val == -9999:

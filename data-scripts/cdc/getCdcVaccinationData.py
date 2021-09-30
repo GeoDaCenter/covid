@@ -270,6 +270,8 @@ if __name__ == "__main__":
     ccptRolling = casesRolling.div(testingRolling, axis='columns').round(2).replace([np.inf, -np.inf], np.nan)
     ccptRolling['state_fips'] = casesRolling['state_fips']
     
+    # ccptRolling = ccptRolling[['state_fips'] + [list(ccptRolling.columns)[0:-1]]]
+    
     totalTesting.to_csv(os.path.join(repo_root, 'public/csv/covid_testing_cdc_state.csv'), index=False)
     testingPer100Rolling.to_csv(os.path.join(repo_root, 'public/csv/covid_tcap_cdc_state.csv'), index=False)
     ccptRolling.to_csv(os.path.join(repo_root, 'public/csv/covid_ccpt_cdc_state.csv'), index=False)
