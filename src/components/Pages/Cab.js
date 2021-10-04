@@ -96,7 +96,7 @@ export default function About(){
                     The community advisory board (CAB) represents key stakeholders in the implementation and outcome of the US COVID Atlas.
                </h2>
                 <p>
-                    The CAB draws on our members’ expertise to guide the development of our data tools and project deliverables and to ensure that the Atlas meets the needs of communities and organizations and serves as a valuable data tool for furthering health equity. Below are the current members:
+                    The CAB draws on our members’ expertise to guide the development of our tools and efforts to ensure that the Atlas meets the needs of communities and organizations and serves as a valuable data tool for furthering health equity. This group will convene quarterly to discuss the Atlas' current work and our major initiatives going forward. Below are the current members:
                 </p>
                 <Gutter h={32} />
                 <MemberGrid members={cabMembers} columns={{xs:12}}/>
