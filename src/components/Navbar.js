@@ -277,11 +277,11 @@ const pageDropDowns = {
       desc: 'The core team and contributors behind the Atlas project.',
       link: '/about#team'
     },
-    // {
-    //   header: 'Advisory Board',
-    //   desc: 'The community advisory board driving engagement from 2021 onward.',
-    //   link: '/cab'
-    // },
+    {
+      header: 'Advisory Board',
+      desc: 'The community advisory board driving engagement from 2021 onward.',
+      link: '/cab'
+    },
     // {
     //   header: 'FAQ',
     //   desc: 'Frequently asked questions on data, maps, and the project.',
