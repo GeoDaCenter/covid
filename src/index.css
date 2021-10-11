@@ -163,6 +163,9 @@ body {
   overflow:hidden !important;
 }
 
+#view-MapView div, .mapboxgl-control-container {
+  z-index:5 !important;
+}
 /* svg styles */
 
 .cls-1 {
