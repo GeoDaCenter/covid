@@ -49,7 +49,6 @@ def write_table_to_bq(table, project_id, dataset_id, columns_dic, id_col=False):
     input_file = os.path.join(repo_root, 'public/csv', table)
     print('writing: ', input_file)
     df = handleAmbiguousColumns(pd.read_csv(input_file).replace('suppressed',-9999))
-    print(df.dtypes)
     if id_col != False:
         df.columns = ['fips_code' if col == id_col else col for col in list(df.columns)]
 
