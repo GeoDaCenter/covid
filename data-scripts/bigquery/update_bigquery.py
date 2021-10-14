@@ -5,7 +5,7 @@ from google.cloud import bigquery
 import pandas_gbq
 import json
 import time
-
+import datetime
 '''
 Destination table on Bigquery
 Safegraph and 1P3A are stored in private dataset: safegraph and 1P3A
@@ -28,6 +28,19 @@ repo_root = os.path.abspath(os.path.join(dir_path, '..', '..')) # /path-to-repo/
 print('dir_path: ', dir_path)
 print('repo_root: ', repo_root)
 
+def isValidDate(date_text):
+    try:
+        datetime.datetime.strptime(date_text, '%Y-%m-%d')
+        return True
+    except:
+        return False
+
+def handleAmbiguousColumns(df):
+    for column in df.columns:
+        if (isValidDate(column)):
+            df[column] = df[column].astype(float)
+    return df
+
 def write_table_to_bq(table, project_id, dataset_id, columns_dic, id_col=False):
     '''
     Write table to bigquery and append columns to a dictionary
@@ -35,7 +48,8 @@ def write_table_to_bq(table, project_id, dataset_id, columns_dic, id_col=False):
     table_id = dataset_id + '.' + table[:-4]
     input_file = os.path.join(repo_root, 'public/csv', table)
     print('writing: ', input_file)
-    df = pd.read_csv(input_file).replace('suppressed',-9999)
+    df = handleAmbiguousColumns(pd.read_csv(input_file).replace('suppressed',-9999))
+    print(df.dtypes)
     if id_col != False:
         df.columns = ['fips_code' if col == id_col else col for col in list(df.columns)]
 
