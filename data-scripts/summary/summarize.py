@@ -72,7 +72,11 @@ def getEquitySummary(counties):
 
     topQuartileEssential = essentialWorkers[essentialWorkers.pct_essential > essentialWorkers.pct_essential.quantile(.75)]
     summedEssential = mergedDeaths[mergedDeaths.GEOID.isin(list(topQuartileEssential.fips))].sum()
-    nationalEssential = round((summedEssential[summedEssential.keys()[-1]]/summedEssential['population'])*10000000)/100
+    for i in range(len(summedEssential.keys())-1,0,-1):
+        col = summedEssential.keys()[i]
+        if summedEssential[col] != 0:
+            nationalVal = summedEssential[col]
+    nationalEssential = round((nationalVal/summedEssential['population'])*10000000)/100
 
     return {
         'nationDeathsPer100k': national,
