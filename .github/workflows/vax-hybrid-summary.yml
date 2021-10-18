@@ -1,4 +1,4 @@
-name: Vax, Hybrid, Pbf, and Summarize 0.0.2c
+name: Vax, Hybrid, Pbf, and Summarize 0.0.2d
 
 on:
   schedule:
@@ -35,7 +35,7 @@ jobs:
       - name: execute summarize
         run: python data-scripts/summary/summarize.py  
 
-      - name: commit files
+      - name: fetch concurrent commits
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
