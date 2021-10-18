@@ -301,6 +301,7 @@ export const updateSelectionKeys  = ( geoid, type) => {
     }
 }
 
+
 // adds to current chart data from current data
 export const appendSelectionData = ( data ) => {
     return {

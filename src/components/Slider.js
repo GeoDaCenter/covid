@@ -277,7 +277,8 @@ function DateSlider(){
     const currTable = useSelector(state => state.storedData[state.currentTable.numerator]);
     const shouldLoadTimeseries = useSelector((state)=>state.shouldLoadTimeseries)
     const shouldAlwaysLoadTimeseries = useSelector((state)=>state.shouldAlwaysLoadTimeseries)
-    const dateIndices = currTable !== undefined 
+
+    const dateIndices = currTable !== undefined && nType === 'time-series'
         ? !shouldLoadTimeseries && !shouldAlwaysLoadTimeseries 
             ? currTable.dates.slice(nRange,)
             : currTable.dates

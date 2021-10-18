@@ -346,9 +346,9 @@ export default function MapSection(){
         } else {
             try {
                 setHighlightGeog([objectID]); 
-                dispatch(updateSelectionKeys(objectID, 'update'))
-                window.localStorage.setItem('SHARED_GEOID', objectID);
-                window.localStorage.setItem('SHARED_VIEW', JSON.stringify(viewport));
+                dispatch(updateSelectionKeys(objectID, 'update'));
+                // window.localStorage.setItem('SHARED_GEOID', objectID);
+                // window.localStorage.setItem('SHARED_VIEW', JSON.stringify(viewport));
             } catch {}
         }
     }

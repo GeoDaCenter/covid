@@ -694,6 +694,10 @@ var reducer = (state = INITIAL_STATE, action) => {
 
             if (!properties || !geography) return state;
 
+            if (action.payload.type === "reset"){
+                selectionKeys = []
+            }
+
             if (action.payload.type === "update"){
                 selectionKeys = [action.payload.geoid]
             }

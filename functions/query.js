@@ -26,13 +26,42 @@ async function query(query, bigquery) {
   return await job.getQueryResults();
 };
 
-const constructQuery = (datasets, days=30) => {
+const colToDate = (col) => col.replace(/_/g, '-').slice(1,)
+const dateToCol = (date) => `_${date.replace(/-/g, '_')}`
+const getColList = (columns, days, endIndex=0) => columns.slice(endIndex-days, endIndex ? endIndex : columns.length).map(col => col[0] === '_' ? col.slice(1,).replace(/_/g, '-') : col)
+
+const findClosestDate = (columns, date) => {
+    if (!date) return date
+    const colDateFormat = dateToCol(date)
+    if (columns.includes(colDateFormat)){
+        return colDateFormat
+    }
+    const dateCols = columns.map(col => new Date(colToDate(col))).filter(date => date > 0)
+    const closestDate = dateCols.reduce((a, b) => {return Math.abs(a - date) < Math.abs(b - date) ? a : b});
+    return dateToCol(closestDate.toISOString().slice(0,10))
+}
+
+const constructQuery = (datasets, days=30, startDate=false) => {
     let queryStrings = []
     datasets.forEach(dataset => {
         const currColumns = columns[dataset];
-        const dateRange = currColumns.slice(-days,).map(col => col[0] === '_' ? col.slice(1,).replace(/_/g, '-') : col) 
+        
+        let endDate;
+
+        try {
+            endDate = findClosestDate(columns[dataset],startDate)
+        } catch {
+            console.log(dataset)
+        }
+        const endIndex = currColumns.indexOf(endDate) === -1
+            ? 0
+            : currColumns.indexOf(endDate)
+
+        const dateRange = getColList(currColumns, days, endIndex)
+        const colRange = dateRange.map(date => dateToCol(date))
+
         queryStrings.push({
-            query: `SELECT fips_code as id, ARRAY(SELECT IFNULL(${currColumns.slice(-days,).join(',-999) UNION ALL SELECT IFNULL( ')},-999)) as vals from covid-atlas.${dataset}`,
+            query: `SELECT fips_code as id, ARRAY(SELECT IFNULL(${colRange.join(',-999) UNION ALL SELECT IFNULL( ')},-999)) as vals from covid-atlas.${dataset}`,
             dataset,
             dateRange
         })
@@ -104,9 +133,8 @@ const constructTimeQuery = (dataset,geoid=false,allSeries=false) => {
     }
 
     queryString = queryString.slice(0,-2) + ' from `covid-atlas.' + dataset + '`'
-
-    if (geoid && geoid.length === 1) queryString += ' where fips_code = ' + geoid[0]
-    if (geoid && geoid.length > 1) queryString += ' where fips_code IN (' + geoid.join(',') + ')'
+    if (geoid && geoid.length === 1) queryString += ' where fips_code = ' + geoid
+    if (geoid && geoid.length > 1) queryString += ' where fips_code IN (' + geoid + ')'
 
     return {
         queryString,
@@ -122,7 +150,8 @@ exports.handler = async (event) => {
             datasets,
             days, 
             geoid,
-            type
+            type,
+            startDate
         } = event.queryStringParameters;
         const bigquery = new BigQuery(options);
         if (type === undefined) {
@@ -137,7 +166,8 @@ exports.handler = async (event) => {
                 queryStrings
             } = constructQuery(
                 datasetsArray,
-                days||30
+                days||30,
+                startDate||false
             )
             const results = await Promise.all(queryStrings.map(entry => query(entry.query, bigquery)))
             const parsed = results.map((result, idx) => {return {
@@ -147,13 +177,13 @@ exports.handler = async (event) => {
             }})
             return { 
                 statusCode: 200, 
-                body: JSON.stringify({ data: parsed }) 
+                body: JSON.stringify({ data: parsed })
             };
 
         }
 
         if (type === "timeseries") {
-            const idArray = geoid ? JSON.parse(geoid) : false;
+            const idArray = geoid ? geoid : false;
             const {
                 queryString,
                 dateRange
@@ -162,9 +192,8 @@ exports.handler = async (event) => {
                 idArray
             )
             if (idArray && idArray.length > 1) {
-                
                 const indQuery = constructTimeQuery(
-                    dataset,
+                    datasets,
                     idArray,
                     true
                 )
@@ -180,7 +209,7 @@ exports.handler = async (event) => {
                 const data = zip(result, dateRange)
                 return { 
                     statusCode: 200, 
-                    body: JSON.stringify({ data }) 
+                    body: JSON.stringify({ data })
                 };
             }
         }

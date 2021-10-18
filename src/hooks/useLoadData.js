@@ -50,6 +50,7 @@ export default function useLoadData(){
   const chartParams = useSelector(state => state.chartParams);
   const dataPresets = useSelector((state) => state.dataPresets);
   const defaultTables = useSelector((state) => state.defaultTables);
+  const selectionKeys = useSelector((state)=>state.selectionKeys);
   const shouldLoadTimeseries = useSelector((state)=>state.shouldLoadTimeseries);
   const shouldAlwaysLoadTimeseries = useSelector((state)=>state.shouldAlwaysLoadTimeseries);
   const snapshotDaysToLoad = useSelector((state)=>state.snapshotDaysToLoad);
@@ -77,11 +78,11 @@ export default function useLoadData(){
     return tempArray
   }
 
-  const getTimeSeriesData = async () => {
+  const getTimeSeriesData = async (geoid=[]) => {
     const defaultChartTable = defaultTables[chartParams.table]
     const currCaseData = dataPresets[currentData].hasOwnProperty('tables') ? dataPresets[currentData].tables[chartParams.table]||defaultChartTable : defaultChartTable;
-    if (!currCaseData.hasOwnProperty('bigQuery')) return;
-    const data = await getTimeSeries(currCaseData.bigQuery)
+    if (!currCaseData || !currCaseData.hasOwnProperty('bigQuery')) return;
+    const data = await getTimeSeries(currCaseData.bigQuery, geoid)
     dispatch({
       type:'SET_CHART_DATA',
       payload: data
@@ -120,14 +121,16 @@ export default function useLoadData(){
     );
     
     const dateIndices = numeratorData.dates;
-
-    const binIndex = (!shouldLoadTimeseries && !shouldAlwaysLoadTimeseries)
-      ? dateIndices.slice(-1)[0] 
-      : dateIndices !== null 
-      ? mapParams.binMode === 'dynamic' && dateIndices?.indexOf(dataParams.nIndex) !== -1
-      ? dataParams.nIndex 
-      : dateIndices.slice(-1)[0] 
-      : null;
+    
+    const binIndex = dataParams.nType !== 'time-series'
+      ? null
+      : (!shouldLoadTimeseries && !shouldAlwaysLoadTimeseries)
+        ? dateIndices.slice(-1)[0] 
+        : dateIndices !== null 
+          ? mapParams.binMode === 'dynamic' && dateIndices?.indexOf(dataParams.nIndex) !== -1
+            ? dataParams.nIndex 
+            : dateIndices.slice(-1)[0] 
+        : null;
 
     let binData = getDataForBins(
       dataParams.numerator === 'properties' ? geojsonData.data.features : numeratorData.data, 
@@ -135,6 +138,9 @@ export default function useLoadData(){
       {...dataParams, nIndex: binIndex, dIndex: dataParams.dType === 'time-series' ? binIndex : null},
       Object.values(geojsonOrder.indexOrder)
     );
+    const nIndex = dateIndices?.indexOf(dataParams.nIndex) === -1 || (!shouldLoadTimeseries && !shouldAlwaysLoadTimeseries)
+      ? binIndex 
+      : dataParams.nIndex
 
     let bins;
     
@@ -182,21 +188,23 @@ export default function useLoadData(){
           colorScale: mapParams.mapType === 'natural_breaks' ? colorScales[dataParams.colorScale || mapParams.mapType] : colorScales[mapParams.mapType || dataParams.colorScale ]
         },
         variableParams: {
-          nIndex: dateIndices?.indexOf(dataParams.nIndex) === -1 || (!shouldLoadTimeseries && !shouldAlwaysLoadTimeseries)
-          ? binIndex 
-          : dataParams.nIndex,
+          nIndex
         },
         dates: dateLists.isoDateList,
         storedLisaData: lisaData,
         storedCartogramData: cartogramData
       })
     )
+
     setIsInProcess(false)
-    return [numeratorParams.file, denominatorParams && denominatorParams.file, mapId]
+    return { 
+      nIndex,
+      loadedTables: [numeratorParams.file, denominatorParams && denominatorParams.file, mapId]
+    }
   },[currentData])
 
 
-  const secondLoad = useMemo(() => async (datasetParams, defaultTables, loadedTables, mapId) => {
+  const secondLoad = useMemo(() => async (datasetParams, defaultTables, loadedTables, mapId, currentIndex) => {
     if (geoda === undefined) return;
     setIsInProcess(true);
     
@@ -235,7 +243,7 @@ export default function useLoadData(){
 
     const dataToFetch = [
       ...tablePromises,
-      getRecentSnapshot(queriesToExecute, snapshotDaysToLoad)
+      getRecentSnapshot(queriesToExecute, snapshotDaysToLoad, currentIndex)
     ]
 
     tableNames = [
@@ -313,11 +321,11 @@ export default function useLoadData(){
       if (!storedGeojson[currentData]) {
         dispatch(setIsLoading())
         firstLoad(dataPresets[currentData], defaultTables[dataPresets[currentData]['geography']])
-          .then(primaryTables => {
-            if (primaryTables !== undefined) dispatch(updateMap());
-            return primaryTables
-          }).then(primaryTables => {
-            return secondLoad(dataPresets[currentData], defaultTables[dataPresets[currentData]['geography']], [...Object.keys(storedData), ...primaryTables.slice(0,-1)], primaryTables.slice(-1,)[0])
+          .then(firstLoadResults => {
+            if (firstLoadResults !== undefined) dispatch(updateMap());
+            return firstLoadResults
+          }).then(firstLoadResults => {
+            return secondLoad(dataPresets[currentData], defaultTables[dataPresets[currentData]['geography']], [...Object.keys(storedData), ...firstLoadResults.loadedTables.slice(0,-1)], firstLoadResults.loadedTables.slice(-1,)[0], firstLoadResults.nIndex)
           }).then(geojsonToLoad => {
             lazyGenerateWeights(geojsonToLoad[0], geojsonToLoad[1])
           })
@@ -353,6 +361,9 @@ export default function useLoadData(){
     }
   },[shouldLoadTimeseries])
 
+  useEffect(() => {
+    getTimeSeriesData(selectionKeys)
+  }, [JSON.stringify(selectionKeys)])
   return [
     firstLoad,
     secondLoad,
