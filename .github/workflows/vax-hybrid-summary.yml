@@ -1,4 +1,4 @@
-name: Vax, Hybrid, Pbf, and Summarize 0.0.2d
+name: Vax, Hybrid, Pbf, and Summarize 0.0.2e
 
 on:
   schedule:
@@ -38,7 +38,7 @@ jobs:
       - name: fetch concurrent commits
         run: |
           git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --local user.name "Atlas Bot"
           git fetch
           
       - name: commit files
