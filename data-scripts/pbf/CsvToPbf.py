@@ -125,7 +125,6 @@ fileList = [
 
 # %%
 for fileInfo in fileList:
-    csvData = pd.read_csv(os.path.join(repo_root, f'public/csv/{fileInfo["fileName"]}.csv'), low_memory=False).replace('suppressed', -9999)
     print(fileInfo['fileName'])
     try:
         multiplier = 10**fileInfo['decimals']
@@ -133,6 +132,15 @@ for fileInfo in fileList:
     except:
         multiplier = 1
         suffix = ""
+    
+    csvData = pd.read_csv(os.path.join(repo_root, f'public/csv/{fileInfo["fileName"]}.csv'), low_memory=False)
+    csvData = csvData.replace('suppressed', -9999) \
+        .apply(pd.to_numeric, errors="coerce") \
+        .fillna(-999) * multiplier
+
+    csvData = csvData[[fileInfo['joinColumn']] + list(csvData.columns)[fileInfo['dateIndex']:]]
+    csvData[fileInfo['joinColumn']] = csvData[fileInfo['joinColumn']] / multiplier
+    csvData = csvData.astype(int)
 
     dataOut = flatData_pb2.Rows()
     dataOut.dates.extend(list(csvData.columns[fileInfo['dateIndex']:]))
@@ -140,24 +148,14 @@ for fileInfo in fileList:
     rowObj = {}
     for i in range(0, len(csvData)):
         try:
-            id = int(csvData.iloc[i][fileInfo['joinColumn']])
+            id = csvData.iloc[i][fileInfo['joinColumn']]
         except:
             print(f'ERROR - GEOID {csvData.iloc[i][fileInfo["joinColumn"]]}')
             continue
-
+        
         rowObj[i] = dataOut.row.add()
         rowObj[i].geoid = id
-        cleanVals = []
-        for val in list(csvData.iloc[i].values)[fileInfo['dateIndex']:]:
-            if val == -9999:
-                cleanVals.append(int(-9999))
-            else:
-                try: 
-                    cleanVals.append(int(val*multiplier))
-                except:
-                    cleanVals.append(int(-999))
-
-        rowObj[i].vals.extend(cleanVals)
+        rowObj[i].vals.extend(csvData.iloc[i].values[1:])
 
     f = open(os.path.join(repo_root, f'public/pbf/{fileInfo["fileName"]}{suffix}.pbf'), "wb")
     f.write(dataOut.SerializeToString())

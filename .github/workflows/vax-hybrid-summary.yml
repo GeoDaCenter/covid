@@ -1,4 +1,4 @@
-name: Vax, Hybrid, Pbf, and Summarize 0.0.2b
+name: Vax, Hybrid, Pbf, and Summarize 0.0.2c
 
 on:
   schedule:
@@ -39,6 +39,10 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          git fetch
+          
+      - name: commit files
+        run: |
           git add -A
           git commit -m "Update Summary Data" -a
           
