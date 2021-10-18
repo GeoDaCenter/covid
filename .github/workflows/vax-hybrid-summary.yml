@@ -1,4 +1,4 @@
-name: data-summary v2
+name: Vax, Hybrid, Pbf, and Summarize
 
 on:
   schedule:
@@ -17,15 +17,24 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.7.7' # install the python version needed
-          
+
       - name: install python packages
         run: |
           python -m pip install --upgrade pip
-          pip install -r data-scripts/summary/requirements.txt
+          pip install -r data-scripts/requirements.txt
           
-      - name: execute py script # get the latest data
-        run: python data-scripts/summary/summarize.py
-          
+      - name: execute cdc vaccination data
+        run: python data-scripts/cdc/getCdcVaccinationData.py
+        
+      - name: execute hybrid update
+        run: python data-scripts/cdc/hybrid_update.py  
+
+      - name: execute pbf
+        run: python data-scripts/pbf/CsvToPbf.py  
+
+      - name: execute summarize
+        run: python data-scripts/summary/summarize.py  
+
       - name: commit files
         run: |
           git config --local user.email "action@github.com"
