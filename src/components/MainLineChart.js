@@ -129,7 +129,6 @@ const CustomTooltip = props => {
 
 const MainLineChart = () => {
     const { data, maximums } = useSelector(state => state.chartData);
-    
     const dataParams = useSelector(state => state.dataParams);
     const nType = useSelector(state => state.dataParams.nType);
     const dType = useSelector(state => state.dataParams.dType);
@@ -263,8 +262,10 @@ const MainLineChart = () => {
                         <Tooltip
                             content={CustomTooltip}
                         />
-                        {selectionKeys.length < 2 && <Line type="monotone" yAxisId="left" dataKey={"v"} name="Total Cases" stroke={colors.lightgray} dot={false} isAnimationActive={false} /> }
-                        {selectionKeys.length < 2 && <Line type="monotone" yAxisId="right" dataKey={selectionKeys.length > 0 ? selectionNames[0] : "a"} name="7-Day Average New Cases" stroke={colors.yellow} dot={false} isAnimationActive={false} /> }
+                        {selectionKeys.length === 0 && <Line type="monotone" yAxisId="left" dataKey={`v`} name="Total Cases" stroke={colors.lightgray} dot={false} isAnimationActive={false} /> }
+                        {selectionKeys.length === 0 && <Line type="monotone" yAxisId="right" dataKey={"a"} name="7-Day Average New Cases" stroke={colors.yellow} dot={false} isAnimationActive={false} /> }
+                        {selectionKeys.length === 1 && <Line type="monotone" yAxisId="right" dataKey={`${selectionKeys[0]}a`} name="7-Day Average New Cases" stroke={colors.yellow} dot={false} isAnimationActive={false} /> }
+                        {selectionKeys.length === 1 && <Line type="monotone" yAxisId="left" dataKey={`${selectionKeys[0]}v`} name="Total Cases" stroke={colors.lightgray} dot={false} isAnimationActive={false} /> }
                         
                         {(selectionKeys.length > 1 && showSummarized) &&
                                 <Line 
@@ -279,12 +280,12 @@ const MainLineChart = () => {
                                 />
                         }
                         {selectionKeys.length > 1 && 
-                            selectionNames.map((key,index) => {
+                            selectionKeys.map((key,index) => {
                                 return <Line 
                                     type='monotone'
                                     yAxisId='left' 
-                                    dataKey={key} 
-                                    name={key + ' 7-Day Ave'} 
+                                    dataKey={key+"a"} 
+                                    name={selectionNames[index] + ' 7-Day Ave'} 
                                     stroke={selectionKeys.length > colors.qualtitiveScale.length ? 'white' : colors.qualtitiveScale[index]} 
                                     dot={false} 
                                     isAnimationActive={false}  
