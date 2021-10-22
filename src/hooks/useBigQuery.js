@@ -5,14 +5,14 @@ const parseData = (data, dates, dummyArray) => {
         dates: data.dateRange.map(f => dates.indexOf(f)),
         data: {}
     }
-
-    const firstDate = parsedData.dates[0]
+    
     for (let i=0; i<data.rows.length; i++) {
-        parsedData.data[data.rows[i].id] = [ 
-            ...(dummyArray.slice(0,firstDate)),
-            ...(data.rows[i].vals)
-        ]
+        parsedData.data[data.rows[i].id] = [...dummyArray]
+        for (let j=0; j<parsedData.dates.length;j++){
+            parsedData.data[data.rows[i].id][parsedData.dates[j]] = data.rows[i].vals[j]
+        }
     }
+    
     return parsedData
 }
 
@@ -23,6 +23,7 @@ export default function useBigQuery(){
         const response = await fetch(queryUrl).then(r => r.text()).then(r => JSON.parse(r.replace(/-9999/g, null).replace(/-999/g, null)))
         const dummyArray = new Array(dates.length).fill(null)
         if (response.data.length === 1){
+            console.log(response.data[0])
             return parseData(response.data[0],dates, dummyArray)   
         } else {
             return response.data.map(data => parseData(data, dates, dummyArray))
@@ -30,9 +31,7 @@ export default function useBigQuery(){
     }
 
     const getTimeSeries = async (dataset, geoid=[]) => {
-        console.log(geoid)
         const data = await fetch(`${process.env.PUBLIC_URL}/.netlify/functions/query?type=timeseries&datasets=${dataset}${geoid.length ? '&geoid=' + geoid : ''}`).then(r => r.json())
-        console.log(data)
         return data
     }
     

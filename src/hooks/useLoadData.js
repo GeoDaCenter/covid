@@ -132,6 +132,9 @@ export default function useLoadData(){
             : dateIndices.slice(-1)[0] 
         : null;
 
+    console.log(numeratorData.data)
+    console.log(binIndex)
+
     let binData = getDataForBins(
       dataParams.numerator === 'properties' ? geojsonData.data.features : numeratorData.data, 
       dataParams.denominator === 'properties' ? geojsonProperties : denominatorData.data, 

@@ -64,6 +64,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                 // and move on to the next
                 if (!storedData.hasOwnProperty(datasets[i])){
                     storedData[datasets[i]] = action.payload.data[datasets[i]];
+                    if (datasets[i].includes('covid_deaths_usafacts')) console.log(datasets[i], action.payload.data[datasets[i]])
                     continue
                 }
 
@@ -73,6 +74,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                 let currentStaticData = action.payload.data[datasets[i]];
                 const datasetKeys = Object.keys(storedData[datasets[i]].data)
                 const gbqIndices = storedData[datasets[i]].dates
+                console.log(gbqIndices)
 
                 // Loop through row (features) and date, using big query values as insertions
                 // and static as base, to reduce loop iterations 

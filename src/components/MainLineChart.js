@@ -58,8 +58,8 @@ const monthNames = ["Jan","Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Se
 
 const numberFormatter = val => val > 1000000 ? `${val/1000000}M` : val > 1000 ? `${val/1000}K` : val;
 const dateFormatter = val => { 
-    let tempDate = (new Date(val).getMonth()+1)%12;
-    return `${monthNames[tempDate]}`
+    const tempDate = new Date(val)
+    return `${monthNames[(tempDate.getMonth()+1)%12]} ${(tempDate.getFullYear()+'').slice(-2,)}`
 };
 
 const CustomTick = props => <text {...props}>{props.labelFormatter(props.payload.value)}</text>
@@ -144,13 +144,14 @@ const MainLineChart = () => {
     const shouldAlwaysLoadTimeseries = useSelector((state)=>state.shouldAlwaysLoadTimeseries);
 
     const [logChart, setLogChart] = useState(false);
+    const [popNormalized, setPopNormalized] = useState(false);
     const [showSummarized, setShowSummarized] = useState(true);
     const [activeLine, setActiveLine] = useState(false);
 
     const dispatch = useDispatch();
 
-    const handleSwitch = () => setLogChart(prev => !prev)
-    const handlePopSwitch = () => dispatch(setChartParams({populationNormalized: !populationNormalized}))
+    const handleScaleSwitch = () => setLogChart(prev => !prev)
+    const handlePopSwitch = () => setPopNormalized(prev => !prev)
     const handleSummarizedSwitch = () => setShowSummarized(prev => !prev)
     const handleChange = (newValue) => {
         if (nType === "time-series" && dType === "time-series") {
@@ -190,7 +191,7 @@ const MainLineChart = () => {
     const handleLegendLeave = () => {
         setActiveLine(false)
     }
-
+    
     if (maximums && data) {
         return (
             <ChartContainer id="lineChart">
@@ -262,16 +263,16 @@ const MainLineChart = () => {
                         <Tooltip
                             content={CustomTooltip}
                         />
-                        {selectionKeys.length === 0 && <Line type="monotone" yAxisId="left" dataKey={`v`} name="Total Cases" stroke={colors.lightgray} dot={false} isAnimationActive={false} /> }
-                        {selectionKeys.length === 0 && <Line type="monotone" yAxisId="right" dataKey={"a"} name="7-Day Average New Cases" stroke={colors.yellow} dot={false} isAnimationActive={false} /> }
-                        {selectionKeys.length === 1 && <Line type="monotone" yAxisId="right" dataKey={`${selectionKeys[0]}a`} name="7-Day Average New Cases" stroke={colors.yellow} dot={false} isAnimationActive={false} /> }
-                        {selectionKeys.length === 1 && <Line type="monotone" yAxisId="left" dataKey={`${selectionKeys[0]}v`} name="Total Cases" stroke={colors.lightgray} dot={false} isAnimationActive={false} /> }
+                        {selectionKeys.length === 0 && <Line type="monotone" yAxisId="left" dataKey={`v${popNormalized ? '100k' : ''}`} name="Total Cases" stroke={colors.lightgray} dot={false} isAnimationActive={false} /> }
+                        {selectionKeys.length === 0 && <Line type="monotone" yAxisId="right" dataKey={`a${popNormalized ? '100k' : ''}`} name="7-Day Average New Cases" stroke={colors.yellow} dot={false} isAnimationActive={false} /> }
+                        {selectionKeys.length === 1 && <Line type="monotone" yAxisId="right" dataKey={`${selectionKeys[0]}a${popNormalized ? '100k' : ''}`} name="7-Day Average New Cases" stroke={colors.yellow} dot={false} isAnimationActive={false} /> }
+                        {selectionKeys.length === 1 && <Line type="monotone" yAxisId="left" dataKey={`${selectionKeys[0]}v${popNormalized ? '100k' : ''}`} name="Total Cases" stroke={colors.lightgray} dot={false} isAnimationActive={false} /> }
                         
                         {(selectionKeys.length > 1 && showSummarized) &&
                                 <Line 
                                     type='monotone'
                                     yAxisId='right'
-                                    dataKey='v'
+                                    dataKey={`v${popNormalized && '100k'}`}
                                     name='Total For Selection' 
                                     stroke={colors.lightgray}
                                     strokeWidth={3} 
@@ -284,7 +285,7 @@ const MainLineChart = () => {
                                 return <Line 
                                     type='monotone'
                                     yAxisId='left' 
-                                    dataKey={key+"a"} 
+                                    dataKey={`${key}a${popNormalized ? '100k' : ''}`} 
                                     name={selectionNames[index] + ' 7-Day Ave'} 
                                     stroke={selectionKeys.length > colors.qualtitiveScale.length ? 'white' : colors.qualtitiveScale[index]} 
                                     dot={false} 
@@ -314,7 +315,7 @@ const MainLineChart = () => {
                     <StyledSwitch>
                         <Switch
                             checked={logChart}
-                            onChange={handleSwitch}
+                            onChange={handleScaleSwitch}
                             name='log chart switch'
                             inputProps={{ 'aria-label': 'secondary checkbox' }}
                         />
@@ -322,12 +323,12 @@ const MainLineChart = () => {
                     </StyledSwitch>
                     <StyledSwitch>
                         <Switch
-                            checked={populationNormalized}
+                            checked={popNormalized}
                             onChange={handlePopSwitch}
                             name='population normalized chart switch'
                             inputProps={{ 'aria-label': 'secondary checkbox' }}
                         />
-                        <p>{populationNormalized ? 'Per 100k' : 'Counts'}</p>
+                        <p>{popNormalized ? 'Per 100k' : 'Counts'}</p>
                     </StyledSwitch>
                     {selectionKeys.length > 1 && <StyledSwitch>
                         <Switch

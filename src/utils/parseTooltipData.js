@@ -1,9 +1,10 @@
 import { tooltipTables } from '../config';
+import { closestIndex } from '../utils';
 
-export const parseTooltipData = (geoid, state) => {
+export const parseTooltipData = (geoid, {currentData, storedData, storedGeojson, dataPresets, defaultTables, dataParams}) => {
     let tooltipData = {}
-    const properties = state.storedGeojson[state.currentData].properties[geoid];
-    const geography = state.dataPresets[state.currentData].geography;
+    const properties = storedGeojson[currentData].properties[geoid];
+    const geography = dataPresets[currentData].geography;
 
     tooltipData = {
         population: properties.population,
@@ -11,14 +12,15 @@ export const parseTooltipData = (geoid, state) => {
     }
     
     const currentTables = {
-        ...state.defaultTables[geography],
-        ...state.dataPresets[state.currentData].tables
+        ...defaultTables[geography],
+        ...dataPresets[currentData].tables
     }
 
     for (const table in currentTables){
-        if (state.storedData.hasOwnProperty(currentTables[table].file) && tooltipTables.includes(table) && state.storedData[currentTables[table].file].data.hasOwnProperty(geoid)){
-            tooltipData[table] = state.storedData[currentTables[table].file].data[geoid][state.dataParams.nIndex]
-            if (table === 'cases' || table === 'deaths') tooltipData[`daily_${table}`] = state.storedData[currentTables[table].file].data[geoid][state.dataParams.nIndex]-state.storedData[currentTables[table].file].data[geoid][state.dataParams.nIndex-1]
+        if (storedData.hasOwnProperty(currentTables[table].file) && tooltipTables.includes(table) && storedData[currentTables[table].file].data.hasOwnProperty(geoid)){
+            const index = closestIndex(storedData[currentTables[table].file].dates, dataParams.nIndex)
+            tooltipData[table] = storedData[currentTables[table].file].data[geoid][index]
+            if (table === 'cases' || table === 'deaths') tooltipData[`daily_${table}`] = storedData[currentTables[table].file].data[geoid][index]-storedData[currentTables[table].file].data[geoid][index-1]
         }
     }
     return tooltipData

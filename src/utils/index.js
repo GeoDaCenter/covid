@@ -1,5 +1,6 @@
 
 import addSelectedChartData from './addSelectedChartData';
+import { closestIndex } from './closestIndex.js';
 import colIndex from './colIndex.js';
 import colLookup from './colLookup.js';
 import dataFn from './dataFunction.js';
@@ -41,6 +42,7 @@ import { shallowEqual } from './shallowEqual';
 
 export {
     addSelectedChartData,
+    closestIndex,
     colIndex,
     colLookup,
     dataFn,
