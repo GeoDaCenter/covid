@@ -1,6 +1,5 @@
 const getURLParams = (params) => {
     const { dataParams, mapParams, coords, currentData, dateIndex } = params;
-    console.log(dataParams)
     let mapCoords = `?lat=${Math.round(coords.latitude*1000)/1000}&lon=${Math.round(coords.longitude*1000)/1000}&z=${Math.round(coords.zoom*10)/10}`;
     let source = `&src=${currentData.split('.geojson')[0]}`;
     let variable = `&var=${dataParams.variableName.replace(/ /g,"_")}`;

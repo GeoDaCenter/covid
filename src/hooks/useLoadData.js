@@ -43,6 +43,7 @@ export const indexGeoProps = (data, key) => {
 
 export default function useLoadData(){
   const dataParams = useSelector(state => state.dataParams);
+  const dates = useSelector(state => state.dates);
   const mapParams = useSelector(state => state.mapParams);
   const currentData = useSelector(state => state.currentData);
   const storedData = useSelector(state => state.storedData);
@@ -56,6 +57,7 @@ export default function useLoadData(){
   const snapshotDaysToLoad = useSelector((state)=>state.snapshotDaysToLoad);
   const geoda = useContext(GeoDaContext);
   const currentTable = useSelector((state) => state.currentTable);
+  const hasUrlParams = useSelector((state) => state.hasUrlParams);
   const { getRecentSnapshot, getTimeSeries } = useBigQuery()
 
   const dispatch = useDispatch();
@@ -79,8 +81,10 @@ export default function useLoadData(){
   }
 
   const getTimeSeriesData = async (geoid=[]) => {
-    const defaultChartTable = defaultTables[chartParams.table]
-    const currCaseData = dataPresets[currentData].hasOwnProperty('tables') ? dataPresets[currentData].tables[chartParams.table]||defaultChartTable : defaultChartTable;
+    const defaultChartTable = defaultTables[dataPresets[currentData].geography]['cases']
+    const currCaseData = dataPresets[currentData].hasOwnProperty('tables') 
+      ? dataPresets[currentData].tables[chartParams.table]||defaultChartTable 
+      : defaultChartTable;
     if (!currCaseData || !currCaseData.hasOwnProperty('bigQuery')) return;
     const data = await getTimeSeries(currCaseData.bigQuery, geoid)
     dispatch({
@@ -98,10 +102,11 @@ export default function useLoadData(){
     
     
     if ((storedData.hasOwnProperty(numeratorParams?.file)||dataParams.numerator === 'properties') && (storedData.hasOwnProperty(denominatorParams?.file)||dataParams.denominator !== 'properties')) return [numeratorParams.file, denominatorParams && denominatorParams.file]
+
     const firstLoadPromises = [
       geoda.loadGeoJSON(`${process.env.PUBLIC_URL}/geojson/${datasetParams.geojson}`, datasetParams.id),
-      numeratorParams ? numeratorParams.bigQuery !== undefined && (!shouldLoadTimeseries && !shouldAlwaysLoadTimeseries) ? getRecentSnapshot([numeratorParams.bigQuery], snapshotDaysToLoad) : handleLoadData(numeratorParams) : false,
-      denominatorParams ? denominatorParams.bigQuery !== undefined && (!shouldLoadTimeseries && !shouldAlwaysLoadTimeseries) ? getRecentSnapshot([denominatorParams.bigQuery], snapshotDaysToLoad) : handleLoadData(denominatorParams) : false
+      numeratorParams ? numeratorParams.bigQuery !== undefined && (!shouldLoadTimeseries && !shouldAlwaysLoadTimeseries) ? getRecentSnapshot([numeratorParams.bigQuery], snapshotDaysToLoad, hasUrlParams ? dataParams.nIndex : false) : handleLoadData(numeratorParams) : false,
+      denominatorParams ? denominatorParams.bigQuery !== undefined && (!shouldLoadTimeseries && !shouldAlwaysLoadTimeseries) ? getRecentSnapshot([denominatorParams.bigQuery], snapshotDaysToLoad, hasUrlParams ? dataParams.nIndex : false) : handleLoadData(denominatorParams) : false
     ];
 
     const [
@@ -131,9 +136,6 @@ export default function useLoadData(){
             ? dataParams.nIndex 
             : dateIndices.slice(-1)[0] 
         : null;
-
-    console.log(numeratorData.data)
-    console.log(binIndex)
 
     let binData = getDataForBins(
       dataParams.numerator === 'properties' ? geojsonData.data.features : numeratorData.data, 

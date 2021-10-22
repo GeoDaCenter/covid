@@ -32,7 +32,8 @@ var reducer = (state = INITIAL_STATE, action) => {
                 currentTable: action.payload.data.currentTable,
                 dates: action.payload.data.dates,
                 storedLisaData: action.payload.data.storedLisaData||{},
-                storedCartogramData: action.payload.data.storedCartogramData||{}
+                storedCartogramData: action.payload.data.storedCartogramData||{},
+                hasUrlParams: false
             }
         }
         case 'ADD_TABLES': {

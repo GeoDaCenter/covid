@@ -23,7 +23,6 @@ export default function useBigQuery(){
         const response = await fetch(queryUrl).then(r => r.text()).then(r => JSON.parse(r.replace(/-9999/g, null).replace(/-999/g, null)))
         const dummyArray = new Array(dates.length).fill(null)
         if (response.data.length === 1){
-            console.log(response.data[0])
             return parseData(response.data[0],dates, dummyArray)   
         } else {
             return response.data.map(data => parseData(data, dates, dummyArray))

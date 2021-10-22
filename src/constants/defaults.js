@@ -147,5 +147,6 @@ export const INITIAL_STATE = {
   savedLocation: '',
   shouldSaveLocation: false,
   shouldSaveOverlay:false,
-  shouldSaveResource:false
+  shouldSaveResource:false,
+  hasUrlParams: Object.keys(paramsDict).length > 0
 };
