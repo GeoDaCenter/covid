@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import {
-  LineChart, Line, XAxis, YAxis, ReferenceArea, ReferenceLine, 
+  LineChart, Line, XAxis, YAxis, ReferenceArea, 
   Tooltip, Label, ResponsiveContainer, Legend
 } from 'recharts';
 
@@ -10,7 +10,7 @@ import Switch from '@material-ui/core/Switch';
 
 import styled from 'styled-components';
 import { colors } from '../config';
-import { setVariableParams, setChartParams } from '../actions';
+import { setVariableParams } from '../actions';
 
 const ChartContainer = styled.span`
     span {

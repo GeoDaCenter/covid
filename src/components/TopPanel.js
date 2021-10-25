@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import styled from 'styled-components';
 
-import { DateSlider, Dock, Ticks, SliderPlaceholder } from '../components';
+import { DateSlider, Dock, Ticks } from '../components';
 import { colors } from '../config';
 import * as SVG from '../config/svg';
 import { OutlineButton, StyledDropDown } from '../styled_components';

@@ -342,48 +342,42 @@ export const defaultTables = {
             'bigQuery':'public.vaccination_one_or_more_doses_cdc',
             'dates':'isoDateList',
             'type':'time-series',
-            'join':'fips',
-            'bigQuery':'public.vaccination_one_or_more_doses_cdc'
+            'join':'fips'
         },
         'vaccines_fully_vaccinated':{
             'file':'vaccination_fully_vaccinated_cdc.pbf',
             'bigQuery':'public.vaccination_fully_vaccinated_cdc',
             'dates':'isoDateList',
             'type':'time-series',
-            'join':'fips',
-            'bigQuery':'public.vaccination_fully_vaccinated_cdc'
+            'join':'fips'
         },
         'testing':{
             'file':'covid_testing_cdc.e-2.pbf',
             'bigQuery':'public.covid_testing_cdc',
             'dates':'isoDateList',
             'type':'time-series',
-            'join':'county',
-            'bigQuery':'public.covid_testing_cdc'
+            'join':'county'
         },
         'testing_wk_pos':{
             'file':'covid_wk_pos_cdc.e-4.pbf',
             'bigQuery':'public.covid_wk_pos_cdc',
             'dates':'isoDateList',
             'type':'time-series',
-            'join':'county',
-            'bigQuery':'public.covid_wk_pos_cdc'
+            'join':'county'
         },
         'testing_tcap':{
             'file':'covid_tcap_cdc.e-2.pbf',
             'bigQuery':'public.covid_tcap_cdc',
             'dates':'isoDateList',
             'type':'time-series',
-            'join':'county',
-            'bigQuery':'public.covid_tcap_cdc'
+            'join':'county'
         },
         'testing_ccpt':{
             'file':'covid_ccpt_cdc.e-4.pbf',
             'bigQuery':'public.covid_ccpt_cdc',
             'dates':'isoDateList',
             'type':'time-series',
-            'join':'county',
-            'bigQuery':'public.covid_ccpt_cdc'
+            'join':'county'
         }
     },
     'County (Hybrid)':{
@@ -391,8 +385,7 @@ export const defaultTables = {
             'file':'vaccination_one_or_more_doses_cdc_h.pbf',
             'dates':'isoDateList',
             'type':'time-series',
-            'join':'fips',
-            'bigQuery':'public.vaccination_one_or_more_doses_cdc_h'
+            'join':'fips'
         },
         'vaccines_fully_vaccinated':{
             'file':'vaccination_fully_vaccinated_cdc_h.pbf',

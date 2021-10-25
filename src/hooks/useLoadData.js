@@ -8,7 +8,7 @@ import useBigQuery from './useBigQuery';
 //   then performs a join and loads the data into the store
 
 import { 
-  initialDataLoad, addWeights, addTables, addGeojson, updateMap, reconcileTables, updateChart, addTableAndChart, setIsLoading } from '../actions';
+  initialDataLoad, addWeights, addTables, addGeojson, updateMap, reconcileTables, setIsLoading } from '../actions';
 
 import { colorScales, fixedScales } from '../config';
 import { GeoDaContext } from '../contexts/GeoDaContext';
@@ -43,7 +43,7 @@ export const indexGeoProps = (data, key) => {
 
 export default function useLoadData(){
   const dataParams = useSelector(state => state.dataParams);
-  const dates = useSelector(state => state.dates);
+  // const dates = useSelector(state => state.dates);
   const mapParams = useSelector(state => state.mapParams);
   const currentData = useSelector(state => state.currentData);
   const storedData = useSelector(state => state.storedData);
@@ -56,7 +56,7 @@ export default function useLoadData(){
   const shouldAlwaysLoadTimeseries = useSelector((state)=>state.shouldAlwaysLoadTimeseries);
   const snapshotDaysToLoad = useSelector((state)=>state.snapshotDaysToLoad);
   const geoda = useContext(GeoDaContext);
-  const currentTable = useSelector((state) => state.currentTable);
+  // const currentTable = useSelector((state) => state.currentTable);
   const hasUrlParams = useSelector((state) => state.hasUrlParams);
   const { getRecentSnapshot, getTimeSeries } = useBigQuery()
 
