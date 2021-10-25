@@ -1,4 +1,4 @@
-name: Vax, Hybrid, Pbf, and Summarize 0.0.2e
+name: Daily Data Pull 0.0.1
 
 on:
   schedule:
@@ -25,15 +25,30 @@ jobs:
           
       - name: execute cdc vaccination data
         run: python data-scripts/cdc/getCdcVaccinationData.py
+
+      - name: execute cdc county data
+        run: python data-scripts/cdc/getCdcCountyData.py
         
+      - name: execute usafacts
+        run: python data-scripts/usafacts/usafacts.py  
+
+      - name: execute 1p3a
+        run: python data-scripts/_1p3a/_1p3a.py  
+
       - name: execute hybrid update
-        run: python data-scripts/cdc/hybrid_update.py  
+        run: python data-scripts/cdc/hybrid_update.py 
 
       - name: execute pbf
         run: python data-scripts/pbf/CsvToPbf.py  
 
       - name: execute summarize
-        run: python data-scripts/summary/summarize.py  
+        run: python data-scripts/summary/summarize.py 
+
+      - name: execute update report
+        run: python weekly-report/update-csvs.py 
+
+      # - name: execute update bigquery
+        # run: python weekly-report/bigquery/update_bigquery.py
 
       - name: fetch concurrent commits
         run: |
