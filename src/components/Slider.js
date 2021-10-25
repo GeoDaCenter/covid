@@ -430,7 +430,7 @@ function DateSlider(){
                                 min={1}
                                 max={dates.length}
                                 step={1}
-                                characteristic={nType==="characteristic"}
+                                characteristic={nType==="characteristic" && "characteristic"}
                         />}
                         {/* Slider for bin date */}
                         {/* {!customRange && 

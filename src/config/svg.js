@@ -77,12 +77,12 @@ export const locate = <svg viewBox="0 0 100 100">
 </svg>
 
 export const minus = <svg viewBox="0 0 100 100">
-        <rect x="20" y="43.1" class="st0" width="60" height="13.6"/>
+        <rect x="20" y="43.1" className="st0" width="60" height="13.6"/>
     </svg>
 
 export const plus = <svg viewBox="0 0 100 100" >
             <g>
-                <polygon class="st0" points="43.1,17.2 56.9,17.2 56.9,42.6 80,42.6 80,57.4 56.9,57.4 56.9,82.8 43.1,82.8 43.1,57.4 20,57.4 
+                <polygon className="st0" points="43.1,17.2 56.9,17.2 56.9,42.6 80,42.6 80,57.4 56.9,57.4 56.9,82.8 43.1,82.8 43.1,57.4 20,57.4 
                     20,42.6 43.1,42.6 	"/>
             </g>
     </svg>

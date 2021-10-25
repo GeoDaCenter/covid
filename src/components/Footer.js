@@ -120,16 +120,16 @@ const Footer = ( props ) => {
                         <h1 className="signup">Sign up for the Newsletter</h1>                    
                         <h2>We'll keep you up to date with new updates, features, and insights on the COVID-19 pandemic. Follow the US COVID Atlas team on Medium too.</h2>
             
-                        <form action="https://github.us10.list-manage.com/subscribe/post?u=5ed730d26727290870ec65153&amp;id=74f209d5ed" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate form-inline vertical-center" target="_blank" novalidate="">
-                            <label class="sr-only" for="inlineFormInputGroupUsername2">Email</label>                            
+                        <form action="https://github.us10.list-manage.com/subscribe/post?u=5ed730d26727290870ec65153&amp;id=74f209d5ed" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate form-inline vertical-center" target="_blank" novalidate="">
+                            <label className="sr-only" for="inlineFormInputGroupUsername2">Email</label>                            
                             <Grid container spacing={1}>
                                                                 
-                                {/* <input type="email" class="form-control EnterEmailBox" name="b_5ed730d26727290870ec65153_74f209d5ed" placeholder="Enter email address" /> */}
+                                {/* <input type="email" className="form-control EnterEmailBox" name="b_5ed730d26727290870ec65153_74f209d5ed" placeholder="Enter email address" /> */}
                                 <Grid item xs={8} sm={10}>
-                                    <TextField id="outlined-basic" variant="outlined" type="email" class="form-control EnterEmailBox" name="b_5ed730d26727290870ec65153_74f209d5ed" placeholder="Enter email address"/>
+                                    <TextField id="outlined-basic" variant="outlined" type="email" className="form-control EnterEmailBox" name="b_5ed730d26727290870ec65153_74f209d5ed" placeholder="Enter email address"/>
                                 </Grid>
                                 <Grid item xs={4} sm={2}>
-                                    <input type="submit" value="SUBSCRIBE" name="subscribe" id="mc-embedded-subscribe" class="btn btn-lg SubmitEmailBox" />
+                                    <input type="submit" value="SUBSCRIBE" name="subscribe" id="mc-embedded-subscribe" className="btn btn-lg SubmitEmailBox" />
                                 </Grid>
                             </Grid>
                         </form>

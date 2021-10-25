@@ -384,10 +384,10 @@ export default function MapSection(){
         choropleth: new GeoJsonLayer({
             id: 'choropleth',
             data: currentMapGeography,
-            getFillColor: d => !colorFilter || currentMapData[d.properties.GEOID].color.length === 4 
-                ? currentMapData[d.properties.GEOID].color
-                : [...currentMapData[d.properties.GEOID].color, 25+(!colorFilter || colorFilter===currentMapData[d.properties.GEOID].color)*225],
-            getElevation: d => currentMapData[d.properties.GEOID].height,
+            getFillColor: d => !colorFilter || currentMapData[d.properties.GEOID]?.color.length === 4 
+                ? currentMapData[d.properties.GEOID]?.color
+                : [...currentMapData[d.properties.GEOID]?.color, 25+(!colorFilter || colorFilter===currentMapData[d.properties.GEOID].color)*225],
+            getElevation: d => currentMapData[d.properties.GEOID]?.height,
             pickable: true,
             stroked: false,
             filled: true,
@@ -428,7 +428,7 @@ export default function MapSection(){
             id: 'hoverHighlightlayer',    
             data: currentMapGeography,
             getLineColor: d => hoverGeog === d.properties.GEOID ? mapParams.vizType === 'dotDensity' ? [200,200,200] : [50, 50, 50] : [50, 50, 50, 0], 
-            getElevation: d => currentMapData[d.properties.GEOID].height,
+            getElevation: d => currentMapData[d.properties.GEOID]?.height,
             pickable: false,
             stroked: true,
             filled:false,

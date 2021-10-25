@@ -12,6 +12,7 @@ import {
 
 import { colorScales, fixedScales } from '../config';
 import { GeoDaContext } from '../contexts/GeoDaContext';
+import { files } from 'jszip';
 
 const dateLists = getDateLists();
 const handleLoadData = (fileInfo) => fileInfo.file.slice(-4,) === '.pbf' ? getParsePbf(fileInfo, dateLists[fileInfo.dates]) : getParseCSV(fileInfo, dateLists[fileInfo.dates])
@@ -208,6 +209,21 @@ export default function useLoadData(){
     }
   },[currentData])
 
+  const fetchTable = async ({
+    file='',
+    bigQuery=undefined,
+    fileSpec={},
+    snapshotDaysToLoad=30,
+    currentIndex=undefined
+  }) => {
+    if (bigQuery === undefined){
+      dispatch(reconcileTables({[file]: await handleLoadData(fileSpec)}))
+      return;
+    } else {
+      dispatch(reconcileTables({[file]: await getRecentSnapshot([bigQuery], snapshotDaysToLoad, currentIndex)}))
+      return;
+    }
+  }
 
   const secondLoad = useMemo(() => async (datasetParams, defaultTables, loadedTables, mapId, currentIndex) => {
     if (geoda === undefined) return;
@@ -227,50 +243,58 @@ export default function useLoadData(){
     for (let i=0;i<filesToLoad.length;i++){
       if (
         Object.keys(storedData).includes(filesToLoad[i].file) 
-        && 
+          && 
         (
-          (!shouldAlwaysLoadTimeseries && !shouldLoadTimeseries)
-          ||
-          storedData[filesToLoad[i].file].complete 
+          (!shouldAlwaysLoadTimeseries && !shouldLoadTimeseries) 
+          || 
+          storedData[filesToLoad[i].file].complete
         )
       ) {
         continue
       }
-
+      
       if (shouldAlwaysLoadTimeseries || shouldLoadTimeseries || filesToLoad[i].bigQuery === undefined) {
-        tablePromises.push(handleLoadData(filesToLoad[i]))
-        tableNames.files.push(filesToLoad[i].file)
+        fetchTable({
+          file: filesToLoad[i].file,
+          fileSpec: filesToLoad[i]
+        })        
       } else if (filesToLoad[i].bigQuery !== undefined) {
-        queriesToExecute.push(filesToLoad[i].bigQuery)
-        tableNames.queries.push(filesToLoad[i].file)
+        fetchTable({
+          file: filesToLoad[i].file,
+          bigQuery:filesToLoad[i].bigQuery,
+          fileSpec: filesToLoad[i],
+          snapshotDaysToLoad,
+          currentIndex
+        }) 
       }
     }
 
-    const dataToFetch = [
-      ...tablePromises,
-      getRecentSnapshot(queriesToExecute, snapshotDaysToLoad, currentIndex)
-    ]
+    // const dataToFetch = [
+    //   ...tablePromises,
+    //   getRecentSnapshot(queriesToExecute, snapshotDaysToLoad, currentIndex)
+    // ]
 
-    tableNames = [
-      ...tableNames.files,
-      ...tableNames.queries
-    ]
+    // tableNames = [
+    //   ...tableNames.files,
+    //   ...tableNames.queries
+    // ]
 
-    let fetchedData = await Promise.all(dataToFetch)
-    fetchedData = [
-      ...fetchedData.slice(0,-1),
-      ...fetchedData.slice(-1,)[0]
-    ]
+    // let fetchedData = await Promise.all(dataToFetch)
+    // fetchedData = [
+    //   ...fetchedData.slice(0,-1), // all file static data
+    //   ...fetchedData.slice(-1,)[0] // bigquery response
+    // ]
     
-    let dataObj = {}
-    for (let i=0; i<filesToLoad.length; i++){
-      if (loadedTables.includes(tableNames[i])) {
-        continue
-      } else {
-        dataObj[tableNames[i]] = fetchedData[i]
-      }
-    }
-    dispatch(reconcileTables(dataObj))
+    // let dataObj = {}
+    // for (let i=0; i<filesToLoad.length; i++){
+    //   if (loadedTables.includes(tableNames[i])) {
+    //     continue
+    //   } else {
+    //     dataObj[tableNames[i]] = fetchedData[i]
+    //   }
+    // }
+
+    // dispatch(reconcileTables(dataObj))
     setIsInProcess(false)
     return [datasetParams.geojson, mapId]
   }, [currentData])
