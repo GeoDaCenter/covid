@@ -288,15 +288,13 @@ export const defaultTables = {
             'file':'covid_confirmed_usafacts.pbf',
             'bigQuery':'public.covid_confirmed_usafacts',
             'dates':'isoDateList',
-            'type':'time-series-cumulative',
-            'bigQuery':'public.covid_confirmed_usafacts'
+            'type':'time-series-cumulative'
         },
         'deaths': {
             'file':'covid_deaths_usafacts.pbf',
             'bigQuery':'public.covid_deaths_usafacts',
             'dates':'isoDateList',
-            'type':'time-series-cumulative' ,
-            'bigQuery':'public.covid_deaths_usafacts'
+            'type':'time-series-cumulative' 
         },
         'chr_health_context':{
             'file':'chr_health_context',

@@ -1,4 +1,5 @@
 const {BigQuery} = require('@google-cloud/bigquery');
+const gzipResponse = require('./gzip');
 const columns = require('./meta/columns.json');
 const population = require('./meta/population.json')
 const totalPopulation = 326698928;
@@ -193,10 +194,7 @@ exports.handler = async (event) => {
                 dataset: queryStrings[idx].dataset,
                 dateRange: queryStrings[idx].dateRange,
             }})
-            return { 
-                statusCode: 200, 
-                body: JSON.stringify({ data: parsed })
-            };
+            return await gzipResponse(JSON.stringify({ data: parsed }));
 
         }
 
@@ -224,17 +222,13 @@ exports.handler = async (event) => {
 
                 const [resultSum, resultIndividual] = await Promise.all([query(queryString, bigquery), query(indQuery.queryString, bigquery)])
                 const data = zip(resultSum, dateRange, popData, totalPopulation,resultIndividual)
-                return { 
-                    statusCode: 200, 
-                    body: JSON.stringify({ data }) 
-                };
+                
+                return await gzipResponse(JSON.stringify({ data }));
+
             } else {
                 const result = await query(queryString, bigquery, totalPopulation)
                 const data = zip(result, dateRange)
-                return { 
-                    statusCode: 200, 
-                    body: JSON.stringify({ data })
-                };
+                return await gzipResponse(JSON.stringify({ data }));
             }
         }
     } catch (error) {
