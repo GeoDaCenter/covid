@@ -1,4 +1,4 @@
-name: Daily Data Pull 0.0.2
+name: Daily Data Pull 0.0.2b
 
 on:
   schedule:
@@ -50,10 +50,11 @@ jobs:
       # - name: execute update bigquery
         # run: python weekly-report/bigquery/update_bigquery.py
 
-      # - name: fetch concurrent commits
-      #   run: |
-      #     git fetch
-          
+      - name: fetch concurrent commits
+        run: |
+          git fetch
+          git pull
+
       - name: commit files
         run: |
           git config --local user.email "action@github.com"

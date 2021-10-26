@@ -128,9 +128,8 @@ def create_county_files(raw_data):
     counties = pd.DataFrame(counties[['STATEFP','COUNTYFP','COUNTYNS','AFFGEOID','GEOID','NAME','state_abbr']])
     counties['name_merge'] = counties.apply(lambda x: x['NAME'].lower() + x['state_abbr'].lower(), axis=1)
 
-    raw_data['name_merge'] = raw_data.apply(lambda x: x['county_name'].lower() + x['state_name'].lower(), axis=1)
+    raw_data['name_merge'] = raw_data['county_name'].str.lower() + raw_data['state_name'].str.lower()
     raw_data['name_merge'] = raw_data['name_merge'].apply(lambda x: county_fix_code.get(x, x))
-
     county_agg = raw_data[['confirmed_date','name_merge','confirmed_count','death_count']].groupby(['confirmed_date','name_merge']).sum().reset_index()
 
     county_deaths = county_agg.pivot(index='name_merge', columns='confirmed_date',values='death_count').reset_index()
