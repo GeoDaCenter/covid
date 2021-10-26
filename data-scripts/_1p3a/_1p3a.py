@@ -170,7 +170,7 @@ if __name__ == '__main__':
     fetch_covid_data()
 
     raw_data = pd.read_csv(os.path.join(repo_root, 'data-scripts/_1p3a/us-cases.csv'))
-    print(raw_data.head())
+    
     create_state_files(raw_data)
     create_county_files(raw_data)
 
