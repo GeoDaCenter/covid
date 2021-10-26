@@ -96,7 +96,7 @@ def fetch_covid_data():
     os.system('curl -o {}/us-cases.csv https://files.1point3acres.com/coronavirus/data/us-cases.csv?token=PFl0dpfo'.format(dir_path))
 
 def create_state_files(raw_data):
-    states = gpd.read_file(os.path.join(repo_root, 'data/states.geojson'))
+    states = gpd.read_file(os.path.join(repo_root, 'public/geojson/state_1p3a.geojson'))
     states = pd.DataFrame(states[['GEOID','STUSPS','NAME']])
     state_agg = raw_data[['confirmed_date','state_name','confirmed_count','death_count']].groupby(['confirmed_date','state_name']).sum().reset_index()
     state_deaths = state_agg.pivot(index='state_name', columns='confirmed_date',values='death_count').reset_index()
@@ -113,18 +113,19 @@ def create_state_files(raw_data):
     states_deaths_final.to_csv(os.path.join(repo_root, 'public/csv/covid_deaths_1p3a_state.csv'), index=False)
     states_confir_final.to_csv(os.path.join(repo_root, 'public/csv/covid_confirmed_1p3a_state.csv'), index=False)
 
-    states = gpd.read_file(os.path.join(repo_root, 'data/states.geojson'))
-    states_deaths_sim = states_deaths_final.copy().drop(columns=['NAME'])
-    states_deaths_sim.columns = ['d' + x if x != 'GEOID' else x for x in states_deaths_sim.columns]
-    states_confir_json = states_confir_final.copy()
-    state_json = pd.merge(states_deaths_sim, states_confir_final, how='inner', on='GEOID')
-    state_json = state_json.merge(states[['GEOID','geometry']], how='inner', on='GEOID')
-    state_json = gpd.GeoDataFrame(state_json, geometry=state_json.geometry)
-    state_json.to_file(os.path.join(repo_root, 'data/states_update.geojson'), driver='GeoJSON')
+    # Depricated API stuff
+    # states = gpd.read_file(os.path.join(repo_root, 'data/states.geojson'))
+    # states_deaths_sim = states_deaths_final.copy().drop(columns=['NAME'])
+    # states_deaths_sim.columns = ['d' + x if x != 'GEOID' else x for x in states_deaths_sim.columns]
+    # states_confir_json = states_confir_final.copy()
+    # state_json = pd.merge(states_deaths_sim, states_confir_final, how='inner', on='GEOID')
+    # state_json = state_json.merge(states[['GEOID','geometry']], how='inner', on='GEOID')
+    # state_json = gpd.GeoDataFrame(state_json, geometry=state_json.geometry)
+    # state_json.to_file(os.path.join(repo_root, 'data/states_update.geojson'), driver='GeoJSON')
 
 def create_county_files(raw_data):
-    counties = gpd.read_file(os.path.join(repo_root, 'data/county_2018.geojson'))
-    counties = pd.DataFrame(counties[['STATEFP','COUNTYFP','COUNTYNS','AFFGEOID','GEOID','NAME','LSAD','state_abbr']])
+    counties = gpd.read_file(os.path.join(repo_root, 'public/geojson/county_1p3a.geojson'))
+    counties = pd.DataFrame(counties[['STATEFP','COUNTYFP','COUNTYNS','AFFGEOID','GEOID','NAME','state_abbr']])
     counties['name_merge'] = counties.apply(lambda x: x['NAME'].lower() + x['state_abbr'].lower(), axis=1)
 
     raw_data['name_merge'] = raw_data.apply(lambda x: x['county_name'].lower() + x['state_name'].lower(), axis=1)
@@ -146,29 +147,30 @@ def create_county_files(raw_data):
     county_deaths_final.to_csv(os.path.join(repo_root, 'public/csv/covid_deaths_1p3a.csv'), index=False)
     county_confir_final.to_csv(os.path.join(repo_root, 'public/csv/covid_confirmed_1p3a.csv'), index=False)
 
-    unmatched = pd.merge(counties, county_deaths, left_on='name_merge', right_on='name_merge',how='right')
-    unmatched_locs = list(unmatched[unmatched['STATEFP'].isna()].name_merge)
-    unmatched_locs = [ct for ct in unmatched_locs if ('unknown' not in ct and 'unassigned' not in ct and 'princess' not in ct and 'out-of-state' not in ct and 'out of state' not in ct)]
+    # unmatched = pd.merge(counties, county_deaths, left_on='name_merge', right_on='name_merge',how='right')
+    # unmatched_locs = list(unmatched[unmatched['STATEFP'].isna()].name_merge)
+    # unmatched_locs = [ct for ct in unmatched_locs if ('unknown' not in ct and 'unassigned' not in ct and 'princess' not in ct and 'out-of-state' not in ct and 'out of state' not in ct)]
 
-    with open(os.path.join(dir_path, 'unmatched.txt'), 'w') as file:
-        for item in unmatched_locs:
-            file.write('%s\n' % item)
+    # Depricated API stuff
+    # with open(os.path.join(dir_path, 'unmatched.txt'), 'w') as file:
+    #     for item in unmatched_locs:
+    #         file.write('%s\n' % item)
 
-    counties = gpd.read_file(os.path.join(repo_root, 'data/county_2018.geojson'))
-    county_deaths_sim = county_deaths_final.copy().drop(columns=['STATEFP', 'COUNTYFP', 'AFFGEOID', 'GEOID', 'NAME', 'LSAD'])
-    county_deaths_sim.columns = ['d' + x if x != 'COUNTYNS' else x for x in county_deaths_sim.columns]
-    county_confir_json = county_confir_final.copy()
-    county_json = pd.merge(county_deaths_sim, county_confir_final, how='inner', on='COUNTYNS')
-    county_json = county_json.merge(counties[['COUNTYNS','geometry']], how='inner', on='COUNTYNS')
-    county_json = gpd.GeoDataFrame(county_json, geometry=county_json.geometry)
-    county_json.to_file(os.path.join(repo_root, 'data/counties_update.geojson'), driver='GeoJSON')
+    # counties = gpd.read_file(os.path.join(repo_root, 'data/county_2018.geojson'))
+    # county_deaths_sim = county_deaths_final.copy().drop(columns=['STATEFP', 'COUNTYFP', 'AFFGEOID', 'GEOID', 'NAME', 'LSAD'])
+    # county_deaths_sim.columns = ['d' + x if x != 'COUNTYNS' else x for x in county_deaths_sim.columns]
+    # county_confir_json = county_confir_final.copy()
+    # county_json = pd.merge(county_deaths_sim, county_confir_final, how='inner', on='COUNTYNS')
+    # county_json = county_json.merge(counties[['COUNTYNS','geometry']], how='inner', on='COUNTYNS')
+    # county_json = gpd.GeoDataFrame(county_json, geometry=county_json.geometry)
+    # county_json.to_file(os.path.join(repo_root, 'data/counties_update.geojson'), driver='GeoJSON')
 
 if __name__ == '__main__':
 
     fetch_covid_data()
 
     raw_data = pd.read_csv(os.path.join(repo_root, 'data-scripts/_1p3a/us-cases.csv'))
-
+    print(raw_data.head())
     create_state_files(raw_data)
     create_county_files(raw_data)
 
