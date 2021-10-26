@@ -52,12 +52,12 @@ jobs:
 
       # - name: fetch concurrent commits
       #   run: |
-      #     git config --local user.email "action@github.com"
-      #     git config --local user.name "Atlas Bot"
       #     git fetch
           
       - name: commit files
         run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "Atlas Bot"
           git add -A
           git commit -m "Update Data" -a
           
