@@ -1,4 +1,4 @@
-name: Daily Data Pull 0.0.2c
+name: Daily Data Pull 0.0.2d
 
 on:
   schedule:
@@ -25,6 +25,8 @@ jobs:
        
       - name: fetch initial commits
         run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "Atlas Bot"
           git fetch
           git pull
 
@@ -62,8 +64,6 @@ jobs:
 
       - name: commit files
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "Atlas Bot"
           git add -A
           git commit -m "Update Data" -a
           
