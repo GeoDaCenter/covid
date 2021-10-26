@@ -1,4 +1,4 @@
-name: Daily Data Pull 0.0.2b
+name: Daily Data Pull 0.0.2c
 
 on:
   schedule:
@@ -22,29 +22,34 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r data-scripts/requirements.txt
-          
-      - name: execute cdc vaccination data
-        run: python data-scripts/cdc/getCdcVaccinationData.py
+       
+      - name: fetch initial commits
+        run: |
+          git fetch
+          git pull
 
-      - name: execute cdc county data
-        run: python data-scripts/cdc/getCdcCountyData.py
+      # - name: cdc vaccination data
+      #   run: python data-scripts/cdc/getCdcVaccinationData.py
+
+      # - name: cdc county data
+      #   run: python data-scripts/cdc/getCdcCountyData.py
         
-      - name: execute usafacts
-        run: python data-scripts/usafacts/usafacts.py  
+      # - name: usafacts
+      #   run: python data-scripts/usafacts/usafacts.py  
 
-      - name: execute 1p3a
-        run: python data-scripts/_1p3a/_1p3a.py  
+      # - name: 1p3a
+      #   run: python data-scripts/_1p3a/_1p3a.py  
 
-      - name: execute hybrid update
-        run: python data-scripts/cdc/hybrid_update.py 
+      # - name: hybrid update
+      #   run: python data-scripts/cdc/hybrid_update.py 
 
-      - name: execute pbf
+      - name: pbf
         run: python data-scripts/pbf/CsvToPbf.py  
 
-      - name: execute summarize
+      - name: summarize
         run: python data-scripts/summary/summarize.py 
 
-      - name: execute update report
+      - name: update report
         run: python weekly-report/update-csvs.py 
 
       # - name: execute update bigquery
