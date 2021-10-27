@@ -1,4 +1,4 @@
-name: Daily Data Pull 0.0.2e
+name: Daily Data Pull 0.0.3
 
 on:
   schedule:
@@ -22,14 +22,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r data-scripts/requirements.txt
-       
-      # - name: fetch initial commits
-      #   run: |
-      #     git config --local user.email "action@github.com"
-      #     git config --local user.name "Atlas Bot"
-      #     git fetch
-      #     git pull
-
+      
       - name: cdc vaccination data
         run: python data-scripts/cdc/getCdcVaccinationData.py
 
@@ -56,11 +49,6 @@ jobs:
 
       # - name: execute update bigquery
         # run: python weekly-report/bigquery/update_bigquery.py
-
-      # - name: fetch concurrent commits
-      #   run: |
-      #     git fetch
-      #     git pull
 
       - name: commit files
         run: |
