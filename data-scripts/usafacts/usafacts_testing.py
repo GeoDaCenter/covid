@@ -49,7 +49,7 @@ def usafacts_testing():
 def validate_and_process():
     fips_set = None
 
-    with open(os.path.join(repo_root, 'data/county_3220.geojson')) as in_file:
+    with open(os.path.join(repo_root, 'public/geojson/county_usfacts.geojson')) as in_file:
       data = json.load(in_file)
       features = data['features']
       fips_list = [str(int(x['properties']['GEOID'])) for x in features]
