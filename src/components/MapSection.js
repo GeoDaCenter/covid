@@ -23,6 +23,7 @@ import useLoadData from '../hooks/useLoadData';
 import useUpdateData from '../hooks/useUpdateData';
 // PBF schemas
 import * as Schemas from '../schemas';
+import { loading } from '../config/svg';
 
 const view = new MapView({repeat: true});
 
@@ -68,6 +69,42 @@ const GeocoderContainer = styled.div`
     }
 `
 
+const DataLoadingContainer = styled.div`
+    position:fixed;
+    left:50%;
+    bottom:6em;
+    z-index:1;
+    transform:translateX(-50%);
+    width:2rem;
+    height:2rem;
+    pointer-events:none;
+    opacity:0.9;
+    &:after {
+        content: 'Background data loading...';
+        position:absolute;
+        left:50%;
+        top:-2em;
+        color:white;
+        width:200px;
+        text-align:center;
+        transform:translate(-100px);
+        text-shadow:0 0 2px black;
+    }
+    @keyframes rotate {
+        from {
+            transform:rotate(0deg);
+        }
+        to {
+            transform:rotate(360deg);
+        }
+    }
+    svg {
+        animation: rotate 2s ease-in-out infinite;
+    }
+`
+
+const BackgroundLoader = () => <DataLoadingContainer>{loading}</DataLoadingContainer>
+// © Mapbox Improve this map | © Mapbox © OpenStreetMap Improve this map
 //create your forceUpdate hook
 function useForceUpdate(){
     const [, setValue] = useState(0); // integer state
@@ -97,7 +134,7 @@ export default function MapSection(){
     const storedCartogramData = useSelector(state => state.storedCartogramData);
     const storedLisaData = useSelector(state => state.storedLisaData);
     // eslint-disable-next-line no-empty-pattern
-    const [] = useLoadData();
+    const {isInProcess} = useLoadData();
     // eslint-disable-next-line no-empty-pattern
     const [] = useUpdateData();
     const viewport = useViewport();
@@ -746,6 +783,7 @@ export default function MapSection(){
                     onChange={handleGeocoder}
                 />
             </GeocoderContainer>
+            {isInProcess && <BackgroundLoader/>}
         </MapContainer>
     ) 
 }

@@ -131,6 +131,7 @@ function PreferencePanel({closePanel}){
     const shouldSaveLocation = useSelector((state) => state.shouldSaveLocation);
     const shouldSaveOverlay = useSelector((state) => state.shouldSaveOverlay);
     const shouldSaveResource = useSelector((state) => state.shouldSaveResource);
+    const shouldSaveVariable = useSelector((state) => state.shouldSaveVariable);
     const mapParams = useSelector((state) => state.mapParams);
 
     const dispatch = useDispatch();
@@ -173,16 +174,15 @@ function PreferencePanel({closePanel}){
                 label="Save map location"
             />
             <br/>
-            <FormControlLabel
+            {/* <FormControlLabel
                 control={
                     <Checkbox 
-                        checked={false} 
-                        onChange={(e) => console.log(e)} 
+                        checked={shouldSaveVariable} 
+                        onChange={() => dispatch({type:'SET_PREFERENCE', payload:{pref:'shouldSaveVariable',value:'toggle'}})} 
                         name="saveVariable" 
                     />}
                 label="Save variable settings"
-                disabled
-            />
+            /> */}
             <FormControlLabel
                 control={
                     <Checkbox 

@@ -270,3 +270,7 @@ button.mapboxgl-ctrl-attrib-button {
   font-weight: bold;
   display:block;
 }
+
+.mapboxgl-ctrl-bottom-left, .mapboxgl-ctrl-bottom-right {
+  display: none !important;
+}

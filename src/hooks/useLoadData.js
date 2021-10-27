@@ -218,10 +218,10 @@ export default function useLoadData(){
   }) => {
     if (bigQuery === undefined){
       dispatch(reconcileTables({[file]: await handleLoadData(fileSpec)}))
-      return;
+      return true;
     } else {
       dispatch(reconcileTables({[file]: await getRecentSnapshot([bigQuery], snapshotDaysToLoad, currentIndex)}))
-      return;
+      return true;
     }
   }
 
@@ -240,6 +240,8 @@ export default function useLoadData(){
       files: [],
       queries: []
     }
+    let promiseArray = [];
+    
     for (let i=0;i<filesToLoad.length;i++){
       if (
         Object.keys(storedData).includes(filesToLoad[i].file) 
@@ -253,21 +255,24 @@ export default function useLoadData(){
         continue
       }
       
+
       if (shouldAlwaysLoadTimeseries || shouldLoadTimeseries || filesToLoad[i].bigQuery === undefined) {
-        fetchTable({
+        promiseArray.push(fetchTable({
           file: filesToLoad[i].file,
           fileSpec: filesToLoad[i]
-        })        
+        })) 
       } else if (filesToLoad[i].bigQuery !== undefined) {
-        fetchTable({
+        promiseArray.push(fetchTable({
           file: filesToLoad[i].file,
           bigQuery:filesToLoad[i].bigQuery,
           fileSpec: filesToLoad[i],
           snapshotDaysToLoad,
           currentIndex
-        }) 
+        }))
       }
     }
+
+    await Promise.all(promiseArray).then(() => setIsInProcess(false))
 
     // const dataToFetch = [
     //   ...tablePromises,
@@ -295,7 +300,6 @@ export default function useLoadData(){
     // }
 
     // dispatch(reconcileTables(dataObj))
-    setIsInProcess(false)
     return [datasetParams.geojson, mapId]
   }, [currentData])
   
@@ -393,9 +397,10 @@ export default function useLoadData(){
   useEffect(() => {
     getTimeSeriesData(selectionKeys)
   }, [JSON.stringify(selectionKeys)])
-  return [
+  return {
     firstLoad,
     secondLoad,
-    lazyFetchData
-  ]
+    lazyFetchData,
+    isInProcess
+  }
 }
