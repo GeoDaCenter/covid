@@ -178,7 +178,7 @@ if __name__ == "__main__":
     t0 = time.time()
     project_id = 'covid-atlas'
     
-    print(len(os.environ.get('SK_ID')))
+    print(len(os.environ.get('SK')))
 
     client = initClient({
             "type":"service_account",
