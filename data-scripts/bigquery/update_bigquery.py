@@ -1,7 +1,9 @@
+# %%
 import os
 import pandas as pd
 import regex as re
 from google.cloud import bigquery
+from google.oauth2 import service_account
 import pandas_gbq
 import json
 import time
@@ -17,16 +19,14 @@ If any data file's name/path is updated, please make change here accordingly.
 Local: run `export GOOGLE_APPLICATION_CREDENTIALS="/path-to-credentials/credentials.json" ` 
        before running this script
 '''
-
-
-# Construct a BigQuery client object.
-client = bigquery.Client()
-
+# %%
 dir_path = os.path.dirname(os.path.realpath(__file__)) # /path-to-repo/covid/data-scripts/bigquery
 repo_root = os.path.abspath(os.path.join(dir_path, '..', '..')) # /path-to-repo/covid/
 
-print('dir_path: ', dir_path)
-print('repo_root: ', repo_root)
+def initClient(secret, project):
+    credentials = service_account.Credentials.from_service_account_info(secret)
+    # Construct a BigQuery client object.
+    return bigquery.Client(project,credentials)
 
 def isValidDate(date_text):
     try:
@@ -176,8 +176,20 @@ id_col_dict = {
 if __name__ == "__main__":
 
     t0 = time.time()
-
     project_id = 'covid-atlas'
+    
+    client = initClient({
+            "type":"service_account",
+            "project_id":"covid-atlas",
+            "private_key_id":os.environ.get('SK_ID'),
+            "private_key":os.environ.get('SK').replace('\\n', '\n'),
+            "client_email":os.environ.get('G_CLIENT_EMAIL'),
+            "client_id":os.environ.get('G_ID'),
+            "auth_uri":"https://accounts.google.com/o/oauth2/auth",
+            "token_uri":"https://oauth2.googleapis.com/token",
+            "auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs",
+            "client_x509_cert_url":os.environ.get('G_CERT_URL')
+        }, project_id)
 
     with open(os.path.join(repo_root,'functions/meta/columns.json')) as json_file:
         columns_dic = json.load(json_file)
@@ -203,3 +215,4 @@ if __name__ == "__main__":
         json.dump(columns_dic, write_file, indent=4)
 
     print('Updating all data costs: ', time.time() - t0)
+# %%
