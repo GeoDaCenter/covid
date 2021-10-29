@@ -44,6 +44,7 @@ const CsvDownloaderContainer = styled.div`
         background:${colors.gray} url('${process.env.PUBLIC_URL}/assets/img/animated_cluster.svg') ;
         background-repeat:no-repeat;
         background-position:center center;
+        background-size:100px 100px;
         opacity:0.5;
         pointer-events:none;
         button, *.MuiIconButton-colorSecondary.Mui-checked {
@@ -124,32 +125,32 @@ const checkboxSets = [
         name: 'vaccination',
         subset: [
             {
+                label: 'County - Vaccine Series Complete (Fully Vaccinated) - CDC',
+                name: 'vaccination_fully_vaccinated_cdc'
+            },
+            {
                 label: 'County - One or More Doses Administered - CDC',
                 name: 'vaccination_one_or_more_doses_cdc'
             },
             {
-                label: 'County - Vaccine Series Complete Administered - CDC',
-                name: 'vaccination_fully_vaccinated_cdc'
+                label: 'Hybrid - Vaccine Series Complete (Fully Vaccinated) - CDC',
+                name: 'vaccination_fully_vaccinated_cdc_h'
             },
             {
                 label: 'Hybrid - One or More Doses Administered - CDC',
                 name: 'vaccination_one_or_more_doses_cdc_h'
             },
             {
-                label: 'Hybrid - Vaccine Series Complete Administered - CDC',
-                name: 'vaccination_fully_vaccinated_cdc_h'
+                label: 'State - Vaccine Series Complete (Fully Vaccinated) - CDC',
+                name: 'vaccination_fully_vaccinated_cdc_state'
             },
             {
                 label: 'State - One or More Doses Administered - CDC',
                 name: 'vaccination_one_or_more_doses_cdc_state'
             },
             {
-                label: 'State - Vaccine Series Complete Administered - CDC',
-                name: 'vaccination_fully_vaccinated_cdc_state'
-            },
-            {
                 label: 'State - Doses Distributed but not Administered - CDC',
-                name: 'vaccine_dist_cdc'
+                name: 'vaccination_to_be_distributed_cdc_state'
             }
         ]
     },
@@ -292,9 +293,13 @@ const CsvDownloader = () => {
             covid_ccpt_cdc: false,
             covid_ccpt_cdc_state: false,
         vaccination:false,
-            vaccine_admin1_cdc: false,
-            vaccine_admin2_cdc: false,
-            vaccine_dist_cdc: false,
+            vaccination_fully_vaccinated_cdc: false,
+            vaccination_one_or_more_doses_cdc: false,
+            vaccination_fully_vaccinated_cdc_h: false,
+            vaccination_one_or_more_doses_cdc_h: false,
+            vaccination_fully_vaccinated_cdc_state: false,
+            vaccination_one_or_more_doses_cdc_state: false,
+            vaccination_to_be_distributed_cdc_state: false,
         hospitals_clinics:false,
             context_fqhc_clinics_hrsa: false,
             context_hospitals_covidcaremap: false,
