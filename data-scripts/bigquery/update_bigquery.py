@@ -178,8 +178,9 @@ if __name__ == "__main__":
     t0 = time.time()
     project_id = 'covid-atlas'
     
-    print(f"key length: ${os.getenv('SK').replace('\\\\n', '\n')}")
-    
+    keyLength = os.getenv('SK').replace('\\\\n', '\n')
+    print(f"key length: ${keyLength}")
+
     client = initClient({
             "type":"service_account",
             "project_id":"covid-atlas",
