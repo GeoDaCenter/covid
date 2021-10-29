@@ -260,6 +260,30 @@ const press = {
             'link': 'https://www.fastcompany.com/90667101/pandemic-response-innovation-by-design-2021',
             'text': "Pandemic Response category honoree for Fast Company's annual design awards",
             'date': '(September 21, 2021)'
+        },
+        {
+            'name': 'Robert Wood Johnson Foundation:',
+            'link': 'https://www.rwjf.org/en/library/collections/better-data-for-better-health.html',
+            'text': 'Better Data for Better Health: Data resources for analysis of the many factors that shape health in communities',
+            'date': '(May 19, 2021)'
+        },
+        {
+            'name': 'County Health Rankings & Roadmaps:',
+            'link': 'https://www.countyhealthrankings.org/news-events/tracking-covid-19-recently-updated-us-covid-atlas-offers-more-complete-picture-of-the-pandemic',
+            'text': 'Tracking COVID-19: Recently Updated US COVID Atlas Offers More Complete Picture of the Pandemic Experience',
+            'date': '(April 15, 2021)'
+        },
+        {
+            'name': 'STAT:',
+            'link': 'https://www.statnews.com/2021/03/31/integrate-social-determinants-time-place-public-health-maps/',
+            'text': 'Adding social determinants gives public health maps a sense of place and time',
+            'date': '(March 31, 2021)'
+        },
+        {
+            'name': 'MapBox:',
+            'link': 'https://www.mapbox.com/blog/notable-maps-visualizing-covid-19-and-surrounding-impacts-exploring-many-views-on-one-pandemic',
+            'text': 'Notable Maps Visualizing COVID-19 and Surrounding Impacts',
+            'date': '(February 5, 2021)'
         }
     ]
 }
