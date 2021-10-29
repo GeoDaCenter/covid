@@ -1,4 +1,4 @@
-name: Daily Data Pull 0.0.5
+name: Daily Data Pull 0.0.6
 
 on:
   schedule:
@@ -47,14 +47,15 @@ jobs:
       - name: update report
         run: python weekly-report/update-csvs.py 
 
-      - name: execute update bigquery
-        run: python data-scripts/bigquery/update_bigquery.py
-        env:
-          SK_ID: ${{secrets.GOOGLE_SK_ID}}
-          SK: ${{secrets.GOOGLE_SK}}
-          G_CLIENT_EMAIL: ${{secrets.GOOGLE_G_CLIENT_EMAIL}}
-          G_ID: ${{secrets.GOOGLE_G_ID}}
-          G_CERT_URL: ${{secrets.GOOGLE_G_CERT_URL}}
+      # - name: execute update bigquery
+      #   run: python data-scripts/bigquery/update_bigquery.py
+      #   env:
+      #     SK_ID: ${{secrets.GOOGLE_SK_ID}}
+      #     SK: ${{secrets.GOOGLE_SK}}
+      #     G_CLIENT_EMAIL: ${{secrets.GOOGLE_G_CLIENT_EMAIL}}
+      #     G_ID: ${{secrets.GOOGLE_G_ID}}
+      #     G_CERT_URL: ${{secrets.GOOGLE_G_CERT_URL}}
+      
       - name: commit files
         run: |
           git config --local user.email "action@github.com"
