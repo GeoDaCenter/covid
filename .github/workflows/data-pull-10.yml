@@ -1,10 +1,12 @@
-name: Gbq Test 5
+name: Daily Data Pull 0.0.10
 
 on:
+  schedule:
+    - cron: '0 */12 * * *' # runs at midnight, 8am, and 4pm UTC
   workflow_dispatch:
 
 jobs:
-  build:
+  update-data:
     runs-on: ubuntu-latest
     steps:
 
@@ -21,6 +23,30 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r data-scripts/requirements.txt
       
+      - name: cdc vaccination data
+        run: python data-scripts/cdc/getCdcVaccinationData.py
+
+      - name: cdc county data
+        run: python data-scripts/cdc/getCdcCountyData.py
+        
+      - name: usafacts
+        run: python data-scripts/usafacts/usafacts.py  
+
+      - name: 1p3a
+        run: python data-scripts/_1p3a/_1p3a.py  
+
+      - name: hybrid update
+        run: python data-scripts/cdc/hybrid_update.py 
+
+      - name: pbf
+        run: python data-scripts/pbf/CsvToPbf.py  
+
+      - name: summarize
+        run: python data-scripts/summary/summarize.py 
+
+      - name: update report
+        run: python weekly-report/update-csvs.py 
+
       - name: execute update bigquery
         run: python data-scripts/bigquery/update_bigquery.py
         env:
@@ -29,6 +55,7 @@ jobs:
           G_CLIENT_EMAIL: ${{secrets.GOOGLE_G_CLIENT_EMAIL}}
           G_ID: ${{secrets.GOOGLE_G_ID}}
           G_CERT_URL: ${{secrets.GOOGLE_G_CERT_URL}}
+      
       - name: commit files
         run: |
           git config --local user.email "action@github.com"

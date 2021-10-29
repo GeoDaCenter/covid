@@ -12,11 +12,13 @@ Destination table on Bigquery
 Safegraph and 1P3A are stored in private dataset: safegraph and 1P3A
 All other public datasets: public 
 
-Source: https://github.com/GeoDaCenter/covid/tree/master/public/csv
-If any data file's name/path is updated, please make change here accordingly.
+This script requires environment variables for that make up relevant GCP credentials, specifically: 
+    "private_key_id":os.getenv('SK_ID')
+    "private_key":os.getenv('SK')
+    "client_email":os.getenv('G_CLIENT_EMAIL')
+    "client_id":os.getenv('G_ID')
+    "client_x509_cert_url":os.getenv('G_CERT_URL')
 
-Local: run `export GOOGLE_APPLICATION_CREDENTIALS="/path-to-credentials/credentials.json" ` 
-       before running this script
 '''
 # %%
 dir_path = os.path.dirname(os.path.realpath(__file__)) # /path-to-repo/covid/data-scripts/bigquery
@@ -172,13 +174,6 @@ if __name__ == "__main__":
 
     t0 = time.time()
     project_id = 'covid-atlas'
-
-    keyLength = len(os.getenv('SK'))
-    print(f"key length: {keyLength}")
-    keyLength = len(os.getenv('SK').replace('\\\\n', '\n').replace('\\n', '\n'))
-    print(f"key length: {keyLength}")
-    keyLength = len(os.getenv('SK').replace('\\n', '\n'))
-    print(f"key length: {keyLength}")
 
     credentials = service_account.Credentials.from_service_account_info({
         "type":"service_account",
