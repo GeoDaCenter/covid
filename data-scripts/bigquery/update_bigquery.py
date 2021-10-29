@@ -177,8 +177,8 @@ if __name__ == "__main__":
 
     t0 = time.time()
     project_id = 'covid-atlas'
-    
-    keyLength = os.getenv('SK').replace('\\\\n', '\n')
+
+    keyLength = len(os.getenv('SK').replace('\\\\n', '\n'))
     print(f"key length: ${keyLength}")
 
     client = initClient({
