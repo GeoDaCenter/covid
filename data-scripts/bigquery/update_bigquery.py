@@ -1,5 +1,7 @@
 # %%
 import os
+from google.auth import credentials
+from google.cloud.bigquery import client
 import pandas as pd
 import regex as re
 from google.cloud import bigquery
@@ -26,7 +28,10 @@ repo_root = os.path.abspath(os.path.join(dir_path, '..', '..')) # /path-to-repo/
 def initClient(secret, project):
     credentials = service_account.Credentials.from_service_account_info(secret)
     # Construct a BigQuery client object.
-    return bigquery.Client(project,credentials)
+    return {
+        "client": bigquery.Client(project,credentials),
+        "credentials": credentials
+    }
 
 def isValidDate(date_text):
     try:
@@ -41,7 +46,7 @@ def handleAmbiguousColumns(df):
             df[column] = df[column].astype(float)
     return df
 
-def write_table_to_bq(table, project_id, dataset_id, columns_dic, id_col=False):
+def write_table_to_bq(table, project_id, credentials, dataset_id, columns_dic, id_col=False):
     '''
     Write table to bigquery and append columns to a dictionary
     '''
@@ -64,7 +69,8 @@ def write_table_to_bq(table, project_id, dataset_id, columns_dic, id_col=False):
 
     pandas_gbq.to_gbq(df, table_id, 
                     project_id=project_id, 
-                    if_exists='replace'
+                    if_exists='replace',
+                    credentials=credentials
                     )
 
 berkeley_predictions_lst = ['berkeley_predictions.csv']
@@ -177,14 +183,13 @@ if __name__ == "__main__":
 
     t0 = time.time()
     project_id = 'covid-atlas'
-    print('here!!!!!')
-    print(os.getenv('SK').replace('\\n', '\n'))
+    
     keyLength = len(os.getenv('SK'))
     print(f"key length: ${keyLength}")
     keyLength = len(os.getenv('SK').replace('\\n', '\n'))
     print(f"key length: ${keyLength}")
 
-    client = initClient({
+    gbq_auth = initClient({
             "type":"service_account",
             "project_id":"covid-atlas",
             "private_key_id":os.getenv('SK_ID'),
@@ -197,6 +202,9 @@ if __name__ == "__main__":
             "client_x509_cert_url":os.getenv('G_CERT_URL')
         }, project_id)
 
+    client = gbq_auth['client']
+    credentials = gbq_auth['credentials']
+
     with open(os.path.join(repo_root,'functions/meta/columns.json')) as json_file:
         columns_dic = json.load(json_file)
 
@@ -207,15 +215,15 @@ if __name__ == "__main__":
 
     for table in public_lst:
         dataset_id = 'public'
-        write_table_to_bq(table, project_id, dataset_id, columns_dic, id_col_dict[table])
+        write_table_to_bq(table, project_id, credentials, dataset_id, columns_dic, id_col_dict[table])
 
     for table in _1P3A_lst:
         dataset_id = '1P3A'
-        write_table_to_bq(table, project_id, dataset_id, columns_dic, id_col_dict[table])
+        write_table_to_bq(table, project_id, credentials,  dataset_id, columns_dic, id_col_dict[table])
 
     for table in safegraph_lst:
         dataset_id = 'safegraph'
-        write_table_to_bq(table, project_id, dataset_id, columns_dic, id_col_dict[table])
+        write_table_to_bq(table, project_id, credentials,  dataset_id, columns_dic, id_col_dict[table])
 
     with open(os.path.join(repo_root,'functions/meta/columns.json'), 'w') as write_file:
         json.dump(columns_dic, write_file, indent=4)
