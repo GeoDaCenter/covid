@@ -178,7 +178,7 @@ if __name__ == "__main__":
     t0 = time.time()
     project_id = 'covid-atlas'
     print('here!!!!!')
-    print(os.getenv('SK'))
+    print(os.getenv('SK').replace('\\n', '\n'))
     keyLength = len(os.getenv('SK'))
     print(f"key length: ${keyLength}")
     keyLength = len(os.getenv('SK').replace('\\n', '\n'))
@@ -188,7 +188,7 @@ if __name__ == "__main__":
             "type":"service_account",
             "project_id":"covid-atlas",
             "private_key_id":os.getenv('SK_ID'),
-            "private_key":os.getenv('SK').replace('\\\\n', '\n'),
+            "private_key":os.getenv('SK').replace('\\n', '\n'),
             "client_email":os.getenv('G_CLIENT_EMAIL'),
             "client_id":os.getenv('G_ID'),
             "auth_uri":"https://accounts.google.com/o/oauth2/auth",
