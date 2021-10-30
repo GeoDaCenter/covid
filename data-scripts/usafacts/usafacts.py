@@ -118,11 +118,11 @@ def validate_and_process():
       '''
 
       out_field_names = list(cases_out_rows[0].keys())
-
       cases_csv_writer = csv.DictWriter(cases_out_file, fieldnames=out_field_names)
       cases_csv_writer.writeheader()
       cases_csv_writer.writerows(cases_out_rows)
 
+      out_field_names = list(deaths_out_rows[0].keys())
       deaths_csv_writer = csv.DictWriter(deaths_out_file, fieldnames=out_field_names)
       deaths_csv_writer.writeheader()
       deaths_csv_writer.writerows(deaths_out_rows)
