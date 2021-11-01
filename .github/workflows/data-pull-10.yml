@@ -1,4 +1,4 @@
-name: Daily Data Pull 0.0.10c
+name: Daily Data Pull 0.0.10d
 
 on:
   schedule:
@@ -28,6 +28,9 @@ jobs:
 
       - name: cdc county data
         run: python data-scripts/cdc/getCdcCountyData.py
+
+      - name: nyt
+        run: python data-scripts/nyt/nyt.py
         
       - name: usafacts
         run: python data-scripts/usafacts/usafacts.py  
