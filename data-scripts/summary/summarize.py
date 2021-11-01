@@ -71,17 +71,14 @@ def getEquitySummary(counties):
     national = round((summedDeaths[summedDeaths.keys()[-1]]/summedDeaths['population'])*10000000)/100
 
     topQuartileEssential = essentialWorkers[essentialWorkers.pct_essential > essentialWorkers.pct_essential.quantile(.75)]
-    summedEssential = mergedDeaths[mergedDeaths.GEOID.isin(list(topQuartileEssential.fips))].sum()
-    for i in range(len(summedEssential.keys())-1,0,-1):
-        col = summedEssential.keys()[i]
-        if summedEssential[col] != 0:
-            nationalVal = summedEssential[col]
-    nationalEssential = round((nationalVal/summedEssential['population'])*10000000)/100
+    summedEssential = mergedDeaths[mergedDeaths.GEOID.isin(list(topQuartileEssential.fips))].sum()[list(mergedDeaths.keys())[-1]]
+    summedPopulation = mergedDeaths[mergedDeaths.GEOID.isin(list(topQuartileEssential.fips))].sum()['population']
+    nationalEssential = round((summedEssential/summedPopulation)*10000000)/100
 
     return {
         'nationDeathsPer100k': national,
         'quartileEssentialDeathsPer100k': nationalEssential,
-        'quartileEssentialPct': round((nationalEssential-national)/nationalEssential*100)
+        'quartileEssentialPct': round((nationalEssential-national)/national*100)
     }
 
 def getUsafExtract():
