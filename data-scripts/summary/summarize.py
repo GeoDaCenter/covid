@@ -6,8 +6,8 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 repo_root = os.path.abspath(os.path.join(dir_path, '..', '..'))
 
 def getCaseSummary(counties):
-    cases = pd.read_csv(os.path.join(repo_root, 'public/csv/covid_confirmed_usafacts.csv'))
-    summedCases = counties[['GEOID','population']].merge(cases, how="inner", left_on="GEOID", right_on="countyFIPS").sum()
+    cases = pd.read_csv(os.path.join(repo_root, 'public/csv/covid_confirmed_nyt.csv'))
+    summedCases = counties[['GEOID','population']].merge(cases, how="inner", left_on="GEOID", right_on="fips").sum()
     keys = summedCases.keys()[-15:]
     cases14 = []
     casesSummary = {}
@@ -64,9 +64,9 @@ def getVaxSummary(hybrid):
 
 def getEquitySummary(counties):
     essentialWorkers = pd.read_csv(os.path.join(repo_root, 'public/csv/context_essential_workers_acs.csv'))
-    deaths = pd.read_csv(os.path.join(repo_root, 'public/csv/covid_deaths_usafacts.csv'))
+    deaths = pd.read_csv(os.path.join(repo_root, 'public/csv/covid_deaths_nyt.csv'))
 
-    mergedDeaths = counties[['GEOID','population']].merge(deaths, how="inner", left_on="GEOID", right_on="countyFIPS")
+    mergedDeaths = counties[['GEOID','population']].merge(deaths, how="inner", left_on="GEOID", right_on="fips")
     summedDeaths = mergedDeaths.sum()
     national = round((summedDeaths[summedDeaths.keys()[-1]]/summedDeaths['population'])*10000000)/100
 
@@ -82,11 +82,11 @@ def getEquitySummary(counties):
     }
 
 def getUsafExtract():
-    cases = pd.read_csv(os.path.join(repo_root, 'public/csv/covid_confirmed_usafacts.csv'))
-    cases = cases[['countyFIPS']+list(cases.columns)[-90:]]
-    cases.to_csv(os.path.join(repo_root, 'public/csv/covid_confirm_usafacts_extract.csv'), index=False)
+    cases = pd.read_csv(os.path.join(repo_root, 'public/csv/covid_confirmed_nyt.csv'))
+    cases = cases[['fips']+list(cases.columns)[-90:]]
+    cases.to_csv(os.path.join(repo_root, 'public/csv/covid_confirmed_nyt.csv'), index=False)
 if __name__ == "__main__":
-    with open(os.path.join(repo_root, 'public/geojson/county_usfacts.geojson')) as f:
+    with open(os.path.join(repo_root, 'public/geojson/county_nyt.geojson')) as f:
         data = json.load(f)
     counties = pd.DataFrame([f['properties'] for f in data['features']])
 
