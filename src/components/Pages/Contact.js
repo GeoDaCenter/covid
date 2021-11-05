@@ -262,6 +262,12 @@ const press = {
             'date': '(September 21, 2021)'
         },
         {
+            'name': 'USC Price Center for Social Innovation:',
+            'link': 'https://socialinnovation.usc.edu/wp-content/uploads/2021/10/RWJF-Report_FINAL_External.pdf',
+            'text': "Designing Data Platforms for Action & Influence: Lessons Learned From a Case Study of Five Data Platforms",
+            'date': '(September 2021)'
+        },
+        {
             'name': 'Robert Wood Johnson Foundation:',
             'link': 'https://www.rwjf.org/en/library/collections/better-data-for-better-health.html',
             'text': 'Better Data for Better Health: Data resources for analysis of the many factors that shape health in communities',
