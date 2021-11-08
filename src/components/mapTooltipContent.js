@@ -6,7 +6,13 @@ import { HoverDiv } from '../styled_components';
 export default function MapTooltipContent(){
     // destructure the object for cleaner formatting
     const tooltipContent = useSelector(state => state.tooltipContent);
-    if (!tooltipContent.data) return <></>;
+    if (!tooltipContent.data && !tooltipContent.custom) return <></>;
+    
+    if (tooltipContent.data.custom) {
+        return <HoverDiv style={{position: 'absolute', zIndex: 1, pointerEvents: 'none', left: tooltipContent.x, top: tooltipContent.y}}>
+            {Object.entries(tooltipContent.data.custom).map(entry => <><b>{entry[0]}:</b> {entry[1]}<br/></>)}
+        </HoverDiv>
+    }
     
     return <HoverDiv style={{position: 'absolute', zIndex: 1, pointerEvents: 'none', left: tooltipContent.x, top: tooltipContent.y}}>
         {tooltipContent.data.name !== undefined && <>

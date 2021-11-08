@@ -178,7 +178,9 @@ const VizTypeButton = styled.button`
   margin:0;
   font-family:'Lato', sans-serif;
   font-size:.875rem;
-  cursor:pointer;
+  cursor:${props => props.disabled ? 'none' : 'pointer'};
+  pointer-events:${props => props.disabled ? 'none' : 'initial'};
+  opacity:${props => props.disabled ? '.25' : '1'};
   transition:250ms all;
   letter-spacing:0.02857em;
   font-weight:500;
@@ -314,6 +316,23 @@ const dotDensityAcsGroups = [
     'idx':7,
     'name': 'Two or more',
   }]
+
+const BYODButton = styled.button`
+  background:none;
+  color:${colors.white};
+  border:1px solid white;
+  cursor:pointer;
+  padding:.25em .5em;
+  margin:0.25em 0;
+  border-radius:0.5em;
+  text-transform:capitalize;
+  font-size:.75rem;
+  transition:250ms all;
+  &:hover {
+    color: ${colors.yellow};
+    border-color: ${colors.yellow};
+  }
+`
 const onlyUnique = (value, index, self) => self.indexOf(value) === index;
 
 export default function VariablePanel(){
@@ -346,7 +365,7 @@ export default function VariablePanel(){
   const urlParamsTree = useSelector(state => state.urlParamsTree);
   const allGeographies = Object.values(variableTree).flatMap(o => Object.keys(o)).filter(onlyUnique)
   const allDatasets = Object.values(variableTree).flatMap(o => Object.values(o)).flatMap(o => o).filter(onlyUnique)
-  
+  const isCustom = !(['State','County','County (Hybrid)'].includes(dataPresets[currentData].geography))  
   
   const handleMapType = (event, newValue) => {
     let nBins = newValue === 'hinge15_breaks' ? 6 : 8
@@ -485,9 +504,10 @@ export default function VariablePanel(){
     <VariablePanelContainer className={panelState.variables ? '' : 'hidden'} otherPanels={panelState.info} id="variablePanel">
       {panelState.variables && <ControlsContainer>
         <h2>Data Sources &amp;<br/> Map Variables</h2>
-        <button Title="Add Custom Data" onClick={() => dispatch(setPanelState({dataLoader: true}))} style={{background:'none', outline:'none', border:'none', display:'inline-block', width:'20px', fill:'white', cursor: 'pointer'}}>
-          <Icon symbol="addData" />
-        </button>
+
+        <BYODButton Title="Add Custom Data" onClick={() => dispatch(setPanelState({dataLoader: true}))}>
+          Load your own data
+        </BYODButton>
         <Gutter h={20}/>
         <StyledDropDown id="variableSelect">
           <InputLabel htmlFor="variableSelect">Variable</InputLabel>
@@ -616,9 +636,9 @@ export default function VariablePanel(){
         <p>Visualization Type</p>
         <ButtonGroup id="visualizationType">
           <VizTypeButton active={vizType === '2D'} data-val="2D" key="2D-btn" onClick={() => handleVizTypeButton('2D')}>2D</VizTypeButton>
-          <VizTypeButton active={vizType === '3D'} data-val="3D" key="3D-btn" onClick={() => handleVizTypeButton('3D')}>3D</VizTypeButton>
+          <VizTypeButton active={vizType === '3D'} data-val="3D" key="3D-btn" onClick={() => handleVizTypeButton('3D')} disabled={isCustom}>3D</VizTypeButton>
           <VizTypeButton active={vizType === 'dotDensity'} data-val="dotDensity" key="dotDensity-btn" onClick={() => handleVizTypeButton('dotDensity')}>Dot Density</VizTypeButton>
-          <VizTypeButton active={vizType === 'cartogram'} data-val="cartogram" key="cartogram-btn" onClick={() => handleVizTypeButton('cartogram')}>Cartogram</VizTypeButton>
+          <VizTypeButton active={vizType === 'cartogram'} data-val="cartogram" key="cartogram-btn" onClick={() => handleVizTypeButton('cartogram')} disabled={isCustom}>Cartogram</VizTypeButton>
         </ButtonGroup>
         <Gutter h={12}/>
         {/* {
@@ -695,14 +715,17 @@ export default function VariablePanel(){
           <DotDensityControls>
             <p className="help-text">1 Dot = 500 People</p>
             <BinsContainer>
-              <Switch
-                checked={dotDensityParams.colorCOVID}
-                onChange={() => dispatch(changeDotDensityMode())}
-                name="dot density mode"
-              />
-              <p>{dotDensityParams.colorCOVID ? 'Color by COVID Data' : 'Color by ACS Race / Ethnicity'}</p>
-              <Gutter h={10}/>
-              <p className="help-text">Toggle ACS Race / Ethnicity Groups</p>
+              {!isCustom && <>
+                <Switch
+                  checked={dotDensityParams.colorCOVID}
+                  onChange={() => dispatch(changeDotDensityMode())}
+                  name="dot density mode"
+                  disabled={isCustom}
+                />
+                <p>{dotDensityParams.colorCOVID ? 'Color by COVID Data' : 'Color by ACS Race / Ethnicity'}</p>
+                <Gutter h={10}/>
+                <p className="help-text">Toggle ACS Race / Ethnicity Groups</p>
+              </>}
               <Gutter h={5}/>
               {dotDensityAcsGroups.map(group => 
                 <AcsRaceButton 

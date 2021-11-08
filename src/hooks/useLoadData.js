@@ -19,9 +19,16 @@ const handleLoadData = (fileInfo) => fileInfo.file.slice(-4,) === '.pbf' ? getPa
 export const getIdOrder = (features, idProp) => {
   let geoidOrder = {};
   let indexOrder = {}
-  for (let i=0; i<features.length; i++) {
-    geoidOrder[features[i].properties[idProp]] = i
-    indexOrder[i] = features[i].properties[idProp]
+  if (!idProp) {
+    for (let i=0; i<features.length; i++) {
+      geoidOrder[i] = i
+      indexOrder[i] = i
+    }
+  } else {
+    for (let i=0; i<features.length; i++) {
+      geoidOrder[features[i].properties[idProp]] = i
+      indexOrder[i] = features[i].properties[idProp]
+    }
   }
   return { geoidOrder, indexOrder }
 };
@@ -35,9 +42,15 @@ export const getIdOrder = (features, idProp) => {
 */
 export const indexGeoProps = (data, key) => {
   let geoProperties = {};
-  for (var i = 0; i < data.features.length; i++) {
-    geoProperties[data.features[i].properties[key]] =
-      data.features[i].properties;
+  if (!key) {
+    for (var i = 0; i < data.features.length; i++) {
+      geoProperties[i] = data.features[i].properties;
+    }
+  } else {
+    for (var i = 0; i < data.features.length; i++) {
+      geoProperties[data.features[i].properties[key]] =
+        data.features[i].properties;
+    }
   }
   return geoProperties;
 };

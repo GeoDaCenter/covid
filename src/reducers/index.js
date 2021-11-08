@@ -2,6 +2,7 @@ import { INITIAL_STATE } from '../constants/defaults';
 import { mapFnNb, mapFnTesting, mapFnHinge, dataFn, getVarId, getCSV, getCartogramCenter, getDataForCharts, getURLParams } from '../utils';
 import { tooltipTables } from '../config';
 import { indexGeoProps, getIdOrder } from '../hooks/useLoadData';
+
 // utils
 const getSimpleColor = (value, bins, colorScale, mapType, numerator, storedLisaData, storedGeojson, currentData, GEOID, mapFn) => mapFn(value, bins, colorScale, mapType, numerator);
 const getLisaColor = (value, bins, colorScale, mapType, numerator, storedLisaData, storedGeojson, currentData, GEOID) => colorScale[storedLisaData[storedGeojson[currentData].indices['geoidOrder'][GEOID]]]||[240,240,240]
@@ -112,6 +113,17 @@ const parseTooltipData = (geoid, state) => {
     let tooltipData = {}
     const properties = state.storedGeojson[state.currentData].properties[geoid];
     const geography = state.dataPresets[state.currentData].geography;
+    if (!(['County','State','County (Hybrid)'].includes(geography))) {
+        const varsToCalculate = Object.entries(state.variableTree)
+            .filter(treeEntry => treeEntry[1].hasOwnProperty(geography))
+            .map(entry => entry[0])
+        
+        for (let i=0; i<varsToCalculate.length; i++) {
+            tooltipData[varsToCalculate[i]] = dataFn(properties, properties, state.variablePresets[varsToCalculate[i]])
+        }
+        tooltipData = {custom: {...tooltipData, ...properties}}
+        return tooltipData
+    }
 
     tooltipData = {
         population: properties.population,
@@ -1188,11 +1200,11 @@ var reducer = (state = INITIAL_STATE, action) => {
                     dateIndices: [],
                     properties: indexGeoProps(
                         action.payload.geojson.data, 
-                        action.payload.idCol
+                        false
                     ),
                     indices: getIdOrder(
                         action.payload.geojson.data.features,
-                        action.payload.idCol
+                        false
                     )
                 }
             }
@@ -1218,7 +1230,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                 [dataName]: {
                     plainName: dataName,
                     geojson: dataName,
-                    id: action.payload.idCol,
+                    id: 'idx',
                     geography: dataName,
                     tables: {}
                 }
@@ -1257,7 +1269,6 @@ var reducer = (state = INITIAL_STATE, action) => {
                 urlParamsTree,
                 variableTree,
                 variablePresets,
-                shouldPanMap: true,
                 currentData: dataName,
                 dataParams: {
                     ...action.payload.variables[0]
@@ -1265,6 +1276,14 @@ var reducer = (state = INITIAL_STATE, action) => {
                 currentTable: {
                     numerator: "properties",
                     denominator: "properties"
+                },
+                mapParams: {
+                    ...state.mapParams,
+                    vizType: "2D",
+                    dotDensityParams: {
+                        ...state.mapParams.dotDensityParams,
+                        colorCOVID: false
+                    }
                 },
                 shouldPanMap: true
             }

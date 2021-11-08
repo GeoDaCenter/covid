@@ -197,7 +197,7 @@ const validateGeojson = (content) => {
     return [false, true]
 }
 
-const steps = ['Load your GeoJSON', 'Select ID', 'Configure Variables']
+const steps = ['Load your GeoJSON', 'Configure your Variables']
 
 const Steps = ({activeStep, steps}) => <>
     <StyledStepper activeStep={activeStep}>
@@ -235,7 +235,10 @@ const FormDropDownContainer = styled.div`
     }
 `
 
-const CardContainer = styled(Grid)``
+const CardContainer = styled(Grid)`
+    max-height:50vh;
+    overflow-y:scroll;
+`
 
 const VariableCard = styled(Card)`
     &.MuiPaper-root {
@@ -347,8 +350,9 @@ const VariableEditor = ({fileName, columns, variables, setVariables, handleClose
             <h3>Variable Editor</h3>
             <Gutter h={30} />
             
-            <VariableLabel htmlFor="variableName">Variable Name</VariableLabel>
+            <VariableLabel htmlFor="variableName" required>Variable Name</VariableLabel>
             <VariableTextField 
+                required
                 id="variableName" 
                 label="Variable Name" 
                 onChange={(event) => handleProperty('variableName', event.target.value)}
@@ -359,8 +363,9 @@ const VariableEditor = ({fileName, columns, variables, setVariables, handleClose
             <Gutter h={30} />
 
             <StyledDropDown id="numerSelect">
-                <InputLabel htmlFor="numerSelect">Numerator Column</InputLabel>
+                <InputLabel htmlFor="numerSelect" required>Numerator Column</InputLabel>
                 <Select
+                    required
                     value={variableInfo.nProperty}
                     onChange={(event) => handleProperty('nProperty', event.target.value)}
                     aria-describedby="numer-name-helper"
@@ -369,11 +374,11 @@ const VariableEditor = ({fileName, columns, variables, setVariables, handleClose
                                 
                 </Select>
             </StyledDropDown>
-            <HelperText id="numer-name-helper">Your variable value, or if normalizing,<br/> the top of your expression.</HelperText>
+            <HelperText id="numer-name-helper">The column for your variable.<br/>If you want to normalize your data,<br/> the top of your expression.</HelperText>
             <Gutter h={30} />
 
             <StyledDropDown id="denomSelect">
-                <InputLabel htmlFor="denomSelect">Denominator Column</InputLabel>
+                <InputLabel htmlFor="denomSelect">Denominator Column (Optional)</InputLabel>
                 <Select
                     value={variableInfo.dProperty}
                     onChange={(event) => handleProperty('dProperty', event.target.value)}
@@ -383,7 +388,7 @@ const VariableEditor = ({fileName, columns, variables, setVariables, handleClose
                     {columns.map(col =>  <MenuItem value={col} key={'denom-select-'+col}>{col}</MenuItem> )}         
                 </Select>
             </StyledDropDown>
-            <HelperText id="denom-name-helper">If normalizing,<br/> the bottom of your expression.</HelperText>
+            <HelperText id="denom-name-helper">If normalizing, the bottom of your expression.</HelperText>
             
             <Gutter h={30} />
             
@@ -401,7 +406,7 @@ const VariableEditor = ({fileName, columns, variables, setVariables, handleClose
             </StyledDropDown>
             <Gutter h={30} />
 
-            <VariableLabel htmlFor="colorScaleSelect">Variable Scale</VariableLabel>
+            {/* <VariableLabel htmlFor="colorScaleSelect">Variable Scale</VariableLabel>
             <VariableTextField 
                 id="standard-basic" 
                 label="Variable Scale" 
@@ -418,7 +423,7 @@ const VariableEditor = ({fileName, columns, variables, setVariables, handleClose
                 onChange={(event) => handleProperty('scale3D', event.target.value)}
                 type="number"
                 value={variableInfo.scale3D}
-            />
+            /> */}
             <Gutter h={30} />
             
             <FormButton onClick={handleSave}>Save Variable</FormButton>
@@ -432,6 +437,8 @@ const VariableEditor = ({fileName, columns, variables, setVariables, handleClose
     </DataLoaderContainer>
 }
 
+const addIndex = (geojson) => ({...geojson, features: geojson.features.map((feature, idx) => ({...feature, properties: {...feature.properties, idx}}))})
+
 // DataLoader component
 export default function DataLoader(){
     const dispatch = useDispatch()
@@ -442,7 +449,6 @@ export default function DataLoader(){
     const [remoteUrl, setRemoteUrl] = useState('');
     const [fileMessage, setFileMessage] = useState(false);
     const [activeStep, setActiveStep] = useState(0);
-    const [selectedId, setSelectedId] = useState('');
     const [variables, setVariables] = useState([])
     const [editor, setEditor] = useState({open:false, idx:false})
 
@@ -466,15 +472,16 @@ export default function DataLoader(){
         const content = data ? data : JSON.parse(fileReader.result);
         const [error, validGeojson] = validateGeojson(content)
         if (validGeojson) {
+            const indexedGeoJson = addIndex(content)
             setCurrentGeojson({
-                data: {...content},
-                columns: Object.keys(content.features[0].properties)
+                data: {...indexedGeoJson},
+                columns: Object.keys(indexedGeoJson.features[0].properties)
             })
-            setSelectedId(Object.keys(content.features[0].properties)[0])
+            // setSelectedId(Object.keys(content.features[0].properties)[0])
 
             setFileMessage({
                 type: 'validation',
-                body:`Basic validation complete. Please select define your variables.`
+                body:`Basic validation complete 🎉 Continue to configure your variables. `
             });
 
             loadArrayBuffer(content)
@@ -540,7 +547,6 @@ export default function DataLoader(){
         dispatch(addCustomData(
             selectedFile,
             currentGeojson,
-            selectedId,
             variables 
         ))
         closePanel()
@@ -561,7 +567,7 @@ export default function DataLoader(){
 
                     <label for="filename">{uploadTab ? 'Select your GeoJSON for Upload' : 'Enter a valid GeoJSON URL'}</label>
                     <Gutter h={15}/>
-                    <HelperText>For more information on formatting your data, click <a href="#">here</a></HelperText>
+                    <HelperText>For more information on formatting your data and privacy, click <a href="/data-loading">here</a>.</HelperText>
                     <HelperText>You can load your file directly, or select a remote link to fetch data from.</HelperText>
                     <Gutter h={15}/>
                     
@@ -591,8 +597,7 @@ export default function DataLoader(){
                     <input type="submit" value="Validate" />
                     {fileMessage && <MessageText type={fileMessage.type}>{fileMessage.body}</MessageText>}
                 </FileForm>}
-
-                {activeStep === 1 && <>
+                {/* {activeStep === 1 && <>
                     <label for="idSelect">Select your data's ID column</label>
                     <Gutter h={15}/>
                     <HelperText>Choose a column that represents your data's featured ID, <br/>such as GEOID or FIPS code, ZIP code, or other geographic identifier.</HelperText>                   
@@ -609,9 +614,8 @@ export default function DataLoader(){
                             </Select>
                         </StyledDropDown>
                     </FormDropDownContainer>
-                </>}
-
-                {activeStep === 2 && <>
+                </>} */}
+                {activeStep === 1 && <>
                     <label for="idSelect">Configure your variables</label>
                     <Gutter h={15}/>
                     <CardContainer 

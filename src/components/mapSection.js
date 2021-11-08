@@ -291,7 +291,7 @@ export default function MapSection(){
 
     useEffect(() => {
         if (shouldPanMap) {
-            setViewport(currMapViewport)
+            setViewport({bearing:0, pitch:0, latitude:0, longitude:0, zoom:10, ...currMapViewport})
             dispatch(mapDidPan())
         }
     }, [currMapViewport])
@@ -425,7 +425,7 @@ export default function MapSection(){
             lineWidthScale: 500,
             getLineWidth:  5, 
             lineWidthMinPixels: 1,
-            lineWidthMaxPixels: 10,
+            lineWidthMaxPixels: 5,
             updateTriggers: {
                 getLineColor: highlightGeog
             }
@@ -443,7 +443,7 @@ export default function MapSection(){
             lineWidthScale: 500,
             getLineWidth: 5,
             lineWidthMinPixels: 2,
-            lineWidthMaxPixels: 10,
+            lineWidthMaxPixels: 5,
             updateTriggers: {
                 getLineColor: hoverGeog,
                 getElevation: currentMapID,
