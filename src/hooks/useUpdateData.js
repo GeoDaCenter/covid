@@ -19,7 +19,6 @@ export default function useUpdateData(){
   const currentTable = useSelector(state => state.currentTable);
   const storedData = useSelector(state => state.storedData);
   const storedGeojson = useSelector(state => state.storedGeojson);
-  const storedLisaData = useSelector(state => state.storedLisaData);
   const dataPresets = useSelector((state) => state.dataPresets);
   const defaultTables = useSelector((state) => state.defaultTables);
   const shouldUpdate = useSelector(state => state.shouldUpdate);
@@ -27,7 +26,7 @@ export default function useUpdateData(){
   const [stingerTimeout, setStingerTimeout] = useState();
   const [stinger, setStinger] = useState(false);
   const geoda = useContext(GeoDaContext);
-
+  
   const updateBins =  async () => { 
     setIsCalculating(true)
     if ((storedData[currentTable.numerator]||dataParams.numerator==='properties') && mapParams.mapType !== "lisa"){
@@ -93,7 +92,7 @@ export default function useUpdateData(){
       dataParams,
       Object.values(storedGeojson[currentData].indices.indexOrder)
     );
-    const cartogramData = await geoda.cartogram(currentData, dataForCartogram);
+    const cartogramData = await geoda.cartogram(storedGeojson[currentData].mapId, dataForCartogram);
     let tempArray = new Array(cartogramData.length)
     for (let i=0; i<cartogramData.length; i++){
         cartogramData[i].value = dataForCartogram[i]

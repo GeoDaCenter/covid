@@ -40,23 +40,22 @@ export const INITIAL_STATE = {
   centroids: {},
   // data and map params 
   dataParams: {
-    variableName:"Percent Fully Vaccinated",
-    numerator: 'vaccines_fully_vaccinated',
+    variableName:"Confirmed Count per 100K Population",
+    numerator: 'cases',
     nType: 'time-series',
+    nRange: 7,
     nProperty: null,
-    nRange: null,
     denominator: 'properties',
     dType: 'characteristic',
     dProperty: 'population',
     dRange:null,
     dIndex:null,
-    scale:100,
-    scale3D: 500_000,
-    colorScale: 'YlGn8',
+    scale:100000,
+    scale3D: 1000,
     fixedScale: null,
-    dataNote: 'Texas reports only state-level vaccination rates to the CDC.',
+    colorScale: null,
+    dataNote: null,
     zAxisParams: null,
-    fixedScale: null,
     storedRange: null,
     ...currVariable
   },
@@ -148,5 +147,6 @@ export const INITIAL_STATE = {
     data: null
   },
   shouldUpdate:true,
-  isLoading: true
+  isLoading: true,
+  mapScreenshotData: {}
 };

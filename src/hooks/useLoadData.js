@@ -76,8 +76,8 @@ export default function useLoadData(){
     return lisaValues.clusters
   }
 
-  const getCartogramValues = async (currentData, dataForCartogram) => {
-    let cartogramData = await geoda.cartogram(currentData, dataForCartogram);
+  const getCartogramValues = async (mapId, dataForCartogram) => {
+    let cartogramData = await geoda.cartogram(mapId, dataForCartogram);
     let tempArray = new Array(cartogramData.length)
     for (let i=0; i<cartogramData.length; i++){
         cartogramData[i].value = dataForCartogram[i]
@@ -148,7 +148,7 @@ export default function useLoadData(){
     }
     
     const lisaData = mapParams.mapType === 'lisa' ? await getLisaValues(datasetParams.geojson, binData, mapId) : null;  
-    const cartogramData = mapParams.vizType === 'cartogram' ? await getCartogramValues(datasetParams.geojson, binData) : null;
+    const cartogramData = mapParams.vizType === 'cartogram' ? await getCartogramValues(mapId, binData) : null;
     
     dispatch(
       initialDataLoad({
@@ -284,6 +284,7 @@ export default function useLoadData(){
           })
       } else {
         dispatch(updateChart());
+        dispatch(updateMap());
       }
     }
   },[currentData, geoda])

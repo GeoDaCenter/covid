@@ -10,6 +10,27 @@ import { colors } from '../config';
 const FooterContainer = styled.footer`
     width:100%;
     background: ${colors.teal};
+    h1 {    
+        font-family: 'Playfair Display', serif;
+        font-size: 49px;
+        font-weight: 300;
+        text-align: left;
+        font-style: italic;
+        color: #d8d8d8;
+        width: 80vw;
+        max-width: 940px;
+        margin: 0;
+        font-size:4rem;
+        @media (max-width:960px){
+            font-size:2rem;
+            width:100%;
+        }
+    }
+    .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+        margin-bottom: .5rem;
+        font-weight: 500;
+        line-height: 1.2;
+    }
     p {
         color:${colors.lightgray};
         font-size:1rem;
@@ -78,6 +99,7 @@ const SignupForm = styled.div`
     h1.signup {
         width:100%;
         font-size:2rem;
+        text-align:center;
     }
     h2 {
         color: ${colors.lightgray};
@@ -93,18 +115,19 @@ const SignupForm = styled.div`
         background:white;
         width:100%;
     }
-    .SubmitEmailBox {
-        width:100%;
-        height:100%;
+    a {
         display:inline-block;
         background-color: ${colors.orange};
         color: #0d0d0d;
         border:none;
         outline:none;
         border-radius:5px;
+        font-size:1.25rem;
+        text-transform:uppercase;
+        padding:.25em .5em;
+        margin:.5em 0 0 0;
         font-weight:bold;
         font-family:'Lato', sans-serif;
-        cursor:pointer;
     }
     .sr-only {
         visibility: hidden;
@@ -120,19 +143,7 @@ const Footer = ( props ) => {
                         <h1 className="signup">Sign up for the Newsletter</h1>                    
                         <h2>We'll keep you up to date with new updates, features, and insights on the COVID-19 pandemic. Follow the US COVID Atlas team on Medium too.</h2>
             
-                        <form action="https://github.us10.list-manage.com/subscribe/post?u=5ed730d26727290870ec65153&amp;id=74f209d5ed" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate form-inline vertical-center" target="_blank" novalidate="">
-                            <label class="sr-only" for="inlineFormInputGroupUsername2">Email</label>                            
-                            <Grid container spacing={1}>
-                                                                
-                                {/* <input type="email" class="form-control EnterEmailBox" name="b_5ed730d26727290870ec65153_74f209d5ed" placeholder="Enter email address" /> */}
-                                <Grid item xs={8} sm={10}>
-                                    <TextField id="outlined-basic" variant="outlined" type="email" class="form-control EnterEmailBox" name="b_5ed730d26727290870ec65153_74f209d5ed" placeholder="Enter email address"/>
-                                </Grid>
-                                <Grid item xs={4} sm={2}>
-                                    <input type="submit" value="SUBSCRIBE" name="subscribe" id="mc-embedded-subscribe" class="btn btn-lg SubmitEmailBox" />
-                                </Grid>
-                            </Grid>
-                        </form>
+                        <a href="https://github.us10.list-manage.com/subscribe/post?u=5ed730d26727290870ec65153&id=74f209d5ed" target="_blank" rel="noopener noreferrer">Subscribe</a>
                     </SignupForm>
                     }
                     
@@ -158,6 +169,7 @@ const Footer = ( props ) => {
                                 <li><a href="https://geodacenter.github.io/" target="_blank" rel="noopener noreferrer">GeoDa Open Software</a></li>
                                 <li><a href="https://covidatlas.healthcarecommunities.org" target="_blank" rel="noopener noreferrer">Learning Community</a></li>
                                 <li><NavLink to="/conduct">Code of Conduct</NavLink></li>
+                                <li><NavLink to="/privacy">Privacy Policy</NavLink></li>
                             </ul>
                         </p>
                     </Grid>

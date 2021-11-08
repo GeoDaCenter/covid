@@ -36,5 +36,12 @@ public/map/build
 public/proto/node_modules/
 data-scripts/safegraph/fullData2021-03-05.csv
 yarn.lock
-data-scripts/docker/gbq-credentials.json
+yarn.lock
 .env
+data-scripts/docker/gbq-credentials.json
+
+# 1p3a data
+data-scripts/_1p3a/cases.csv
+data-scripts/_1p3a/us-cases.csv
+data-scripts/_1p3a/us-cases.csv
+data-scripts/_1p3a/cases.csv

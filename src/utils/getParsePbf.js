@@ -9,17 +9,16 @@ export default async function getParsePbf(fileInfo, dateList){
         .then(r => r.arrayBuffer())
         .then(ab => new Pbf(ab))
         .then(pbf => Schemas.Rows.read(pbf))
-        
+    
     let returnData = {};
     let dateIndices = [];
     let constructorIndices = [];
     let columnNames = ['geoid', ...pbfData.dates]
-    
     // embedded scientific scale exponent in file name
     const scale = (/.e-[0-9]/g).exec(fileInfo.file) ? 10 ** -+(/.e-[0-9]/g).exec(fileInfo.file)[0]?.split('-')[1] : 1
 
     for (let i=0; i<dateList.length; i++) {
-        if (pbfData.dates.indexOf(dateList[i]) !== -1){
+        if (pbfData.dates.includes(dateList[i])){
             dateIndices.push(i);
             constructorIndices.push(true)
         } else {
@@ -32,10 +31,21 @@ export default async function getParsePbf(fileInfo, dateList){
             returnData[pbfData.row[i].geoid] = []
             for (let n=0, j=0; n<constructorIndices.length; n++) {
                 if (constructorIndices[n]) {
-                    returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j] === -999 ? null : ((pbfData.row[i].vals[j]*scale||0)+(returnData[pbfData.row[i].geoid][n-1]||0))||null)
+                    returnData[pbfData.row[i].geoid].push(
+                        pbfData.row[i].vals[j] <= -999 
+                            ? pbfData.row[i].vals[j] === -999 
+                                ? null 
+                                : undefined
+                            : ((pbfData.row[i].vals[j]*scale||0)+(returnData[pbfData.row[i].geoid][n-1]||0))||null
+                        )
                     j++;
                 } else {
-                    returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j] === -999 ? null : pbfData.row[i].vals[j-1]*scale||null)
+                    returnData[pbfData.row[i].geoid].push(
+                        pbfData.row[i].vals[j] <= -999 
+                            ? pbfData.row[i].vals[j] === -999
+                                ? null
+                                : undefined 
+                            : pbfData.row[i].vals[j-1]*scale||null)
                 }
             }
         }
@@ -44,7 +54,12 @@ export default async function getParsePbf(fileInfo, dateList){
             returnData[pbfData.row[i].geoid] = []
             for (let n=0, j=0; n<constructorIndices.length; n++) {
                 if (constructorIndices[n]) {
-                    returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j] === -999 ? null : pbfData.row[i].vals[j]*scale)
+                    returnData[pbfData.row[i].geoid].push(
+                        pbfData.row[i].vals[j] <= -999 
+                            ? pbfData.row[i].vals[j] === -999
+                                ? null
+                                : undefined  
+                            : pbfData.row[i].vals[j]*scale)
                     j++;
                 } else {
                     returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j-1]*scale||null)

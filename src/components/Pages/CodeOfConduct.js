@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
 import { ContentContainer } from '../../styled_components';
-import { StaticNavbar, Footer } from '../';
+import { NavBar, Footer } from '../';
 
 const ConductPage = styled.div`
     background:white;
@@ -31,17 +31,16 @@ const CodeOfConduct = () => {
 
     useEffect(() => {
         fetch(`${process.env.PUBLIC_URL}/code-of-conduct.md`).then(r => r.text()).then(text => {
-            console.log(text)
             setCodeText(text)
         })
     }, [])
     return (
        <ConductPage>
-           <StaticNavbar/>
-           <ContentContainer>
+            <NavBar light/>
+            <ContentContainer>
                 <ReactMarkdown>{codeText}</ReactMarkdown>
-           </ContentContainer>
-           <Footer/>
+            </ContentContainer>
+            <Footer/>
        </ConductPage>
     );
 }

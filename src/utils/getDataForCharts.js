@@ -2,8 +2,8 @@ const getDataForCharts = (table, dates, additionalParams={}) => {
     const { populationData=[], name=[], interval=1, geoid=[] } = additionalParams;
     const data = table.data;
     const dateIndices = table.dates;
-    
-    const populationModifier = populationData.length ? (val, population) => val === val && (val/population)*100_000 : val => val
+    // eslint-disable-next no-self-compare
+    const populationModifier = populationData.length ? (val, population) => val && (val/population)*100_000 : val => val
 
     // get list of all features (GEOIDs/FIPS)
     const features = Object.keys(data);

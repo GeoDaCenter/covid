@@ -1,0 +1,21 @@
+[functions]
+  directory = "functions/"
+
+[build.environment]
+  NODE_VERSION = "16.5.0"
+  AWS_LAMBDA_JS_RUNTIME = "16.5.0"
+
+[[headers]]
+  for = "/csv/*"
+    [headers.values]
+    Access-Control-Allow-Origin = "*"
+
+[[headers]]
+  for = "/geojson/*"
+    [headers.values]
+    Access-Control-Allow-Origin = "*"
+
+[[headers]]
+  for = "/pbf/*"
+    [headers.values]
+    Access-Control-Allow-Origin = "*"

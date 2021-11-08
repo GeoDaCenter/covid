@@ -216,14 +216,14 @@ export const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqM
 
 export const colors = {
     white: '#ffffff',
-    black: '#00000',
+    black: '#000000',
     darkgray:'#1a1a1a',
     gray:'#2b2b2b',
     buttongray: '#f5f5f5',
     lightgray: '#d8d8d8',
     yellow: '#FFCE00',
-    lightblue: '#A1E1E3',
     red: '#EC1E24',
+    lightblue: '#A1E1E3',
     strongOrange: '#F16622',
     orange:'#F37E44',
     skyblue: '#c1ebeb',
@@ -276,25 +276,23 @@ export const colors = {
     ]
 }
 
-export const defaultData = 'cdc_h.geojson';
+export const defaultData = 'county_nyt.geojson';
 export const defaultTables = {
     'County': {
-        'predictions':{
-            'file':'berkeley_predictions',
-            'type':'characteristic',
-            'join':'fips'
-        },
+        // 'predictions':{
+        //     'file':'berkeley_predictions',
+        //     'type':'characteristic',
+        //     'join':'fips'
+        // },
         'cases': {
-            'file':'covid_confirmed_cdc.e-2.pbf',
+            'file':'covid_confirmed_usafacts.pbf',
             'dates':'isoDateList',
-            'type':'time-series-cumulative',
-            'accumulate':true
+            'type':'time-series-cumulative'
         },
         'deaths': {
-            'file':'covid_deaths_cdc.e-2.pbf',
+            'file':'covid_deaths_usafacts.pbf',
             'dates':'isoDateList',
-            'type':'time-series-cumulative',
-            'accumulate':true
+            'type':'time-series-cumulative' 
         },
         'chr_health_context':{
             'file':'chr_health_context',
@@ -334,10 +332,16 @@ export const defaultTables = {
             'type':'characteristic',
             'join':'fips'
         },
-        'vaccines_fully_vaccinated':{
-            'file':'vaccine_fully_vaccinated_cdc',
+        'vaccines_one_dose':{
+            'file':'vaccination_one_or_more_doses_cdc.pbf',
             'dates':'isoDateList',
-            'type':'time-series-cumulative',
+            'type':'time-series',
+            'join':'fips'
+        },
+        'vaccines_fully_vaccinated':{
+            'file':'vaccination_fully_vaccinated_cdc.pbf',
+            'dates':'isoDateList',
+            'type':'time-series',
             'join':'fips'
         },
         'testing':{
@@ -363,25 +367,96 @@ export const defaultTables = {
             'dates':'isoDateList',
             'type':'time-series',
             'join':'county'
-        },
-        'essential_workers': {
-            'file':'context_essential_workers_acs',
-            'type':'characteristic',
-            'join':'fips'
         }
     },
     'County (Hybrid)':{
+        'vaccines_one_dose':{
+            'file':'vaccination_one_or_more_doses_cdc_h.pbf',
+            'dates':'isoDateList',
+            'type':'time-series',
+            'join':'fips'
+        },
+        'vaccines_fully_vaccinated':{
+            'file':'vaccination_fully_vaccinated_cdc_h.pbf',
+            'dates':'isoDateList',
+            'type':'time-series',
+            'join':'fips'
+        },
+        'chr_health_context':{
+            'file':'chr_health_context',
+            'type':'characteristic',
+            'join':'FIPS'
+        },
+        'chr_life':{
+            'file':'chr_life',
+            'type':'characteristic',
+            'join':'FIPS'
+        },
+        'chr_health_factors':{
+            'file':'chr_health_factors',
+            'type':'characteristic',
+            'join':'FIPS'
+        },
+        'pct_home':{
+            'file':'mobility_home_workdays_safegraph.pbf',
+            'dates':'isoDateList',
+            'type':'time-series',
+            'join':'county'
+        },
+        'pct_parttime':{
+            'file':'mobility_parttime_workdays_safegraph.pbf',
+            'dates':'isoDateList',
+            'type':'time-series',
+            'join':'county'
+        },
+        'pct_fulltime':{
+            'file':'mobility_fulltime_workdays_safegraph.pbf',
+            'dates':'isoDateList',
+            'type':'time-series',
+            'join':'county'
+        },
+        'essential_workers':{
+            'file':'context_essential_workers_acs',
+            'type':'characteristic',
+            'join':'fips'
+        },
+        'testing':{
+            'file':'covid_testing_cdc.e-2.pbf',
+            'dates':'isoDateList',
+            'type':'time-series',
+            'join':'county'
+        },
+        'testing_wk_pos':{
+            'file':'covid_wk_pos_cdc.e-4.pbf',
+            'dates':'isoDateList',
+            'type':'time-series',
+            'join':'county'
+        },
+        'testing_tcap':{
+            'file':'covid_tcap_cdc.e-2.pbf',
+            'dates':'isoDateList',
+            'type':'time-series',
+            'join':'county'
+        },
+        'testing_ccpt':{
+            'file':'covid_ccpt_cdc.e-4.pbf',
+            'dates':'isoDateList',
+            'type':'time-series',
+            'join':'county'
+        }
     },
     'State': {
         'cases': {
             'file':'covid_confirmed_usafacts_state',
             'dates':'isoDateList',
-            'type':'time-series-cumulative'
+            'type':'time-series-cumulative',
+            'join':'StateFIPS'
         },
         'deaths': {
             'file':'covid_deaths_usafacts_state',
             'dates':'isoDateList',
-            'type':'time-series-cumulative'
+            'type':'time-series-cumulative',
+            'join':'StateFIPS'
         },
         'chr_health_context':{
             'file':'chr_health_context_state',
@@ -423,22 +498,22 @@ export const defaultTables = {
             'join':'state_fips'
         },
         'vaccines_one_dose':{
-            'file':'vaccination_one_or_more_doses_cdc',
+            'file':'vaccination_one_or_more_doses_cdc_state',
             'dates':'isoDateList',
             'type':'time-series',
-            'join':'fips'
+            'join':'GEOID'
         },
         'vaccines_fully_vaccinated':{
-            'file':'vaccination_fully_vaccinated_cdc',
+            'file':'vaccination_fully_vaccinated_cdc_state',
             'dates':'isoDateList',
             'type':'time-series',
-            'join':'fips'
+            'join':'GEOID'
         },
         'vaccines_dist':{
-            'file':'vaccination_to_be_distributed_cdc',
+            'file':'vaccination_to_be_distributed_cdc_state',
             'dates':'isoDateList',
             'type':'time-series',
-            'join':'fips'
+            'join':'GEOID'
         },
     }
 }
@@ -471,14 +546,12 @@ export const dataPresets = {
             'cases': {
                 'file':'covid_confirmed_1p3a.pbf',
                 'dates':'isoDateList',
-                'type':'time-series-cumulative',
-                'accumulate':true
+                'type':'time-series-cumulative'
             },
             'deaths': {
                 'file':'covid_deaths_1p3a.pbf',
                 'dates':'isoDateList',
-                'type':'time-series-cumulative',
-                'accumulate':true
+                'type':'time-series-cumulative'
             }
         }
     },
@@ -505,20 +578,7 @@ export const dataPresets = {
         geojson: 'cdc.geojson', // geospatial data to join to
         id: 'GEOID',
         geography: 'County',
-        tables: {
-            'cases': {
-                'file':'covid_confirmed_cdc.e-2.pbf',
-                'dates':'isoDateList',
-                'type':'time-series',
-                'accumulate':true
-            },
-            'deaths': {
-                'file':'covid_deaths_cdc.e-2.pbf',
-                'dates':'isoDateList',
-                'type':'time-series',
-                'accumulate':true
-            }
-        }
+        tables: {}
     },
     'cdc_h.geojson': {
         plainName: 'CDC', // Plain english name for dataset
@@ -527,7 +587,13 @@ export const dataPresets = {
         geography: 'County (Hybrid)',
         tables: {
             'vaccines_fully_vaccinated':{
-                'file':'vaccine_fully_vaccinated_cdc_h',
+                'file':'vaccination_fully_vaccinated_cdc_h.pbf',
+                'dates':'isoDateList',
+                'type':'time-series-cumulative',
+                'join':'fips'
+            },
+            'vaccines_one_dose':{
+                'file':'vaccination_one_or_more_doses_cdc_h.pbf',
                 'dates':'isoDateList',
                 'type':'time-series-cumulative',
                 'join':'fips'
@@ -554,15 +620,13 @@ export const dataPresets = {
                 'file':'covid_confirmed_1p3a_state',
                 'dates':'isoDateList',
                 'type':'time-series-cumulative',
-                'join':'GEOID',
-                'accumulate':true
+                'join':'GEOID'
             },
             'deaths': {
                 'file':'covid_deaths_1p3a_state',
                 'dates':'isoDateList',
                 'type':'time-series-cumulative',
-                'join':'GEOID',
-                'accumulate':true
+                'join':'GEOID'
             }
         }
     },
@@ -607,7 +671,7 @@ export const dataPresets = {
         }
     }, 
 }
-export const tooltipTables = ['cases','deaths','testing_wk_pos','testing_tcap','vaccines_fully_vaccinated']
+export const tooltipTables = ['cases','deaths','testing_wk_pos','testing_tcap','vaccines_fully_vaccinated','vaccines_one_dose']
 
 export const tooltipInfo = {
     Choropleth: <p>A thematic map used to represent data through various shading patterns on predetermined geographic areas (counties, state).</p>,
@@ -639,7 +703,7 @@ export const tooltipInfo = {
     DrOverdMrtRt: <p>Number of drug poisoning deaths per 100,000 population</p>,
     LfExpRt: <p>Average number of years a person can expect to live</p>,
     SlfHlthPrc: <p>Percentage of adults reporting fair or poor health</p>,
-    SeverityIndex: <p>Indicates the severity of the local covid-19 outbreak, based on cumulative and predicted deaths</p>,
+    // SeverityIndex: <p>Indicates the severity of the local covid-19 outbreak, based on cumulative and predicted deaths</p>,
     PredictedDeaths: <p>Predicted number of deaths for a county</p>,
     PredictedDeathsInterval: <p>Margin of error for predicted death counts for a county </p>,
     healthfactor:<p>Health factors represent those things we can modify to improve community conditions and the length and quality of life for residents</p>,
@@ -997,7 +1061,7 @@ export const variablePresets = {
         scale3D: 1000,
         colorScale: 'YlGnBu8',
         fixedScale: null,
-        dataNote: 'Data prior to 2/28/21 include any doses administered in the state and may include residents of other states.'
+        dataNote: 'TX & HI report only state-level vaccination rates to the CDC.'
     },
     "Percent Fully Vaccinated": {
         variableName:"Percent Fully Vaccinated",
@@ -1014,7 +1078,7 @@ export const variablePresets = {
         scale3D: 500_000,
         colorScale: 'YlGn8',
         fixedScale: null,
-        dataNote: 'Texas reports only state-level vaccination rates to the CDC.'
+        dataNote: 'TX & HI report only state-level vaccination rates to the CDC.'
     },
     "Doses to be Administered per 100 People": {
         variableName:"Doses to be Administered per 100 People",
@@ -1034,23 +1098,23 @@ export const variablePresets = {
         dataNote: null,
     },
 
-    "Forecasting (5-Day Severity Index)": {
-      variableName:"Forecasting (5-Day Severity Index)",
-      numerator: 'predictions',
-      nType: 'characteristic',
-      nProperty: 'severity_index',
-      nRange: null,
-      denominator: 'properties',
-      dType: null,
-      dProperty: null,
-      dRange:null,
-      dIndex:null,
-      scale:1,
-      colorScale: 'forecasting',
-      fixedScale: 'forecasting',
-      scale3D: 50000,
-      dataNote: null,
-    },
+    // "Forecasting (5-Day Severity Index)": {
+    //   variableName:"Forecasting (5-Day Severity Index)",
+    //   numerator: 'predictions',
+    //   nType: 'characteristic',
+    //   nProperty: 'severity_index',
+    //   nRange: null,
+    //   denominator: 'properties',
+    //   dType: null,
+    //   dProperty: null,
+    //   dRange:null,
+    //   dIndex:null,
+    //   scale:1,
+    //   colorScale: 'forecasting',
+    //   fixedScale: 'forecasting',
+    //   scale3D: 50000,
+    //   dataNote: null,
+    // },
     "Percent Essential Workers":{
       variableName:"Percent Essential Workers",
       numerator: 'essential_workers',
@@ -1124,28 +1188,28 @@ export const variablePresets = {
 export const variableTree = {
     "HEADER:cases":{},
     "Confirmed Count": {
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
+        "County": ["USA Facts","1point3acres","New York Times"],//"CDC",
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "Confirmed Count per 100K Population":{
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
+        "County": ["USA Facts","1point3acres","New York Times"],//"CDC",
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "Confirmed Count per Licensed Bed":{
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
+        "County": ["USA Facts","1point3acres","New York Times"],//"CDC",
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "HEADER:deaths":{},
     "Death Count":{
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
+        "County": ["USA Facts","1point3acres","New York Times"],//"CDC",
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "Death Count per 100K Population": {
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
+        "County": ["USA Facts","1point3acres","New York Times"],//"CDC",
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "Death Count / Confirmed Count": {
-        "County": ["CDC","USA Facts","1point3acres","New York Times"],
+        "County": ["USA Facts","1point3acres","New York Times"],//"CDC",
         "State": ["USA Facts","1point3acres","New York Times"]
     },
     "HEADER:testing":{},
@@ -1164,15 +1228,17 @@ export const variableTree = {
         "State": ["CDC"]
     },
     "Percent Received At Least One Dose":{
+        "County (Hybrid)": ["CDC"],
+        "County": ["CDC"],
         "State": ["CDC"]
     },
     'Doses to be Administered per 100 People': {
         "State": ["CDC"]
     },
-    "HEADER:forecasting":{},
-    "Forecasting (5-Day Severity Index)":{
-        "County": ["Yu Group at Berkeley"]
-    },
+    // "HEADER:forecasting":{},
+    // "Forecasting (5-Day Severity Index)":{
+    //     "County": ["Yu Group at Berkeley"]
+    // },
     "HEADER:community health information":{},
     "Uninsured Percent": {
         "County": ["County Health Rankings"],
@@ -1210,7 +1276,7 @@ export const datasetTree = {
       'New York Times':'county_nyt.geojson',
       'USA Facts':'county_usfacts.geojson',
       'CDC':'cdc.geojson',
-      'Yu Group at Berkeley':'cdc.geojson',
+    //   'Yu Group at Berkeley':'cdc.geojson',
       'County Health Rankings':'cdc.geojson',
       'ACS':'cdc.geojson',   
       'Safegraph':'cdc.geojson'

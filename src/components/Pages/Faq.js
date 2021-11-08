@@ -9,14 +9,11 @@ import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 
 import { ContentContainer, Gutter } from '../../styled_components';
-import { StaticNavbar, Footer } from '../';
+import { NavBar, Footer } from '../';
 import { colors } from '../../config';
 
 const FaqPage = styled.div`
     background:white;
-    ul li {
-        margin-bottom:16px;
-    }
 `
 
 const ButtonContainer = styled(Grid)`
@@ -189,7 +186,7 @@ const faqQuestions = [
             are sourced from Safegraph’s <a href="https://docs.safegraph.com/docs/social-distancing-metrics" target="_blank" rel="noopener noreferrer">Social Distancing Metrics</a>. 
             <br/><br/>
             We have also added an <i>Essential Workers</i> data layer to contextualize these mobility metrics. This variable (found under 
-            Variables > Community Health Information) estimates the percentage of adult workers in essential occupations, based on 
+            Variables {`>`} Community Health Information) estimates the percentage of adult workers in essential occupations, based on 
             2019 American Community Survey county-level estimates. 
             <br/><br/>
             More about Safegraph’s mobility data: Safegraph provides U.S. Census block group level data that reports mobile phone 
@@ -278,9 +275,7 @@ const faqQuestions = [
     }
 ]   
 
-{/* <a href="" target="_blank" rel="noopener noreferrer"></a> */}
-
-const Faq = () => {
+export default function Faq(){
 
     const [expanded, setExpanded] = useState('panel0');
   
@@ -290,9 +285,9 @@ const Faq = () => {
 
     const goTo = (page) => window.location.href = page;
     return (
-       <FaqPage>
-           <StaticNavbar/>
-           <ContentContainer>
+         <FaqPage>
+            <NavBar light/>
+            <ContentContainer>
                <h1>Help</h1>
                <hr/>
                <ButtonContainer container spacing={2}>
@@ -349,5 +344,3 @@ const Faq = () => {
        </FaqPage>
     );
 }
- 
-export default Faq;

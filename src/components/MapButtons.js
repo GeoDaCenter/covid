@@ -1,6 +1,6 @@
 // general imports, state
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import {FlyToInterpolator} from '@deck.gl/core';
 
@@ -74,11 +74,10 @@ const ShareURL = styled.input`
 `
 
 
-export default function({
+export default function MapButtons({
     boxSelect,
     setBoxSelect
 }){
-    const dispatch = useDispatch();
     const selectionKeys = useSelector(state => state.selectionKeys);
     const panelState = useSelector(state => state.panelState);
     const viewport = useViewport();
@@ -170,6 +169,6 @@ export default function({
             <NavInlineButtonGroup>
                 <ShareButton />
             </NavInlineButtonGroup>
-            <ShareURL type="text" value="" id="share-url" />
+            <ShareURL type="text" value="" id="share-url" readOnly />
         </MapButtonContainer>
 }

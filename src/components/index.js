@@ -13,21 +13,24 @@ import HeroMap from './heroMap';
 import Icon from './Icon';
 import InfoBox from './infoBox';
 import Legend from './legend';
+import FastTrackInsights from './FastTrackInsights';
 import MapButtons  from './MapButtons';
-import MainLineChart from './mainLineChart';
-import MapSection from './mapSection';
-import MapTooltipContent from './mapTooltipContent';
-import NavBar from './navbar';
-import NotificationBox from './notificationBox';
-import VariablePanel from './variablePanel';
-import Popover from './tooltipPopper';
-import Preloader from './preloader';
-import Scaleable from './scaleable';
-import StaticNavbar from './staticNavbar';
-import Ticks from './ticks';
-import Tooltip from './tooltip';
-import TopPanel from './topPanel';
-import Geocoder from './geocoder';
+import MainLineChart from './MainLineChart';
+import MapSection from './MapSection';
+import MapTooltipContent from './MapTooltipContent';
+import MemberGrid from './MemberGrid';
+import NavBar from './Navbar';
+import NotificationBox from './NotificationBox';
+import VariablePanel from './VariablePanel';
+import Popover from './TooltipPopper';
+import Preloader from './Preloader';
+import PrintLayout from './PrintLayout';
+import Scaleable from './Scaleable';
+import StaticNavbar from './StaticNavbar';
+import Ticks from './Ticks';
+import Tooltip from './Tooltip';
+import TopPanel from './TopPanel';
+import Geocoder from './Geocoder';
 import ShareButton from './ShareButton';
 
 
@@ -60,6 +63,7 @@ export {
     Dock,
     Draggable,
     Geocoder,
+    FastTrackInsights,
     Footer,
     HeroMap,
     Icon,
@@ -69,11 +73,13 @@ export {
     MainLineChart,
     MapSection,
     MapTooltipContent,
+    MemberGrid,
     NavBar,
     NotificationBox,
     VariablePanel,
     Popover,
     Preloader,
+    PrintLayout,
     Scaleable,
     StaticNavbar,
     Ticks,

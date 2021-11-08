@@ -6,6 +6,8 @@ import dataFn from './dataFunction.js';
 import findDates from './findDates';
 import { findDateIndices, getDateIndices } from './findDateIndices';
 import findTableDetails from './findTableDetails';
+import { generateMapData } from './generateMapData';
+import { generateReport } from './generateReport';
 import geojsonArrayBuffer from './geojsonArrayBuffer';
 import getArrayCSV from './getArrayCSV';
 import getCartogramValues from './getCartogramValues';
@@ -32,8 +34,9 @@ import loadJson from './loadJson';
 import { mapFn, mapFnNb, mapFnTesting, mapFnHinge} from './mapFunction.js';
 import parseBinPairs from './parseBinPairs';
 import parseMapboxLayers from './parseMapboxLayers';
+import { parseTooltipData } from './parseTooltipData';
 import shallowCompare from './shallowCompare';
-
+import { shallowEqual } from './shallowEqual';
 export {
     addSelectedChartData,
     colIndex,
@@ -44,6 +47,8 @@ export {
     findTableDetails,
     getDateIndices,
     geojsonArrayBuffer,
+    generateMapData, 
+    generateReport, 
     getArrayCSV,
     getCartogramValues,
     getCartogramCenter,
@@ -72,5 +77,7 @@ export {
     mapFnHinge,
     parseBinPairs,
     parseMapboxLayers,
-    shallowCompare
+    parseTooltipData,
+    shallowCompare,
+    shallowEqual, 
 }

@@ -24,12 +24,13 @@ RUN wget http://download.osgeo.org/libspatialindex/spatialindex-src-1.8.5.tar.gz
 
 
 # Install geopandas
-RUN pip install rtree geopandas pandas boto3 requests pytz us lxml
-RUN pip install bs4 grequests
+RUN pip install rtree geopandas pandas boto3 requests grequests pytz us lxml
+RUN pip install bs4 protobuf pandas_gbq google-cloud-bigquery regex
 
-# Move entrypoint script to container and deploy key to ssh folder
+# Move entrypoint script to container and deploy key and gbq key to ssh folder
 COPY entrypoint.sh .
 COPY id_rsa /root/.ssh/id_rsa
+COPY gbq-credentials.json /root/.ssh/gbq-credentials.json
 
 # Run git clone, get data, git push
-CMD "./entrypoint.sh"
+ENTRYPOINT ["sh", "entrypoint.sh"]
