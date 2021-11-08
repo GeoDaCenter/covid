@@ -15,7 +15,7 @@ import {  setDates, setNotification, setPanelState } from '../../actions';
 
 import { MapSection, NavBar, VariablePanel, Legend,  TopPanel, Preloader,
   DataPanel, MainLineChart, Scaleable, Draggable, InfoBox,
-  NotificationBox, Popover, MapTooltipContent, PrintLayout } from '../../components';  
+  NotificationBox, Popover, MapTooltipContent, PrintLayout, DataLoader } from '../../components';  
 import { ViewportProvider } from '../../contexts/ViewportContext';
 import { GeoDaContext } from "../../contexts/GeoDaContext";
 
@@ -148,76 +148,89 @@ export default function Map() {
 
   return (
     <>
-    <div className="Map-App" style={{overflow:'hidden'}}>
-      <Preloader loaded={mapLoaded} />
-      {isLoading && <div id="loadingIcon">
-          <img
-            src={`${process.env.PUBLIC_URL}/assets/img/animated_cluster.svg`}
-            role="presentation"
-            alt=""
-          />
-        </div>
-      }
-      {/* <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
-        <button onClick={() => console.log(fullState)}>Log state</button>
-      </header> */}
+      <div className="Map-App" style={{overflow:'hidden'}}>
+        <Preloader loaded={mapLoaded} />
+        {isLoading && <div id="loadingIcon">
+            <img
+              src={`${process.env.PUBLIC_URL}/assets/img/animated_cluster.svg`}
+              role="presentation"
+              alt=""
+            />
+          </div>
+        }
+        {/* <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
+          <button onClick={() => console.log(fullState)}>Log state</button>
+        </header> */}
         <div id="mainContainer" className={isLoading ? 'loading' : ''}>
-        {geodaReady && 
-          <GeoDaContext.Provider value={geoda}>
-            <ViewportProvider defaultViewport={defaultViewport} >
-              <MapSection />
-              <PrintLayout />
-            </ViewportProvider>
-            <TopPanel />
-            <Legend 
-              variableName={variableName} 
-              colorScale={mapParams.colorScale}
-              bins={mapParams.bins}
-              fixedScale={fixedScale}
-              resource={mapParams.resource}
-              note={dataNote}
-              />
-            <VariablePanel />
-            <DataPanel />
-            <Popover /> 
-            <NotificationBox />  
-            {panelState.lineChart && <Draggable 
-              z={9}
-              defaultX={defaultDimensions.defaultXLong}
-              defaultY={defaultDimensions.defaultY}
-              title="lineChart"
-              content={
-              <Scaleable 
-                content={
-                  <MainLineChart />
-                } 
-                title="lineChart"
-                defaultWidth={defaultDimensions.defaultWidthLong}
-                defaultHeight={defaultDimensions.defaultHeight}
-                minHeight={defaultDimensions.minHeight}
-                minWidth={defaultDimensions.minWidth} />
-            }/>} 
-            {panelState.tutorial && <Draggable 
-              z={10}
-              defaultX={defaultDimensions.defaultXManual}
-              defaultY={defaultDimensions.defaultYManual}
-              title="tutorial"
-              content={
-              <Scaleable 
-                content={
-                  <InfoBox />
-                } 
-                title="tutorial"
-                defaultWidth={defaultDimensions.defaultWidthManual}
-                defaultHeight={defaultDimensions.defaultHeightManual}
-                minHeight={defaultDimensions.minHeight}
-                minWidth={defaultDimensions.minWidth} />
-            }/>}
-            <MapTooltipContent />
-          </GeoDaContext.Provider>}
+          {geodaReady && 
+            <>
+              <GeoDaContext.Provider value={geoda}>
+                <ViewportProvider defaultViewport={defaultViewport} >
+                  <MapSection />
+                  <PrintLayout />
+                  <TopPanel />
+                  <Legend 
+                    variableName={variableName} 
+                    colorScale={mapParams.colorScale}
+                    bins={mapParams.bins}
+                    fixedScale={fixedScale}
+                    resource={mapParams.resource}
+                    note={dataNote}
+                    />
+                  <VariablePanel />
+                  <DataPanel />
+                  <Popover /> 
+                  <NotificationBox />  
+                  {panelState.lineChart && <Draggable 
+                    z={9}
+                    defaultX={defaultDimensions.defaultXLong}
+                    defaultY={defaultDimensions.defaultY}
+                    title="lineChart"
+                    content={
+                    <Scaleable 
+                      content={
+                        <MainLineChart />
+                      } 
+                      title="lineChart"
+                      content={
+                      <Scaleable 
+                        content={
+                          <MainLineChart />
+                        } 
+                        title="lineChart"
+                        defaultWidth={defaultDimensions.defaultWidthLong}
+                        defaultHeight={defaultDimensions.defaultHeight}
+                        minHeight={defaultDimensions.minHeight}
+                        minWidth={defaultDimensions.minWidth} 
+                        />}
+                      />}
+                    />} 
+                    {panelState.tutorial && <Draggable 
+                      z={10}
+                      defaultX={defaultDimensions.defaultXManual}
+                      defaultY={defaultDimensions.defaultYManual}
+                      title="tutorial"
+                      content={
+                      <Scaleable 
+                        content={
+                          <InfoBox />
+                        } 
+                        title="tutorial"
+                        defaultWidth={defaultDimensions.defaultWidthManual}
+                        defaultHeight={defaultDimensions.defaultHeightManual}
+                        minHeight={defaultDimensions.minHeight}
+                        minWidth={defaultDimensions.minWidth} />
+                    }/>}
+                    <MapTooltipContent />
+                    {panelState.dataLoader &&
+                      <DataLoader/>
+                    }
+                </ViewportProvider>
+              </GeoDaContext.Provider>
+            </>}
         </div>
-    </div>
-    <NavBar />
+      </div>
+      <NavBar />
     </>
   );
 }

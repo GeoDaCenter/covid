@@ -15,13 +15,14 @@ import {MapboxLayer} from '@deck.gl/mapbox';
 
 // component, action, util, and config import
 import { Geocoder, MapButtons } from '../components';
-import { setMapLoaded, openContextMenu, setNotification, setTooltipContent, setDotDensityData, updateSelectionKeys} from '../actions';
+import { setMapLoaded, openContextMenu, setNotification, setTooltipContent, setDotDensityData, updateSelectionKeys, mapDidPan} from '../actions';
 import {getCSV, getCartogramCenter, parseMapboxLayers, shallowCompare } from '../utils';
 import { colors, MAPBOX_ACCESS_TOKEN } from '../config';
 import MAP_STYLE from '../config/style.json';
 import { useViewport, useSetViewport } from '../contexts/ViewportContext';
 import useLoadData from '../hooks/useLoadData';
 import useUpdateData from '../hooks/useUpdateData';
+import useFindViewport from '../hooks/useFindViewport';
 // PBF schemas
 import * as Schemas from '../schemas';
 
@@ -95,18 +96,18 @@ export default function MapSection(){
     const currentMapData = useSelector(state => state.mapData.data);
     const currentMapID = useSelector(state => state.mapData.params);
     const storedGeojson = useSelector(state => state.storedGeojson);
+    const dataPresets = useSelector(state => state.dataPresets);
     const currentMapGeography = storedGeojson[currentData]?.data||[]
     const colorFilter = useSelector(state => state.colorFilter);
-
+    const currIdCol = dataPresets[currentData].id
     const storedCartogramData = useSelector(state => state.storedCartogramData);
     const storedLisaData = useSelector(state => state.storedLisaData);
-    // eslint-disable-next-line no-empty-pattern
-    const [] = useLoadData();
-    // eslint-disable-next-line no-empty-pattern
-    const [] = useUpdateData();
+    const shouldPanMap = useSelector(state => state.shouldPanMap);
+    useLoadData();
+    useUpdateData();
     const viewport = useViewport();
     const setViewport = useSetViewport();
-    
+    const currMapViewport = useFindViewport(storedGeojson[currentData]?.mapId)
     // component state elements
     // hover and highlight geographibes
     const [hoverGeog, setHoverGeog] = useState(null);
@@ -291,6 +292,13 @@ export default function MapSection(){
     useEffect(() => {
         forceUpdate()
     }, [currentMapID, storedCartogramData, storedLisaData])
+
+    useEffect(() => {
+        if (shouldPanMap) {
+            setViewport({bearing:0, pitch:0, latitude:0, longitude:0, zoom:10, ...currMapViewport})
+            dispatch(mapDidPan())
+        }
+    }, [currMapViewport])
     
     const mapRef = useRef();
     const deckRef = useRef();
@@ -310,9 +318,9 @@ export default function MapSection(){
     }
 
     const handleMapHover = ({x, y, object, layer}) => {
-        dispatch(setTooltipContent(x, y, Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : object?.properties?.GEOID));
-        if (object && object?.properties?.GEOID) {
-            if (object?.properties?.GEOID !== hoverGeog) setHoverGeog(object?.properties?.GEOID)
+        dispatch(setTooltipContent(x, y, Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : object?.properties[currIdCol]));
+        if (object && object?.properties[currIdCol]) {
+            if (object?.properties[currIdCol] !== hoverGeog) setHoverGeog(object?.properties[currIdCol])
         } else {
             setHoverGeog(null)
         }
@@ -322,7 +330,7 @@ export default function MapSection(){
 
     const handleMapClick = (info, e) => {
         if (e.rightButton) return;
-        const objectID = +info.object?.properties?.GEOID
+        const objectID = +info.object?.properties[currIdCol]
         if (!objectID) return;
 
         if (multipleSelect) {
@@ -452,9 +460,9 @@ export default function MapSection(){
             id: 'cartogram layer',
             data: currentMapGeography.features,
             pickable:true,
-            getPosition: d => currentMapData[d.properties.GEOID].position,
-            getFillColor: d => currentMapData[d.properties.GEOID].color,
-            getRadius: d => currentMapData[d.properties.GEOID].radius,  
+            getPosition: d => currentMapData[d.properties[currIdCol]].position,
+            getFillColor: d => currentMapData[d.properties[currIdCol]].color,
+            getRadius: d => currentMapData[d.properties[currIdCol]].radius,  
             onHover: handleMapHover,
             radiusScale: currentData.includes('state') ? 9 : 6,
             updateTriggers: {
@@ -468,8 +476,8 @@ export default function MapSection(){
         cartogramText: new TextLayer({
             id: 'cartogram text layer',
             data: currentMapGeography.features,
-            getPosition: d => currentMapData[d.properties.GEOID].position,
-            getSize: d => currentMapData[d.properties.GEOID].radius,  
+            getPosition: d => currentMapData[d.properties[currIdCol]].position,
+            getSize: d => currentMapData[d.properties[currIdCol]].radius,  
             sizeScale: 4,
             backgroundColor: [240,240,240],
             pickable:false,
@@ -692,7 +700,7 @@ export default function MapSection(){
 
                 let GeoidList = [];
                 for (let i=0; i<features.length; i++) {
-                    const objectID = features[i].object?.properties?.GEOID
+                    const objectID = features[i].object?.properties[currIdCol]
                     if (!objectID || GeoidList.indexOf(objectID) !== -1) continue
                     GeoidList.push(objectID)
                 }

@@ -42,7 +42,7 @@ export default function useUpdateData(){
 
         if (mapParams.binMode !== 'dynamic' && dataParams.nType === 'time-series') tempDataParams.nIndex = storedData[currentTable.numerator]?.dates.slice(-1,)[0]
         if (mapParams.binMode !== 'dynamic' && dataParams.dType === 'time-series') tempDataParams.dIndex = tempDataParams.nIndex
-
+        
         let binData = getDataForBins(
           dataParams.numerator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.numerator].data, 
           dataParams.denominator === 'properties' ? storedGeojson[currentData].properties : storedData[currentTable.denominator].data, 
@@ -150,7 +150,7 @@ export default function useUpdateData(){
   // Both of these are computationally heavy.
   useEffect(() => {
     if (!isCalculating) {
-      if (mapParams.mapType === "lisa" && storedData[currentTable.numerator] !== undefined && storedGeojson[currentData] !== undefined) updateLisa()
+      if (mapParams.mapType === "lisa" && (storedData[currentTable.numerator] !== undefined || currentTable.numerator==='properties') && storedGeojson[currentData] !== undefined) updateLisa()
       if (mapParams.vizType === 'cartogram' && storedData[currentTable.numerator] !== undefined && storedGeojson[currentData] !== undefined) {
         updateCartogram()
       }
@@ -182,7 +182,7 @@ export default function useUpdateData(){
     }
   },[currentTable.numerator, currentTable.denominator, dataPresets, defaultTables, geoda])
 
-  const binReady = () => (storedGeojson[currentData] && storedData[currentTable.numerator] && mapParams.mapType !== 'lisa')
+  const binReady = () => (storedGeojson[currentData] && (storedData[currentTable.numerator]||currentTable.numerator==='properties') && mapParams.mapType !== 'lisa')
   // Trigger on index change while dynamic bin mode
   useEffect(() => { 
     if (!isCalculating && binReady() && mapParams.binMode === 'dynamic') updateBins()

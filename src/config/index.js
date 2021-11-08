@@ -1267,11 +1267,6 @@ export const variableTree = {
     }
 }
 
-const onlyUnique = (value, index, self) => self.indexOf(value) === index;
-export const allGeographies = Object.values(variableTree).flatMap(o => Object.keys(o)).filter(onlyUnique)
-export const allDatasets = Object.values(variableTree).flatMap(o => Object.values(o)).flatMap(o => o).filter(onlyUnique)
-
-
 export const datasetTree = {
     'County (Hybrid)': {
         'CDC':'cdc_h.geojson',

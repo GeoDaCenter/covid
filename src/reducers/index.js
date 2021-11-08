@@ -131,8 +131,16 @@ var reducer = (state = INITIAL_STATE, action) => {
             }
         }
         case 'UPDATE_CHART': {
-            const currCaseData = state.dataPresets[state.currentData].tables[state.chartParams.table]?.file||state.defaultTables[state.dataPresets[state.currentData].geography][state.chartParams.table].file
-            
+            let currCaseData;
+            try {
+                currCaseData = 
+                    state.dataPresets[state.currentData].tables[state.chartParams.table]?.file
+                    ||state.defaultTables[state.dataPresets[state.currentData].geography][state.chartParams.table].file
+            } catch {
+                return {
+                    ...state
+                }
+            }
             let populationData = [];
 
             if (state.chartParams.populationNormalized){
@@ -816,6 +824,119 @@ var reducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 storedGeojson
+            }
+        }
+        case 'ADD_CUSTOM_DATA': {
+            const rootName = action.payload.selectedFile?.name.split('.geojson')[0];
+            let dataName = action.payload.selectedFile?.name.split('.geojson')[0]
+            if (state.storedGeojson.hasOwnProperty(dataName)){
+                let i=2;
+                while (state.storedGeojson.hasOwnProperty(dataName)) {
+                    dataName = `${rootName}-${i}`
+                    i++;
+                }
+            }
+
+            const storedGeojson = {
+                ...state.storedGeojson,
+                [dataName]: {
+                    ...action.payload.geojson,
+                    weights: {},
+                    dateIndices: [],
+                    properties: indexGeoProps(
+                        action.payload.geojson.data, 
+                        false
+                    ),
+                    indices: getIdOrder(
+                        action.payload.geojson.data.features,
+                        false
+                    )
+                }
+            }
+
+            let variablePresets = {
+                ...state.variablePresets
+            }
+
+            const datasetTree = {
+                ...state.datasetTree,
+                [dataName]: {
+                    [dataName]:dataName,
+                }
+            }
+
+            const defaultTables = {
+                ...state.defaultTables,
+                [dataName]: {}
+            }
+
+            const dataPresets = {
+                ...state.dataPresets,
+                [dataName]: {
+                    plainName: dataName,
+                    geojson: dataName,
+                    id: 'idx',
+                    geography: dataName,
+                    tables: {}
+                }
+            }
+
+            let variableTree = {
+                [`HEADER: ${dataName}`]:{},
+            }
+
+            for (let i=0; i<action.payload.variables.length; i++){
+                let currVariable = action.payload.variables[i].variableName
+                variablePresets[currVariable] = action.payload.variables[i]
+                variableTree[currVariable] = {
+                    [dataName]: [dataName]
+                }
+            }
+            variableTree = {
+                ...variableTree,
+                ...state.variableTree
+            }
+
+            const urlParamsTree = {
+                ...state.urlParamsTree,
+                [dataName]:{
+                    name: dataName,
+                    geography: dataName
+                }
+            }
+
+            return {
+                ...state,
+                dataPresets,
+                datasetTree,
+                defaultTables,
+                storedGeojson,
+                urlParamsTree,
+                variableTree,
+                variablePresets,
+                currentData: dataName,
+                dataParams: {
+                    ...action.payload.variables[0]
+                },
+                currentTable: {
+                    numerator: "properties",
+                    denominator: "properties"
+                },
+                mapParams: {
+                    ...state.mapParams,
+                    vizType: "2D",
+                    dotDensityParams: {
+                        ...state.mapParams.dotDensityParams,
+                        colorCOVID: false
+                    }
+                },
+                shouldPanMap: true
+            }
+        }
+        case 'MAP_DID_PAN':{
+            return {
+                ...state,
+                shouldPanMap: false
             }
         }
         default:

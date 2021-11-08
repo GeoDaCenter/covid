@@ -1,17 +1,19 @@
 
-import BottomPanel from './BottomPanel';
-import ContextMenu from './ContextMenu';
-import CsvDownloader from './CsvDownloader';
-import DataDetails from './DataDetails';
-import DataPanel from './DataPanel';
-import DateSlider from './Slider';
-import Dock from './Dock';
-import Draggable from './Draggable';
+import BottomPanel from './bottomPanel';
+import ContextMenu from './contextMenu';
+import CsvDownloader from './csvDownloader';
+import DataDetails from './dataDetails';
+import DataLoader from './DataLoader';
+import DataPanel from './dataPanel';
+import DateSlider from './slider';
+import Dock from './dock';
+import Draggable from './draggable';
 import Footer from './Footer';
+import HeroMap from './heroMap';
+import Icon from './Icon';
+import InfoBox from './infoBox';
+import Legend from './legend';
 import FastTrackInsights from './FastTrackInsights';
-import HeroMap from './HeroMap';
-import InfoBox from './InfoBox';
-import Legend from './Legend';
 import MapButtons  from './MapButtons';
 import MainLineChart from './MainLineChart';
 import MapSection from './MapSection';
@@ -55,6 +57,7 @@ export {
     ContextMenu,
     CsvDownloader,
     DataDetails,
+    DataLoader,
     DataPanel,
     DateSlider,
     Dock,
@@ -63,6 +66,7 @@ export {
     FastTrackInsights,
     Footer,
     HeroMap,
+    Icon,
     InfoBox,
     Legend,
     MapButtons,
