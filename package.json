@@ -27,7 +27,6 @@
     "comlink": "^4.3.1",
     "d3-dsv": "^2.0.0",
     "d3-scale": "^3.2.0",
-    "dayjs": "^1.10.6",
     "file-saver": "^2.0.5",
     "jszip": "^3.6.0",
     "lodash": "^4.17.20",
@@ -44,9 +43,7 @@
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
     "remark-gfm": "^1.0.0",
-    "styled-components": "^5.2.1",
-    "web-vitals": "^0.2.4",
-    "workbox-build": "^6.1.5"
+    "styled-components": "^5.2.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -87,6 +84,8 @@
   },
   "devDependencies": {
     "source-map-explorer": "^2.5.2",
-    "worker-loader": "^3.0.6"
+    "worker-loader": "^3.0.6",
+    "workbox-build": "^6.1.5",
+    "dayjs": "^1.10.6"
   }
 }

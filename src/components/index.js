@@ -41,6 +41,7 @@ import CodeOfConduct from './Pages/CodeOfConduct';
 import Contact from './Pages/Contact';
 import Choropleth from './Pages/Choropleth';
 import Data from './Pages/Data';
+import DataLoading from './Pages/DataLoading';
 import ErrorPage from './Pages/Error';
 import Faq from './Pages/Faq';
 import Home from './Pages/Home';
@@ -93,6 +94,7 @@ export {
     Contact,
     Choropleth,
     Data,
+    DataLoading,
     ErrorPage,
     Faq,
     Home,

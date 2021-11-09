@@ -45,3 +45,8 @@ data-scripts/_1p3a/cases.csv
 data-scripts/_1p3a/us-cases.csv
 data-scripts/_1p3a/us-cases.csv
 data-scripts/_1p3a/cases.csv
+
+# yarn stuff
+.yarn/cache/*
+yarn.lock
+.yarn/*.gz

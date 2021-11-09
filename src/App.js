@@ -10,6 +10,7 @@ const Choropleth = React.lazy(() => import('./components/Pages/Choropleth'));
 const CodeOfConduct = React.lazy(() => import('./components/Pages/CodeOfConduct'));
 const Contact = React.lazy(() => import('./components/Pages/Contact'));
 const Data = React.lazy(() => import('./components/Pages/Data'));
+const DataLoading = React.lazy(() => import('./components/Pages/DataLoading'));
 const Download = React.lazy(() => import('./components/Pages/Download'));
 const Faq = React.lazy(() => import('./components/Pages/Faq'));
 const Hotspots = React.lazy(() => import('./components/Pages/Hotspots'));
@@ -41,6 +42,8 @@ export default function App(){
               <Route path="/api.html" component={Api}/>
               <Route path="/data" component={Data}/>
               <Route path="/data.html" component={Data}/>
+              <Route path="/data-loading" component={DataLoading}/>
+              <Route path="/data-loading.html" component={DataLoading}/>
               <Route path="/docs" component={Data}/>
               <Route path="/docs.html" component={Data}/>
               <Route path="/download" component={Download}/>
