@@ -13,7 +13,7 @@ import Slider from '@material-ui/core/Slider';
 
 import styled from 'styled-components';
 
-import Tooltip from './tooltip';
+import Tooltip from './Tooltip';
 import { Icon } from '../components';
 import { StyledDropDown, BinsContainer, Gutter } from '../styled_components';
 import { setVariableParams, setMapParams, setCurrentData, setPanelState, setParametersAndData, setNotification, changeDotDensityMode, toggleDotDensityRace, setDotDensityBgOpacity } from '../actions';

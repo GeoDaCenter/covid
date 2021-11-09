@@ -1,10 +1,23 @@
 import { tooltipTables } from '../config';
+import { dataFn } from '../utils';
 
 export const parseTooltipData = (geoid, state) => {
     let tooltipData = {}
     const properties = state.storedGeojson[state.currentData].properties[geoid];
     const geography = state.dataPresets[state.currentData].geography;
 
+    if (!(['County','State','County (Hybrid)'].includes(geography))) {
+        const varsToCalculate = Object.entries(state.variableTree)
+            .filter(treeEntry => treeEntry[1].hasOwnProperty(geography))
+            .map(entry => entry[0])
+        
+        for (let i=0; i<varsToCalculate.length; i++) {
+            tooltipData[varsToCalculate[i]] = dataFn(properties, properties, state.variablePresets[varsToCalculate[i]])
+        }
+        tooltipData = {custom: {...tooltipData, ...properties}}
+        return tooltipData
+    }
+    
     tooltipData = {
         population: properties.population,
         name: ['County', 'County (Hybrid)'].includes(geography) ? properties.NAME + ', ' + properties.state_abbr : properties.NAME

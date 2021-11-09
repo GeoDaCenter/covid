@@ -13,15 +13,16 @@ export const generateMapData = (state) => {
     };
 
     let returnObj = {};
+    const idCol = state.dataPresets[state.currentData].id
 
     const getTable = (i, predicate) => {
         if (state.dataParams[predicate] === 'properties' ) {
             return state.storedGeojson[state.currentData].data.features[i].properties 
         } else {
             try {
-                return state.storedData[state.dataPresets[state.currentData].tables[state.dataParams[predicate]].file].data[state.storedGeojson[state.currentData].data.features[i].properties.GEOID]
+                return state.storedData[state.dataPresets[state.currentData].tables[state.dataParams[predicate]].file].data[state.storedGeojson[state.currentData].data.features[i].properties[idCol]]
             } catch {
-                return state.storedData[state.defaultTables[state.dataPresets[state.currentData].geography][state.dataParams[predicate]].file].data[state.storedGeojson[state.currentData].data.features[i].properties.GEOID];
+                return state.storedData[state.defaultTables[state.dataPresets[state.currentData].geography][state.dataParams[predicate]].file].data[state.storedGeojson[state.currentData].data.features[i].properties[idCol]];
             }
         }
     }
@@ -60,8 +61,8 @@ export const generateMapData = (state) => {
             data: returnObj
         }
     }
-
     for (let i=0; i<state.storedGeojson[state.currentData].data.features.length; i++){
+        const currGeoid = state.storedGeojson[state.currentData].data.features[i].properties[idCol]
         const tempVal = dataFn(getTable(i, 'numerator'), getTable(i, 'denominator'), state.dataParams)
         
         const color = getColor(
@@ -73,18 +74,18 @@ export const generateMapData = (state) => {
             state.storedLisaData, 
             state.storedGeojson, 
             state.currentData, 
-            state.storedGeojson[state.currentData].data.features[i].properties.GEOID,
+            currGeoid,
             mapFn
         );
 
         const height = getHeight(tempVal, state.dataParams);
 
         if (color === null) {
-            returnObj[state.storedGeojson[state.currentData].data.features[i].properties.GEOID] = {color:[0,0,0,0],height:0}
+            returnObj[currGeoid] = {color:[0,0,0,0],height:0}
             continue;
         }
 
-        returnObj[state.storedGeojson[state.currentData].data.features[i].properties.GEOID] = {color,height}
+        returnObj[currGeoid] = {color,height}
     }
 
     return {

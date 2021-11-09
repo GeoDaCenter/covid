@@ -2,7 +2,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useState, useEffect, useMemo, useContext } from 'react';
 import { 
-  getParseCSV, getParsePbf, getDataForBins, getDateLists } from '../utils'; //getVarId
+  getParseCSV, getParsePbf, getDataForBins, getDateLists, indexGeoProps, getIdOrder } from '../utils'; //getVarId
 // Main data loader
 // This functions asynchronously accesses the Geojson data and CSVs
 //   then performs a join and loads the data into the store
@@ -15,45 +15,6 @@ import { GeoDaContext } from '../contexts/GeoDaContext';
 
 const dateLists = getDateLists();
 const handleLoadData = (fileInfo) => fileInfo.file.slice(-4,) === '.pbf' ? getParsePbf(fileInfo, dateLists[fileInfo.dates]) : getParseCSV(fileInfo, dateLists[fileInfo.dates])
-
-export const getIdOrder = (features, idProp) => {
-  let geoidOrder = {};
-  let indexOrder = {}
-  if (!idProp) {
-    for (let i=0; i<features.length; i++) {
-      geoidOrder[i] = i
-      indexOrder[i] = i
-    }
-  } else {
-    for (let i=0; i<features.length; i++) {
-      geoidOrder[features[i].properties[idProp]] = i
-      indexOrder[i] = features[i].properties[idProp]
-    }
-  }
-  return { geoidOrder, indexOrder }
-};
-
-/**
-* Assign an array of geo objects (eg. Features of a GeoJSON) into an indexed object
-* based  on the provided key property
-* @param {Object} data Geojson-like object to be assigned
-* @param {String} key Key inside properties to index rows on
-* @returns {Object} Indexed geodata for faster access
-*/
-export const indexGeoProps = (data, key) => {
-  let geoProperties = {};
-  if (!key) {
-    for (var i = 0; i < data.features.length; i++) {
-      geoProperties[i] = data.features[i].properties;
-    }
-  } else {
-    for (var i = 0; i < data.features.length; i++) {
-      geoProperties[data.features[i].properties[key]] =
-        data.features[i].properties;
-    }
-  }
-  return geoProperties;
-};
 
 export default function useLoadData(){
   const dataParams = useSelector(state => state.dataParams);

@@ -113,7 +113,6 @@ export default function MapSection(){
     const [hoverGeog, setHoverGeog] = useState(null);
     const [highlightGeog, setHighlightGeog] = useState([]);
     const [glContext, setGLContext] = useState();
-    
     // async fetched data and cartogram center
     const [resourceLayerData, setResourceLayerData] = useState({
         clinics: [],
@@ -393,10 +392,10 @@ export default function MapSection(){
         choropleth: new GeoJsonLayer({
             id: 'choropleth',
             data: currentMapGeography,
-            getFillColor: d => !colorFilter || currentMapData[d.properties.GEOID]?.color?.length === 4 
-                ? currentMapData[d.properties.GEOID]?.color
-                : [...(currentMapData[d.properties.GEOID]?.color||[0,0,0]), 0+(!colorFilter || colorFilter===currentMapData[d.properties.GEOID]?.color)*225],
-            getElevation: d => currentMapData[d.properties.GEOID]?.height||0,
+            getFillColor: d => !colorFilter || currentMapData[d.properties[currIdCol]]?.color?.length === 4 
+                ? currentMapData[d.properties[currIdCol]]?.color
+                : [...(currentMapData[d.properties[currIdCol]]?.color||[0,0,0]), 0+(!colorFilter || colorFilter===currentMapData[d.properties[currIdCol]]?.color)*225],
+            getElevation: d => currentMapData[d.properties[currIdCol]]?.height||0,
             pickable: true,
             stroked: false,
             filled: true,
@@ -427,7 +426,7 @@ export default function MapSection(){
             stroked: true,
             filled:false,
             lineWidthScale: 500,
-            getLineWidth: d => highlightGeog.indexOf(d.properties.GEOID)!==-1 ? 5 : 0, 
+            getLineWidth: d => highlightGeog.indexOf(d.properties[currIdCol])!==-1 ? 5 : 0, 
             lineWidthMinPixels: 0,
             lineWidthMaxPixels: 10,
             updateTriggers: {
@@ -439,14 +438,14 @@ export default function MapSection(){
             id: 'hoverHighlightlayer',    
             data: currentMapGeography,
             getLineColor: () => mapParams.vizType === 'dotDensity' ? [200,200,200] : [50, 50, 50], 
-            getElevation: d => currentMapData[d.properties.GEOID]?.height||0,
+            getElevation: d => currentMapData[d.properties[currIdCol]]?.height||0,
             pickable: false,
             stroked: true,
             filled:false,
             wireframe: mapParams.vizType === '3D',
             extruded: mapParams.vizType === '3D',
             lineWidthScale: 500,
-            getLineWidth: d => hoverGeog === d.properties.GEOID ? 8 : 0,
+            getLineWidth: d => hoverGeog === d.properties[currIdCol] ? 8 : 0,
             lineWidthMinPixels: 0,
             lineWidthMaxPixels: 10,
             updateTriggers: {

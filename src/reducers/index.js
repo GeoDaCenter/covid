@@ -1,5 +1,5 @@
 import { INITIAL_STATE } from '../constants/defaults';
-import { getDataForCharts, generateMapData, generateReport, shallowEqual, parseTooltipData  } from '../utils';
+import { getDataForCharts, generateMapData, generateReport, shallowEqual, parseTooltipData, getIdOrder, indexGeoProps  } from '../utils';
 
 var reducer = (state = INITIAL_STATE, action) => {
     switch(action.type) {

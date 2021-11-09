@@ -22,6 +22,7 @@ import { getDateLists } from './getDateLists.js';
 import getGeoidIndex from './getGeoidIndex';
 import getGeoids from './getGeoids';
 import getGzipData from './getGzipData';
+import { getIdOrder } from './getIdOrder';
 import getJson from './getJson';
 import getJsonPure from './getJsonPure';
 import getLisaValues from './getLisaValues';
@@ -29,6 +30,7 @@ import getParseCSV from './getParseCSV';
 import getParsePbf from './getParsePbf'
 import getURLParams from './getURLParams';
 import getVarId from './getVarId';
+import { indexGeoProps } from './indexGeoProps';
 import loadGeojsonToGeoda from './loadGeojsonToGeoda';
 import loadJson from './loadJson';
 import { mapFn, mapFnNb, mapFnTesting, mapFnHinge} from './mapFunction.js';
@@ -61,6 +63,7 @@ export {
     getDateLists,
     getGeoidIndex,
     getGeoids,
+    getIdOrder,
     getJson,
     getJsonPure,
     getLisaValues,
@@ -69,6 +72,7 @@ export {
     getURLParams,
     getVarId,
     getGzipData,
+    indexGeoProps,
     loadGeojsonToGeoda,
     loadJson,
     mapFn,
