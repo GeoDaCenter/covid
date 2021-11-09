@@ -187,6 +187,9 @@ const FileUploader = ({onFileSelectSuccess, onFileSelectError}) => {
 }
 
 const validateGeojson = (content) => {
+    if (!content) {
+        return ['Please select a file.', false]
+    }
     if (content.crs?.properties?.name && !content.crs.properties.name.includes('CRS84') ){
         return ['Geospatial data must be in WGS84 projection.', false]
     }
@@ -519,16 +522,20 @@ export default function DataLoader(){
 
     const handleFileSubmission = (e) => {
         e.preventDefault();
-        if (uploadTab){
-            fileReader = new FileReader();
-            fileReader.onloadend = () => handleFileRead();
-            fileReader.readAsText(selectedFile)
-        } else {
-            setFileMessage({
-                type: 'wait',
-                body:`Please wait, fetching your data...`
-            });
-            fetchRemoteData(remoteUrl)
+        try {  
+            if (uploadTab){
+                fileReader = new FileReader();
+                fileReader.onloadend = () => handleFileRead();
+                fileReader.readAsText(selectedFile)
+            } else {
+                setFileMessage({
+                    type: 'wait',
+                    body:`Please wait, fetching your data...`
+                });
+                fetchRemoteData(remoteUrl)
+            }
+        } catch {
+            console.log(e)
         }
     }
 

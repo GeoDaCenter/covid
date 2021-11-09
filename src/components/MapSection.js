@@ -98,6 +98,7 @@ export default function MapSection(){
     const storedGeojson = useSelector(state => state.storedGeojson);
     const dataPresets = useSelector(state => state.dataPresets);
     const currentMapGeography = storedGeojson[currentData]?.data||[]
+    const isPoint = currentMapGeography.features ? currentMapGeography.features[0].geometry.type === 'Point' : false;
     const colorFilter = useSelector(state => state.colorFilter);
     const currIdCol = dataPresets[currentData].id
     const storedCartogramData = useSelector(state => state.storedCartogramData);
@@ -317,8 +318,14 @@ export default function MapSection(){
     }
 
     const handleMapHover = ({x, y, object, layer}) => {
-        dispatch(setTooltipContent(x, y, Object.keys(layer?.props).indexOf('getIcon')!==-1 ? object : object?.properties[currIdCol]));
-        if (object && object?.properties[currIdCol]) {
+        if (object) {
+            dispatch(setTooltipContent(x, y, object?.properties ? object.properties[currIdCol] : object));
+        } else {
+            setHoverGeog(null)
+            dispatch(setTooltipContent(x, y, null))
+        }
+
+        if (!isPoint && object && object?.properties[currIdCol]) {
             if (object?.properties[currIdCol] !== hoverGeog) setHoverGeog(object?.properties[currIdCol])
         } else {
             setHoverGeog(null)
@@ -396,6 +403,9 @@ export default function MapSection(){
                 ? currentMapData[d.properties[currIdCol]]?.color
                 : [...(currentMapData[d.properties[currIdCol]]?.color||[0,0,0]), 0+(!colorFilter || colorFilter===currentMapData[d.properties[currIdCol]]?.color)*225],
             getElevation: d => currentMapData[d.properties[currIdCol]]?.height||0,
+            getPointRadius: 250,
+            pointRadiusMaxPixels: 50,
+            pointRadiusMinPixels: 5,
             pickable: true,
             stroked: false,
             filled: true,
@@ -413,7 +423,8 @@ export default function MapSection(){
                 transitions: colorFilter,
                 opacity: mapParams.overlay,
                 getElevation: currentMapID,
-                getFillColor: [currentMapID,colorFilter]
+                getFillColor: [currentMapID,colorFilter],
+                getPointRadius: viewport.zoom
             },
         }),
         choroplethHighlight:  new GeoJsonLayer({

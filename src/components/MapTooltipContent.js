@@ -10,7 +10,7 @@ export default function MapTooltipContent(){
     
     if (tooltipContent.data.custom) {
         return <HoverDiv style={{position: 'absolute', zIndex: 1, pointerEvents: 'none', left: tooltipContent.x, top: tooltipContent.y}}>
-            {Object.entries(tooltipContent.data.custom).map(entry => <><b>{entry[0]}:</b> {entry[1]}<br/></>)}
+            {Object.entries(tooltipContent.data.custom).map(entry => <><b>{entry[0]}:</b> {typeof entry[1] !== 'object' ? entry[1] : JSON.stringify(entry[1])}<br/></>)}
         </HoverDiv>
     }
     
