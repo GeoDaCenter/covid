@@ -95,6 +95,7 @@ export default function MapSection(){
     const dotDensityData = useSelector(state => state.dotDensityData);
     const currentMapData = useSelector(state => state.mapData.data);
     const currentMapID = useSelector(state => state.mapData.params);
+    const currentHeightScale = useSelector(state => state.mapData.heightScale);
     const storedGeojson = useSelector(state => state.storedGeojson);
     const dataPresets = useSelector(state => state.dataPresets);
     const currentMapGeography = storedGeojson[currentData]?.data||[]
@@ -403,6 +404,7 @@ export default function MapSection(){
                 ? currentMapData[d.properties[currIdCol]]?.color
                 : [...(currentMapData[d.properties[currIdCol]]?.color||[0,0,0]), 0+(!colorFilter || colorFilter===currentMapData[d.properties[currIdCol]]?.color)*225],
             getElevation: d => currentMapData[d.properties[currIdCol]]?.height||0,
+            elevationScale: currentHeightScale||1,
             getPointRadius: 250,
             pointRadiusMaxPixels: 50,
             pointRadiusMinPixels: 5,
@@ -422,7 +424,8 @@ export default function MapSection(){
             updateTriggers: {
                 transitions: colorFilter,
                 opacity: mapParams.overlay,
-                getElevation: currentMapID,
+                getElevation: [currentMapID,currentHeightScale],
+                elevationScale: currentHeightScale,
                 getFillColor: [currentMapID,colorFilter],
                 getPointRadius: viewport.zoom
             },
@@ -450,6 +453,7 @@ export default function MapSection(){
             data: currentMapGeography,
             getLineColor: () => mapParams.vizType === 'dotDensity' ? [200,200,200] : [50, 50, 50], 
             getElevation: d => currentMapData[d.properties[currIdCol]]?.height||0,
+            elevationScale: currentHeightScale||1,
             pickable: false,
             stroked: true,
             filled:false,
@@ -461,7 +465,8 @@ export default function MapSection(){
             lineWidthMaxPixels: 10,
             updateTriggers: {
                 getLineColor: mapParams.vizType,
-                getElevation: currentMapID,
+                getElevation: [currentMapID,currentHeightScale],
+                elevationScale: currentHeightScale,
                 getLineWidth: hoverGeog,
                 extruded: mapParams.vizType
             }
