@@ -511,6 +511,9 @@ export default function DataLoader(){
             })
         if (data) {
             handleFileRead(data)
+            setSelectedFile({
+                name: url.split('/').pop(),
+            })
         } else {
             setFileMessage({
                 type: 'error',

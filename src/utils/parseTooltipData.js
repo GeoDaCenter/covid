@@ -14,7 +14,7 @@ export const parseTooltipData = (geoid, state) => {
         for (let i=0; i<varsToCalculate.length; i++) {
             tooltipData[varsToCalculate[i]] = dataFn(properties, properties, state.variablePresets[varsToCalculate[i]])
         }
-        tooltipData = {custom: {...tooltipData, ...properties}}
+        tooltipData = {custom: {...tooltipData, ...(Object.keys(properties).length < 10 ? properties : {})}}
         return tooltipData
     }
     
