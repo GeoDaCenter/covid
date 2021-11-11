@@ -1,5 +1,5 @@
-// import { useEffect, useState } from 'react';
-// import { useSelector } from 'react-redux';
+import { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import ReactGA from 'react-ga';
 
 ReactGA.initialize('UA-72724100-4');
@@ -7,7 +7,7 @@ ReactGA.pageview(window.location.pathname + window.location.search);
 
 export default function useTrackUserActions(){
     // What dataset is being viewed?
-    // const currentData = useSelector((state) => state.currentData); 
+    const currentData = useSelector((state) => state.currentData); 
     // // What variable is being selected?
     // const variableName = useSelector((state) => state.dataParams.variableName);
     // // What overlay layer is being used?
@@ -20,6 +20,20 @@ export default function useTrackUserActions(){
     // const mapType = useSelector((state) => state.mapParams.mapType);
     // // What counties or states are being selected?
     // const selectionKeys = useSelector(state => state.selectionKeys);
+    // What are the default datasets?
+    const dataPresets = useSelector((state) => state.dataPresets); 
+    const baseDatasetNum = useRef(Object.keys(dataPresets).length);
+    
+    useEffect(() => {
+        const customDatasetsLoaded = Object.keys(dataPresets).length - baseDatasetNum.current
+        if (customDatasetsLoaded > 0){
+            ReactGA.event({
+                category: 'Custom Data',
+                action: 'Loaded Datasets',
+                value: customDatasetsLoaded
+            });
+        }
+    },[Object.keys(dataPresets).length])
     
     // const [hasLogged, setHasLogged] = useState({
     //     'currentData': [],

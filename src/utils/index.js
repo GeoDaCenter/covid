@@ -37,6 +37,7 @@ import { mapFn, mapFnNb, mapFnTesting, mapFnHinge} from './mapFunction.js';
 import parseBinPairs from './parseBinPairs';
 import parseMapboxLayers from './parseMapboxLayers';
 import { parseTooltipData } from './parseTooltipData';
+import resolveName from './resolveName';
 import shallowCompare from './shallowCompare';
 import { shallowEqual } from './shallowEqual';
 export {
@@ -82,6 +83,7 @@ export {
     parseBinPairs,
     parseMapboxLayers,
     parseTooltipData,
+    resolveName,
     shallowCompare,
     shallowEqual, 
 }

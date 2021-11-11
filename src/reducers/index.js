@@ -1,5 +1,5 @@
 import { INITIAL_STATE } from '../constants/defaults';
-import { getDataForCharts, generateMapData, generateReport, shallowEqual, parseTooltipData, getIdOrder, indexGeoProps  } from '../utils';
+import { getDataForCharts, generateMapData, generateReport, shallowEqual, parseTooltipData, getIdOrder, indexGeoProps,resolveName } from '../utils';
 
 var reducer = (state = INITIAL_STATE, action) => {
     switch(action.type) {
@@ -827,16 +827,8 @@ var reducer = (state = INITIAL_STATE, action) => {
             }
         }
         case 'ADD_CUSTOM_DATA': {
-            const rootName = action.payload.selectedFile?.name.split('.geojson')[0];
-            let dataName = action.payload.selectedFile?.name.split('.geojson')[0]
-            if (state.storedGeojson.hasOwnProperty(dataName)){
-                let i=2;
-                while (state.storedGeojson.hasOwnProperty(dataName)) {
-                    dataName = `${rootName}-${i}`
-                    i++;
-                }
-            }
-
+            const dataName = resolveName(action.payload.selectedFile?.name.split('.geojson')[0], Object.keys(state.storedGeojson));
+            
             const storedGeojson = {
                 ...state.storedGeojson,
                 [dataName]: {
@@ -875,8 +867,8 @@ var reducer = (state = INITIAL_STATE, action) => {
                 [dataName]: {
                     plainName: dataName,
                     geojson: dataName,
-                    id: 'idx',
                     geography: dataName,
+                    id: 'idx',
                     tables: {}
                 }
             }
@@ -884,17 +876,17 @@ var reducer = (state = INITIAL_STATE, action) => {
             let variableTree = {
                 [`HEADER: ${dataName}`]:{},
             }
-
+            const variablesList = Object.keys(state.variablePresets)
             for (let i=0; i<action.payload.variables.length; i++){
-                let currVariable = action.payload.variables[i].variableName
-                variablePresets[currVariable] = action.payload.variables[i]
+                let currVariable = resolveName(action.payload.variables[i].variableName, variablesList)
+                variablesList.push(currVariable)
+                variablePresets[currVariable] = {
+                    ...action.payload.variables[i],
+                    variableName: currVariable,
+                }
                 variableTree[currVariable] = {
                     [dataName]: [dataName]
                 }
-            }
-            variableTree = {
-                ...variableTree,
-                ...state.variableTree
             }
 
             const urlParamsTree = {
@@ -904,7 +896,7 @@ var reducer = (state = INITIAL_STATE, action) => {
                     geography: dataName
                 }
             }
-
+            
             return {
                 ...state,
                 dataPresets,
@@ -912,12 +904,13 @@ var reducer = (state = INITIAL_STATE, action) => {
                 defaultTables,
                 storedGeojson,
                 urlParamsTree,
-                variableTree,
+                variableTree: {
+                    ...variableTree,
+                    ...state.variableTree
+                },
                 variablePresets,
                 currentData: dataName,
-                dataParams: {
-                    ...action.payload.variables[0]
-                },
+                dataParams: Object.values(variablePresets).slice(-1)[0],
                 currentTable: {
                     numerator: "properties",
                     denominator: "properties"
