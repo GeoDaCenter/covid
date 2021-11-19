@@ -6,7 +6,7 @@ The U.S. COVID-19 Atlas provides county-level visualizations and analytics to re
 
 The current Atlas is available here: [https://USCovidAtlas.org](https://USCovidAtlas.org). The Atlas is being updated everyday by midnight EST. We are working on releasing regular updates with more data, functions, and analysis.
 
-![screenshot](https://github.com/GeoDaCenter/covid/blob/master/data/screenshot2.png)
+![screenshot](https://github.com/GeoDaCenter/covid/blob/master/public/img/screenshot.png)
 
 ## DATA
 
