@@ -1,75 +1,53 @@
 GEOID,NAME,average,state_abbr,state_name
-42113,Sullivan County ,43.94,PA,Pennsylvania
-42015,Bradford County ,95.08,PA,Pennsylvania
-42099,Perry County ,51.33,PA,Pennsylvania
-42035,Clinton County ,90.67,PA,Pennsylvania
-42075,Lebanon County ,69.33,PA,Pennsylvania
-42007,Beaver County ,64.54,PA,Pennsylvania
-42039,Crawford County ,83.4,PA,Pennsylvania
-42073,Lawrence County ,74.88,PA,Pennsylvania
-42105,Potter County ,81.82,PA,Pennsylvania
-42121,Venango County ,120.56,PA,Pennsylvania
-42069,Lackawanna County ,51.01,PA,Pennsylvania
-42059,Greene County ,72.69,PA,Pennsylvania
-42057,Fulton County ,94.54,PA,Pennsylvania
-42053,Forest County ,52.47,PA,Pennsylvania
-42047,Elk County ,91.95,PA,Pennsylvania
-42085,Mercer County ,73.82,PA,Pennsylvania
-42123,Warren County ,87.78,PA,Pennsylvania
-42043,Dauphin County ,55.37,PA,Pennsylvania
-42117,Tioga County ,103.96,PA,Pennsylvania
-42109,Snyder County ,64.96,PA,Pennsylvania
-42049,Erie County ,79.72,PA,Pennsylvania
-42065,Jefferson County ,82.96,PA,Pennsylvania
-42079,Luzerne County ,58.51,PA,Pennsylvania
-42125,Washington County ,74.06,PA,Pennsylvania
-42071,Lancaster County ,51.69,PA,Pennsylvania
-42033,Clearfield County ,74.26,PA,Pennsylvania
-42051,Fayette County ,74.94,PA,Pennsylvania
-42131,Wyoming County ,65.25,PA,Pennsylvania
-42093,Montour County ,92.93,PA,Pennsylvania
-42107,Schuylkill County ,81.6,PA,Pennsylvania
-42005,Armstrong County ,95.19,PA,Pennsylvania
-42061,Huntingdon County ,87.12,PA,Pennsylvania
-42055,Franklin County ,59.09,PA,Pennsylvania
-42063,Indiana County ,84.63,PA,Pennsylvania
-42067,Juniata County ,71.54,PA,Pennsylvania
-42081,Lycoming County ,97.76,PA,Pennsylvania
-42127,Wayne County ,49.06,PA,Pennsylvania
-42027,Centre County ,65.39,PA,Pennsylvania
-42013,Blair County ,99.9,PA,Pennsylvania
-42025,Carbon County ,63.46,PA,Pennsylvania
-42011,Berks County ,60.24,PA,Pennsylvania
-42129,Westmoreland County ,76.27,PA,Pennsylvania
-42021,Cambria County ,93.11,PA,Pennsylvania
-42037,Columbia County ,71.19,PA,Pennsylvania
-42097,Northumberland County ,91.29,PA,Pennsylvania
-42089,Monroe County ,48.76,PA,Pennsylvania
-42003,Allegheny County ,55.02,PA,Pennsylvania
-42077,Lehigh County ,48.38,PA,Pennsylvania
-42031,Clarion County ,115.53,PA,Pennsylvania
-42041,Cumberland County ,58.77,PA,Pennsylvania
-42083,McKean County ,62.53,PA,Pennsylvania
-42087,Mifflin County ,71.8,PA,Pennsylvania
-42119,Union County ,58.27,PA,Pennsylvania
-42009,Bedford County ,74.94,PA,Pennsylvania
-42019,Butler County ,77.18,PA,Pennsylvania
-42023,Cameron County ,70.12,PA,Pennsylvania
-42115,Susquehanna County ,71.19,PA,Pennsylvania
-42111,Somerset County ,73.19,PA,Pennsylvania
-54023,Grant County ,60.13,WV,West Virginia
-54033,Harrison County ,39.79,WV,West Virginia
-54007,Braxton County ,43.01,WV,West Virginia
-54051,Marshall County ,46.05,WV,West Virginia
-54057,Mineral County ,35.09,WV,West Virginia
-54101,Webster County ,98.95,WV,West Virginia
-54083,Randolph County ,44.24,WV,West Virginia
-54097,Upshur County ,48.19,WV,West Virginia
-54077,Preston County ,59.11,WV,West Virginia
-54093,Tucker County ,52.86,WV,West Virginia
-54041,Lewis County ,50.91,WV,West Virginia
-54091,Taylor County ,38.77,WV,West Virginia
-54001,Barbour County ,69.17,WV,West Virginia
+42113,Sullivan County ,41.63,PA,Pennsylvania
+42015,Bradford County ,76.43,PA,Pennsylvania
+42035,Clinton County ,81.16,PA,Pennsylvania
+42007,Beaver County ,65.91,PA,Pennsylvania
+42039,Crawford County ,102.3,PA,Pennsylvania
+42073,Lawrence County ,67.52,PA,Pennsylvania
+42105,Potter County ,80.97,PA,Pennsylvania
+42121,Venango County ,112.37,PA,Pennsylvania
+42069,Lackawanna County ,39.93,PA,Pennsylvania
+42053,Forest County ,120.49,PA,Pennsylvania
+42047,Elk County ,62.08,PA,Pennsylvania
+42085,Mercer County ,55.81,PA,Pennsylvania
+42123,Warren County ,98.13,PA,Pennsylvania
+42043,Dauphin County ,37.21,PA,Pennsylvania
+42117,Tioga County ,91.83,PA,Pennsylvania
+42049,Erie County ,78.22,PA,Pennsylvania
+42065,Jefferson County ,71.29,PA,Pennsylvania
+42079,Luzerne County ,51.05,PA,Pennsylvania
+42125,Washington County ,65.39,PA,Pennsylvania
+42033,Clearfield County ,55.03,PA,Pennsylvania
+42051,Fayette County ,63.82,PA,Pennsylvania
+42131,Wyoming County ,47.64,PA,Pennsylvania
+42093,Montour County ,57.01,PA,Pennsylvania
+42107,Schuylkill County ,69.06,PA,Pennsylvania
+42005,Armstrong County ,77.75,PA,Pennsylvania
+42061,Huntingdon County ,40.89,PA,Pennsylvania
+42063,Indiana County ,64.8,PA,Pennsylvania
+42067,Juniata County ,39.55,PA,Pennsylvania
+42081,Lycoming County ,86.19,PA,Pennsylvania
+42127,Wayne County ,43.8,PA,Pennsylvania
+42027,Centre County ,36.1,PA,Pennsylvania
+42013,Blair County ,78.21,PA,Pennsylvania
+42129,Westmoreland County ,58.79,PA,Pennsylvania
+42021,Cambria County ,66.68,PA,Pennsylvania
+42037,Columbia County ,55.87,PA,Pennsylvania
+42097,Northumberland County ,68.24,PA,Pennsylvania
+42003,Allegheny County ,45.89,PA,Pennsylvania
+42031,Clarion County ,85.36,PA,Pennsylvania
+42083,McKean County ,47.16,PA,Pennsylvania
+42119,Union County ,31.35,PA,Pennsylvania
+42009,Bedford County ,65.83,PA,Pennsylvania
+42019,Butler County ,69.99,PA,Pennsylvania
+42023,Cameron County ,54.87,PA,Pennsylvania
+42115,Susquehanna County ,76.37,PA,Pennsylvania
+42111,Somerset County ,67.09,PA,Pennsylvania
+54023,Grant County ,34.36,WV,West Virginia
+54007,Braxton County ,33.01,WV,West Virginia
+54083,Randolph County ,38.34,WV,West Virginia
+54097,Upshur County ,33.67,WV,West Virginia
 46055,Haakon County ,34.31,SD,South Dakota
 46105,Perkins County ,34.4,SD,South Dakota
 46015,Brule County ,76.1,SD,South Dakota
@@ -100,208 +78,80 @@ GEOID,NAME,average,state_abbr,state_name
 46085,Lyman County ,96.0,SD,South Dakota
 46049,Faulk County ,104.59,SD,South Dakota
 46033,Custer County ,59.99,SD,South Dakota
-39137,Putnam County ,67.71,OH,Ohio
-39051,Fulton County ,67.54,OH,Ohio
-39173,Wood County ,45.96,OH,Ohio
-39003,Allen County ,67.26,OH,Ohio
-39085,Lake County ,51.67,OH,Ohio
-39011,Auglaize County ,61.47,OH,Ohio
-39055,Geauga County ,54.73,OH,Ohio
-39125,Paulding County ,50.72,OH,Ohio
-39063,Hancock County ,57.19,OH,Ohio
-39091,Logan County ,52.03,OH,Ohio
-39077,Huron County ,56.21,OH,Ohio
-39099,Mahoning County ,50.08,OH,Ohio
-39035,Cuyahoga County ,39.0,OH,Ohio
-39175,Wyandot County ,45.88,OH,Ohio
-39155,Trumbull County ,45.8,OH,Ohio
-39043,Erie County ,51.53,OH,Ohio
-39069,Henry County ,50.73,OH,Ohio
-39033,Crawford County ,47.6,OH,Ohio
-39065,Hardin County ,47.56,OH,Ohio
-39147,Seneca County ,62.32,OH,Ohio
-39161,Van Wert County ,88.4,OH,Ohio
-39039,Defiance County ,70.91,OH,Ohio
-39007,Ashtabula County ,74.1,OH,Ohio
-39171,Williams County ,86.25,OH,Ohio
-39107,Mercer County ,45.86,OH,Ohio
-39143,Sandusky County ,58.06,OH,Ohio
-39029,Columbiana County ,59.75,OH,Ohio
-39095,Lucas County ,33.47,OH,Ohio
-55113,Sawyer County ,89.01,WI,Wisconsin
-55031,Douglas County ,59.91,WI,Wisconsin
-55041,Forest County ,42.77,WI,Wisconsin
-55107,Rusk County ,29.21,WI,Wisconsin
-55015,Calumet County ,64.53,WI,Wisconsin
-55033,Dunn County ,69.99,WI,Wisconsin
-55039,Fond du Lac County ,49.57,WI,Wisconsin
-55005,Barron County ,48.62,WI,Wisconsin
-55115,Shawano County ,36.58,WI,Wisconsin
-55129,Washburn County ,101.98,WI,Wisconsin
-55123,Vernon County ,34.64,WI,Wisconsin
-55073,Marathon County ,56.82,WI,Wisconsin
-55053,Jackson County ,38.32,WI,Wisconsin
-55013,Burnett County ,57.11,WI,Wisconsin
-55091,Pepin County ,31.47,WI,Wisconsin
-55043,Grant County ,35.01,WI,Wisconsin
-55141,Wood County ,66.87,WI,Wisconsin
-55095,Polk County ,68.22,WI,Wisconsin
-55007,Bayfield County ,36.21,WI,Wisconsin
-55109,St. Croix County ,75.23,WI,Wisconsin
-55069,Lincoln County ,42.58,WI,Wisconsin
-55075,Marinette County ,69.43,WI,Wisconsin
-55093,Pierce County ,65.24,WI,Wisconsin
-55037,Florence County ,49.41,WI,Wisconsin
-26121,Muskegon County ,78.35,MI,Michigan
-26139,Ottawa County ,80.12,MI,Michigan
-26101,Manistee County ,39.74,MI,Michigan
-26019,Benzie County ,79.76,MI,Michigan
-26087,Lapeer County ,63.98,MI,Michigan
-26149,St. Joseph County ,60.76,MI,Michigan
-26031,Cheboygan County ,49.94,MI,Michigan
-26079,Kalkaska County ,48.27,MI,Michigan
-26151,Sanilac County ,68.02,MI,Michigan
-26059,Hillsdale County ,70.13,MI,Michigan
-26049,Genesee County ,58.91,MI,Michigan
-26015,Barry County ,71.6,MI,Michigan
-26023,Branch County ,76.7,MI,Michigan
-26137,Otsego County ,69.1,MI,Michigan
-26057,Gratiot County ,77.23,MI,Michigan
-26065,Ingham County ,59.79,MI,Michigan
-26067,Ionia County ,81.69,MI,Michigan
-26085,Lake County ,53.44,MI,Michigan
-26107,Mecosta County ,78.59,MI,Michigan
-26035,Clare County ,55.99,MI,Michigan
-26043,Dickinson County ,71.51,MI,Michigan
-26055,Grand Traverse County ,60.26,MI,Michigan
-26039,Crawford County ,69.18,MI,Michigan
-26119,Montmorency County ,78.67,MI,Michigan
-26077,Kalamazoo County ,57.45,MI,Michigan
-26125,Oakland County ,46.91,MI,Michigan
-26009,Antrim County ,51.16,MI,Michigan
-26165,Wexford County ,66.87,MI,Michigan
-26007,Alpena County ,74.89,MI,Michigan
-26091,Lenawee County ,76.74,MI,Michigan
-26111,Midland County ,54.82,MI,Michigan
-26147,St. Clair County ,68.31,MI,Michigan
-26159,Van Buren County ,64.72,MI,Michigan
-26113,Missaukee County ,35.22,MI,Michigan
-26027,Cass County ,37.2,MI,Michigan
-26061,Houghton County ,62.86,MI,Michigan
-26081,Kent County ,70.64,MI,Michigan
-26045,Eaton County ,77.48,MI,Michigan
-26051,Gladwin County ,38.98,MI,Michigan
-26071,Iron County ,66.26,MI,Michigan
-26135,Oscoda County ,43.15,MI,Michigan
-26155,Shiawassee County ,101.37,MI,Michigan
-26123,Newaygo County ,73.89,MI,Michigan
-26105,Mason County ,99.41,MI,Michigan
-26117,Montcalm County ,74.13,MI,Michigan
-26005,Allegan County ,81.69,MI,Michigan
-26093,Livingston County ,79.81,MI,Michigan
-26089,Leelanau County ,59.42,MI,Michigan
-26029,Charlevoix County ,32.69,MI,Michigan
-26141,Presque Isle County ,50.23,MI,Michigan
-26099,Macomb County ,58.92,MI,Michigan
-26145,Saginaw County ,54.24,MI,Michigan
-26127,Oceana County ,78.41,MI,Michigan
-26157,Tuscola County ,64.12,MI,Michigan
-26131,Ontonagon County ,40.69,MI,Michigan
-26063,Huron County ,72.01,MI,Michigan
-26163,Wayne County ,47.15,MI,Michigan
-26017,Bay County ,58.35,MI,Michigan
-26075,Jackson County ,94.75,MI,Michigan
-26133,Osceola County ,62.11,MI,Michigan
-26041,Delta County ,65.53,MI,Michigan
-26037,Clinton County ,75.01,MI,Michigan
-26073,Isabella County ,49.25,MI,Michigan
-26109,Menominee County ,62.72,MI,Michigan
-26161,Washtenaw County ,39.27,MI,Michigan
-26103,Marquette County ,39.27,MI,Michigan
-26025,Calhoun County ,61.62,MI,Michigan
-27005,Becker County ,49.91,MN,Minnesota
-27009,Benton County ,89.06,MN,Minnesota
-27007,Beltrami County ,81.16,MN,Minnesota
-27097,Morrison County ,73.27,MN,Minnesota
-27131,Rice County ,52.79,MN,Minnesota
-27161,Waseca County ,44.05,MN,Minnesota
-27013,Blue Earth County ,68.93,MN,Minnesota
-27051,Grant County ,86.61,MN,Minnesota
-27083,Lyon County ,62.47,MN,Minnesota
-27133,Rock County ,37.94,MN,Minnesota
-27147,Steele County ,64.66,MN,Minnesota
-27153,Todd County ,79.49,MN,Minnesota
-27067,Kandiyohi County ,77.02,MN,Minnesota
-27065,Kanabec County ,88.37,MN,Minnesota
-27003,Anoka County ,64.97,MN,Minnesota
-27017,Carlton County ,56.27,MN,Minnesota
-27035,Crow Wing County ,42.51,MN,Minnesota
-27059,Isanti County ,64.51,MN,Minnesota
-27165,Watonwan County ,53.38,MN,Minnesota
-27163,Washington County ,63.33,MN,Minnesota
-27085,McLeod County ,66.59,MN,Minnesota
-27123,Ramsey County ,47.67,MN,Minnesota
-27073,Lac qui Parle County ,73.82,MN,Minnesota
-27043,Faribault County ,66.82,MN,Minnesota
-27173,Yellow Medicine County ,99.89,MN,Minnesota
-27135,Roseau County ,116.41,MN,Minnesota
-27111,Otter Tail County ,64.79,MN,Minnesota
-27143,Sibley County ,47.9,MN,Minnesota
-27115,Pine County ,79.94,MN,Minnesota
-27149,Stevens County ,151.85,MN,Minnesota
-27019,Carver County ,87.07,MN,Minnesota
-27101,Murray County ,51.31,MN,Minnesota
-27109,Olmsted County ,67.29,MN,Minnesota
-27049,Goodhue County ,109.42,MN,Minnesota
-27053,Hennepin County ,51.11,MN,Minnesota
-27087,Mahnomen County ,96.0,MN,Minnesota
-27155,Traverse County ,55.65,MN,Minnesota
-27171,Wright County ,89.54,MN,Minnesota
-27039,Dodge County ,140.9,MN,Minnesota
-27169,Winona County ,48.89,MN,Minnesota
-27167,Wilkin County ,38.29,MN,Minnesota
-27029,Clearwater County ,55.12,MN,Minnesota
-27151,Swift County ,91.08,MN,Minnesota
-27011,Big Stone County ,74.05,MN,Minnesota
-27127,Redwood County ,69.89,MN,Minnesota
-27041,Douglas County ,91.39,MN,Minnesota
-27061,Itasca County ,78.06,MN,Minnesota
-27015,Brown County ,41.37,MN,Minnesota
-27157,Wabasha County ,78.41,MN,Minnesota
-27089,Marshall County ,47.15,MN,Minnesota
-27129,Renville County ,57.26,MN,Minnesota
-27145,Stearns County ,74.43,MN,Minnesota
-27121,Pope County ,106.69,MN,Minnesota
-27079,Le Sueur County ,54.63,MN,Minnesota
-27139,Scott County ,86.49,MN,Minnesota
-27099,Mower County ,41.84,MN,Minnesota
-27093,Meeker County ,82.94,MN,Minnesota
-27037,Dakota County ,59.95,MN,Minnesota
-27069,Kittson County ,88.94,MN,Minnesota
-27071,Koochiching County ,70.05,MN,Minnesota
-27001,Aitkin County ,46.01,MN,Minnesota
-27077,Lake of the Woods County ,56.26,MN,Minnesota
-27091,Martin County ,62.97,MN,Minnesota
-27021,Cass County ,59.07,MN,Minnesota
-27057,Hubbard County ,58.21,MN,Minnesota
-27027,Clay County ,61.42,MN,Minnesota
-27025,Chisago County ,68.39,MN,Minnesota
-27023,Chippewa County ,54.72,MN,Minnesota
-27033,Cottonwood County ,65.32,MN,Minnesota
-27103,Nicollet County ,61.74,MN,Minnesota
-27095,Mille Lacs County ,87.18,MN,Minnesota
-27107,Norman County ,78.41,MN,Minnesota
-27113,Pennington County ,67.48,MN,Minnesota
-27141,Sherburne County ,103.74,MN,Minnesota
-27047,Freeborn County ,58.97,MN,Minnesota
-27119,Polk County ,52.0,MN,Minnesota
-27137,St. Louis County ,68.4,MN,Minnesota
-27045,Fillmore County ,79.33,MN,Minnesota
-27159,Wadena County ,98.41,MN,Minnesota
+55061,Kewaunee County ,55.43,WI,Wisconsin
+55113,Sawyer County ,126.54,WI,Wisconsin
+55031,Douglas County ,81.96,WI,Wisconsin
+55041,Forest County ,77.62,WI,Wisconsin
+55107,Rusk County ,45.33,WI,Wisconsin
+55015,Calumet County ,81.17,WI,Wisconsin
+55087,Outagamie County ,78.02,WI,Wisconsin
+55078,Menominee County ,49.92,WI,Wisconsin
+55097,Portage County ,65.97,WI,Wisconsin
+55099,Price County ,82.6,WI,Wisconsin
+55033,Dunn County ,98.24,WI,Wisconsin
+55131,Washington County ,61.16,WI,Wisconsin
+55137,Waushara County ,59.83,WI,Wisconsin
+55085,Oneida County ,61.84,WI,Wisconsin
+55125,Vilas County ,59.54,WI,Wisconsin
+55071,Manitowoc County ,70.16,WI,Wisconsin
+55089,Ozaukee County ,39.64,WI,Wisconsin
+55105,Rock County ,43.27,WI,Wisconsin
+55065,Lafayette County ,51.22,WI,Wisconsin
+55057,Juneau County ,101.12,WI,Wisconsin
+55039,Fond du Lac County ,66.88,WI,Wisconsin
+55077,Marquette County ,39.46,WI,Wisconsin
+55005,Barron County ,75.13,WI,Wisconsin
+55115,Shawano County ,55.04,WI,Wisconsin
+55117,Sheboygan County ,74.15,WI,Wisconsin
+55081,Monroe County ,68.44,WI,Wisconsin
+55017,Chippewa County ,68.47,WI,Wisconsin
+55129,Washburn County ,71.93,WI,Wisconsin
+55103,Richland County ,38.28,WI,Wisconsin
+55025,Dane County ,30.14,WI,Wisconsin
+55123,Vernon County ,68.35,WI,Wisconsin
+55009,Brown County ,75.56,WI,Wisconsin
+55035,Eau Claire County ,70.88,WI,Wisconsin
+55073,Marathon County ,79.42,WI,Wisconsin
+55053,Jackson County ,62.0,WI,Wisconsin
+55013,Burnett County ,98.31,WI,Wisconsin
+55091,Pepin County ,55.08,WI,Wisconsin
+55119,Taylor County ,44.21,WI,Wisconsin
+55027,Dodge County ,74.21,WI,Wisconsin
+55055,Jefferson County ,67.33,WI,Wisconsin
+55043,Grant County ,68.91,WI,Wisconsin
+55021,Columbia County ,47.16,WI,Wisconsin
+55023,Crawford County ,70.17,WI,Wisconsin
+55045,Green County ,66.65,WI,Wisconsin
+55121,Trempealeau County ,66.48,WI,Wisconsin
+55011,Buffalo County ,72.69,WI,Wisconsin
+55067,Langlade County ,55.91,WI,Wisconsin
+55063,La Crosse County ,52.73,WI,Wisconsin
+55079,Milwaukee County ,34.04,WI,Wisconsin
+55111,Sauk County ,57.73,WI,Wisconsin
+55141,Wood County ,98.07,WI,Wisconsin
+55083,Oconto County ,64.28,WI,Wisconsin
+55095,Polk County ,94.25,WI,Wisconsin
+55007,Bayfield County ,72.42,WI,Wisconsin
+55139,Winnebago County ,73.56,WI,Wisconsin
+55109,St. Croix County ,103.34,WI,Wisconsin
+55133,Waukesha County ,62.85,WI,Wisconsin
+55135,Waupaca County ,77.75,WI,Wisconsin
+55127,Walworth County ,61.99,WI,Wisconsin
+55003,Ashland County ,75.47,WI,Wisconsin
+55069,Lincoln County ,56.43,WI,Wisconsin
+55075,Marinette County ,87.05,WI,Wisconsin
+55093,Pierce County ,93.74,WI,Wisconsin
+55047,Green Lake County ,60.93,WI,Wisconsin
+55001,Adams County ,54.09,WI,Wisconsin
+55019,Clark County ,60.47,WI,Wisconsin
+55049,Iowa County ,36.29,WI,Wisconsin
+55037,Florence County ,69.17,WI,Wisconsin
+19083,Hardin County ,28.36,IA,Iowa
 19081,Hancock County ,112.84,IA,Iowa
 19019,Buchanan County ,31.78,IA,Iowa
 19023,Butler County ,66.9,IA,Iowa
 19195,Worth County ,66.76,IA,Iowa
+19121,Madison County ,31.47,IA,Iowa
 19003,Adams County ,72.85,IA,Iowa
 19033,Cerro Gordo County ,86.08,IA,Iowa
 19039,Clarke County ,55.41,IA,Iowa
@@ -319,6 +169,7 @@ GEOID,NAME,average,state_abbr,state_name
 19055,Delaware County ,62.91,IA,Iowa
 19067,Floyd County ,77.47,IA,Iowa
 19189,Winnebago County ,109.46,IA,Iowa
+19091,Humboldt County ,52.27,IA,Iowa
 19159,Ringgold County ,40.13,IA,Iowa
 19197,Wright County ,34.59,IA,Iowa
 19113,Linn County ,44.44,IA,Iowa
@@ -327,208 +178,367 @@ GEOID,NAME,average,state_abbr,state_name
 19175,Union County ,75.71,IA,Iowa
 19061,Dubuque County ,92.53,IA,Iowa
 19131,Mitchell County ,38.97,IA,Iowa
-35011,De Baca County ,110.96,NM,New Mexico
-35043,Sandoval County ,52.26,NM,New Mexico
-35061,Valencia County ,58.87,NM,New Mexico
-35021,Harding County ,62.25,NM,New Mexico
-35037,Quay County ,121.14,NM,New Mexico
-35051,Sierra County ,70.56,NM,New Mexico
-35017,Grant County ,88.58,NM,New Mexico
-35053,Socorro County ,77.31,NM,New Mexico
-35031,McKinley County ,64.91,NM,New Mexico
-35045,San Juan County ,115.33,NM,New Mexico
-35035,Otero County ,78.88,NM,New Mexico
-35019,Guadalupe County ,32.6,NM,New Mexico
-35005,Chaves County ,44.96,NM,New Mexico
-35047,San Miguel County ,47.9,NM,New Mexico
-35059,Union County ,47.9,NM,New Mexico
-35023,Hidalgo County ,29.41,NM,New Mexico
-35027,Lincoln County ,60.86,NM,New Mexico
-35057,Torrance County ,54.96,NM,New Mexico
-35013,Dona Ana County ,84.39,NM,New Mexico
-35029,Luna County ,77.72,NM,New Mexico
-35006,Cibola County ,34.42,NM,New Mexico
-36099,Seneca County ,39.21,NY,New York
-36101,Steuben County ,57.48,NY,New York
-36015,Chemung County ,54.48,NY,New York
-36007,Broome County ,48.79,NY,New York
-36037,Genesee County ,68.59,NY,New York
-36121,Wyoming County ,58.46,NY,New York
-36115,Washington County ,102.59,NY,New York
-36123,Yates County ,35.42,NY,New York
-36091,Saratoga County ,47.81,NY,New York
-36055,Monroe County ,48.37,NY,New York
-36113,Warren County ,76.88,NY,New York
-36029,Erie County ,51.67,NY,New York
-36083,Rensselaer County ,35.21,NY,New York
-36069,Ontario County ,66.68,NY,New York
-36031,Essex County ,31.03,NY,New York
-36051,Livingston County ,70.41,NY,New York
-36075,Oswego County ,55.05,NY,New York
-36089,St. Lawrence County ,46.29,NY,New York
-36043,Herkimer County ,60.11,NY,New York
-36073,Orleans County ,69.39,NY,New York
-36107,Tioga County ,69.91,NY,New York
-36035,Fulton County ,74.16,NY,New York
-36063,Niagara County ,60.12,NY,New York
-36049,Lewis County ,60.95,NY,New York
-36003,Allegany County ,72.91,NY,New York
-36009,Cattaraugus County ,77.97,NY,New York
-36041,Hamilton County ,49.96,NY,New York
-36013,Chautauqua County ,49.25,NY,New York
-21069,Fleming County ,40.45,KY,Kentucky
-21169,Metcalfe County ,29.99,KY,Kentucky
-21001,Adair County ,51.23,KY,Kentucky
-21053,Clinton County ,34.98,KY,Kentucky
-21097,Harrison County ,44.38,KY,Kentucky
-21207,Russell County ,50.68,KY,Kentucky
-21231,Wayne County ,68.62,KY,Kentucky
-56033,Sheridan County ,32.37,WY,Wyoming
-56031,Platte County ,49.41,WY,Wyoming
-56021,Laramie County ,53.37,WY,Wyoming
-56015,Goshen County ,45.71,WY,Wyoming
-20023,Cheyenne County ,32.02,KS,Kansas
-20109,Logan County ,81.34,KS,Kansas
-20009,Barton County ,38.39,KS,Kansas
-20193,Thomas County ,111.38,KS,Kansas
-20187,Stanton County ,41.55,KS,Kansas
-20039,Decatur County ,84.3,KS,Kansas
-20137,Norton County ,41.66,KS,Kansas
-20145,Pawnee County ,48.97,KS,Kansas
-20081,Haskell County ,38.83,KS,Kansas
-20181,Sherman County ,93.39,KS,Kansas
-20179,Sheridan County ,79.81,KS,Kansas
-20199,Wallace County ,90.7,KS,Kansas
+39137,Putnam County ,53.83,OH,Ohio
+39051,Fulton County ,56.73,OH,Ohio
+39003,Allen County ,54.72,OH,Ohio
+39011,Auglaize County ,51.48,OH,Ohio
+39125,Paulding County ,39.36,OH,Ohio
+39099,Mahoning County ,40.25,OH,Ohio
+39155,Trumbull County ,37.95,OH,Ohio
+39069,Henry County ,41.32,OH,Ohio
+39065,Hardin County ,34.42,OH,Ohio
+39161,Van Wert County ,83.35,OH,Ohio
+39039,Defiance County ,55.23,OH,Ohio
+39007,Ashtabula County ,51.97,OH,Ohio
+39171,Williams County ,85.09,OH,Ohio
+39029,Columbiana County ,49.72,OH,Ohio
+26121,Muskegon County ,66.79,MI,Michigan
+26139,Ottawa County ,75.75,MI,Michigan
+26101,Manistee County ,72.47,MI,Michigan
+26019,Benzie County ,77.32,MI,Michigan
+26087,Lapeer County ,59.6,MI,Michigan
+26149,St. Joseph County ,64.28,MI,Michigan
+26031,Cheboygan County ,47.7,MI,Michigan
+26079,Kalkaska County ,59.72,MI,Michigan
+26151,Sanilac County ,79.41,MI,Michigan
+26059,Hillsdale County ,57.04,MI,Michigan
+26049,Genesee County ,58.38,MI,Michigan
+26015,Barry County ,84.92,MI,Michigan
+26023,Branch County ,76.37,MI,Michigan
+26137,Otsego County ,65.0,MI,Michigan
+26057,Gratiot County ,53.22,MI,Michigan
+26065,Ingham County ,47.02,MI,Michigan
+26067,Ionia County ,78.58,MI,Michigan
+26085,Lake County ,58.29,MI,Michigan
+26107,Mecosta County ,68.02,MI,Michigan
+26013,Baraga County ,63.81,MI,Michigan
+26035,Clare County ,41.99,MI,Michigan
+26043,Dickinson County ,59.22,MI,Michigan
+26055,Grand Traverse County ,61.19,MI,Michigan
+26039,Crawford County ,75.37,MI,Michigan
+26119,Montmorency County ,64.79,MI,Michigan
+26077,Kalamazoo County ,53.52,MI,Michigan
+26125,Oakland County ,44.06,MI,Michigan
+26009,Antrim County ,56.71,MI,Michigan
+26165,Wexford County ,61.27,MI,Michigan
+26091,Lenawee County ,69.92,MI,Michigan
+26111,Midland County ,41.8,MI,Michigan
+26147,St. Clair County ,73.41,MI,Michigan
+26159,Van Buren County ,65.67,MI,Michigan
+26113,Missaukee County ,40.94,MI,Michigan
+26027,Cass County ,47.19,MI,Michigan
+26061,Houghton County ,80.54,MI,Michigan
+26081,Kent County ,69.08,MI,Michigan
+26045,Eaton County ,70.8,MI,Michigan
+26071,Iron County ,76.45,MI,Michigan
+26155,Shiawassee County ,94.27,MI,Michigan
+26123,Newaygo County ,59.64,MI,Michigan
+26083,Keweenaw County ,93.9,MI,Michigan
+26105,Mason County ,94.96,MI,Michigan
+26117,Montcalm County ,67.58,MI,Michigan
+26005,Allegan County ,67.8,MI,Michigan
+26093,Livingston County ,71.62,MI,Michigan
+26089,Leelanau County ,54.14,MI,Michigan
+26029,Charlevoix County ,58.3,MI,Michigan
+26141,Presque Isle County ,49.12,MI,Michigan
+26099,Macomb County ,52.49,MI,Michigan
+26145,Saginaw County ,58.25,MI,Michigan
+26127,Oceana County ,68.14,MI,Michigan
+26157,Tuscola County ,53.92,MI,Michigan
+26063,Huron County ,65.22,MI,Michigan
+26075,Jackson County ,87.65,MI,Michigan
+26133,Osceola County ,50.42,MI,Michigan
+26037,Clinton County ,60.52,MI,Michigan
+26073,Isabella County ,41.18,MI,Michigan
+26109,Menominee County ,56.57,MI,Michigan
+26161,Washtenaw County ,34.78,MI,Michigan
+26103,Marquette County ,31.8,MI,Michigan
+26025,Calhoun County ,65.87,MI,Michigan
+27005,Becker County ,51.18,MN,Minnesota
+27009,Benton County ,95.17,MN,Minnesota
+27007,Beltrami County ,77.44,MN,Minnesota
+27097,Morrison County ,81.08,MN,Minnesota
+27131,Rice County ,59.52,MN,Minnesota
+27161,Waseca County ,49.37,MN,Minnesota
+27013,Blue Earth County ,61.17,MN,Minnesota
+27051,Grant County ,57.74,MN,Minnesota
+27083,Lyon County ,72.43,MN,Minnesota
+27117,Pipestone County ,46.66,MN,Minnesota
+27133,Rock County ,34.91,MN,Minnesota
+27147,Steele County ,65.44,MN,Minnesota
+27153,Todd County ,87.68,MN,Minnesota
+27067,Kandiyohi County ,84.73,MN,Minnesota
+27065,Kanabec County ,92.83,MN,Minnesota
+27003,Anoka County ,66.49,MN,Minnesota
+27017,Carlton County ,50.65,MN,Minnesota
+27035,Crow Wing County ,43.63,MN,Minnesota
+27059,Isanti County ,61.58,MN,Minnesota
+27165,Watonwan County ,46.87,MN,Minnesota
+27163,Washington County ,59.27,MN,Minnesota
+27085,McLeod County ,78.16,MN,Minnesota
+27123,Ramsey County ,46.72,MN,Minnesota
+27073,Lac qui Parle County ,50.62,MN,Minnesota
+27043,Faribault County ,64.77,MN,Minnesota
+27173,Yellow Medicine County ,85.41,MN,Minnesota
+27135,Roseau County ,117.34,MN,Minnesota
+27111,Otter Tail County ,63.56,MN,Minnesota
+27143,Sibley County ,53.65,MN,Minnesota
+27115,Pine County ,84.84,MN,Minnesota
+27063,Jackson County ,31.28,MN,Minnesota
+27149,Stevens County ,118.27,MN,Minnesota
+27019,Carver County ,84.36,MN,Minnesota
+27101,Murray County ,53.02,MN,Minnesota
+27109,Olmsted County ,69.72,MN,Minnesota
+27049,Goodhue County ,111.59,MN,Minnesota
+27053,Hennepin County ,49.32,MN,Minnesota
+27087,Mahnomen County ,88.22,MN,Minnesota
+27155,Traverse County ,51.37,MN,Minnesota
+27171,Wright County ,92.77,MN,Minnesota
+27039,Dodge County ,143.68,MN,Minnesota
+27169,Winona County ,48.61,MN,Minnesota
+27029,Clearwater County ,61.6,MN,Minnesota
+27151,Swift County ,81.97,MN,Minnesota
+27011,Big Stone County ,68.35,MN,Minnesota
+27127,Redwood County ,73.61,MN,Minnesota
+27041,Douglas County ,99.07,MN,Minnesota
+27061,Itasca County ,75.85,MN,Minnesota
+27015,Brown County ,40.23,MN,Minnesota
+27081,Lincoln County ,30.04,MN,Minnesota
+27157,Wabasha County ,81.06,MN,Minnesota
+27089,Marshall County ,48.67,MN,Minnesota
+27125,Red Lake County ,64.16,MN,Minnesota
+27129,Renville County ,55.31,MN,Minnesota
+27145,Stearns County ,76.52,MN,Minnesota
+27121,Pope County ,115.79,MN,Minnesota
+27079,Le Sueur County ,53.6,MN,Minnesota
+27139,Scott County ,84.99,MN,Minnesota
+27099,Mower County ,46.9,MN,Minnesota
+27093,Meeker County ,83.56,MN,Minnesota
+27037,Dakota County ,63.23,MN,Minnesota
+27069,Kittson County ,79.05,MN,Minnesota
+27071,Koochiching County ,71.18,MN,Minnesota
+27001,Aitkin County ,48.72,MN,Minnesota
+27055,Houston County ,55.88,MN,Minnesota
+27077,Lake of the Woods County ,67.51,MN,Minnesota
+27091,Martin County ,65.12,MN,Minnesota
+27021,Cass County ,65.96,MN,Minnesota
+27057,Hubbard County ,64.37,MN,Minnesota
+27027,Clay County ,51.86,MN,Minnesota
+27025,Chisago County ,68.39,MN,Minnesota
+27023,Chippewa County ,51.15,MN,Minnesota
+27033,Cottonwood County ,67.84,MN,Minnesota
+27103,Nicollet County ,53.7,MN,Minnesota
+27095,Mille Lacs County ,99.95,MN,Minnesota
+27107,Norman County ,78.41,MN,Minnesota
+27113,Pennington County ,70.5,MN,Minnesota
+27141,Sherburne County ,93.93,MN,Minnesota
+27047,Freeborn County ,60.84,MN,Minnesota
+27119,Polk County ,48.84,MN,Minnesota
+27137,St. Louis County ,67.26,MN,Minnesota
+27045,Fillmore County ,77.28,MN,Minnesota
+27159,Wadena County ,116.2,MN,Minnesota
+20123,Mitchell County ,41.33,KS,Kansas
+20189,Stevens County ,67.84,KS,Kansas
+20155,Reno County ,60.9,KS,Kansas
+20073,Greenwood County ,51.05,KS,Kansas
+20023,Cheyenne County ,42.69,KS,Kansas
+20077,Harper County ,45.33,KS,Kansas
+20109,Logan County ,91.51,KS,Kansas
+20009,Barton County ,37.86,KS,Kansas
+20193,Thomas County ,107.73,KS,Kansas
+20187,Stanton County ,48.47,KS,Kansas
+20183,Smith County ,70.2,KS,Kansas
+20141,Osborne County ,71.37,KS,Kansas
+20039,Decatur County ,64.46,KS,Kansas
+20101,Lane County ,69.6,KS,Kansas
+20145,Pawnee County ,53.23,KS,Kansas
+20081,Haskell County ,67.07,KS,Kansas
+20067,Grant County ,56.27,KS,Kansas
+20181,Sherman County ,95.78,KS,Kansas
+20179,Sheridan County ,51.31,KS,Kansas
+20199,Wallace County ,126.98,KS,Kansas
 20153,Rawlins County ,79.71,KS,Kansas
-20063,Gove County ,38.18,KS,Kansas
-20151,Pratt County ,31.31,KS,Kansas
-38075,Renville County ,40.08,ND,North Dakota
-38081,Sargent County ,66.22,ND,North Dakota
-38045,LaMoure County ,41.81,ND,North Dakota
-38073,Ransom County ,42.64,ND,North Dakota
-38091,Steele County ,52.36,ND,North Dakota
-38015,Burleigh County ,57.15,ND,North Dakota
-38101,Ward County ,70.15,ND,North Dakota
-38031,Foster County ,60.79,ND,North Dakota
-38093,Stutsman County ,59.0,ND,North Dakota
-38023,Divide County ,36.18,ND,North Dakota
-38041,Hettinger County ,61.0,ND,North Dakota
-38065,Oliver County ,101.1,ND,North Dakota
-38017,Cass County ,69.46,ND,North Dakota
-38059,Morton County ,58.46,ND,North Dakota
-38013,Burke County ,77.46,ND,North Dakota
-38003,Barnes County ,59.33,ND,North Dakota
-38097,Traill County ,149.64,ND,North Dakota
-38099,Walsh County ,67.45,ND,North Dakota
-38061,Mountrail County ,45.03,ND,North Dakota
-38077,Richland County ,35.96,ND,North Dakota
-38063,Nelson County ,39.14,ND,North Dakota
-38055,McLean County ,84.75,ND,North Dakota
-38053,McKenzie County ,31.91,ND,North Dakota
-38057,Mercer County ,73.35,ND,North Dakota
-38089,Stark County ,93.46,ND,North Dakota
-38087,Slope County ,40.58,ND,North Dakota
-38049,McHenry County ,45.8,ND,North Dakota
-38021,Dickey County ,91.98,ND,North Dakota
-38037,Grant County ,42.02,ND,North Dakota
-38083,Sheridan County ,40.67,ND,North Dakota
-38043,Kidder County ,40.65,ND,North Dakota
-38035,Grand Forks County ,50.32,ND,North Dakota
-38105,Williams County ,80.11,ND,North Dakota
-38025,Dunn County ,39.08,ND,North Dakota
-38069,Pierce County ,30.54,ND,North Dakota
-31185,York County ,56.94,NE,Nebraska
-31145,Red Willow County ,68.74,NE,Nebraska
-31085,Hayes County ,30.3,NE,Nebraska
+20171,Scott County ,60.62,KS,Kansas
+20015,Butler County ,27.94,KS,Kansas
+20135,Ness County ,58.01,KS,Kansas
+20055,Finney County ,46.77,KS,Kansas
+20095,Kingman County ,47.81,KS,Kansas
+20063,Gove County ,103.64,KS,Kansas
+20065,Graham County ,28.07,KS,Kansas
+20151,Pratt County ,35.78,KS,Kansas
+35011,De Baca County ,62.41,NM,New Mexico
+35021,Harding County ,62.25,NM,New Mexico
+35051,Sierra County ,61.58,NM,New Mexico
+35045,San Juan County ,79.02,NM,New Mexico
+35019,Guadalupe County ,35.86,NM,New Mexico
+35005,Chaves County ,36.23,NM,New Mexico
+35047,San Miguel County ,40.77,NM,New Mexico
+35059,Union County ,34.22,NM,New Mexico
+35027,Lincoln County ,62.33,NM,New Mexico
+35009,Curry County ,30.45,NM,New Mexico
+35057,Torrance County ,36.64,NM,New Mexico
+35029,Luna County ,48.28,NM,New Mexico
+35041,Roosevelt County ,61.28,NM,New Mexico
+36099,Seneca County ,51.59,NY,New York
+36101,Steuben County ,66.03,NY,New York
+36097,Schuyler County ,67.49,NY,New York
+36015,Chemung County ,65.15,NY,New York
+36077,Otsego County ,30.59,NY,New York
+36007,Broome County ,53.28,NY,New York
+36109,Tompkins County ,28.86,NY,New York
+36011,Cayuga County ,38.16,NY,New York
+36037,Genesee County ,86.78,NY,New York
+36121,Wyoming County ,69.03,NY,New York
+36115,Washington County ,120.84,NY,New York
+36123,Yates County ,42.84,NY,New York
+36091,Saratoga County ,59.94,NY,New York
+36095,Schoharie County ,29.15,NY,New York
+36055,Monroe County ,51.85,NY,New York
+36023,Cortland County ,38.89,NY,New York
+36113,Warren County ,84.41,NY,New York
+36029,Erie County ,59.34,NY,New York
+36083,Rensselaer County ,42.65,NY,New York
+36069,Ontario County ,65.38,NY,New York
+36031,Essex County ,34.81,NY,New York
+36051,Livingston County ,78.24,NY,New York
+36075,Oswego County ,60.21,NY,New York
+36065,Oneida County ,59.73,NY,New York
+36089,St. Lawrence County ,54.11,NY,New York
+36043,Herkimer County ,72.91,NY,New York
+36073,Orleans County ,71.82,NY,New York
+36107,Tioga County ,77.77,NY,New York
+36035,Fulton County ,77.62,NY,New York
+36063,Niagara County ,68.42,NY,New York
+36057,Montgomery County ,69.66,NY,New York
+36117,Wayne County ,62.42,NY,New York
+36053,Madison County ,43.84,NY,New York
+36049,Lewis County ,66.83,NY,New York
+36003,Allegany County ,73.21,NY,New York
+36045,Jefferson County ,60.41,NY,New York
+36009,Cattaraugus County ,89.0,NY,New York
+36041,Hamilton County ,59.33,NY,New York
+36013,Chautauqua County ,61.04,NY,New York
+31157,Scotts Bluff County ,36.65,NE,Nebraska
+31145,Red Willow County ,67.42,NE,Nebraska
+31181,Webster County ,44.01,NE,Nebraska
+31085,Hayes County ,45.45,NE,Nebraska
 31007,Banner County ,61.58,NE,Nebraska
-31023,Butler County ,61.98,NE,Nebraska
-31107,Knox County ,43.9,NE,Nebraska
-31019,Buffalo County ,45.74,NE,Nebraska
-31047,Dawson County ,31.21,NE,Nebraska
-31081,Hamilton County ,79.38,NE,Nebraska
-31141,Platte County ,62.65,NE,Nebraska
+31107,Knox County ,45.59,NE,Nebraska
 31015,Boyd County ,62.96,NE,Nebraska
-31057,Dundy County ,42.37,NE,Nebraska
-31001,Adams County ,51.56,NE,Nebraska
-31065,Furnas County ,50.74,NE,Nebraska
-31037,Colfax County ,51.78,NE,Nebraska
-4003,Cochise County ,45.48,AZ,Arizona
-4019,Pima County ,44.09,AZ,Arizona
-4001,Apache County ,37.35,AZ,Arizona
-4005,Coconino County ,49.62,AZ,Arizona
-4013,Maricopa County ,38.37,AZ,Arizona
-4017,Navajo County ,84.11,AZ,Arizona
-4021,Pinal County ,63.89,AZ,Arizona
-4009,Graham County ,69.77,AZ,Arizona
-4007,Gila County ,75.44,AZ,Arizona
-18087,LaGrange County ,45.49,IN,Indiana
-18169,Wabash County ,64.13,IN,Indiana
-18113,Noble County ,54.19,IN,Indiana
-18033,DeKalb County ,85.97,IN,Indiana
-18179,Wells County ,41.4,IN,Indiana
-18069,Huntington County ,87.18,IN,Indiana
-18183,Whitley County ,71.75,IN,Indiana
-18001,Adams County ,32.47,IN,Indiana
-18151,Steuben County ,77.08,IN,Indiana
-18085,Kosciusko County ,55.11,IN,Indiana
-18003,Allen County ,59.15,IN,Indiana
-18053,Grant County ,59.75,IN,Indiana
-18039,Elkhart County ,46.8,IN,Indiana
-17177,Stephenson County ,68.23,IL,Illinois
-17015,Carroll County ,45.13,IL,Illinois
-17085,Jo Daviess County ,56.27,IL,Illinois
-8063,Kit Carson County ,56.13,CO,Colorado
-8101,Pueblo County ,49.79,CO,Colorado
-8109,Saguache County ,30.92,CO,Colorado
-8061,Kiowa County ,49.3,CO,Colorado
-8089,Otero County ,63.93,CO,Colorado
-8017,Cheyenne County ,63.06,CO,Colorado
-8011,Bent County ,76.24,CO,Colorado
-8027,Custer County ,40.02,CO,Colorado
-8007,Archuleta County ,60.87,CO,Colorado
-8071,Las Animas County ,66.5,CO,Colorado
-50019,Orleans County ,78.57,VT,Vermont
-50021,Rutland County ,90.62,VT,Vermont
-50027,Windsor County ,38.15,VT,Vermont
-50025,Windham County ,33.44,VT,Vermont
-50001,Addison County ,29.01,VT,Vermont
-50005,Caledonia County ,64.8,VT,Vermont
-50003,Bennington County ,63.24,VT,Vermont
-50015,Lamoille County ,33.92,VT,Vermont
-50009,Essex County ,96.65,VT,Vermont
-30105,Valley County ,39.83,MT,Montana
-30111,Yellowstone County ,39.56,MT,Montana
-30085,Roosevelt County ,104.33,MT,Montana
-30019,Daniels County ,32.6,MT,Montana
-30055,McCone County ,61.35,MT,Montana
-30083,Richland County ,72.94,MT,Montana
-30009,Carbon County ,46.06,MT,Montana
-30071,Phillips County ,38.1,MT,Montana
+31033,Cheyenne County ,27.55,NE,Nebraska
+56033,Sheridan County ,28.56,WY,Wyoming
+56031,Platte County ,46.12,WY,Wyoming
+56015,Goshen County ,37.21,WY,Wyoming
+38075,Renville County ,62.98,ND,North Dakota
+38081,Sargent County ,69.9,ND,North Dakota
+38045,LaMoure County ,45.3,ND,North Dakota
+38073,Ransom County ,42.64,ND,North Dakota
+38091,Steele County ,82.27,ND,North Dakota
+38015,Burleigh County ,48.46,ND,North Dakota
+38101,Ward County ,70.57,ND,North Dakota
+38031,Foster County ,56.45,ND,North Dakota
+38093,Stutsman County ,61.04,ND,North Dakota
+38023,Divide County ,66.33,ND,North Dakota
+38041,Hettinger County ,61.0,ND,North Dakota
+38007,Billings County ,45.3,ND,North Dakota
+38065,Oliver County ,93.32,ND,North Dakota
+38017,Cass County ,63.39,ND,North Dakota
+38059,Morton County ,51.92,ND,North Dakota
+38013,Burke County ,77.46,ND,North Dakota
+38003,Barnes County ,52.73,ND,North Dakota
+38097,Traill County ,135.39,ND,North Dakota
+38099,Walsh County ,62.16,ND,North Dakota
+38061,Mountrail County ,40.81,ND,North Dakota
+38085,Sioux County ,51.8,ND,North Dakota
+38077,Richland County ,30.7,ND,North Dakota
+38063,Nelson County ,63.6,ND,North Dakota
+38055,McLean County ,80.29,ND,North Dakota
+38039,Griggs County ,113.48,ND,North Dakota
+38051,McIntosh County ,43.06,ND,North Dakota
+38057,Mercer County ,71.68,ND,North Dakota
+38089,Stark County ,85.13,ND,North Dakota
+38021,Dickey County ,89.11,ND,North Dakota
+38037,Grant County ,54.02,ND,North Dakota
+38083,Sheridan County ,61.01,ND,North Dakota
+38043,Kidder County ,34.84,ND,North Dakota
+38035,Grand Forks County ,44.44,ND,North Dakota
+38105,Williams County ,81.37,ND,North Dakota
+38025,Dunn County ,55.36,ND,North Dakota
+38069,Pierce County ,30.54,ND,North Dakota
+18087,LaGrange County ,43.65,IN,Indiana
+18169,Wabash County ,53.74,IN,Indiana
+18113,Noble County ,50.58,IN,Indiana
+18033,DeKalb County ,67.91,IN,Indiana
+18179,Wells County ,31.18,IN,Indiana
+18183,Whitley County ,54.77,IN,Indiana
+18001,Adams County ,30.85,IN,Indiana
+18151,Steuben County ,70.86,IN,Indiana
+18085,Kosciusko County ,46.04,IN,Indiana
+18003,Allen County ,46.56,IN,Indiana
+18039,Elkhart County ,40.2,IN,Indiana
+17177,Stephenson County ,78.92,IL,Illinois
+17041,Douglas County ,32.61,IL,Illinois
+17113,McLean County ,38.18,IL,Illinois
+17141,Ogle County ,58.45,IL,Illinois
+17015,Carroll County ,59.84,IL,Illinois
+17085,Jo Daviess County ,70.66,IL,Illinois
+17007,Boone County ,39.44,IL,Illinois
+17079,Jasper County ,38.7,IL,Illinois
+17201,Winnebago County ,66.24,IL,Illinois
+17019,Champaign County ,40.24,IL,Illinois
+16055,Kootenai County ,31.25,ID,Idaho
+8063,Kit Carson County ,59.87,CO,Colorado
+8095,Phillips County ,39.7,CO,Colorado
+8025,Crowley County ,27.91,CO,Colorado
+8021,Conejos County ,38.6,CO,Colorado
+8109,Saguache County ,44.17,CO,Colorado
+8061,Kiowa County ,59.15,CO,Colorado
+8089,Otero County ,72.5,CO,Colorado
+8099,Prowers County ,40.3,CO,Colorado
+8017,Cheyenne County ,105.09,CO,Colorado
+8011,Bent County ,105.75,CO,Colorado
+8007,Archuleta County ,76.36,CO,Colorado
+8009,Baca County ,48.11,CO,Colorado
+8105,Rio Grande County ,51.6,CO,Colorado
+8071,Las Animas County ,51.38,CO,Colorado
+50019,Orleans County ,65.29,VT,Vermont
+50021,Rutland County ,91.83,VT,Vermont
+50027,Windsor County ,53.35,VT,Vermont
+50017,Orange County ,37.03,VT,Vermont
+50025,Windham County ,39.73,VT,Vermont
+50001,Addison County ,34.81,VT,Vermont
+50005,Caledonia County ,81.23,VT,Vermont
+50003,Bennington County ,90.68,VT,Vermont
+50015,Lamoille County ,40.71,VT,Vermont
+50009,Essex County ,105.85,VT,Vermont
+30111,Yellowstone County ,38.65,MT,Montana
+30085,Roosevelt County ,63.62,MT,Montana
+30083,Richland County ,64.13,MT,Montana
+30009,Carbon County ,41.99,MT,Montana
 30103,Treasure County ,110.31,MT,Montana
-2290,Yukon-Koyukuk Census Area ,34.3,AK,Alaska
-2185,North Slope Borough ,36.45,AK,Alaska
+23005,Cumberland County ,36.48,ME,Maine
+23025,Somerset County ,61.13,ME,Maine
+23027,Waldo County ,28.99,ME,Maine
+23017,Oxford County ,59.06,ME,Maine
+23011,Kennebec County ,54.07,ME,Maine
+23007,Franklin County ,59.49,ME,Maine
+23023,Sagadahoc County ,55.48,ME,Maine
+23021,Piscataquis County ,84.6,ME,Maine
+23029,Washington County ,68.06,ME,Maine
+23001,Androscoggin County ,81.5,ME,Maine
+23003,Aroostook County ,101.07,ME,Maine
+23019,Penobscot County ,43.12,ME,Maine
+2185,North Slope Borough ,72.91,AK,Alaska
 2070,Dillingham Census Area ,34.46,AK,Alaska
-2170,Matanuska-Susitna Borough ,48.33,AK,Alaska
-2188,Northwest Arctic Borough ,193.95,AK,Alaska
-2180,Nome Census Area ,200.07,AK,Alaska
-41065,Wasco County ,34.24,OR,Oregon
-41055,Sherman County ,106.81,OR,Oregon
-41069,Wheeler County ,40.07,OR,Oregon
-41021,Gilliam County ,112.37,OR,Oregon
-23025,Somerset County ,41.98,ME,Maine
-23017,Oxford County ,67.53,ME,Maine
-23011,Kennebec County ,45.13,ME,Maine
-23007,Franklin County ,79.0,ME,Maine
-23001,Androscoggin County ,65.68,ME,Maine
-23019,Penobscot County ,32.86,ME,Maine
-32023,Nye County ,34.65,NV,Nevada
-32001,Churchill County ,45.22,NV,Nevada
-24023,Garrett County ,54.95,MD,Maryland
-24001,Allegany County ,30.57,MD,Maryland
-49037,San Juan County ,43.94,UT,Utah
-33009,Grafton County ,50.74,NH,New Hampshire
-33001,Belknap County ,62.19,NH,New Hampshire
-33007,Coos County ,48.6,NH,New Hampshire
-33013,Merrimack County ,56.4,NH,New Hampshire
-33003,Carroll County ,58.23,NH,New Hampshire
-51195,Wise County ,41.73,VA,Virginia
+2170,Matanuska-Susitna Borough ,49.57,AK,Alaska
+2188,Northwest Arctic Borough ,168.09,AK,Alaska
+2180,Nome Census Area ,143.94,AK,Alaska
+48205,Hartley County ,29.73,TX,Texas
+48065,Carson County ,54.47,TX,Texas
+48163,Frio County ,37.57,TX,Texas
+33009,Grafton County ,39.61,NH,New Hampshire
+33007,Coos County ,28.09,NH,New Hampshire
+24001,Allegany County ,38.9,MD,Maryland
+21097,Harrison County ,32.14,KY,Kentucky
+40003,Alfalfa County ,41.46,OK,Oklahoma
+4009,Graham County ,52.42,AZ,Arizona
