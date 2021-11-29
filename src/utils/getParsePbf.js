@@ -76,7 +76,6 @@ export default async function getParsePbf(fileInfo, dateList){
                     returnData[pbfData.row[i].geoid].push(filterVal(pbfData.row[i].vals[j-1], scale))
                 }
             }
-            if (fileInfo.file === 'covid_tcap_cdc.e-2.pbf') console.log(returnData[53073])
         }
     }
     return {data: returnData, columns: columnNames, dates: dateIndices}
