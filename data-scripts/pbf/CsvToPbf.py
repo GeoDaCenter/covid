@@ -136,7 +136,9 @@ for fileInfo in fileList:
     csvData = pd.read_csv(os.path.join(repo_root, f'public/csv/{fileInfo["fileName"]}.csv'), low_memory=False)
     csvData = csvData.replace('suppressed', -9999) \
         .apply(pd.to_numeric, errors="coerce") \
-        .fillna(-999) * multiplier
+        .fillna(-999) * multiplier 
+    csvData = csvData.replace(-9999 * multiplier, -9999) \
+        .replace(-999 * multiplier, -999)
 
     csvData = csvData[[fileInfo['joinColumn']] + list(csvData.columns)[fileInfo['dateIndex']:]]
     csvData[fileInfo['joinColumn']] = csvData[fileInfo['joinColumn']] / multiplier

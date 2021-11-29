@@ -3,6 +3,22 @@ import * as Pbf from 'pbf';
 // PBF schemas
 import * as Schemas from '../schemas';
 
+const filterVal = (val, scale) => {
+    if (val > -998) {
+        return val*scale
+    }
+    if (val === -999) {
+        return null
+    }
+    if (val === -9999) {
+        return undefined
+    }
+    if (isNaN(val)) {
+        return null
+    }
+    return val*scale
+}
+
 export default async function getParsePbf(fileInfo, dateList){
     
     const pbfData = await fetch(`${process.env.PUBLIC_URL}/pbf/${fileInfo.file}`)
@@ -54,17 +70,13 @@ export default async function getParsePbf(fileInfo, dateList){
             returnData[pbfData.row[i].geoid] = []
             for (let n=0, j=0; n<constructorIndices.length; n++) {
                 if (constructorIndices[n]) {
-                    returnData[pbfData.row[i].geoid].push(
-                        pbfData.row[i].vals[j] <= -999 
-                            ? pbfData.row[i].vals[j] === -999
-                                ? null
-                                : undefined  
-                            : pbfData.row[i].vals[j]*scale)
+                    returnData[pbfData.row[i].geoid].push(filterVal(pbfData.row[i].vals[j], scale))
                     j++;
                 } else {
-                    returnData[pbfData.row[i].geoid].push(pbfData.row[i].vals[j-1]*scale||null)
+                    returnData[pbfData.row[i].geoid].push(filterVal(pbfData.row[i].vals[j-1], scale))
                 }
             }
+            if (fileInfo.file === 'covid_tcap_cdc.e-2.pbf') console.log(returnData[53073])
         }
     }
     return {data: returnData, columns: columnNames, dates: dateIndices}

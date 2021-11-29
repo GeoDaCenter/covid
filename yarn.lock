@@ -5941,7 +5941,6 @@ __metadata:
     remark-gfm: ^1.0.0
     source-map-explorer: ^2.5.2
     styled-components: ^5.2.1
-    web-vitals: ^0.2.4
     workbox-build: ^6.1.5
     worker-loader: ^3.0.6
   languageName: unknown
@@ -17602,13 +17601,6 @@ __metadata:
   dependencies:
     minimalistic-assert: ^1.0.0
   checksum: 2abc306c96930b757972a1c4650eb6b25b5d99f24088714957f88629e137db569368c5de0e57986c89ea70db2f1df9bba11a87cb6d0c8694b6f53a0159fab3bf
-  languageName: node
-  linkType: hard
-
-"web-vitals@npm:^0.2.4":
-  version: 0.2.4
-  resolution: "web-vitals@npm:0.2.4"
-  checksum: 128a4e87730b0a02fb6af3eef7d31f9a79b4646e83cfe4465aa8ce6054fe16f7b1f4125a384f1b4f039091bd9513cb54b4e559c0b10ae953c01900786a16b1c2
   languageName: node
   linkType: hard
 

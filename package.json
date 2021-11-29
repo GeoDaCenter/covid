@@ -83,9 +83,9 @@
     ]
   },
   "devDependencies": {
+    "dayjs": "^1.10.6",
     "source-map-explorer": "^2.5.2",
-    "worker-loader": "^3.0.6",
     "workbox-build": "^6.1.5",
-    "dayjs": "^1.10.6"
+    "worker-loader": "^3.0.6"
   }
 }
