@@ -6,6 +6,7 @@
  * @returns {Object} Indexed geodata for faster access
  */
 export const indexGeoProps = (data, key) => {
+    if (!data) return {};
     let geoProperties = {};
     if (!key) {
         for (var i = 0; i < data.features.length; i++) {

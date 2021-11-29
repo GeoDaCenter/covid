@@ -43,7 +43,8 @@
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
     "remark-gfm": "^1.0.0",
-    "styled-components": "^5.2.1"
+    "styled-components": "^5.2.1",
+    "swr": "^1.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
