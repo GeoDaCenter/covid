@@ -256,9 +256,15 @@ const press = {
     ],
     '2021': [
         {
+            'name': 'NBC Meet the Press:',
+            'link': 'https://www.nbcnews.com/meet-the-press/video/holiday-travel-busts-open-divided-political-and-vaccine-bubbles-127343685885',
+            'text': "Holiday travel busts open divided political and vaccine bubbles",
+            'date': '(November 28, 2021)'
+        },
+        {
             'name': 'Fast Company Innovation by Design:',
             'link': 'https://www.fastcompany.com/90667101/pandemic-response-innovation-by-design-2021',
-            'text': "Pandemic Response category honoree for Fast Company's annual design awards",
+            'text': "Data Download",
             'date': '(September 21, 2021)'
         },
         {
