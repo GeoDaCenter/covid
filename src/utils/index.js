@@ -6,6 +6,7 @@ import dataFn from './dataFunction.js';
 import findDates from './findDates';
 import { findDateIndices, getDateIndices } from './findDateIndices';
 import findTableDetails from './findTableDetails';
+import formatNumber from './formatNumber';
 import { generateMapData } from './generateMapData';
 import { generateReport } from './generateReport';
 import geojsonArrayBuffer from './geojsonArrayBuffer';
@@ -48,6 +49,7 @@ export {
     findDates,
     findDateIndices,
     findTableDetails,
+    formatNumber,
     getDateIndices,
     geojsonArrayBuffer,
     generateMapData, 

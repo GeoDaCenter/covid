@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { HoverDiv } from '../styled_components';
+import { formatNumber } from '../utils';
 // This component handles and formats the map tooltip info. 
 // The props passed to this component should contain an object of the hovered object (from deck, info.object by default)
 export default function MapTooltipContent(){
@@ -10,7 +11,7 @@ export default function MapTooltipContent(){
     
     if (tooltipContent.data.custom) {
         return <HoverDiv style={{position: 'absolute', zIndex: 1, pointerEvents: 'none', left: tooltipContent.x, top: tooltipContent.y}}>
-            {Object.entries(tooltipContent.data.custom).map(entry => <><b>{entry[0]}:</b> {typeof entry[1] !== 'object' ? entry[1] : JSON.stringify(entry[1])}<br/></>)}
+            {Object.entries(tooltipContent.data.custom).map(entry => <><b>{entry[0]}:</b> {typeof entry[1] !== 'object' ? formatNumber(entry[1]) : JSON.stringify(entry[1])}<br/></>)}
         </HoverDiv>
     }
     
