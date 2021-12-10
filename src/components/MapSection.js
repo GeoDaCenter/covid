@@ -318,18 +318,13 @@ export default function MapSection(){
         }
     }
 
-    const handleMapHover = ({x, y, object, layer}) => {
+    const handleMapHover = ({x, y, object, layer}) => {            
         if (object) {
-            dispatch(setTooltipContent(x, y, object?.properties ? object.properties[currIdCol] : object));
+            dispatch(setTooltipContent(x, y, object?.properties && object.properties[currIdCol] ? object.properties[currIdCol] : object));
+            if (object?.properties && object?.properties[currIdCol] !== hoverGeog) setHoverGeog(object?.properties[currIdCol])
         } else {
             setHoverGeog(null)
             dispatch(setTooltipContent(x, y, null))
-        }
-
-        if (!isPoint && object && object?.properties[currIdCol]) {
-            if (object?.properties[currIdCol] !== hoverGeog) setHoverGeog(object?.properties[currIdCol])
-        } else {
-            setHoverGeog(null)
         }
     }
 

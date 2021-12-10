@@ -48,15 +48,12 @@ export default function MapTooltipContent(){
             {tooltipContent.data.Zipcode}<br/>
         </>}
         {tooltipContent.data.testing_status && <>
-            <h3>{tooltipContent.data.name}</h3>
-            <hr />
             {tooltipContent.data.address}<br/>
             {tooltipContent.data.city},{tooltipContent.data.st_abbr} <br />
             {tooltipContent.data.phone}<br/><br/>
             {tooltipContent.data.testing_status === 'Yes' ? 'This location offers COVID-19 testing.' : 'Currently, this location does not offer COVID-19 testing.'}<br/>
         </>}
         {'volume' in tooltipContent.data && <>
-            <h3>{tooltipContent.data.name}</h3>
             {tooltipContent.data.type === 0 && <><b>Invited</b> vaccination clinic</>}
             {tooltipContent.data.type === 1 && <>Participating vaccination clinic</>}
             {tooltipContent.data.type === 3 && <>Large scale vaccination site</>}
