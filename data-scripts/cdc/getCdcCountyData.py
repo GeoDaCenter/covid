@@ -197,7 +197,7 @@ if __name__ == "__main__":
             'operation':None
         },
         {
-            'column':'percent_new_test_results_reported_positive_7_day_rolling_average',
+            'column':'percent_positive_7_day',
             'csv':'covid_wk_pos_cdc',
             'roundTo':4,
             'operation': {
