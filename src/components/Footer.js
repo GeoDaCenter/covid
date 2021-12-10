@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 
-import { colors } from '../config';
+import colors from '../config/colors';
 
 const FooterContainer = styled.footer`
   width: 100%;

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { ContentContainer, Gutter } from '../../styled_components';
 import { NavBar, Footer } from '../';
-// import { colors } from '../../config';
+// import colors from '../../config/colors';
 
 const MethodsPage = styled.div`
   background: white;

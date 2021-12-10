@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { colors } from '../config';
+import colors from '../config/colors';
 
 const Navbar = styled.div`
   width: 100vw;

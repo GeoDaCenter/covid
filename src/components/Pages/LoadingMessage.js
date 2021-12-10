@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ContentContainer } from '../../styled_components';
-import { colors } from '../../config';
+import colors from '../../config/colors';
 
 const PreloaderPage = styled.div`
   background: ${colors.gray};

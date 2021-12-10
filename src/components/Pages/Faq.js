@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 
 import { ContentContainer, Gutter } from '../../styled_components';
 import { NavBar, Footer } from '../';
-import { colors } from '../../config';
+import colors from '../../config/colors';
 
 const FaqPage = styled.div`
   background: white;

@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 // Import config and actions
-import { colors } from '../config';
+import colors from '../config/colors';
 import { setPanelState } from '../actions';
 
 // Styles - Container

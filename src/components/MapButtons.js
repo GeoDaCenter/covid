@@ -6,7 +6,7 @@ import { FlyToInterpolator } from '@deck.gl/core';
 
 import { useViewport, useSetViewport } from '../contexts/ViewportContext';
 import ShareButton from '../components/ShareButton';
-import { colors } from '../config';
+import colors from '../config/colors';
 import * as SVG from '../config/svg';
 
 const NavInlineButtonGroup = styled.div`

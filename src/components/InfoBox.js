@@ -10,7 +10,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 
 // Config/component import
-import { colors } from '../config';
+import colors from '../config/colors';
 import { pages } from '../wiki';
 import { StyledDropDown } from '../styled_components';
 

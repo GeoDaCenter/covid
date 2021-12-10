@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { colors } from '../config';
+import colors from '../config/colors';
 import { hamburger, close } from '../config/svg';
 
 const NavBarOuterContainer = styled.div`
   width: 100%;
-  background: ${(props) => (props.light ? colors.skyblue : 'none')};
+  background: ${(props) => (props.light ? colors.skyblue : colors.darkgray)};
+  border-bottom: ${(props) => (props.light ? 'none' : '1px solid black')};
   z-index: 1;
   position: relative;
   pointer-events: none;
@@ -73,9 +74,6 @@ const NavbarContainer = styled.nav`
     &.active {
       background: ${(props) => (props.light ? colors.teal : colors.darkgray)};
       color: #eee;
-      box-shadow: 7px 11px 11px -10px rgba(0, 0, 0, 1);
-      -webkit-box-shadow: 7px 11px 11px -10px rgba(0, 0, 0, 1);
-      -moz-box-shadow: 7px 11px 11px -10px rgba(0, 0, 0, 1);
     }
   }
   button {
@@ -96,8 +94,11 @@ const NavLogo = styled.div`
   color: white;
   display: flex;
   align-items: center;
-  padding: 0 20px;
+  padding: 0 0 0 2px;
   font-size: 20px;
+  span {
+    padding-left: 10px;
+  }
 `;
 
 const NavItems = styled.div`
@@ -169,9 +170,7 @@ const SuperDropdown = styled.div`
   top: 50px;
   transform: ${(props) => (props.light ? 'translateX(-50%)' : 'none')};
   z-index: 110;
-  box-shadow: 7px 11px 11px -10px rgba(0, 0, 0, 1);
-  -webkit-box-shadow: 7px 11px 11px -10px rgba(0, 0, 0, 1);
-  -moz-box-shadow: 7px 11px 11px -10px rgba(0, 0, 0, 1);
+  border:1px solid black;
   animation: ${fadeIn} 250ms linear 1;
   user-select: none;
   a {
@@ -345,12 +344,14 @@ export default function NavBar(props) {
       <NavBarOuterContainer light={props.light}>
         <NavbarContainer light={props.light}>
           <NavLogo>
-            <img
-              src={`${process.env.PUBLIC_URL}/favicon/android-icon-192x192.png`}
-              style={{ height: '30px', paddingRight: '5px' }}
-              alt="US Covid Atlas Logo"
-            />
-            <a href="/">US COVID ATLAS </a>
+            <a href="/">
+              <img
+                src={`${process.env.PUBLIC_URL}/favicon/android-icon-192x192.png`}
+                style={{ height: '30px', paddingRight: '5px' }}
+                alt="US Covid Atlas Logo"
+              />
+              <span>US COVID ATLAS</span>
+            </a>
           </NavLogo>
           {(navOpen || dims.width > 1024) && (
             <NavItems light={props.light}>

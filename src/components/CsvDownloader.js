@@ -7,7 +7,7 @@ import {
   Checkbox,
   Grid,
 } from '@material-ui/core';
-import { colors } from '../config';
+import colors from '../config/colors';
 import { Gutter } from '../styled_components';
 import * as JSZip from 'jszip';
 

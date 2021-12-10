@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { colors } from '../config';
+import colors from '../config/colors';
 
 const PreloaderContainer = styled.div`
   position: fixed;

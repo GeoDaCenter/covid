@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { ContentContainer, Gutter } from '../../styled_components';
 import Grid from '@material-ui/core/Grid';
 import { NavBar, Footer } from '..';
-import { colors } from '../../config';
-// import { colors } from '../../config';
+import colors from '../../config/colors';
+// import colors from '../../config/colors';
 
 const MethodsPage = styled.div`
   background: white;

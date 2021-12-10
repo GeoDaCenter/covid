@@ -5,7 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import { MemberGrid, NavBar, Footer } from '../../components';
 import { contributors } from '../../meta/contributors';
 import { coreTeam } from '../../meta/coreTeam';
-import { colors } from '../../config';
+import colors from '../../config/colors';
 
 const phases = ['alpha', 'beta', 'v2', 'v3'];
 const timelineText = [

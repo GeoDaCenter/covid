@@ -4,7 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import throttle from 'lodash/throttle';
 import styled from 'styled-components';
-import { colors } from '../config';
+import colors from '../config/colors';
 
 const Container = styled.div`
   flex: auto;

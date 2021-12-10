@@ -15,7 +15,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Tooltip from './Tooltip';
 import TwoWeekChart from './TwoWeekLineChart';
 import { setPanelState } from '../actions';
-import { colors } from '../config';
+import colors from '../config/colors';
 import { report } from '../config/svg';
 
 //// Styled components CSS

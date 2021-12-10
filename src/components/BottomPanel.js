@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 
 import styled from 'styled-components';
 
-import { colors } from '../config';
+import colors from '../config/colors';
 
 // helper function to get dock offset
 const getChartHeight = () => {

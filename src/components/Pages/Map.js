@@ -35,7 +35,7 @@ import {
 import { ViewportProvider } from '../../contexts/ViewportContext';
 import { GeoDaContext } from '../../contexts/GeoDaContext';
 import { fitBounds } from '@math.gl/web-mercator';
-import { colors } from '../../config';
+import colors from '../../config/colors';
 import * as Comlink from 'comlink';
 
 import useMapData from '../../hooks/useMapData';
@@ -183,7 +183,7 @@ const DockContainer = styled.div`
   left: 0;
   top: 0;
   background: ${colors.gray};
-  box-shadow: 5px 0px 5px 0px rgba(0, 0, 0, 0.2);
+  border-right:1px solid black;
   display: flex;
   flex-direction: column;
   z-index: 5;
@@ -191,15 +191,55 @@ const DockContainer = styled.div`
     background:none;
     border:none;
     width:100%;
-    height:3em;
-    padding: 10px;
+    height:50px;
+    padding: 14px 14px 14px 10px;
+    cursor:pointer;
+    border-left:4px solid rgba(0,0,0,0);
+    transition: 125ms all;
     svg {
       fill:white;
+      stroke:white;
+      stroke-width:0;
       transition:250ms all;
     }
     &.hovered {
       svg {
         fill: ${colors.yellow};
+        stroke: ${colors.yellow};
+      }
+    }
+    &.active {
+      border-color:${colors.yellow};
+    }
+    span.mobileText {
+      display:none;
+      color:white;
+      font-size:.75rem;
+    }
+  }
+  #settings-button {
+    stroke-width:2px;
+    circle.cls-1 {
+      fill:none;
+    }
+  }
+  @media (max-width: 768px) {
+    width:100%;
+    top:0;
+    height:80px;
+    flex-direction:row;
+    overflow-x:scroll;
+    overflow-y:hidden;
+    button {
+      height:50px;
+      width:auto;
+      text-align:center;
+      padding:10px 20px 0 20px;
+      svg {
+        width:20px;
+      }
+      span.mobileText {
+        display:block;
       }
     }
   }
@@ -213,14 +253,22 @@ const DockLabels = styled.div`
   z-index:50;
   opacity:0;
   pointer-events:none;
-  transition:250ms opacity;
-  background: ${colors.darkgray};
+  transition-delay: 0s;
+  transition-duration:125ms;
+  transition-property: opacity;
+  background: ${colors.darkgray}dd;
+  display:flex;
+  flex-direction:column;
   button {
     padding: 10px;
     color:white;
     background:none;
     height:50px;
     border:none;
+    text-align:left;
+    transition:250ms all;
+    cursor:pointer;
+    font-family:'Lato', sans-serif;
     &.hovered {
       color:${colors.yellow};
     }
@@ -228,6 +276,11 @@ const DockLabels = styled.div`
   &.active {
     opacity:1;
     pointer-events:initial;
+    transition-delay: .3s;
+    transition-duration:250ms;
+  }
+  @media (max-width: 768px) {
+    display:none;
   }
 
 `
@@ -235,27 +288,79 @@ const DockLabels = styled.div`
 const IconDock = () => {
   const dispatch = useDispatch();
   const [hoveredIcon, setHoveredIcon] = useState(null);
+  const panelState = useSelector(state => state.panelState);
   const buttons = [
     {
       symbol: 'settings',
-      id: 'settings-buttom',
-      ariaLabel: 'Settings',
+      id: 'settings-button',
+      ariaLabel: 'Data & Variables',
+      activeState: panelState.variables,
       onClick: () => dispatch({ type: 'TOGGLE_PANEL', payload: 'variables' }),
+    },
+    {
+      symbol: 'summary',
+      id: 'summary-button',
+      ariaLabel: 'Data Details',
+      activeState: panelState.info,
+      onClick: () => dispatch({ type: 'TOGGLE_PANEL', payload: 'info' }),
+    },
+    {
+      symbol: 'lineChart',
+      id: 'lineChart-button',
+      ariaLabel: 'Line Chart',
+      activeState: panelState.lineChart,
+      onClick: () => dispatch({ type: 'TOGGLE_PANEL', payload: 'lineChart' }),
+    },
+    {
+      symbol: 'scatterPlot',
+      id: 'scatterPlot-button',
+      ariaLabel: 'Scatterplot Chart',
+      activeState: panelState.scatterPlot,
+      onClick: () => dispatch({ type: 'TOGGLE_PANEL', payload: 'scatterPlot' }),
+    },
+    {
+      symbol:'addData',
+      id: 'add-data-button',
+      ariaLabel: 'Add Custom Data',
+      activeState: panelState.dataLoader,
+      onClick: () => dispatch({ type: 'TOGGLE_PANEL', payload: 'dataLoader' }),
+    },
+    {
+      symbol: 'report',
+      id: 'report-button',
+      ariaLabel: 'Report Builder',
+      activeState: panelState.builder,
+      onClick: () => dispatch({ type: 'TOGGLE_PANEL', payload: 'builder' }),
+    },
+    {
+      symbol: 'sliders',
+      id: 'user-preferences-button',
+      ariaLabel: 'User Preferences',
+      activeState: panelState.preferences,
+      onClick: () => dispatch({ type: 'TOGGLE_PANEL', payload: 'preferences' }),
+    },
+    {
+      symbol: 'info',
+      id: 'info-button',
+      ariaLabel: 'Tutorial and Info',
+      activeState: panelState.tutorial,
+      onClick: () => dispatch({ type: 'TOGGLE_PANEL', payload: 'tutorial' }),
     },
   ];
   return (
     <DockContainerOuter>
       <DockContainer>
-        {buttons.map(({ symbol, id, ariaLabel, onClick }) => (
+        {buttons.map(({ symbol, id, ariaLabel, onClick, activeState }) => (
           <button
             id={id}
             ariaLabel={ariaLabel}
             onClick={onClick}
-            className={hoveredIcon === id ? 'hovered' : ''}
+            className={`${hoveredIcon === id && 'hovered '}${activeState && ' active'}`}
             onMouseEnter={() => setHoveredIcon(id)}
             onMouseLeave={() => setHoveredIcon(null)}
           >
             <Icon symbol={symbol} />
+            <span className="mobileText">{ariaLabel}</span>
           </button>
         ))}
       </DockContainer>

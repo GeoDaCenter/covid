@@ -27,7 +27,7 @@ import {
   toggleDotDensityRace,
   setDotDensityBgOpacity,
 } from '../actions';
-import { colors } from '../config';
+import colors from '../config/colors';
 import { fixedScales, colorScales } from '../config/scales';
 
 /** STYLES */
@@ -42,7 +42,7 @@ const VariablePanelContainer = styled.div`
   box-shadow: 2px 0px 5px rgba(0,0,0,0.7);
   padding:0;
   box-sizing: border-box;
-  transition:250ms all;
+  transition:125ms all;
   font: 'Lato', sans-serif;
   color:white;
   z-index:0;
@@ -70,7 +70,7 @@ const VariablePanelContainer = styled.div`
     box-sizing:border-box;
     background:${colors.gray};
     width:calc(100%);
-    box-shadow: 0px -5px 10px rgba(0,0,0,0.25);
+    border-top:1px solid black;
     a {  
       color: ${colors.yellow};
       -webkit-text-decoration: none;
@@ -580,13 +580,6 @@ export default function VariablePanel() {
             Data Sources &amp;
             <br /> Map Variables
           </h2>
-
-          <BYODButton
-            Title="Add Custom Data"
-            onClick={() => dispatch(setPanelState({ dataLoader: true }))}
-          >
-            Load your own data
-          </BYODButton>
           <Gutter h={20} />
           <StyledDropDown id="variableSelect">
             <InputLabel htmlFor="variableSelect">Variable</InputLabel>

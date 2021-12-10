@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 import { setNotification } from '../actions';
-import { colors } from '../config';
+import colors from '../config/colors';
 
 const Notification = styled.div`
   width: 300px;

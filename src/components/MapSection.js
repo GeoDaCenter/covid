@@ -35,11 +35,10 @@ import {
   parseMapboxLayers,
   shallowCompare,
 } from '../utils';
-import { colors, MAPBOX_ACCESS_TOKEN } from '../config';
+import { MAPBOX_ACCESS_TOKEN } from '../config';
+import colors from '../config/colors';
 import MAP_STYLE from '../config/style.json';
 import { useViewport, useSetViewport } from '../contexts/ViewportContext';
-import useLoadData, { useMapData } from '../hooks/useLoadData';
-import useUpdateData from '../hooks/useUpdateData';
 import useFindViewport from '../hooks/useFindViewport';
 // PBF schemas
 import * as Schemas from '../schemas';
@@ -68,7 +67,7 @@ const MapContainer = styled.div`
       const { info, variables } = props.panelState;
       return `calc(50px ${variables ? '+ min(25%, 350px)' : ''}) !important`;
     }};
-    transition: 250ms all;
+    transition: 125ms all;
   }
   height: 100%;
   background: ${colors.darkgray};
@@ -84,6 +83,10 @@ const IndicatorBox = styled.div`
   border: 1px dashed #ffce00;
   background: rgba(0, 0, 0, 0.25);
   z-index: 5;
+  left:-5px;
+  right:-5px;
+  width:0;
+  height:0;
 `;
 const GeocoderContainer = styled.div`
   position: fixed;

@@ -11,7 +11,8 @@ import {
   Footer,
   FastTrackInsights,
 } from '../../components';
-import { colors, MAPBOX_ACCESS_TOKEN } from '../../config';
+import { MAPBOX_ACCESS_TOKEN } from '../../config';
+import colors from '../../config/colors';
 import { Gutter } from '../../styled_components';
 
 const HomePage = styled.div`

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { ContentContainer, Gutter } from '../../styled_components';
 import { Footer, MemberGrid, NavBar } from '../../components';
-import { colors } from '../../config';
+import colors from '../../config/colors';
 
 const CabPage = styled.div`
   background: white;

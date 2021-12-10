@@ -4,7 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { DateSlider, Dock, Ticks } from '../components';
-import { colors } from '../config';
+import colors from '../config/colors';
 
 // Styled components
 const TopDrawer = styled.div`
@@ -41,7 +41,7 @@ const TopPanel = () => {
   return (
     <TopDrawer id="timelinePanel">
       <DateSlider />
-      <Dock />
+      {/* <Dock /> */}
       <Ticks />
     </TopDrawer>
   );

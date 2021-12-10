@@ -10,7 +10,7 @@ import Grid from '@material-ui/core/Grid';
 import MuiAccordion from '@material-ui/core/Accordion';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
-import { colors } from '../../config';
+import colors from '../../config/colors';
 const ContactPage = styled.div`
   background: white;
   h1 {

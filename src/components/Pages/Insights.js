@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 
 import { ContentContainer, Gutter } from '../../styled_components';
 import { NavBar, Footer } from '../';
-import { colors } from '../../config';
+import colors from '../../config/colors';
 
 const InsightsPage = styled.div`
   background: white;

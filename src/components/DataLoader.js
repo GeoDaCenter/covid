@@ -22,9 +22,7 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 
 // Config/component import
-import { colors } from '../config';
-import { prop } from 'ramda';
-import { current } from 'immer';
+import colors from '../config/colors';
 
 const fadeIn = keyframes`
   from {opacity:0;}

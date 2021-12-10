@@ -16,7 +16,7 @@ import {
 import Switch from '@material-ui/core/Switch';
 
 import styled from 'styled-components';
-import { colors } from '../config';
+import colors from '../config/colors';
 import { setVariableParams, setChartParams } from '../actions';
 
 const ChartContainer = styled.span`

@@ -8,7 +8,7 @@ import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 
-import { colors } from '../config';
+import colors from '../config/colors';
 
 const Container = styled.div`
   h3 {

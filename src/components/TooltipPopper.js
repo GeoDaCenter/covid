@@ -4,8 +4,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import Popper from '@material-ui/core/Popper';
 
-import { tooltipInfo, colors } from '../config';
+import { tooltipInfo } from '../config';
 import { setAnchorEl } from '../actions';
+import colors from '../config/colors';
 
 const TooltipContentDiv = styled(Popper)`
   z-index: 10000;

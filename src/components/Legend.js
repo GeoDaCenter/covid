@@ -2,7 +2,7 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import styled from 'styled-components';
 import BinsList from './BinsList';
-import { colors } from '../config';
+import colors from '../config/colors';
 import { Gutter } from '../styled_components';
 import Tooltip from './Tooltip';
 import { alert } from '../config/svg';
