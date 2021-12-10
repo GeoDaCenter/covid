@@ -5,7 +5,7 @@ import { getDataForBins, findTableDetails, getParseCSV, getParsePbf, getDateList
 import { 
   storeLisaValues, storeCartogramData, setMapParams, updateMap, addTablesAndUpdate, setIsLoading } from '../actions';
 
-import { colorScales, fixedScales } from '../config';
+import { fixedScales, colorScales } from '../config/scales';
 import { GeoDaContext } from '../contexts/GeoDaContext';
 
 const dateLists = getDateLists();
@@ -200,9 +200,9 @@ export default function useUpdateData(){
     }
   }, [shouldUpdate])
 
-  useEffect(() => {
-    if (storedGeojson[currentData] && mapParams.mapType !== 'lisa' ) dispatch(updateMap());
-  }, [mapParams.bins.breaks])
+  // useEffect(() => {
+  //   if (storedGeojson[currentData] && mapParams.mapType !== 'lisa' ) dispatch(updateMap());
+  // }, [mapParams.bins.breaks])
 
   return [
       updateBins,

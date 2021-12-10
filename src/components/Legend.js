@@ -164,7 +164,14 @@ const DataNote = styled.p`
 `
 
 
-const Legend =  (props) => {
+const Legend =  ({
+    variableName,
+    colorScale,
+    bins,
+    resource,
+    fixedScale,
+    note
+}) => {
     const dispatch = useDispatch()
     const colorFilter = useSelector(state => state.colorFilter)
     const handleHover = (color) => {
@@ -173,6 +180,7 @@ const Legend =  (props) => {
             payload: color
         })
     }
+    const {bins: currentBins, breaks: currentBreaks}=bins;
 
     return (
         <BottomPanel id="bottomPanel">
@@ -180,16 +188,16 @@ const Legend =  (props) => {
                 <Grid container spacing={2} id='legend-bins-container'>
                     <Grid item xs={12}>
                         <LegendTitle>
-                            {props.variableName}
+                            {variableName}
                         </LegendTitle>
                     </Grid>
                     <Grid item xs={12}>
-                        {props.colorScale !== undefined &&  
+                        {colorScale !== undefined &&  
                             <span>
                                 <BinBars 
-                                    firstBinZero={`${props.colorScale[0]}` === `240,240,240` && props.fixedScale === null}
+                                    firstBinZero={`${colorScale[0]}` === `240,240,240` && fixedScale === undefined}
                                 >
-                                    {props.colorScale.map(color => <button
+                                    {colorScale.map(color => <button
                                         onMouseEnter={() => handleHover(color)} 
                                         onMouseLeave={() => handleHover(null)} 
                                         onFocus={() => handleHover(color)}
@@ -201,12 +209,12 @@ const Legend =  (props) => {
 
                                         </button>)}
                                 </BinBars>
-                                <BinLabels firstBinZero={`${props.colorScale[0]}` === `240,240,240`} binLength={props.bins.bins.length}>
-                                    {(`${props.colorScale[0]}` === `240,240,240` && props.fixedScale === null) && <div className="bin firstBin">0</div>}
+                                <BinLabels firstBinZero={`${colorScale[0]}` === `240,240,240`} binLength={currentBins.length}>
+                                    {(`${colorScale[0]}` === `240,240,240` && fixedScale === null) && <div className="bin firstBin">0</div>}
 
                                     {
-                                        props.bins !== undefined && 
-                                        <BinsList data={props.bins.bins} />
+                                        currentBins !== undefined && 
+                                        <BinsList data={currentBins} />
                                     }
                                     
                                 </BinLabels>
@@ -214,21 +222,21 @@ const Legend =  (props) => {
                         }
                     </Grid>
                 </Grid>
-            {props.resource && <Gutter h={20}/>}
-            {props.resource && 
+            {resource && <Gutter h={20}/>}
+            {resource && 
                 <IconContainer>
                     <span className="icons-title">Icons:</span>
 
-                    {props.resource.includes('clinics') && <><img src={`${process.env.PUBLIC_URL}/assets/img/clinic_icon.png`} alt=""/><span className="icons-text">Clinics</span></>}
-                    {props.resource.includes('hospitals') && <><img src={`${process.env.PUBLIC_URL}/assets/img/hospital_icon.png`} alt=""/><span className="icons-text">Hospital</span></>}
-                    {props.resource.includes('vaccination') && <><img src={`${process.env.PUBLIC_URL}/assets/img/federal_site.png`} alt=""/><span className="icons-text">Vaccine Center<Tooltip id="vaccineCenter"/></span></>}
-                    {props.resource.includes('vaccination') && <><img src={`${process.env.PUBLIC_URL}/assets/img/participating_clinic.png`} alt=""/><span className="icons-text">Clinic<Tooltip id="vaccineClinic"/></span></>}
-                    {props.resource.includes('vaccination') && <><img src={`${process.env.PUBLIC_URL}/assets/img/invited_clinic.png`} alt=""/><span className="icons-text">Invited Clinic<Tooltip id="vaccineClinicInvited"/></span></>}
+                    {resource.includes('clinics') && <><img src={`${process.env.PUBLIC_URL}/assets/img/clinic_icon.png`} alt=""/><span className="icons-text">Clinics</span></>}
+                    {resource.includes('hospitals') && <><img src={`${process.env.PUBLIC_URL}/assets/img/hospital_icon.png`} alt=""/><span className="icons-text">Hospital</span></>}
+                    {resource.includes('vaccination') && <><img src={`${process.env.PUBLIC_URL}/assets/img/federal_site.png`} alt=""/><span className="icons-text">Vaccine Center<Tooltip id="vaccineCenter"/></span></>}
+                    {resource.includes('vaccination') && <><img src={`${process.env.PUBLIC_URL}/assets/img/participating_clinic.png`} alt=""/><span className="icons-text">Clinic<Tooltip id="vaccineClinic"/></span></>}
+                    {resource.includes('vaccination') && <><img src={`${process.env.PUBLIC_URL}/assets/img/invited_clinic.png`} alt=""/><span className="icons-text">Invited Clinic<Tooltip id="vaccineClinicInvited"/></span></>}
                 </IconContainer>
             }
-            {props.note && <DataNote>
+            {note && <DataNote>
                 {alert}
-                {props.note}
+                {note}
                 </DataNote>
             }
             </LegendContainer>

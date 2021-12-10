@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 // Helper and Utility functions //
@@ -12,17 +12,17 @@ import { getDateLists } from '../../utils'; //getVarId
 // second row: data and metadata handling 
 // third row: map and variable parameters
 import {  setDates, setNotification, setPanelState } from '../../actions';
-
 import { MapSection, NavBar, VariablePanel, Legend,  TopPanel, Preloader,
   DataPanel, MainLineChart, Scaleable, Draggable, InfoBox,
   NotificationBox, Popover, MapTooltipContent, PrintLayout, DataLoader } from '../../components';  
 import { ViewportProvider } from '../../contexts/ViewportContext';
 import { GeoDaContext } from "../../contexts/GeoDaContext";
-
-import {fitBounds} from '@math.gl/web-mercator';
-  
+import {fitBounds} from '@math.gl/web-mercator';  
 import { colors } from '../../config';
 import * as Comlink from "comlink";
+
+
+import useMapData from '../../hooks/useMapData';
 
 // Main function, App. This function does 2 things:
 // 1: App manages the majority of the side effects when the state changes.
@@ -34,20 +34,6 @@ import * as Comlink from "comlink";
 // 2: App assembles all of the components together and sends Props down
 //    (as of 12/1 only Preloader uses props and is a higher order component)
 
-const getDefaultDimensions = () => ({
-  defaultX: window.innerWidth <= 1024 ? window.innerWidth*.1 : window.innerWidth <= 1400 ? window.innerWidth-400 : window.innerWidth -500, 
-  defaultXLong: window.innerWidth <= 1024 ? window.innerWidth*.1 : window.innerWidth <= 1400 ? window.innerWidth-450 : window.innerWidth -550,
-  defaultY: window.innerWidth <= 1024 ? window.innerHeight*.25 : 75,
-  defaultWidth: window.innerWidth <= 1024 ? window.innerWidth*.8 : 300,
-  defaultWidthLong: window.innerWidth <= 1024 ? window.innerWidth*.8 : window.innerWidth <= 1400 ? 400 : 500,
-  defaultHeight: window.innerWidth <= 1024 ? window.innerHeight*.4 : 300,
-  defaultHeightManual: window.innerWidth <= 1024 ? window.innerHeight*.7 : window.innerHeight*.5,
-  defaultWidthManual: window.innerWidth <= 1024 ? window.innerWidth*.5 : window.innerWidth*.35,
-  defaultXManual: window.innerWidth <= 1024 ? window.innerWidth*.25 : window.innerWidth*.25,
-  defaultYManual: window.innerWidth <= 1024 ? window.innerHeight*.15 : window.innerHeight*.325,
-  minHeight: window.innerWidth <= 1024 ? window.innerHeight*.5 : 200,
-  minWidth: window.innerWidth <= 1024 ? window.innerWidth*.5 : 200,
-})
 
 const dateLists = getDateLists()
 // US bounds
@@ -69,41 +55,25 @@ const defaultViewport = paramsDict.hasOwnProperty('lat')
     bounds: [[-130.14, 53.96],[-67.12, 19]]
   })
 
-var geoda;
 export default function Map() {
-
-  // These selectors access different pieces of the store. While App mainly
-  // dispatches to the store, we need checks to make sure side effects
-  // are OK to trigger. Issues arise with missing data, columns, etc.
-  const mapParams = useSelector(state => state.mapParams);
-  const dataNote = useSelector(state => state.dataParams.dataNote);
-  const fixedScale = useSelector(state => state.dataParams.fixedScale);
-  const variableName = useSelector(state => state.dataParams.variableName);
-  const panelState = useSelector(state => state.panelState);
-  const mapLoaded = useSelector(state => state.mapLoaded);
-  const isLoading = useSelector(state => state.isLoading);
+  const geoda = useRef(null)
   // const fullState = useSelector(state => state);
 
   const dispatch = useDispatch(); 
 
-  // geoda is the WebGeoda proxy class. Generally, having a non-serializable
-  // data in the state is poor for performance, but the App component state only
-  // contains geoda.
-  const [defaultDimensions, setDefaultDimensions] = useState({...getDefaultDimensions()})
-
   // // Dispatch helper functions for side effects and data handling
   // Get centroid data for cartogram
   // const getCentroids = (geojson, geoda) =>  dispatch(setCentroids(geoda.GetCentroids(geojson), geojson))
-
   const [geodaReady, setGeodaReady] = useState(false);
 
 
   useEffect(() => {
     let worker = Comlink.wrap(new Worker(`${process.env.PUBLIC_URL}/workers/worker.jsgeoda.js`))
     worker.New()
-      .then(() => geoda = worker)
+      .then(() => geoda.current = worker)
       .then(() => setGeodaReady(true))
   }, []);
+
   // After runtime is initialized, this loads in geoda to the context
   useEffect(() => {
     let paramsDict = {}; 
@@ -141,96 +111,144 @@ export default function Map() {
     dispatch(setDates(dateLists.isoDateList))
   },[])  
 
-  // default width handlers on resize
-  useEffect(() => {
-    setDefaultDimensions({...getDefaultDimensions()})
-  }, [window.innerHeight, window.innerWidth])
-
   return (
     <>
       <div className="Map-App" style={{overflow:'hidden'}}>
-        <Preloader loaded={mapLoaded} />
-        {isLoading && <div id="loadingIcon">
-            <img
-              src={`${process.env.PUBLIC_URL}/assets/img/animated_cluster.svg`}
-              role="presentation"
-              alt=""
-            />
+          {/* <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
+            <button onClick={() => console.log(fullState)}>Log state</button>
+          </header> */}
+          <div id="mainContainer">
+            {geodaReady && 
+              <>
+                <GeoDaContext.Provider value={geoda.current}>
+                  <ViewportProvider defaultViewport={defaultViewport} >
+                    <MapPageContainer />
+                  </ViewportProvider>
+                </GeoDaContext.Provider>
+              </>}
           </div>
-        }
-        {/* <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
-          <button onClick={() => console.log(fullState)}>Log state</button>
-        </header> */}
-        <div id="mainContainer" className={isLoading ? 'loading' : ''}>
-          {geodaReady && 
-            <>
-              <GeoDaContext.Provider value={geoda}>
-                <ViewportProvider defaultViewport={defaultViewport} >
-                  <MapSection />
-                  <PrintLayout />
-                  <TopPanel />
-                  <Legend 
-                    variableName={variableName} 
-                    colorScale={mapParams.colorScale}
-                    bins={mapParams.bins}
-                    fixedScale={fixedScale}
-                    resource={mapParams.resource}
-                    note={dataNote}
-                    />
-                  <VariablePanel />
-                  <DataPanel />
-                  <Popover /> 
-                  <NotificationBox />  
-                  {panelState.lineChart && <Draggable 
-                    z={9}
-                    defaultX={defaultDimensions.defaultXLong}
-                    defaultY={defaultDimensions.defaultY}
-                    title="lineChart"
-                    content={
-                    <Scaleable 
-                      content={
-                        <MainLineChart />
-                      } 
-                      title="lineChart"
-                      content={
-                      <Scaleable 
-                        content={
-                          <MainLineChart />
-                        } 
-                        title="lineChart"
-                        defaultWidth={defaultDimensions.defaultWidthLong}
-                        defaultHeight={defaultDimensions.defaultHeight}
-                        minHeight={defaultDimensions.minHeight}
-                        minWidth={defaultDimensions.minWidth} 
-                        />}
-                      />}
-                    />} 
-                    {panelState.tutorial && <Draggable 
-                      z={10}
-                      defaultX={defaultDimensions.defaultXManual}
-                      defaultY={defaultDimensions.defaultYManual}
-                      title="tutorial"
-                      content={
-                      <Scaleable 
-                        content={
-                          <InfoBox />
-                        } 
-                        title="tutorial"
-                        defaultWidth={defaultDimensions.defaultWidthManual}
-                        defaultHeight={defaultDimensions.defaultHeightManual}
-                        minHeight={defaultDimensions.minHeight}
-                        minWidth={defaultDimensions.minWidth} />
-                    }/>}
-                    <MapTooltipContent />
-                    {panelState.dataLoader &&
-                      <DataLoader/>
-                    }
-                </ViewportProvider>
-              </GeoDaContext.Provider>
-            </>}
-        </div>
+        <NavBar />
       </div>
-      <NavBar />
     </>
   );
+}
+
+const MapPageContainer = () => {
+  // These selectors access different pieces of the store. While App mainly
+  // dispatches to the store, we need checks to make sure side effects
+  // are OK to trigger. Issues arise with missing data, columns, etc.
+  const mapParams = useSelector(state => state.mapParams);
+  const dataNote = useSelector(state => state.dataParams.dataNote);
+  const fixedScale = useSelector(state => state.dataParams.fixedScale);
+  const variableName = useSelector(state => state.dataParams.variableName);
+  const panelState = useSelector(state => state.panelState);
+
+  // geoda is the WebGeoda proxy class. Generally, having a non-serializable
+  // data in the state is poor for performance, but the App component state only
+  // contains geoda.
+  const getDefaultDimensions = () => ({
+    defaultX: window.innerWidth <= 1024 ? window.innerWidth*.1 : window.innerWidth <= 1400 ? window.innerWidth-400 : window.innerWidth -500, 
+    defaultXLong: window.innerWidth <= 1024 ? window.innerWidth*.1 : window.innerWidth <= 1400 ? window.innerWidth-450 : window.innerWidth -550,
+    defaultY: window.innerWidth <= 1024 ? window.innerHeight*.25 : 75,
+    defaultWidth: window.innerWidth <= 1024 ? window.innerWidth*.8 : 300,
+    defaultWidthLong: window.innerWidth <= 1024 ? window.innerWidth*.8 : window.innerWidth <= 1400 ? 400 : 500,
+    defaultHeight: window.innerWidth <= 1024 ? window.innerHeight*.4 : 300,
+    defaultHeightManual: window.innerWidth <= 1024 ? window.innerHeight*.7 : window.innerHeight*.5,
+    defaultWidthManual: window.innerWidth <= 1024 ? window.innerWidth*.5 : window.innerWidth*.35,
+    defaultXManual: window.innerWidth <= 1024 ? window.innerWidth*.25 : window.innerWidth*.25,
+    defaultYManual: window.innerWidth <= 1024 ? window.innerHeight*.15 : window.innerHeight*.325,
+    minHeight: window.innerWidth <= 1024 ? window.innerHeight*.5 : 200,
+    minWidth: window.innerWidth <= 1024 ? window.innerWidth*.5 : 200,
+  })
+  const [defaultDimensions, setDefaultDimensions] = useState({...getDefaultDimensions()})
+
+  // default width handlers on resize
+  useEffect(() => {
+    typeof window && window.addEventListener('resize', () => setDefaultDimensions({...getDefaultDimensions()}))
+  }, [])
+  
+  const [
+    currentMapGeography,
+    currentMapData,
+    currentMapID,
+    currentBins,
+    currentHeightScale,
+    isLoading
+] = useMapData({});
+
+  return <div>
+    {isLoading && <div id="loadingIcon">
+        <img
+          src={`${process.env.PUBLIC_URL}/assets/img/animated_cluster.svg`}
+          role="presentation"
+          alt=""
+        />
+      </div>
+    }
+    <MapSection 
+      currentMapGeography={currentMapGeography}
+      currentMapData={currentMapData}
+      currentMapID={currentMapID}
+      currentHeightScale={currentHeightScale}
+      isLoading={isLoading}
+      />
+    <PrintLayout />
+    <TopPanel />
+    <Legend 
+      variableName={variableName} 
+      colorScale={mapParams.colorScale}
+      bins={mapParams.bins}
+      fixedScale={fixedScale}
+      resource={mapParams.resource}
+      note={dataNote}
+      />
+    <VariablePanel />
+    <DataPanel />
+    <Popover /> 
+    <NotificationBox />  
+    {panelState.lineChart && <Draggable 
+      z={9}
+      defaultX={defaultDimensions.defaultXLong}
+      defaultY={defaultDimensions.defaultY}
+      title="lineChart"
+      content={
+      <Scaleable 
+        content={
+          <MainLineChart />
+        } 
+        title="lineChart"
+        content={
+        <Scaleable 
+          content={
+            <MainLineChart />
+          } 
+          title="lineChart"
+          defaultWidth={defaultDimensions.defaultWidthLong}
+          defaultHeight={defaultDimensions.defaultHeight}
+          minHeight={defaultDimensions.minHeight}
+          minWidth={defaultDimensions.minWidth} 
+          />}
+        />}
+      />} 
+      {panelState.tutorial && <Draggable 
+        z={10}
+        defaultX={defaultDimensions.defaultXManual}
+        defaultY={defaultDimensions.defaultYManual}
+        title="tutorial"
+        content={
+        <Scaleable 
+          content={
+            <InfoBox />
+          } 
+          title="tutorial"
+          defaultWidth={defaultDimensions.defaultWidthManual}
+          defaultHeight={defaultDimensions.defaultHeightManual}
+          minHeight={defaultDimensions.minHeight}
+          minWidth={defaultDimensions.minWidth} />
+      }/>}
+      <MapTooltipContent />
+      {panelState.dataLoader &&
+        <DataLoader/>
+      }
+    </div>
 }

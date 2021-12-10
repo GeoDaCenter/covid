@@ -20,7 +20,7 @@ import {getCSV, getCartogramCenter, parseMapboxLayers, shallowCompare } from '..
 import { colors, MAPBOX_ACCESS_TOKEN } from '../config';
 import MAP_STYLE from '../config/style.json';
 import { useViewport, useSetViewport } from '../contexts/ViewportContext';
-import useLoadData from '../hooks/useLoadData';
+import useLoadData, { useMapData } from '../hooks/useLoadData';
 import useUpdateData from '../hooks/useUpdateData';
 import useFindViewport from '../hooks/useFindViewport';
 // PBF schemas
@@ -88,25 +88,30 @@ const chunkArray = (data, chunk) => {
     return tempArray
 };
 
-export default function MapSection(){ 
+export default function MapSection({
+    currentMapGeography,
+    currentMapData,
+    currentMapID,
+    currentHeightScale,
+}){ 
     // fetch pieces of state from store    
     const currentData = useSelector(state => state.currentData);
     const mapParams = useSelector(state => state.mapParams);
     const dotDensityData = useSelector(state => state.dotDensityData);
-    const currentMapData = useSelector(state => state.mapData.data);
-    const currentMapID = useSelector(state => state.mapData.params);
-    const currentHeightScale = useSelector(state => state.mapData.heightScale);
+    // const currentMapData = useSelector(state => state.mapData.data);
+    // const currentMapID = useSelector(state => state.mapData.params);
+    // const currentHeightScale = useSelector(state => state.mapData.heightScale);
     const storedGeojson = useSelector(state => state.storedGeojson);
     const dataPresets = useSelector(state => state.dataPresets);
-    const currentMapGeography = storedGeojson[currentData]?.data||[]
-    const isPoint = currentMapGeography.features ? currentMapGeography.features[0].geometry.type === 'Point' : false;
+    // const currentMapGeography = storedGeojson[currentData]?.data||[]
     const colorFilter = useSelector(state => state.colorFilter);
     const currIdCol = dataPresets[currentData].id
     const storedCartogramData = useSelector(state => state.storedCartogramData);
     const storedLisaData = useSelector(state => state.storedLisaData);
     const shouldPanMap = useSelector(state => state.shouldPanMap);
-    useLoadData();
-    useUpdateData();
+    
+    const isPoint = currentMapGeography?.features ? currentMapGeography.features[0].geometry.type === 'Point' : false;
+
     const viewport = useViewport();
     const setViewport = useSetViewport();
     const currMapViewport = useFindViewport(storedGeojson[currentData]?.mapId)
@@ -403,7 +408,7 @@ export default function MapSection(){
             getFillColor: d => !colorFilter || currentMapData[d.properties[currIdCol]]?.color?.length === 4 
                 ? currentMapData[d.properties[currIdCol]]?.color
                 : [...(currentMapData[d.properties[currIdCol]]?.color||[0,0,0]), 0+(!colorFilter || colorFilter===currentMapData[d.properties[currIdCol]]?.color)*225],
-            getElevation: d => currentMapData[d.properties[currIdCol]]?.height||0,
+            getElevation: d => currentMapData[d.properties[currIdCol]]?.value||0,
             elevationScale: currentHeightScale||1,
             getPointRadius: 250,
             pointRadiusMaxPixels: 50,
@@ -473,7 +478,7 @@ export default function MapSection(){
         }),
         cartogram: new ScatterplotLayer({
             id: 'cartogram layer',
-            data: currentMapGeography.features,
+            data: currentMapGeography?.features||[],
             pickable:true,
             getPosition: d => currentMapData[d.properties[currIdCol]].position,
             getFillColor: d => currentMapData[d.properties[currIdCol]].color,
@@ -490,7 +495,7 @@ export default function MapSection(){
         }),
         cartogramText: new TextLayer({
             id: 'cartogram text layer',
-            data: currentMapGeography.features,
+            data: currentMapGeography?.features||[],
             getPosition: d => currentMapData[d.properties[currIdCol]].position,
             getSize: d => currentMapData[d.properties[currIdCol]].radius,  
             sizeScale: 4,

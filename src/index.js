@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import { Provider } from 'react-redux';
 import './index.css';
-import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+// import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import { createStore } from 'redux';
 import rootReducer from './reducers';
 // import { persistStore, persistReducer } from 'redux-persist';
@@ -48,4 +48,4 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
-serviceWorkerRegistration.register();
+// serviceWorkerRegistration.register();

@@ -27,7 +27,7 @@ import getJson from './getJson';
 import getJsonPure from './getJsonPure';
 import getLisaValues from './getLisaValues';
 import getParseCSV from './getParseCSV';
-import getParsePbf from './getParsePbf'
+import getParsePbf, {parsePbfData} from './getParsePbf'
 import getURLParams from './getURLParams';
 import getVarId from './getVarId';
 import { indexGeoProps } from './indexGeoProps';
@@ -82,6 +82,7 @@ export {
     mapFnHinge,
     parseBinPairs,
     parseMapboxLayers,
+    parsePbfData,
     parseTooltipData,
     resolveName,
     shallowCompare,

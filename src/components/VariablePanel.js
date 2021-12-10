@@ -17,7 +17,8 @@ import Tooltip from './Tooltip';
 import { Icon } from '../components';
 import { StyledDropDown, BinsContainer, Gutter } from '../styled_components';
 import { setVariableParams, setMapParams, setCurrentData, setPanelState, setParametersAndData, setNotification, changeDotDensityMode, toggleDotDensityRace, setDotDensityBgOpacity } from '../actions';
-import { fixedScales, colorScales, colors } from '../config';
+import {  colors } from '../config';
+import { fixedScales, colorScales } from '../config/scales';
 
 /** STYLES */
 const VariablePanelContainer = styled.div`

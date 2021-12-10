@@ -7,11 +7,8 @@ const getDataForBins = ({
     fixedOrder=false,
     dataReady=true
 }) => {
+    if (!dataReady) return [];    
     
-    if (!dataReady) {
-        return [];
-    }
-    console.log(dataReady)
     const { nProperty, nIndex, dType, dIndex} = dataParams;
 
     // declare empty array for return variables
@@ -21,6 +18,7 @@ const getDataForBins = ({
     const keys = fixedOrder || Object.keys(numeratorData);
     const n = keys.length;
 
+    // debugger;
     // this checks if the bins generated should be dynamic (generating for each date) or fixed (to the most recent date)
     if (nIndex === null && nProperty === null) {
         // if fixed, get the most recent date
@@ -40,7 +38,6 @@ const getDataForBins = ({
     let conditionalCheck = () => false;
     
     if (dataParams.numerator.indexOf('vaccin') !== -1) conditionalCheck = (val) => val > 100 ? true : false;
-    
     for (let i=0; i<rtn.length;i++){
         if (rtn[i] < 0 || conditionalCheck(rtn[i])) rtn[i] = 0 
     }

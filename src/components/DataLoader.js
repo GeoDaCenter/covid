@@ -5,7 +5,7 @@ import styled, {keyframes} from 'styled-components';
 import { GeoDaContext } from '../contexts/GeoDaContext';
 
 import { setPanelState, addCustomData } from '../actions';
-import { colorScales } from '../config';
+import { colorScales } from '../config/scales';
 
 import Select from '@material-ui/core/Select';
 import { StyledDropDown, BinsContainer, Gutter } from '../styled_components';
