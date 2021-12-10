@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import styled from 'styled-components';
 
 // Helper and Utility functions //
 // first row: data loading
@@ -9,18 +10,33 @@ import { getDateLists } from '../../utils'; //getVarId
 
 // Actions -- Redux state manipulation following Flux architecture //
 // first row: data storage
-// second row: data and metadata handling 
+// second row: data and metadata handling
 // third row: map and variable parameters
-import {  setDates, setNotification, setPanelState } from '../../actions';
-import { MapSection, NavBar, VariablePanel, Legend,  TopPanel, Preloader,
-  DataPanel, MainLineChart, Scaleable, Draggable, InfoBox,
-  NotificationBox, Popover, MapTooltipContent, PrintLayout, DataLoader } from '../../components';  
+import { setDates, setNotification, setPanelState } from '../../actions';
+import {
+  MapSection,
+  NavBar,
+  VariablePanel,
+  Legend,
+  TopPanel,
+  Preloader,
+  DataPanel,
+  MainLineChart,
+  Scaleable,
+  Draggable,
+  InfoBox,
+  NotificationBox,
+  Popover,
+  MapTooltipContent,
+  PrintLayout,
+  DataLoader,
+  Icon,
+} from '../../components';
 import { ViewportProvider } from '../../contexts/ViewportContext';
-import { GeoDaContext } from "../../contexts/GeoDaContext";
-import {fitBounds} from '@math.gl/web-mercator';  
+import { GeoDaContext } from '../../contexts/GeoDaContext';
+import { fitBounds } from '@math.gl/web-mercator';
 import { colors } from '../../config';
-import * as Comlink from "comlink";
-
+import * as Comlink from 'comlink';
 
 import useMapData from '../../hooks/useMapData';
 
@@ -34,57 +50,76 @@ import useMapData from '../../hooks/useMapData';
 // 2: App assembles all of the components together and sends Props down
 //    (as of 12/1 only Preloader uses props and is a higher order component)
 
-
-const dateLists = getDateLists()
+const dateLists = getDateLists();
 // US bounds
 
 let paramsDict = {};
-for (const [key, value] of new URLSearchParams(window.location.search) ) { paramsDict[key] = value; }
+for (const [key, value] of new URLSearchParams(window.location.search)) {
+  paramsDict[key] = value;
+}
 
 const defaultViewport = paramsDict.hasOwnProperty('lat')
   ? {
-    latitude: +paramsDict.lat,
-    longitude: +paramsDict.lon,
-    zoom: +paramsDict.z,
-    pitch: paramsDict.viz === '3D' ? 30 : 0,
-    bearing: paramsDict.viz === '3D' ? -30 : 0,
-  }
+      latitude: +paramsDict.lat,
+      longitude: +paramsDict.lon,
+      zoom: +paramsDict.z,
+      pitch: paramsDict.viz === '3D' ? 30 : 0,
+      bearing: paramsDict.viz === '3D' ? -30 : 0,
+    }
   : fitBounds({
-    width: window.innerWidth,
-    height: window.innerHeight,
-    bounds: [[-130.14, 53.96],[-67.12, 19]]
-  })
+      width: window.innerWidth,
+      height: window.innerHeight,
+      bounds: [
+        [-130.14, 53.96],
+        [-67.12, 19],
+      ],
+    });
+
+const MapContainer = styled.div``;
+
+const MapOuterContainer = styled.div`
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 50px);
+  overflow: hidden;
+`;
 
 export default function Map() {
-  const geoda = useRef(null)
+  const geoda = useRef(null);
   // const fullState = useSelector(state => state);
 
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
 
   // // Dispatch helper functions for side effects and data handling
   // Get centroid data for cartogram
   // const getCentroids = (geojson, geoda) =>  dispatch(setCentroids(geoda.GetCentroids(geojson), geojson))
   const [geodaReady, setGeodaReady] = useState(false);
 
-
   useEffect(() => {
-    let worker = Comlink.wrap(new Worker(`${process.env.PUBLIC_URL}/workers/worker.jsgeoda.js`))
-    worker.New()
-      .then(() => geoda.current = worker)
-      .then(() => setGeodaReady(true))
+    let worker = Comlink.wrap(
+      new Worker(`${process.env.PUBLIC_URL}/workers/worker.jsgeoda.js`),
+    );
+    worker
+      .New()
+      .then(() => (geoda.current = worker))
+      .then(() => setGeodaReady(true));
   }, []);
 
   // After runtime is initialized, this loads in geoda to the context
   useEffect(() => {
-    let paramsDict = {}; 
+    let paramsDict = {};
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    for (const [key, value] of urlParams ) { paramsDict[key] = value; }
+    for (const [key, value] of urlParams) {
+      paramsDict[key] = value;
+    }
 
     if (!paramsDict.hasOwnProperty('v')) {
       // do nothing, most of the time
     } else if (paramsDict['v'] === '1') {
-      dispatch(setNotification(`
+      dispatch(
+        setNotification(
+          `
           <h2>Welcome to the Atlas v2!</h2>
           <p>
           The share link you have entered is for an earlier release of the US Covid Atlas. 
@@ -96,159 +131,303 @@ export default function Map() {
           </a>
           </p>
         `,
-        'center'))
+          'center',
+        ),
+      );
     }
 
     if (window.innerWidth <= 1024) {
-      dispatch(setPanelState({
-        variables:false,
-        info:false,
-        tutorial:false,
-        lineChart: false
-      }))
+      dispatch(
+        setPanelState({
+          variables: false,
+          info: false,
+          tutorial: false,
+          lineChart: false,
+        }),
+      );
     }
 
-    dispatch(setDates(dateLists.isoDateList))
-  },[])  
+    dispatch(setDates(dateLists.isoDateList));
+  }, []);
 
   return (
     <>
-      <div className="Map-App" style={{overflow:'hidden'}}>
-          {/* <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
+      <div className="Map-App" style={{ overflow: 'hidden' }}>
+        <NavBar />
+        {/* <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
             <button onClick={() => console.log(fullState)}>Log state</button>
           </header> */}
-          <div id="mainContainer">
-            {geodaReady && 
-              <>
-                <GeoDaContext.Provider value={geoda.current}>
-                  <ViewportProvider defaultViewport={defaultViewport} >
-                    <MapPageContainer />
-                  </ViewportProvider>
-                </GeoDaContext.Provider>
-              </>}
-          </div>
-        <NavBar />
+        <MapOuterContainer>
+          {geodaReady && (
+            <>
+              <GeoDaContext.Provider value={geoda.current}>
+                <ViewportProvider defaultViewport={defaultViewport}>
+                  <MapPageContainer />
+                </ViewportProvider>
+              </GeoDaContext.Provider>
+            </>
+          )}
+        </MapOuterContainer>
       </div>
     </>
   );
 }
 
+const DockContainerOuter = styled.div``
+
+const DockContainer = styled.div`
+  height: calc(100vh - 50px);
+  background: lightgray;
+  width: 50px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: ${colors.gray};
+  box-shadow: 5px 0px 5px 0px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  z-index: 5;
+  button {
+    background:none;
+    border:none;
+    width:100%;
+    height:3em;
+    padding: 10px;
+    svg {
+      fill:white;
+      transition:250ms all;
+    }
+    &.hovered {
+      svg {
+        fill: ${colors.yellow};
+      }
+    }
+  }
+`;
+
+
+const DockLabels = styled.div`
+  position: absolute;
+  left:50px;
+  color:red;
+  z-index:50;
+  opacity:0;
+  pointer-events:none;
+  transition:250ms opacity;
+  background: ${colors.darkgray};
+  button {
+    padding: 10px;
+    color:white;
+    background:none;
+    height:50px;
+    border:none;
+    &.hovered {
+      color:${colors.yellow};
+    }
+  }
+  &.active {
+    opacity:1;
+    pointer-events:initial;
+  }
+
+`
+
+const IconDock = () => {
+  const dispatch = useDispatch();
+  const [hoveredIcon, setHoveredIcon] = useState(null);
+  const buttons = [
+    {
+      symbol: 'settings',
+      id: 'settings-buttom',
+      ariaLabel: 'Settings',
+      onClick: () => dispatch({ type: 'TOGGLE_PANEL', payload: 'variables' }),
+    },
+  ];
+  return (
+    <DockContainerOuter>
+      <DockContainer>
+        {buttons.map(({ symbol, id, ariaLabel, onClick }) => (
+          <button
+            id={id}
+            ariaLabel={ariaLabel}
+            onClick={onClick}
+            className={hoveredIcon === id ? 'hovered' : ''}
+            onMouseEnter={() => setHoveredIcon(id)}
+            onMouseLeave={() => setHoveredIcon(null)}
+          >
+            <Icon symbol={symbol} />
+          </button>
+        ))}
+      </DockContainer>
+      <DockLabels className={hoveredIcon ? 'active' : ''}>
+        {buttons.map(({ symbol, id, ariaLabel, onClick }) => (
+            <button
+              id={id}
+              ariaLabel={ariaLabel}
+              onClick={onClick}
+              className={hoveredIcon === id ? 'hovered' : ''}
+              onMouseEnter={() => setHoveredIcon(id)}
+              onMouseLeave={() => setHoveredIcon(null)}
+            >
+              {ariaLabel}
+            </button>
+          ))}
+      </DockLabels>
+    </DockContainerOuter>
+  );
+};
 const MapPageContainer = () => {
   // These selectors access different pieces of the store. While App mainly
   // dispatches to the store, we need checks to make sure side effects
   // are OK to trigger. Issues arise with missing data, columns, etc.
-  const mapParams = useSelector(state => state.mapParams);
-  const dataNote = useSelector(state => state.dataParams.dataNote);
-  const fixedScale = useSelector(state => state.dataParams.fixedScale);
-  const variableName = useSelector(state => state.dataParams.variableName);
-  const panelState = useSelector(state => state.panelState);
+  const mapParams = useSelector((state) => state.mapParams);
+  const dataNote = useSelector((state) => state.dataParams.dataNote);
+  const fixedScale = useSelector((state) => state.dataParams.fixedScale);
+  const variableName = useSelector((state) => state.dataParams.variableName);
+  const panelState = useSelector((state) => state.panelState);
 
   // geoda is the WebGeoda proxy class. Generally, having a non-serializable
   // data in the state is poor for performance, but the App component state only
   // contains geoda.
   const getDefaultDimensions = () => ({
-    defaultX: window.innerWidth <= 1024 ? window.innerWidth*.1 : window.innerWidth <= 1400 ? window.innerWidth-400 : window.innerWidth -500, 
-    defaultXLong: window.innerWidth <= 1024 ? window.innerWidth*.1 : window.innerWidth <= 1400 ? window.innerWidth-450 : window.innerWidth -550,
-    defaultY: window.innerWidth <= 1024 ? window.innerHeight*.25 : 75,
-    defaultWidth: window.innerWidth <= 1024 ? window.innerWidth*.8 : 300,
-    defaultWidthLong: window.innerWidth <= 1024 ? window.innerWidth*.8 : window.innerWidth <= 1400 ? 400 : 500,
-    defaultHeight: window.innerWidth <= 1024 ? window.innerHeight*.4 : 300,
-    defaultHeightManual: window.innerWidth <= 1024 ? window.innerHeight*.7 : window.innerHeight*.5,
-    defaultWidthManual: window.innerWidth <= 1024 ? window.innerWidth*.5 : window.innerWidth*.35,
-    defaultXManual: window.innerWidth <= 1024 ? window.innerWidth*.25 : window.innerWidth*.25,
-    defaultYManual: window.innerWidth <= 1024 ? window.innerHeight*.15 : window.innerHeight*.325,
-    minHeight: window.innerWidth <= 1024 ? window.innerHeight*.5 : 200,
-    minWidth: window.innerWidth <= 1024 ? window.innerWidth*.5 : 200,
-  })
-  const [defaultDimensions, setDefaultDimensions] = useState({...getDefaultDimensions()})
+    defaultX:
+      window.innerWidth <= 1024
+        ? window.innerWidth * 0.1
+        : window.innerWidth <= 1400
+        ? window.innerWidth - 400
+        : window.innerWidth - 500,
+    defaultXLong:
+      window.innerWidth <= 1024
+        ? window.innerWidth * 0.1
+        : window.innerWidth <= 1400
+        ? window.innerWidth - 450
+        : window.innerWidth - 550,
+    defaultY: window.innerWidth <= 1024 ? window.innerHeight * 0.25 : 75,
+    defaultWidth: window.innerWidth <= 1024 ? window.innerWidth * 0.8 : 300,
+    defaultWidthLong:
+      window.innerWidth <= 1024
+        ? window.innerWidth * 0.8
+        : window.innerWidth <= 1400
+        ? 400
+        : 500,
+    defaultHeight: window.innerWidth <= 1024 ? window.innerHeight * 0.4 : 300,
+    defaultHeightManual:
+      window.innerWidth <= 1024
+        ? window.innerHeight * 0.7
+        : window.innerHeight * 0.5,
+    defaultWidthManual:
+      window.innerWidth <= 1024
+        ? window.innerWidth * 0.5
+        : window.innerWidth * 0.35,
+    defaultXManual:
+      window.innerWidth <= 1024
+        ? window.innerWidth * 0.25
+        : window.innerWidth * 0.25,
+    defaultYManual:
+      window.innerWidth <= 1024
+        ? window.innerHeight * 0.15
+        : window.innerHeight * 0.325,
+    minHeight: window.innerWidth <= 1024 ? window.innerHeight * 0.5 : 200,
+    minWidth: window.innerWidth <= 1024 ? window.innerWidth * 0.5 : 200,
+  });
+  const [defaultDimensions, setDefaultDimensions] = useState({
+    ...getDefaultDimensions(),
+  });
 
   // default width handlers on resize
   useEffect(() => {
-    typeof window && window.addEventListener('resize', () => setDefaultDimensions({...getDefaultDimensions()}))
-  }, [])
-  
+    typeof window &&
+      window.addEventListener('resize', () =>
+        setDefaultDimensions({ ...getDefaultDimensions() }),
+      );
+  }, []);
+
   const [
     currentMapGeography,
     currentMapData,
     currentMapID,
     currentBins,
     currentHeightScale,
-    isLoading
-] = useMapData({});
+    isLoading,
+  ] = useMapData({});
 
-  return <div>
-    {isLoading && <div id="loadingIcon">
-        <img
-          src={`${process.env.PUBLIC_URL}/assets/img/animated_cluster.svg`}
-          role="presentation"
-          alt=""
-        />
-      </div>
-    }
-    <MapSection 
-      currentMapGeography={currentMapGeography}
-      currentMapData={currentMapData}
-      currentMapID={currentMapID}
-      currentHeightScale={currentHeightScale}
-      isLoading={isLoading}
+  return (
+    <MapContainer>
+      {isLoading && (
+        <div id="loadingIcon">
+          <img
+            src={`${process.env.PUBLIC_URL}/assets/img/animated_cluster.svg`}
+            role="presentation"
+            alt=""
+          />
+        </div>
+      )}
+      <IconDock />
+      <MapSection
+        currentMapGeography={currentMapGeography}
+        currentMapData={currentMapData}
+        currentMapID={currentMapID}
+        currentHeightScale={currentHeightScale}
+        isLoading={isLoading}
       />
-    <PrintLayout />
-    <TopPanel />
-    <Legend 
-      variableName={variableName} 
-      colorScale={mapParams.colorScale}
-      bins={mapParams.bins}
-      fixedScale={fixedScale}
-      resource={mapParams.resource}
-      note={dataNote}
+      <PrintLayout />
+      <TopPanel />
+      <Legend
+        variableName={variableName}
+        colorScale={mapParams.colorScale}
+        bins={currentBins}
+        fixedScale={fixedScale}
+        resource={mapParams.resource}
+        note={dataNote}
       />
-    <VariablePanel />
-    <DataPanel />
-    <Popover /> 
-    <NotificationBox />  
-    {panelState.lineChart && <Draggable 
-      z={9}
-      defaultX={defaultDimensions.defaultXLong}
-      defaultY={defaultDimensions.defaultY}
-      title="lineChart"
-      content={
-      <Scaleable 
-        content={
-          <MainLineChart />
-        } 
-        title="lineChart"
-        content={
-        <Scaleable 
-          content={
-            <MainLineChart />
-          } 
+      <VariablePanel />
+      <DataPanel />
+      <Popover />
+      <NotificationBox />
+      {panelState.lineChart && (
+        <Draggable
+          z={9}
+          defaultX={defaultDimensions.defaultXLong}
+          defaultY={defaultDimensions.defaultY}
           title="lineChart"
-          defaultWidth={defaultDimensions.defaultWidthLong}
-          defaultHeight={defaultDimensions.defaultHeight}
-          minHeight={defaultDimensions.minHeight}
-          minWidth={defaultDimensions.minWidth} 
-          />}
-        />}
-      />} 
-      {panelState.tutorial && <Draggable 
-        z={10}
-        defaultX={defaultDimensions.defaultXManual}
-        defaultY={defaultDimensions.defaultYManual}
-        title="tutorial"
-        content={
-        <Scaleable 
           content={
-            <InfoBox />
-          } 
+            <Scaleable
+              content={<MainLineChart />}
+              title="lineChart"
+              content={
+                <Scaleable
+                  content={<MainLineChart />}
+                  title="lineChart"
+                  defaultWidth={defaultDimensions.defaultWidthLong}
+                  defaultHeight={defaultDimensions.defaultHeight}
+                  minHeight={defaultDimensions.minHeight}
+                  minWidth={defaultDimensions.minWidth}
+                />
+              }
+            />
+          }
+        />
+      )}
+      {panelState.tutorial && (
+        <Draggable
+          z={10}
+          defaultX={defaultDimensions.defaultXManual}
+          defaultY={defaultDimensions.defaultYManual}
           title="tutorial"
-          defaultWidth={defaultDimensions.defaultWidthManual}
-          defaultHeight={defaultDimensions.defaultHeightManual}
-          minHeight={defaultDimensions.minHeight}
-          minWidth={defaultDimensions.minWidth} />
-      }/>}
+          content={
+            <Scaleable
+              content={<InfoBox />}
+              title="tutorial"
+              defaultWidth={defaultDimensions.defaultWidthManual}
+              defaultHeight={defaultDimensions.defaultHeightManual}
+              minHeight={defaultDimensions.minHeight}
+              minWidth={defaultDimensions.minWidth}
+            />
+          }
+        />
+      )}
       <MapTooltipContent />
-      {panelState.dataLoader &&
-        <DataLoader/>
-      }
-    </div>
-}
+      {panelState.dataLoader && <DataLoader />}
+    </MapContainer>
+  );
+};

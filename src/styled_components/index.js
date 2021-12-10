@@ -59,69 +59,75 @@ export const StyledDropDown = styled(FormControl)`
       }
     }
   }
-`
+`;
 
 export const StyledDropDownNoLabel = styled(StyledDropDown)`
   .MuiFormLabel-root {
-    display:none;
+    display: none;
   }
-  padding:10px 0 5px 20px !important;
+  padding: 10px 0 5px 20px !important;
   label + .MuiInput-formControl {
-    margin-top:0;
+    margin-top: 0;
   }
-`
+`;
 
 export const SwitchContainer = styled(Grid)`
-  padding-top:4px !important;
-  p { 
+  padding-top: 4px !important;
+  p {
     display: inline;
-    color:white;
-    transform:translateY(5px);
+    color: white;
+    transform: translateY(5px);
   }
   span.MuiSwitch-track {
-      background-color:${colors.buttongray};
+    background-color: ${colors.buttongray};
   }
   .MuiSwitch-colorSecondary.Mui-checked {
-      color:${colors.lightblue};
+    color: ${colors.lightblue};
   }
   .MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track {
-      background-color: ${colors.lightblue};
+    background-color: ${colors.lightblue};
   }
   .MuiSwitch-colorSecondary:hover {
-      background-color:${colors.lightblue}55;
+    background-color: ${colors.lightblue}55;
   }
-`
+`;
 
 export const BinsContainer = styled.div`
-  display:inline-block;
-  transform:translateY(10px);
-  opacity: ${props => props.disabled ? 0.25 : 1};
-  pointer-events: ${props => props.disabled ? 'none' : 'initial'};
-  p { 
+  display: inline-block;
+  transform: translateY(10px);
+  opacity: ${(props) => (props.disabled ? 0.25 : 1)};
+  pointer-events: ${(props) => (props.disabled ? 'none' : 'initial')};
+  p {
     display: inline;
-    color:white;
-    transform:translateY(5px);
+    color: white;
+    transform: translateY(5px);
   }
   span.MuiSwitch-track {
-      background-color:${colors.buttongray};
+    background-color: ${colors.buttongray};
   }
   .MuiSwitch-colorSecondary.Mui-checked {
-      color:${colors.lightblue};
+    color: ${colors.lightblue};
   }
   .MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track {
-      background-color: ${colors.lightblue};
+    background-color: ${colors.lightblue};
   }
   .MuiSwitch-colorSecondary:hover {
-      background-color:${colors.lightblue}55;
+    background-color: ${colors.lightblue}55;
   }
-`
+`;
 
 export const ContentContainer = styled.div`
-  width:100%;
-  max-width:1140px;
-  padding:20px;
-  margin:0 auto;
-  h1, h2, h3, h4, h5, h6, p {
+  width: 100%;
+  max-width: 1140px;
+  padding: 20px;
+  margin: 0 auto;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p {
     color: #0d0d0d;
   }
   h1 {
@@ -130,14 +136,14 @@ export const ContentContainer = styled.div`
     font-weight: 300;
     font-style: italic;
   }
-  h2 { 
+  h2 {
     font-family: 'Lato', sans-serif;
     font-size: 16px;
     line-height: 1.5;
     letter-spacing: 1.75px;
     font-weight: 700;
     font-stretch: normal;
-    margin:20px 0;
+    margin: 20px 0;
   }
   h3 {
     font-family: 'Playfair Display', serif;
@@ -145,7 +151,10 @@ export const ContentContainer = styled.div`
     font-weight: 300;
     font-style: italic;
   }
-  p, a, ul li, ol li {
+  p,
+  a,
+  ul li,
+  ol li {
     font-family: 'Lato', sans-serif;
     font-size: 16px;
     font-weight: 400;
@@ -154,12 +163,13 @@ export const ContentContainer = styled.div`
     line-height: 1.63;
     letter-spacing: normal;
   }
-  ul, ol {
-    padding-left:20px;
+  ul,
+  ol {
+    padding-left: 20px;
   }
   a {
-    font-weight:bold;
-    text-decoration:none;
+    font-weight: bold;
+    text-decoration: none;
     color: ${colors.blue};
   }
   hr {
@@ -170,26 +180,26 @@ export const ContentContainer = styled.div`
     margin: 1em 0;
     padding: 0;
   }
-`
+`;
 
 export const Gutter = styled.div`
-    width:100%;
-    display:block;
-    height: ${props => props.h}px;
-`
+  width: 100%;
+  display: block;
+  height: ${(props) => props.h}px;
+`;
 
 export const HoverDiv = styled.div`
-  background:${colors.gray};
-  padding:20px;
-  color:white;
-  box-shadow: 0px 0px 5px rgba(0,0,0,0.7);
-  border-radius:0.5vh 0.5vh 0 0;
+  background: ${colors.gray};
+  padding: 20px;
+  color: white;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.7);
+  border-radius: 0.5vh 0.5vh 0 0;
   h3 {
-      margin:5px 0;
+    margin: 5px 0;
   }
   hr {
-      margin: 5px 0;
+    margin: 5px 0;
   }
-  max-width:50ch;
-  line-height:1.25;
-`
+  max-width: 50ch;
+  line-height: 1.25;
+`;

@@ -1,4 +1,3 @@
-
 import BottomPanel from './BottomPanel';
 import ContextMenu from './ContextMenu';
 import CsvDownloader from './CsvDownloader';
@@ -14,7 +13,7 @@ import Icon from './Icon';
 import InfoBox from './InfoBox';
 import Legend from './Legend';
 import FastTrackInsights from './FastTrackInsights';
-import MapButtons  from './MapButtons';
+import MapButtons from './MapButtons';
 import MainLineChart from './MainLineChart';
 import MapSection from './MapSection';
 import MapTooltipContent from './MapTooltipContent';
@@ -32,7 +31,6 @@ import Tooltip from './Tooltip';
 import TopPanel from './TopPanel';
 import Geocoder from './Geocoder';
 import ShareButton from './ShareButton';
-
 
 // pages
 import About from './Pages/About';
@@ -54,55 +52,54 @@ import Time from './Pages/Time';
 import Trends from './Pages/Trends';
 
 export {
-    BottomPanel,
-    ContextMenu,
-    CsvDownloader,
-    DataDetails,
-    DataLoader,
-    DataPanel,
-    DateSlider,
-    Dock,
-    Draggable,
-    Geocoder,
-    FastTrackInsights,
-    Footer,
-    HeroMap,
-    Icon,
-    InfoBox,
-    Legend,
-    MapButtons,
-    MainLineChart,
-    MapSection,
-    MapTooltipContent,
-    MemberGrid,
-    NavBar,
-    NotificationBox,
-    VariablePanel,
-    Popover,
-    Preloader,
-    PrintLayout,
-    Scaleable,
-    StaticNavbar,
-    Ticks,
-    Tooltip, 
-    TopPanel,
-    ShareButton,
-
-    About,
-    Api,
-    CodeOfConduct,
-    Contact,
-    Choropleth,
-    Data,
-    DataLoading,
-    ErrorPage,
-    Faq,
-    Home,
-    Hotspots,
-    Insights,
-    LoadingMessage,
-    Map,
-    Methodology,
-    Time,
-    Trends
-}
+  BottomPanel,
+  ContextMenu,
+  CsvDownloader,
+  DataDetails,
+  DataLoader,
+  DataPanel,
+  DateSlider,
+  Dock,
+  Draggable,
+  Geocoder,
+  FastTrackInsights,
+  Footer,
+  HeroMap,
+  Icon,
+  InfoBox,
+  Legend,
+  MapButtons,
+  MainLineChart,
+  MapSection,
+  MapTooltipContent,
+  MemberGrid,
+  NavBar,
+  NotificationBox,
+  VariablePanel,
+  Popover,
+  Preloader,
+  PrintLayout,
+  Scaleable,
+  StaticNavbar,
+  Ticks,
+  Tooltip,
+  TopPanel,
+  ShareButton,
+  About,
+  Api,
+  CodeOfConduct,
+  Contact,
+  Choropleth,
+  Data,
+  DataLoading,
+  ErrorPage,
+  Faq,
+  Home,
+  Hotspots,
+  Insights,
+  LoadingMessage,
+  Map,
+  Methodology,
+  Time,
+  Trends,
+};

@@ -1,11 +1,11 @@
 const getColumns = (data, names) => {
-    let rtn = {};
+  let rtn = {};
 
-    for (let i=0; i < data.length; i++) {
-        rtn[names[i]] = data[i][1]
-    }
+  for (let i = 0; i < data.length; i++) {
+    rtn[names[i]] = data[i][1];
+  }
 
-    return rtn;
-}
+  return rtn;
+};
 
 export default getColumns;

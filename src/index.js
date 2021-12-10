@@ -22,8 +22,8 @@ import rootReducer from './reducers';
 const store = createStore(
   rootReducer,
   // (
-  //   typeof window === 'object' 
-  //   && window.__REDUX_DEVTOOLS_EXTENSION__ 
+  //   typeof window === 'object'
+  //   && window.__REDUX_DEVTOOLS_EXTENSION__
   //   && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
   // ) && window.__REDUX_DEVTOOLS_EXTENSION__({
   //   stateSanitizer: (state) => state.storedGeojson ? { ...state, storedData: '<<EXCLUDED>>', storedGeojson: '<<EXCLUDED>>' } : state
@@ -31,21 +31,24 @@ const store = createStore(
 );
 // const persistor = persistStore(store)
 
-
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       {/* <PersistGate loading={null} persistor={persistor}> */}
-        <App />
+      <App />
       {/* </PersistGate> */}
     </Provider>
 
-    <button id="new-content-button" className="hidden" onClick={() => window.location.reload(true)}>
+    <button
+      id="new-content-button"
+      className="hidden"
+      onClick={() => window.location.reload(true)}
+    >
       <span>New data or features are available</span>
       Click here to reload
     </button>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );
 
 // serviceWorkerRegistration.register();

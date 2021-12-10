@@ -1,6 +1,5 @@
-import { createContext} from 'react';
+import { createContext } from 'react';
 export const GeoDaContext = createContext({});
-
 
 // todo swap to the below implementation
 // import React from 'react';

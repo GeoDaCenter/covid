@@ -1,16 +1,16 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { colors } from '../config';
 
 const Navbar = styled.div`
-    width:100vw;
-    background: ${colors.skyblue};
-    top:0;
-    left:0;
-    padding: 20px 16px;
-`
+  width: 100vw;
+  background: ${colors.skyblue};
+  top: 0;
+  left: 0;
+  padding: 20px 16px;
+`;
 
 const NavbarContent = styled.div`
     width:100%;
@@ -106,84 +106,89 @@ const NavbarContent = styled.div`
         }
     }
 
-`
+`;
 
 const StaticNavbar = () => {
-    const [ mapLinksOpen, setMapLinksOpen ] = useState(false)
+  const [mapLinksOpen, setMapLinksOpen] = useState(false);
 
-    const listener = (e) => {
-        setMapLinksOpen(false)
-    }
+  const listener = (e) => {
+    setMapLinksOpen(false);
+  };
 
-    const removeListener = () => {
-        window.removeEventListener('click', listener)
-        window.removeEventListener('click', removeListener)
-    }
+  const removeListener = () => {
+    window.removeEventListener('click', listener);
+    window.removeEventListener('click', removeListener);
+  };
 
-    const handleNavOpen = (e) => {
-        if (!mapLinksOpen) {
-            setTimeout(() => {
-                window.addEventListener('click', listener)
-                window.addEventListener('click', removeListener)
-            }, 250);
-        }
-        setMapLinksOpen(prev => !prev)
+  const handleNavOpen = (e) => {
+    if (!mapLinksOpen) {
+      setTimeout(() => {
+        window.addEventListener('click', listener);
+        window.addEventListener('click', removeListener);
+      }, 250);
     }
-    
-    return (
-       <Navbar>
-            <NavbarContent>
-                <NavLink to="/">
-                    <img 
-                        src={`${process.env.PUBLIC_URL}/img/us-covid-atlas-cluster-logo.svg`}
-                        alt="US Covid Atlas Logo"
-                        className="logo"
-                    />
-                </NavLink>
-                <nav className="mainNav">
-                    <ul>
-                        <li>     
-                            <button onClick={handleNavOpen}>Map</button>
-                            {mapLinksOpen && 
-                            <ul id="mapLinks">
-                                <NavLink to="/map">Explore</NavLink>
-                                <NavLink to="/data">Data</NavLink>
-                                <NavLink to="/api">API</NavLink>
-                                <NavLink to="/methods">Methods</NavLink>
-                                <NavLink to="/faq">Help + Faq</NavLink>
-                            </ul>}
-                        </li>
-                        <li>
-                            <NavLink to="/insights">Insights</NavLink>
-                        </li>
-                        <li>
-                            <NavLink to="/about">About</NavLink>
-                        </li>
-                        <li>
-                            <NavLink to="/contact">Contact</NavLink>
-                        </li>
-                    </ul>
-                </nav>
-                
-                <nav className="mobileNav">
-                    <button onClick={handleNavOpen}>
-                        <img src={`${process.env.PUBLIC_URL}/icons/hamburger.svg`} alt="Open navigation icon"/>
-                    </button>
-                    {mapLinksOpen && 
-                    <ul id="mapLinks">
-                        <NavLink to="/map">Explore</NavLink>
-                        <NavLink to="/data">Data</NavLink>
-                        <NavLink to="/api">API</NavLink>
-                        <NavLink to="/methods">Methods</NavLink>
-                        <NavLink to="/insights">Insights</NavLink>
-                        <NavLink to="/faq">Help + Faq</NavLink>
-                        <NavLink to="/about">About</NavLink>
-                        <NavLink to="/contact">Contact</NavLink>
-                    </ul>}
-                </nav>
-            </NavbarContent>
-       </Navbar>
-    );
-}
- 
+    setMapLinksOpen((prev) => !prev);
+  };
+
+  return (
+    <Navbar>
+      <NavbarContent>
+        <NavLink to="/">
+          <img
+            src={`${process.env.PUBLIC_URL}/img/us-covid-atlas-cluster-logo.svg`}
+            alt="US Covid Atlas Logo"
+            className="logo"
+          />
+        </NavLink>
+        <nav className="mainNav">
+          <ul>
+            <li>
+              <button onClick={handleNavOpen}>Map</button>
+              {mapLinksOpen && (
+                <ul id="mapLinks">
+                  <NavLink to="/map">Explore</NavLink>
+                  <NavLink to="/data">Data</NavLink>
+                  <NavLink to="/api">API</NavLink>
+                  <NavLink to="/methods">Methods</NavLink>
+                  <NavLink to="/faq">Help + Faq</NavLink>
+                </ul>
+              )}
+            </li>
+            <li>
+              <NavLink to="/insights">Insights</NavLink>
+            </li>
+            <li>
+              <NavLink to="/about">About</NavLink>
+            </li>
+            <li>
+              <NavLink to="/contact">Contact</NavLink>
+            </li>
+          </ul>
+        </nav>
+
+        <nav className="mobileNav">
+          <button onClick={handleNavOpen}>
+            <img
+              src={`${process.env.PUBLIC_URL}/icons/hamburger.svg`}
+              alt="Open navigation icon"
+            />
+          </button>
+          {mapLinksOpen && (
+            <ul id="mapLinks">
+              <NavLink to="/map">Explore</NavLink>
+              <NavLink to="/data">Data</NavLink>
+              <NavLink to="/api">API</NavLink>
+              <NavLink to="/methods">Methods</NavLink>
+              <NavLink to="/insights">Insights</NavLink>
+              <NavLink to="/faq">Help + Faq</NavLink>
+              <NavLink to="/about">About</NavLink>
+              <NavLink to="/contact">Contact</NavLink>
+            </ul>
+          )}
+        </nav>
+      </NavbarContent>
+    </Navbar>
+  );
+};
+
 export default StaticNavbar;

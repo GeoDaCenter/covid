@@ -1,4 +1,3 @@
-
 import addSelectedChartData from './addSelectedChartData';
 import colIndex from './colIndex.js';
 import colLookup from './colLookup.js';
@@ -27,13 +26,13 @@ import getJson from './getJson';
 import getJsonPure from './getJsonPure';
 import getLisaValues from './getLisaValues';
 import getParseCSV from './getParseCSV';
-import getParsePbf, {parsePbfData} from './getParsePbf'
+import getParsePbf, { parsePbfData } from './getParsePbf';
 import getURLParams from './getURLParams';
 import getVarId from './getVarId';
 import { indexGeoProps } from './indexGeoProps';
 import loadGeojsonToGeoda from './loadGeojsonToGeoda';
 import loadJson from './loadJson';
-import { mapFn, mapFnNb, mapFnTesting, mapFnHinge} from './mapFunction.js';
+import { mapFn, mapFnNb, mapFnTesting, mapFnHinge } from './mapFunction.js';
 import parseBinPairs from './parseBinPairs';
 import parseMapboxLayers from './parseMapboxLayers';
 import { parseTooltipData } from './parseTooltipData';
@@ -41,50 +40,50 @@ import resolveName from './resolveName';
 import shallowCompare from './shallowCompare';
 import { shallowEqual } from './shallowEqual';
 export {
-    addSelectedChartData,
-    colIndex,
-    colLookup,
-    dataFn,
-    findDates,
-    findDateIndices,
-    findTableDetails,
-    getDateIndices,
-    geojsonArrayBuffer,
-    generateMapData, 
-    generateReport, 
-    getArrayCSV,
-    getCartogramValues,
-    getCartogramCenter,
-    getColumns,
-    // getCurrentWuuid,
-    getCSV,
-    getDataForBins,
-    getDataForCharts,
-    getDataForLisa,
-    getDateLists,
-    getGeoidIndex,
-    getGeoids,
-    getIdOrder,
-    getJson,
-    getJsonPure,
-    getLisaValues,
-    getParseCSV,
-    getParsePbf,
-    getURLParams,
-    getVarId,
-    getGzipData,
-    indexGeoProps,
-    loadGeojsonToGeoda,
-    loadJson,
-    mapFn,
-    mapFnNb, 
-    mapFnTesting, 
-    mapFnHinge,
-    parseBinPairs,
-    parseMapboxLayers,
-    parsePbfData,
-    parseTooltipData,
-    resolveName,
-    shallowCompare,
-    shallowEqual, 
-}
+  addSelectedChartData,
+  colIndex,
+  colLookup,
+  dataFn,
+  findDates,
+  findDateIndices,
+  findTableDetails,
+  getDateIndices,
+  geojsonArrayBuffer,
+  generateMapData,
+  generateReport,
+  getArrayCSV,
+  getCartogramValues,
+  getCartogramCenter,
+  getColumns,
+  // getCurrentWuuid,
+  getCSV,
+  getDataForBins,
+  getDataForCharts,
+  getDataForLisa,
+  getDateLists,
+  getGeoidIndex,
+  getGeoids,
+  getIdOrder,
+  getJson,
+  getJsonPure,
+  getLisaValues,
+  getParseCSV,
+  getParsePbf,
+  getURLParams,
+  getVarId,
+  getGzipData,
+  indexGeoProps,
+  loadGeojsonToGeoda,
+  loadJson,
+  mapFn,
+  mapFnNb,
+  mapFnTesting,
+  mapFnHinge,
+  parseBinPairs,
+  parseMapboxLayers,
+  parsePbfData,
+  parseTooltipData,
+  resolveName,
+  shallowCompare,
+  shallowEqual,
+};

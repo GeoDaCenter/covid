@@ -6,7 +6,7 @@
 //         .then(response => {
 //         return response.ok ? response.arrayBuffer() : Promise.reject(response.status);
 //         }).then(compressed => {
-        
+
 //         // convert to binary
 //         const binData = new Uint8Array(compressed);
 

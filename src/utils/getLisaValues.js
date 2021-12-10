@@ -4,15 +4,14 @@ const getLisaValues = (gda_proxy, dataset, data, geoids) => {
   let w = getCurrentWuuid(gda_proxy, dataset);
   let t0 = performance.now();
   let all_zeros = true;
-  for (let i=0; i<data.length; ++i) { 
-    if (data[i] !== 0)
-      all_zeros = false;
+  for (let i = 0; i < data.length; ++i) {
+    if (data[i] !== 0) all_zeros = false;
   }
   let clusters = [];
   let sig = [];
 
   if (all_zeros) {
-    for (let i=0; i<data.length; ++i) { 
+    for (let i = 0; i < data.length; ++i) {
       clusters.push(0);
       sig.push(0);
     }
@@ -21,9 +20,9 @@ const getLisaValues = (gda_proxy, dataset, data, geoids) => {
     clusters = gda_proxy.parseVecDouble(lisa.clusters());
     sig = gda_proxy.parseVecDouble(lisa.significances());
   }
-  
+
   console.log(t0 - performance.now());
   return clusters;
-}
+};
 
 export default getLisaValues;

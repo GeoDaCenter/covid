@@ -63,64 +63,64 @@
 //     width:20vw;
 // `
 
-export default function PrintLayout(){
-    // const [printing, setPrinting] = useState(false)
-    // console.log(printing)
-    // useEffect(() => {
-    //     window.addEventListener("beforeprint", () => setPrinting(true));
-    //     window.addEventListener("afterprint", () => setPrinting(false));
-    // }, [])
+export default function PrintLayout() {
+  // const [printing, setPrinting] = useState(false)
+  // console.log(printing)
+  // useEffect(() => {
+  //     window.addEventListener("beforeprint", () => setPrinting(true));
+  //     window.addEventListener("afterprint", () => setPrinting(false));
+  // }, [])
 
-    // const mapScreenshotData = useSelector(state => state.mapScreenshotData);
-    // const dataParams = useSelector(state => state.dataParams);
-    // const mapParams = useSelector(state => state.mapParams);
-    // const dates = useSelector(state => state.dates);
-    
-    // if (!printing) {
-        return <div></div>
-    // } //else {
-        
-        // return (
-        //     <PrintContainer id="printContainer">
-        //         <Grid container spacing={1}>
-        //             <Grid item xs={12}>
-        //                 <h1>{dataParams.variableName}</h1>
-        //                 {dataParams.rangeType !== 'custom' && 
-        //                     <h2>{dataParams.nType !== 'characteristic' ? `${dates[dataParams.nIndex]}` : 'Characteristic Data'}</h2>
-        //                 } 
-        //             </Grid>
-        //             <Grid item xs={12} sm={6}>
-        //                 <MapContainer>
-        //                     <ScreenshotImage src={mapScreenshotData.deck}/>
-        //                     <ScreenshotImage src={mapScreenshotData.mapbox} overlay/> 
-        //                     <Legend 
-        //                         variableName={dataParams.variableName} 
-        //                         colorScale={mapParams.colorScale}
-        //                         bins={mapParams.bins}
-        //                         fixedScale={dataParams.fixedScale}
-        //                         resource={mapParams.resource}
-        //                         note={dataParams.dataNote}
-        //                     />
-        //                 </MapContainer>
-        //             </Grid>
-        //             <Grid item xs={6}>
-        //                 <h4>7-Day Average Cases</h4>
-        //                 <h4>7-Day Average Deaths</h4>
-        //                 <h4>7-Day Average Cases Per 100K</h4>
-        //                 <h4>7-Day Average Deaths Per 100K</h4>
-        //                 <h4>Cumulative Cases</h4>
-        //                 <h4>Cumulative Deaths</h4>
-        //                 <h4>Cumulative Cases Per 100K</h4>
-        //                 <h4>Cumulative Deaths Per 100K</h4>
-        //             </Grid>
-        //             <Grid item xs={6}>
-        //                 <LineChartContainer>
-        //                     <MainLineChart printing={true} />
-        //                 </LineChartContainer>
-        //             </Grid>
-        //         </Grid>
-        //         <LogoImage src={`${process.env.PUBLIC_URL}/img/us-covid-atlas-cluster-logo.svg`} />
-        //     </PrintContainer>
-        // )    
-    // }
+  // const mapScreenshotData = useSelector(state => state.mapScreenshotData);
+  // const dataParams = useSelector(state => state.dataParams);
+  // const mapParams = useSelector(state => state.mapParams);
+  // const dates = useSelector(state => state.dates);
+
+  // if (!printing) {
+  return <div></div>;
+  // } //else {
+
+  // return (
+  //     <PrintContainer id="printContainer">
+  //         <Grid container spacing={1}>
+  //             <Grid item xs={12}>
+  //                 <h1>{dataParams.variableName}</h1>
+  //                 {dataParams.rangeType !== 'custom' &&
+  //                     <h2>{dataParams.nType !== 'characteristic' ? `${dates[dataParams.nIndex]}` : 'Characteristic Data'}</h2>
+  //                 }
+  //             </Grid>
+  //             <Grid item xs={12} sm={6}>
+  //                 <MapContainer>
+  //                     <ScreenshotImage src={mapScreenshotData.deck}/>
+  //                     <ScreenshotImage src={mapScreenshotData.mapbox} overlay/>
+  //                     <Legend
+  //                         variableName={dataParams.variableName}
+  //                         colorScale={mapParams.colorScale}
+  //                         bins={mapParams.bins}
+  //                         fixedScale={dataParams.fixedScale}
+  //                         resource={mapParams.resource}
+  //                         note={dataParams.dataNote}
+  //                     />
+  //                 </MapContainer>
+  //             </Grid>
+  //             <Grid item xs={6}>
+  //                 <h4>7-Day Average Cases</h4>
+  //                 <h4>7-Day Average Deaths</h4>
+  //                 <h4>7-Day Average Cases Per 100K</h4>
+  //                 <h4>7-Day Average Deaths Per 100K</h4>
+  //                 <h4>Cumulative Cases</h4>
+  //                 <h4>Cumulative Deaths</h4>
+  //                 <h4>Cumulative Cases Per 100K</h4>
+  //                 <h4>Cumulative Deaths Per 100K</h4>
+  //             </Grid>
+  //             <Grid item xs={6}>
+  //                 <LineChartContainer>
+  //                     <MainLineChart printing={true} />
+  //                 </LineChartContainer>
+  //             </Grid>
+  //         </Grid>
+  //         <LogoImage src={`${process.env.PUBLIC_URL}/img/us-covid-atlas-cluster-logo.svg`} />
+  //     </PrintContainer>
+  // )
+  // }
 }

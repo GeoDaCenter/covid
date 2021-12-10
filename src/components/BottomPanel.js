@@ -8,72 +8,76 @@ import styled from 'styled-components';
 import { colors } from '../config';
 
 // helper function to get dock offset
-const getChartHeight = () => { try { return document.querySelector('#main-chart-container').offsetHeight} catch { return 0} }
+const getChartHeight = () => {
+  try {
+    return document.querySelector('#main-chart-container').offsetHeight;
+  } catch {
+    return 0;
+  }
+};
 
 // Styled components
 const BottomDrawer = styled.div`
-    position: fixed;
-    bottom:0;
-    left:50%;
-    background:${colors.gray};
-    transform:translateX(-50%);
-    width:38vw;
-    max-width: 500px;
-    box-sizing: border-box;
-    padding:0 0 5px 0;
-    margin:0;
-    box-shadow: 0px 0px 5px rgba(0,0,0,0.7);
-    border-radius:0.5vh 0.5vh 0 0;
-    transition:250ms all;
-    hr {
-        opacity:0.5;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  background: ${colors.gray};
+  transform: translateX(-50%);
+  width: 38vw;
+  max-width: 500px;
+  box-sizing: border-box;
+  padding: 0 0 5px 0;
+  margin: 0;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.7);
+  border-radius: 0.5vh 0.5vh 0 0;
+  transition: 250ms all;
+  hr {
+    opacity: 0.5;
+  }
+  @media (max-width: 1024px) {
+    width: 50vw;
+    div {
+      padding-bottom: 5px;
     }
-    @media (max-width:1024px){
-        width:50vw;
-        div {
-            padding-bottom:5px;
-        }
-        #binModeSwitch {
-            position:absolute !important;
-            right: 10px !important;
-            top: 10px !important;
-        }
-        #dateRangeSelector {
-            position:absolute !important;
-            left: 66% !important;
-            transform:translateX(-50%) !important;
-            top: 10px !important;
-        }
+    #binModeSwitch {
+      position: absolute !important;
+      right: 10px !important;
+      top: 10px !important;
     }
-    
-    @media (max-width:768px){
-    
-        width:100%;
-        max-width:100%;
-        padding:0;
-        left:0;
-        transform:none;
+    #dateRangeSelector {
+      position: absolute !important;
+      left: 66% !important;
+      transform: translateX(-50%) !important;
+      top: 10px !important;
     }
-    @media (max-width:750px) and (orientation: landscape) {
-        // bottom all the way down for landscape phone
-    }
-`
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    left: 0;
+    transform: none;
+  }
+  @media (max-width: 750px) and (orientation: landscape) {
+    // bottom all the way down for landscape phone
+  }
+`;
 
 const BottomPanel = () => {
+  const panelState = useSelector((state) => state.panelState);
 
-    const panelState = useSelector(state => state.panelState);
+  // offset for the bottom panel based on the chart height,
+  // managed through props via styled-components
+  const [bottomMargin, setBottomMargin] = useState(0);
 
-    // offset for the bottom panel based on the chart height, 
-    // managed through props via styled-components
-    const [bottomMargin, setBottomMargin] = useState(0);
+  const handleResize = () => setBottomMargin(getChartHeight());
+  window.addEventListener('resize', handleResize);
 
-    const handleResize = () => setBottomMargin(getChartHeight())
-    window.addEventListener("resize", handleResize);
-    
-    return (
-        <BottomDrawer bottom={panelState.chart ? 0 : bottomMargin } id="bottomPanel">
-            {/* <DateSlider /> */}
-            {/* <hr />
+  return (
+    <BottomDrawer bottom={panelState.chart ? 0 : bottomMargin} id="bottomPanel">
+      {/* <DateSlider /> */}
+      {/* <hr />
             <MainLineChart />
             <OpenCloseButton onClick={handleBottomOpen} bottom={panelState.chart ? 5 : bottomMargin}>
                 <svg version="1.1" x="0px" y="0px" viewBox="0 0 100 100">
@@ -93,9 +97,8 @@ const BottomPanel = () => {
                 </svg>
 
             </OpenCloseButton> */}
-        </BottomDrawer>
-    )
+    </BottomDrawer>
+  );
+};
 
-}
-
-export default BottomPanel
+export default BottomPanel;

@@ -47,8 +47,6 @@
 //   createHandlerBoundToURL(process.env.PUBLIC_URL + '/index.html')
 // );
 
-
-
 // registerRoute(
 //   // Add in any other file extensions or routing criteria as needed.
 //   ({ url }) => url.origin === self.location.origin && url.pathname.endsWith('.geojson'), // Customize this strategy as needed, e.g., by changing to CacheFirst.
@@ -99,7 +97,6 @@
 //     ],
 //   })
 // );
-
 
 // self.addEventListener('message', (event) => {
 //   if (event.data && event.data.type === 'SKIP_WAITING') {

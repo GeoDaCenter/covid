@@ -1,5 +1,5 @@
 import React from 'react';
-import * as SVG from '../config/svg.js'
+import * as SVG from '../config/svg.js';
 
 // export const IconButton = ({onClick,children}) => {
 //     return <button>
@@ -7,8 +7,8 @@ import * as SVG from '../config/svg.js'
 //     </button>
 // }
 
-const Icon = ({symbol, style}) => {
-    return <span {...style}>{SVG[symbol]}</span>
-}
+const Icon = ({ symbol, style }) => {
+  return <span {...style}>{SVG[symbol]}</span>;
+};
 
-export default Icon
+export default Icon;

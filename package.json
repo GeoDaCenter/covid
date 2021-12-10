@@ -85,6 +85,7 @@
   },
   "devDependencies": {
     "dayjs": "^1.10.6",
+    "prettier": "2.5.1",
     "source-map-explorer": "^2.5.2",
     "workbox-build": "^6.1.5",
     "worker-loader": "^3.0.6"
