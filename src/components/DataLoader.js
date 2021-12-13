@@ -2,7 +2,7 @@
 import React, { useState, useRef, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled, { keyframes } from 'styled-components';
-import { GeoDaContext } from '../contexts/GeoDaContext';
+import { useGeoda } from '../contexts/Geoda';
 
 import { setPanelState, addCustomData } from '../actions';
 import { colorScales } from '../config/scales';
@@ -530,7 +530,10 @@ export default function DataLoader() {
   const [editor, setEditor] = useState({ open: false, idx: false });
 
   const [currentGeojson, setCurrentGeojson] = useState({});
-  const geoda = useContext(GeoDaContext);
+  const {
+    geoda,
+    geodaReady
+  } = useGeoda();
 
   const closePanel = () => dispatch(setPanelState({ dataLoader: false }));
 

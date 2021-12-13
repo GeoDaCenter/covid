@@ -1,5 +1,5 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { useEffect, useMemo, useContext } from 'react';
+import { useSelector } from 'react-redux';
+import { useEffect, useMemo, useState } from 'react';
 import {
   getParseCSV,
   parsePbfData,
@@ -11,18 +11,18 @@ import {
 // This functions asynchronously accesses the Geojson data and CSVs
 //   then performs a join and loads the data into the store
 import useSWR from 'swr';
-import { addGeojson } from '../actions';
-import { GeoDaContext } from '../contexts/GeoDaContext';
+import { useGeoda } from '../contexts/Geoda';
 import * as Pbf from 'pbf';
 import * as Schemas from '../schemas';
+import { useDataStore } from '../contexts/Data';
 
 const dateLists = getDateLists();
 
-const handleFetcher = (fileInfo) => {
+const handleFetcher = (fileInfo, signal=null) => {
   if (!fileInfo.file) return () => {};
   if (fileInfo.file.slice(-4) === '.pbf') {
     return () =>
-      fetch(`${process.env.PUBLIC_URL}/pbf/${fileInfo.file}`)
+      fetch(`${process.env.PUBLIC_URL}/pbf/${fileInfo.file}`, {signal})
         .then((r) => r.arrayBuffer())
         .then((ab) => new Pbf(ab))
         .then((pbf) => Schemas.Rows.read(pbf))
@@ -30,14 +30,14 @@ const handleFetcher = (fileInfo) => {
           parsePbfData(pbfData, fileInfo, dateLists[fileInfo.dates]),
         );
   }
-  return (fileInfo) => getParseCSV(fileInfo, dateLists[fileInfo.dates]);
+  return (fileInfo) => getParseCSV(fileInfo, dateLists[fileInfo.dates], signal);
 };
 
 function useGetTable({
   fetchParams = {},
   shouldFetch = false,
   storedData = {},
-  dispatch = () => {},
+  datadispatch = () => {},
 }) {
   const fetcher = handleFetcher(fetchParams);
 
@@ -51,7 +51,7 @@ function useGetTable({
 
   useEffect(() => {
     if (data && !error && !storedData[fetchParams.file]) {
-      dispatch({
+      datadispatch({
         type: 'RECONCILE_TABLES',
         payload: {
           data: {
@@ -69,11 +69,14 @@ function useGetTable({
 
 function useGetGeojson({
   geoda = {},
+  geodaReady = false,
   datasetParams = {},
   storedGeojson = {},
-  dispatch = () => {},
+  dataDispatch = () => {},
 }) {
   useMemo(async () => {
+    
+    if (!geodaReady) return;
     if (storedGeojson[datasetParams.file]) {
       return storedGeojson[datasetParams.file];
     } else {
@@ -86,40 +89,94 @@ function useGetGeojson({
 
       const order = getIdOrder(data?.features || [], datasetParams.id);
 
-      dispatch(
-        addGeojson({
+      dataDispatch({
+        type: 'LOAD_GEOJSON',
+        payload: {
           [datasetParams.geojson]: {
             data,
             mapId,
             weights: {},
             properties,
             order,
-          },
-        }),
-      );
+          }
+        }})
     }
-  }, [JSON.stringify(datasetParams), typeof geoda]);
+  }, [JSON.stringify(datasetParams), geodaReady]);
+
+  if (!geodaReady){
+    return [
+      {},
+      false,
+      undefined, // error
+    ];
+  }
 
   return [
     storedGeojson[datasetParams.geojson],
     storedGeojson[datasetParams.geojson] &&
-      storedGeojson[datasetParams.geojson].data &&
-      storedGeojson[datasetParams.geojson].mapId &&
-      true,
+    storedGeojson[datasetParams.geojson].data &&
+    storedGeojson[datasetParams.geojson].mapId &&
+    true,
     undefined, // error
   ];
+}
+
+function useBackgroundLoadData({
+  currentGeography='',
+  shouldFetch=false,
+  defaultTables={currentGeography:{}},
+  loadedTables=[],
+  dataDispatch=()=>{},
+}){  
+  const fetchParams = defaultTables[currentGeography] ? Object.values(defaultTables[currentGeography]).filter(f => loadedTables.indexOf(f.file) === -1)[0] : false;
+  const controller = new AbortController()
+  const fetcher = handleFetcher(!!fetchParams ? fetchParams : {}, controller.signal);
+  const { data, error } = useSWR(
+    shouldFetch && !!fetchParams ? fetchParams.file : null,
+    fetcher,
+  );
+  
+  useEffect(() => {
+    if (!shouldFetch) {
+      try {
+        controller.abort()
+      } catch(e){
+        console.log(e)
+      }
+    }
+  },[shouldFetch])
+
+  useEffect(() => {
+    if (data && !error && !loadedTables.includes(fetchParams.file)) {
+      dataDispatch({
+        type: 'RECONCILE_TABLES',
+        payload: {
+          data: {
+            [fetchParams.file]: data,
+          },
+        },
+      });
+    }
+  }, [JSON.stringify(data?.columns)]);
+
 }
 
 export default function useLoadData() {
   const dataParams = useSelector((state) => state.dataParams);
   const currentData = useSelector((state) => state.currentData);
-  const storedData = useSelector((state) => state.storedData);
-  const storedGeojson = useSelector((state) => state.storedGeojson);
   const dataPresets = useSelector((state) => state.dataPresets);
   const defaultTables = useSelector((state) => state.defaultTables);
-  const dispatch = useDispatch();
-  const geoda = useContext(GeoDaContext);
-
+  const {
+    geoda,
+    geodaReady
+  } = useGeoda();
+  const [{
+    storedData,
+    storedGeojson,
+    dotDensityData,
+    resourceLayerData
+  }, dataDispatch] = useDataStore();
+  
   const datasetParams = dataPresets[currentData];
 
   const firstLoadParams = {
@@ -137,7 +194,7 @@ export default function useLoadData() {
     fetchParams: firstLoadParams.numerator,
     shouldFetch: true,
     storedData,
-    dispatch,
+    dataDispatch,
   });
 
   const [denominatorData, denominatorDataReady, denominatorDataError] =
@@ -145,157 +202,32 @@ export default function useLoadData() {
       fetchParams: firstLoadParams.denominator,
       shouldFetch: true,
       storedData,
-      dispatch,
+      dataDispatch,
     });
 
   const [geojsonData, geojsonDataReady, geojsonDataError] = useGetGeojson({
     geoda,
+    geodaReady,
     datasetParams,
     storedGeojson,
-    dispatch,
+    dataDispatch,
   });
 
   const dateIndices = numeratorData ? numeratorData.dates : null;
 
+  const backgroundLoading = useBackgroundLoadData({
+    currentGeography: dataPresets[currentData].geography,
+    defaultTables,
+    shouldFetch: !!numeratorDataReady && !!denominatorDataReady && !!geojsonDataReady,
+    loadedTables: Object.keys(storedData),
+    dataDispatch
+  })
+  
   return {
     geojsonData,
     numeratorData,
     denominatorData,
     dateIndices,
-    dataReady: numeratorDataReady && denominatorDataReady && geojsonDataReady,
+    dataReady: !!numeratorDataReady && !!denominatorDataReady && !!geojsonDataReady,
   };
 }
-
-// dispatch(
-//   initialDataLoad({
-//     storedData: {
-//       [numeratorParams && numeratorParams.file]:numeratorData,
-//       [denominatorParams && denominatorParams.file]:denominatorParams,
-//     },
-//     currentData: datasetParams.geojson,
-//     currentTable: {
-//       numerator:dataParams.numerator === 'properties' ? 'properties' : numeratorParams.file,
-//       denominator:dataParams.denominator === 'properties' ? 'properties' : denominatorParams.file
-//     },
-//     storedGeojson: {
-//       [datasetParams.geojson]:{
-//         weights:{},
-//         properties: geojsonProperties,
-//         indices: geojsonOrder,
-//         mapId,
-//         data: geojsonData
-//       }
-//     },
-//     mapParams: {
-//       bins,
-//       colorScale: mapParams.mapType === 'natural_breaks' ? colorScales[dataParams.colorScale || mapParams.mapType] : colorScales[mapParams.mapType || dataParams.colorScale ]
-//     },
-//     variableParams: {
-//       nIndex: dateIndices?.indexOf(dataParams.nIndex) === -1 ? binIndex : dataParams.nIndex,
-//     },
-//     dates: dateLists.isoDateList,
-//     storedLisaData: lisaData,
-//     storedCartogramData: cartogramData
-//   })
-// )
-// setIsInProcess(false)
-// return [numeratorParams.file, denominatorParams && denominatorParams.file, mapId]
-// },[currentData])
-
-// const secondLoad = useMemo(() => async (datasetParams, defaultTables, loadedTables, mapId) => {
-//   if (geoda === undefined) return;
-//   setIsInProcess(true);
-
-//   const defaultChartTable = defaultTables[chartParams.table]
-//   const currCaseData = dataPresets[currentData].hasOwnProperty('tables') ? dataPresets[currentData].tables[chartParams.table]||defaultChartTable : defaultChartTable;
-
-//   if (storedData.hasOwnProperty(currCaseData?.file) || loadedTables.indexOf(currCaseData?.file) !== -1){
-//     dispatch(updateChart());
-//   } else {
-//     const table = await handleLoadData(currCaseData);
-//     dispatch(addTableAndChart({
-//       [currCaseData.file]: table
-//     }))
-//   }
-
-//   const filesToLoad = [
-//     ...Object.values(datasetParams.tables),
-//     ...Object.values(defaultTables)
-//   ]
-
-//   const tablePromises = filesToLoad.map(table => Object.keys(storedData).includes(table.file) ? null : handleLoadData(table))
-//   const fetchedData = await Promise.all(tablePromises)
-//   let dataObj = {}
-//   for (let i=0; i<filesToLoad.length; i++){
-//     if (loadedTables.includes(filesToLoad[i].file)) {
-//       continue
-//     } else {
-//       dataObj[filesToLoad[i].file] = fetchedData[i]
-//     }
-//   }
-//   dispatch(addTables(dataObj))
-//   setIsInProcess(false)
-//   return [datasetParams.geojson, mapId]
-// }, [currentData])
-
-// const lazyFetchData = useMemo(() => async (dataPresets, loadedTables) => {
-//   const loadedGeojsons = Object.keys(storedGeojson)
-//   const geojsonFiles = Object.keys(dataPresets)
-
-//   for (let i=0; i<geojsonFiles.length;i++){
-//     if (isInProcess) return;
-//     const file = geojsonFiles[i];
-//     if (!loadedTables.includes(file) && !loadedGeojsons.includes(file) && !(currentData === file)){
-//       const geojsonData = await geoda.loadGeoJSON(`${process.env.PUBLIC_URL}/geojson/${file}`)
-//       dispatch(addGeojson({[file]:geojsonData}))
-//     }
-//   }
-
-//   const allLoadedTables = [...loadedTables, ...Object.keys(storedData)]
-//   let tableFiles = []
-//   for (let i=0; i<geojsonFiles.length; i++){
-//     for (const table in dataPresets[geojsonFiles[i]].tables){
-//       tableFiles.push(dataPresets[geojsonFiles[i]].tables[table])
-//     }
-//   }
-
-//   for (let i=0; i<tableFiles.length; i++){
-//     if (isInProcess) return;
-//     const fileInfo = tableFiles[i];
-//     if (!allLoadedTables.includes(fileInfo.file)){
-//       const tableData = await handleLoadData(fileInfo)
-//       dispatch(addTables({[fileInfo.file]:tableData}))
-//     }
-//   }
-//   return true
-
-// }, [currentData])
-
-// const lazyGenerateWeights = useMemo(() => async (geojsonFile, geojsonId) => {
-//   if (storedGeojson[geojsonFile] && 'Queen' in storedGeojson[geojsonFile].weights){
-//     return;
-//   } else {
-//     let weights = await geoda.getQueenWeights(geojsonId);
-//     dispatch(addWeights(geojsonFile, weights))
-//   }
-
-// }, [currentData])
-
-// // const lisaData = mapParams.mapType === 'lisa' ? await getLisaValues(datasetParams.geojson, binData, mapId) : null;
-// // const cartogramData = mapParams.vizType === 'cartogram' ? await getCartogramValues(mapId, binData) : null;
-
-// const getLisaValues = async (currentData, dataForLisa, mapId) => {
-// const weights = storedGeojson[currentData] && 'Queen' in storedGeojson[currentData].weights ? storedGeojson[currentData].Weights.Queen : await geoda.getQueenWeights(mapId);
-// const lisaValues = await geoda.localMoran(weights, dataForLisa);
-// return lisaValues.clusters
-// }
-
-// const getCartogramValues = async (mapId, dataForCartogram) => {
-// let cartogramData = await geoda.cartogram(mapId, dataForCartogram);
-// let tempArray = new Array(cartogramData.length)
-// for (let i=0; i<cartogramData.length; i++){
-//     cartogramData[i].value = dataForCartogram[i]
-//     tempArray[i] = cartogramData[i]
-// };
-// return tempArray
-// }

@@ -32,11 +32,9 @@ import {
   DataLoader,
   Icon,
 } from '../../components';
-import { ViewportProvider } from '../../contexts/ViewportContext';
-import { GeoDaContext } from '../../contexts/GeoDaContext';
+import { ViewportProvider } from '../../contexts/Viewport';
 import { fitBounds } from '@math.gl/web-mercator';
 import colors from '../../config/colors';
-import * as Comlink from 'comlink';
 
 import useMapData from '../../hooks/useMapData';
 
@@ -85,25 +83,10 @@ const MapOuterContainer = styled.div`
 `;
 
 export default function Map() {
-  const geoda = useRef(null);
-  // const fullState = useSelector(state => state);
-
   const dispatch = useDispatch();
-
   // // Dispatch helper functions for side effects and data handling
   // Get centroid data for cartogram
   // const getCentroids = (geojson, geoda) =>  dispatch(setCentroids(geoda.GetCentroids(geojson), geojson))
-  const [geodaReady, setGeodaReady] = useState(false);
-
-  useEffect(() => {
-    let worker = Comlink.wrap(
-      new Worker(`${process.env.PUBLIC_URL}/workers/worker.jsgeoda.js`),
-    );
-    worker
-      .New()
-      .then(() => (geoda.current = worker))
-      .then(() => setGeodaReady(true));
-  }, []);
 
   // After runtime is initialized, this loads in geoda to the context
   useEffect(() => {
@@ -154,19 +137,10 @@ export default function Map() {
     <>
       <div className="Map-App" style={{ overflow: 'hidden' }}>
         <NavBar />
-        {/* <header className="App-header" style={{position:'fixed', left: '20vw', top:'100px', zIndex:10}}>
-            <button onClick={() => console.log(fullState)}>Log state</button>
-          </header> */}
         <MapOuterContainer>
-          {geodaReady && (
-            <>
-              <GeoDaContext.Provider value={geoda.current}>
-                <ViewportProvider defaultViewport={defaultViewport}>
-                  <MapPageContainer />
-                </ViewportProvider>
-              </GeoDaContext.Provider>
-            </>
-          )}
+          <ViewportProvider defaultViewport={defaultViewport}>
+            <MapPageContainer />
+          </ViewportProvider>
         </MapOuterContainer>
       </div>
     </>

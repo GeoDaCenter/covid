@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavInlineButton } from './MapButtons';
-import { useViewport } from '../contexts/ViewportContext';
+import { useViewport } from '../contexts/Viewport';
 import { share } from '../config/svg';
 import { useSelector } from 'react-redux';
 import { getURLParams } from '../utils';

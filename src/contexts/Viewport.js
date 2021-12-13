@@ -1,4 +1,3 @@
-// ViewportContext.js
 import React, { useState, useContext } from 'react';
 import throttle from 'lodash/throttle';
 

@@ -47,12 +47,12 @@
     "swr": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-app-rewired start",
     "build-sw": "node ./src/sw-build.js",
-    "build": "react-scripts build && npm run build-sw",
+    "build": "react-app-rewired build",
     "netlify-build": "npm run build && cd build && cat _redirects",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "test": "react-scripts test",
+    "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -84,8 +84,10 @@
     ]
   },
   "devDependencies": {
+    "comlink-loader": "^2.0.0",
     "dayjs": "^1.10.6",
     "prettier": "2.5.1",
+    "react-app-rewired": "^2.1.8",
     "source-map-explorer": "^2.5.2",
     "workbox-build": "^6.1.5",
     "worker-loader": "^3.0.6"

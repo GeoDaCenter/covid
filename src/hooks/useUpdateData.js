@@ -18,7 +18,7 @@ import {
 } from '../actions';
 
 import { fixedScales, colorScales } from '../config/scales';
-import { GeoDaContext } from '../contexts/GeoDaContext';
+import { useGeoda } from '../contexts/Geoda';
 
 const dateLists = getDateLists();
 const handleLoadData = (fileInfo) =>
@@ -40,7 +40,10 @@ export default function useUpdateData() {
   const [isCalculating, setIsCalculating] = useState(false);
   const [stingerTimeout, setStingerTimeout] = useState();
   const [stinger, setStinger] = useState(false);
-  const geoda = useContext(GeoDaContext);
+  const {
+    geoda,
+    geodaReady
+  } = useGeoda();
 
   const updateBins = async () => {
     setIsCalculating(true);

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { FlyToInterpolator } from '@deck.gl/core';
 
-import { useViewport, useSetViewport } from '../contexts/ViewportContext';
+import { useViewport, useSetViewport } from '../contexts/Viewport';
 import ShareButton from '../components/ShareButton';
 import colors from '../config/colors';
 import * as SVG from '../config/svg';

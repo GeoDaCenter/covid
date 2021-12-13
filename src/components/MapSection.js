@@ -38,7 +38,7 @@ import {
 import { MAPBOX_ACCESS_TOKEN } from '../config';
 import colors from '../config/colors';
 import MAP_STYLE from '../config/style.json';
-import { useViewport, useSetViewport } from '../contexts/ViewportContext';
+import { useViewport, useSetViewport } from '../contexts/Viewport';
 import useFindViewport from '../hooks/useFindViewport';
 // PBF schemas
 import * as Schemas from '../schemas';
@@ -402,25 +402,25 @@ export default function MapSection({
   };
 
   const handleMapHover = ({ x, y, object, layer }) => {
-    if (object) {
-      dispatch(
-        setTooltipContent(
-          x,
-          y,
-          object?.properties ? object.properties[currIdCol] : object,
-        ),
-      );
-    } else {
-      setHoverGeog(null);
-      dispatch(setTooltipContent(x, y, null));
-    }
+    // if (object) {
+    //   dispatch(
+    //     setTooltipContent(
+    //       x,
+    //       y,
+    //       object?.properties ? object.properties[currIdCol] : object,
+    //     ),
+    //   );
+    // } else {
+    //   setHoverGeog(null);
+    //   dispatch(setTooltipContent(x, y, null));
+    // }
 
-    if (!isPoint && object && object?.properties[currIdCol]) {
-      if (object?.properties[currIdCol] !== hoverGeog)
-        setHoverGeog(object?.properties[currIdCol]);
-    } else {
-      setHoverGeog(null);
-    }
+    // if (!isPoint && object && object?.properties[currIdCol]) {
+    //   if (object?.properties[currIdCol] !== hoverGeog)
+    //     setHoverGeog(object?.properties[currIdCol]);
+    // } else {
+    //   setHoverGeog(null);
+    // }
   };
 
   const getScatterColor = (geoid) => currentMapData[geoid]?.color;

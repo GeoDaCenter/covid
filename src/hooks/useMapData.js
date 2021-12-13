@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import useLoadData from './useLoadData';
-import { GeoDaContext } from '../contexts/GeoDaContext';
+import { useGeoda } from '../contexts/Geoda';
 import { getVarId, getDataForBins } from '../utils';
 import { fixedScales } from '../config/scales';
 // function getAndCacheWeights
@@ -176,7 +176,10 @@ export default function useMapData({}) {
     dataReady,
   } = useLoadData();
   const dispatch = useDispatch();
-  const geoda = useContext(GeoDaContext);
+  const {
+    geoda,
+    geodaReady
+  } = useGeoda();
 
   const binIndex =
     dateIndices !== null

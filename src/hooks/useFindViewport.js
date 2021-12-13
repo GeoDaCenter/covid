@@ -1,14 +1,16 @@
-import { GeoDaContext } from '../contexts/GeoDaContext';
+import { useGeoda } from '../contexts/Geoda';
 import { fitBounds } from '@math.gl/web-mercator';
-import { useEffect, useState, useContext } from 'react';
-import { isCompositeComponent } from 'react-dom/test-utils';
+import { useEffect, useState } from 'react';
 
 export default function useFindViewport(mapId) {
-  const geoda = useContext(GeoDaContext);
+  const {
+    geoda,
+    geodaReady
+  } = useGeoda();
   const [currViewport, setCurrViewport] = useState({});
 
   const findViewport = async (mapId) => {
-    if (!mapId) return;
+    if (!mapId || !geodaReady) return;
     const extents = await geoda.getBounds(mapId);
     if (!extents) return;
     const viewport = fitBounds({

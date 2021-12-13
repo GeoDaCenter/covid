@@ -4,7 +4,7 @@ if ('function' === typeof importScripts) {
   );
   /* global workbox */
   if (workbox) {
-    console.log('Workbox is loaded');
+    console.log('Data is being cached.');
     self.skipWaiting();
 
     workbox.precaching.precacheAndRoute(self.__WB_MANIFEST);
@@ -16,6 +16,7 @@ if ('function' === typeof importScripts) {
         /\/[^\/]+\.[^\/]+$/,
         new RegExp('/500000/viz.html'),
         new RegExp('/500000'),
+        'index.html'
       ],
     });
     workbox.routing.registerRoute(navigationRoute);
