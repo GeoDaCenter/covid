@@ -10,7 +10,7 @@ import {
 // Main data loader
 // This functions asynchronously accesses the Geojson data and CSVs
 //   then performs a join and loads the data into the store
-import useSWR from 'swr';
+// import useSWR from 'swr';
 import { useGeoda } from '../contexts/Geoda';
 import * as Pbf from 'pbf';
 import * as Schemas from '../schemas';
@@ -18,53 +18,70 @@ import { useDataStore } from '../contexts/Data';
 
 const dateLists = getDateLists();
 
-const handleFetcher = (fileInfo, signal=null) => {
-  if (!fileInfo.file) return () => {};
-  if (fileInfo.file.slice(-4) === '.pbf') {
+const fetchFile = (fileInfo) => {
+  const {
+    name,
+    type,
+    timespan,
+    dates
+  } = fileInfo; 
+  if (!file || !type || !timespan) return () => {};
+  if (type === 'pbf') {
     return () =>
-      fetch(`${process.env.PUBLIC_URL}/pbf/${fileInfo.file}`, {signal})
+      fetch(`${process.env.PUBLIC_URL}/pbf/${name}.${timespan}.pbf`)
         .then((r) => r.arrayBuffer())
         .then((ab) => new Pbf(ab))
         .then((pbf) => Schemas.Rows.read(pbf))
         .then((pbfData) =>
-          parsePbfData(pbfData, fileInfo, dateLists[fileInfo.dates]),
+          parsePbfData(pbfData, fileInfo, dateLists[dates]),
         );
   }
-  return (fileInfo) => getParseCSV(fileInfo, dateLists[fileInfo.dates], signal);
-};
+  return (fileInfo) => getParseCSV(fileInfo, dateLists[dates], signal);
+}
+
+const fetcher = (filesToFetch=[]) => filesToFetch.length ? Promise.all(filesToFetch.map(fetchFile)) : () => [];
+
+// fetch params spec
+// {
+//   file: 'covid_confirmed_usafacts.latest.pbf',
+//   name: '',
+//    type:'pbf',
+//  timespan: 'latest'
+// dates: 'ISO' or 'US'
+// accumulate: yeah or nea
+// }
 
 function useGetTable({
-  fetchParams = {},
+  filesToFetch = [],
   shouldFetch = false,
   storedData = {},
-  datadispatch = () => {},
+  dataDispatch = () => {},
 }) {
-  const fetcher = handleFetcher(fetchParams);
-
-  const fetchResponse = useSWR(
-    shouldFetch && !storedData[fetchParams.file] ? fetchParams.file : null,
-    fetcher,
-  );
-
-  const data = storedData[fetchParams.file] || fetchResponse.data;
-  const error = fetchResponse.error;
-
   useEffect(() => {
-    if (data && !error && !storedData[fetchParams.file]) {
-      datadispatch({
-        type: 'RECONCILE_TABLES',
-        payload: {
-          data: {
-            [fetchParams.file]: data,
-          },
-        },
-      });
+    if (shouldFetch) {
+      fetcher(filesToFetch).then(dataArray => {
+        if (dataArray.length) {
+          dataArray.forEach((newData, idx) => {
+            if (!(storedData[filesToFetch[idx]?.name] && storedData[filesToFetch[idx]?.name][filesToFetch[idx]?.loaded?.includes(timespan)])){
+              dataDispatch({
+                type: 'RECONCILE_TABLE',
+                payload: {
+                  name: [fetchParams.name],
+                  newData,
+                  timespan: filesToFetch[idx].timespan
+                }
+              })
+            }
+          })
+        }
+      })
     }
-  }, [JSON.stringify(data?.columns)]);
+  }, [shouldFetch, JSON.stringify(filesToFetch)]);
 
-  if (fetchParams.noFile) return [{}, true, {}];
-  if (error || !data) return [data, false, error];
-  return [data, true, error];
+  const returnData = storedData[filesToFetch[0]?.name]
+  const dataReady = filesToFetch.all(({name, timespan}) => storedData[name] && storedData[name]?.loaded?.includes(timespan))
+  const error = false
+  return [returnData, dataReady, error];
 }
 
 function useGetGeojson({
@@ -121,51 +138,52 @@ function useGetGeojson({
   ];
 }
 
-function useBackgroundLoadData({
-  currentGeography='',
-  shouldFetch=false,
-  defaultTables={currentGeography:{}},
-  loadedTables=[],
-  dataDispatch=()=>{},
-}){  
-  const fetchParams = defaultTables[currentGeography] ? Object.values(defaultTables[currentGeography]).filter(f => loadedTables.indexOf(f.file) === -1)[0] : false;
-  const controller = new AbortController()
-  const fetcher = handleFetcher(!!fetchParams ? fetchParams : {}, controller.signal);
-  const { data, error } = useSWR(
-    shouldFetch && !!fetchParams ? fetchParams.file : null,
-    fetcher,
-  );
+// function useBackgroundLoadData({
+//   currentGeography='',
+//   shouldFetch=false,
+//   defaultTables={currentGeography:{}},
+//   loadedTables=[],
+//   dataDispatch=()=>{},
+// }){  
+//   const fetchParams = defaultTables[currentGeography] ? Object.values(defaultTables[currentGeography]).filter(f => loadedTables.indexOf(f.file) === -1)[0] : false;
+//   const controller = new AbortController()
+//   const fetcher = handleFetcher(!!fetchParams ? fetchParams : {}, controller.signal);
+//   const { data, error } = useSWR(
+//     shouldFetch && !!fetchParams ? fetchParams.file : null,
+//     fetcher,
+//   );
   
-  useEffect(() => {
-    if (!shouldFetch) {
-      try {
-        controller.abort()
-      } catch(e){
-        console.log(e)
-      }
-    }
-  },[shouldFetch])
+//   useEffect(() => {
+//     if (!shouldFetch) {
+//       try {
+//         controller.abort()
+//       } catch(e){
+//         console.log(e)
+//       }
+//     }
+//   },[shouldFetch])
 
-  useEffect(() => {
-    if (data && !error && !loadedTables.includes(fetchParams.file)) {
-      dataDispatch({
-        type: 'RECONCILE_TABLES',
-        payload: {
-          data: {
-            [fetchParams.file]: data,
-          },
-        },
-      });
-    }
-  }, [JSON.stringify(data?.columns)]);
+//   useEffect(() => {
+//     if (data && !error && !loadedTables.includes(fetchParams.file)) {
+//       dataDispatch({
+//         type: 'RECONCILE_TABLES',
+//         payload: {
+//           data: {
+//             [fetchParams.file]: data,
+//           },
+//         },
+//       });
+//     }
+//   }, [JSON.stringify(data?.columns)]);
 
-}
+// }
 
 export default function useLoadData() {
   const dataParams = useSelector((state) => state.dataParams);
   const currentData = useSelector((state) => state.currentData);
   const dataPresets = useSelector((state) => state.dataPresets);
   const defaultTables = useSelector((state) => state.defaultTables);
+
   const {
     geoda,
     geodaReady
@@ -215,13 +233,13 @@ export default function useLoadData() {
 
   const dateIndices = numeratorData ? numeratorData.dates : null;
 
-  const backgroundLoading = useBackgroundLoadData({
-    currentGeography: dataPresets[currentData].geography,
-    defaultTables,
-    shouldFetch: !!numeratorDataReady && !!denominatorDataReady && !!geojsonDataReady,
-    loadedTables: Object.keys(storedData),
-    dataDispatch
-  })
+  // const backgroundLoading = useBackgroundLoadData({
+  //   currentGeography: dataPresets[currentData].geography,
+  //   defaultTables,
+  //   shouldFetch: !!numeratorDataReady && !!denominatorDataReady && !!geojsonDataReady,
+  //   loadedTables: Object.keys(storedData),
+  //   dataDispatch
+  // })
   
   return {
     geojsonData,

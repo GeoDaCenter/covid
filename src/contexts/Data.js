@@ -19,6 +19,59 @@ function reducer(state, action) {
                 ...state,
                 dotDensityData: action.payload
             }
+            
+        case 'RECONCILE_TABLE': {
+            // expected shape: // type: 'RECILE_TABLES', payload: { data: { dataset1: {data,dates,columns}}}
+            let storedData = {
+                ...state.storedData,
+            };
+            const {
+                name,
+                newData,
+                timespan
+            } = action.payload;
+              
+            // If the data doesn't exist, easy. Just plug in the full dataset
+            // and move on to the next
+            if (!storedData.hasOwnProperty(name)) {
+                storedData[name] = {
+                    ...newData,
+                    loaded: [timespan]
+                }
+                continue;
+            }
+
+            // Otherwise, we need to reconcile based on keys present in the 'dates'
+            // property, using the big query data as the most up-to-date vs the
+            // static fetched data, which may have been cached client-side
+            const datasetKeys = Object.keys(storedData[name].data);
+            const dateIndices = storedData[name].dates;
+
+            // Loop through row (features) and date, using big query values as insertions
+            // and static as base, to reduce loop iterations
+            for (let x = 0; x < datasetKeys.length; x++) {
+                let tempValues = newData.data[datasetKeys[x]];
+                for (let n = 0; n < dateIndices.length; n++) {
+                    tempValues[gbqIndices[n]] = storedData[name].data[datasetKeys[x]][dateIndices[n]];
+                }
+                storedData[name].data[datasetKeys[x]] = tempValues;
+            }
+
+            // Reconcile and sort date indices
+            let reconciledDates = newData.dates;
+            
+            for (let n = 0; n < storedData[name].dates; n++) {
+                if (reconciledDates.indexOf(storedData[name].dates[n]) === -1) {
+                    reconciledDates.push(storedData[name].dates[n]);
+                }
+                storedData[name].dates = reconciledDates.sort((a, b) => a - b);
+            }
+
+            return {
+                ...state,
+                storedData,
+            };
+        }
         case 'RECONCILE_TABLES': {
             // expected shape: // type: 'RECILE_TABLES', payload: { data: { dataset1: {data,dates,columns}}}
             let storedData = {
