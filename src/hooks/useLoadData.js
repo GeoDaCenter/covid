@@ -25,7 +25,7 @@ const fetchFile = (fileInfo) => {
     timespan,
     dates
   } = fileInfo; 
-  if (!file || !type || !timespan) return () => {};
+  if (!name || !type || !timespan) return () => {};
   if (type === 'pbf') {
     return () =>
       fetch(`${process.env.PUBLIC_URL}/pbf/${name}.${timespan}.pbf`)
@@ -36,10 +36,10 @@ const fetchFile = (fileInfo) => {
           parsePbfData(pbfData, fileInfo, dateLists[dates]),
         );
   }
-  return (fileInfo) => getParseCSV(fileInfo, dateLists[dates], signal);
+  return (fileInfo) => getParseCSV(fileInfo, dateLists[dates]);
 }
 
-const fetcher = (filesToFetch=[]) => filesToFetch.length ? Promise.all(filesToFetch.map(fetchFile)) : () => [];
+const fetcher = async (filesToFetch=[]) => filesToFetch.length ? Promise.all(filesToFetch.map(fetchFile)) : () => [];
 
 // fetch params spec
 // {
@@ -62,11 +62,11 @@ function useGetTable({
       fetcher(filesToFetch).then(dataArray => {
         if (dataArray.length) {
           dataArray.forEach((newData, idx) => {
-            if (!(storedData[filesToFetch[idx]?.name] && storedData[filesToFetch[idx]?.name][filesToFetch[idx]?.loaded?.includes(timespan)])){
+            if (!(storedData[filesToFetch[idx]?.name] && storedData[filesToFetch[idx]?.name][filesToFetch[idx]?.loaded?.includes(filesToFetch[idx]?.timespan)])) {
               dataDispatch({
                 type: 'RECONCILE_TABLE',
                 payload: {
-                  name: [fetchParams.name],
+                  name: filesToFetch[idx].name,
                   newData,
                   timespan: filesToFetch[idx].timespan
                 }
@@ -79,7 +79,8 @@ function useGetTable({
   }, [shouldFetch, JSON.stringify(filesToFetch)]);
 
   const returnData = storedData[filesToFetch[0]?.name]
-  const dataReady = filesToFetch.all(({name, timespan}) => storedData[name] && storedData[name]?.loaded?.includes(timespan))
+  console.log(filesToFetch)
+  const dataReady = filesToFetch.every(({name, timespan}) => storedData[name] && storedData[name]?.loaded?.includes(timespan))
   const error = false
   return [returnData, dataReady, error];
 }
@@ -182,10 +183,21 @@ function getFetchParams({
   datasetParams,
   defaultTables,
   predicate,
-  dataIndices
+  dateList
 }){
-
+  const tableName = dataParams[predicate] 
+  const eitherIndex = dataParams.nIndex||dataParams.dIndex
+  if (tableName === 'properties') {
+    return {
+      noFile: true
+    }
+  }
+  return {
+    ...(datasetParams?.tables[tableName]||defaultTables[tableName]),
+    timespan: (!eitherIndex || dateList?.length - eitherIndex < 45 ) ? 'latest' : dateList[eitherIndex]?.slice(0,7)
+  }
 }
+
 export default function useLoadData() {
   const dataParams = useSelector((state) => state.dataParams);
   const currentData = useSelector((state) => state.currentData);
@@ -205,19 +217,25 @@ export default function useLoadData() {
   
   const datasetParams = dataPresets[currentData];
 
-  const firstLoadParams = {
-    numerator:
-      datasetParams.tables[dataParams.numerator] ||
-      defaultTables[dataParams.numerator],
-    denominator:
-      dataParams.denominator !== 'properties'
-        ? datasetParams.tables[dataParams.denominator] ||
-          defaultTables[dataParams.denominator]
-        : { noFile: true },
-  };
-
+  const numeratorParams = getFetchParams({
+    dataParams,
+    datasetParams,
+    defaultTables,
+    predicate: 'numerator',
+    dateList: dateLists['isoDateList']
+  })
+  
+  const denominatorParams = getFetchParams({
+    dataParams,
+    datasetParams,
+    defaultTables,
+    predicate: 'denominator',
+    dateList: dateLists['isoDateList']
+  })
+  console.log(numeratorParams, denominatorParams)
+  
   const [numeratorData, numeratorDataReady, numeratorDataError] = useGetTable({
-    fetchParams: firstLoadParams.numerator,
+    fetchParams: numeratorParams,
     shouldFetch: true,
     storedData,
     dataDispatch,
@@ -225,7 +243,7 @@ export default function useLoadData() {
 
   const [denominatorData, denominatorDataReady, denominatorDataError] =
     useGetTable({
-      fetchParams: firstLoadParams.denominator,
+      fetchParams: denominatorParams,
       shouldFetch: true,
       storedData,
       dataDispatch,

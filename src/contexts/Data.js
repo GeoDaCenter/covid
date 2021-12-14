@@ -38,7 +38,11 @@ function reducer(state, action) {
                     ...newData,
                     loaded: [timespan]
                 }
-                continue;
+
+                return {
+                    ...state,
+                    storedData,
+                };
             }
 
             // Otherwise, we need to reconcile based on keys present in the 'dates'
@@ -52,7 +56,7 @@ function reducer(state, action) {
             for (let x = 0; x < datasetKeys.length; x++) {
                 let tempValues = newData.data[datasetKeys[x]];
                 for (let n = 0; n < dateIndices.length; n++) {
-                    tempValues[gbqIndices[n]] = storedData[name].data[datasetKeys[x]][dateIndices[n]];
+                    tempValues[dateIndices[n]] = storedData[name].data[datasetKeys[x]][dateIndices[n]];
                 }
                 storedData[name].data[datasetKeys[x]] = tempValues;
             }
