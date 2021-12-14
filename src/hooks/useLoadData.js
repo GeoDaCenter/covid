@@ -177,7 +177,15 @@ function useGetGeojson({
 //   }, [JSON.stringify(data?.columns)]);
 
 // }
+function getFetchParams({
+  dataParams,
+  datasetParams,
+  defaultTables,
+  predicate,
+  dataIndices
+}){
 
+}
 export default function useLoadData() {
   const dataParams = useSelector((state) => state.dataParams);
   const currentData = useSelector((state) => state.currentData);
