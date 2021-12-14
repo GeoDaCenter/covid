@@ -38,7 +38,7 @@ const fetchFile = (fileInfo) => {
           parsePbfData(pbfData, fileInfo, dateLists[date]),
         );
   }
-  return (fileInfo) => getParseCsvPromise(fileInfo, dateLists[date]);
+  return getParseCsvPromise(fileInfo, dateLists[date]);
 }
 
 const fetcher = async (filesToFetch=[]) => filesToFetch.length ? await Promise.all(filesToFetch.map(file => fetchFile(file))) : () => [];
@@ -151,10 +151,12 @@ function useBackgroundLoadData({
   const filesToFetch = findAllDefaults(tables, currentGeography).map(dataspec => ({...dataspec, timespan: currTimespan})).filter(filesToFetch => !(storedData[filesToFetch.name] && storedData[filesToFetch.name].loaded?.includes(filesToFetch.timespan)));
   useEffect(() => {
     if (shouldFetch && filesToFetch.length) {
+      console.log(filesToFetch[0])
       fetcher([filesToFetch[0]]).then(dataArray => {
         if (dataArray.length) {
           dataArray.forEach((newData, idx) => {
-            if (!(storedData[filesToFetch[idx]?.name] && storedData[filesToFetch[idx]?.name][filesToFetch[idx]?.loaded?.includes(filesToFetch[idx]?.timespan)])) {
+            console.log('loaded ' + filesToFetch[0].name, newData)
+            if (newData && newData.data && !(storedData[filesToFetch[idx]?.name] && storedData[filesToFetch[idx]?.name][filesToFetch[idx]?.loaded?.includes(filesToFetch[idx]?.timespan)])) {
               dataDispatch({
                 type: 'RECONCILE_TABLE',
                 payload: {

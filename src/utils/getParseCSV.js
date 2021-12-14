@@ -40,7 +40,7 @@ export async function getParseCSV(fileInfo, dateList) {
 }
 
 export const getParseCsvPromise = (fileInfo, dateList) =>
-  fetch(`${process.env.PUBLIC_URL}/csv/${fileInfo.file}.csv`)
+  fetch(`${process.env.PUBLIC_URL}/csv/${fileInfo.name}.csv`)
     .then((response) => {
       return response.ok ? response.text() : Promise.reject(response.status);
     })
