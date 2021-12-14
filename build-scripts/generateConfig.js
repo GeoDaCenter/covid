@@ -72,7 +72,28 @@ const generateDefaults = async () => {
     return data
 }
 
+const generateLegacyDatasets = async () => {
+    const tables = await generateTables();
+    const datasets = await generateDatasets();
+    let returnObj = {};
+    datasets.forEach(d => {
+        let returnTables = {};
+        try {
+            console.log(Object.entries(d.tables))
+            returnTables = Object.entries(d.tables).map(entry=>({[entry[0]]: tables.find(t => t.Id === entry[1])})).reduce((prev, curr) => ({...prev, ...curr}))
+        } catch {}
+        
+        returnObj[d.file] = {
+            ...d,
+            geosjon: d.file,
+            tables: returnTables
+        }
+    })
+    fs.writeFileSync('./src/config/legacyDatasets.js',  `// this is a generated file, do not edit directly. See Google sheets to update variable config \n export default ${JSON.stringify(returnObj)}`)
+}
+
 const variables = generateVariables();
 const tables = generateTables();
-const dataests = generateDatasets();
+const datasets = generateDatasets();
 const defaults = generateDefaults();
+// const legacyDatasets = generateLegacyDatasets();

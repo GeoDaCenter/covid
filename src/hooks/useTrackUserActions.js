@@ -21,12 +21,12 @@ export default function useTrackUserActions() {
   // // What counties or states are being selected?
   // const selectionKeys = useSelector(state => state.selectionKeys);
   // What are the default datasets?
-  const dataPresets = useSelector((state) => state.dataPresets);
-  const baseDatasetNum = useRef(Object.keys(dataPresets).length);
+  const datasets = useSelector((state) => state.datasets);
+  const baseDatasetNum = useRef(datasets.length);
 
   useEffect(() => {
     const customDatasetsLoaded =
-      Object.keys(dataPresets).length - baseDatasetNum.current;
+      datasets.length - baseDatasetNum.current;
     if (customDatasetsLoaded > 0) {
       ReactGA.event({
         category: 'Custom Data',
@@ -34,7 +34,7 @@ export default function useTrackUserActions() {
         value: customDatasetsLoaded,
       });
     }
-  }, [Object.keys(dataPresets).length]);
+  }, [datasets.length]);
 
   // const [hasLogged, setHasLogged] = useState({
   //     'currentData': [],

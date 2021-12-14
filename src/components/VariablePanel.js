@@ -28,6 +28,7 @@ import {
   setDotDensityBgOpacity,
 } from '../actions';
 import colors from '../config/colors';
+import {findIn} from '../utils';
 import { fixedScales, colorScales } from '../config/scales';
 
 /** STYLES */
@@ -369,8 +370,9 @@ export default function VariablePanel() {
   const dType = useSelector((state) => state.dataParams.dType);
   const rangeType = useSelector((state) => state.dataParams.rangeType);
 
-  const variablePresets = useSelector((state) => state.variablePresets);
-  const dataPresets = useSelector((state) => state.dataPresets);
+  const variables = useSelector((state) => state.variables);
+  const datasets = useSelector((state) => state.datasets);
+  const currentPreset = findIn(datasets, 'file', currentData);
   const variableTree = useSelector((state) => state.variableTree);
   const datasetTree = useSelector((state) => state.datasetTree);
   const urlParamsTree = useSelector((state) => state.urlParamsTree);
@@ -382,7 +384,7 @@ export default function VariablePanel() {
     .flatMap((o) => o)
     .filter(onlyUnique);
   const isCustom = !['State', 'County', 'County (Hybrid)'].includes(
-    dataPresets[currentData].geography,
+    currentPreset.geography,
   );
 
   const handleMapType = (event, newValue) => {
@@ -444,12 +446,12 @@ export default function VariablePanel() {
   const handleDotDensitySlider = (e, newValue) =>
     dispatch(setDotDensityBgOpacity(newValue));
   const handleVariable = (e) => {
-    let tempGeography = dataPresets[currentData].geography;
+    let tempGeography = currentPreset.geography;
     let tempDataset = urlParamsTree[currentData].name;
     if (
       mapType === 'lisa' &&
-      (variablePresets[e.target.value].numerator === 'vaccines_one_dose' ||
-        variablePresets[e.target.value].numerator ===
+      (findIn(variables, 'name', e.target.value).numerator === 'vaccines_one_dose' ||
+        findIn(variables, 'name', e.target.value).numerator ===
           'vaccines_fully_vaccinated')
     ) {
       dispatch(
@@ -477,18 +479,18 @@ export default function VariablePanel() {
       dispatch(
         setParametersAndData({
           params: {
-            ...variablePresets[e.target.value],
+            ...findIn(variables, 'name', e.target.value),
           },
           dataset: datasetTree[tempGeography][tempDataset],
           mapParams: {
-            customScale: variablePresets[e.target.value].colorScale || null,
+            customScale: findIn(variables, 'name', e.target.value).colorScale || null,
           },
         }),
       );
     } else {
       dispatch(
         setVariableParams({
-          ...variablePresets[e.target.value],
+          ...findIn(variables, 'name', e.target.value),
         }),
       );
     }
@@ -516,7 +518,7 @@ export default function VariablePanel() {
   const handleDataset = (e) => {
     dispatch(
       setCurrentData(
-        datasetTree[dataPresets[currentData].geography][e.target.value],
+        datasetTree[currentPreset.geography][e.target.value],
       ),
     );
   };
@@ -552,21 +554,15 @@ export default function VariablePanel() {
   const handleSwitch = () =>
     dispatch(setMapParams({ binMode: binMode === 'dynamic' ? '' : 'dynamic' }));
 
-  const availableData = allDatasets.filter(
+  const availableData = currentPreset.geography ? allDatasets.filter(
     (dataset) =>
-      variableTree[variableName][dataPresets[currentData].geography].indexOf(
+      variableTree[variableName][currentPreset.geography].indexOf(
         dataset,
       ) !== -1,
-  );
+  ) : [];
   const dataName = availableData.includes(urlParamsTree[currentData].name)
     ? urlParamsTree[currentData].name
     : availableData[0];
-  // const textDataset = Object.keys(
-  //   urlParamsTree
-  //   )[Object.values(
-  //     urlParamsTree
-  //   ).findIndex(o => o.name == dataName)]
-  //   console.log(textDataset)
 
   return (
     <VariablePanelContainer
@@ -703,7 +699,7 @@ export default function VariablePanel() {
           <StyledDropDown id="geographySelect" style={{ marginRight: '20px' }}>
             <InputLabel htmlFor="geographySelect">Geography</InputLabel>
             <Select
-              value={dataPresets[currentData].geography}
+              value={currentPreset.geography}
               onChange={handleGeography}
             >
               {allGeographies.map((geography) => (
@@ -727,12 +723,8 @@ export default function VariablePanel() {
                   value={dataset}
                   key={dataset}
                   disabled={
-                    variableTree[variableName][
-                      dataPresets[currentData].geography
-                    ] === undefined ||
-                    variableTree[variableName][
-                      dataPresets[currentData].geography
-                    ].indexOf(dataset) === -1
+                    variableTree[variableName][currentPreset.geography] === undefined ||
+                    variableTree[variableName][currentPreset.geography].indexOf(dataset) === -1
                   }
                 >
                   {dataset}

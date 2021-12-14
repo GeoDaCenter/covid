@@ -1,13 +1,14 @@
 import {
-  variablePresets,
-  dataPresets,
-  defaultTables,
   defaultData,
   datasetTree,
   variableTree,
   urlParamsTree,
 } from '../config/index';
+import variables from '../config/variables';
+import tables from '../config/tables';
+import datasets from '../config/datasets';
 
+import {findIn} from '../utils';
 // read in URL params
 let paramsDict = {};
 for (const [key, value] of new URLSearchParams(window.location.search)) {
@@ -15,7 +16,7 @@ for (const [key, value] of new URLSearchParams(window.location.search)) {
 }
 const currVariable = paramsDict.hasOwnProperty('var')
   ? {
-      ...variablePresets[paramsDict.var.replace(/_/g, ' ')],
+      ...findIn(variables, 'name', paramsDict.var.replace(/_/g, ' ')),
       [paramsDict.hasOwnProperty('date') && 'nIndex']: +paramsDict.date,
       [paramsDict.hasOwnProperty('range') && 'nRange']:
         paramsDict.range === 'null' ? null : +paramsDict.range,
@@ -30,9 +31,9 @@ export const INITIAL_STATE = {
   currentMethod: paramsDict.hasOwnProperty('mthd')
     ? paramsDict.mthd
     : 'natural_breaks',
-  dataPresets,
-  defaultTables,
-  variablePresets,
+  datasets,
+  tables,
+  variables,
   datasetTree,
   variableTree,
   urlParamsTree,

@@ -448,10 +448,10 @@ export const stopPlaying = () => {
 
 export const lazyFetchData = (dataPresets) => {
   return {
-    type: 'LAZY_LOAD_DATA',
-    payload: {
-      dataPresets,
-    },
+    // type: 'LAZY_LOAD_DATA',
+    // payload: {
+    //   dataPresets,
+    // },
   };
 };
 

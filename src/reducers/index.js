@@ -1,13 +1,16 @@
 import { INITIAL_STATE } from '../constants/defaults';
 import {
   getDataForCharts,
-  generateMapData,
+  // generateMapData,
   generateReport,
   shallowEqual,
   parseTooltipData,
   getIdOrder,
   indexGeoProps,
   resolveName,
+  findIn,
+  findDefault,
+  findTableOrDefault
 } from '../utils';
 
 var reducer = (state = INITIAL_STATE, action) => {
@@ -132,14 +135,14 @@ var reducer = (state = INITIAL_STATE, action) => {
         storedGeojson,
       };
     }
-    case 'UPDATE_MAP': {
-      return {
-        ...state,
-        mapData: generateMapData(state),
-        shouldUpdate: false,
-        isLoading: false,
-      };
-    }
+    // case 'UPDATE_MAP': {
+    //   return {
+    //     ...state,
+    //     mapData: generateMapData(state),
+    //     shouldUpdate: false,
+    //     isLoading: false,
+    //   };
+    // }
     case 'DATA_LOAD': {
       // main new data loading reducer
       // I: Destructure payload (load) object
@@ -212,19 +215,12 @@ var reducer = (state = INITIAL_STATE, action) => {
       };
     }
     case 'UPDATE_CHART': {
-      let currCaseData;
-      try {
-        currCaseData =
-          state.dataPresets[state.currentData].tables[state.chartParams.table]
-            ?.file ||
-          state.defaultTables[state.dataPresets[state.currentData].geography][
-            state.chartParams.table
-          ].file;
-      } catch {
-        return {
-          ...state,
-        };
-      }
+      
+      const currDataset = findIn(state.datasets, 'file', state.currentData);
+      const currCaseData = currDataset.tables[state.chartParams.table]
+        ? findIn(state.tables, 'id', currDataset.tables[state.chartParams.table]).name
+        : findDefault(state.tables, state.chartParams.table, currDataset.geography).name;
+        
       let populationData = [];
 
       if (state.chartParams.populationNormalized) {
@@ -293,16 +289,13 @@ var reducer = (state = INITIAL_STATE, action) => {
         ...action.payload.params,
       };
 
-      const currCaseData =
-        state.dataPresets[state.currentData].tables[state.chartParams.table]
-          ?.file ||
-        state.defaultTables[state.dataPresets[state.currentData].geography][
-          state.chartParams.table
-        ].file;
+      const currDataset = findIn(state.datasets, 'file', state.currentData);      
+      const currCaseData = currDataset.tables[state.chartParams.table]
+        ? findIn(state.tables, 'id', currDataset.tables[state.chartParams.table])
+        : findDefault(state.tables, state.chartParams.table, currDataset.geography);
       const properties = state.storedGeojson[state.currentData].properties;
 
       let populationData = [];
-
       if (chartParams.populationNormalized) {
         if (state.selectionKeys.length) {
           populationData = state.selectionKeys.map(
@@ -406,19 +399,19 @@ var reducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         storedLisaData: action.payload.data,
-        mapData: generateMapData({
-          ...state,
-          storedLisaData: action.payload.data,
-        }),
+        // mapData: generateMapData({
+        //   ...state,
+        //   storedLisaData: action.payload.data,
+        // }),
       };
     }
     case 'SET_STORED_CARTOGRAM_DATA': {
       return {
         ...state,
-        mapData: generateMapData({
-          ...state,
-          storedCartogramData: action.payload.data,
-        }),
+        // mapData: generateMapData({
+        //   ...state,
+        //   storedCartogramData: action.payload.data,
+        // }),
         storedCartogramData: action.payload.data,
       };
     }
@@ -437,32 +430,11 @@ var reducer = (state = INITIAL_STATE, action) => {
         centroids: centroidsObj,
       };
     case 'SET_CURRENT_DATA': {
+      const currDataset = findIn(state.datasets, 'file', action.payload.data);
       const currentTable = {
-        numerator:
-          state.dataParams.numerator === 'properties'
-            ? 'properties'
-            : state.dataPresets[action.payload.data].tables.hasOwnProperty(
-                state.dataParams.numerator,
-              )
-            ? state.dataPresets[action.payload.data].tables[
-                state.dataParams.numerator
-              ].file
-            : state.defaultTables[
-                state.dataPresets[action.payload.data].geography
-              ][state.dataParams.numerator].file,
-        denominator:
-          state.dataParams.denominator === 'properties'
-            ? 'properties'
-            : state.dataPresets[action.payload.data].tables.hasOwnProperty(
-                state.dataParams.denominator,
-              )
-            ? state.dataPresets[action.payload.data].tables[
-                state.dataParams.denominator
-              ].file
-            : state.defaultTables[
-                state.dataPresets[action.payload.data].geography
-              ][state.dataParams.denominator].file,
-      };
+        numerator: findTableOrDefault(currDataset, state.tables, state.dataParams.numerator),
+        denominator: findTableOrDefault(currDataset, state.tables, state.dataParams.denominator),
+      }
 
       return {
         ...state,
@@ -530,42 +502,42 @@ var reducer = (state = INITIAL_STATE, action) => {
         ...state,
         sidebarData: action.payload.data,
       };
-    case 'INCREMENT_DATE': {
-      let dataParams = {
-        ...state.dataParams,
-      };
+    // case 'INCREMENT_DATE': {
+    //   let dataParams = {
+    //     ...state.dataParams,
+    //   };
 
-      const currIndices = state.storedData[state.currentTable.numerator].dates;
-      const nextIndex =
-        currIndices[
-          currIndices.indexOf(state.dataParams.nIndex) + action.payload.index
-        ];
+    //   const currIndices = state.storedData[state.currentTable.numerator].dates;
+    //   const nextIndex =
+    //     currIndices[
+    //       currIndices.indexOf(state.dataParams.nIndex) + action.payload.index
+    //     ];
 
-      if (nextIndex === undefined) {
-        return {
-          ...state,
-        };
-      } else {
-        dataParams.nIndex = nextIndex;
-        dataParams.dIndex = nextIndex;
-        return {
-          ...state,
-          dataParams,
-          tooltipContent: {
-            x: state.tooltipContent.x,
-            y: state.tooltipContent.y,
-            data: state.tooltipContent.geoid
-              ? parseTooltipData(state.tooltipContent.geoid, state)
-              : state.tooltipContent.data,
-            geoid: state.tooltipContent.geoid,
-          },
-          mapData: generateMapData({ ...state, dataParams }),
-          sidebarData: state.selectionKeys.length
-            ? generateReport(state.selectionKeys, state)
-            : state.sidebarData,
-        };
-      }
-    }
+    //   if (nextIndex === undefined) {
+    //     return {
+    //       ...state,
+    //     };
+    //   } else {
+    //     dataParams.nIndex = nextIndex;
+    //     dataParams.dIndex = nextIndex;
+    //     return {
+    //       ...state,
+    //       dataParams,
+    //       tooltipContent: {
+    //         x: state.tooltipContent.x,
+    //         y: state.tooltipContent.y,
+    //         data: state.tooltipContent.geoid
+    //           ? parseTooltipData(state.tooltipContent.geoid, state)
+    //           : state.tooltipContent.data,
+    //         geoid: state.tooltipContent.geoid,
+    //       },
+    //       mapData: generateMapData({ ...state, dataParams }),
+    //       sidebarData: state.selectionKeys.length
+    //         ? generateReport(state.selectionKeys, state)
+    //         : state.sidebarData,
+    //     };
+    //   }
+    // }
     case 'SET_START_PLAYING': {
       let dateObj = {
         ...state.dataParams,
@@ -605,32 +577,12 @@ var reducer = (state = INITIAL_STATE, action) => {
         ...state.dataParams,
         ...action.payload.params,
       };
+      const currDataset = findIn(state.datasets, 'file', state.currentData);
 
       const currentTable = {
-        numerator:
-          dataParams.numerator === 'properties'
-            ? 'properties'
-            : state.dataPresets[state.currentData].tables.hasOwnProperty(
-                dataParams.numerator,
-              )
-            ? state.dataPresets[state.currentData].tables[dataParams.numerator]
-                .file
-            : state.defaultTables[
-                state.dataPresets[state.currentData].geography
-              ][dataParams.numerator].file,
-        denominator:
-          dataParams.denominator === 'properties'
-            ? 'properties'
-            : state.dataPresets[state.currentData].tables.hasOwnProperty(
-                dataParams.denominator,
-              )
-            ? state.dataPresets[state.currentData].tables[
-                dataParams.denominator
-              ].file
-            : state.defaultTables[
-                state.dataPresets[state.currentData].geography
-              ][dataParams.denominator].file,
-      };
+        numerator: findTableOrDefault(currDataset, state.tables, state.dataParams.numerator),
+        denominator: findTableOrDefault(currDataset, state.tables, state.dataParams.denominator),
+      }
 
       if (state.dataParams.zAxisParams !== null) {
         dataParams.zAxisParams.nIndex = dataParams.nIndex;
@@ -701,12 +653,12 @@ var reducer = (state = INITIAL_STATE, action) => {
             ? state.dataParams.nRange
             : state.storedRange,
         dataParams,
-        mapData:
-          state.mapParams.binMode !== 'dynamic' &&
-          state.mapParams.mapType !== 'lisa' &&
-          shallowEqual(state.dataParams, dataParams)
-            ? generateMapData({ ...state, dataParams })
-            : state.mapData,
+        // mapData:
+        //   state.mapParams.binMode !== 'dynamic' &&
+        //   state.mapParams.mapType !== 'lisa' &&
+        //   shallowEqual(state.dataParams, dataParams)
+        //     ? generateMapData({ ...state, dataParams })
+        //     : state.mapData,
         currentTable,
         tooltipContent: {
           x: state.tooltipContent.x,
@@ -731,33 +683,11 @@ var reducer = (state = INITIAL_STATE, action) => {
         ...state.mapParams,
         ...action.payload.params.dataMapParams,
       };
-
+      const currDataset = findIn(state.datasets, 'file', action.payload.params.dataset);
       const currentTable = {
-        numerator:
-          dataParams.numerator === 'properties'
-            ? 'properties'
-            : state.dataPresets[
-                action.payload.params.dataset
-              ].tables.hasOwnProperty(dataParams.numerator)
-            ? state.dataPresets[action.payload.params.dataset].tables[
-                dataParams.numerator
-              ].file
-            : state.defaultTables[
-                state.dataPresets[action.payload.params.dataset].geography
-              ][dataParams.numerator].file,
-        denominator:
-          dataParams.denominator === 'properties'
-            ? 'properties'
-            : state.dataPresets[
-                action.payload.params.dataset
-              ].tables.hasOwnProperty(dataParams.denominator)
-            ? state.dataPresets[action.payload.params.dataset].tables[
-                dataParams.denominator
-              ].file
-            : state.defaultTables[
-                state.dataPresets[action.payload.params.dataset].geography
-              ][dataParams.denominator].file,
-      };
+        numerator: findTableOrDefault(currDataset, state.tables, state.dataParams.numerator),
+        denominator: findTableOrDefault(currDataset, state.tables, state.dataParams.denominator),
+      }
 
       if (
         action.payload.params.variableName !== undefined &&
@@ -881,7 +811,8 @@ var reducer = (state = INITIAL_STATE, action) => {
       let selectionKeys = [...state.selectionKeys];
 
       const properties = state.storedGeojson[state.currentData].properties;
-      const geography = state.dataPresets[state.currentData].geography;
+      const currDataset = findIn(state.datasets, 'file', state.currentData);
+      const geography = currDataset.geography;
 
       if (!properties || !geography) return state;
 
@@ -901,13 +832,8 @@ var reducer = (state = INITIAL_STATE, action) => {
         selectionKeys.splice(selectionKeys.indexOf(action.payload.geoid), 1);
       }
 
-      const currCaseData =
-        state.dataPresets[state.currentData].tables[state.chartParams.table]
-          ?.file ||
-        state.defaultTables[state.dataPresets[state.currentData].geography][
-          state.chartParams.table
-        ].file;
-
+      const currCaseData = findTableOrDefault(currDataset, state.tables, state.chartParams.table);
+      
       const additionalParams = {
         geoid: selectionKeys,
         populationData: state.chartParams.populationNormalized
@@ -1114,8 +1040,8 @@ var reducer = (state = INITIAL_STATE, action) => {
         },
       };
 
-      let variablePresets = {
-        ...state.variablePresets,
+      let variables = {
+        ...state.variables,
       };
 
       const datasetTree = {
@@ -1125,36 +1051,47 @@ var reducer = (state = INITIAL_STATE, action) => {
         },
       };
 
-      const defaultTables = {
-        ...state.defaultTables,
-        [dataName]: {},
-      };
+      const tables = [
+        ...state.tables,
+        {
+          name:dataName,
+          geography: 	dataName,
+          table: dataName, 
+          fileType: null,
+          dataType: 'characteristic',
+          join: 'idx',
+          default: 1,
+          id: dataName
+      }
+    ]
 
-      const dataPresets = {
-        ...state.dataPresets,
-        [dataName]: {
-          plainName: dataName,
-          geojson: dataName,
+      const datasets = [
+        ...state.datasets,
+        {
+          name: dataName,
+          file: dataName,
           geography: dataName,
-          id: 'idx',
+          join: 'idx',
           tables: {},
-        },
-      };
+        }
+      ]
 
       let variableTree = {
         [`HEADER: ${dataName}`]: {},
       };
-      const variablesList = Object.keys(state.variablePresets);
+      const variablesList = state.variables.map(f => f.name)
       for (let i = 0; i < action.payload.variables.length; i++) {
         let currVariable = resolveName(
           action.payload.variables[i].variableName,
           variablesList,
         );
         variablesList.push(currVariable);
-        variablePresets[currVariable] = {
+       
+        variables.unshift({
           ...action.payload.variables[i],
           variableName: currVariable,
-        };
+        })
+
         variableTree[currVariable] = {
           [dataName]: [dataName],
         };
@@ -1170,18 +1107,18 @@ var reducer = (state = INITIAL_STATE, action) => {
 
       return {
         ...state,
-        dataPresets,
+        datasets,
         datasetTree,
-        defaultTables,
+        tables,
         storedGeojson,
         urlParamsTree,
         variableTree: {
           ...variableTree,
           ...state.variableTree,
         },
-        variablePresets,
+        variables,
         currentData: dataName,
-        dataParams: Object.values(variablePresets).slice(-1)[0],
+        dataParams: variables[0],
         currentTable: {
           numerator: 'properties',
           denominator: 'properties',

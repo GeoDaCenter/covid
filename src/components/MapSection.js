@@ -30,6 +30,7 @@ import {
   mapDidPan,
 } from '../actions';
 import {
+  findIn,
   getCSV,
   getCartogramCenter,
   parseMapboxLayers,
@@ -131,10 +132,10 @@ export default function MapSection({
   // const currentMapID = useSelector(state => state.mapData.params);
   // const currentHeightScale = useSelector(state => state.mapData.heightScale);
   const storedGeojson = useSelector((state) => state.storedGeojson);
-  const dataPresets = useSelector((state) => state.dataPresets);
+  const datasets = useSelector((state) => state.datasets);
   // const currentMapGeography = storedGeojson[currentData]?.data||[]
   const colorFilter = useSelector((state) => state.colorFilter);
-  const currIdCol = dataPresets[currentData].id;
+  const currIdCol = findIn(datasets, 'file', currentData).join;
   const storedCartogramData = useSelector((state) => state.storedCartogramData);
   const storedLisaData = useSelector((state) => state.storedLisaData);
   const shouldPanMap = useSelector((state) => state.shouldPanMap);
