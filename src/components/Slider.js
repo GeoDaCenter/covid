@@ -9,6 +9,7 @@ import useTickUpdate from "../hooks/useTickUpdate";
 import colors from "../config/colors";
 import { useDataStore } from "../contexts/Data";
 import dataDateRanges from "../config/dataDateRanges";
+import useCurrentDateIndices from "../hooks/useCurrentDateIndices";
 import Ticks from './Ticks'
 
 const SliderContainer = styled(Grid)`
@@ -98,7 +99,7 @@ const LineSlider = styled(Slider)`
 const SpeedSlider = styled.div`
   position: absolute;
   padding: 0.75em 0.5em 0.25em 0.5em;
-  widht: 100%;
+  width: 100%;
   background: ${colors.gray};
   border-radius: 0.5em;
   left: 0;
@@ -166,7 +167,7 @@ const RangeSlider = styled(Slider)`
     width: 1px;
     height: 2px;
   }
-  span.muislider-thumb.muislider-active: {
+  span.muislider-thumb.muislider-active:hover {
     box-shadow: 0px 0px 10px rgba(200, 200, 200, 0.5);
   }
 `;
@@ -285,14 +286,12 @@ const findLastDate = (array) => {
 }
 function DateSlider() {
   const dispatch = useDispatch();
-  const [{ storedData }] = useDataStore();
-
-  const nIndex = useSelector((state) => state.dataParams.nIndex);
-  const dIndex = useSelector((state) => state.dataParams.dIndex);
-  const dates = useSelector((state) => state.dates);
-  const currentTable = useSelector((state) => state.currentTable);
-  const currDates = storedData[currentTable?.numerator?.name]?.dates;
-  const currDatesAvailable = dataDateRanges[currentTable?.numerator?.name];
+  const [
+    currIndex,
+    currDates,
+    currDatesAvailable,
+    allDates
+  ] = useCurrentDateIndices();
 
   // const dateIndices = currTable !== undefined && currTable.dates;
   // const dates = useSelector((state) => state.dates);
@@ -326,7 +325,6 @@ function DateSlider() {
   // }, [dRange]);
 
   const handleChange = debounce((event, newValue) => {
-    console.log(newValue)
     dispatch(setVariableParams({ nIndex: newValue }));
     // const val = dateIndices.includes(newValue)
     //   ? newValue
@@ -380,7 +378,6 @@ function DateSlider() {
   //     );
   //   }
   // }, 25);
-
   const handlePlayPause = () => {
     if (!isTicking) {
       setIsTicking(true);
@@ -418,31 +415,31 @@ function DateSlider() {
         </PlayPauseButton>
       </Grid>
       <DateContainer item xs={2} md={1}>
-        <p>{valuetext(dates, 0)}</p>
+        <p>{valuetext(allDates, 0)}</p>
       </DateContainer>
       <Grid item xs={6} md={9}>
         <SliderAndTicksContainer>
           <SliderAndTicksInner>
-            <Ticks id="ticks" loaded={currDates} available={currDatesAvailable} fullLength={dates.length} />
+            <Ticks id="ticks" loaded={currDates} available={currDatesAvailable} fullLength={allDates.length} />
           </SliderAndTicksInner>
           <SliderAndTicksInner>
-            <LineSlider
+            {currIndex !== undefined && <LineSlider
               id="timeSlider"
-              value={nIndex}
+              value={currIndex}
               // valueLabelDisplay="on"
               onChange={handleChange}
               getAriaValueText={valuetext}
               valueLabelFormat={valuetext}
               aria-labelledby="aria-valuetext"
               min={1}
-              max={dates.length}
+              max={allDates.length}
               step={1}
-            />
+            />}
           </SliderAndTicksInner>
         </SliderAndTicksContainer>
       </Grid>
       <DateContainer item xs={2} md={1}>
-        <p>{valuetext(dates, findLastDate(currDatesAvailable))}</p>
+        <p>{valuetext(allDates, findLastDate(currDatesAvailable))}</p>
       </DateContainer>
     </SliderContainer>
   );

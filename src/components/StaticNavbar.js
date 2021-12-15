@@ -105,7 +105,6 @@ const NavbarContent = styled.div`
             }
         }
     }
-
 `;
 
 const StaticNavbar = () => {

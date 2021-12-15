@@ -35,7 +35,7 @@ const fetchFile = (fileInfo) => {
         .then((pbf) => Schemas.Rows.read(pbf))
         .then((pbfData) =>
           parsePbfData(pbfData, fileInfo, dateLists[date]),
-        );
+        ).catch(err => console.log(err));
   }
   return getParseCsvPromise(fileInfo, dateLists[date]);
 }
@@ -60,13 +60,10 @@ function useGetTable({
 }) {
   useEffect(() => {
     if (shouldFetch) {
-      console.log(filesToFetch)
       fetcher(filesToFetch).then(dataArray => {
         if (dataArray.length) {
           dataArray.forEach((newData, idx) => {
-            
-            console.log((!(storedData[filesToFetch[idx]?.name] || (storedData[filesToFetch[idx]?.name] && storedData[filesToFetch[idx]?.name]?.loaded?.includes(filesToFetch[idx]?.timespan)))))
-            if (!(storedData[filesToFetch[idx]?.name] || (storedData[filesToFetch[idx]?.name] && storedData[filesToFetch[idx]?.name]?.loaded?.includes(filesToFetch[idx]?.timespan)))) {
+            if (!storedData[filesToFetch[idx]?.name] || (!!storedData[filesToFetch[idx]?.name] && !storedData[filesToFetch[idx]?.name]?.loaded?.includes(filesToFetch[idx]?.timespan))) {
               dataDispatch({
                 type: 'RECONCILE_TABLE',
                 payload: {

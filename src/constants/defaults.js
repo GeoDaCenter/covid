@@ -56,6 +56,7 @@ export const INITIAL_STATE = {
     nType: "time-series",
     nRange: 7,
     nProperty: null,
+    nIndex: null,
     denominator: "properties",
     dType: "characteristic",
     dProperty: "population",

@@ -429,7 +429,7 @@ const MapPageContainer = () => {
     currentHeightScale,
     isLoading,
   ] = useMapData({});
-
+  
   return (
     <MapContainer>
       {isLoading && (

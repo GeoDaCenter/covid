@@ -6,11 +6,13 @@ const getDataForBins = ({
   dataParams,
   fixedOrder = false,
   dataReady = true,
+  binIndex = null,
 }) => {
   if (!dataReady) return [];
 
-  const { nProperty, nIndex, dType, dIndex } = dataParams;
-
+  const { nProperty, dType } = dataParams;
+  const nIndex = dataParams.nIndex || binIndex;
+  const dIndex = dType === 'time-series' ? nIndex : null;
   // declare empty array for return variables
   let rtn = new Array(fixedOrder ? fixedOrder.length : numeratorData.length);
 
@@ -38,7 +40,7 @@ const getDataForBins = ({
   } else {
     for (let i = 0; i < n; i++) {
       rtn[i] =
-        dataFn(numeratorData[keys[i]], denominatorData[keys[i]], dataParams) ||
+        dataFn(numeratorData[keys[i]], denominatorData[keys[i]], {...dataParams, nIndex, dIndex}) ||
         0;
     }
   }
@@ -50,7 +52,7 @@ const getDataForBins = ({
   for (let i = 0; i < rtn.length; i++) {
     if (rtn[i] < 0 || conditionalCheck(rtn[i])) rtn[i] = 0;
   }
-
+  
   return rtn;
 };
 export default getDataForBins;

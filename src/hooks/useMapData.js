@@ -53,6 +53,7 @@ const generateJoinData = ({
       value: binData[i],
     };
   }
+
   return [joinData, maxDesirableHeight / Math.max(...binData)];
 };
 
@@ -74,7 +75,7 @@ export function useLisaMap({
     ) {
       const weights =
         storedGeojson[currentData] &&
-        'Queen' in storedGeojson[currentData].weights
+          'Queen' in storedGeojson[currentData].weights
           ? storedGeojson[currentData].Weights.Queen
           : await geoda.getQueenWeights(mapId);
       const lisaValues = await geoda.localMoran(weights, dataForLisa);
@@ -130,16 +131,54 @@ const getAsyncBins = async (geoda, mapParams, binData) =>
     ? await geoda.naturalBreaks(mapParams.nBins, binData)
     : await geoda.hinge15Breaks(binData);
 
+const shallowCompareNotIndex = (a, b) => {
+  const keys= Object.keys(a);
+  for (let i = 0; i < keys.length; i++) {
+    if (a[keys[i]] !== b[keys[i]] && keys[i] !== 'nIndex' && keys[i] !== 'dIndex') return false;
+  }
+  return true;
+};
+
 function useGetBins({ mapParams, dataParams, binData, geoda, dataReady }) {
   const [bins, setBins] = useState({});
+  const [binnedParams, setBinnedParams] = useState({
+    mapParams: JSON.stringify(mapParams),
+    dataParams: JSON.stringify(dataParams),
+    dataReady,
+    geoda: typeof geoda
+  });
+
   useMemo(async () => {
-    if (!dataReady) return {};
+    if (
+      !dataReady ||
+      (JSON.stringify(binnedParams.mapParams) === JSON.stringify(mapParams)
+        && binnedParams.dataReady === dataReady
+        && (binnedParams.geoda === typeof geoda && typeof geoda === 'function')
+        && (JSON.stringify(binnedParams.dataParams) === JSON.stringify(dataParams)))) {
+      return {}
+    }
+
+    if (mapParams.binMode !== 'dynamic' && shallowCompareNotIndex(binnedParams, dataParams)) {
+      return {}
+    }
 
     if (dataParams.fixedScale !== null && dataParams.fixedScale !== undefined) {
       setBins(fixedScales[dataParams.fixedScale]);
+      setBinnedParams({
+        mapParams: JSON.stringify(mapParams),
+        dataParams: JSON.stringify(dataParams),
+        dataReady,
+        geoda: typeof geoda
+      })
     }
     if (mapParams.mapType === 'lisa') {
       setBins(fixedScales['lisa']);
+      setBinnedParams({
+        mapParams: JSON.stringify(mapParams),
+        dataParams: JSON.stringify(dataParams),
+        dataReady,
+        geoda: typeof geoda
+      })
     }
     if (typeof geoda === 'function') {
       const nb = await getAsyncBins(geoda, mapParams, binData);
@@ -148,23 +187,29 @@ function useGetBins({ mapParams, dataParams, binData, geoda, dataReady }) {
           mapParams.mapType === 'natural_breaks'
             ? nb
             : [
-                'Lower Outlier',
-                '< 25%',
-                '25-50%',
-                '50-75%',
-                '>75%',
-                'Upper Outlier',
-              ],
+              'Lower Outlier',
+              '< 25%',
+              '25-50%',
+              '50-75%',
+              '>75%',
+              'Upper Outlier',
+            ],
         breaks: nb,
       });
+      setBinnedParams({
+        mapParams: JSON.stringify(mapParams),
+        dataParams: JSON.stringify(dataParams),
+        dataReady,
+        geoda: typeof geoda
+      })
     }
     return {};
-  }, [JSON.stringify(mapParams), typeof geoda, dataReady]); //todo update depenency array if needed for some dataparam roperties
+  }, [JSON.stringify(mapParams), JSON.stringify(dataParams), typeof geoda, dataReady]); //todo update depenency array if needed for some dataparam roperties
 
   return bins;
 }
 
-export default function useMapData({}) {
+export default function useMapData({ }) {
   const dataParams = useSelector((state) => state.dataParams);
   const currentData = useSelector((state) => state.currentData);
   const mapParams = useSelector((state) => state.mapParams);
@@ -200,11 +245,8 @@ export default function useMapData({}) {
           dataParams.denominator === 'properties'
             ? geojsonData?.properties
             : denominatorData?.data,
-        dataParams: {
-          ...dataParams,
-          nIndex: binIndex,
-          dIndex: dataParams.dType === 'time-series' ? binIndex : null,
-        },
+        dataParams,
+        binIndex,
         fixedOrder:
           geojsonData?.order?.indexOrder &&
           Object.values(geojsonData.order.indexOrder),
