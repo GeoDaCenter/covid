@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { useEffect, useMemo, useState } from 'react';
 import {
   findAllDefaults,
-  findIn,
+  findIn,findTableOrDefault,
   getDateLists,
   getIdOrder,
   getParseCSV,
@@ -17,7 +17,6 @@ import { useGeoda } from '../contexts/Geoda';
 import * as Pbf from 'pbf';
 import * as Schemas from '../schemas';
 import { useDataStore } from '../contexts/Data';
-import { findTableOrDefault } from '../utils';
 
 const dateLists = getDateLists();
 
@@ -61,10 +60,13 @@ function useGetTable({
 }) {
   useEffect(() => {
     if (shouldFetch) {
+      console.log(filesToFetch)
       fetcher(filesToFetch).then(dataArray => {
         if (dataArray.length) {
           dataArray.forEach((newData, idx) => {
-            if (!(storedData[filesToFetch[idx]?.name] && storedData[filesToFetch[idx]?.name][filesToFetch[idx]?.loaded?.includes(filesToFetch[idx]?.timespan)])) {
+            
+            console.log((!(storedData[filesToFetch[idx]?.name] || (storedData[filesToFetch[idx]?.name] && storedData[filesToFetch[idx]?.name]?.loaded?.includes(filesToFetch[idx]?.timespan)))))
+            if (!(storedData[filesToFetch[idx]?.name] || (storedData[filesToFetch[idx]?.name] && storedData[filesToFetch[idx]?.name]?.loaded?.includes(filesToFetch[idx]?.timespan)))) {
               dataDispatch({
                 type: 'RECONCILE_TABLE',
                 payload: {
@@ -151,11 +153,9 @@ function useBackgroundLoadData({
   const filesToFetch = findAllDefaults(tables, currentGeography).map(dataspec => ({...dataspec, timespan: currTimespan})).filter(filesToFetch => !(storedData[filesToFetch.name] && storedData[filesToFetch.name].loaded?.includes(filesToFetch.timespan)));
   useEffect(() => {
     if (shouldFetch && filesToFetch.length) {
-      console.log(filesToFetch[0])
       fetcher([filesToFetch[0]]).then(dataArray => {
         if (dataArray.length) {
           dataArray.forEach((newData, idx) => {
-            console.log('loaded ' + filesToFetch[0].name, newData)
             if (newData && newData.data && !(storedData[filesToFetch[idx]?.name] && storedData[filesToFetch[idx]?.name][filesToFetch[idx]?.loaded?.includes(filesToFetch[idx]?.timespan)])) {
               dataDispatch({
                 type: 'RECONCILE_TABLE',
@@ -205,7 +205,6 @@ export default function useLoadData() {
   // current state data params
   const currDataset = findIn(datasets, 'file', currentData)
   const currTimespan = (!(dataParams.nIndex||dataParams.dIndex) || dateLists.isoDateList.length - (dataParams.nIndex||dataParams.dIndex) < 45 ) ? 'latest' : dateLists.isoDateList[(dataParams.nIndex||dataParams.dIndex)]?.slice(0,7)
-
 
   const {
     geoda,

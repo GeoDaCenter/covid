@@ -3,34 +3,37 @@ import {
   datasetTree,
   variableTree,
   urlParamsTree,
-} from '../config/index';
-import variables from '../config/variables';
-import tables from '../config/tables';
-import datasets from '../config/datasets';
+} from "../config/index";
+import variables from "../config/variables";
+import tables from "../config/tables";
+import datasets from "../config/datasets";
 
-import {findIn} from '../utils';
+import { findIn, findTableOrDefault } from "../utils";
 // read in URL params
 let paramsDict = {};
 for (const [key, value] of new URLSearchParams(window.location.search)) {
   paramsDict[key] = value;
 }
-const currVariable = paramsDict.hasOwnProperty('var')
+const currVariable = paramsDict.hasOwnProperty("var")
   ? {
-      ...findIn(variables, 'name', paramsDict.var.replace(/_/g, ' ')),
-      [paramsDict.hasOwnProperty('date') && 'nIndex']: +paramsDict.date,
-      [paramsDict.hasOwnProperty('range') && 'nRange']:
-        paramsDict.range === 'null' ? null : +paramsDict.range,
+      ...findIn(variables, "name", paramsDict.var.replace(/_/g, " ")),
+      [paramsDict.hasOwnProperty("date") && "nIndex"]: +paramsDict.date,
+      [paramsDict.hasOwnProperty("range") && "nRange"]:
+        paramsDict.range === "null" ? null : +paramsDict.range,
     }
   : {};
 
+const currentData = paramsDict.hasOwnProperty("src")
+  ? `${paramsDict.src}.geojson`
+  : defaultData;
+const currDataset = findIn(datasets, "file", currentData);
+
 export const INITIAL_STATE = {
   // Default data state
-  currentData: paramsDict.hasOwnProperty('src')
-    ? `${paramsDict.src}.geojson`
-    : defaultData,
-  currentMethod: paramsDict.hasOwnProperty('mthd')
+  currentData,
+  currentMethod: paramsDict.hasOwnProperty("mthd")
     ? paramsDict.mthd
-    : 'natural_breaks',
+    : "natural_breaks",
   datasets,
   tables,
   variables,
@@ -48,14 +51,14 @@ export const INITIAL_STATE = {
   centroids: {},
   // data and map params
   dataParams: {
-    variableName: 'Confirmed Count per 100K Population',
-    numerator: 'cases',
-    nType: 'time-series',
+    variableName: "Confirmed Count per 100K Population",
+    numerator: "cases",
+    nType: "time-series",
     nRange: 7,
     nProperty: null,
-    denominator: 'properties',
-    dType: 'characteristic',
-    dProperty: 'population',
+    denominator: "properties",
+    dType: "characteristic",
+    dProperty: "population",
     dRange: null,
     dIndex: null,
     scale: 100000,
@@ -69,28 +72,28 @@ export const INITIAL_STATE = {
   },
   storedRange: null,
   mapParams: {
-    mapType: paramsDict.hasOwnProperty('mthd')
+    mapType: paramsDict.hasOwnProperty("mthd")
       ? paramsDict.mthd
-      : 'natural_breaks',
+      : "natural_breaks",
     bins: {
       bins: [],
       breaks: [],
     },
     binMode:
-      paramsDict.hasOwnProperty('dBin') && paramsDict.dBin ? 'dynamic' : '',
+      paramsDict.hasOwnProperty("dBin") && paramsDict.dBin ? "dynamic" : "",
     fixedScale: null,
     nBins:
-      paramsDict.hasOwnProperty('mthd') &&
-      paramsDict.mthd.includes === 'hinge15_breaks'
+      paramsDict.hasOwnProperty("mthd") &&
+      paramsDict.mthd.includes === "hinge15_breaks"
         ? 6
-        : paramsDict.hasOwnProperty('mthd') &&
-          paramsDict.mthd.includes === 'lisa'
+        : paramsDict.hasOwnProperty("mthd") &&
+          paramsDict.mthd.includes === "lisa"
         ? 4
         : 8,
-    vizType: paramsDict.hasOwnProperty('viz') ? paramsDict.viz : '2D',
-    activeGeoid: '',
-    overlay: paramsDict.hasOwnProperty('ovr') ? paramsDict.ovr : '',
-    resource: paramsDict.hasOwnProperty('res') ? paramsDict.res : '',
+    vizType: paramsDict.hasOwnProperty("viz") ? paramsDict.viz : "2D",
+    activeGeoid: "",
+    overlay: paramsDict.hasOwnProperty("ovr") ? paramsDict.ovr : "",
+    resource: paramsDict.hasOwnProperty("res") ? paramsDict.res : "",
     colorScale: [
       [240, 240, 240],
       [255, 255, 204],
@@ -118,14 +121,14 @@ export const INITIAL_STATE = {
     },
   },
   chartParams: {
-    table: 'cases',
+    table: "cases",
     populationNormalized: false,
   },
   // current data
   chartData: [{}],
   currentTable: {
-    numerator: '',
-    denominator: '',
+    numerator: findTableOrDefault(currDataset, tables, "cases"),
+    denominator: "properties",
   },
   currentZVariable: null,
   dates: {},
@@ -143,7 +146,7 @@ export const INITIAL_STATE = {
   mapLoaded: false,
   notification: {
     info: null,
-    location: '',
+    location: "",
   },
   panelState: {
     variables: true,

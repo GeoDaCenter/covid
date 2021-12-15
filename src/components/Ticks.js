@@ -1,46 +1,44 @@
-import { useSelector } from 'react-redux';
-import styled from 'styled-components';
+import { useMemo } from "react";
+import styled from "styled-components";
 
-const TickMarks = styled.div`
-  width: 55.25%;
-  margin: -12px 22.5% 23px 25.5%;
-  transform: scaleX(0.984) translateX(1px);
-  height: 3px;
+const TickMarsContainer = styled.div`
+  width:100%;
   display: flex;
+  flex-direction: row;
+  height:2px;
+  position:absolute;
+  top:calc(50% + 1px);
+  transform:translateY(-50%);
   span {
-    width: 1px;
-    height: 3px;
-    display: inline-block;
-  }
-  @media (min-width: 600px) {
-    width: 60.25%;
-    margin: -13px 20% 23px 23%;
-    transform: none;
-  }
-  @media (hover: none) {
-    margin-top: -20px;
+    height:100%;
+    flex:1;
+    min-width:0;
   }
 `;
 
-export default function Ticks() {
-  const storedTable = useSelector((state) => state.storedData);
-  const numeratorTable = useSelector((state) => state.currentTable.numerator);
-  const currTable = storedTable[numeratorTable];
-  const length = useSelector((state) => state.dates.length);
-  const dateIndices = currTable?.dates;
+export default function Ticks({ loaded, available, fullLength }) {
+  const ticks = useMemo(() => {
+    if (!loaded || !available || !fullLength) return null;
+    const items = [];
+    for (let i = 0; i < fullLength; i++) {
+      items.push(
+        <span
+          key={i}
+          style={{ background: loaded.includes(i) 
+            ? "white" 
+            : available[i]
+            ? "gray"
+            : "black" 
+          }}
+        />
+      );
+    }
+    return items;
+  }, [fullLength, JSON.stringify(loaded), JSON.stringify(available)]);
 
-  if (!dateIndices) return null;
-
-  const items = [];
-
-  for (let i = 0; i < length; i++) {
-    items.push(
-      <span
-        key={i}
-        style={{ background: dateIndices.includes(i) ? 'white' : 'black' }}
-      />,
-    );
-  }
-
-  return <TickMarks> {items} </TickMarks>;
+  return (
+    <TickMarsContainer>
+      {ticks}
+    </TickMarsContainer>
+  );
 }

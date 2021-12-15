@@ -41,8 +41,6 @@ const TopPanel = () => {
   return (
     <TopDrawer id="timelinePanel">
       <DateSlider />
-      {/* <Dock /> */}
-      <Ticks />
     </TopDrawer>
   );
 };
