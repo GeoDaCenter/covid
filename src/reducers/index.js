@@ -10,8 +10,22 @@ import {
   resolveName,
   findIn,
   findDefault,
-  findTableOrDefault
+  findTableOrDefault,
+  findClosestValue
 } from '../utils';
+
+import dataDateRanges from '../config/dataDateRanges';
+import { fixedScales, colorScales } from '../config/scales';
+const findDefaultOrCurrent = (variableTree, datasets, variableName, datasetName) => {
+  const availableGeographies = variableTree[variableName]
+  for (const geography of availableGeographies) {
+    if (geography.includes(datasetName)) {
+      return datasets.finds(dataset => dataset.name === datasetName);
+    } else {
+      return geography[0]
+    }
+  }
+}
 
 var reducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -572,6 +586,51 @@ var reducer = (state = INITIAL_STATE, action) => {
         isPlaying: false,
       };
     }
+    
+    case 'CHANGE_VARIABLE': {
+      // find target params
+      let currVariableParams = findIn(state.variables, 'variableName', action.payload)
+      // find current dataset
+      let currDataset = findIn(state.datasets, 'file', state.currentData);
+      // check if current dataset geography compatible with target variable
+      const currentData = state.variableTree[action.payload].hasOwnProperty(currDataset.geography)
+        ? state.currentData
+        : findDefaultOrCurrent(state.variableTree, state.datasets, action.payload.variable, currDataset.name)
+      // update variable to match target, if changed
+      currDataset = findIn(state.datasets, 'file', currentData);
+      // declare tables
+      const currentTable = {
+        numerator: findTableOrDefault(currDataset, state.tables, currVariableParams.numerator),
+        denominator: findTableOrDefault(currDataset, state.tables, currVariableParams.denominator),
+      }
+      const dataName = currentTable.numerator?.name?.split('.')[0] || currentTable.numerator?.name?.split('.')[0]
+      // pull index casesx
+      const currIndex = currVariableParams.nIndex || currVariableParams.dIndex || state.dataParams.nIndex || state.dataParams.dIndex
+      // update variable index
+      currVariableParams.nIndex = currVariableParams.nType === 'characteristic' || state.dataParams.nIndex === null
+        ? null
+        : dataDateRanges[dataName] && dataDateRanges[dataName][currIndex]
+          ? currIndex
+          : findClosestValue(currIndex, dataDateRanges[dataName]);
+      // scales
+      const colorScale = currVariableParams.colorScale
+      ? colorScales[currVariableParams.colorScale]
+      : colorScales['natural_breaks'];
+
+      const mapParams = {
+        ...state.mapParams,
+        colorScale      
+      }
+
+      return {
+        ...state,
+        currentData,
+        currentTable,
+        dataParams: currVariableParams,
+        mapParams
+      }
+    }
+
     case 'SET_VARIABLE_PARAMS': {
       let dataParams = {
         ...state.dataParams,
@@ -584,10 +643,10 @@ var reducer = (state = INITIAL_STATE, action) => {
         denominator: findTableOrDefault(currDataset, state.tables, state.dataParams.denominator),
       }
 
-      if (state.dataParams.zAxisParams !== null) {
-        dataParams.zAxisParams.nIndex = dataParams.nIndex;
-        dataParams.zAxisParams.dIndex = dataParams.dIndex;
-      }
+      // if (state.dataParams.zAxisParams !== null) {
+      //   dataParams.zAxisParams.nIndex = dataParams.nIndex;
+      //   dataParams.zAxisParams.dIndex = dataParams.dIndex;
+      // }
 
       if (
         action.payload.params.variableName !== undefined &&

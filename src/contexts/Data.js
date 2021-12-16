@@ -44,7 +44,7 @@ function reducer(state, action) {
             } else if (error){
                 storedData[name].loaded.push(timespan);
             } else {
-                const newDates = newData.dates||[];
+                const newDates = newData?.dates||[];
                 // Otherwise, we need to reconcile based on keys present in the 'dates'
                 // property, using the big query data as the most up-to-date vs the
                 // static fetched data, which may have been cached client-side
@@ -61,8 +61,9 @@ function reducer(state, action) {
 
                 // Reconcile and sort date indices
                 storedData[name].loaded.push(timespan);
+                
                 if (storedData[name]?.dates?.length) {
-                    storedData[name].dates = [...storedData[name].dates, ...newData.dates].filter(onlyUnique).sort(orderInts);
+                    storedData[name].dates = [...storedData[name].dates, ...newData?.dates||[]].filter(onlyUnique).sort(orderInts);
                 }
             }
             

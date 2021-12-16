@@ -12,6 +12,7 @@ import {
   getDateIndices,
   findTableOrDefault,
 } from "./find";
+import {findClosestValue, findDateIncrement, findDateDecrement} from "./findClosestValue";
 // import { generateMapData } from './generateMapData';
 import { generateReport } from "./generateReport";
 import geojsonArrayBuffer from "./geojsonArrayBuffer";
@@ -58,6 +59,9 @@ export {
   findDateIndices,
   findDefault,
   findTableOrDefault,
+  findClosestValue,
+  findDateIncrement,
+  findDateDecrement,
   getDateIndices,
   geojsonArrayBuffer,
   // generateMapData,

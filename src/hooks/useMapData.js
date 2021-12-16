@@ -164,16 +164,6 @@ function useGetBins({ mapParams, dataParams, binData, geoda, dataReady }) {
         return {}
       }
     }
-
-    if (dataParams.fixedScale !== null && dataParams.fixedScale !== undefined) {
-      setBins(fixedScales[dataParams.fixedScale]);
-      setBinnedParams({
-        mapParams: JSON.stringify(mapParams),
-        dataParams: JSON.stringify(dataParams),
-        dataReady,
-        geoda: typeof geoda
-      })
-    }
     if (mapParams.mapType === 'lisa') {
       setBins(fixedScales['lisa']);
       setBinnedParams({
@@ -182,8 +172,15 @@ function useGetBins({ mapParams, dataParams, binData, geoda, dataReady }) {
         dataReady,
         geoda: typeof geoda
       })
-    }
-    if (typeof geoda === 'function') {
+    } else if (dataParams.fixedScale !== null && dataParams.fixedScale !== undefined && fixedScales[dataParams.fixedScale]) {
+      setBins([fixedScales[dataParams.fixedScale]]);
+      setBinnedParams({
+        mapParams: JSON.stringify(mapParams),
+        dataParams: JSON.stringify(dataParams),
+        dataReady,
+        geoda: typeof geoda
+      })
+    } else if (typeof geoda === 'function') {
       const nb = await getAsyncBins(geoda, mapParams, binData);
       setBins({
         bins:
@@ -208,7 +205,6 @@ function useGetBins({ mapParams, dataParams, binData, geoda, dataReady }) {
     }
     return {};
   }, [JSON.stringify(mapParams), JSON.stringify(dataParams), typeof geoda, dataReady]); //todo update depenency array if needed for some dataparam roperties
-
   return bins;
 }
 

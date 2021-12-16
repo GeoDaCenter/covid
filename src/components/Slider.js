@@ -9,6 +9,7 @@ import useTickUpdate from "../hooks/useTickUpdate";
 import colors from "../config/colors";
 import { useDataStore } from "../contexts/Data";
 import dataDateRanges from "../config/dataDateRanges";
+import {findClosestValue} from "../utils";
 import useCurrentDateIndices from "../hooks/useCurrentDateIndices";
 import Ticks from './Ticks'
 
@@ -299,36 +300,6 @@ function DateSlider() {
   //     setDRange(false);
   //   }
   // }, [dRange]);
-  const findDateIncrement = (index, availableDates) => {
-    for (let i=index; i<availableDates.length; i++) {
-      if (availableDates[i] === 1) {
-        return i;
-      }
-    }
-    return null
-  }
-  
-  const findDateDecrement = (index, availableDates) => {
-    for (let i=index; i>=0; i--) {
-      if (availableDates[i] === 1) {
-        return i;
-      }
-    }
-    return null
-  }
-  
-  const findClosestValue = (index, availableDates, decrement=false) => {
-    if (decrement) {
-      const decremnentAttempt = findDateDecrement(index, availableDates);
-      if (decremnentAttempt !== null) return decremnentAttempt
-    } else {
-      const incrementAttempt = findDateIncrement(index, availableDates);
-      if (incrementAttempt !== null) return incrementAttempt
-      const decremnentAttempt = findDateDecrement(index, availableDates);
-      if (decremnentAttempt !== null) return decremnentAttempt
-    }
-    return index
-  }
 
   const handleChange = debounce((event, newValue) => {
     if (currDatesAvailable[newValue]) {

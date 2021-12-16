@@ -440,81 +440,19 @@ export default function VariablePanel() {
       }),
     );
   };
-  const handleOpenClose = () =>
-    dispatch(setPanelState({ variables: !panelState.variables }));
+
   const handleVizTypeButton = (vizType) => dispatch(setMapParams({ vizType }));
-  const handleDotDensitySlider = (e, newValue) =>
-    dispatch(setDotDensityBgOpacity(newValue));
-  const handleVariable = (e) => {
-    let tempGeography = currentPreset.geography;
-    let tempDataset = urlParamsTree[currentData].name;
-    if (
-      mapType === 'lisa' &&
-      (findIn(variables, 'name', e.target.value).numerator === 'vaccines_one_dose' ||
-        findIn(variables, 'name', e.target.value).numerator ===
-          'vaccines_fully_vaccinated')
-    ) {
-      dispatch(
-        setNotification(
-          `
-                  <h2>Map Note</h2>
-                  <p>
-                      <br/>
-                      Red-colored areas represent a <i>high</i> share of the population that has been vaccinated. Blue-colored areas represent areas where vaccination rates remain <i>low</i>.
-                  </p>
-              `,
-          'bottom-right',
-        ),
-      );
-    }
 
-    // check if valid combination based on variable tree
-    if (
-      !variableTree[e.target.value].hasOwnProperty(tempGeography) ||
-      variableTree[e.target.value][tempGeography].indexOf(tempDataset) === -1
-    ) {
-      tempGeography = Object.keys(variableTree[e.target.value])[0];
-      tempDataset = variableTree[e.target.value][tempGeography][0];
-
-      dispatch(
-        setParametersAndData({
-          params: {
-            ...findIn(variables, 'name', e.target.value),
-          },
-          dataset: datasetTree[tempGeography][tempDataset],
-          mapParams: {
-            customScale: findIn(variables, 'name', e.target.value).colorScale || null,
-          },
-        }),
-      );
-    } else {
-      dispatch(
-        setVariableParams({
-          ...findIn(variables, 'name', e.target.value),
-        }),
-      );
-    }
-  };
-
-  const handleGeography = (e) => {
-    if (
-      !variableTree[variableName][e.target.value].indexOf(
-        urlParamsTree[currentData].name,
-      ) !== -1
-    ) {
-      let datasetWithGeography = variableTree[variableName][e.target.value][0];
-      dispatch(
-        setCurrentData(datasetTree[e.target.value][datasetWithGeography]),
-      );
-    } else {
-      dispatch(
-        setCurrentData(
-          datasetTree[e.target.value][urlParamsTree[currentData].name],
-        ),
-      );
-    }
-  };
-
+  const handleDotDensitySlider = (e, newValue) => dispatch(setDotDensityBgOpacity(newValue));
+  const handleVariable = (e) => dispatch({
+    type:'CHANGE_VARIABLE',
+    payload: e.target.value,
+  })
+  const handleGeography = (e) => dispatch({
+    type:'CHANGE_GEOGRAPHY',
+    payload: e.target.value,
+  })
+  
   const handleDataset = (e) => {
     dispatch(
       setCurrentData(

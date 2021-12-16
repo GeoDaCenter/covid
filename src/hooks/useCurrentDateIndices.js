@@ -9,16 +9,15 @@ export default function useCurrentDateIndices() {
     const dIndex = useSelector((state) => state.dataParams.dIndex);
     const dates = useSelector((state) => state.dates);
     const currentTable = useSelector((state) => state.currentTable);
-    const currDates = storedData[currentTable?.numerator?.name]?.dates;
-    const currDatesAvailable = dataDateRanges[currentTable?.numerator?.name];
+    const currDates = storedData[currentTable?.numerator?.name?.split('.')[0]]?.dates;
+    const currDatesAvailable = dataDateRanges[currentTable?.numerator?.name?.split('.')[0]];
     const currentIndex = (nIndex||dIndex) === null 
         ? currDatesAvailable?.slice(-1)[0] || dates.length-1
         : (nIndex||dIndex)
-
     return [
-        currentIndex,
-        currDates,
-        currDatesAvailable,
-        dates,
+        currentIndex||1,
+        currDates||[],
+        currDatesAvailable||[],
+        dates||[],
     ]
 }

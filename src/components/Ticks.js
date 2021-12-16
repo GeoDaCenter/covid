@@ -33,7 +33,7 @@ export default function Ticks({ loaded, available, fullLength }) {
     }
     return items;
   }, [fullLength, JSON.stringify(loaded), JSON.stringify(available)]);
-
+  
   return (
     <TickMarsContainer>
       {ticks}
