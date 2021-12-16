@@ -24,10 +24,8 @@ export default function Ticks({ loaded, available, fullLength }) {
       items.push(
         <span
           key={i}
-          style={{ background: loaded.includes(i) 
+          style={{ background: loaded.includes(i) || available[i]
             ? "white" 
-            : available[i]
-            ? "gray"
             : "black" 
           }}
         />

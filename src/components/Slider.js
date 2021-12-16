@@ -299,9 +299,43 @@ function DateSlider() {
   //     setDRange(false);
   //   }
   // }, [dRange]);
+  const findDateIncrement = (index, availableDates) => {
+    for (let i=index; i<availableDates.length; i++) {
+      if (availableDates[i] === 1) {
+        return i;
+      }
+    }
+    return null
+  }
+  
+  const findDateDecrement = (index, availableDates) => {
+    for (let i=index; i>=0; i--) {
+      if (availableDates[i] === 1) {
+        return i;
+      }
+    }
+    return null
+  }
+  
+  const findClosestValue = (index, availableDates, decrement=false) => {
+    if (decrement) {
+      const decremnentAttempt = findDateDecrement(index, availableDates);
+      if (decremnentAttempt !== null) return decremnentAttempt
+    } else {
+      const incrementAttempt = findDateIncrement(index, availableDates);
+      if (incrementAttempt !== null) return incrementAttempt
+      const decremnentAttempt = findDateDecrement(index, availableDates);
+      if (decremnentAttempt !== null) return decremnentAttempt
+    }
+    return index
+  }
 
   const handleChange = debounce((event, newValue) => {
-    dispatch(setVariableParams({ nIndex: newValue }));
+    if (currDatesAvailable[newValue]) {
+      dispatch(setVariableParams({ nIndex: newValue }));
+    } else {
+      dispatch(setVariableParams({ nIndex: findClosestValue(newValue, currDatesAvailable, newValue < currIndex) }));
+    }
     // const val = dateIndices.includes(newValue)
     //   ? newValue
     //   : dateIndices.reduce((a, b) => {
@@ -321,7 +355,7 @@ function DateSlider() {
     //   default:
     //     break;
     // }
-  }, 5);
+  }, 25);
 
   // const handleRangeChange = debounce((event, newValue) => {
   //   const val0 = dateIndices.includes(newValue[0])
