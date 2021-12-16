@@ -36,6 +36,7 @@ const PlayPauseButton = styled(Button)`
   width:100%;
   &.MuiButton-root {
     min-width:auto;
+    max-width:40px;
   }
   svg {
     fill:white;
@@ -79,9 +80,6 @@ const LineSlider = styled(Slider)`
       span {
         background: none;
       }
-    }
-    @media (max-width: 768px) {
-      transform: scale(1.25);
     }
   }
   span.MuiSlider-mark {
@@ -181,21 +179,6 @@ const DateH3 = styled.h3`
   text-align: center;
   pointer-events: none;
 `;
-const InitialDate = styled.p`
-  position: absolute;
-  left: 10%;
-  bottom: 18px;
-  font-size: 75%;
-  @media (max-width: 600px) {
-    bottom: 18px;
-    left: 12%;
-  }
-`;
-
-const EndDate = styled(InitialDate)`
-  left: initial;
-  right: 10px;
-`;
 
 const DateSelectorContainer = styled(Grid)`
   display: flex;
@@ -243,22 +226,15 @@ const formatDate = (date) => {
   return rawDate.toLocaleDateString("en-US", options);
 };
 
-function DateTitle() {
-  const nType = useSelector((state) => state.dataParams.nType);
-  const nIndex = useSelector((state) => state.dataParams.nIndex);
-  const dates = useSelector((state) => state.dates);
-
-  return (
-    <>
-      <DateSelectorContainer item xs={12}>
-        <DateH3>
-          {nType !== "characteristic"
-            ? formatDate(`${dates[nIndex]}`)
-            : "Characteristic Data"}
-        </DateH3>
-      </DateSelectorContainer>
-    </>
-  );
+function DateTitle({
+  dates,
+  currIndex
+}) {
+  return <DateSelectorContainer item xs={12}>
+      <DateH3>
+        {(dates && dates.length && currIndex !== undefined) ? formatDate(dates[currIndex]) : ""}
+      </DateH3>
+    </DateSelectorContainer>
 }
 
 function debounce(func, wait, immediate) {
@@ -389,7 +365,11 @@ function DateSlider() {
   // if (nType !== 'characteristic' && dateIndices) {
   return (
     <SliderContainer container spacing={0}>
-      <Grid item xs={2} md={1}>
+      <DateTitle
+        currIndex={currIndex}
+        dates={allDates}
+        />
+      <Grid item xs={1} md={1}  lg={1} xl={1} >
         <PlayPauseButton id="playPause" onClick={() => handlePlayPause()}>
           {!isTicking ? (
             <svg x="0px" y="0px" viewBox="0 0 100 100">
@@ -414,10 +394,10 @@ function DateSlider() {
           )}
         </PlayPauseButton>
       </Grid>
-      <DateContainer item xs={2} md={1}>
+      <DateContainer item xs={1} md={1} lg={1} xl={1} style={{textAlign:'right'}}>
         <p>{valuetext(allDates, 0)}</p>
       </DateContainer>
-      <Grid item xs={6} md={9}>
+      <Grid item xs={9} md={9}>
         <SliderAndTicksContainer>
           <SliderAndTicksInner>
             <Ticks id="ticks" loaded={currDates} available={currDatesAvailable} fullLength={allDates.length} />
@@ -438,7 +418,7 @@ function DateSlider() {
           </SliderAndTicksInner>
         </SliderAndTicksContainer>
       </Grid>
-      <DateContainer item xs={2} md={1}>
+      <DateContainer item xs={1} md={1} style={{textAlign:'left'}}>
         <p>{valuetext(allDates, findLastDate(currDatesAvailable))}</p>
       </DateContainer>
     </SliderContainer>

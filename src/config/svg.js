@@ -194,7 +194,7 @@ export const facebook = (
 export const hamburger = (
   <svg height="100px" width="100px" viewBox="0 0 32 32" x="0px" y="0px">
     <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-      <g transform="translate(6.000000, 9.000000)" fill-rule="nonzero">
+      <g transform="translate(6.000000, 9.000000)" fillRule="nonzero">
         <path d="M0,8 L0,6 L20,6 L20,8 L0,8 Z M0,14 L0,12 L20,12 L20,14 L0,14 Z M0,2 L0,0 L20,0 L20,2 L0,2 Z"></path>
       </g>
     </g>

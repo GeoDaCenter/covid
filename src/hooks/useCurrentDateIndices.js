@@ -12,7 +12,7 @@ export default function useCurrentDateIndices() {
     const currDates = storedData[currentTable?.numerator?.name]?.dates;
     const currDatesAvailable = dataDateRanges[currentTable?.numerator?.name];
     const currentIndex = (nIndex||dIndex) === null 
-        ? dates.length
+        ? currDatesAvailable?.slice(-1)[0] || dates.length-1
         : (nIndex||dIndex)
 
     return [

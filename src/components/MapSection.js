@@ -492,7 +492,7 @@ export default function MapSection({
       });
     }
   }, []);
-
+  
   const FullLayers = {
     choropleth: new GeoJsonLayer({
       id: 'choropleth',
@@ -500,7 +500,7 @@ export default function MapSection({
       getFillColor: (d) =>
         !colorFilter ||
         currentMapData[d.properties[currIdCol]]?.color?.length === 4
-          ? currentMapData[d.properties[currIdCol]]?.color
+          ? currentMapData[d.properties[currIdCol]]?.color || [120, 120, 120]
           : [
               ...(currentMapData[d.properties[currIdCol]]?.color || [0, 0, 0]),
               0 +

@@ -32,6 +32,7 @@ function reducer(state, action) {
                 name,
                 newData,
                 timespan,
+                error
             } = action.payload;
             // If the data doesn't exist, easy. Just plug in the full dataset
             // and move on to the next
@@ -40,32 +41,31 @@ function reducer(state, action) {
                     ...newData,
                     loaded: [timespan]
                 }
-
-                return {
-                    ...state,
-                    storedData,
-                };
-            }
-            const newDates = newData.dates||[];
-            // Otherwise, we need to reconcile based on keys present in the 'dates'
-            // property, using the big query data as the most up-to-date vs the
-            // static fetched data, which may have been cached client-side
-            const datasetKeys = Object.keys(storedData[name].data);
-            // Loop through row (features) and date, using big query values as insertions
-            // and static as base, to reduce loop iterations
-            for (let x = 0; x < datasetKeys.length; x++) {
-                let tempValues = storedData[name].data[datasetKeys[x]];
-                for (let n = 0; n < newDates.length; n++) {
-                    tempValues[newDates[n]] = newData.data[datasetKeys[x]][newDates[n]];
+            } else if (error){
+                storedData[name].loaded.push(timespan);
+            } else {
+                const newDates = newData.dates||[];
+                // Otherwise, we need to reconcile based on keys present in the 'dates'
+                // property, using the big query data as the most up-to-date vs the
+                // static fetched data, which may have been cached client-side
+                const datasetKeys = Object.keys(storedData[name].data);
+                // Loop through row (features) and date, using big query values as insertions
+                // and static as base, to reduce loop iterations
+                for (let x = 0; x < datasetKeys.length; x++) {
+                    let tempValues = storedData[name].data[datasetKeys[x]];
+                    for (let n = 0; n < newDates.length; n++) {
+                        tempValues[newDates[n]] = newData.data[datasetKeys[x]][newDates[n]];
+                    }
+                    storedData[name].data[datasetKeys[x]] = tempValues;
                 }
-                storedData[name].data[datasetKeys[x]] = tempValues;
-            }
 
-            // Reconcile and sort date indices
-            storedData[name].loaded.push(timespan);
-            if (storedData[name]?.dates?.length) {
-                storedData[name].dates = [...storedData[name].dates, ...newData.dates].filter(onlyUnique).sort(orderInts);
+                // Reconcile and sort date indices
+                storedData[name].loaded.push(timespan);
+                if (storedData[name]?.dates?.length) {
+                    storedData[name].dates = [...storedData[name].dates, ...newData.dates].filter(onlyUnique).sort(orderInts);
+                }
             }
+            
             return {
                 ...state,
                 storedData,

@@ -135,7 +135,7 @@ export default function Map() {
 
   return (
     <>
-      <div className="Map-App" style={{ overflow: 'hidden' }}>
+      <div className="Map-App" style={{ overflow: 'hidden', maxHeight: '100vh' }}>
         <NavBar />
         <MapOuterContainer>
           <ViewportProvider defaultViewport={defaultViewport}>

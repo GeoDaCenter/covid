@@ -35,12 +35,12 @@ const fetchFile = (fileInfo) => {
         .then((pbf) => Schemas.Rows.read(pbf))
         .then((pbfData) =>
           parsePbfData(pbfData, fileInfo, dateLists[date]),
-        ).catch(err => console.log(err));
+        )
   }
   return getParseCsvPromise(fileInfo, dateLists[date]);
 }
 
-const fetcher = async (filesToFetch=[]) => filesToFetch.length ? await Promise.all(filesToFetch.map(file => fetchFile(file))) : () => [];
+const fetcher = async (filesToFetch=[]) => filesToFetch.length ? await Promise.allSettled(filesToFetch.map(file => fetchFile(file))) : () => [];
 
 // fetch params spec
 // {
@@ -62,7 +62,7 @@ function useGetTable({
     if (shouldFetch) {
       fetcher(filesToFetch).then(dataArray => {
         if (dataArray.length) {
-          dataArray.forEach((newData, idx) => {
+          dataArray.forEach(({value: newData}, idx) => {
             if (!storedData[filesToFetch[idx]?.name] || (!!storedData[filesToFetch[idx]?.name] && !storedData[filesToFetch[idx]?.name]?.loaded?.includes(filesToFetch[idx]?.timespan))) {
               dataDispatch({
                 type: 'RECONCILE_TABLE',
@@ -75,7 +75,7 @@ function useGetTable({
             }
           })
         }
-      })
+      }).catch(() => console.log('error fetching table'));
     }
   }, [shouldFetch, JSON.stringify(filesToFetch)]);
 
@@ -123,18 +123,18 @@ function useGetGeojson({
 
   if (!geodaReady){
     return [
-      {},
-      false,
+      {}, // data
+      false, // data ready
       undefined, // error
     ];
   }
 
   return [
-    storedGeojson[currDataset.file],
+    storedGeojson[currDataset.file], // data
     storedGeojson[currDataset.file] &&
     storedGeojson[currDataset.file].data &&
     storedGeojson[currDataset.file].mapId &&
-    true,
+    true, // data ready
     undefined, // error
   ];
 }
@@ -148,20 +148,35 @@ function useBackgroundLoadData({
   currTimespan='latest'
 }){  
   const filesToFetch = findAllDefaults(tables, currentGeography).map(dataspec => ({...dataspec, timespan: currTimespan})).filter(filesToFetch => !(storedData[filesToFetch.name] && storedData[filesToFetch.name].loaded?.includes(filesToFetch.timespan)));
+
   useEffect(() => {
     if (shouldFetch && filesToFetch.length) {
       fetcher([filesToFetch[0]]).then(dataArray => {
         if (dataArray.length) {
-          dataArray.forEach((newData, idx) => {
-            if (newData && newData.data && !(storedData[filesToFetch[idx]?.name] && storedData[filesToFetch[idx]?.name][filesToFetch[idx]?.loaded?.includes(filesToFetch[idx]?.timespan)])) {
-              dataDispatch({
-                type: 'RECONCILE_TABLE',
-                payload: {
-                  name: filesToFetch[idx].name,
-                  newData,
-                  timespan: filesToFetch[idx].timespan
-                }
-              })
+          dataArray.forEach((response, idx) => {
+            const newData = response.value;
+            if (!(storedData[filesToFetch[idx]?.name] && storedData[filesToFetch[idx]?.name][filesToFetch[idx]?.loaded?.includes(filesToFetch[idx]?.timespan)])) {
+              if (newData && newData.data) {
+                dataDispatch({
+                  type: 'RECONCILE_TABLE',
+                  payload: {
+                    name: filesToFetch[idx].name,
+                    newData,
+                    timespan: filesToFetch[idx].timespan
+                  }
+                })
+              } else if (response.status === 'rejected') {
+                dataDispatch({
+                  type: 'RECONCILE_TABLE',
+                  payload: {
+                    name: filesToFetch[idx].name,
+                    newData:{},
+                    error:true,
+                    timespan: filesToFetch[idx].timespan
+                  }
+                })
+              }
+              
             }
           })
         }

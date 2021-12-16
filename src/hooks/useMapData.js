@@ -28,7 +28,7 @@ const generateJoinData = ({
   dataReady,
   storedGeojson,
 }) => {
-  if (!dataReady || !bins.breaks) return [undefined, undefined];
+  if (!dataReady || !bins.breaks) return [{}, undefined];
   const geoids = Object.values(order);
 
   // const getColor = getColorFunction(mapParams.mapType)
@@ -149,17 +149,20 @@ function useGetBins({ mapParams, dataParams, binData, geoda, dataReady }) {
   });
 
   useMemo(async () => {
-    if (
-      !dataReady ||
-      (JSON.stringify(binnedParams.mapParams) === JSON.stringify(mapParams)
-        && binnedParams.dataReady === dataReady
-        && (binnedParams.geoda === typeof geoda && typeof geoda === 'function')
-        && (JSON.stringify(binnedParams.dataParams) === JSON.stringify(dataParams)))) {
-      return {}
-    }
+    if (!dataReady) return;
+    
+    if (bins.bins){
+      if (
+        (binnedParams.mapParams === JSON.stringify(mapParams)
+          && binnedParams.dataReady === dataReady
+          && (binnedParams.geoda === typeof geoda && typeof geoda === 'function')
+          && (binnedParams.dataParams === JSON.stringify(dataParams)))) {
+        return {}
+      }
 
-    if (mapParams.binMode !== 'dynamic' && shallowCompareNotIndex(binnedParams, dataParams)) {
-      return {}
+      if (mapParams.binMode !== 'dynamic' && shallowCompareNotIndex(JSON.parse(binnedParams.dataParams), dataParams)) {
+        return {}
+      }
     }
 
     if (dataParams.fixedScale !== null && dataParams.fixedScale !== undefined) {
