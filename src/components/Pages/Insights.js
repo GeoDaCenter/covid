@@ -122,6 +122,32 @@ const products = [
 
 const research = [
     {
+        'title':'Dimensions of uncertainty: a spatiotemporal review of five COVID-19 datasets',
+        'description':<p>
+            <i>Dylan Halpern, Qinyun Lin, Ryan Wang, Stephanie Yang, Steve Goldstein, and Marynia Kolak</i>
+            <br/><br/>
+            COVID-19 surveillance across the United States is essential to tracking and mitigating the pandemic, 
+            but data representing cases and deaths may be impacted by attribute, spatial, and temporal uncertainties. 
+            COVID-19 case and death data are essential to understanding the pandemic and serve as key inputs for prediction 
+            models that inform policy-decisions; consistent information across datasets is critical to ensuring coherent 
+            findings. We implement an exploratory data analytic approach to characterize, synthesize, and visualize 
+            spatial-temporal dimensions of uncertainty across commonly used datasets for case and death metrics 
+            (Johns Hopkins University, the New York Times, USAFacts, and 1Point3Acres). We scrutinize data consistency 
+            to assess where and when disagreements occur, potentially indicating underlying uncertainty. We observe 
+            differences in cumulative case and death rates to highlight discrepancies and identify spatial patterns. 
+            Data are assessed using pairwise agreement (Cohen’s kappa) and agreement across all datasets (Fleiss’ kappa) 
+            to summarize changes over time. Findings suggest highest agreements between CDC, JHU, and NYT datasets. 
+            We find nine discrete type-components of information uncertainty for COVID-19 datasets reflecting various 
+            complex processes. Understanding processes and indicators of uncertainty in COVID-19 data reporting is 
+            especially relevant to public health professionals and policymakers to accurately understand and communicate 
+            information about the pandemic.
+            <br/><br/>
+        </p>,
+        'thumbnail':`${process.env.PUBLIC_URL}/research/dimensionsOfUncertainty.jpg`,
+        'alt':'A matrix of cumulative case differences, calculated as the sum of daily 7-day rolling averages of new cases from 3/15/2020 to 4/15/2021. The color bins for these maps are fixed across the maps and approximate quintile breaks in either diverging direction.',
+        'link':'https://www.tandfonline.com/doi/full/10.1080/15230406.2021.1975311',
+    },
+    {
         'title':'The US COVID Atlas: A dynamic cyberinfrastructure surveillance system for interactive exploration of the pandemic',
         'description':<p>
             <i>Marynia Kolak, Xun Li, Qinyun Lin, Ryan Wang, Moksha Menghaney, Stephanie Yang, Vidal Anguiano Jr</i>
