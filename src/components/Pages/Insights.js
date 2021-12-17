@@ -143,7 +143,7 @@ const research = [
             information about the pandemic.
             <br/><br/>
         </p>,
-        'thumbnail':`${process.env.PUBLIC_URL}/research/dimensionsOfUncertainty.jpg`,
+        'thumbnail':`${process.env.PUBLIC_URL}/research/dimensionsOfUncertainty.png`,
         'alt':'A matrix of cumulative case differences, calculated as the sum of daily 7-day rolling averages of new cases from 3/15/2020 to 4/15/2021. The color bins for these maps are fixed across the maps and approximate quintile breaks in either diverging direction.',
         'link':'https://www.tandfonline.com/doi/full/10.1080/15230406.2021.1975311',
     },
