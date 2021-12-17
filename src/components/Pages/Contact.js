@@ -369,7 +369,7 @@ export default function Contact(){
                 <hr/>
                 <p>
                     
-                    Contact US COVID Atlas co-leads directly if you have any questions about the Atlas or have media inquiries:<br/>
+                    We'd love to hear from you! Send us a message if you have any questions or comments about the US Covid Atlas, our data, platform, or insights.<br/>
                 </p>
                 {submitted && 
                     <SuccessMessage>
@@ -454,14 +454,14 @@ export default function Contact(){
                     </Grid>
                 </ContactForm>
                 <p>
-                    For additional inquiries, contact the US COVID Atlas team: Marynia Kolak (mkolak at uchicago.edu) or Qinyun Lin (qinyunlin at uchicago.edu)
+                    For media and additional inquiries, contact us directly: Marynia Kolak (mkolak at uchicago.edu).
                 </p>
                 <Gutter h={40}/>
                 <h2>NEWSLETTER</h2>
                 <hr/>
                 <p>
                     <a href="https://github.us10.list-manage.com/subscribe/post?u=5ed730d26727290870ec65153&id=74f209d5ed" target="_blank" rel="noopener noreferrer">Sign up for our newsletter</a> for 
-                        semi-annual updates on innovative new features, fresh datasets, open source advances, and recent publications from the Atlas team.
+                        updates on upcoming events, new features, fresh datasets, and recent publications from the US Covid Atlas.
                 </p>
                 <Gutter h={40}/>
                 <h2>CITATION</h2>
