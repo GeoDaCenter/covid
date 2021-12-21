@@ -71,3 +71,11 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: master
+
+      - name: execute s3 push
+        run: python data-scripts/aws/upload-to-s3.py
+        env:
+          S3_DEPLOYER_ID: ${{ secrets.S3_DEPLOYER_ID }}
+          S3_DEPLOYER_KEY: ${{ secrets.S3_DEPLOYER_KEY }}
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+      
