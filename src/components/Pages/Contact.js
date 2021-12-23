@@ -369,7 +369,7 @@ export default function Contact(){
                 <hr/>
                 <p>
                     
-                    We'd love to hear from you! Send us a message if you have any questions or comments about the US Covid Atlas, our data, platform, or insights.<br/>
+                    We'd love to hear from you! Send us a message using the form below with any questions or comments.<br/>
                 </p>
                 {submitted && 
                     <SuccessMessage>
@@ -454,7 +454,7 @@ export default function Contact(){
                     </Grid>
                 </ContactForm>
                 <p>
-                    For media and additional inquiries, contact us directly: Marynia Kolak (mkolak at uchicago.edu).
+                    For media inquiries, contact Marynia Kolak (mkolak at uchicago.edu).
                 </p>
                 <Gutter h={40}/>
                 <h2>NEWSLETTER</h2>
