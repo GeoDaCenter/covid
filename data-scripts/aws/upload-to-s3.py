@@ -53,8 +53,15 @@ if __name__ == '__main__':
     ]
 
     for folder in foldersToUpload:
+        try:
         ## Individual files
-        upload_folder(folder['path'], folder['subfolder'], s3, covid_bucket)
+            upload_folder(folder['path'], folder['subfolder'], s3, covid_bucket)
+        except Exception as e:
+            print(e)
+        
+        try:
         # Zip!
-        zipAndUpload(folder, s3, covid_bucket)
+            zipAndUpload(folder, s3, covid_bucket)
+        except Exception as e:
+            print(e)
 # %%
