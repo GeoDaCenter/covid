@@ -70,7 +70,7 @@ export const colorScales = {
     [227, 74, 51],
   ],
   testing: [
-    [240, 240, 240],
+    [239, 239, 239],
     [13, 8, 135],
     [92, 1, 166],
     [156, 23, 158],
@@ -80,7 +80,7 @@ export const colorScales = {
     [240, 249, 33],
   ],
   testingCap: [
-    [240, 240, 240],
+    [239, 239, 239],
     [247, 251, 255],
     [222, 235, 247],
     [198, 219, 239],
@@ -195,7 +195,7 @@ export const colorScales = {
 export const fixedScales = {
   testing: {
     bins: ['No Data', '<3%', '5%', '10%', '15%', '20%', '>25%'],
-    breaks: [0, 3, 5, 10, 15, 20, 25, Math.pow(10, 12)],
+    breaks: [-1, 3, 5, 10, 15, 20, 25, Math.pow(10, 12)],
   },
   testingCap: {
     bins: ['No Data', '<50', '100', '150', '200', '250', '300', '350', '>400'],

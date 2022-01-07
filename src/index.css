@@ -285,3 +285,9 @@ button.mapboxgl-ctrl-attrib-button {
   font-weight: bold;
   display: block;
 }
+
+/* Mapbox */
+
+.mapboxgl-ctrl-bottom-right * {
+  display:none;
+}

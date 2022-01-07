@@ -78,10 +78,25 @@ fs.readdir(directoryPath, function (err, files) {
                 fs.mkdirSync(`public/timeseries/${fileName}`);
             } catch {}
 
-            fs.writeFileSync(`public/timeseries/${fileName}/dates.json`,  `${JSON.stringify(dates)}`)
-            row.forEach(entry => {
-                fs.writeFileSync(`public/timeseries/${fileName}/${entry.geoid}.json`,  `${JSON.stringify(cleanVals(entry.vals, multiplier))}`)
-            })
+            // if (fileName === 'covid_confirmed_nyt') console.log(row)
+            let sumData = [];
+            for (let i=0; i<row.length; i++) {
+              const entry = row[i];
+              const values = cleanVals(entry.vals, multiplier);
+              fs.writeFileSync(`public/timeseries/${fileName}/${entry.geoid}.json`,  `${JSON.stringify(values)}`)
+              for (let j=0; j<values.length; j++) {
+                sumData[j] = (values[j]||0) + (sumData[j]||0);
+              }
+            }
+            
+            // if (fileName === 'covid_confirmed_nyt') console.log(sumData)
+            fs.writeFileSync(`public/timeseries/${fileName}/index.json`,  `{
+                "dates": ${JSON.stringify(dates)},
+                "sumData": ${JSON.stringify(sumData)},
+                "multiplier": ${multiplier},
+                "count": ${row.length},
+                "ids": ${JSON.stringify(row.map(entry => entry.geoid))}
+            }`)
         }
     });
 

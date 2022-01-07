@@ -6,6 +6,7 @@ import { FlyToInterpolator } from '@deck.gl/core';
 
 import { useViewport, useSetViewport } from '../contexts/Viewport';
 import ShareButton from '../components/ShareButton';
+import MapAttribution from '../components/MapAttribution';
 import colors from '../config/colors';
 import * as SVG from '../config/svg';
 
@@ -54,8 +55,8 @@ export const NavInlineButton = styled.button`
 
 const MapButtonContainer = styled.div`
   position: absolute;
-  right: ${(props) => (props.infoPanel ? 317 : 10)}px;
-  bottom: 30px;
+  right: ${(props) => (props.infoPanel ? 'calc(20% + 10px)' : '10px')};
+  bottom: 50px;
   z-index: 10;
   transition: 250ms all;
   @media (max-width: 768px) {
@@ -117,7 +118,7 @@ export default function MapButtons({ boxSelect, setBoxSelect }) {
   };
 
   return (
-    <MapButtonContainer infoPanel={panelState.info && selectionKeys.length}>
+    <MapButtonContainer infoPanel={panelState.info}>
       <NavInlineButtonGroup>
         <NavInlineButton
           title="Selection Box"
@@ -164,6 +165,9 @@ export default function MapButtons({ boxSelect, setBoxSelect }) {
       </NavInlineButtonGroup>
       <NavInlineButtonGroup>
         <ShareButton />
+      </NavInlineButtonGroup>
+      <NavInlineButtonGroup>
+          <MapAttribution />
       </NavInlineButtonGroup>
       <ShareURL type="text" value="" id="share-url" readOnly />
     </MapButtonContainer>

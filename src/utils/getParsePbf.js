@@ -24,8 +24,8 @@ export const parsePbfData = (pbfData, fileInfo, dateList) => {
   let constructorIndices = [];
   let columnNames = ['geoid', ...pbfData.dates];
   // embedded scientific scale exponent in file name
-  const scale = /.e-[0-9]/g.exec(fileInfo.file)
-    ? 10 ** -+/.e-[0-9]/g.exec(fileInfo.file)[0]?.split('-')[1]
+  const scale = /.e-[0-9]/g.exec(fileInfo.name)
+    ? 10 ** -+/.e-[0-9]/g.exec(fileInfo.name)[0]?.split('-')[1]
     : 1;
 
   for (let i = 0; i < dateList.length; i++) {

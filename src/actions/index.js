@@ -387,9 +387,9 @@ export const openContextMenu = (params) => {
   };
 };
 
-export const setTooltipContent = (x, y, data) => {
+export const setTooltipInfo = (x, y, data) => {
   return {
-    type: 'SET_TOOLTIP_CONTENT',
+    type: 'SET_TOOLTIP_INFO',
     payload: {
       x,
       y,

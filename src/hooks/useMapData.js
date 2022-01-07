@@ -12,7 +12,7 @@ const getContinuousColor = (val, breaks, colors, useZero = false) => {
   if (useZero && val === 0) return colors[0];
   if (val === null || val === undefined) return [50, 50, 50];
   for (let i = 0; i < breaks.length; i++) {
-    if (val <= breaks[i]) return colors[i + 1];
+    if (val <= breaks[i]) return colors[i + useZero];
   }
   return colors[colors.length - 1];
 };
@@ -36,19 +36,20 @@ const generateJoinData = ({
   // const getHeight = dataParams.variableName.toLowerCase().includes("percent")
   //     ? getPctHeight
   //     : getStandardHeight
-
+  
   let joinData = {};
   if (mapParams.vizType === 'cartogram') {
   }
   if (mapParams.mapType === 'lisa') {
   }
+  const shouldUseZero = mapParams.colorScale[0] === [240,240,240]
   for (let i = 0; i < geoids.length; i++) {
     joinData[geoids[i]] = {
       color: getContinuousColor(
         binData[i],
         bins.breaks,
         mapParams.colorScale,
-        true,
+        shouldUseZero,
       ),
       value: binData[i],
     };
@@ -173,7 +174,7 @@ function useGetBins({ mapParams, dataParams, binData, geoda, dataReady }) {
         geoda: typeof geoda
       })
     } else if (dataParams.fixedScale !== null && dataParams.fixedScale !== undefined && fixedScales[dataParams.fixedScale]) {
-      setBins([fixedScales[dataParams.fixedScale]]);
+      setBins(fixedScales[dataParams.fixedScale]);
       setBinnedParams({
         mapParams: JSON.stringify(mapParams),
         dataParams: JSON.stringify(dataParams),
@@ -302,7 +303,7 @@ export default function useMapData({ }) {
       JSON.stringify(cartogramData),
     ],
   );
-
+  
   return [
     geojsonData?.data, // geography
     colorAndValueData, // color and value data

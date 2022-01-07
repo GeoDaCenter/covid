@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 import {
   LineChart,
@@ -11,13 +11,14 @@ import {
   Label,
   ResponsiveContainer,
   Legend,
-} from 'recharts';
+} from "recharts";
 
-import Switch from '@material-ui/core/Switch';
+import Switch from "@material-ui/core/Switch";
 
-import styled from 'styled-components';
-import colors from '../config/colors';
-import { setVariableParams, setChartParams } from '../actions';
+import styled from "styled-components";
+import colors from "../config/colors";
+import { setVariableParams, setChartParams } from "../actions";
+import useGetLineChartData from "../hooks/useGetLineChartData";
 
 const ChartContainer = styled.span`
   span {
@@ -54,7 +55,7 @@ const StyledSwitch = styled.div`
 `;
 const ChartTitle = styled.h3`
   text-align: center;
-  font-family: 'Playfair Display', serif;
+  font-family: "Playfair Display", serif;
   padding: 0;
   font-weight: normal;
   margin: 0;
@@ -62,18 +63,18 @@ const ChartTitle = styled.h3`
 `;
 
 const monthNames = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'June',
-  'July',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "June",
+  "July",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ];
 
 const numberFormatter = (val) =>
@@ -104,7 +105,7 @@ const getDateRange = ({ startDate, endDate }) => {
   }
 
   for (let i = 0; i < years.length; i++) {
-    let yearStr = '' + years[i];
+    let yearStr = "" + years[i];
     let n;
 
     if (years[i] === 2020) {
@@ -113,9 +114,9 @@ const getDateRange = ({ startDate, endDate }) => {
       n = 1;
     }
 
-    let dateString = `${yearStr}-${n < 10 ? 0 : ''}${n}-01`;
+    let dateString = `${yearStr}-${n < 10 ? 0 : ""}${n}-01`;
     while (n < 13) {
-      dateString = `${yearStr}-${n < 10 ? 0 : ''}${n}-01`;
+      dateString = `${yearStr}-${n < 10 ? 0 : ""}${n}-01`;
       dateArray.push(dateString);
       n++;
     }
@@ -123,10 +124,20 @@ const getDateRange = ({ startDate, endDate }) => {
   return dateArray;
 };
 
+const rangeIncrement = (maximum) => {
+  let returnArray = [];
+  const increment = 2 * 10 ** (`${maximum}`.length - 1);
+  for (let i = 0; i < maximum; i += increment) {
+    returnArray.push(i);
+  }
+  return returnArray;
+};
+
 const dateRange = getDateRange({
-  startDate: new Date('02/01/2020'),
+  startDate: new Date("02/01/2020"),
   endDate: new Date(),
 });
+
 const CustomTooltip = (props) => {
   try {
     if (props.active) {
@@ -135,27 +146,27 @@ const CustomTooltip = (props) => {
         <div
           style={{
             background: colors.darkgray,
-            padding: '10px',
-            borderRadius: '4px',
+            padding: "10px",
+            borderRadius: "4px",
             boxShadow:
-              '0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12)',
+              "0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12)",
           }}
         >
-          <p style={{ color: 'white', padding: '5px 0 0 0' }}>
+          <p style={{ color: "white", padding: "5px 0 0 0" }}>
             {data[0].payload.date}
           </p>
           {data.map((data) => (
             <p
               style={{
                 color: data.color,
-                padding: '5px 0 0 0',
+                padding: "5px 0 0 0",
                 textShadow: `2px 2px 4px ${colors.black}`,
                 fontWeight: 600,
               }}
             >
-              {data.name}:{' '}
+              {data.name}:{" "}
               {Number.isInteger(Math.floor(data.payload[data.dataKey]))
-                ? Math.floor(data.payload[data.dataKey]).toLocaleString('en')
+                ? Math.floor(data.payload[data.dataKey]).toLocaleString("en")
                 : data.payload[data.dataKey]}
             </p>
           ))}
@@ -168,89 +179,42 @@ const CustomTooltip = (props) => {
   return null;
 };
 
-const MainLineChart = () => {
-  const chartData = useSelector((state) => state.chartData.data);
-  const maximums = useSelector((state) => state.chartData.maximums);
-  const dataParams = useSelector((state) => state.dataParams);
-  const nType = useSelector((state) => state.dataParams.nType);
-  const dType = useSelector((state) => state.dataParams.dType);
-  const currentVariable = useSelector((state) => state.currentVariable);
-  const currentData = useSelector((state) => state.currentData);
-  const selectionKeys = useSelector((state) => state.selectionKeys);
-  const selectionNames = useSelector((state) => state.selectionNames);
-  const storedData = useSelector((state) => state.storedData);
-  const currentTable = useSelector((state) => state.currentTable);
-  const populationNormalized = useSelector(
-    (state) => state.chartParams.populationNormalized,
-  );
+export default function MainLineChart() {
+  const dispatch = useDispatch();
+  const {
+    currentData,
+    currIndex,
+    currRange,
+    chartData,
+    maximums,
+    isTimeseries,
+    selectionKeys,
+    selectionNames,
+  } = useGetLineChartData({});
 
   const [logChart, setLogChart] = useState(false);
   const [showSummarized, setShowSummarized] = useState(true);
   const [activeLine, setActiveLine] = useState(false);
-
-  const dispatch = useDispatch();
+  const [populationNormalized, setPopulationNormalized] = useState(false);
 
   const handleSwitch = () => setLogChart((prev) => !prev);
-  const handlePopSwitch = () =>
-    dispatch(setChartParams({ populationNormalized: !populationNormalized }));
+  const handlePopSwitch = () => setPopulationNormalized((prev) => !prev);
   const handleSummarizedSwitch = () => setShowSummarized((prev) => !prev);
-  const handleChange = (newValue) => {
-    if (nType === 'time-series' && dType === 'time-series') {
-      dispatch(setVariableParams({ nIndex: newValue, dIndex: newValue }));
-    } else if (nType === 'time-series') {
-      dispatch(setVariableParams({ nIndex: newValue }));
-    } else if (dType === 'time-series') {
-      dispatch(setVariableParams({ dIndex: newValue }));
-    } else if (currentVariable.includes('Testing')) {
-      dispatch(setVariableParams({ nIndex: newValue }));
-    }
-  };
-  const chartSetDate = (e) => {
-    if (e?.activeTooltipIndex !== undefined) {
-      if (
-        storedData[currentTable.numerator].dates.indexOf(
-          e.activeTooltipIndex,
-        ) !== -1
-      ) {
-        handleChange(e.activeTooltipIndex);
-      } else {
-        handleChange(
-          storedData[currentTable.numerator].dates.reduce((a, b) => {
-            return Math.abs(b - e.activeTooltipIndex) <
-              Math.abs(a - e.activeTooltipIndex)
-              ? b
-              : a;
-          }),
-        );
-      }
-    }
-  };
-
-  const rangeIncrement = (maximum) => {
-    let returnArray = [];
-    const increment = 2 * 10 ** (`${maximum}`.length - 1);
-    for (let i = 0; i < maximum; i += increment) {
-      returnArray.push(i);
-    }
-
-    return returnArray;
-  };
-
-  const handleLegendHover = (o) => {
-    setActiveLine(o.dataKey);
-  };
-
-  const handleLegendLeave = () => {
-    setActiveLine(false);
-  };
+  const handleSetDate = ({ activeTooltipIndex }) =>
+    dispatch({
+      type: "SET_DATA_PARAMS",
+      payload: { nIndex: activeTooltipIndex },
+    });
+  const handleLegendHover = (o) => setActiveLine(+o.dataKey.split('Weekly')[0]);
+  const handleLegendLeave = () => setActiveLine(false);
 
   if (maximums && chartData) {
     return (
       <ChartContainer id="lineChart">
         {selectionNames.length < 2 ? (
           <ChartTitle>
-            Total Cases and 7-Day Average New Cases{' '}
-            {selectionNames.length ? `: ${selectionNames[0]}` : ''}
+            Total Cases and 7-Day Average New Cases{" "}
+            {selectionNames.length ? `: ${selectionNames[0]}` : ""}
           </ChartTitle>
         ) : (
           <ChartTitle>7-Day Average New Cases</ChartTitle>
@@ -264,7 +228,7 @@ const MainLineChart = () => {
               left: 10,
               bottom: 20,
             }}
-            onClick={nType === 'characteristic' ? '' : chartSetDate}
+            onClick={isTimeseries ? handleSetDate : null}
           >
             <XAxis
               dataKey="date"
@@ -273,10 +237,10 @@ const MainLineChart = () => {
                 <CustomTick
                   style={{
                     fill: `${colors.white}88`,
-                    fontSize: '10px',
-                    fontFamily: 'Lato',
+                    fontSize: "10px",
+                    fontFamily: "Lato",
                     fontWeight: 600,
-                    transform: 'translateY(10px)',
+                    transform: "translateY(10px)",
                   }}
                   labelFormatter={dateFormatter}
                 />
@@ -285,8 +249,8 @@ const MainLineChart = () => {
             <YAxis
               yAxisId="left"
               type="number"
-              scale={logChart ? 'log' : 'linear'}
-              domain={[0.01, 'dataMax']}
+              scale={logChart ? "log" : "linear"}
+              domain={[0.01, "dataMax"]}
               allowDataOverflow
               ticks={
                 selectionKeys.length === 0
@@ -297,8 +261,8 @@ const MainLineChart = () => {
                 <CustomTick
                   style={{
                     fill: colors.lightgray,
-                    fontSize: '10px',
-                    fontFamily: 'Lato',
+                    fontSize: "10px",
+                    fontFamily: "Lato",
                     fontWeight: 600,
                   }}
                   labelFormatter={numberFormatter}
@@ -311,7 +275,7 @@ const MainLineChart = () => {
                 style={{
                   marginTop: 10,
                   fill: colors.lightgray,
-                  fontFamily: 'Lato',
+                  fontFamily: "Lato",
                   fontWeight: 600,
                 }}
                 angle={-90}
@@ -320,8 +284,8 @@ const MainLineChart = () => {
             <YAxis
               yAxisId="right"
               orientation="right"
-              scale={logChart ? 'log' : 'linear'}
-              domain={[0.01, 'dataMax']}
+              scale={logChart ? "log" : "linear"}
+              domain={[0.01, "dataMax"]}
               allowDataOverflow
               ticks={
                 selectionKeys.length === 0
@@ -332,8 +296,8 @@ const MainLineChart = () => {
                 <CustomTick
                   style={{
                     fill: colors.yellow,
-                    fontSize: '10px',
-                    fontFamily: 'Lato',
+                    fontSize: "10px",
+                    fontFamily: "Lato",
                     fontWeight: 600,
                   }}
                   labelFormatter={numberFormatter}
@@ -347,7 +311,7 @@ const MainLineChart = () => {
                   marginTop: 10,
                   fill:
                     selectionKeys.length < 2 ? colors.yellow : colors.lightgray,
-                  fontFamily: 'Lato',
+                  fontFamily: "Lato",
                   fontWeight: 600,
                 }}
                 angle={-90}
@@ -356,46 +320,71 @@ const MainLineChart = () => {
             <Tooltip content={CustomTooltip} />
             <ReferenceArea
               yAxisId="left"
-              x1={
-                dataParams.nRange === null
-                  ? dataParams.variableName.indexOf('Testing') !== -1
-                    ? dataParams.nIndex - 7
-                    : 0
-                  : dataParams.nIndex - dataParams.nRange
-              }
-              x2={dataParams.nIndex}
+              x1={currIndex - currRange}
+              x2={currIndex}
               fill="white"
               fillOpacity={0.15}
               isAnimationActive={false}
             />
-            {selectionKeys.length < 2 && (
+            {selectionKeys.length === 0 ? (
               <Line
                 type="monotone"
                 yAxisId="left"
-                dataKey={'sum'}
+                dataKey={`sum${populationNormalized ? "100k" : ""}`}
                 name="Total Cases"
                 stroke={colors.lightgray}
                 dot={false}
                 isAnimationActive={false}
               />
+            ) : (
+              selectionKeys.map((geoid) => {
+                <Line
+                  type="monotone"
+                  yAxisId="left"
+                  dataKey={`${geoid}Sum${populationNormalized ? "100k" : ""}`}
+                  name="Total Cases"
+                  stroke={colors.lightgray}
+                  dot={false}
+                  isAnimationActive={false}
+                />;
+              })
             )}
-            {selectionKeys.length < 2 && (
+            {selectionKeys.length === 0 ? (
               <Line
                 type="monotone"
                 yAxisId="right"
-                dataKey={selectionKeys.length > 0 ? selectionNames[0] : 'count'}
+                dataKey={`weekly${populationNormalized ? "100k" : ""}`}
                 name="7-Day Average New Cases"
                 stroke={colors.yellow}
                 dot={false}
                 isAnimationActive={false}
               />
+            ) : (
+              selectionKeys.map((geoid, idx) => (
+                <Line
+                  type="monotone"
+                  yAxisId="left"
+                  key={`line-weekly-${geoid}`}
+                  dataKey={`${geoid}Weekly${populationNormalized ? "100k" : ""}`}
+                  name={selectionNames[idx] + " 7-Day Ave"}
+                  stroke={
+                    selectionKeys.length > colors.qualtitiveScale.length
+                      ? "white"
+                      : colors.qualtitiveScale[idx]
+                  }
+                  dot={false}
+                  isAnimationActive={false}
+                  strokeOpacity={activeLine === geoid ? 1 : 0.7}
+                  strokeWidth={activeLine === geoid ? 3 : 1}
+                />
+              ))
             )}
-
+            //{" "}
             {selectionKeys.length > 1 && showSummarized && (
               <Line
                 type="monotone"
                 yAxisId="right"
-                dataKey="sum"
+                dataKey="keySum"
                 name="Total For Selection"
                 stroke={colors.lightgray}
                 strokeWidth={3}
@@ -403,26 +392,6 @@ const MainLineChart = () => {
                 isAnimationActive={false}
               />
             )}
-            {selectionKeys.length > 1 &&
-              selectionNames.map((key, index) => {
-                return (
-                  <Line
-                    type="monotone"
-                    yAxisId="left"
-                    dataKey={key}
-                    name={key + ' 7-Day Ave'}
-                    stroke={
-                      selectionKeys.length > colors.qualtitiveScale.length
-                        ? 'white'
-                        : colors.qualtitiveScale[index]
-                    }
-                    dot={false}
-                    isAnimationActive={false}
-                    strokeOpacity={activeLine === key ? 1 : 0.7}
-                    strokeWidth={activeLine === key ? 3 : 1}
-                  />
-                );
-              })}
             {selectionKeys.length < colors.qualtitiveScale.length && (
               <Legend
                 onMouseEnter={handleLegendHover}
@@ -437,18 +406,18 @@ const MainLineChart = () => {
               checked={logChart}
               onChange={handleSwitch}
               name="log chart switch"
-              inputProps={{ 'aria-label': 'secondary checkbox' }}
+              inputProps={{ "aria-label": "secondary checkbox" }}
             />
-            <p>{logChart ? 'Log Scale' : 'Linear Scale'}</p>
+            <p>{logChart ? "Log Scale" : "Linear Scale"}</p>
           </StyledSwitch>
           <StyledSwitch>
             <Switch
               checked={populationNormalized}
               onChange={handlePopSwitch}
               name="population normalized chart switch"
-              inputProps={{ 'aria-label': 'secondary checkbox' }}
+              inputProps={{ "aria-label": "secondary checkbox" }}
             />
-            <p>{populationNormalized ? 'Per 100k' : 'Counts'}</p>
+            <p>{populationNormalized ? "Per 100k" : "Counts"}</p>
           </StyledSwitch>
           {selectionKeys.length > 1 && (
             <StyledSwitch>
@@ -456,15 +425,15 @@ const MainLineChart = () => {
                 checked={showSummarized}
                 onChange={handleSummarizedSwitch}
                 name="show summarized chart switch"
-                inputProps={{ 'aria-label': 'secondary checkbox' }}
+                inputProps={{ "aria-label": "secondary checkbox" }}
               />
               <p>
                 {showSummarized
                   ? `Show ${
-                      populationNormalized ? 'Average' : 'Total'
+                      populationNormalized ? "Average" : "Total"
                     } For Selection`
                   : `Show ${
-                      currentData.includes('state') ? 'States' : 'Counties'
+                      currentData.includes("state") ? "States" : "Counties"
                     }`}
               </p>
             </StyledSwitch>
@@ -473,8 +442,6 @@ const MainLineChart = () => {
       </ChartContainer>
     );
   } else {
-    return <div></div>;
+    return null
   }
-};
-
-export default MainLineChart;
+}

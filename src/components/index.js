@@ -10,6 +10,7 @@ import Draggable from './Draggable';
 import Footer from './Footer';
 import HeroMap from './HeroMap';
 import Icon from './Icon';
+import IconDock from './IconDock';
 import InfoBox from './InfoBox';
 import Legend from './Legend';
 import FastTrackInsights from './FastTrackInsights';
@@ -66,6 +67,7 @@ export {
   Footer,
   HeroMap,
   Icon,
+  IconDock,
   InfoBox,
   Legend,
   MapButtons,

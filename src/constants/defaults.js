@@ -159,7 +159,7 @@ export const INITIAL_STATE = {
     dataLoader: false,
   },
   urlParams: {},
-  tooltipContent: {
+  tooltipInfo: {
     x: 0,
     y: 0,
     data: null,

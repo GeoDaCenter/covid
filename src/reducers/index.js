@@ -1,9 +1,9 @@
-import { INITIAL_STATE } from '../constants/defaults';
+import { INITIAL_STATE } from "../constants/defaults";
 import {
   getDataForCharts,
   // generateMapData,
-  generateReport,
-  shallowEqual,
+  // generateReport,
+  // shallowEqual,
   parseTooltipData,
   getIdOrder,
   indexGeoProps,
@@ -11,25 +11,30 @@ import {
   findIn,
   findDefault,
   findTableOrDefault,
-  findClosestValue
-} from '../utils';
+  findClosestValue,
+} from "../utils";
 
-import dataDateRanges from '../config/dataDateRanges';
-import { fixedScales, colorScales } from '../config/scales';
-const findDefaultOrCurrent = (variableTree, datasets, variableName, datasetName) => {
-  const availableGeographies = variableTree[variableName]
+import dataDateRanges from "../config/dataDateRanges";
+import { fixedScales, colorScales } from "../config/scales";
+const findDefaultOrCurrent = (
+  variableTree,
+  datasets,
+  variableName,
+  datasetName
+) => {
+  const availableGeographies = variableTree[variableName];
   for (const geography of availableGeographies) {
     if (geography.includes(datasetName)) {
-      return datasets.finds(dataset => dataset.name === datasetName);
+      return datasets.finds((dataset) => dataset.name === datasetName);
     } else {
-      return geography[0]
+      return geography[0];
     }
   }
-}
+};
 
 var reducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case 'INITIAL_LOAD': {
+    case "INITIAL_LOAD": {
       const dataParams = {
         ...state.dataParams,
         ...action.payload.data.variableParams,
@@ -63,7 +68,7 @@ var reducer = (state = INITIAL_STATE, action) => {
     }
     // This action takes partially loaded tables from big query already in the state
     // and reconciles those with the full time-series fetched from static files
-    case 'RECONCILE_TABLES': {
+    case "RECONCILE_TABLES": {
       let storedData = {
         ...state.storedData,
       };
@@ -115,7 +120,7 @@ var reducer = (state = INITIAL_STATE, action) => {
         storedData,
       };
     }
-    case 'ADD_TABLES': {
+    case "ADD_TABLES": {
       const storedData = {
         ...state.storedData,
         ...action.payload.data,
@@ -126,7 +131,7 @@ var reducer = (state = INITIAL_STATE, action) => {
         storedData,
       };
     }
-    case 'ADD_TABLES_AND_UPDATE': {
+    case "ADD_TABLES_AND_UPDATE": {
       const storedData = {
         ...state.storedData,
         ...action.payload.data,
@@ -138,7 +143,7 @@ var reducer = (state = INITIAL_STATE, action) => {
         shouldUpdate: true,
       };
     }
-    case 'ADD_GEOJSON': {
+    case "ADD_GEOJSON": {
       const storedGeojson = {
         ...state.storedGeojson,
         ...action.payload.data,
@@ -157,7 +162,7 @@ var reducer = (state = INITIAL_STATE, action) => {
     //     isLoading: false,
     //   };
     // }
-    case 'DATA_LOAD': {
+    case "DATA_LOAD": {
       // main new data loading reducer
       // I: Destructure payload (load) object
       let {
@@ -228,13 +233,20 @@ var reducer = (state = INITIAL_STATE, action) => {
         panelState: panelsDataObj,
       };
     }
-    case 'UPDATE_CHART': {
-      
-      const currDataset = findIn(state.datasets, 'file', state.currentData);
+    case "UPDATE_CHART": {
+      const currDataset = findIn(state.datasets, "file", state.currentData);
       const currCaseData = currDataset.tables[state.chartParams.table]
-        ? findIn(state.tables, 'id', currDataset.tables[state.chartParams.table]).name
-        : findDefault(state.tables, state.chartParams.table, currDataset.geography).name;
-        
+        ? findIn(
+            state.tables,
+            "id",
+            currDataset.tables[state.chartParams.table]
+          ).name
+        : findDefault(
+            state.tables,
+            state.chartParams.table,
+            currDataset.geography
+          ).name;
+
       let populationData = [];
 
       if (state.chartParams.populationNormalized) {
@@ -258,11 +270,11 @@ var reducer = (state = INITIAL_STATE, action) => {
         chartData: getDataForCharts(
           state.storedData[currCaseData],
           state.dates,
-          additionalParams,
+          additionalParams
         ),
       };
     }
-    case 'ADD_TABLE_AND_CHART': {
+    case "ADD_TABLE_AND_CHART": {
       let populationData = [];
 
       if (state.chartParams.populationNormalized) {
@@ -292,28 +304,36 @@ var reducer = (state = INITIAL_STATE, action) => {
         chartData: getDataForCharts(
           Object.values(action.payload.data)[0],
           state.dates,
-          additionalParams,
+          additionalParams
         ),
         storedData,
       };
     }
-    case 'SET_CHART_PARAMS': {
+    case "SET_CHART_PARAMS": {
       const chartParams = {
         ...state.chartParams,
         ...action.payload.params,
       };
 
-      const currDataset = findIn(state.datasets, 'file', state.currentData);      
+      const currDataset = findIn(state.datasets, "file", state.currentData);
       const currCaseData = currDataset.tables[state.chartParams.table]
-        ? findIn(state.tables, 'id', currDataset.tables[state.chartParams.table])
-        : findDefault(state.tables, state.chartParams.table, currDataset.geography);
+        ? findIn(
+            state.tables,
+            "id",
+            currDataset.tables[state.chartParams.table]
+          )
+        : findDefault(
+            state.tables,
+            state.chartParams.table,
+            currDataset.geography
+          );
       const properties = state.storedGeojson[state.currentData].properties;
 
       let populationData = [];
       if (chartParams.populationNormalized) {
         if (state.selectionKeys.length) {
           populationData = state.selectionKeys.map(
-            (key) => properties[key].population,
+            (key) => properties[key].population
           );
         } else {
           populationData.push(0);
@@ -338,7 +358,7 @@ var reducer = (state = INITIAL_STATE, action) => {
       const chartData = getDataForCharts(
         state.storedData[currCaseData],
         state.dates,
-        additionalParams,
+        additionalParams
       );
 
       return {
@@ -347,7 +367,7 @@ var reducer = (state = INITIAL_STATE, action) => {
         chartData,
       };
     }
-    case 'DATA_LOAD_EXISTING':
+    case "DATA_LOAD_EXISTING":
       let [variableParamsExDataObj, panelsExDataObj] = [
         {
           ...state.dataParams,
@@ -368,7 +388,7 @@ var reducer = (state = INITIAL_STATE, action) => {
         selectionIndex: [],
         panelState: panelsExDataObj,
       };
-    case 'SET_NEW_BINS': {
+    case "SET_NEW_BINS": {
       let [binsVariableParams, binsMapParams] = [
         {
           ...state.dataParams,
@@ -385,12 +405,12 @@ var reducer = (state = INITIAL_STATE, action) => {
         mapParams: binsMapParams,
       };
     }
-    case 'SET_GEOID':
+    case "SET_GEOID":
       return {
         ...state,
         currentGeoid: action.payload.geoid,
       };
-    case 'SET_STORED_DATA': {
+    case "SET_STORED_DATA": {
       const storedData = {
         ...state.storedData,
         [action.payload.name]: action.payload.data,
@@ -400,7 +420,7 @@ var reducer = (state = INITIAL_STATE, action) => {
         storedData,
       };
     }
-    case 'SET_STORED_GEOJSON':
+    case "SET_STORED_GEOJSON":
       let geojsonObj = {
         ...state.storedGeojson,
       };
@@ -409,7 +429,7 @@ var reducer = (state = INITIAL_STATE, action) => {
         ...state,
         storedGeojson: geojsonObj,
       };
-    case 'SET_STORED_LISA_DATA': {
+    case "SET_STORED_LISA_DATA": {
       return {
         ...state,
         storedLisaData: action.payload.data,
@@ -419,7 +439,7 @@ var reducer = (state = INITIAL_STATE, action) => {
         // }),
       };
     }
-    case 'SET_STORED_CARTOGRAM_DATA': {
+    case "SET_STORED_CARTOGRAM_DATA": {
       return {
         ...state,
         // mapData: generateMapData({
@@ -429,12 +449,12 @@ var reducer = (state = INITIAL_STATE, action) => {
         storedCartogramData: action.payload.data,
       };
     }
-    case 'SET_STORED_MOBILITY_DATA':
+    case "SET_STORED_MOBILITY_DATA":
       return {
         ...state,
         storedMobilityData: action.payload.data,
       };
-    case 'SET_CENTROIDS':
+    case "SET_CENTROIDS":
       let centroidsObj = {
         ...state.centroids,
       };
@@ -443,12 +463,20 @@ var reducer = (state = INITIAL_STATE, action) => {
         ...state,
         centroids: centroidsObj,
       };
-    case 'SET_CURRENT_DATA': {
-      const currDataset = findIn(state.datasets, 'file', action.payload.data);
+    case "SET_CURRENT_DATA": {
+      const currDataset = findIn(state.datasets, "file", action.payload.data);
       const currentTable = {
-        numerator: findTableOrDefault(currDataset, state.tables, state.dataParams.numerator),
-        denominator: findTableOrDefault(currDataset, state.tables, state.dataParams.denominator),
-      }
+        numerator: findTableOrDefault(
+          currDataset,
+          state.tables,
+          state.dataParams.numerator
+        ),
+        denominator: findTableOrDefault(
+          currDataset,
+          state.tables,
+          state.dataParams.denominator
+        ),
+      };
 
       return {
         ...state,
@@ -459,22 +487,22 @@ var reducer = (state = INITIAL_STATE, action) => {
         currentTable,
       };
     }
-    case 'SET_GEODA_PROXY':
+    case "SET_GEODA_PROXY":
       return {
         ...state,
         geodaProxy: action.payload.proxy,
       };
-    case 'SET_DATES':
+    case "SET_DATES":
       return {
         ...state,
         dates: action.payload.data,
       };
-    case 'SET_DATA_FUNCTION':
+    case "SET_DATA_FUNCTION":
       return {
         ...state,
         currentDataFn: action.payload.fn,
       };
-    case 'SET_COLUMN_NAMES':
+    case "SET_COLUMN_NAMES":
       let colObj = {
         ...state.cols,
       };
@@ -483,35 +511,35 @@ var reducer = (state = INITIAL_STATE, action) => {
         ...state,
         cols: colObj,
       };
-    case 'SET_CURR_DATE':
+    case "SET_CURR_DATE":
       return {
         ...state,
         currDate: action.payload.date,
       };
-    case 'SET_DATE_INDEX':
+    case "SET_DATE_INDEX":
       return {
         ...state,
         currDateIndex: action.payload.index,
       };
-    case 'SET_START_DATE_INDEX':
+    case "SET_START_DATE_INDEX":
       return {
         ...state,
         startDateIndex: action.payload.index,
       };
-    case 'SET_BINS':
+    case "SET_BINS":
       let binsObj = {};
-      binsObj['bins'] = action.payload.bins;
-      binsObj['breaks'] = action.payload.breaks;
+      binsObj["bins"] = action.payload.bins;
+      binsObj["breaks"] = action.payload.breaks;
       return {
         ...state,
         bins: binsObj,
       };
-    case 'SET_3D':
+    case "SET_3D":
       return {
         ...state,
         use3D: !state.use3D,
       };
-    case 'SET_DATA_SIDEBAR':
+    case "SET_DATA_SIDEBAR":
       return {
         ...state,
         sidebarData: action.payload.data,
@@ -552,7 +580,7 @@ var reducer = (state = INITIAL_STATE, action) => {
     //     };
     //   }
     // }
-    case 'SET_START_PLAYING': {
+    case "SET_START_PLAYING": {
       let dateObj = {
         ...state.dataParams,
       };
@@ -580,68 +608,113 @@ var reducer = (state = INITIAL_STATE, action) => {
         };
       }
     }
-    case 'SET_STOP_PLAYING': {
+    case "SET_STOP_PLAYING": {
       return {
         ...state,
         isPlaying: false,
       };
     }
-    
-    case 'CHANGE_VARIABLE': {
+
+    case "CHANGE_VARIABLE": {
       // find target params
-      let currVariableParams = findIn(state.variables, 'variableName', action.payload)
+      let currVariableParams = findIn(
+        state.variables,
+        "variableName",
+        action.payload
+      );
       // find current dataset
-      let currDataset = findIn(state.datasets, 'file', state.currentData);
+      let currDataset = findIn(state.datasets, "file", state.currentData);
       // check if current dataset geography compatible with target variable
-      const currentData = state.variableTree[action.payload].hasOwnProperty(currDataset.geography)
+      const currentData = state.variableTree[action.payload].hasOwnProperty(
+        currDataset.geography
+      )
         ? state.currentData
-        : findDefaultOrCurrent(state.variableTree, state.datasets, action.payload.variable, currDataset.name)
+        : findDefaultOrCurrent(
+            state.variableTree,
+            state.datasets,
+            action.payload.variable,
+            currDataset.name
+          );
       // update variable to match target, if changed
-      currDataset = findIn(state.datasets, 'file', currentData);
+      currDataset = findIn(state.datasets, "file", currentData);
       // declare tables
       const currentTable = {
-        numerator: findTableOrDefault(currDataset, state.tables, currVariableParams.numerator),
-        denominator: findTableOrDefault(currDataset, state.tables, currVariableParams.denominator),
-      }
-      const dataName = currentTable.numerator?.name?.split('.')[0] || currentTable.numerator?.name?.split('.')[0]
+        numerator: findTableOrDefault(
+          currDataset,
+          state.tables,
+          currVariableParams.numerator
+        ),
+        denominator: findTableOrDefault(
+          currDataset,
+          state.tables,
+          currVariableParams.denominator
+        ),
+      };
+      const dataName =
+        currentTable.numerator?.name?.split(".")[0] ||
+        currentTable.numerator?.name?.split(".")[0];
       // pull index casesx
-      const currIndex = currVariableParams.nIndex || currVariableParams.dIndex || state.dataParams.nIndex || state.dataParams.dIndex
+      const currIndex =
+        currVariableParams.nIndex ||
+        currVariableParams.dIndex ||
+        state.dataParams.nIndex ||
+        state.dataParams.dIndex;
       // update variable index
-      currVariableParams.nIndex = currVariableParams.nType === 'characteristic' || state.dataParams.nIndex === null
-        ? null
-        : dataDateRanges[dataName] && dataDateRanges[dataName][currIndex]
+      currVariableParams.nIndex =
+        currVariableParams.nType === "characteristic" ||
+        state.dataParams.nIndex === null
+          ? null
+          : dataDateRanges[dataName] && dataDateRanges[dataName][currIndex]
           ? currIndex
           : findClosestValue(currIndex, dataDateRanges[dataName]);
       // scales
       const colorScale = currVariableParams.colorScale
-      ? colorScales[currVariableParams.colorScale]
-      : colorScales['natural_breaks'];
+        ? colorScales[currVariableParams.colorScale]
+        : colorScales["natural_breaks"];
 
       const mapParams = {
         ...state.mapParams,
-        colorScale      
-      }
+        colorScale,
+      };
 
       return {
         ...state,
         currentData,
         currentTable,
         dataParams: currVariableParams,
-        mapParams
-      }
+        mapParams,
+      };
     }
 
-    case 'SET_VARIABLE_PARAMS': {
+    case "SET_DATA_PARAMS": {
+      const dataParams = {
+        ...state.dataParams,
+        ...action.payload,
+      };
+      return {
+        ...state,
+        dataParams
+      }
+    }
+    case "SET_VARIABLE_PARAMS": {
       let dataParams = {
         ...state.dataParams,
         ...action.payload.params,
       };
-      const currDataset = findIn(state.datasets, 'file', state.currentData);
+      const currDataset = findIn(state.datasets, "file", state.currentData);
 
       const currentTable = {
-        numerator: findTableOrDefault(currDataset, state.tables, state.dataParams.numerator),
-        denominator: findTableOrDefault(currDataset, state.tables, state.dataParams.denominator),
-      }
+        numerator: findTableOrDefault(
+          currDataset,
+          state.tables,
+          state.dataParams.numerator
+        ),
+        denominator: findTableOrDefault(
+          currDataset,
+          state.tables,
+          state.dataParams.denominator
+        ),
+      };
 
       // if (state.dataParams.zAxisParams !== null) {
       //   dataParams.zAxisParams.nIndex = dataParams.nIndex;
@@ -653,8 +726,8 @@ var reducer = (state = INITIAL_STATE, action) => {
         dataParams.variableName !== state.dataParams.variable
       ) {
         if (
-          dataParams.nType === 'time-series' &&
-          state.dataParams.nType === 'time-series'
+          dataParams.nType === "time-series" &&
+          state.dataParams.nType === "time-series"
         ) {
           dataParams.nRange =
             dataParams.nRange !== null && state.dataParams.nRange !== null
@@ -663,9 +736,9 @@ var reducer = (state = INITIAL_STATE, action) => {
         }
 
         if (
-          dataParams.nType === 'time-series' &&
+          dataParams.nType === "time-series" &&
           state.storedData[currentTable.numerator]?.dates?.indexOf(
-            dataParams.nIndex,
+            dataParams.nIndex
           ) === -1
         ) {
           const nearestIndex = state.storedData[
@@ -684,16 +757,16 @@ var reducer = (state = INITIAL_STATE, action) => {
           }
         }
 
-        if (dataParams.dType === 'time-series') {
+        if (dataParams.dType === "time-series") {
           dataParams.dIndex = dataParams.nIndex;
           dataParams.dRange = dataParams.nRange;
         }
 
-        if (dataParams.nType === 'time-series' && dataParams.nIndex === null) {
+        if (dataParams.nType === "time-series" && dataParams.nIndex === null) {
           dataParams.nIndex = state.storedIndex;
           dataParams.nRange = state.storedRange;
         }
-        if (dataParams.dType === 'time-series' && dataParams.dIndex === null) {
+        if (dataParams.dType === "time-series" && dataParams.dIndex === null) {
           dataParams.dIndex = state.storedIndex;
           dataParams.dRange = state.storedRange;
         }
@@ -702,13 +775,13 @@ var reducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         storedIndex:
-          dataParams.nType === 'characteristic' &&
-          state.dataParams.nType === 'time-series'
+          dataParams.nType === "characteristic" &&
+          state.dataParams.nType === "time-series"
             ? state.dataParams.nIndex
             : state.storedIndex,
         storedRange:
-          dataParams.nType === 'characteristic' &&
-          state.dataParams.nType === 'time-series'
+          dataParams.nType === "characteristic" &&
+          state.dataParams.nType === "time-series"
             ? state.dataParams.nRange
             : state.storedRange,
         dataParams,
@@ -719,20 +792,17 @@ var reducer = (state = INITIAL_STATE, action) => {
         //     ? generateMapData({ ...state, dataParams })
         //     : state.mapData,
         currentTable,
-        tooltipContent: {
-          x: state.tooltipContent.x,
-          y: state.tooltipContent.y,
-          data: state.tooltipContent.geoid
-            ? parseTooltipData(state.tooltipContent.geoid, state)
-            : state.tooltipContent.data,
-          geoid: state.tooltipContent.geoid,
+        tooltipInfo: {
+          x: state.tooltipInfo.x,
+          y: state.tooltipInfo.y,
+          geoid: state.tooltipInfo.geoid,
         },
-        sidebarData: state.selectionKeys.length
-          ? generateReport(state.selectionKeys, state)
-          : state.sidebarData,
+        // sidebarData: state.selectionKeys.length
+        //   ? generateReport(state.selectionKeys, state)
+        //   : state.sidebarData,
       };
     }
-    case 'SET_VARIABLE_PARAMS_AND_DATASET': {
+    case "SET_VARIABLE_PARAMS_AND_DATASET": {
       let dataParams = {
         ...state.dataParams,
         ...action.payload.params.params,
@@ -742,19 +812,31 @@ var reducer = (state = INITIAL_STATE, action) => {
         ...state.mapParams,
         ...action.payload.params.dataMapParams,
       };
-      const currDataset = findIn(state.datasets, 'file', action.payload.params.dataset);
+      const currDataset = findIn(
+        state.datasets,
+        "file",
+        action.payload.params.dataset
+      );
       const currentTable = {
-        numerator: findTableOrDefault(currDataset, state.tables, state.dataParams.numerator),
-        denominator: findTableOrDefault(currDataset, state.tables, state.dataParams.denominator),
-      }
+        numerator: findTableOrDefault(
+          currDataset,
+          state.tables,
+          state.dataParams.numerator
+        ),
+        denominator: findTableOrDefault(
+          currDataset,
+          state.tables,
+          state.dataParams.denominator
+        ),
+      };
 
       if (
         action.payload.params.variableName !== undefined &&
         dataParams.variableName !== state.dataParams.variable
       ) {
         if (
-          dataParams.nType === 'time-series' &&
-          state.dataParams.nType === 'time-series'
+          dataParams.nType === "time-series" &&
+          state.dataParams.nType === "time-series"
         ) {
           dataParams.nRange =
             dataParams.nRange !== null && state.dataParams.nRange !== null
@@ -763,9 +845,9 @@ var reducer = (state = INITIAL_STATE, action) => {
         }
 
         if (
-          dataParams.nType === 'time-series' &&
+          dataParams.nType === "time-series" &&
           state.storedData[currentTable.numerator]?.dates?.indexOf(
-            dataParams.nIndex,
+            dataParams.nIndex
           ) === -1
         ) {
           const nearestIndex = state.storedData[
@@ -784,7 +866,7 @@ var reducer = (state = INITIAL_STATE, action) => {
           }
         }
 
-        if (dataParams.dType === 'time-series') {
+        if (dataParams.dType === "time-series") {
           dataParams.dIndex = dataParams.nIndex;
           dataParams.dRange = dataParams.nRange;
         }
@@ -800,7 +882,7 @@ var reducer = (state = INITIAL_STATE, action) => {
         currentData: action.payload.params.dataset,
       };
     }
-    case 'SET_Z_VARIABLE_PARAMS':
+    case "SET_Z_VARIABLE_PARAMS":
       let paramObjZ = {
         ...state.dataParams,
         zAxisParams: action.payload.params,
@@ -812,7 +894,7 @@ var reducer = (state = INITIAL_STATE, action) => {
         dataParams: paramObjZ,
       };
 
-    case 'SET_MAP_PARAMS': {
+    case "SET_MAP_PARAMS": {
       let mapParams = {
         ...state.mapParams,
         ...action.payload.params,
@@ -824,14 +906,14 @@ var reducer = (state = INITIAL_STATE, action) => {
 
       if (
         state.storedData[state.currentTable.numerator]?.dates?.indexOf(
-          dataParams.nIndex,
+          dataParams.nIndex
         ) === -1
       )
         dataParams.nIndex =
           state.storedData[state.currentTable.numerator]?.dates.slice(-1)[0];
       let zAxisVariableReset = state.currentZVariable;
 
-      if (action.payload.params.vizType !== '3D') {
+      if (action.payload.params.vizType !== "3D") {
         dataParams.zAxisParams = null;
         zAxisVariableReset = null;
       }
@@ -843,7 +925,7 @@ var reducer = (state = INITIAL_STATE, action) => {
         currentZVariable: zAxisVariableReset,
       };
     }
-    case 'SET_PANELS':
+    case "SET_PANELS":
       let panelsObj = {
         ...state.panelState,
         ...action.payload.params,
@@ -852,7 +934,7 @@ var reducer = (state = INITIAL_STATE, action) => {
         ...state,
         panelState: panelsObj,
       };
-    case 'TOGGLE_PANEL': {
+    case "TOGGLE_PANEL": {
       return {
         ...state,
         panelState: {
@@ -861,79 +943,54 @@ var reducer = (state = INITIAL_STATE, action) => {
         },
       };
     }
-    case 'SET_VARIABLE_NAME':
+    case "SET_VARIABLE_NAME":
       return {
         ...state,
         currentVariable: action.payload.name,
       };
-    case 'UPDATE_SELECTION': {
+    case "UPDATE_SELECTION": {
       let selectionKeys = [...state.selectionKeys];
-
-      const properties = state.storedGeojson[state.currentData].properties;
-      const currDataset = findIn(state.datasets, 'file', state.currentData);
-      const geography = currDataset.geography;
-
-      if (!properties || !geography) return state;
-
-      if (action.payload.type === 'update') {
+      if (action.payload.type === "update") {
         selectionKeys = [action.payload.geoid];
       }
-      if (action.payload.type === 'append') {
+      if (action.payload.type === "append") {
         selectionKeys.push(action.payload.geoid);
       }
-      if (action.payload.type === 'bulk-append') {
+      if (action.payload.type === "bulk-append") {
         for (let i = 0; i < action.payload.geoid.length; i++) {
           if (selectionKeys.indexOf(action.payload.geoid[i]) === -1)
             selectionKeys.push(action.payload.geoid[i]);
         }
       }
-      if (action.payload.type === 'remove') {
+      if (action.payload.type === "remove") {
         selectionKeys.splice(selectionKeys.indexOf(action.payload.geoid), 1);
       }
-
-      const currCaseData = findTableOrDefault(currDataset, state.tables, state.chartParams.table);
-      
-      const additionalParams = {
-        geoid: selectionKeys,
-        populationData: state.chartParams.populationNormalized
-          ? selectionKeys.map((key) => properties[key].population)
-          : [],
-        name: ['County', 'County (Hybrid)'].includes(geography)
-          ? selectionKeys.map(
-              (key) => properties[key].NAME + ', ' + properties[key].state_abbr,
-            )
-          : selectionKeys.map((key) => properties[key].name),
-      };
-
       return {
         ...state,
         selectionKeys,
-        selectionNames: additionalParams.name,
-        chartData: getDataForCharts(
-          state.storedData[currCaseData],
-          state.dates,
-          additionalParams,
-        ),
-        sidebarData: generateReport(selectionKeys, state),
+        panelState: {
+          ...state.panelState,
+          info: true,
+        },
       };
     }
-    case 'SET_ANCHOR_EL':
+    case "SET_ANCHOR_EL":
       return {
         ...state,
         anchorEl: action.payload.anchorEl,
       };
-    case 'SET_MAP_LOADED':
+    case "SET_MAP_LOADED":
       return {
         ...state,
         mapLoaded: action.payload.loaded,
       };
-    case 'SET_IS_LOADING': {
+    case "SET_IS_LOADING": {
       return {
         ...state,
         isLoading: true,
       };
     }
-    case 'SET_NOTIFICATION': {
+    case "SET_NOTIFICATION": {
       return {
         ...state,
         notification: {
@@ -942,16 +999,16 @@ var reducer = (state = INITIAL_STATE, action) => {
         },
       };
     }
-    case 'SET_URL_PARAMS':
+    case "SET_URL_PARAMS":
       const { urlParams, presets } = action.payload;
 
       let preset = urlParams.var
-        ? presets[urlParams.var.replace(/_/g, ' ')]
+        ? presets[urlParams.var.replace(/_/g, " ")]
         : {};
 
       let urlMapParamsObj = {
         ...state.mapParams,
-        binMode: urlParams.dbin ? 'dynamic' : '',
+        binMode: urlParams.dbin ? "dynamic" : "",
         mapType: urlParams.mthd || state.mapParams.mapType,
         overlay: urlParams.ovr || state.mapParams.overlay,
         resource: urlParams.res || state.mapParams.resource,
@@ -962,8 +1019,8 @@ var reducer = (state = INITIAL_STATE, action) => {
         ...state.dataParams,
         ...preset,
         nIndex: urlParams.date || state.dataParams.nIndex,
-        nRange: urlParams.hasOwnProperty('range')
-          ? urlParams.range === 'null'
+        nRange: urlParams.hasOwnProperty("range")
+          ? urlParams.range === "null"
             ? null
             : urlParams.range
           : state.dataParams.nRange,
@@ -971,9 +1028,9 @@ var reducer = (state = INITIAL_STATE, action) => {
       };
 
       let urlCoordObj = {
-        lat: urlParams.lat || '',
-        lon: urlParams.lon || '',
-        z: urlParams.z || '',
+        lat: urlParams.lat || "",
+        lon: urlParams.lon || "",
+        z: urlParams.z || "",
       };
 
       let urlParamsSource = urlParams.src
@@ -987,7 +1044,7 @@ var reducer = (state = INITIAL_STATE, action) => {
         mapParams: urlMapParamsObj,
         dataParams: urlDataParamsObj,
       };
-    case 'OPEN_CONTEXT_MENU':
+    case "OPEN_CONTEXT_MENU":
       let contextPanelsObj = {
         ...state.panelState,
         context: true,
@@ -1000,33 +1057,30 @@ var reducer = (state = INITIAL_STATE, action) => {
         ...state,
         panelState: contextPanelsObj,
       };
-    case 'SET_TOOLTIP_CONTENT': {
-      let tooltipData;
-      if (
-        typeof action.payload.data === 'number' ||
-        typeof action.payload.data === 'string'
-      ) {
-        tooltipData = parseTooltipData(action.payload.data, state);
-      } else {
-        tooltipData = action.payload.data;
-      }
-      const tooltipContent = {
+    case "SET_TOOLTIP_INFO": {
+      const data =
+        typeof action.payload.data === "number" ||
+        typeof action.payload.data === "string"
+          ? false
+          : action.payload.data;
+
+      const tooltipInfo = {
         x: action.payload.x,
         y: action.payload.y,
-        data: tooltipData,
+        data,
         geoid: +action.payload.data,
       };
       return {
         ...state,
-        tooltipContent,
+        tooltipInfo,
       };
     }
-    case 'SET_DOT_DENSITY':
+    case "SET_DOT_DENSITY":
       return {
         ...state,
         dotDensityData: action.payload.data,
       };
-    case 'CHANGE_DOT_DENSITY_MODE':
+    case "CHANGE_DOT_DENSITY_MODE":
       let changeDotDensityObj = {
         ...state.mapParams,
       };
@@ -1038,7 +1092,7 @@ var reducer = (state = INITIAL_STATE, action) => {
         ...state,
         mapParams: changeDotDensityObj,
       };
-    case 'TOGGLE_DOT_DENSITY_RACE':
+    case "TOGGLE_DOT_DENSITY_RACE":
       let toggleAcsObj = {
         ...state.mapParams,
       };
@@ -1050,7 +1104,7 @@ var reducer = (state = INITIAL_STATE, action) => {
         ...state,
         mapParams: toggleAcsObj,
       };
-    case 'SET_DOT_DENSITY_BACKGROUND_OPACITY':
+    case "SET_DOT_DENSITY_BACKGROUND_OPACITY":
       let backgroundOpacityState = {
         ...state.mapParams,
       };
@@ -1061,13 +1115,13 @@ var reducer = (state = INITIAL_STATE, action) => {
         ...state,
         mapParams: backgroundOpacityState,
       };
-    case 'SET_COLOR_FILTER': {
+    case "SET_COLOR_FILTER": {
       return {
         ...state,
         colorFilter: action.payload,
       };
     }
-    case 'ADD_WEIGHTS': {
+    case "ADD_WEIGHTS": {
       const storedGeojson = {
         ...state.storedGeojson,
         [action.payload.file]: {
@@ -1082,10 +1136,10 @@ var reducer = (state = INITIAL_STATE, action) => {
         storedGeojson,
       };
     }
-    case 'ADD_CUSTOM_DATA': {
+    case "ADD_CUSTOM_DATA": {
       const dataName = resolveName(
-        action.payload.selectedFile?.name.split('.geojson')[0],
-        Object.keys(state.storedGeojson),
+        action.payload.selectedFile?.name.split(".geojson")[0],
+        Object.keys(state.storedGeojson)
       );
 
       const storedGeojson = {
@@ -1113,16 +1167,16 @@ var reducer = (state = INITIAL_STATE, action) => {
       const tables = [
         ...state.tables,
         {
-          name:dataName,
-          geography: 	dataName,
-          table: dataName, 
+          name: dataName,
+          geography: dataName,
+          table: dataName,
           fileType: null,
-          dataType: 'characteristic',
-          join: 'idx',
+          dataType: "characteristic",
+          join: "idx",
           default: 1,
-          id: dataName
-      }
-    ]
+          id: dataName,
+        },
+      ];
 
       const datasets = [
         ...state.datasets,
@@ -1130,26 +1184,26 @@ var reducer = (state = INITIAL_STATE, action) => {
           name: dataName,
           file: dataName,
           geography: dataName,
-          join: 'idx',
+          join: "idx",
           tables: {},
-        }
-      ]
+        },
+      ];
 
       let variableTree = {
         [`HEADER: ${dataName}`]: {},
       };
-      const variablesList = state.variables.map(f => f.name)
+      const variablesList = state.variables.map((f) => f.name);
       for (let i = 0; i < action.payload.variables.length; i++) {
         let currVariable = resolveName(
           action.payload.variables[i].variableName,
-          variablesList,
+          variablesList
         );
         variablesList.push(currVariable);
-       
+
         variables.unshift({
           ...action.payload.variables[i],
           variableName: currVariable,
-        })
+        });
 
         variableTree[currVariable] = {
           [dataName]: [dataName],
@@ -1179,12 +1233,12 @@ var reducer = (state = INITIAL_STATE, action) => {
         currentData: dataName,
         dataParams: variables[0],
         currentTable: {
-          numerator: 'properties',
-          denominator: 'properties',
+          numerator: "properties",
+          denominator: "properties",
         },
         mapParams: {
           ...state.mapParams,
-          vizType: '2D',
+          vizType: "2D",
           dotDensityParams: {
             ...state.mapParams.dotDensityParams,
             colorCOVID: false,
@@ -1193,7 +1247,7 @@ var reducer = (state = INITIAL_STATE, action) => {
         shouldPanMap: true,
       };
     }
-    case 'MAP_DID_PAN': {
+    case "MAP_DID_PAN": {
       return {
         ...state,
         shouldPanMap: false,

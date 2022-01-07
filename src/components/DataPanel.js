@@ -3,13 +3,14 @@
 
 // Import main libraries
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 // Import helper libraries
 import styled from 'styled-components';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import useGetSidebarData from '../hooks/useGetSidebarData';
 
 // Import config and sub-components
 import Tooltip from './Tooltip';
@@ -21,10 +22,10 @@ import { report } from '../config/svg';
 //// Styled components CSS
 // Main container for entire panel
 const DataPanelContainer = styled.div`
-  position: fixed;
-  min-width: 250px;
+  position: absolute;
+  width:20%;
   right: 0;
-  top: 50px;
+  top: 0;
   overflow-x: visible;
   height: calc(100vh - 50px);
   background-color: ${colors.gray}fa;
@@ -55,8 +56,6 @@ const DataPanelContainer = styled.div`
     &.open {
       transform: none;
     }
-    display: ${(props) =>
-      props.otherPanels || props.dataLength === 0 ? 'none' : 'initial'};
   }
   button#showHideRight {
     position: absolute;
@@ -266,19 +265,13 @@ const ExpandSelect = styled(FormControl)`
 
 // DataPanel Function Component
 export default function DataPanel() {
-  const dispatch = useDispatch();
   const selectionKeys = useSelector((state) => state.selectionKeys);
   const panelState = useSelector((state) => state.panelState);
-  const sidebarData = useSelector((state) => state.sidebarData);
   const [expanded, setExpanded] = useState(true);
-  if (!selectionKeys.length) return null;
-
-  // handles panel open/close
-  const handleOpenClose = () =>
-    dispatch(setPanelState({ info: !panelState.info }));
-
+  const sidebarData = useGetSidebarData({selectionKeys, panelOpen: panelState.info})
   // Set expanded or contracted view
   const handleExpandContract = (event) => setExpanded(event.target.value);
+  
   return (
     <DataPanelContainer
       className={panelState.info ? 'open' : ''}
@@ -287,7 +280,8 @@ export default function DataPanel() {
       otherPanels={panelState.variables}
       dataLength={selectionKeys.length}
     >
-      <ExpandSelect>
+      {!selectionKeys.length && <h3>Click an area for more detailed data.</h3>}
+      {!!selectionKeys.length && <ExpandSelect>
         <Select
           labelId="expand-view-label"
           id="expand-view"
@@ -297,7 +291,7 @@ export default function DataPanel() {
           <MenuItem value={true}>Expanded</MenuItem>
           <MenuItem value={false}>Compact</MenuItem>
         </Select>
-      </ExpandSelect>
+      </ExpandSelect>}
       <ReportWrapper>
         <ReportContainer expanded={expanded}>
           <ReportSection>
@@ -686,14 +680,6 @@ export default function DataPanel() {
           )}
 
           <div className="extraPadding"></div>
-
-          <button
-            onClick={handleOpenClose}
-            id="showHideRight"
-            className={panelState.info ? 'active' : 'hidden'}
-          >
-            {report}
-          </button>
         </ReportContainer>
       </ReportWrapper>
     </DataPanelContainer>

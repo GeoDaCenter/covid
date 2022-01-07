@@ -1,48 +1,48 @@
 // general imports, state
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import styled from 'styled-components';
-import * as Pbf from 'pbf';
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import styled from "styled-components";
+import * as Pbf from "pbf";
 
 // deck GL and helper function import
-import DeckGL from '@deck.gl/react';
-import { MapView, FlyToInterpolator } from '@deck.gl/core';
+import DeckGL from "@deck.gl/react";
+import { MapView, FlyToInterpolator } from "@deck.gl/core";
 import {
   ScatterplotLayer,
   IconLayer,
   TextLayer,
   GeoJsonLayer,
-} from '@deck.gl/layers';
-import { DataFilterExtension } from '@deck.gl/extensions';
-import { fitBounds } from '@math.gl/web-mercator';
-import MapboxGLMap from 'react-map-gl';
-import { MapboxLayer } from '@deck.gl/mapbox';
+} from "@deck.gl/layers";
+import { DataFilterExtension } from "@deck.gl/extensions";
+import { fitBounds } from "@math.gl/web-mercator";
+import MapboxGLMap from "react-map-gl";
+import { MapboxLayer } from "@deck.gl/mapbox";
 
 // component, action, util, and config import
-import { Geocoder, MapButtons } from '../components';
+import { Geocoder, MapButtons } from "../components";
 import {
   setMapLoaded,
   openContextMenu,
   setNotification,
-  setTooltipContent,
+  setTooltipInfo,
   setDotDensityData,
   updateSelectionKeys,
   mapDidPan,
-} from '../actions';
+} from "../actions";
 import {
   findIn,
   getCSV,
   getCartogramCenter,
   parseMapboxLayers,
   shallowCompare,
-} from '../utils';
-import { MAPBOX_ACCESS_TOKEN } from '../config';
-import colors from '../config/colors';
-import MAP_STYLE from '../config/style.json';
-import { useViewport, useSetViewport } from '../contexts/Viewport';
-import useFindViewport from '../hooks/useFindViewport';
+} from "../utils";
+import { MAPBOX_ACCESS_TOKEN } from "../config";
+import colors from "../config/colors";
+import MAP_STYLE from "../config/style.json";
+import { useViewport, useSetViewport } from "../contexts/Viewport";
+import useFindViewport from "../hooks/useFindViewport";
 // PBF schemas
-import * as Schemas from '../schemas';
+import * as Schemas from "../schemas";
 
 const view = new MapView({ repeat: true });
 
@@ -56,18 +56,14 @@ const ICON_MAPPING = {
 };
 
 // component styling
+const MapContainerOuter = styled.div`
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+`;
 const MapContainer = styled.div`
   #deckgl-wrapper {
-    width: ${(props) => {
-      const { info, variables } = props.panelState;
-      return `calc(100% - 50px ${info ? '- 20%' : ''} ${
-        variables ? '- min(25%, 350px)' : ''
-      }) !important`;
-    }};
-    left: ${(props) => {
-      const { info, variables } = props.panelState;
-      return `calc(50px ${variables ? '+ min(25%, 350px)' : ''}) !important`;
-    }};
+    width: 100%;
     transition: 125ms all;
   }
   height: 100%;
@@ -84,10 +80,10 @@ const IndicatorBox = styled.div`
   border: 1px dashed #ffce00;
   background: rgba(0, 0, 0, 0.25);
   z-index: 5;
-  left:-5px;
-  right:-5px;
-  width:0;
-  height:0;
+  left: -5px;
+  right: -5px;
+  width: 0;
+  height: 0;
 `;
 const GeocoderContainer = styled.div`
   position: fixed;
@@ -135,14 +131,14 @@ export default function MapSection({
   const datasets = useSelector((state) => state.datasets);
   // const currentMapGeography = storedGeojson[currentData]?.data||[]
   const colorFilter = useSelector((state) => state.colorFilter);
-  const currIdCol = findIn(datasets, 'file', currentData).join;
+  const currIdCol = findIn(datasets, "file", currentData).join;
   const storedCartogramData = useSelector((state) => state.storedCartogramData);
   const storedLisaData = useSelector((state) => state.storedLisaData);
   const shouldPanMap = useSelector((state) => state.shouldPanMap);
   const panelState = useSelector((state) => state.panelState);
 
   const isPoint = currentMapGeography?.features
-    ? currentMapGeography.features[0].geometry.type === 'Point'
+    ? currentMapGeography.features[0].geometry.type === "Point"
     : false;
 
   const viewport = useViewport();
@@ -171,13 +167,13 @@ export default function MapSection({
 
   // fix for alt-tabbing sleep
   let visibilityChange = null;
-  if (typeof document.hidden !== 'undefined') {
+  if (typeof document.hidden !== "undefined") {
     // Opera 12.10 and Firefox 18 and later support
-    visibilityChange = 'visibilitychange';
-  } else if (typeof document.msHidden !== 'undefined') {
-    visibilityChange = 'msvisibilitychange';
-  } else if (typeof document.webkitHidden !== 'undefined') {
-    visibilityChange = 'webkitvisibilitychange';
+    visibilityChange = "visibilitychange";
+  } else if (typeof document.msHidden !== "undefined") {
+    visibilityChange = "msvisibilitychange";
+  } else if (typeof document.webkitHidden !== "undefined") {
+    visibilityChange = "webkitvisibilitychange";
   }
 
   // shared view broadcast
@@ -186,22 +182,22 @@ export default function MapSection({
       setBoxSelect(false);
       setMultipleSelect(false);
     });
-    document.addEventListener('contextmenu', (e) => {
+    document.addEventListener("contextmenu", (e) => {
       e.preventDefault();
     });
 
-    window.addEventListener('storage', () => {
+    window.addEventListener("storage", () => {
       // When local storage changes, dump the list to the console.
-      const SHARED_GEOID = localStorage.getItem('SHARED_GEOID');
+      const SHARED_GEOID = localStorage.getItem("SHARED_GEOID");
       if (SHARED_GEOID !== null) {
-        setHighlightGeog(SHARED_GEOID.split(',').map((d) => parseInt(d)));
+        setHighlightGeog(SHARED_GEOID.split(",").map((d) => parseInt(d)));
       }
-      const SHARED_VIEW = JSON.parse(localStorage.getItem('SHARED_VIEW'));
+      const SHARED_VIEW = JSON.parse(localStorage.getItem("SHARED_VIEW"));
       if (
         !document.hasFocus() &&
         SHARED_VIEW !== null &&
         shallowCompare(SHARED_VIEW, viewport) &&
-        SHARED_VIEW.hasOwnProperty('latitude')
+        SHARED_VIEW.hasOwnProperty("latitude")
       ) {
         setViewport({
           longitude: SHARED_VIEW.longitude,
@@ -212,12 +208,12 @@ export default function MapSection({
         });
       }
     });
-    window.addEventListener('contextmenu', (e) => {
+    window.addEventListener("contextmenu", (e) => {
       dispatch(
         openContextMenu({
           x: e.pageX,
           y: e.pageY,
-        }),
+        })
       );
     });
   }, []);
@@ -225,7 +221,7 @@ export default function MapSection({
   // change map center on viztype change
   useEffect(() => {
     switch (mapParams.vizType) {
-      case '3D': {
+      case "3D": {
         setViewport((viewState) => {
           return {
             ...viewState,
@@ -239,7 +235,7 @@ export default function MapSection({
       default: {
         setViewport((viewState) => {
           if (
-            mapParams.vizType !== 'cartogram' &&
+            mapParams.vizType !== "cartogram" &&
             viewState.latitude < 15 &&
             viewState.longitude > -30
           ) {
@@ -273,7 +269,7 @@ export default function MapSection({
   // needs a separate rule from the above effect due to state and county cartograms
   // having separate locations
   useEffect(() => {
-    if (mapParams.vizType !== 'cartogram') return;
+    if (mapParams.vizType !== "cartogram") return;
 
     if (storedCartogramData.length) {
       let center = getCartogramCenter(storedCartogramData);
@@ -286,7 +282,7 @@ export default function MapSection({
         setViewport({
           latitude: center[1],
           longitude: center[0],
-          zoom: currentData.includes('state') ? 6 : 5,
+          zoom: currentData.includes("state") ? 6 : 5,
           bearing: 0,
           pitch: 0,
         });
@@ -305,7 +301,7 @@ export default function MapSection({
 
   // change mapbox layer on viztype change or overlay/resource change
   useEffect(() => {
-    if (mapParams.vizType === 'dotDensity') {
+    if (mapParams.vizType === "dotDensity") {
       if (!dotDensityData.length) {
         getDotDensityData();
       }
@@ -316,32 +312,32 @@ export default function MapSection({
   // load in Hospital and clinic data when called
   useEffect(() => {
     if (
-      mapParams.resource.includes('hospital') ||
-      mapParams.resource.includes('clinic')
+      mapParams.resource.includes("hospital") ||
+      mapParams.resource.includes("clinic")
     ) {
       if (!resourceLayerData.hospitals.length) {
         getCSV(
-          `${process.env.PUBLIC_URL}/csv/context_hospitals_covidcaremap.csv`,
+          `${process.env.PUBLIC_URL}/csv/context_hospitals_covidcaremap.csv`
         ).then((values) =>
-          setResourceLayerData((prev) => ({ ...prev, hospitals: values })),
+          setResourceLayerData((prev) => ({ ...prev, hospitals: values }))
         );
       }
 
       if (!resourceLayerData.clinics.length) {
         getCSV(
-          `${process.env.PUBLIC_URL}/csv/context_fqhc_clinics_hrsa.csv`,
+          `${process.env.PUBLIC_URL}/csv/context_fqhc_clinics_hrsa.csv`
         ).then((values) =>
-          setResourceLayerData((prev) => ({ ...prev, clinics: values })),
+          setResourceLayerData((prev) => ({ ...prev, clinics: values }))
         );
       }
     }
 
-    if (mapParams.resource.includes('vaccination')) {
+    if (mapParams.resource.includes("vaccination")) {
       if (!resourceLayerData.vaccineSites.length) {
         getCSV(
-          `${process.env.PUBLIC_URL}/csv/context_vaccination_sites_hrsa_wh.csv`,
+          `${process.env.PUBLIC_URL}/csv/context_vaccination_sites_hrsa_wh.csv`
         ).then((values) =>
-          setResourceLayerData((prev) => ({ ...prev, vaccineSites: values })),
+          setResourceLayerData((prev) => ({ ...prev, vaccineSites: values }))
         );
         dispatch(
           setNotification(
@@ -355,8 +351,8 @@ export default function MapSection({
                     </a>
                     </p>
                 `,
-            'center',
-          ),
+            "center"
+          )
         );
       }
     }
@@ -403,25 +399,24 @@ export default function MapSection({
   };
 
   const handleMapHover = ({ x, y, object, layer }) => {
-    // if (object) {
-    //   dispatch(
-    //     setTooltipContent(
-    //       x,
-    //       y,
-    //       object?.properties ? object.properties[currIdCol] : object,
-    //     ),
-    //   );
-    // } else {
-    //   setHoverGeog(null);
-    //   dispatch(setTooltipContent(x, y, null));
-    // }
-
-    // if (!isPoint && object && object?.properties[currIdCol]) {
-    //   if (object?.properties[currIdCol] !== hoverGeog)
-    //     setHoverGeog(object?.properties[currIdCol]);
-    // } else {
-    //   setHoverGeog(null);
-    // }
+    if (object) {
+      dispatch(
+        setTooltipInfo(
+          x,
+          y,
+          object?.properties ? object.properties[currIdCol] : object,
+        ),
+      );
+    } else {
+      setHoverGeog(null);
+      dispatch(setTooltipInfo(x, y, null));
+    }
+    if (!isPoint && object && object?.properties[currIdCol]) {
+      if (object?.properties[currIdCol] !== hoverGeog)
+        setHoverGeog(object?.properties[currIdCol]);
+    } else {
+      setHoverGeog(null);
+    }
   };
 
   const getScatterColor = (geoid) => currentMapData[geoid]?.color;
@@ -436,19 +431,19 @@ export default function MapSection({
         if (highlightGeog.indexOf(objectID) === -1) {
           let GeoidList = [...highlightGeog, objectID];
           setHighlightGeog(GeoidList);
-          dispatch(updateSelectionKeys(objectID, 'append'));
-          window.localStorage.setItem('SHARED_GEOID', GeoidList);
-          window.localStorage.setItem('SHARED_VIEW', JSON.stringify(viewport));
+          dispatch(updateSelectionKeys(objectID, "append"));
+          window.localStorage.setItem("SHARED_GEOID", GeoidList);
+          window.localStorage.setItem("SHARED_VIEW", JSON.stringify(viewport));
         } else {
           if (highlightGeog.length > 1) {
             let tempArray = [...highlightGeog];
             tempArray.splice(tempArray.indexOf(objectID), 1);
             setHighlightGeog(tempArray);
-            dispatch(updateSelectionKeys(objectID, 'remove'));
-            window.localStorage.setItem('SHARED_GEOID', tempArray);
+            dispatch(updateSelectionKeys(objectID, "remove"));
+            window.localStorage.setItem("SHARED_GEOID", tempArray);
             window.localStorage.setItem(
-              'SHARED_VIEW',
-              JSON.stringify(viewport),
+              "SHARED_VIEW",
+              JSON.stringify(viewport)
             );
           }
         }
@@ -456,9 +451,9 @@ export default function MapSection({
     } else {
       try {
         setHighlightGeog([objectID]);
-        dispatch(updateSelectionKeys(objectID, 'update'));
-        window.localStorage.setItem('SHARED_GEOID', objectID);
-        window.localStorage.setItem('SHARED_VIEW', JSON.stringify(viewport));
+        dispatch(updateSelectionKeys(objectID, "update"));
+        window.localStorage.setItem("SHARED_GEOID", objectID);
+        window.localStorage.setItem("SHARED_VIEW", JSON.stringify(viewport));
       } catch {}
     }
   };
@@ -487,15 +482,15 @@ export default function MapSection({
         zoom: zoom,
         bearing: 0,
         pitch: 0,
-        transitionDuration: 'auto',
+        transitionDuration: "auto",
         transitionInterpolator: new FlyToInterpolator(),
       });
     }
   }, []);
-  
+
   const FullLayers = {
     choropleth: new GeoJsonLayer({
-      id: 'choropleth',
+      id: "choropleth",
       data: currentMapGeography,
       getFillColor: (d) =>
         !colorFilter ||
@@ -518,9 +513,9 @@ export default function MapSection({
       stroked: false,
       filled: true,
       wireframe: false,
-      extruded: mapParams.vizType === '3D',
+      extruded: mapParams.vizType === "3D",
       opacity:
-        mapParams.vizType === 'dotDensity'
+        mapParams.vizType === "dotDensity"
           ? mapParams.dotDensityParams.backgroundTransparency
           : 0.8,
       material: false,
@@ -540,10 +535,10 @@ export default function MapSection({
       },
     }),
     choroplethHighlight: new GeoJsonLayer({
-      id: 'highlightLayer',
+      id: "highlightLayer",
       data: currentMapGeography,
       getLineColor: () =>
-        mapParams.vizType === 'dotDensity' ? [240, 240, 240] : [0, 104, 109],
+        mapParams.vizType === "dotDensity" ? [240, 240, 240] : [0, 104, 109],
       opacity: 0.8,
       material: false,
       pickable: false,
@@ -560,17 +555,17 @@ export default function MapSection({
       },
     }),
     choroplethHover: new GeoJsonLayer({
-      id: 'hoverHighlightlayer',
+      id: "hoverHighlightlayer",
       data: currentMapGeography,
       getLineColor: () =>
-        mapParams.vizType === 'dotDensity' ? [200, 200, 200] : [50, 50, 50],
+        mapParams.vizType === "dotDensity" ? [200, 200, 200] : [50, 50, 50],
       getElevation: (d) => currentMapData[d.properties[currIdCol]]?.height || 0,
       elevationScale: currentHeightScale || 1,
       pickable: false,
       stroked: true,
       filled: false,
-      wireframe: mapParams.vizType === '3D',
-      extruded: mapParams.vizType === '3D',
+      wireframe: mapParams.vizType === "3D",
+      extruded: mapParams.vizType === "3D",
       lineWidthScale: 500,
       getLineWidth: (d) => (hoverGeog === d.properties[currIdCol] ? 8 : 0),
       lineWidthMinPixels: 0,
@@ -584,14 +579,14 @@ export default function MapSection({
       },
     }),
     cartogram: new ScatterplotLayer({
-      id: 'cartogram layer',
+      id: "cartogram layer",
       data: currentMapGeography?.features || [],
       pickable: true,
       getPosition: (d) => currentMapData[d.properties[currIdCol]].position,
       getFillColor: (d) => currentMapData[d.properties[currIdCol]].color,
       getRadius: (d) => currentMapData[d.properties[currIdCol]].radius,
       onHover: handleMapHover,
-      radiusScale: currentData.includes('state') ? 9 : 6,
+      radiusScale: currentData.includes("state") ? 9 : 6,
       updateTriggers: {
         data: currentMapGeography,
         getPosition: [currentMapID, storedLisaData, storedCartogramData],
@@ -601,19 +596,19 @@ export default function MapSection({
       },
     }),
     cartogramText: new TextLayer({
-      id: 'cartogram text layer',
+      id: "cartogram text layer",
       data: currentMapGeography?.features || [],
       getPosition: (d) => currentMapData[d.properties[currIdCol]].position,
       getSize: (d) => currentMapData[d.properties[currIdCol]].radius,
       sizeScale: 4,
       backgroundColor: [240, 240, 240],
       pickable: false,
-      sizeUnits: 'meters',
-      fontWeight: 'bold',
-      getTextAnchor: 'middle',
-      getAlignmentBaseline: 'center',
+      sizeUnits: "meters",
+      fontWeight: "bold",
+      getTextAnchor: "middle",
+      getAlignmentBaseline: "center",
       maxWidth: 500,
-      wordBreak: 'break-word',
+      wordBreak: "break-word",
       getText: (d) => d.properties.NAME,
       updateTriggers: {
         data: currentMapGeography,
@@ -635,7 +630,7 @@ export default function MapSection({
     // }),
 
     dotDensityWhite: new ScatterplotLayer({
-      id: 'dot density layer white',
+      id: "dot density layer white",
       data: dotDensityData,
       pickable: false,
       filled: true,
@@ -667,7 +662,7 @@ export default function MapSection({
       },
     }),
     dotDensity: new ScatterplotLayer({
-      id: 'dot density layer',
+      id: "dot density layer",
       data: dotDensityData,
       pickable: false,
       filled: true,
@@ -706,14 +701,14 @@ export default function MapSection({
     }),
 
     hospitals: new IconLayer({
-      id: 'hospital-layer',
+      id: "hospital-layer",
       data: resourceLayerData.hospitals,
       pickable: true,
       iconAtlas: `${process.env.PUBLIC_URL}/assets/img/icon_atlas.png`,
       iconMapping: ICON_MAPPING,
-      getIcon: (d) => 'hospital',
+      getIcon: (d) => "hospital",
       getPosition: (d) => [d.Longitude, d.Latitude],
-      sizeUnits: 'meters',
+      sizeUnits: "meters",
       getSize: 20000,
       sizeMinPixels: 12,
       sizeMaxPixels: 24,
@@ -723,15 +718,15 @@ export default function MapSection({
       onHover: handleMapHover,
     }),
     clinic: new IconLayer({
-      id: 'clinics-layer',
+      id: "clinics-layer",
       data: resourceLayerData.clinics,
       pickable: true,
       iconAtlas: `${process.env.PUBLIC_URL}/assets/img/icon_atlas.png`,
       iconMapping: ICON_MAPPING,
-      getIcon: (d) => 'clinic',
+      getIcon: (d) => "clinic",
       getSize: 20000,
       getPosition: (d) => [d.lon, d.lat],
-      sizeUnits: 'meters',
+      sizeUnits: "meters",
       sizeMinPixels: 7,
       sizeMaxPixels: 20,
       updateTriggers: {
@@ -740,22 +735,22 @@ export default function MapSection({
       onHover: handleMapHover,
     }),
     vaccinationSites: new IconLayer({
-      id: 'vaccine-sites-layer',
+      id: "vaccine-sites-layer",
       data: resourceLayerData.vaccineSites,
       pickable: true,
       iconAtlas: `${process.env.PUBLIC_URL}/assets/img/icon_atlas.png`,
       iconMapping: ICON_MAPPING,
       getIcon: (d) =>
         d.type === 0
-          ? 'invitedVaccineSite'
+          ? "invitedVaccineSite"
           : d.type === 1
-          ? 'participatingVaccineSite'
+          ? "participatingVaccineSite"
           : d.type === 3
-          ? 'megaSite'
-          : '',
+          ? "megaSite"
+          : "",
       getSize: (d) => (d.type === 3 ? 200000 : 1000),
       getPosition: (d) => [d.lon, d.lat],
-      sizeUnits: 'meters',
+      sizeUnits: "meters",
       sizeMinPixels: 20,
       sizeMaxPixels: 60,
       updateTriggers: {
@@ -769,37 +764,37 @@ export default function MapSection({
     (layers, vizType, overlays, resources, currData) => {
       var LayerArray = [];
 
-      if (vizType === 'cartogram') {
+      if (vizType === "cartogram") {
         // LayerArray.push(layers['cartogramBackground'])
-        LayerArray.push(layers['cartogram']);
-        if (currentData.includes('state')) {
-          LayerArray.push(layers['cartogramText']);
+        LayerArray.push(layers["cartogram"]);
+        if (currentData.includes("state")) {
+          LayerArray.push(layers["cartogramText"]);
         }
         return LayerArray;
-      } else if (vizType === '2D') {
-        LayerArray.push(layers['choropleth']);
-        LayerArray.push(layers['choroplethHighlight']);
-        LayerArray.push(layers['choroplethHover']);
-      } else if (vizType === '3D') {
-        LayerArray.push(layers['choropleth']);
-        LayerArray.push(layers['choroplethHover']);
-      } else if (vizType === 'dotDensity') {
-        LayerArray.push(layers['choropleth']);
-        LayerArray.push(layers['dotDensity']);
-        LayerArray.push(layers['dotDensityWhite']);
-        LayerArray.push(layers['choroplethHighlight']);
-        LayerArray.push(layers['choroplethHover']);
+      } else if (vizType === "2D") {
+        LayerArray.push(layers["choropleth"]);
+        LayerArray.push(layers["choroplethHighlight"]);
+        LayerArray.push(layers["choroplethHover"]);
+      } else if (vizType === "3D") {
+        LayerArray.push(layers["choropleth"]);
+        LayerArray.push(layers["choroplethHover"]);
+      } else if (vizType === "dotDensity") {
+        LayerArray.push(layers["choropleth"]);
+        LayerArray.push(layers["dotDensity"]);
+        LayerArray.push(layers["dotDensityWhite"]);
+        LayerArray.push(layers["choroplethHighlight"]);
+        LayerArray.push(layers["choroplethHover"]);
       }
 
-      if (resources && resources.includes('hospital'))
-        LayerArray.push(layers['hospitals']);
-      if (resources && resources.includes('clinic'))
-        LayerArray.push(layers['clinic']);
-      if (resources && resources.includes('vaccinationSites'))
-        LayerArray.push(layers['vaccinationSites']);
+      if (resources && resources.includes("hospital"))
+        LayerArray.push(layers["hospitals"]);
+      if (resources && resources.includes("clinic"))
+        LayerArray.push(layers["clinic"]);
+      if (resources && resources.includes("vaccinationSites"))
+        LayerArray.push(layers["vaccinationSites"]);
 
       return LayerArray;
-    },
+    }
   );
 
   const listener = (e) => {
@@ -825,10 +820,10 @@ export default function MapSection({
   };
 
   const removeListeners = () => {
-    window.removeEventListener('touchmove', touchListener);
-    window.removeEventListener('touchend', removeListeners);
-    window.removeEventListener('mousemove', listener);
-    window.removeEventListener('mouseup', removeListeners);
+    window.removeEventListener("touchmove", touchListener);
+    window.removeEventListener("touchend", removeListeners);
+    window.removeEventListener("mousemove", listener);
+    window.removeEventListener("mouseup", removeListeners);
     setBoxSelectDims({
       left: -50,
       top: -50,
@@ -842,7 +837,7 @@ export default function MapSection({
 
   const handleBoxSelect = (e) => {
     try {
-      if (e.type === 'mousedown') {
+      if (e.type === "mousedown") {
         setBoxSelectDims({
           left: e.pageX,
           top: e.pageY,
@@ -851,14 +846,14 @@ export default function MapSection({
           width: 0,
           height: 0,
         });
-        window.addEventListener('touchmove', touchListener);
-        window.addEventListener('touchend', removeListeners);
-        window.addEventListener('mousemove', listener);
-        window.addEventListener('mouseup', removeListeners);
+        window.addEventListener("touchmove", touchListener);
+        window.addEventListener("touchend", removeListeners);
+        window.addEventListener("mousemove", listener);
+        window.addEventListener("mouseup", removeListeners);
       } else {
         const { left, top, width, height } = boxSelectDims;
 
-        let layerIds = ['choropleth'];
+        let layerIds = ["choropleth"];
         let features = deckRef.current.pickObjects({
           x: left,
           y: top - 50,
@@ -874,18 +869,18 @@ export default function MapSection({
           GeoidList.push(objectID);
         }
 
-        dispatch(updateSelectionKeys(GeoidList, 'bulk-append'));
+        dispatch(updateSelectionKeys(GeoidList, "bulk-append"));
         setHighlightGeog(GeoidList);
 
-        window.localStorage.setItem('SHARED_GEOID', GeoidList);
-        window.localStorage.setItem('SHARED_VIEW', JSON.stringify(viewport));
+        window.localStorage.setItem("SHARED_GEOID", GeoidList);
+        window.localStorage.setItem("SHARED_VIEW", JSON.stringify(viewport));
 
         setBoxSelectDims({});
         removeListeners();
         setBoxSelect(false);
       }
     } catch {
-      console.log('bad selection');
+      console.log("bad selection");
     }
   };
 
@@ -899,71 +894,74 @@ export default function MapSection({
       map.addLayer(
         new MapboxLayer({ id: FullLayers[layerKeys[i]].props.id, deck }),
         [
-          'dotDensityWhite',
-          'dotDensity',
-          'vaccinationSites',
-          'hospitals',
-          'clinic',
+          "dotDensityWhite",
+          "dotDensity",
+          "vaccinationSites",
+          "hospitals",
+          "clinic",
         ].includes(layerKeys[i])
-          ? 'state-label'
-          : 'water',
+          ? "state-label"
+          : "water"
       );
     }
   }, []);
 
   return (
-    <MapContainer
-      onKeyDown={handleKeyDown}
-      onKeyUp={handleKeyUp}
-      onMouseDown={(e) => {
-        boxSelect && handleBoxSelect(e);
-        dispatch(setTooltipContent(null, null, null));
-      }}
-      onMouseUp={(e) => boxSelect && handleBoxSelect(e)}
-      panelState={panelState}
-    >
-      <IndicatorBox style={{ ...boxSelectDims }} />
-      <DeckGL
-        layers={getLayers(
-          FullLayers,
-          mapParams.vizType,
-          mapParams.overlay,
-          mapParams.resource,
-          currentData,
-        )}
-        ref={deckRef}
-        views={view}
-        viewState={viewport}
-        onViewStateChange={({ viewState }) =>
-          boxSelect ? null : setViewport(viewState)
-        }
-        controller={true}
-        pickingRadius={20}
-        onWebGLInitialized={setGLContext}
-        glOptions={{ stencil: true }}
+    <MapContainerOuter>
+      <MapContainer
+        onKeyDown={handleKeyDown}
+        onKeyUp={handleKeyUp}
+        onMouseDown={(e) => {
+          boxSelect && handleBoxSelect(e);
+          dispatch(setTooltipInfo(null, null, null));
+        }}
+        id="mapContainer"
+        onMouseUp={(e) => boxSelect && handleBoxSelect(e)}
+        panelState={panelState}
       >
-        <MapboxGLMap
-          reuseMaps
-          ref={mapRef}
-          mapStyle={MAP_STYLE}
-          gl={glContext}
-          preventStyleDiffing={true}
-          mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
-          onLoad={() => {
-            onMapLoad();
-            dispatch(setMapLoaded(true));
-          }}
-        ></MapboxGLMap>
-      </DeckGL>
-      <MapButtons boxSelect={boxSelect} setBoxSelect={setBoxSelect} />
-      <GeocoderContainer>
-        <Geocoder
-          id="Geocoder"
-          placeholder={'Search by location'}
-          API_KEY={MAPBOX_ACCESS_TOKEN}
-          onChange={handleGeocoder}
-        />
-      </GeocoderContainer>
-    </MapContainer>
+        <IndicatorBox style={{ ...boxSelectDims }} />
+        <DeckGL
+          layers={getLayers(
+            FullLayers,
+            mapParams.vizType,
+            mapParams.overlay,
+            mapParams.resource,
+            currentData
+          )}
+          ref={deckRef}
+          views={view}
+          viewState={viewport}
+          onViewStateChange={({ viewState }) =>
+            boxSelect ? null : setViewport(viewState)
+          }
+          controller={true}
+          pickingRadius={20}
+          onWebGLInitialized={setGLContext}
+          glOptions={{ stencil: true }}
+        >
+          <MapboxGLMap
+            reuseMaps
+            ref={mapRef}
+            mapStyle={MAP_STYLE}
+            gl={glContext}
+            preventStyleDiffing={true}
+            mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN}
+            onLoad={() => {
+              onMapLoad();
+              dispatch(setMapLoaded(true));
+            }}
+          ></MapboxGLMap>
+        </DeckGL>
+        <MapButtons boxSelect={boxSelect} setBoxSelect={setBoxSelect} />
+        <GeocoderContainer>
+          <Geocoder
+            id="Geocoder"
+            placeholder={"Search by location"}
+            API_KEY={MAPBOX_ACCESS_TOKEN}
+            onChange={handleGeocoder}
+          />
+        </GeocoderContainer>
+      </MapContainer>
+    </MapContainerOuter>
   );
 }

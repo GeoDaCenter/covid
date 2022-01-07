@@ -1,43 +1,35 @@
-import { tooltipTables } from '../config';
-import { dataFn } from '../utils';
+import { findIn } from '../utils';
+import { tooltipTables } from '../config/defaults';
 
-export const parseTooltipData = (geoid, state) => {
+export const parseTooltipData = ({
+  currentData,
+  currDataset,
+  currIndex,
+  currTables,
+  geoid,
+  storedGeojson,
+  storedData
+}) => {
+  if (!currDataset || !storedGeojson[currentData] || !currTables) return {}
   let tooltipData = {};
-  // const properties = state.storedGeojson[state.currentData].properties[geoid];
-  // const geography = state.dataPresets[state.currentData].geography;
+  const { file, geography, join, name, tables } = currDataset;
+  const properties = storedGeojson[currentData].properties;
 
-  // if (!['County', 'State', 'County (Hybrid)'].includes(geography)) {
-  //   const varsToCalculate = Object.entries(state.variableTree)
-  //     .filter((treeEntry) => treeEntry[1].hasOwnProperty(geography))
-  //     .map((entry) => entry[0]);
-
-  //   for (let i = 0; i < varsToCalculate.length; i++) {
-  //     tooltipData[varsToCalculate[i]] = dataFn(
-  //       properties,
-  //       properties,
-  //       findIn(state.variables, 'name', varsToCalculate[i])
-  //     );
-  //   }
-  //   tooltipData = {
-  //     custom: {
-  //       ...tooltipData,
-  //       ...(Object.keys(properties).length < 10 ? properties : {}),
-  //     },
-  //   };
-  //   return tooltipData;
-  // }
-
-  // tooltipData = {
-  //   population: properties.population,
-  //   name: ['County', 'County (Hybrid)'].includes(geography)
-  //     ? properties.NAME + ', ' + properties.state_abbr
-  //     : properties.NAME,
-  // };
+  const locProperties = properties[geoid]
+  const pop = locProperties && locProperties.population;
   
-  // const currentTables = {
-  //   ...state.defaultTables[geography],
-  //   ...state.dataPresets[state.currentData].tables,
-  // };
+  if (locProperties){
+    tooltipData.name = ['County', 'County (Hybrid)'].includes(geography)
+        ? locProperties.NAME + ', ' + locProperties.state_abbr
+        : locProperties.NAME
+  }
+  for (let i=0; i<currTables.length; i++){
+    const tableName = currTables[i];
+    const data = storedData[tableName.name];
+    if (data?.data && data.data[geoid] && data?.dates && data.dates.includes(currIndex)) {
+      tooltipData[`${tableName.table}`] = data.data[geoid][currIndex]
+    }
+  }
 
   // for (const table in currentTables) {
   //   if (

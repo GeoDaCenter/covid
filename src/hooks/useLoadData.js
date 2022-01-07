@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useMemo, useState } from 'react';
 import {
   findAllDefaults,
@@ -9,10 +9,7 @@ import {
   getParseCsvPromise,
   indexGeoProps,
   parsePbfData
-} from '../utils'; //getVarId
-// Main data loader
-// This functions asynchronously accesses the Geojson data and CSVs
-//   then performs a join and loads the data into the store
+} from '../utils';
 import { useGeoda } from '../contexts/Geoda';
 import * as Pbf from 'pbf';
 import * as Schemas from '../schemas';
@@ -145,10 +142,14 @@ function useBackgroundLoadData({
   tables=[],
   storedData={},
   dataDispatch=()=>{},
-  currTimespan='latest'
+  currTimespans=['latest']
 }){  
-  const filesToFetch = findAllDefaults(tables, currentGeography).map(dataspec => ({...dataspec, timespan: currTimespan})).filter(filesToFetch => !(storedData[filesToFetch.name] && storedData[filesToFetch.name].loaded?.includes(filesToFetch.timespan)));
-
+  const filesToFetch = currTimespans.map(timespan => 
+    findAllDefaults(tables, currentGeography)
+      .map(dataspec => ({...dataspec, timespan}))
+      .filter(filesToFetch => !(storedData[filesToFetch.name] && storedData[filesToFetch.name].loaded?.includes(filesToFetch.timespan)))
+    ).flat().filter(f => f.timespan !== false);
+  // console.log(filesToFetch)
   useEffect(() => {
     if (shouldFetch && filesToFetch.length) {
       fetcher([filesToFetch[0]]).then(dataArray => {
@@ -183,8 +184,7 @@ function useBackgroundLoadData({
       })
     }
   }, [shouldFetch, JSON.stringify(filesToFetch)]);
-
-}
+};
 
 function getFetchParams({
   dataParams,
@@ -192,31 +192,51 @@ function getFetchParams({
   tables,
   predicate,
   dateList,
-  currTimespan
+  currTimespans
 }){
   const tableName = dataParams[predicate] 
-  const eitherIndex = dataParams.nIndex||dataParams.dIndex
+  
   if (tableName === 'properties') {
     return [{
       noFile: true
     }]
   }
-  return [{
+  
+  return currTimespans.filter(t => !!t).map(timespan => ({
     ...findTableOrDefault(currDataset, tables, tableName),
-    timespan: currTimespan
-  }]
+    timespan
+  }))
 }
+
+const findSecondaryMonth = (
+  index,
+  dateList
+) => {
+  const date = new Date(dateList[index]).getDate();
+  if (date > 8 && date < 19) return false
+  if (date < 8) return dateList[index-14]?.slice(0,7)
+  if (date > 19) return dateLists[index+14]?.slice(0,7)
+  return false
+};
 
 export default function useLoadData() {
   // pieces of redux state
+  const dispatch = useDispatch();
   const dataParams = useSelector((state) => state.dataParams);
   const currentData = useSelector((state) => state.currentData);
   const datasets = useSelector((state) => state.datasets);
   const tables = useSelector((state) => state.tables);
+  const [firstLoad, setFirstLoad] = useState(true);
 
   // current state data params
   const currDataset = findIn(datasets, 'file', currentData)
-  const currTimespan = (!(dataParams.nIndex||dataParams.dIndex) || dateLists.isoDateList.length - (dataParams.nIndex||dataParams.dIndex) < 45 ) ? 'latest' : dateLists.isoDateList[(dataParams.nIndex||dataParams.dIndex)]?.slice(0,7)
+  const currIndex = dataParams.nIndex||dataParams.dIndex
+  const currTimespans = [
+    (!currIndex || dateLists.isoDateList.length - currIndex < 45 ) ? 'latest' : dateLists.isoDateList[currIndex]?.slice(0,7),
+    (!currIndex || dateLists.isoDateList.length - currIndex < 45 ) 
+      ? false 
+      : findSecondaryMonth(currIndex, dateLists.isoDateList)
+  ]
 
   const {
     geoda,
@@ -236,7 +256,7 @@ export default function useLoadData() {
     currDataset,
     predicate: 'numerator',
     dateList: dateLists['isoDateList'],
-    currTimespan
+    currTimespans
   })
   
   const denominatorParams = getFetchParams({
@@ -245,7 +265,7 @@ export default function useLoadData() {
     currDataset,
     predicate: 'denominator',
     dateList: dateLists['isoDateList'],
-    currTimespan
+    currTimespans
   })
   
   const [numeratorData, numeratorDataReady, numeratorDataError] = useGetTable({
@@ -272,13 +292,26 @@ export default function useLoadData() {
   });
   const dateIndices = numeratorData ? numeratorData.dates : null;
 
+  // First load fix numerator index
+  useEffect(() => {
+    if (firstLoad && numeratorData && numeratorData.dates.slice(-1)[0]){
+      dispatch({
+        type: 'SET_DATA_PARAMS',
+        payload: {
+          nIndex: numeratorData.dates.slice(-1)[0]
+        }
+      })
+      setFirstLoad(false)
+    }
+  },[numeratorData && numeratorData.dates.slice(-1)[0]])
+
   const backgroundLoading = useBackgroundLoadData({
     currentGeography: currDataset.geography,
     tables,
     shouldFetch: !!numeratorDataReady && !!denominatorDataReady && !!geojsonDataReady,
     storedData,
     dataDispatch,
-    currTimespan
+    currTimespans
   })
   
   return {
