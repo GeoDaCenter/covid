@@ -15,35 +15,63 @@ import useGetSidebarData from '../hooks/useGetSidebarData';
 // Import config and sub-components
 import Tooltip from './Tooltip';
 import TwoWeekChart from './TwoWeekLineChart';
-import { setPanelState } from '../actions';
 import colors from '../config/colors';
-import { report } from '../config/svg';
 
 //// Styled components CSS
 // Main container for entire panel
 const DataPanelContainer = styled.div`
-  position: absolute;
+  /* position: absolute;
   width:20%;
   right: 0;
-  top: 0;
-  overflow-x: visible;
-  height: calc(100vh - 50px);
+  top: 0; */
+  overflow-x: hidden;
+  position: relative;
+  
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #2b2b2b;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: url('${process.env.PUBLIC_URL}/icons/grip.png'), #999;
+    background-position: center center;
+    background-repeat: no-repeat, no-repeat;
+    background-size: 50%, 100%;
+    transition: 125ms all;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: url('${process.env.PUBLIC_URL}/icons/grip.png'), #f9f9f9;
+    background-position: center center;
+    background-repeat: no-repeat, no-repeat;
+    background-size: 50%, 100%;
+  }
+  /* overflow-y: scroll; */
+  /* height: calc(100vh - 50px); */
   background-color: ${colors.gray}fa;
-  box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.7);
+  /* box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.7); */
   padding: 20px;
+  flex: 1 1 auto;
   box-sizing: border-box;
   transition: 250ms all;
-  font: 'Lato', sans-serif;
+  font-family: 'Lato', sans-serif;
   color: white;
   font-size: 100%;
   padding: 0;
   z-index: 5;
-  transform: translateX(100%);
+  /* transform: translateX(100%); */
+  width:0;
   h4 {
     margin: 10px 0;
   }
   &.open {
-    transform: none;
+    width: auto;
   }
   @media (max-width: 1024px) {
     min-width: 50vw;
@@ -55,75 +83,6 @@ const DataPanelContainer = styled.div`
     z-index: 51;
     &.open {
       transform: none;
-    }
-  }
-  button#showHideRight {
-    position: absolute;
-    right: calc(100% - 20px);
-    top: 20px;
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    margin: 0;
-    background-color: ${colors.gray};
-    box-shadow: 0px 0px 6px rgba(0, 0, 0, 1);
-    outline: none;
-    border: none;
-    cursor: pointer;
-    transition: 500ms all;
-    svg {
-      width: 15px;
-      height: 15px;
-      margin: 12.5px 0 0 0;
-      @media (max-width: 600px) {
-        width: 20px;
-        height: 20px;
-        margin: 5px;
-      }
-      fill: white;
-      transform: rotate(180deg);
-      transition: 500ms all;
-    }
-    :after {
-      opacity: 0;
-      font-weight: bold;
-      color: white;
-      position: relative;
-      top: -17px;
-      transition: 500ms all;
-      content: 'Report';
-      right: 50px;
-      z-index: 4;
-    }
-    &.hidden {
-      right: 100%;
-      svg {
-        transform: rotate(0deg);
-      }
-      :after {
-        opacity: 1;
-      }
-    }
-    @media (max-width: 768px) {
-      top: 120px;
-    }
-    @media (max-width: 600px) {
-      left: 100%;
-      width: 30px;
-      height: 30px;
-      top: 180px;
-      &.hidden svg {
-        transform: rotate(0deg);
-      }
-      :after {
-        display: none;
-      }
-      &.active {
-        left: 90%;
-      }
-      &.active svg {
-        transform: rotate(90deg);
-      }
     }
   }
 
@@ -152,8 +111,14 @@ const DataPanelContainer = styled.div`
       text-decoration: none;
     }
   }
-  .extraPadding {
-    padding-bottom: 20vh;
+  
+  h6.alt-index {
+    padding-bottom:0;
+    margin-left:2px;
+    color:${colors.orange};
+    &:before {
+      content: '*'
+    }
   }
   p {
     padding-right: ${(props) => (props.expanded ? '10px' : '0px')};
@@ -161,9 +126,7 @@ const DataPanelContainer = styled.div`
 `;
 // Scrollable Wrapper for main report information
 const ReportWrapper = styled.div`
-  height: 100vh;
-  overflow-y: scroll;
-
+  /* overflow-y:scroll; */
   ::-webkit-scrollbar {
     width: 10px;
   }
@@ -269,6 +232,7 @@ export default function DataPanel() {
   const panelState = useSelector((state) => state.panelState);
   const [expanded, setExpanded] = useState(true);
   const sidebarData = useGetSidebarData({selectionKeys, panelOpen: panelState.info})
+  const dates = useSelector(state => state.dates)
   // Set expanded or contracted view
   const handleExpandContract = (event) => setExpanded(event.target.value);
   
@@ -351,6 +315,7 @@ export default function DataPanel() {
           {sidebarData.hasOwnProperty('fully_vaccinated') && (
             <ReportSection>
               <h2>COVID Vaccination</h2>
+              {sidebarData.hasOwnProperty('vaccine_index') && <h6 className="alt-index">{dates[sidebarData.vaccine_index]}</h6>}
               <br />
               <h6>
                 Source:{' '}
@@ -420,6 +385,7 @@ export default function DataPanel() {
           {sidebarData.hasOwnProperty('testing') && (
             <ReportSection>
               <h2>Testing</h2>
+              {sidebarData.hasOwnProperty('testing_index') && <h6 className="alt-index">{dates[sidebarData.testing_index]}</h6>}
               <br />
               <h6>
                 Source:{' '}
@@ -663,6 +629,7 @@ export default function DataPanel() {
           {sidebarData.hasOwnProperty('pct_home') && (
             <ReportSection>
               <h2>Mobility</h2>
+              {sidebarData.hasOwnProperty('mobility_index') && <h6 className="alt-index">{sidebarData.mobility_index}</h6>}
               <br />
               <p>Percent Completely At Home</p>
               <div className="numberChartContainer">
@@ -678,8 +645,6 @@ export default function DataPanel() {
               </div>
             </ReportSection>
           )}
-
-          <div className="extraPadding"></div>
         </ReportContainer>
       </ReportWrapper>
     </DataPanelContainer>

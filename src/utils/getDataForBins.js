@@ -2,13 +2,13 @@ import dataFn from './dataFunction';
 // this function loops through the current data set and provides data for GeodaJS to create custom breaks
 const getDataForBins = ({
   numeratorData,
-  denominatorData,
+  denominatorData = {},
   dataParams,
   fixedOrder = false,
   dataReady = true,
   binIndex = null,
 }) => {
-  if (!dataReady) return [];
+  if (!dataReady || !numeratorData) return [];
 
   const { nProperty, dType } = dataParams;
   const nIndex = dataParams.nIndex || binIndex;

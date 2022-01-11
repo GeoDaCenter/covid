@@ -21,7 +21,7 @@ import {
   TopPanel,
   Preloader,
   DataPanel,
-  MainLineChart,
+  LineChart,
   Scaleable,
   Draggable,
   InfoBox,
@@ -31,7 +31,8 @@ import {
   PrintLayout,
   DataLoader,
   Icon,
-  IconDock
+  IconDock,
+  Scatterchart
 } from '../../components';
 import { ViewportProvider } from '../../contexts/Viewport';
 import { fitBounds } from '@math.gl/web-mercator';
@@ -82,6 +83,22 @@ const MapOuterContainer = styled.div`
   height: calc(100vh - 50px);
   overflow: hidden;
 `;
+
+const MapPlaneContainer = styled.div`
+  display:flex;
+  flex-direction:row;
+  width:100%;
+  height:100%;
+`
+
+const RightPaneContainer = styled.div`
+  flex:0 1 auto;
+  height:calc(100vh - 50px);
+  display: flex;
+  flex-direction:column;
+  overflow:hidden;
+
+`
 
 export default function Map() {
   const dispatch = useDispatch();
@@ -234,14 +251,23 @@ const MapPageContainer = () => {
           />
         </div>
       )}
-      <IconDock />
-      <MapSection
-        currentMapGeography={currentMapGeography}
-        currentMapData={currentMapData}
-        currentMapID={currentMapID}
-        currentHeightScale={currentHeightScale}
-        isLoading={isLoading}
-      />
+      <MapPlaneContainer>
+        <IconDock />
+        <VariablePanel />
+        <MapSection
+          currentMapGeography={currentMapGeography}
+          currentMapData={currentMapData}
+          currentMapID={currentMapID}
+          currentHeightScale={currentHeightScale}
+          isLoading={isLoading}
+        />
+        <RightPaneContainer>
+            {panelState.lineChart && <LineChart />}
+            {panelState.scatterChart && <Scatterchart />}
+            <DataPanel />
+        </RightPaneContainer>
+      </MapPlaneContainer>
+
       <PrintLayout />
       <TopPanel />
       <Legend
@@ -252,11 +278,9 @@ const MapPageContainer = () => {
         resource={mapParams.resource}
         note={dataNote}
       />
-      <VariablePanel />
-      <DataPanel />
       <Popover />
       <NotificationBox />
-      {panelState.lineChart && (
+      {/* {panelState.lineChart && (
         <Draggable
           z={9}
           defaultX={defaultDimensions.defaultXLong}
@@ -279,7 +303,7 @@ const MapPageContainer = () => {
             />
           }
         />
-      )}
+      )} */}
       {panelState.tutorial && (
         <Draggable
           z={10}

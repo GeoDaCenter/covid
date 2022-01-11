@@ -15,7 +15,7 @@ import InfoBox from './InfoBox';
 import Legend from './Legend';
 import FastTrackInsights from './FastTrackInsights';
 import MapButtons from './MapButtons';
-import MainLineChart from './MainLineChart';
+import LineChart from './LineChart';
 import MapSection from './MapSection';
 import MapTooltipContent from './MapTooltipContent';
 import MemberGrid from './MemberGrid';
@@ -26,6 +26,7 @@ import Popover from './TooltipPopper';
 import Preloader from './Preloader';
 import PrintLayout from './PrintLayout';
 import Scaleable from './Scaleable';
+import Scatterchart from './Scatterchart';
 import StaticNavbar from './StaticNavbar';
 import Ticks from './Ticks';
 import Tooltip from './Tooltip';
@@ -71,7 +72,7 @@ export {
   InfoBox,
   Legend,
   MapButtons,
-  MainLineChart,
+  LineChart,
   MapSection,
   MapTooltipContent,
   MemberGrid,
@@ -87,6 +88,7 @@ export {
   Tooltip,
   TopPanel,
   ShareButton,
+  Scatterchart,
   About,
   Api,
   CodeOfConduct,

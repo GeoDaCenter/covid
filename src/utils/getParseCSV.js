@@ -3,7 +3,7 @@ import { findDateIndices } from "../utils";
 
 export async function getParseCSV(fileInfo, dateList) {
   const text = await fetch(
-    `${process.env.PUBLIC_URL}/csv/${fileInfo.file}.csv`
+    `${process.env.PUBLIC_URL}/csv/${fileInfo.name}.csv`
   ).then((response) => {
     return response.ok ? response.text() : Promise.reject(response.status);
   });

@@ -1,14 +1,15 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
+import React from "react";
+import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
 // import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import { createStore } from 'redux';
-import rootReducer from './reducers';
-import {GeodaProvider} from './contexts/Geoda';
-import {DataProvider} from './contexts/Data';
+import { createStore } from "redux";
+import rootReducer from "./reducers";
+import { GeodaProvider } from "./contexts/Geoda";
+import { DataProvider } from "./contexts/Data";
+import { BackgroundLoadingProvider } from "./contexts/BackgroundData";
 
-import App from './App';
-import './index.css';
+import App from "./App";
+import "./index.css";
 
 // import { persistStore, persistReducer } from 'redux-persist';
 // import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
@@ -26,28 +27,36 @@ import './index.css';
 
 const store = createStore(
   rootReducer,
-  (
-    typeof window === 'object'
-    && window.__REDUX_DEVTOOLS_EXTENSION__
-    && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-  ) && window.__REDUX_DEVTOOLS_EXTENSION__({
-    stateSanitizer: (state) => state.storedGeojson ? { ...state, storedData: '<<EXCLUDED>>', storedGeojson: '<<EXCLUDED>>' } : state
-  })
+  typeof window === "object" &&
+    window.__REDUX_DEVTOOLS_EXTENSION__ &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&
+    window.__REDUX_DEVTOOLS_EXTENSION__({
+      stateSanitizer: (state) =>
+        state.storedGeojson
+          ? {
+              ...state,
+              storedData: "<<EXCLUDED>>",
+              storedGeojson: "<<EXCLUDED>>",
+            }
+          : state,
+    })
 );
 // const persistor = persistStore(store)
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
-      {/* <PersistGate persistor={persistor}> */}
-      <GeodaProvider>
-        <DataProvider>
-          <App />
-        </DataProvider>
-      </GeodaProvider>
-      {/* </PersistGate> */}
-    </Provider>
+    <BackgroundLoadingProvider>
+      <Provider store={store}>
+        {/* <PersistGate persistor={persistor}> */}
+        <GeodaProvider>
+          <DataProvider>
+            <App />
+          </DataProvider>
+        </GeodaProvider>
+        {/* </PersistGate> */}
+      </Provider>
+    </BackgroundLoadingProvider>
   </React.StrictMode>,
-  document.getElementById('root'),
-// serviceWorkerRegistration.register();
+  document.getElementById("root")
+  // serviceWorkerRegistration.register();
 );

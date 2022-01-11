@@ -151,12 +151,13 @@ export const INITIAL_STATE = {
   },
   panelState: {
     variables: true,
-    info: false,
+    info: true,
     tutorial: false,
     lineChart: true,
     context: false,
     contextPos: { x: null, y: null },
     dataLoader: false,
+    scatterChart: false
   },
   urlParams: {},
   tooltipInfo: {

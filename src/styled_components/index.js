@@ -190,10 +190,11 @@ export const Gutter = styled.div`
 
 export const HoverDiv = styled.div`
   background: ${colors.gray};
-  padding: 20px;
+  border:1px solid ${colors.darkgray};
+  padding: .5em;
   color: white;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.7);
-  border-radius: 0.5vh 0.5vh 0 0;
+  /* box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.7); */
+  /* border-radius: 0.5vh 0.5vh 0 0; */
   h3 {
     margin: 5px 0;
   }

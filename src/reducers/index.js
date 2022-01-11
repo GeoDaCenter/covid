@@ -693,8 +693,8 @@ var reducer = (state = INITIAL_STATE, action) => {
       };
       return {
         ...state,
-        dataParams
-      }
+        dataParams,
+      };
     }
     case "SET_VARIABLE_PARAMS": {
       let dataParams = {
@@ -904,25 +904,24 @@ var reducer = (state = INITIAL_STATE, action) => {
         ...state.dataParams,
       };
 
-      if (
-        state.storedData[state.currentTable.numerator]?.dates?.indexOf(
-          dataParams.nIndex
-        ) === -1
-      )
-        dataParams.nIndex =
-          state.storedData[state.currentTable.numerator]?.dates.slice(-1)[0];
-      let zAxisVariableReset = state.currentZVariable;
-
-      if (action.payload.params.vizType !== "3D") {
-        dataParams.zAxisParams = null;
-        zAxisVariableReset = null;
+      if (state.mapParams.mapType !== action.payload.params.mapType) {
+        switch (action.payload.params.mapType) {
+          case "lisa":
+            mapParams.colorScale = colorScales.lisa;
+            break;
+          case "hinge15_breaks":
+            mapParams.colorScale = colorScales.hinge15_breaks
+            break;
+          default:
+            mapParams.colorScale = dataParams.colorScale
+              ? colorScales[dataParams.colorScale]
+              : colorScales.natural_breaks;
+        }
       }
-
       return {
         ...state,
         mapParams,
         dataParams,
-        currentZVariable: zAxisVariableReset,
       };
     }
     case "SET_PANELS":
@@ -1057,7 +1056,16 @@ var reducer = (state = INITIAL_STATE, action) => {
         ...state,
         panelState: contextPanelsObj,
       };
+    case "SET_VARIABLE_MENU_WIDTH": {
+      return {
+        ...state,
+        variableMenuWidth: action.payload,
+      };
+    }
     case "SET_TOOLTIP_INFO": {
+      if (!state.tooltipInfo.x && !action.payload.data) {
+        return state;
+      }
       const data =
         typeof action.payload.data === "number" ||
         typeof action.payload.data === "string"
@@ -1065,8 +1073,8 @@ var reducer = (state = INITIAL_STATE, action) => {
           : action.payload.data;
 
       const tooltipInfo = {
-        x: action.payload.x,
-        y: action.payload.y,
+        x: action.payload.x + 60 + state.variableMenuWidth,
+        y: action.payload.y + 10,
         data,
         geoid: +action.payload.data,
       };

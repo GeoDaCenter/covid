@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect, useRef} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import InputLabel from '@material-ui/core/InputLabel';
@@ -33,22 +33,29 @@ import { fixedScales, colorScales } from '../config/scales';
 
 /** STYLES */
 const VariablePanelContainer = styled.div`
-  position:absolute;
+  /* position:absolute;
   left:50px;
   top:0;
-  height:auto;
-  min-height:calc(100vh - 50px);
-  width:min(25%, 350px);
+  height:auto; */
+  flex: 0.0001 1 auto;
+  width:auto;
+  /* min-height:calc(100vh - 50px); */
+  /* width:min(25%, 350px); */
   background-color: ${colors.gray}fa;
   box-shadow: 2px 0px 5px rgba(0,0,0,0.7);
   padding:0;
   box-sizing: border-box;
   transition:125ms all;
   font: 'Lato', sans-serif;
+  max-height:calc(100vh - 50px);
   color:white;
   z-index:0;
+  transition:250ms all;
+  display: flex;
+  flex-direction: column;
   &.hidden {
-    transform: translateX(calc(-100% - 50px));
+    width:0;
+    /* transform: translateX(calc(-100% - 50px)); */
   }
   h1,h2,h3,h4 {
     margin: 0 0 10px 0;
@@ -63,28 +70,33 @@ const VariablePanelContainer = styled.div`
     width:100%;
     display: ${(props) => (props.otherPanels ? 'none' : 'initial')};
   }
-  div.noteContainer {
-    position: absolute;
-    bottom:0;
-    left:0;
-    padding:20px;
-    box-sizing:border-box;
-    background:${colors.gray};
-    width:calc(100%);
-    border-top:1px solid black;
-    a {  
-      color: ${colors.yellow};
-      -webkit-text-decoration: none;
-      text-decoration: none;
-      }
+  user-select:none;
+`;
+const NoteContainer = styled.div`
+
+  /* position: absolute;
+  bottom:0;
+  left:0; */
+  flex: 1 1 1;
+  padding:20px;
+  box-sizing:border-box;
+  background:${colors.gray};
+  width:calc(100%);
+  border-top:1px solid black;
+  a {  
+    color: ${colors.yellow};
+    -webkit-text-decoration: none;
+    text-decoration: none;
     }
   }
-  p.note {
-    font-family: 'Lato', sans-serif;
-    font-weight:300;
-    font-size:90%;
-  }
-  div.poweredByGeoda {
+}
+p.note {
+  font-family: 'Lato', sans-serif;
+  font-weight:300;
+  font-size:90%;
+}
+
+div.poweredByGeoda {
     color:white;
     width:100%;
     text-align:center;
@@ -103,74 +115,7 @@ const VariablePanelContainer = styled.div`
       }
     }
   }
-  button#showHideLeft {
-    position:absolute;
-    left:95%;
-    top:20px;
-    width:40px;
-    height:40px;
-    box-sizing:border-box;
-    padding:0;
-    margin:0;
-    background-color: ${colors.gray};
-    box-shadow: 0px 0px 6px rgba(0,0,0,1);
-    outline:none;
-    border:none;
-    cursor: pointer;
-    transition:500ms all;
-    svg { 
-      width:20px;
-      height:20px;
-      margin:10px 0 0 0;
-      @media (max-width:600px){
-        width:20px;
-        height:20px;
-        margin:5px;
-      }
-      fill:white;
-      transform:rotate(0deg);
-      transition:500ms all;
-      .cls-1 {
-        fill:none;
-        stroke-width:6px;
-        stroke:white;
-      }
-    }
-    :after {
-      opacity:0;
-      font-weight:bold;
-      content: 'Variables';
-      color:white;
-      position: relative;
-      right:-50px;
-      top:-22px;
-      transition:500ms all;
-      z-index:4;
-    }
-    @media (max-width:768px){
-      top:120px;
-    }
-    @media (max-width:600px) {
-      left:90%;
-      width:30px;
-      height:30px;
-      top:140px;
-      :after {
-        display:none;
-      }
-    }
-  }
-  button#showHideLeft.hidden {
-    left:100%;
-    svg {
-      transform:rotate(90deg);
-    }
-    :after {
-      opacity:1;
-    }
-  }
-  user-select:none;
-`;
+`
 const ButtonGroup = styled.div`
   button:first-of-type {
     border-radius: 0.5em 0 0 0.5em;
@@ -234,9 +179,9 @@ const TwoUp = styled.div`
 `;
 
 const ControlsContainer = styled.div`
-  max-height: 78vh;
   overflow-y: scroll;
   padding: 20px;
+  flex: 1 1 5;
 
   ::-webkit-scrollbar {
     width: 10px;
@@ -264,14 +209,14 @@ const ControlsContainer = styled.div`
     background-size: 50%, 100%;
   }
 
-  @media (max-height: 1325px) {
+  /* @media (max-height: 1325px) {
     padding: 20px 20px 10vh 20px;
   }
 
   @media (max-width: 600px) {
     width: 100%;
     padding: 0 10px 25vh 10px;
-  }
+  } */
 `;
 
 const ListSubheader = styled(MenuItem)`
@@ -348,7 +293,7 @@ const onlyUnique = (value, index, self) => self.indexOf(value) === index;
 
 export default function VariablePanel() {
   const dispatch = useDispatch();
-
+  const variablePanelRef = useRef(null);
   const currentData = useSelector((state) => state.currentData);
 
   const binMode = useSelector((state) => state.mapParams.binMode);
@@ -386,6 +331,14 @@ export default function VariablePanel() {
   const isCustom = !['State', 'County', 'County (Hybrid)'].includes(
     currentPreset.geography,
   );
+
+  useLayoutEffect(() => {
+    dispatch({type:'SET_VARIABLE_MENU_WIDTH', payload: variablePanelRef.current.offsetWidth});
+  },[])
+
+  useLayoutEffect(() => {
+    dispatch({type:'SET_VARIABLE_MENU_WIDTH', payload: variablePanelRef.current.offsetWidth});
+  },[panelState.variables])
 
   const handleMapType = (event, newValue) => {
     let nBins = newValue === 'hinge15_breaks' ? 6 : 8;
@@ -507,6 +460,7 @@ export default function VariablePanel() {
       className={panelState.variables ? '' : 'hidden'}
       otherPanels={panelState.info}
       id="variablePanel"
+      ref={variablePanelRef}
     >
       {panelState.variables && (
         <ControlsContainer>
@@ -928,7 +882,7 @@ export default function VariablePanel() {
           </TwoUp>
         </ControlsContainer>
       )}
-      <div className="noteContainer">
+      <NoteContainer>
         {/* <h3>Help us improve the Atlas!</h3>
         <p>
           <a href="https://docs.google.com/forms/d/e/1FAIpQLSf0KdYeVyvwnz0RLnZijY3kdyFe1SwXukPc--a1HFPE1NRxyw/viewform?usp=sf_link" target="_blank" rel="noopener noreferrer">Take the Atlas v2 survey here </a>
@@ -936,9 +890,9 @@ export default function VariablePanel() {
         </p>
         <hr></hr> */}
         <p className="note">
-          Data is updated with freshest available data at 3pm CST daily, at
-          minimum. In case of data discrepancy, local health departments are
-          considered most accurate as per CDC recommendations. More information
+          Data is updated with freshest available data at 3pm CST daily,<br/> at
+          minimum. In case of data discrepancy, local health departments<br/> are
+          considered most accurate as per CDC recommendations. <br/>More information
           on <a href="data.html">data</a>, <a href="methods.html">methods</a>,
           and <a href="FAQ.html">FAQ</a> at main site.
         </p>
@@ -955,7 +909,7 @@ export default function VariablePanel() {
             POWERED BY GEODA
           </a>
         </div>
-      </div>
+      </NoteContainer>
       {/* <button onClick={handleOpenClose} id="showHideLeft" className={panelState.variables ? 'active' : 'hidden'}>
         <Icon symbol="settings" />
       </button> */}

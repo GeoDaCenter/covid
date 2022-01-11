@@ -12,7 +12,12 @@ import {
   getDateIndices,
   findTableOrDefault,
 } from "./find";
+import {
+  fetchFile,
+  fetcher
+} from './fetcher'
 import {findClosestValue, findDateIncrement, findDateDecrement} from "./findClosestValue";
+import {findSecondaryMonth} from './findSecondaryMonth'
 // import { generateMapData } from './generateMapData';
 import { generateReport } from "./generateReport";
 import geojsonArrayBuffer from "./geojsonArrayBuffer";
@@ -26,6 +31,7 @@ import getDataForBins from "./getDataForBins.js";
 import getDataForCharts from "./getDataForCharts.js";
 import getDataForLisa from "./getDataForLisa.js";
 import { getDateLists } from "./getDateLists.js";
+import { getFetchParams } from "./getFetchParams";
 import getGeoidIndex from "./getGeoidIndex";
 import getGeoids from "./getGeoids";
 import getGzipData from "./getGzipData";
@@ -47,11 +53,14 @@ import { parseTooltipData } from "./parseTooltipData";
 import resolveName from "./resolveName";
 import shallowCompare from "./shallowCompare";
 import { shallowEqual } from "./shallowEqual";
+import { stitch } from "./stitch";
 export {
   addSelectedChartData,
   colIndex,
   colLookup,
   dataFn,
+  fetcher,
+  fetchFile,
   findAllCurrentTables,
   findAllDefaults,
   findIn,
@@ -62,6 +71,7 @@ export {
   findClosestValue,
   findDateIncrement,
   findDateDecrement,
+  findSecondaryMonth,
   getDateIndices,
   geojsonArrayBuffer,
   // generateMapData,
@@ -76,6 +86,7 @@ export {
   getDataForCharts,
   getDataForLisa,
   getDateLists,
+  getFetchParams,
   getGeoidIndex,
   getGeoids,
   getIdOrder,
@@ -102,4 +113,5 @@ export {
   resolveName,
   shallowCompare,
   shallowEqual,
+  stitch
 };

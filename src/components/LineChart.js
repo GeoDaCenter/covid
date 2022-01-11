@@ -25,6 +25,13 @@ const ChartContainer = styled.span`
     color: white;
   }
   user-select: none;
+  min-height:200px;
+  height:30vh;
+  max-height:30vh;
+  flex: 1 0 auto;
+  background: ${colors.gray};
+  padding:1em 0;
+  border-bottom:1px solid black;
 `;
 const SwitchesContainer = styled.div`
   display: flex;
@@ -55,7 +62,8 @@ const StyledSwitch = styled.div`
 `;
 const ChartTitle = styled.h3`
   text-align: center;
-  font-family: "Playfair Display", serif;
+  font-family: "Lato", sans-serif;
+  font-weight:bold;
   padding: 0;
   font-weight: normal;
   margin: 0;

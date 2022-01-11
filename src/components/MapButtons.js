@@ -55,7 +55,7 @@ export const NavInlineButton = styled.button`
 
 const MapButtonContainer = styled.div`
   position: absolute;
-  right: ${(props) => (props.infoPanel ? 'calc(20% + 10px)' : '10px')};
+  right: 10px;
   bottom: 50px;
   z-index: 10;
   transition: 250ms all;

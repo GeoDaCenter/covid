@@ -58,8 +58,9 @@ const ICON_MAPPING = {
 // component styling
 const MapContainerOuter = styled.div`
   position: relative;
-  width: 100vw;
-  height: 100vh;
+  /* width: 100%; */
+  height: calc(100vh - 50px);
+  flex: 1;
 `;
 const MapContainer = styled.div`
   #deckgl-wrapper {
@@ -408,7 +409,7 @@ export default function MapSection({
         ),
       );
     } else {
-      setHoverGeog(null);
+      hoverGeog && setHoverGeog(null);
       dispatch(setTooltipInfo(x, y, null));
     }
     if (!isPoint && object && object?.properties[currIdCol]) {

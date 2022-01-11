@@ -4,15 +4,17 @@ import styled from 'styled-components';
 import { Icon } from '../components';
 import colors from '../config/colors';
 
-const DockContainerOuter = styled.div``
+const DockContainerOuter = styled.div`
+  position:relative;
+`
 
 const DockContainer = styled.div`
   height: calc(100vh - 50px);
   background: lightgray;
   width: 50px;
-  position: absolute;
-  left: 0;
-  top: 0;
+  /* position: absolute; */
+  /* left: 0; */
+  /* top: 0; */
   background: ${colors.gray};
   border-right:1px solid black;
   display: flex;
@@ -78,10 +80,11 @@ const DockContainer = styled.div`
 
 
 const DockLabels = styled.div`
-  position: absolute;
+  position: fixed;
   left:50px;
+  top:50px;
   color:red;
-  z-index:50;
+  z-index:5000;
   opacity:0;
   pointer-events:none;
   transition-delay: 0s;
@@ -142,13 +145,13 @@ export default function IconDock(){
       activeState: panelState.lineChart,
       onClick: () => dispatch({ type: 'TOGGLE_PANEL', payload: 'lineChart' }),
     },
-    // {
-    //   symbol: 'scatterPlot',
-    //   id: 'scatterPlot-button',
-    //   ariaLabel: 'Scatterplot Chart',
-    //   activeState: panelState.scatterPlot,
-    //   onClick: () => dispatch({ type: 'TOGGLE_PANEL', payload: 'scatterPlot' }),
-    // },
+    {
+      symbol: 'scatterChart',
+      id: 'scatterPlot-button',
+      ariaLabel: 'Scatterplot Chart',
+      activeState: panelState.scatterChart,
+      onClick: () => dispatch({ type: 'TOGGLE_PANEL', payload: 'scatterChart' }),
+    },
     {
       symbol:'addData',
       id: 'add-data-button',
