@@ -165,6 +165,51 @@ export default function Map() {
   );
 }
 
+// geoda is the WebGeoda proxy class. Generally, having a non-serializable
+// data in the state is poor for performance, but the App component state only
+// contains geoda.
+const getDefaultDimensions = () => ({
+  defaultX:
+    window.innerWidth <= 1024
+      ? window.innerWidth * 0.1
+      : window.innerWidth <= 1400
+      ? window.innerWidth - 400
+      : window.innerWidth - 500,
+  defaultXLong:
+    window.innerWidth <= 1024
+      ? window.innerWidth * 0.1
+      : window.innerWidth <= 1400
+      ? window.innerWidth - 450
+      : window.innerWidth - 550,
+  defaultY: window.innerWidth <= 1024 ? window.innerHeight * 0.25 : 75,
+  defaultWidth: window.innerWidth <= 1024 ? window.innerWidth * 0.8 : 300,
+  defaultWidthLong:
+    window.innerWidth <= 1024
+      ? window.innerWidth * 0.8
+      : window.innerWidth <= 1400
+      ? 400
+      : 500,
+  defaultHeight: window.innerWidth <= 1024 ? window.innerHeight * 0.4 : 300,
+  defaultHeightManual:
+    window.innerWidth <= 1024
+      ? window.innerHeight * 0.7
+      : window.innerHeight * 0.5,
+  defaultWidthManual:
+    window.innerWidth <= 1024
+      ? window.innerWidth * 0.5
+      : window.innerWidth * 0.35,
+  defaultXManual:
+    window.innerWidth <= 1024
+      ? window.innerWidth * 0.25
+      : window.innerWidth * 0.25,
+  defaultYManual:
+    window.innerWidth <= 1024
+      ? window.innerHeight * 0.15
+      : window.innerHeight * 0.325,
+  minHeight: window.innerWidth <= 1024 ? window.innerHeight * 0.5 : 200,
+  minWidth: window.innerWidth <= 1024 ? window.innerWidth * 0.5 : 200,
+});
+
 const MapPageContainer = () => {
   // These selectors access different pieces of the store. While App mainly
   // dispatches to the store, we need checks to make sure side effects
@@ -174,61 +219,11 @@ const MapPageContainer = () => {
   const fixedScale = useSelector((state) => state.dataParams.fixedScale);
   const variableName = useSelector((state) => state.dataParams.variableName);
   const panelState = useSelector((state) => state.panelState);
-
-  // geoda is the WebGeoda proxy class. Generally, having a non-serializable
-  // data in the state is poor for performance, but the App component state only
-  // contains geoda.
-  const getDefaultDimensions = () => ({
-    defaultX:
-      window.innerWidth <= 1024
-        ? window.innerWidth * 0.1
-        : window.innerWidth <= 1400
-        ? window.innerWidth - 400
-        : window.innerWidth - 500,
-    defaultXLong:
-      window.innerWidth <= 1024
-        ? window.innerWidth * 0.1
-        : window.innerWidth <= 1400
-        ? window.innerWidth - 450
-        : window.innerWidth - 550,
-    defaultY: window.innerWidth <= 1024 ? window.innerHeight * 0.25 : 75,
-    defaultWidth: window.innerWidth <= 1024 ? window.innerWidth * 0.8 : 300,
-    defaultWidthLong:
-      window.innerWidth <= 1024
-        ? window.innerWidth * 0.8
-        : window.innerWidth <= 1400
-        ? 400
-        : 500,
-    defaultHeight: window.innerWidth <= 1024 ? window.innerHeight * 0.4 : 300,
-    defaultHeightManual:
-      window.innerWidth <= 1024
-        ? window.innerHeight * 0.7
-        : window.innerHeight * 0.5,
-    defaultWidthManual:
-      window.innerWidth <= 1024
-        ? window.innerWidth * 0.5
-        : window.innerWidth * 0.35,
-    defaultXManual:
-      window.innerWidth <= 1024
-        ? window.innerWidth * 0.25
-        : window.innerWidth * 0.25,
-    defaultYManual:
-      window.innerWidth <= 1024
-        ? window.innerHeight * 0.15
-        : window.innerHeight * 0.325,
-    minHeight: window.innerWidth <= 1024 ? window.innerHeight * 0.5 : 200,
-    minWidth: window.innerWidth <= 1024 ? window.innerWidth * 0.5 : 200,
-  });
-  const [defaultDimensions, setDefaultDimensions] = useState({
-    ...getDefaultDimensions(),
-  });
+  const [defaultDimensions, setDefaultDimensions] = useState(getDefaultDimensions());
 
   // default width handlers on resize
   useEffect(() => {
-    typeof window &&
-      window.addEventListener('resize', () =>
-        setDefaultDimensions({ ...getDefaultDimensions() }),
-      );
+    typeof window && window.addEventListener('resize', () => setDefaultDimensions({ ...getDefaultDimensions() }));
   }, []);
 
   const [

@@ -34,6 +34,10 @@ function reducer(state, action) {
                 timespan,
                 error
             } = action.payload;
+            if (newData?.dates && !newData.dates.length) return state
+            if (newData && newData.columns && storedData[name] && storedData[name].columns) {
+                if (newData.columns.join('') === storedData[name].columns.join('')) return state
+            }
             // If the data doesn't exist, easy. Just plug in the full dataset
             // and move on to the next
             if (!storedData.hasOwnProperty(name)) {

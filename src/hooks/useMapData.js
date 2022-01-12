@@ -67,7 +67,7 @@ const generateJoinData = ({
 const getLisa = async (currentGeojson, geoda, dataForLisa) => {
   const weights =
     currentGeojson && "Queen" in currentGeojson.weights
-      ? currentGeojson.Weights.Queen
+      ? currentGeojson.weights.Queen
       : await geoda.getQueenWeights(currentGeojson.mapId);
   const lisaValues = await geoda.localMoran(weights, dataForLisa);
 
@@ -204,7 +204,7 @@ function useGetBins({
         }) ===
           JSON.stringify({ ...mapParams, ...dataParams, dIndex: 0, nIndex: 0 })
       ) {
-        console.log("diff params, not dynamic");
+        // console.log("diff params, not dynamic");
         return;
       }
     }
@@ -231,7 +231,7 @@ function useGetBins({
         currentData,
       });
     } else if (typeof geoda === "function") {
-      console.log("generating bins");
+      // console.log("generating bins");
       getAsyncBins(geoda, mapParams, binData).then((nb) => {
         setBins({
           bins:
