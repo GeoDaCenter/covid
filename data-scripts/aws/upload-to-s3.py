@@ -26,9 +26,10 @@ def write_to_s3(filename, s3, bucket, subfolder, pathToFolder):
         print(e)
 # %%
 def zipAndUpload(folder, s3, bucket, format='zip'):
-    shutil.make_archive(os.path.join(repo_root, 'tmp', f'{folder["subfolder"]}'), format, folder['path'])
-    write_to_s3(f'{folder["subfolder"]}.{format}', s3, bucket, format, )
-    os.remove(os.path.join(repo_root, os.path.join(repo_root, 'tmp', f'{folder["subfolder"]}.{format}')))
+    pathToFolder = os.path.join(repo_root, 'tmp')
+    shutil.make_archive(os.path.join(repo_root, pathToFolder, f'{folder["subfolder"]}'), format, folder['path'])
+    write_to_s3(f'{folder["subfolder"]}.{format}', s3, bucket, format, os.path.join(repo_root, pathToFolder))
+    os.remove(os.path.join(repo_root, os.path.join(repo_root, pathToFolder, f'{folder["subfolder"]}.{format}')))
 #%%
 if __name__ == '__main__':
 
