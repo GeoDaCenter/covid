@@ -1,16 +1,20 @@
 import styled from 'styled-components';
 import FormControl from '@mui/material/FormControl';
 
-export const StyledDropDown = styled.div`
+export const StyledDropDown = styled(FormControl)`
   margin:0 10px 0 0;
   color:white;
   padding:0;
   .MuiInputBase-root {
     font-family: 'Lato', sans-serif;
+    border-radius:0;
   }
   .MuiFormLabel-root {
     color: white;
     font-family: 'Lato', sans-serif;
+  }
+  .MuiSelect-select {
+    padding: .5em 1em;
   }
   .Mui-focused {
     color: white !important;

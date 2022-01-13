@@ -1,12 +1,13 @@
 import { useState } from "react";
+import InputLabel from "@mui/material/InputLabel";
 import Popover from "@mui/material/Popover";
-import Select from '@mui/material/Select';
 import MenuItem from "@mui/material/MenuItem";
-import Switch from '@mui/material/Switch';
+import Switch from "@mui/material/Switch";
+import Select from "@mui/material/Select";
 import { Icon } from "../components";
 import styled from "styled-components";
 import colors from "../config/colors";
-
+import { StyledDropDown } from "../components";
 
 const PopoverContainer = styled.div`
   position: absolute;
@@ -38,38 +39,86 @@ const PopoverContainer = styled.div`
 `;
 
 const PopoverContent = styled.div`
-  background: ${colors.black};
+  background: ${colors.gray};
+  border:1px solid ${colors.yellow};
   color: ${colors.white};
-  padding:.5em;
-  overflow:hidden;
+  padding: 1em;
+  overflow: hidden;
 `;
 //   {
 //   type: header | helperText | label | select | switch | geocoder | size
-//   content: text | list 
-//   value: text | state 
+//   content: text | list
+//   value: text | state
 //   action: setState | null
 //   additionalProps: {...}
 //   }
 
-const H3 = ({ content }) => <h3>{content}</h3>
-const P = ({ content }) => <p>{content}</p>
-const Label = ({ content }) => <label>{content}</label>
-const SelectControl = ({ content, value, action }, rest) => <Select value={value} onChange={action} {...rest}>
-  {content.map((item, index) => <MenuItem key={index} value={item}>{item}</MenuItem>)}
-</Select>
+const H3 = ({ content }) => <h3>{content}</h3>;
+const P = ({ content }) => <p>{content}</p>;
+const Label = ({ content }) => <label>{content}</label>;
+const SelectControl = ({ content, value, action }, rest) => (
+  <StyledDropDown style={{marginTop: '1.5em', width: '100%'}}>
+    <InputLabel htmlFor="variableSelect">{content.label}</InputLabel>
+    <Select
+      MenuProps={{ id: "variableMenu" }}
+      value={value}
+      onChange={action}
+      {...rest}
+    >
+      {content.items.map((item, index) => (
+        <MenuItem key={index} value={item.value}>
+          {item.text}
+        </MenuItem>
+      ))}
+    </Select>
+  </StyledDropDown>
+);
+
+const StyledSwitch = styled.div`
+  margin: 0 5px;
+  @media (max-width: 960px) {
+    margin: 0;
+  }
+  p {
+    color: white;
+    display: inline;
+    text-align: center;
+  }
+  span.MuiSwitch-track {
+    background-color: ${colors.lightgray};
+  }
+  .MuiSwitch-colorSecondary.Mui-checked {
+    color: ${colors.lightblue};
+  }
+  .MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track {
+    background-color: ${colors.lightblue};
+  }
+  .MuiSwitch-colorSecondary:hover {
+    background-color: ${colors.lightblue}55;
+  }
+`;
+
+const SwitchControl = ({ content, value, action }, rest) => <StyledSwitch>
+  <Switch
+    checked={value}
+    onChange={action}
+    name="log chart switch"
+    inputProps={{ "aria-label": "secondary checkbox" }}
+  />
+  <p>{content}</p>
+</StyledSwitch>
+
 const ControlElementMapping = {
   header: H3,
   helperText: P,
   label: Label,
   select: SelectControl,
-  switch: Switch,
+  switch: SwitchControl,
   // geocoder: Geocoder,
   // size: Size,
-}
+};
 
-export default function ControlsPopover({
-  controlElements=[]
-}) {
+export default function ControlsPopover({ controlElements = [] }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
@@ -106,12 +155,12 @@ export default function ControlsPopover({
         }}
       >
         <PopoverContent>
-          {controlElements.map(elementProps => {
+          {controlElements.map((elementProps) => {
             if (ControlElementMapping[elementProps.type]) {
               const El = ControlElementMapping[elementProps.type];
-              return <El {...elementProps}/>
+              return <El {...elementProps} />;
             } else {
-              return null
+              return null;
             }
           })}
         </PopoverContent>

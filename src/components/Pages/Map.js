@@ -248,7 +248,7 @@ const MapPageContainer = () => {
       )}
       <MapPlaneContainer>
         <IconDock />
-        {/* <VariablePanel /> */}
+        <VariablePanel />
         <MapSection
           currentMapGeography={currentMapGeography}
           currentMapData={currentMapData}

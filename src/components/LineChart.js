@@ -36,33 +36,6 @@ const ChartContainer = styled.span`
   border-bottom:1px solid black;
   position: relative;
 `;
-const SwitchesContainer = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-const StyledSwitch = styled.div`
-  margin: 0 5px;
-  @media (max-width: 960px) {
-    margin: 0;
-  }
-  p {
-    color: white;
-    display: inline;
-    text-align: center;
-  }
-  span.MuiSwitch-track {
-    background-color: ${colors.lightgray};
-  }
-  .MuiSwitch-colorSecondary.Mui-checked {
-    color: ${colors.lightblue};
-  }
-  .MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track {
-    background-color: ${colors.lightblue};
-  }
-  .MuiSwitch-colorSecondary:hover {
-    background-color: ${colors.lightblue}55;
-  }
-`;
 const ChartTitle = styled.h3`
   text-align: center;
   font-family: "Lato", sans-serif;
@@ -198,6 +171,7 @@ const CustomTooltip = (props) => {
 
 export default function MainLineChart() {
   const dispatch = useDispatch();
+  const [currentTable, setCurrentTable] = useState("cases");
   const {
     currentData,
     currIndex,
@@ -207,7 +181,9 @@ export default function MainLineChart() {
     isTimeseries,
     selectionKeys,
     selectionNames,
-  } = useGetLineChartData({});
+  } = useGetLineChartData({
+    table: currentTable
+  });
 
   const [logChart, setLogChart] = useState(false);
   const [showSummarized, setShowSummarized] = useState(true);
@@ -239,12 +215,47 @@ export default function MainLineChart() {
             },
             {
               type: "select", 
-              content: [
-                "test",
-                "test2"
-              ],
-              action: (e) => console.log(e),
-              value: 'test2'
+              content: {
+                label: "Line Chart Variable",
+                items: [
+                  {
+                    text: "Cases",
+                    value: "cases"
+                  },
+                  {
+                    text: "Deaths",
+                    value: "deaths"
+                  },
+                  {
+                    text: "Fully Vaccinated Persons",
+                    value: "vaccines_fully_vaccinated"
+                  },
+                  {
+                    text: "Weekly Positivity",
+                    value: "testing_wk_pos"
+                  }
+                ],
+              },
+              action: (e) => setCurrentTable(e.target.value),
+              value: currentTable
+            },
+            {
+              type: "switch",
+              content: "Logarithmic Scale",
+              action: handleSwitch,
+              value: logChart
+            },
+            {
+              type: "switch",
+              content: "Population Normalization",
+              action: handlePopSwitch,
+              value: populationNormalized
+            },
+            {
+              type: "switch",
+              content: "Show Summary Line",
+              action: handleSummarizedSwitch,
+              value: showSummarized
             }
           ]}
         />

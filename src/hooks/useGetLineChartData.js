@@ -160,6 +160,7 @@ export default function useGetLineChartData({ table = "cases" }) {
     (entry, index, self) =>
       self.findIndex((f) => f.table === entry.table) === index
   );
+  
   const currentTimeseriesDataset = currTables.find(
     (t) => t.table === table
   )?.name;
@@ -185,7 +186,7 @@ export default function useGetLineChartData({ table = "cases" }) {
         totalPopulation,
       }).then((data) => setData(data));
     }
-  }, [JSON.stringify(selectionKeys), totalPopulation]);
+  }, [JSON.stringify(selectionKeys), totalPopulation, table]);
   
   return {
     ...data,

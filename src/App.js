@@ -1,48 +1,66 @@
-import React, { Suspense } from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { ThemeProvider, StyledEngineProvider, createTheme } from '@mui/material/styles';
-import { Home, LoadingMessage, ErrorPage } from './components/';
-import colors from './config/colors';
-import useTrackUserActions from './hooks/useTrackUserActions.js';
+import React, { Suspense } from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  ThemeProvider,
+  StyledEngineProvider,
+  createTheme,
+} from "@mui/material/styles";
+import { Home, LoadingMessage, ErrorPage } from "./components/";
+import colors from "./config/colors";
+import useTrackUserActions from "./hooks/useTrackUserActions.js";
 
-const About = React.lazy(() => import('./components/Pages/About'));
-const Api = React.lazy(() => import('./components/Pages/Api'));
-const Cab = React.lazy(() => import('./components/Pages/Cab'));
-const Choropleth = React.lazy(() => import('./components/Pages/Choropleth'));
+const About = React.lazy(() => import("./components/Pages/About"));
+const Api = React.lazy(() => import("./components/Pages/Api"));
+const Cab = React.lazy(() => import("./components/Pages/Cab"));
+const Choropleth = React.lazy(() => import("./components/Pages/Choropleth"));
 const CodeOfConduct = React.lazy(() =>
-  import('./components/Pages/CodeOfConduct'),
+  import("./components/Pages/CodeOfConduct")
 );
-const Contact = React.lazy(() => import('./components/Pages/Contact'));
-const Data = React.lazy(() => import('./components/Pages/Data'));
-const DataLoading = React.lazy(() => import('./components/Pages/DataLoading'));
-const Download = React.lazy(() => import('./components/Pages/Download'));
-const Faq = React.lazy(() => import('./components/Pages/Faq'));
-const Hotspots = React.lazy(() => import('./components/Pages/Hotspots'));
-const Insights = React.lazy(() => import('./components/Pages/Insights'));
-const Map = React.lazy(() => import('./components/Pages/Map'));
+const Contact = React.lazy(() => import("./components/Pages/Contact"));
+const Data = React.lazy(() => import("./components/Pages/Data"));
+const DataLoading = React.lazy(() => import("./components/Pages/DataLoading"));
+const Download = React.lazy(() => import("./components/Pages/Download"));
+const Faq = React.lazy(() => import("./components/Pages/Faq"));
+const Hotspots = React.lazy(() => import("./components/Pages/Hotspots"));
+const Insights = React.lazy(() => import("./components/Pages/Insights"));
+const Map = React.lazy(() => import("./components/Pages/Map"));
 const MichiganMasks = React.lazy(() =>
-  import('./components/Pages/MichiganMasks'),
+  import("./components/Pages/MichiganMasks")
 );
-const Methodology = React.lazy(() => import('./components/Pages/Methodology'));
+const Methodology = React.lazy(() => import("./components/Pages/Methodology"));
 const PrivacyPolicy = React.lazy(() =>
-  import('./components/Pages/PrivacyPolicy'),
+  import("./components/Pages/PrivacyPolicy")
 );
-const Time = React.lazy(() => import('./components/Pages/Time'));
-const Trends = React.lazy(() => import('./components/Pages/Trends'));
+const Time = React.lazy(() => import("./components/Pages/Time"));
+const Trends = React.lazy(() => import("./components/Pages/Trends"));
 
 const theme = createTheme({
+  overrides: {
+    MuiTooltip: {
+      borderRadius: 0,
+      tooltip: {
+        borderRadius: 0,
+      },
+    },
+    MuiPopper: {
+      borderRadius: 0,
+      tooltip: {
+        borderRadius: 0,
+      },
+    }
+  },
   palette: {
     primary: {
       // light: will be calculated from palette.primary.main,
-      main: colors.yellow
+      main: colors.yellow,
       // dark: will be calculated from palette.primary.main,
       // contrastText: will be calculated to contrast with palette.primary.main
     },
     secondary: {
-      light: '#0066ff',
-      main: '#0044ff',
+      light: "#0066ff",
+      main: "#0044ff",
       // dark: will be calculated from palette.secondary.main,
-      contrastText: '#ffcc00',
+      contrastText: "#ffcc00",
     },
     // Used by `getContrastText()` to maximize the contrast between
     // the background and the text.
