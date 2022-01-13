@@ -64,58 +64,60 @@ fs.readdir(directoryPath, function (err, files) {
   if (err) {
     return console.log("Unable to scan directory: " + err);
   }
-  console.log(`Splitting ${files.length} files.`)
-  files.forEach(function (file, idx) {    
-    console.log(`${idx}/${files.length}...`)
-    // exclude dot density and already-parsed files.
-    if (
+
+  const fileList = files.filter(
+    (file) =>
       !(
-        file.includes("2020") ||
-        file.includes("2021") ||
-        file.includes("latest") ||
-        file.includes("dotDensity")
+        // exclude dot density and already-parsed files.
+        (
+          file.includes("2020") ||
+          file.includes("2021") ||
+          file.includes("2022") ||
+          file.includes("latest") ||
+          file.includes("dotDensity")
+        )
       )
-    ) {
-      const fileName = file.split(".")[0];
-      makeFolder(fileName);
-      const multiplier =
-        file.split(".").length > 2 ? +file.split(".")[1].split("-")[1] : 1;
-      const { dates, row } = Rows.read(
-        new Pbf(fs.readFileSync(`public/pbf/${file}`))
-      );
-      const reversedDates = [...dates].reverse();
-      const sumData = generateIndividualFiles(fileName, multiplier, row);
-      generateSummary(fileName, dates, sumData, multiplier, row);
-      const months = dates.map((date) => date.slice(0, -3)).filter(onlyUnique);
-      const indexRanges = months.reduce(
-        (prev, curr) => [
-          ...prev,
-          [
-            dates.findIndex((date) => date.includes(curr)),
-            dates.length -
-              reversedDates.findIndex((date) => date.includes(curr)),
-          ],
+  );
+  console.log(`Splitting ${fileList.length} files.`);
+
+  fileList.forEach(function (file, idx) {
+    console.log(`${idx + 1}/${fileList.length}...`);
+    const fileName = file.split(".")[0];
+    makeFolder(fileName);
+    const multiplier =
+      file.split(".").length > 2 ? +file.split(".")[1].split("-")[1] : 1;
+    const { dates, row } = Rows.read(
+      new Pbf(fs.readFileSync(`public/pbf/${file}`))
+    );
+    const reversedDates = [...dates].reverse();
+    const sumData = generateIndividualFiles(fileName, multiplier, row);
+    generateSummary(fileName, dates, sumData, multiplier, row);
+    const months = dates.map((date) => date.slice(0, -3)).filter(onlyUnique);
+    const indexRanges = months.reduce(
+      (prev, curr) => [
+        ...prev,
+        [
+          dates.findIndex((date) => date.includes(curr)),
+          dates.length - reversedDates.findIndex((date) => date.includes(curr)),
         ],
-        []
-      );
-      // generate rows
-      for (let i=0; i<months.length;i++){
-          const month = i === months.length - 1
-            ? 'latest'
-            : months[i];
-          const range = indexRanges[i];
-          const monthData = new Schema.Rows();
-          const rowData = row.map(data => {
-              const entry = new Schema.Entry();
-              entry.setGeoid(data.geoid);
-              entry.setValsList(data.vals.slice(range[0], range[1]));
-              return entry;
-          });
-          monthData.setDatesList(dates.slice(range[0], range[1]));
-          monthData.setRowList(rowData);
-          const binaryData = monthData.serializeBinary()
-          fs.writeFileSync(`public/pbf/${fileName}.${month}.pbf`, binaryData);
-      }
+      ],
+      []
+    );
+    // generate rows
+    for (let i = 0; i < months.length; i++) {
+      const month = i === months.length - 1 ? "latest" : months[i];
+      const range = indexRanges[i];
+      const monthData = new Schema.Rows();
+      const rowData = row.map((data) => {
+        const entry = new Schema.Entry();
+        entry.setGeoid(data.geoid);
+        entry.setValsList(data.vals.slice(range[0], range[1]));
+        return entry;
+      });
+      monthData.setDatesList(dates.slice(range[0], range[1]));
+      monthData.setRowList(rowData);
+      const binaryData = monthData.serializeBinary();
+      fs.writeFileSync(`public/pbf/${fileName}.${month}.pbf`, binaryData);
     }
   });
 

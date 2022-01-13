@@ -52,7 +52,8 @@ yarn.lock
 .yarn/*.gz
 
 # local data
-public/pbf/**
+public/pbf/*
 public/csv/*
 public/geojson/*
 public/timeseries/*
+public/*/*.*
