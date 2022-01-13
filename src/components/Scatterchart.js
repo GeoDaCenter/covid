@@ -17,7 +17,7 @@ import {
   Scatter,
 } from "recharts";
 
-import Switch from "@material-ui/core/Switch";
+import Switch from "@mui/material/Switch";
 
 import styled from "styled-components";
 import colors from "../config/colors";

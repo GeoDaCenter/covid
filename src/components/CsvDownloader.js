@@ -6,7 +6,7 @@ import {
   FormControlLabel,
   Checkbox,
   Grid,
-} from '@material-ui/core';
+} from '@mui/material';
 import colors from '../config/colors';
 import { Gutter } from '../styled_components';
 import * as JSZip from 'jszip';

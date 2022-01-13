@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import Grid from '@material-ui/core/Grid';
+import Grid from '@mui/material/Grid';
 import colors from '../config/colors';
 import { arrow } from '../config/svg';
 import { summary } from '../meta/summary';

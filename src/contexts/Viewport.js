@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import throttle from 'lodash/throttle';
+import throttle from 'lodash.throttle';
 
 const ViewportContext = React.createContext();
 const SetViewportContext = React.createContext();

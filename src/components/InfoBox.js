@@ -6,8 +6,8 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 // MUI import
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 
 // Config/component import
 import colors from '../config/colors';

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import Grid from '@material-ui/core/Grid';
+import Grid from '@mui/material/Grid';
 
 import { ContentContainer, Gutter } from '../../styled_components';
 import { NavBar, Footer } from '../';

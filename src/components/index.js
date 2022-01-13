@@ -1,5 +1,9 @@
+
+// import {BinsContainer} from './BinsContainer';
 import BottomPanel from './BottomPanel';
+// import { ContentContainer } from './ContentContainer'
 import ContextMenu from './ContextMenu';
+import ControlPopover from './ControlPopover';
 import CsvDownloader from './CsvDownloader';
 import DataDetails from './DataDetails';
 import DataLoader from './DataLoader';
@@ -8,7 +12,9 @@ import DateSlider from './Slider';
 import Dock from './Dock';
 import Draggable from './Draggable';
 import Footer from './Footer';
+// import { Gutter } from './Gutter';
 import HeroMap from './HeroMap';
+// import { HoverDiv } from './HoverDiv';
 import Icon from './Icon';
 import IconDock from './IconDock';
 import InfoBox from './InfoBox';
@@ -33,6 +39,8 @@ import Tooltip from './Tooltip';
 import TopPanel from './TopPanel';
 import Geocoder from './Geocoder';
 import ShareButton from './ShareButton';
+// import { StyledDropDown, StyledDropDownNoLabel } from './StyledDropDown';
+// import { SwitchContainer } from './SwitchContainer';
 
 // pages
 import About from './Pages/About';
@@ -52,10 +60,22 @@ import Map from './Pages/Map';
 import Methodology from './Pages/Methodology';
 import Time from './Pages/Time';
 import Trends from './Pages/Trends';
-
+import * as StyledComponents from '../styled_components';
+// const {
+//   BinsContainer,
+//   ContentContainer,
+//   Gutter,
+//   HoverDiv,
+//   StyledDropDown,
+//   StyledDropDownNoLabel,
+//   SwitchContainer
+// } = StyledComponents;
 export {
+  // BinsContainer,
   BottomPanel,
+  // ContentContainer,
   ContextMenu,
+  ControlPopover,
   CsvDownloader,
   DataDetails,
   DataLoader,
@@ -64,9 +84,11 @@ export {
   Dock,
   Draggable,
   Geocoder,
+  // Gutter,
   FastTrackInsights,
   Footer,
   HeroMap,
+  // HoverDiv,
   Icon,
   IconDock,
   InfoBox,
@@ -89,6 +111,9 @@ export {
   TopPanel,
   ShareButton,
   Scatterchart,
+  // StyledDropDown,
+  // StyledDropDownNoLabel,
+  // SwitchContainer,
   About,
   Api,
   CodeOfConduct,

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { ContentContainer } from '../../styled_components';
-import Grid from '@material-ui/core/Grid';
+import Grid from '@mui/material/Grid';
 import { MemberGrid, NavBar, Footer } from '../../components';
 import { contributors } from '../../meta/contributors';
 import { coreTeam } from '../../meta/coreTeam';

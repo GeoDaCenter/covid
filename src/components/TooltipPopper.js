@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import styled from 'styled-components';
-import Popper from '@material-ui/core/Popper';
+import Popper from '@mui/material/Popper';
 
 import { tooltipInfo } from '../config';
 import { setAnchorEl } from '../actions';

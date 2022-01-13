@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Grid from "@material-ui/core/Grid";
-import Slider from "@material-ui/core/Slider";
-import Button from "@material-ui/core/Button";
+import Grid from "@mui/material/Grid";
+import Slider from "@mui/material/Slider";
+import Button from "@mui/material/Button";
 import styled from "styled-components";
 import { setVariableParams } from "../actions";
 import useTickUpdate from "../hooks/useTickUpdate";
@@ -16,7 +16,7 @@ import Ticks from './Ticks'
 const SliderContainer = styled(Grid)`
   color: white;
   box-sizing: border-box;
-  padding: 0;
+  padding: 0 .5em .5em .5em;
   width: 100%;
   user-select: none;
 `;
@@ -48,6 +48,7 @@ const PlayPauseButton = styled(Button)`
 const SliderAndTicksContainer = styled.div`
   position: relative;
   margin:0 1em;
+  transform:translateY(3px);
 `
 
 const SliderAndTicksInner = styled.div`
@@ -72,7 +73,7 @@ const LineSlider = styled(Slider)`
     color: white;
     width: 15px;
     height: 15px;
-    transform: translate(-1.5px, .5px);
+    transform: translate(-1.5px, -4px);
     border:2px solid ${colors.gray};
     .MuiSlider-valueLabel {
       transform: translateY(-10px);
@@ -373,7 +374,7 @@ function DateSlider() {
         currIndex={currIndex}
         dates={allDates}
         />
-      <Grid item xs={1} md={1}  lg={1} xl={1} >
+      <Grid item xs={1} md={1} lg={1} xl={1} >
         <PlayPauseButton id="playPause" onClick={() => handlePlayPause()}>
           {!isTicking ? (
             <svg x="0px" y="0px" viewBox="0 0 100 100">

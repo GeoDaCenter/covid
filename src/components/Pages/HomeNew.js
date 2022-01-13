@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
-import Grid from '@material-ui/core/Grid';
+import Grid from '@mui/material/Grid';
 
 import {
   StaticNavbar,
@@ -12,7 +12,7 @@ import {
   FastTrackInsights,
 } from '../../components';
 import { colors, MAPBOX_ACCESS_TOKEN } from '../../config';
-import { Gutter } from '../../styled_components';
+import { Gutter } from '../../components';
 
 const HomePage = styled.div`
   h1 {

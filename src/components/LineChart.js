@@ -13,11 +13,13 @@ import {
   Legend,
 } from "recharts";
 
-import Switch from "@material-ui/core/Switch";
+import Switch from "@mui/material/Switch";
+import {
+  ControlPopover,
+} from "../components";
 
 import styled from "styled-components";
 import colors from "../config/colors";
-import { setVariableParams, setChartParams } from "../actions";
 import useGetLineChartData from "../hooks/useGetLineChartData";
 
 const ChartContainer = styled.span`
@@ -26,12 +28,13 @@ const ChartContainer = styled.span`
   }
   user-select: none;
   min-height:200px;
-  height:30vh;
-  max-height:30vh;
+  height:100%;
+  max-height:25vh;
   flex: 1 0 auto;
   background: ${colors.gray};
-  padding:1em 0;
+  padding:1em .5em;
   border-bottom:1px solid black;
+  position: relative;
 `;
 const SwitchesContainer = styled.div`
   display: flex;
@@ -68,6 +71,12 @@ const ChartTitle = styled.h3`
   font-weight: normal;
   margin: 0;
   color: white;
+  width:100%;
+  span {
+    max-width:20ch;
+    display: block;
+    margin:0 auto;
+  }
 `;
 
 const monthNames = [
@@ -204,7 +213,6 @@ export default function MainLineChart() {
   const [showSummarized, setShowSummarized] = useState(true);
   const [activeLine, setActiveLine] = useState(false);
   const [populationNormalized, setPopulationNormalized] = useState(false);
-
   const handleSwitch = () => setLogChart((prev) => !prev);
   const handlePopSwitch = () => setPopulationNormalized((prev) => !prev);
   const handleSummarizedSwitch = () => setShowSummarized((prev) => !prev);
@@ -219,21 +227,42 @@ export default function MainLineChart() {
   if (maximums && chartData) {
     return (
       <ChartContainer id="lineChart">
+        <ControlPopover
+          controlElements={[
+            {
+              type: "header",
+              content: "Line Chart Controls"
+            },
+            {
+              type: "helperText",
+              content: "Select the data to display on the chart."
+            },
+            {
+              type: "select", 
+              content: [
+                "test",
+                "test2"
+              ],
+              action: (e) => console.log(e),
+              value: 'test2'
+            }
+          ]}
+        />
         {selectionNames.length < 2 ? (
           <ChartTitle>
-            Total Cases and 7-Day Average New Cases{" "}
-            {selectionNames.length ? `: ${selectionNames[0]}` : ""}
+            <span>Total Cases and 7-Day Average New Cases
+            {selectionNames.length ? `: ${selectionNames[0]}` : ""}</span>
           </ChartTitle>
         ) : (
-          <ChartTitle>7-Day Average New Cases</ChartTitle>
+          <ChartTitle><span>7-Day Average New Cases</span></ChartTitle>
         )}
-        <ResponsiveContainer width="100%" height="80%">
+        <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}
             margin={{
-              top: 0,
+              top: 10,
               right: 10,
-              left: 10,
+              left: 5,
               bottom: 20,
             }}
             onClick={isTimeseries ? handleSetDate : null}
@@ -408,7 +437,7 @@ export default function MainLineChart() {
             )}
           </LineChart>
         </ResponsiveContainer>
-        <SwitchesContainer>
+        {/* <SwitchesContainer>
           <StyledSwitch>
             <Switch
               checked={logChart}
@@ -446,7 +475,7 @@ export default function MainLineChart() {
               </p>
             </StyledSwitch>
           )}
-        </SwitchesContainer>
+        </SwitchesContainer> */}
       </ChartContainer>
     );
   } else {

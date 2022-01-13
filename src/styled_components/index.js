@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import FormControl from '@material-ui/core/FormControl';
-import Grid from '@material-ui/core/Grid';
+import FormControl from '@mui/material/FormControl';
+import Grid from '@mui/material/Grid';
 import colors from '../config/colors';
 
 export const StyledDropDown = styled(FormControl)`

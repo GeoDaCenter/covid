@@ -1,7 +1,5 @@
-import { findIndex } from 'lodash';
-
 const parseMobilityData = (selectedGeoid, weightData, centroids) => {
-  let sourceCenter = findIndex(centroids, (o) => o[0] === selectedGeoid);
+  let sourceCenter = centroids.findIndex((o) => o[0] === selectedGeoid);
   let sourceX = centroids[sourceCenter][1];
   let sourceY = centroids[sourceCenter][2];
 

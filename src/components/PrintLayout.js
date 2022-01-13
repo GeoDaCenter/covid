@@ -1,7 +1,7 @@
 // import React, { useState, useEffect } from 'react';
 // import styled from 'styled-components';
 // import { useSelector } from 'react-redux';
-// import Grid from '@material-ui/core/Grid';
+// import Grid from '@mui/material/Grid';
 
 // import { MainLineChart, Legend } from '.';
 

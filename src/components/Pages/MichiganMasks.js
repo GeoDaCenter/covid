@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import * as d3 from 'd3-dsv';
 
-import Grid from '@material-ui/core/Grid';
+import Grid from '@mui/material/Grid';
 import DeckGL from '@deck.gl/react';
 import { MapView } from '@deck.gl/core';
 import { ScatterplotLayer, GeoJsonLayer } from '@deck.gl/layers';

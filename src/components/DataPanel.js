@@ -7,9 +7,9 @@ import { useSelector } from 'react-redux';
 
 // Import helper libraries
 import styled from 'styled-components';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 import useGetSidebarData from '../hooks/useGetSidebarData';
 
 // Import config and sub-components

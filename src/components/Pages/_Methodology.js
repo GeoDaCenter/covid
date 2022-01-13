@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { ContentContainer, Gutter } from '../../styled_components';
-import Grid from '@material-ui/core/Grid';
+import { ContentContainer, Gutter } from '../../components';
+import Grid from '@mui/material/Grid';
 import { NavBar, Footer } from '..';
 import colors from '../../config/colors';
 // import colors from '../../config/colors';

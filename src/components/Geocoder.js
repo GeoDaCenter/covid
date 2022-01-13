@@ -1,8 +1,8 @@
 // general imports, state
 import React, { useState } from 'react';
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import throttle from 'lodash/throttle';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
+import throttle from 'lodash.throttle';
 import styled from 'styled-components';
 import colors from '../config/colors';
 
@@ -128,8 +128,8 @@ const Geocoder = (props) => {
         renderOption={(option, idx) => (
           <React.Fragment>
             <StyledOption id={idx}>
-              <span>{option.place_name.split(',')[0]}</span>
-              <span>{formatPlaceContext(option.context)}</span>
+              <span>{option?.place_name && option.place_name.split(',')[0]}</span>
+              <span>{formatPlaceContext(option?.context)}</span>
             </StyledOption>
           </React.Fragment>
         )}
