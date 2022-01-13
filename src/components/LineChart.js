@@ -30,6 +30,7 @@ const ChartContainer = styled.span`
   min-height:200px;
   height:100%;
   max-height:25vh;
+  min-width:min(300px, 100vw)
   flex: 1 0 auto;
   background: ${colors.gray};
   padding:1em .5em;

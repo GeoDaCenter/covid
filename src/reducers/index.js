@@ -69,326 +69,326 @@ var reducer = (state = INITIAL_STATE, action) => {
     }
     // This action takes partially loaded tables from big query already in the state
     // and reconciles those with the full time-series fetched from static files
-    case "RECONCILE_TABLES": {
-      let storedData = {
-        ...state.storedData,
-      };
-      const datasets = Object.keys(action.payload.data);
-      for (let i = 0; i < datasets.length; i++) {
-        // null or undefined key name sometimes in place for incomplete data
-        // So, this check makes sure the key and data are not falsy
-        if (!datasets[i] || !action.payload.data[datasets[i]]) {
-          continue;
-        }
+    // case "RECONCILE_TABLES": {
+    //   let storedData = {
+    //     ...state.storedData,
+    //   };
+    //   const datasets = Object.keys(action.payload.data);
+    //   for (let i = 0; i < datasets.length; i++) {
+    //     // null or undefined key name sometimes in place for incomplete data
+    //     // So, this check makes sure the key and data are not falsy
+    //     if (!datasets[i] || !action.payload.data[datasets[i]]) {
+    //       continue;
+    //     }
 
-        // If the data doesn't exist, easy. Just plug in the full dataset
-        // and move on to the next
-        if (!storedData.hasOwnProperty(datasets[i])) {
-          storedData[datasets[i]] = action.payload.data[datasets[i]];
-          // if (datasets[i].includes('covid_deaths_usafacts')) console.log(datasets[i], action.payload.data[datasets[i]])
-          continue;
-        }
+    //     // If the data doesn't exist, easy. Just plug in the full dataset
+    //     // and move on to the next
+    //     if (!storedData.hasOwnProperty(datasets[i])) {
+    //       storedData[datasets[i]] = action.payload.data[datasets[i]];
+    //       // if (datasets[i].includes('covid_deaths_usafacts')) console.log(datasets[i], action.payload.data[datasets[i]])
+    //       continue;
+    //     }
 
-        // Otherwise, we need to reconcile based on keys present in the 'dates'
-        // property, using the big query data as the most up-to-date vs the
-        // static fetched data, which may have been cached client-side
-        let currentStaticData = action.payload.data[datasets[i]];
-        const datasetKeys = Object.keys(storedData[datasets[i]].data);
-        const gbqIndices = storedData[datasets[i]].dates;
+    //     // Otherwise, we need to reconcile based on keys present in the 'dates'
+    //     // property, using the big query data as the most up-to-date vs the
+    //     // static fetched data, which may have been cached client-side
+    //     let currentStaticData = action.payload.data[datasets[i]];
+    //     const datasetKeys = Object.keys(storedData[datasets[i]].data);
+    //     const gbqIndices = storedData[datasets[i]].dates;
 
-        // Loop through row (features) and date, using big query values as insertions
-        // and static as base, to reduce loop iterations
-        for (let x = 0; x < datasetKeys.length; x++) {
-          let tempValues = currentStaticData.data[datasetKeys[x]];
-          for (let n = 0; n < gbqIndices.length; n++) {
-            tempValues[gbqIndices[n]] =
-              storedData[datasets[i]].data[datasetKeys[x]][gbqIndices[n]];
-          }
-          storedData[datasets[i]].data[datasetKeys[x]] = tempValues;
-        }
+    //     // Loop through row (features) and date, using big query values as insertions
+    //     // and static as base, to reduce loop iterations
+    //     for (let x = 0; x < datasetKeys.length; x++) {
+    //       let tempValues = currentStaticData.data[datasetKeys[x]];
+    //       for (let n = 0; n < gbqIndices.length; n++) {
+    //         tempValues[gbqIndices[n]] =
+    //           storedData[datasets[i]].data[datasetKeys[x]][gbqIndices[n]];
+    //       }
+    //       storedData[datasets[i]].data[datasetKeys[x]] = tempValues;
+    //     }
 
-        // Reconcile and sort date indices
-        let reconciledDates = currentStaticData.dates;
-        for (let n = 0; n < storedData[datasets[i]].dates; n++) {
-          if (reconciledDates.indexOf(storedData[datasets[i]].dates[n]) === -1)
-            reconciledDates.push(storedData[datasets[i]].dates[n]);
-        }
-        storedData[datasets[i]].dates = reconciledDates.sort((a, b) => a - b);
-      }
+    //     // Reconcile and sort date indices
+    //     let reconciledDates = currentStaticData.dates;
+    //     for (let n = 0; n < storedData[datasets[i]].dates; n++) {
+    //       if (reconciledDates.indexOf(storedData[datasets[i]].dates[n]) === -1)
+    //         reconciledDates.push(storedData[datasets[i]].dates[n]);
+    //     }
+    //     storedData[datasets[i]].dates = reconciledDates.sort((a, b) => a - b);
+    //   }
 
-      return {
-        ...state,
-        storedData,
-      };
-    }
-    case "ADD_TABLES": {
-      const storedData = {
-        ...state.storedData,
-        ...action.payload.data,
-      };
-
-      return {
-        ...state,
-        storedData,
-      };
-    }
-    case "ADD_TABLES_AND_UPDATE": {
-      const storedData = {
-        ...state.storedData,
-        ...action.payload.data,
-      };
-
-      return {
-        ...state,
-        storedData,
-        shouldUpdate: true,
-      };
-    }
-    case "ADD_GEOJSON": {
-      const storedGeojson = {
-        ...state.storedGeojson,
-        ...action.payload.data,
-      };
-
-      return {
-        ...state,
-        storedGeojson,
-      };
-    }
-    // case 'UPDATE_MAP': {
     //   return {
     //     ...state,
-    //     mapData: generateMapData(state),
-    //     shouldUpdate: false,
-    //     isLoading: false,
+    //     storedData,
     //   };
     // }
-    case "DATA_LOAD": {
-      // main new data loading reducer
-      // I: Destructure payload (load) object
-      let {
-        storeData,
-        currentData,
-        columnNames,
-        dateIndices,
-        storeGeojson,
-        chartData,
-        mapParams,
-        variableParams,
-      } = action.payload.load;
+    // case "ADD_TABLES": {
+    //   const storedData = {
+    //     ...state.storedData,
+    //     ...action.payload.data,
+    //   };
 
-      // II: Create copies of existing state objects.
-      // This is necessary to avoid mutating the state
-      let [
-        dataObj,
-        colDataObj,
-        dateIndexObj,
-        geoDataObj,
-        mapParamsDataObj,
-        variableParamsDataObj,
-        panelsDataObj,
-      ] = [
-        {
-          ...state.storedData,
-        },
-        {
-          ...state.cols,
-        },
-        {
-          ...state.dateIndices,
-        },
-        {
-          ...state.storedGeojson,
-        },
-        {
-          ...state.mapParams,
-          ...mapParams,
-        },
-        {
-          ...state.dataParams,
-          ...variableParams,
-        },
-        {
-          ...state.panelState,
-          info: false,
-        },
-      ];
+    //   return {
+    //     ...state,
+    //     storedData,
+    //   };
+    // }
+    // case "ADD_TABLES_AND_UPDATE": {
+    //   const storedData = {
+    //     ...state.storedData,
+    //     ...action.payload.data,
+    //   };
 
-      dataObj[storeData.name] = storeData.data;
-      colDataObj[columnNames.name] = columnNames.data;
-      dateIndexObj[dateIndices.name] = dateIndices.data;
-      geoDataObj[storeGeojson.name] = storeGeojson.data;
-      return {
-        ...state,
-        storedData: dataObj,
-        cols: colDataObj,
-        dateIndices: dateIndexObj,
-        storedGeojson: geoDataObj,
-        mapParams: mapParamsDataObj,
-        dataParams: variableParamsDataObj,
-        currentData,
-        selectionKeys: [],
-        selectionIndex: [],
-        chartData,
-        sidebarData: {},
-        panelState: panelsDataObj,
-      };
-    }
-    case "UPDATE_CHART": {
-      const currDataset = findIn(state.datasets, "file", state.currentData);
-      const currCaseData = currDataset.tables[state.chartParams.table]
-        ? findIn(
-            state.tables,
-            "id",
-            currDataset.tables[state.chartParams.table]
-          ).name
-        : findDefault(
-            state.tables,
-            state.chartParams.table,
-            currDataset.geography
-          ).name;
+    //   return {
+    //     ...state,
+    //     storedData,
+    //     shouldUpdate: true,
+    //   };
+    // }
+    // case "ADD_GEOJSON": {
+    //   const storedGeojson = {
+    //     ...state.storedGeojson,
+    //     ...action.payload.data,
+    //   };
 
-      let populationData = [];
+    //   return {
+    //     ...state,
+    //     storedGeojson,
+    //   };
+    // }
+    // // case 'UPDATE_MAP': {
+    // //   return {
+    // //     ...state,
+    // //     mapData: generateMapData(state),
+    // //     shouldUpdate: false,
+    // //     isLoading: false,
+    // //   };
+    // // }
+    // case "DATA_LOAD": {
+    //   // main new data loading reducer
+    //   // I: Destructure payload (load) object
+    //   let {
+    //     storeData,
+    //     currentData,
+    //     columnNames,
+    //     dateIndices,
+    //     storeGeojson,
+    //     chartData,
+    //     mapParams,
+    //     variableParams,
+    //   } = action.payload.load;
 
-      if (state.chartParams.populationNormalized) {
-        populationData.push(0);
-        for (
-          let i = 0;
-          i < state.storedGeojson[state.currentData].data.features.length;
-          i++
-        ) {
-          populationData[0] +=
-            state.storedGeojson[state.currentData].data.features[
-              i
-            ].properties.population;
-        }
-      }
-      const additionalParams = {
-        populationData,
-      };
-      return {
-        ...state,
-        chartData: getDataForCharts(
-          state.storedData[currCaseData],
-          state.dates,
-          additionalParams
-        ),
-      };
-    }
-    case "ADD_TABLE_AND_CHART": {
-      let populationData = [];
+    //   // II: Create copies of existing state objects.
+    //   // This is necessary to avoid mutating the state
+    //   let [
+    //     dataObj,
+    //     colDataObj,
+    //     dateIndexObj,
+    //     geoDataObj,
+    //     mapParamsDataObj,
+    //     variableParamsDataObj,
+    //     panelsDataObj,
+    //   ] = [
+    //     {
+    //       ...state.storedData,
+    //     },
+    //     {
+    //       ...state.cols,
+    //     },
+    //     {
+    //       ...state.dateIndices,
+    //     },
+    //     {
+    //       ...state.storedGeojson,
+    //     },
+    //     {
+    //       ...state.mapParams,
+    //       ...mapParams,
+    //     },
+    //     {
+    //       ...state.dataParams,
+    //       ...variableParams,
+    //     },
+    //     {
+    //       ...state.panelState,
+    //       info: false,
+    //     },
+    //   ];
 
-      if (state.chartParams.populationNormalized) {
-        populationData.push(0);
-        for (
-          let i = 0;
-          i < state.storedGeojson[state.currentData].data.features.length;
-          i++
-        ) {
-          populationData[0] +=
-            state.storedGeojson[state.currentData].data.features[
-              i
-            ].properties.population;
-        }
-      }
-      const additionalParams = {
-        populationData,
-      };
+    //   dataObj[storeData.name] = storeData.data;
+    //   colDataObj[columnNames.name] = columnNames.data;
+    //   dateIndexObj[dateIndices.name] = dateIndices.data;
+    //   geoDataObj[storeGeojson.name] = storeGeojson.data;
+    //   return {
+    //     ...state,
+    //     storedData: dataObj,
+    //     cols: colDataObj,
+    //     dateIndices: dateIndexObj,
+    //     storedGeojson: geoDataObj,
+    //     mapParams: mapParamsDataObj,
+    //     dataParams: variableParamsDataObj,
+    //     currentData,
+    //     selectionKeys: [],
+    //     selectionIndex: [],
+    //     chartData,
+    //     sidebarData: {},
+    //     panelState: panelsDataObj,
+    //   };
+    // }
+    // case "UPDATE_CHART": {
+    //   const currDataset = findIn(state.datasets, "file", state.currentData);
+    //   const currCaseData = currDataset.tables[state.chartParams.table]
+    //     ? findIn(
+    //         state.tables,
+    //         "id",
+    //         currDataset.tables[state.chartParams.table]
+    //       ).name
+    //     : findDefault(
+    //         state.tables,
+    //         state.chartParams.table,
+    //         currDataset.geography
+    //       ).name;
 
-      const storedData = {
-        ...state.storedData,
-        ...action.payload.data,
-      };
+    //   let populationData = [];
 
-      return {
-        ...state,
-        chartData: getDataForCharts(
-          Object.values(action.payload.data)[0],
-          state.dates,
-          additionalParams
-        ),
-        storedData,
-      };
-    }
-    case "SET_CHART_PARAMS": {
-      const chartParams = {
-        ...state.chartParams,
-        ...action.payload.params,
-      };
+    //   if (state.chartParams.populationNormalized) {
+    //     populationData.push(0);
+    //     for (
+    //       let i = 0;
+    //       i < state.storedGeojson[state.currentData].data.features.length;
+    //       i++
+    //     ) {
+    //       populationData[0] +=
+    //         state.storedGeojson[state.currentData].data.features[
+    //           i
+    //         ].properties.population;
+    //     }
+    //   }
+    //   const additionalParams = {
+    //     populationData,
+    //   };
+    //   return {
+    //     ...state,
+    //     chartData: getDataForCharts(
+    //       state.storedData[currCaseData],
+    //       state.dates,
+    //       additionalParams
+    //     ),
+    //   };
+    // }
+    // case "ADD_TABLE_AND_CHART": {
+    //   let populationData = [];
 
-      const currDataset = findIn(state.datasets, "file", state.currentData);
-      const currCaseData = currDataset.tables[state.chartParams.table]
-        ? findIn(
-            state.tables,
-            "id",
-            currDataset.tables[state.chartParams.table]
-          )
-        : findDefault(
-            state.tables,
-            state.chartParams.table,
-            currDataset.geography
-          );
-      const properties = state.storedGeojson[state.currentData].properties;
+    //   if (state.chartParams.populationNormalized) {
+    //     populationData.push(0);
+    //     for (
+    //       let i = 0;
+    //       i < state.storedGeojson[state.currentData].data.features.length;
+    //       i++
+    //     ) {
+    //       populationData[0] +=
+    //         state.storedGeojson[state.currentData].data.features[
+    //           i
+    //         ].properties.population;
+    //     }
+    //   }
+    //   const additionalParams = {
+    //     populationData,
+    //   };
 
-      let populationData = [];
-      if (chartParams.populationNormalized) {
-        if (state.selectionKeys.length) {
-          populationData = state.selectionKeys.map(
-            (key) => properties[key].population
-          );
-        } else {
-          populationData.push(0);
-          for (
-            let i = 0;
-            i < state.storedGeojson[state.currentData].data.features.length;
-            i++
-          ) {
-            populationData[0] +=
-              state.storedGeojson[state.currentData].data.features[
-                i
-              ].properties.population;
-          }
-        }
-      }
-      const additionalParams = {
-        populationData,
-        geoid: state.selectionKeys,
-        name: state.selectionNames,
-      };
+    //   const storedData = {
+    //     ...state.storedData,
+    //     ...action.payload.data,
+    //   };
 
-      const chartData = getDataForCharts(
-        state.storedData[currCaseData],
-        state.dates,
-        additionalParams
-      );
+    //   return {
+    //     ...state,
+    //     chartData: getDataForCharts(
+    //       Object.values(action.payload.data)[0],
+    //       state.dates,
+    //       additionalParams
+    //     ),
+    //     storedData,
+    //   };
+    // }
+    // case "SET_CHART_PARAMS": {
+    //   const chartParams = {
+    //     ...state.chartParams,
+    //     ...action.payload.params,
+    //   };
 
-      return {
-        ...state,
-        chartParams,
-        chartData,
-      };
-    }
-    case "DATA_LOAD_EXISTING":
-      let [variableParamsExDataObj, panelsExDataObj] = [
-        {
-          ...state.dataParams,
-          ...action.payload.load.variableParams,
-        },
-        {
-          ...state.panelState,
-          info: false,
-        },
-      ];
+    //   const currDataset = findIn(state.datasets, "file", state.currentData);
+    //   const currCaseData = currDataset.tables[state.chartParams.table]
+    //     ? findIn(
+    //         state.tables,
+    //         "id",
+    //         currDataset.tables[state.chartParams.table]
+    //       )
+    //     : findDefault(
+    //         state.tables,
+    //         state.chartParams.table,
+    //         currDataset.geography
+    //       );
+    //   const properties = state.storedGeojson[state.currentData].properties;
 
-      return {
-        ...state,
-        dataParams: variableParamsExDataObj,
-        chartData: action.payload.load.chartData,
-        sidebarData: {},
-        selectionKeys: [],
-        selectionIndex: [],
-        panelState: panelsExDataObj,
-      };
+    //   let populationData = [];
+    //   if (chartParams.populationNormalized) {
+    //     if (state.selectionKeys.length) {
+    //       populationData = state.selectionKeys.map(
+    //         (key) => properties[key].population
+    //       );
+    //     } else {
+    //       populationData.push(0);
+    //       for (
+    //         let i = 0;
+    //         i < state.storedGeojson[state.currentData].data.features.length;
+    //         i++
+    //       ) {
+    //         populationData[0] +=
+    //           state.storedGeojson[state.currentData].data.features[
+    //             i
+    //           ].properties.population;
+    //       }
+    //     }
+    //   }
+    //   const additionalParams = {
+    //     populationData,
+    //     geoid: state.selectionKeys,
+    //     name: state.selectionNames,
+    //   };
+
+    //   const chartData = getDataForCharts(
+    //     state.storedData[currCaseData],
+    //     state.dates,
+    //     additionalParams
+    //   );
+
+    //   return {
+    //     ...state,
+    //     chartParams,
+    //     chartData,
+    //   };
+    // }
+    // case "DATA_LOAD_EXISTING":
+    //   let [variableParamsExDataObj, panelsExDataObj] = [
+    //     {
+    //       ...state.dataParams,
+    //       ...action.payload.load.variableParams,
+    //     },
+    //     {
+    //       ...state.panelState,
+    //       info: false,
+    //     },
+    //   ];
+
+    //   return {
+    //     ...state,
+    //     dataParams: variableParamsExDataObj,
+    //     chartData: action.payload.load.chartData,
+    //     sidebarData: {},
+    //     selectionKeys: [],
+    //     selectionIndex: [],
+    //     panelState: panelsExDataObj,
+    //   };
     case "SET_NEW_BINS": {
       let [binsVariableParams, binsMapParams] = [
         {
@@ -1083,7 +1083,7 @@ var reducer = (state = INITIAL_STATE, action) => {
 
       const tooltipInfo = {
         x: action.payload.x + 60 + state.variableMenuWidth,
-        y: action.payload.y + 10,
+        y: action.payload.y + 10 + 50,
         data,
         geoid: +action.payload.data,
       };
