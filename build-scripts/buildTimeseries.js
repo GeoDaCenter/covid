@@ -64,7 +64,9 @@ fs.readdir(directoryPath, function (err, files) {
   if (err) {
     return console.log("Unable to scan directory: " + err);
   }
-  files.forEach(function (file) {
+  console.log(`Splitting ${files.length} files.`)
+  files.forEach(function (file, idx) {    
+    console.log(`${idx}/${files.length}...`)
     // exclude dot density and already-parsed files.
     if (
       !(
@@ -98,7 +100,7 @@ fs.readdir(directoryPath, function (err, files) {
       );
       // generate rows
       for (let i=0; i<months.length;i++){
-          const month = i === months.lenght - 1
+          const month = i === months.length - 1
             ? 'latest'
             : months[i];
           const range = indexRanges[i];

@@ -234,7 +234,7 @@ export const generateReport = ({
   const vaccineIndex =
     fullyVaccinated?.dates && fullyVaccinated.dates.includes(currIndex)
       ? currIndex
-      : fullyVaccinated.dates.slice(-1)[0];
+      : fullyVaccinated?.dates && fullyVaccinated.dates.slice(-1)[0];
 
   if (vaccineIndex !== currIndex) {
     report.vaccine_index = vaccineIndex;
@@ -284,7 +284,7 @@ export const generateReport = ({
   const testingIndex =
     testing?.dates && testing.dates.includes(currIndex)
       ? currIndex
-      : testing.dates.slice(-1)[0];
+      : testing?.dates && testing.dates.slice(-1)[0];
 
   if (testingIndex !== currIndex) {
     report.testing_index = testingIndex;
@@ -498,11 +498,11 @@ export const generateReport = ({
     storedData[findIn(currTables, "table", "pct_fulltime").name];
   const pctParttime =
     storedData[findIn(currTables, "table", "pct_parttime").name];
-
+    
   const mobilityIndex =
-    pctHome.dates && pctHome.dates.includes(currIndex)
+    pctHome?.dates && pctHome.dates.includes(currIndex)
       ? currIndex
-      : pctHome.dates.slice(-1)[0];
+      : pctHome?.dates && pctHome.dates.slice(-1)[0];
 
   if (mobilityIndex !== currIndex) {
     report.mobility_index = mobilityIndex;

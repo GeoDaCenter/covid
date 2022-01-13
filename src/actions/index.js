@@ -230,11 +230,12 @@ export const setDataSidebar = (data) => {
 };
 
 // increments the date by 1, for use with the animation
-export const incrementDate = (index) => {
+export const incrementDate = (index, currDatesAvailable) => {
   return {
     type: 'INCREMENT_DATE',
     payload: {
       index,
+      currDatesAvailable
     },
   };
 };

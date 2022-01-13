@@ -17,6 +17,7 @@ import {
   fetcher
 } from './fetcher'
 import {findClosestValue, findDateIncrement, findDateDecrement} from "./findClosestValue";
+import { findNextIndex, findPreviousIndex } from "./findNextIndex";
 import {findSecondaryMonth} from './findSecondaryMonth'
 // import { generateMapData } from './generateMapData';
 import { generateReport } from "./generateReport";
@@ -43,6 +44,7 @@ import {getParseCsvPromise, getParseCSV} from "./getParseCSV";
 import getParsePbf, { parsePbfData } from "./getParsePbf";
 import getURLParams from "./getURLParams";
 import getVarId from "./getVarId";
+import { hasProps } from "./hasProps";
 import { indexGeoProps } from "./indexGeoProps";
 import loadGeojsonToGeoda from "./loadGeojsonToGeoda";
 import loadJson from "./loadJson";
@@ -71,6 +73,8 @@ export {
   findClosestValue,
   findDateIncrement,
   findDateDecrement,
+  findNextIndex,
+  findPreviousIndex,
   findSecondaryMonth,
   getDateIndices,
   geojsonArrayBuffer,
@@ -99,6 +103,7 @@ export {
   getURLParams,
   getVarId,
   getGzipData,
+  hasProps,
   indexGeoProps,
   loadGeojsonToGeoda,
   loadJson,

@@ -50,5 +50,9 @@ data-scripts/_1p3a/cases.csv
 .yarn/cache/*
 yarn.lock
 .yarn/*.gz
-public/pbf/*
+
+# local data
+public/pbf/**
+public/csv/*
+public/geojson/*
 public/timeseries/*

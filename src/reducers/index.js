@@ -12,6 +12,7 @@ import {
   findDefault,
   findTableOrDefault,
   findClosestValue,
+  findNextIndex
 } from "../utils";
 
 import dataDateRanges from "../config/dataDateRanges";
@@ -544,42 +545,31 @@ var reducer = (state = INITIAL_STATE, action) => {
         ...state,
         sidebarData: action.payload.data,
       };
-    // case 'INCREMENT_DATE': {
-    //   let dataParams = {
-    //     ...state.dataParams,
-    //   };
-
-    //   const currIndices = state.storedData[state.currentTable.numerator].dates;
-    //   const nextIndex =
-    //     currIndices[
-    //       currIndices.indexOf(state.dataParams.nIndex) + action.payload.index
-    //     ];
-
-    //   if (nextIndex === undefined) {
-    //     return {
-    //       ...state,
-    //     };
-    //   } else {
-    //     dataParams.nIndex = nextIndex;
-    //     dataParams.dIndex = nextIndex;
-    //     return {
-    //       ...state,
-    //       dataParams,
-    //       tooltipContent: {
-    //         x: state.tooltipContent.x,
-    //         y: state.tooltipContent.y,
-    //         data: state.tooltipContent.geoid
-    //           ? parseTooltipData(state.tooltipContent.geoid, state)
-    //           : state.tooltipContent.data,
-    //         geoid: state.tooltipContent.geoid,
-    //       },
-    //       mapData: generateMapData({ ...state, dataParams }),
-    //       sidebarData: state.selectionKeys.length
-    //         ? generateReport(state.selectionKeys, state)
-    //         : state.sidebarData,
-    //     };
-    //   }
-    // }
+    case 'INCREMENT_DATE': {
+      const {
+        index, 
+        currDatesAvailable
+      } = action.payload;     
+      const nextIndex = findNextIndex({
+          currDatesAvailable,
+          currDateIndex: state.dataParams.nIndex,
+          step: index
+        })
+      if (nextIndex === false) {
+        return {
+          ...state,
+        };
+      } else {
+        return {
+          ...state,          
+          dataParams: {
+            ...state.dataParams,
+            nIndex: nextIndex,
+            dIndex: nextIndex,
+          }
+        }
+      }
+    }
     case "SET_START_PLAYING": {
       let dateObj = {
         ...state.dataParams,
@@ -614,7 +604,26 @@ var reducer = (state = INITIAL_STATE, action) => {
         isPlaying: false,
       };
     }
-
+    case "CHANGE_GEOGRAPHY":{
+      const newGeog = action.payload;
+      const relevantDatasets = state.datasets.filter(f => f.geography === newGeog);
+      if (relevantDatasets.length === 0) {
+        return state
+      }
+      const currentDataset = findIn(state.datasets, "file", state.currentData);
+      const sameDatasetDifferentGeography = relevantDatasets.filter(f => f.name == currentDataset.name);
+      if (sameDatasetDifferentGeography.length > 0) {
+        return {
+          ...state,
+          currentData: sameDatasetDifferentGeography[0].file,
+        };
+      } else {
+        return {
+          ...state,
+          currentData: relevantDatasets[0].file,
+        };
+      }
+    }
     case "CHANGE_VARIABLE": {
       // find target params
       let currVariableParams = findIn(

@@ -276,8 +276,7 @@ function DateSlider() {
   // const [timeCase, setTimeCase] = useState(0);
   // const [dRange, setDRange] = useState(false);
 
-  const [isTicking, setIsTicking, timing, setTiming] = useTickUpdate();
-
+  const [isTicking, setIsTicking, timing, setTiming] = useTickUpdate({currDatesAvailable});
   // useEffect(() => {
   //   if (nType === 'time-series' && dType === 'time-series') {
   //     setTimeCase(1);

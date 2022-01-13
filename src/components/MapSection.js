@@ -412,7 +412,8 @@ export default function MapSection({
       hoverGeog && setHoverGeog(null);
       dispatch(setTooltipInfo(x, y, null));
     }
-    if (!isPoint && object && object?.properties[currIdCol]) {
+
+    if (!isPoint && object && object?.properties && object?.properties[currIdCol]) {
       if (object?.properties[currIdCol] !== hoverGeog)
         setHoverGeog(object?.properties[currIdCol]);
     } else {

@@ -41,7 +41,7 @@ export default function useGetTooltipContent({
                 storedData
             })
         }
-    },[JSON.stringify(data), geoid])
+    },[JSON.stringify(data), geoid, currIndex, currentData])
 
     return tooltipContent
 

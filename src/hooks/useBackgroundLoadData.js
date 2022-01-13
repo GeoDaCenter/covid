@@ -16,9 +16,9 @@ export default function useBackgroundLoadData({
     const filesToFetch = currTimespans.map(timespan => 
       findAllDefaults(tables, currentGeography)
         .map(dataspec => ({...dataspec, timespan}))
-        .filter(filesToFetch => !(storedData[filesToFetch.name] && storedData[filesToFetch.name].loaded?.includes(filesToFetch.timespan)))
+        .filter(filesToFetch => !(storedData[filesToFetch.name] && (storedData[filesToFetch.name].loaded?.includes(filesToFetch.timespan)||filesToFetch.date === null)))
       ).flat().filter(f => f.timespan !== false);
-    // console.log(filesToFetch)
+      
     useEffect(() => {
       if (shouldFetch && filesToFetch.length) {
         fetcher([filesToFetch[0]], dateLists).then(dataArray => {

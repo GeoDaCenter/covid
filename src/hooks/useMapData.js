@@ -351,12 +351,12 @@ export default function useMapData({}) {
     !!data && setMapSnapshot(`${new Date().getTime()}`.slice(-6));
     return data;
   }, [
-    JSON.stringify(mapParams),
-    JSON.stringify(dataParams),
+    mapParams.binMode !== 'dynamic' && mapParams.mapType === 'natural_breaks' && dataParams.nIndex,
     dataReady,
+    // JSON.stringify(dataParams),
     JSON.stringify(bins),
-    lisaVarId,
-    JSON.stringify(cartogramData),
+    mapParams.mapType === 'lisa' && lisaVarId,
+    // JSON.stringify(cartogramData),
   ]);
 
   return [
