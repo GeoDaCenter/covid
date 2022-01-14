@@ -465,7 +465,12 @@ var reducer = (state = INITIAL_STATE, action) => {
         centroids: centroidsObj,
       };
     case "SET_CURRENT_DATA": {
-      const currDataset = findIn(state.datasets, "file", action.payload.data);
+      const prevDataset = findIn(state.datasets, "file", state.currentData);
+      const currDataset = state.datasets.find(f => f.geography === prevDataset.geography && f.name === action.payload);
+      if (!currDataset) {
+        return state;
+      }
+      
       const currentTable = {
         numerator: findTableOrDefault(
           currDataset,
@@ -481,7 +486,7 @@ var reducer = (state = INITIAL_STATE, action) => {
 
       return {
         ...state,
-        currentData: action.payload.data,
+        currentData: currDataset.file,
         selectionKeys: [],
         selectionNaes: [],
         sidebarData: {},

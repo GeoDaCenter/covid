@@ -17,10 +17,10 @@ const BottomPanel = styled.div`
   width: 38vw;
   max-width: 500px;
   box-sizing: border-box;
-  padding: 0 0 5px 0;
+  padding: .5em 1em;
   margin: 0;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.7);
-  border-radius: 0.5vh 0.5vh 0 0;
+  border: 1px solid ${colors.black};
+  border-bottom: none;
   transition: 250ms all;
   color: white;
   hr {
@@ -59,7 +59,7 @@ const BottomPanel = styled.div`
 
 const LegendContainer = styled.div`
   width: 100%;
-  padding: 10px;
+  padding: 10px 0 0 16px;
   margin: 0;
   box-sizing: border-box;
   div.MuiGrid-item {
@@ -86,9 +86,9 @@ const IconContainer = styled.div`
 
 const LegendTitle = styled.h3`
   text-align: center;
-  font-family: 'Playfair Display', serif;
+  font-family: 'Lato', sans-serif;
+  font-weight:bold;
   padding: 0;
-  font-weight: normal;
   margin: 0;
 `;
 

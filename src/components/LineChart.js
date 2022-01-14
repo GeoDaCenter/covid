@@ -15,6 +15,7 @@ import {
 
 import Switch from "@mui/material/Switch";
 import {
+  ChartTitle,
   ControlPopover,
 } from "../components";
 
@@ -30,27 +31,14 @@ const ChartContainer = styled.span`
   min-height:200px;
   height:100%;
   max-height:25vh;
-  min-width:min(300px, 100vw)
+  min-width:max(300px, 15vw);
   flex: 1 0 auto;
   background: ${colors.gray};
   padding:1em .5em;
+  padding-bottom:2em;
+  margin-bottom:1em;
   border-bottom:1px solid black;
   position: relative;
-`;
-const ChartTitle = styled.h3`
-  text-align: center;
-  font-family: "Lato", sans-serif;
-  font-weight:bold;
-  padding: 0;
-  font-weight: normal;
-  margin: 0;
-  color: white;
-  width:100%;
-  span {
-    max-width:20ch;
-    display: block;
-    margin:0 auto;
-  }
 `;
 
 const monthNames = [
@@ -193,11 +181,11 @@ export default function MainLineChart() {
   const handleSwitch = () => setLogChart((prev) => !prev);
   const handlePopSwitch = () => setPopulationNormalized((prev) => !prev);
   const handleSummarizedSwitch = () => setShowSummarized((prev) => !prev);
-  const handleSetDate = ({ activeTooltipIndex }) =>
-    dispatch({
-      type: "SET_DATA_PARAMS",
-      payload: { nIndex: activeTooltipIndex },
-    });
+  // const handleSetDate = ({ activeTooltipIndex }) =>
+  //   dispatch({
+  //     type: "SET_DATA_PARAMS",
+  //     payload: { nIndex: activeTooltipIndex },
+  //   });
   const handleLegendHover = (o) => setActiveLine(+o.dataKey.split('Weekly')[0]);
   const handleLegendLeave = () => setActiveLine(false);
 
@@ -275,9 +263,9 @@ export default function MainLineChart() {
               top: 10,
               right: 10,
               left: 5,
-              bottom: 20,
+              bottom: 40,
             }}
-            onClick={isTimeseries ? handleSetDate : null}
+            // onClick={isTimeseries ? handleSetDate : null}
           >
             <XAxis
               dataKey="date"

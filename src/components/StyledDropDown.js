@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import FormControl from '@mui/material/FormControl';
+import colors from '../config/colors';
 
 export const StyledDropDown = styled(FormControl)`
   margin:0 10px 0 0;
@@ -24,6 +25,17 @@ export const StyledDropDown = styled(FormControl)`
   }
   .MuiInput-underline:after {
     border-bottom: 2px solid white
+  }  
+  .MuiOutlinedInput-root {
+    border: 1px solid ${colors.lightgray}; 
+  }
+  .MuiInputLabel-root {
+    background: ${colors.gray};
+    padding:0 0.25em;
+    top: -8px;
+  }
+  .MuiInputLabel-shrink {
+    top: 0;
   }
   .MuiInputBase-root {
     color: white;

@@ -410,9 +410,7 @@ export default function VariablePanel() {
   
   const handleDataset = (e) => {
     dispatch(
-      setCurrentData(
-        datasetTree[currentPreset.geography][e.target.value],
-      ),
+      setCurrentData(e.target.value),
     );
   };
 

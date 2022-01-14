@@ -108,9 +108,7 @@ export const storeCartogramData = (data) => {
 export const setCurrentData = (data) => {
   return {
     type: 'SET_CURRENT_DATA',
-    payload: {
-      data,
-    },
+    payload: data
   };
 };
 

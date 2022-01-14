@@ -262,6 +262,7 @@ function useGetBins({
     JSON.stringify(dataParams),
     typeof geoda,
     dataReady,
+    currentData
   ]); //todo update depenency array if needed for some dataparam roperties
   return bins;
 }
@@ -308,7 +309,7 @@ export default function useMapData({}) {
           Object.values(geojsonData.order.indexOrder),
         dataReady,
       }),
-    [JSON.stringify(dataParams), JSON.stringify(mapParams), binIndex, dataReady]
+    [JSON.stringify(dataParams), JSON.stringify(mapParams), binIndex, dataReady, currentData]
   );
 
   const bins = useGetBins({
@@ -356,6 +357,7 @@ export default function useMapData({}) {
     // JSON.stringify(dataParams),
     JSON.stringify(bins),
     mapParams.mapType === 'lisa' && lisaVarId,
+    currentData
     // JSON.stringify(cartogramData),
   ]);
 

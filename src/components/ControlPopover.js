@@ -155,10 +155,10 @@ export default function ControlsPopover({ controlElements = [] }) {
         }}
       >
         <PopoverContent>
-          {controlElements.map((elementProps) => {
+          {controlElements.map((elementProps, idx) => {
             if (ControlElementMapping[elementProps.type]) {
               const El = ControlElementMapping[elementProps.type];
-              return <El {...elementProps} />;
+              return <El key={idx} {...elementProps} />;
             } else {
               return null;
             }

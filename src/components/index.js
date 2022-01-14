@@ -1,6 +1,7 @@
 
 import {BinsContainer} from './BinsContainer';
 import BottomPanel from './BottomPanel';
+import { ChartTitle } from './ChartTitle';
 import ContextMenu from './ContextMenu';
 import ControlPopover from './ControlPopover';
 import CsvDownloader from './CsvDownloader';
@@ -38,6 +39,8 @@ import Tooltip from './Tooltip';
 import TopPanel from './TopPanel';
 import Geocoder from './Geocoder';
 import ShareButton from './ShareButton';
+import { SummaryStatistics } from './SummaryStatistics';
+import { TextStatistics } from './TextStatistics';
 import { StyledDropDown, StyledDropDownNoLabel } from './StyledDropDown';
 import { SwitchContainer } from './SwitchContainer';
 
@@ -63,6 +66,7 @@ import Trends from './Pages/Trends';
 export {
   BinsContainer,
   BottomPanel,
+  ChartTitle,
   ContextMenu,
   ControlPopover,
   CsvDownloader,
@@ -95,6 +99,8 @@ export {
   PrintLayout,
   Scaleable,
   StaticNavbar,
+  SummaryStatistics,
+  TextStatistics,
   Ticks,
   Tooltip,
   TopPanel,

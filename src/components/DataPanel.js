@@ -2,20 +2,21 @@
 // and displays it in the right side panel.
 
 // Import main libraries
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 
 // Import helper libraries
-import styled from 'styled-components';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import useGetSidebarData from '../hooks/useGetSidebarData';
+import styled from "styled-components";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import useGetSidebarData from "../hooks/useGetSidebarData";
 
 // Import config and sub-components
-import Tooltip from './Tooltip';
-import TwoWeekChart from './TwoWeekLineChart';
-import colors from '../config/colors';
+import Tooltip from "./Tooltip";
+import TwoWeekChart from "./TwoWeekLineChart";
+import colors from "../config/colors";
+import { TextStatistics } from '../components';
 
 //// Styled components CSS
 // Main container for entire panel
@@ -26,7 +27,7 @@ const DataPanelContainer = styled.div`
   top: 0; */
   overflow-x: hidden;
   position: relative;
-  
+
   ::-webkit-scrollbar {
     width: 10px;
   }
@@ -38,7 +39,7 @@ const DataPanelContainer = styled.div`
 
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    background: url('${process.env.PUBLIC_URL}/icons/grip.png'), #999;
+    background: url("${process.env.PUBLIC_URL}/icons/grip.png"), #999;
     background-position: center center;
     background-repeat: no-repeat, no-repeat;
     background-size: 50%, 100%;
@@ -47,7 +48,7 @@ const DataPanelContainer = styled.div`
 
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-    background: url('${process.env.PUBLIC_URL}/icons/grip.png'), #f9f9f9;
+    background: url("${process.env.PUBLIC_URL}/icons/grip.png"), #f9f9f9;
     background-position: center center;
     background-repeat: no-repeat, no-repeat;
     background-size: 50%, 100%;
@@ -60,13 +61,13 @@ const DataPanelContainer = styled.div`
   flex: 1 1 auto;
   box-sizing: border-box;
   transition: 250ms all;
-  font-family: 'Lato', sans-serif;
+  font-family: "Lato", sans-serif;
   color: white;
   font-size: 100%;
   padding: 0;
   z-index: 5;
   /* transform: translateX(100%); */
-  width:0;
+  width: 0;
   h4 {
     margin: 10px 0;
   }
@@ -111,17 +112,17 @@ const DataPanelContainer = styled.div`
       text-decoration: none;
     }
   }
-  
+
   h6.alt-index {
-    padding-bottom:0;
-    margin-left:2px;
-    color:${colors.orange};
+    padding-bottom: 0;
+    margin-left: 2px;
+    color: ${colors.orange};
     &:before {
-      content: '*'
+      content: "*";
     }
   }
   p {
-    padding-right: ${(props) => (props.expanded ? '10px' : '0px')};
+    padding-right: ${(props) => (props.expanded ? "10px" : "0px")};
   }
 `;
 // Scrollable Wrapper for main report information
@@ -138,7 +139,7 @@ const ReportWrapper = styled.div`
 
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    background: url('${process.env.PUBLIC_URL}/icons/grip.png'), #999;
+    background: url("${process.env.PUBLIC_URL}/icons/grip.png"), #999;
     background-position: center center;
     background-repeat: no-repeat, no-repeat;
     background-size: 50%, 100%;
@@ -147,7 +148,7 @@ const ReportWrapper = styled.div`
 
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-    background: url('${process.env.PUBLIC_URL}/icons/grip.png'), #f9f9f9;
+    background: url("${process.env.PUBLIC_URL}/icons/grip.png"), #f9f9f9;
     background-position: center center;
     background-repeat: no-repeat, no-repeat;
     background-size: 50%, 100%;
@@ -156,7 +157,7 @@ const ReportWrapper = styled.div`
 
 // Inner container for report content
 const ReportContainer = styled.div`
-  padding: 5px 0 0 30px;
+  padding: .5em 0 0 1em;
   box-sizing: border-box;
   overflow-x: visible;
   // Multi-column layout (NYI)
@@ -168,31 +169,31 @@ const ReportContainer = styled.div`
   // column-gap:10px;
   // display:inline-block;
   h3 {
-    font-size: ${(props) => (props.expanded ? '150%' : '100%')};
-    display: ${(props) => (props.expanded ? 'block' : 'inline')};
-    margin: ${(props) => (props.expanded ? '0' : '0 15px 0 0')};
-    padding: ${(props) => (props.expanded ? '0 0 15px 0 !important' : '0')};
+    font-size: ${(props) => (props.expanded ? "150%" : "100%")};
+    display: ${(props) => (props.expanded ? "block" : "inline")};
+    margin: ${(props) => (props.expanded ? "0" : "0 15px 0 0")};
+    padding: ${(props) => (props.expanded ? "0 0 15px 0 !important" : "0")};
     &:before {
-      content: ': ';
-      display: ${(props) => (props.expanded ? 'none' : 'initial')};
+      content: ": ";
+      display: ${(props) => (props.expanded ? "none" : "initial")};
     }
     &:after {
-      content: ' ';
+      content: " ";
       white-space: pre;
       height: 0;
-      display: ${(props) => (props.expanded ? 'none' : 'block')};
+      display: ${(props) => (props.expanded ? "none" : "block")};
     }
   }
   div.numberChartContainer {
     width: 100%;
-    display: ${(props) => (props.expanded ? 'flex' : 'inline')};
+    display: ${(props) => (props.expanded ? "flex" : "inline")};
     align-items: center;
   }
   div.numberContainer {
-    display: ${(props) => (props.expanded ? 'flex' : 'inline')};
+    display: ${(props) => (props.expanded ? "flex" : "inline")};
   }
   .bigOnly {
-    display: ${(props) => (props.expanded ? 'initial' : 'none')};
+    display: ${(props) => (props.expanded ? "initial" : "none")};
   }
 `;
 
@@ -231,33 +232,47 @@ export default function DataPanel() {
   const selectionKeys = useSelector((state) => state.selectionKeys);
   const panelState = useSelector((state) => state.panelState);
   const [expanded, setExpanded] = useState(true);
-  const sidebarData = useGetSidebarData({selectionKeys, panelOpen: panelState.info})
-  const dates = useSelector(state => state.dates)
+  const sidebarData = useGetSidebarData({
+    selectionKeys,
+    panelOpen: panelState.info,
+  });
+  const dates = useSelector((state) => state.dates);
   // Set expanded or contracted view
   const handleExpandContract = (event) => setExpanded(event.target.value);
-  
   return (
     <DataPanelContainer
-      className={panelState.info ? 'open' : ''}
+      className={panelState.info ? "open" : ""}
       id="data-panel"
       expanded={expanded}
       otherPanels={panelState.variables}
       dataLength={selectionKeys.length}
     >
-      {!selectionKeys.length && <h3>Click an area for more detailed data.</h3>}
-      {!!selectionKeys.length && <ExpandSelect>
-        <Select
-          labelId="expand-view-label"
-          id="expand-view"
-          value={null}
-          onChange={handleExpandContract}
-        >
-          <MenuItem value={true}>Expanded</MenuItem>
-          <MenuItem value={false}>Compact</MenuItem>
-        </Select>
-      </ExpandSelect>}
+      {!selectionKeys.length && (
+        <ReportWrapper>
+          <ReportContainer expanded={true}>
+            <p>Click an area for more detailed data.</p>
+          </ReportContainer>
+        </ReportWrapper>
+      )}
+      {!!selectionKeys.length && (
+        <ExpandSelect>
+          <Select
+            labelId="expand-view-label"
+            id="expand-view"
+            value={null}
+            onChange={handleExpandContract}
+          >
+            <MenuItem value={true}>Expanded</MenuItem>
+            <MenuItem value={false}>Compact</MenuItem>
+            <MenuItem value={'text'}>Text</MenuItem>
+          </Select>
+        </ExpandSelect>
+      )}
       <ReportWrapper>
-        <ReportContainer expanded={expanded}>
+        {expanded === 'text' && <ReportContainer>
+          <TextStatistics geoid={selectionKeys[0]} />
+        </ReportContainer>}
+        {expanded === true && <ReportContainer expanded={expanded}>
           <ReportSection>
             {sidebarData.name && <h2>{sidebarData.name}</h2>}
             <br />
@@ -266,19 +281,19 @@ export default function DataPanel() {
                 <h4>{sidebarData.date}</h4>
                 {sidebarData.population && (
                   <>
-                    Population{' '}
-                    <h3>{sidebarData.population?.toLocaleString('en')}</h3>
+                    Population{" "}
+                    <h3>{sidebarData.population?.toLocaleString("en")}</h3>
                   </>
                 )}
               </>
             )}
           </ReportSection>
-          {sidebarData.hasOwnProperty('cases') &&
-            sidebarData.hasOwnProperty('deaths') && (
+          {sidebarData.hasOwnProperty("cases") &&
+            sidebarData.hasOwnProperty("deaths") && (
               <ReportSection>
                 Total Cases
                 <div className="numberChartContainer">
-                  <h3>{sidebarData.cases?.toLocaleString('en')}</h3>
+                  <h3>{sidebarData.cases?.toLocaleString("en")}</h3>
                   {expanded && (
                     <TwoWeekChart
                       data={sidebarData.cases14}
@@ -288,7 +303,7 @@ export default function DataPanel() {
                 </div>
                 Total Deaths
                 <div className="numberChartContainer">
-                  <h3>{sidebarData.deaths?.toLocaleString('en')}</h3>
+                  <h3>{sidebarData.deaths?.toLocaleString("en")}</h3>
                   {expanded && (
                     <TwoWeekChart
                       data={sidebarData.deaths14}
@@ -297,28 +312,32 @@ export default function DataPanel() {
                   )}
                 </div>
                 <p>7-Day Daily Average of New Cases</p>
-                <h3>{sidebarData.cases7d?.toFixed(2).toLocaleString('en')}</h3>
+                <h3>{sidebarData.cases7d?.toFixed(2).toLocaleString("en")}</h3>
                 <p>7-Day Daily Average of New Cases per 100k Population</p>
                 <h3>
-                  {sidebarData.cases100k?.toFixed(2).toLocaleString('en')}
+                  {sidebarData.cases100k?.toFixed(2).toLocaleString("en")}
                 </h3>
                 <p>7-Day Average New Deaths</p>
-                <h3>{sidebarData.deaths7d?.toFixed(2).toLocaleString('en')}</h3>
+                <h3>{sidebarData.deaths7d?.toFixed(2).toLocaleString("en")}</h3>
                 <p>7-Day Daily Average of New Deaths per 100k Population</p>
                 <h3>
-                  {sidebarData.deaths100k?.toFixed(2).toLocaleString('en')}
+                  {sidebarData.deaths100k?.toFixed(2).toLocaleString("en")}
                 </h3>
                 <p>Licensed Hospital Beds</p>
-                <h3>{sidebarData.beds.toLocaleString('en')}</h3>
+                <h3>{sidebarData.beds.toLocaleString("en")}</h3>
               </ReportSection>
             )}
-          {sidebarData.hasOwnProperty('fully_vaccinated') && (
+          {sidebarData.hasOwnProperty("fully_vaccinated") && (
             <ReportSection>
               <h2>COVID Vaccination</h2>
-              {sidebarData.hasOwnProperty('vaccine_index') && <h6 className="alt-index">{dates[sidebarData.vaccine_index]}</h6>}
+              {sidebarData.hasOwnProperty("vaccine_index") && (
+                <h6 className="alt-index">
+                  {dates[sidebarData.vaccine_index]}
+                </h6>
+              )}
               <br />
               <h6>
-                Source:{' '}
+                Source:{" "}
                 <a
                   href="https://covid.cdc.gov/covid-data-tracker/#vaccinations"
                   target="_blank"
@@ -346,10 +365,10 @@ export default function DataPanel() {
                 Total Number
                 <br className="bigOnly" /> Fully Vaccinated
               </p>
-              <h3>{sidebarData.fully_vaccinated.toLocaleString('en')}</h3>
+              <h3>{sidebarData.fully_vaccinated.toLocaleString("en")}</h3>
             </ReportSection>
           )}
-          {sidebarData.hasOwnProperty('one_dose') && (
+          {sidebarData.hasOwnProperty("one_dose") && (
             <ReportSection>
               <p>
                 % of Population
@@ -368,27 +387,31 @@ export default function DataPanel() {
                 Total Number
                 <br className="bigOnly" /> Received At Least One Dose
               </p>
-              <h3>{sidebarData.one_dose?.toLocaleString('en')}</h3>
-              {sidebarData.hasOwnProperty('doses_dist100') && (
+              <h3>{sidebarData.one_dose?.toLocaleString("en")}</h3>
+              {sidebarData.hasOwnProperty("doses_dist100") && (
                 <>
                   <p>
                     Doses to be Administered
                     <br className="bigOnly" /> Per 100 People
                   </p>
                   <h3>
-                    {sidebarData.doses_dist100?.toFixed(2).toLocaleString('en')}
+                    {sidebarData.doses_dist100?.toFixed(2).toLocaleString("en")}
                   </h3>
                 </>
               )}
             </ReportSection>
           )}
-          {sidebarData.hasOwnProperty('testing') && (
+          {sidebarData.hasOwnProperty("testing") && (
             <ReportSection>
               <h2>Testing</h2>
-              {sidebarData.hasOwnProperty('testing_index') && <h6 className="alt-index">{dates[sidebarData.testing_index]}</h6>}
+              {sidebarData.hasOwnProperty("testing_index") && (
+                <h6 className="alt-index">
+                  {dates[sidebarData.testing_index]}
+                </h6>
+              )}
               <br />
               <h6>
-                Source:{' '}
+                Source:{" "}
                 <a
                   href="https://healthdata.gov/dataset/covid-19-diagnostic-laboratory-testing-pcr-testing-time-series"
                   target="_blank"
@@ -422,17 +445,17 @@ export default function DataPanel() {
                 7-Day Confirmed Cases
                 <br className="bigOnly" /> per Testing
               </p>
-              <h3>{sidebarData.ccpt.toLocaleString('en')}%</h3>
+              <h3>{sidebarData.ccpt.toLocaleString("en")}%</h3>
             </ReportSection>
           )}
-          {sidebarData.hasOwnProperty('PovChldPrc') && (
+          {sidebarData.hasOwnProperty("PovChldPrc") && (
             <ReportSection>
               <h2>
                 Community Health Factors
                 <Tooltip id="healthfactor" />
               </h2>
               <h6>
-                Source:{' '}
+                Source:{" "}
                 <a
                   href="https://www.countyhealthrankings.org/"
                   target="_blank"
@@ -451,7 +474,7 @@ export default function DataPanel() {
               <h3>{sidebarData.IncRt}</h3>
               <p>Median household income</p>
               <Tooltip id="MedianHouseholdIncome" />
-              <h3>${sidebarData.MedianHouseholdIncome.toLocaleString('en')}</h3>
+              <h3>${sidebarData.MedianHouseholdIncome.toLocaleString("en")}</h3>
               <p>Food insecurity</p>
               <Tooltip id="FdInsPrc" />
               <h3>{sidebarData.FdInsPrc}%</h3>
@@ -477,14 +500,14 @@ export default function DataPanel() {
               <h3>{sidebarData.SvrHsngPrbRt}%</h3>
             </ReportSection>
           )}
-          {sidebarData.hasOwnProperty('EssentialPct') && (
+          {sidebarData.hasOwnProperty("EssentialPct") && (
             <ReportSection>
               <h2>
                 Essential Workers
                 <Tooltip id="essentialWorkers" />
               </h2>
               <h6>
-                Source:{' '}
+                Source:{" "}
                 <a
                   href="https://www.census.gov/programs-surveys/acs"
                   target="_blank"
@@ -496,14 +519,14 @@ export default function DataPanel() {
               <h3>{Math.round(sidebarData.EssentialPct * 100)}%</h3>
             </ReportSection>
           )}
-          {sidebarData.hasOwnProperty('Over65YearsPrc') && (
+          {sidebarData.hasOwnProperty("Over65YearsPrc") && (
             <ReportSection>
               <h2>
                 Community Health Context
                 <Tooltip id="healthcontext" />
               </h2>
               <h6>
-                Source:{' '}
+                Source:{" "}
                 <a
                   href="https://www.countyhealthrankings.org/"
                   target="_blank"
@@ -544,14 +567,14 @@ export default function DataPanel() {
               <h3>{sidebarData.DrOverdMrtRt}</h3>
             </ReportSection>
           )}
-          {sidebarData.hasOwnProperty('LfExpRt') && (
+          {sidebarData.hasOwnProperty("LfExpRt") && (
             <ReportSection expanded={expanded}>
               <h2>
                 Length &amp; Quality of Life
                 <Tooltip id="healthlife" />
               </h2>
               <h6>
-                Source:{' '}
+                Source:{" "}
                 <a
                   href="https://www.countyhealthrankings.org/"
                   target="_blank"
@@ -572,12 +595,12 @@ export default function DataPanel() {
               <h3>{sidebarData.SlfHlthPrc}%</h3>
             </ReportSection>
           )}
-          {sidebarData.hasOwnProperty('severity_index') && (
+          {sidebarData.hasOwnProperty("severity_index") && (
             <ReportSection>
               <h2>Forecasting</h2>
               <br />
               <h6>
-                Source:{' '}
+                Source:{" "}
                 <a
                   href="https://github.com/Yu-Group/covid19-severity-prediction/"
                   target="_blank"
@@ -592,9 +615,9 @@ export default function DataPanel() {
                 <Tooltip id="SeverityIndex" />
               </p>
               <h3>
-                {' '}
+                {" "}
                 {
-                  ['', 'Low', 'Medium', 'High'][
+                  ["", "Low", "Medium", "High"][
                     Math.round(sidebarData.severity_index)
                   ]
                 }
@@ -604,32 +627,34 @@ export default function DataPanel() {
                 Predicted Deaths <Tooltip id="PredictedDeaths" />
               </p>
               <br />
-              <p>{sidebarData.predDates[0].split('_').slice(1).join('-')}</p>
+              <p>{sidebarData.predDates[0].split("_").slice(1).join("-")}</p>
               <h3>{Math.round(sidebarData.pred1 * 10) / 10}</h3>
 
-              <p>{sidebarData.predDates[1].split('_').slice(1).join('-')}</p>
+              <p>{sidebarData.predDates[1].split("_").slice(1).join("-")}</p>
               <h3>{Math.round(sidebarData.pred2 * 10) / 10}</h3>
 
-              <p>{sidebarData.predDates[2].split('_').slice(1).join('-')}</p>
+              <p>{sidebarData.predDates[2].split("_").slice(1).join("-")}</p>
               <h3>{Math.round(sidebarData.pred3 * 10) / 10}</h3>
 
-              <p>{sidebarData.predDates[3].split('_').slice(1).join('-')}</p>
+              <p>{sidebarData.predDates[3].split("_").slice(1).join("-")}</p>
               <h3>{Math.round(sidebarData.pred4 * 10) / 10}</h3>
 
-              <p>{sidebarData.predDates[4].split('_').slice(1).join('-')}</p>
+              <p>{sidebarData.predDates[4].split("_").slice(1).join("-")}</p>
               <h3>{Math.round(sidebarData.pred5 * 10) / 10}</h3>
 
-              <p>{sidebarData.predDates[5].split('_').slice(1).join('-')}</p>
+              <p>{sidebarData.predDates[5].split("_").slice(1).join("-")}</p>
               <h3>{Math.round(sidebarData.pred6 * 10) / 10}</h3>
 
-              <p>{sidebarData.predDates[6].split('_').slice(1).join('-')}</p>
+              <p>{sidebarData.predDates[6].split("_").slice(1).join("-")}</p>
               <h3>{Math.round(sidebarData.pred7 * 10) / 10}</h3>
             </ReportSection>
           )}
-          {sidebarData.hasOwnProperty('pct_home') && (
+          {sidebarData.hasOwnProperty("pct_home") && (
             <ReportSection>
               <h2>Mobility</h2>
-              {sidebarData.hasOwnProperty('mobility_index') && <h6 className="alt-index">{sidebarData.mobility_index}</h6>}
+              {sidebarData.hasOwnProperty("mobility_index") && (
+                <h6 className="alt-index">{sidebarData.mobility_index}</h6>
+              )}
               <br />
               <p>Percent Completely At Home</p>
               <div className="numberChartContainer">
@@ -645,7 +670,7 @@ export default function DataPanel() {
               </div>
             </ReportSection>
           )}
-        </ReportContainer>
+        </ReportContainer>}
       </ReportWrapper>
     </DataPanelContainer>
   );

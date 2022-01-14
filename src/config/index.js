@@ -1138,29 +1138,29 @@ export const tooltipInfo = {
 export const variableTree = {
   'HEADER:cases': {},
   'Confirmed Count': {
-    County: ['USA Facts', '1point3acres', 'New York Times'], //"CDC",
-    State: ['USA Facts', '1point3acres', 'New York Times'],
+    County: ['USA Facts', '1Point3Acres', 'New York Times'], //"CDC",
+    State: ['USA Facts', '1Point3Acres', 'New York Times'],
   },
   'Confirmed Count per 100K Population': {
-    County: ['USA Facts', '1point3acres', 'New York Times'], //"CDC",
-    State: ['USA Facts', '1point3acres', 'New York Times'],
+    County: ['USA Facts', '1Point3Acres', 'New York Times'], //"CDC",
+    State: ['USA Facts', '1Point3Acres', 'New York Times'],
   },
   'Confirmed Count per Licensed Bed': {
-    County: ['USA Facts', '1point3acres', 'New York Times'], //"CDC",
-    State: ['USA Facts', '1point3acres', 'New York Times'],
+    County: ['USA Facts', '1Point3Acres', 'New York Times'], //"CDC",
+    State: ['USA Facts', '1Point3Acres', 'New York Times'],
   },
   'HEADER:deaths': {},
   'Death Count': {
-    County: ['USA Facts', '1point3acres', 'New York Times'], //"CDC",
-    State: ['USA Facts', '1point3acres', 'New York Times'],
+    County: ['USA Facts', '1Point3Acres', 'New York Times'], //"CDC",
+    State: ['USA Facts', '1Point3Acres', 'New York Times'],
   },
   'Death Count per 100K Population': {
-    County: ['USA Facts', '1point3acres', 'New York Times'], //"CDC",
-    State: ['USA Facts', '1point3acres', 'New York Times'],
+    County: ['USA Facts', '1Point3Acres', 'New York Times'], //"CDC",
+    State: ['USA Facts', '1Point3Acres', 'New York Times'],
   },
   'Death Count / Confirmed Count': {
-    County: ['USA Facts', '1point3acres', 'New York Times'], //"CDC",
-    State: ['USA Facts', '1point3acres', 'New York Times'],
+    County: ['USA Facts', '1Point3Acres', 'New York Times'], //"CDC",
+    State: ['USA Facts', '1Point3Acres', 'New York Times'],
   },
   'HEADER:testing': {},
   '7 Day Testing Positivity Rate Percent': {
@@ -1222,7 +1222,7 @@ export const datasetTree = {
     CDC: 'cdc_h.geojson',
   },
   County: {
-    '1point3acres': 'county_1p3a.geojson',
+    '1Point3Acres': 'county_1p3a.geojson',
     'New York Times': 'county_nyt.geojson',
     'USA Facts': 'county_usfacts.geojson',
     CDC: 'cdc.geojson',
@@ -1232,7 +1232,7 @@ export const datasetTree = {
     Safegraph: 'cdc.geojson',
   },
   State: {
-    '1point3acres': 'state_1p3a.geojson',
+    '1Point3Acres': 'state_1p3a.geojson',
     'New York Times': 'state_nyt.geojson',
     'USA Facts': 'state_usafacts.geojson',
     CDC: 'state_1p3a.geojson',
@@ -1246,7 +1246,7 @@ export const urlParamsTree = {
     geography: 'County',
   },
   'county_1p3a.geojson': {
-    name: '1point3acres',
+    name: '1Point3Acres',
     geography: 'County',
   },
   'county_nyt.geojson': {
@@ -1254,7 +1254,7 @@ export const urlParamsTree = {
     geography: 'County',
   },
   'state_1p3a.geojson': {
-    name: '1point3acres',
+    name: '1Point3Acres',
     geography: 'State',
   },
   'state_usafacts.geojson': {

@@ -25,9 +25,10 @@ export const parseTooltipData = ({
       ? locProperties.NAME + ", " + locProperties.state_abbr
       : locProperties.NAME;
   }
+  
   for (let i = 0; i < currTables.length; i++) {
     const tableName = currTables[i];
-    const data = storedData[tableName.name];
+    const data = storedData[tableName.name.split('.')[0]];
     if (
       data?.data &&
       data.data[geoid] &&

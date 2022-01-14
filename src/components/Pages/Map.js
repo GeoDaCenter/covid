@@ -97,6 +97,7 @@ const RightPaneContainer = styled.div`
   display: flex;
   flex-direction:column;
   overflow:hidden;
+  background: ${colors.gray};
 
 `
 

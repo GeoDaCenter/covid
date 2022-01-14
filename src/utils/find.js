@@ -68,7 +68,7 @@ export const getDateIndices = (data, names) => {
 
 export const findTableOrDefault = (currDataset, tables, tableName) => {
   if (tableName === "properties") return tableName;
-  if (currDataset?.tables[tableName])
+  if (currDataset?.tables && currDataset.tables[tableName])
     return findIn(tables, "id", currDataset.tables[tableName]);
   return findDefault(tables, tableName, currDataset.geography);
 };

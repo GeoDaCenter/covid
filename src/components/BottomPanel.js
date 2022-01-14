@@ -28,8 +28,8 @@ const BottomDrawer = styled.div`
   box-sizing: border-box;
   padding: 0 0 5px 0;
   margin: 0;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.7);
-  border-radius: 0.5vh 0.5vh 0 0;
+  border: 1px solid ${colors.black};
+  border-bottom:none;
   transition: 250ms all;
   hr {
     opacity: 0.5;
