@@ -191,18 +191,11 @@ export default function Map() {
                       content={
                         <MainLineChart />
                       } 
+                      defaultWidth={defaultDimensions.defaultWidthLong}
+                      defaultHeight={defaultDimensions.defaultHeight}
+                      minHeight={defaultDimensions.minHeight}
+                      minWidth={defaultDimensions.minWidth} 
                       title="lineChart"
-                      content={
-                      <Scaleable 
-                        content={
-                          <MainLineChart />
-                        } 
-                        title="lineChart"
-                        defaultWidth={defaultDimensions.defaultWidthLong}
-                        defaultHeight={defaultDimensions.defaultHeight}
-                        minHeight={defaultDimensions.minHeight}
-                        minWidth={defaultDimensions.minWidth} 
-                        />}
                       />}
                     />} 
                     {panelState.tutorial && <Draggable 

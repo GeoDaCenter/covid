@@ -14,10 +14,18 @@ const ResizeButton = styled.button`
     display:${props => props.notScaleable ? 'none' : 'initial'};
 `
 
-const Scaleable = (props) => {
+const Scaleable = ({
+    defaultWidth=300,
+    defaultHeight=200,
+    minHeight=100,
+    minWidth=150,
+    content=null,
+    notScaleable=false,
+    title=''
+}) => {
     
-    const [width, setWidth] = useState(props.defaultWidth);
-    const [height, setHeight] = useState(props.defaultHeight);
+    const [width, setWidth] = useState(defaultWidth);
+    const [height, setHeight] = useState(defaultHeight);
     const [currXYPos, setCurrXYPos] = useState(false);
 
     const listener = (e) => {
@@ -51,19 +59,19 @@ const Scaleable = (props) => {
         window.addEventListener('touchend', removeTouchListener)
     }
     
-    const open = useSelector(state => state.panelState[props.title]);
+    const open = useSelector(state => state.panelState[title]);
 
     useEffect(() => {
-        setWidth(props.defaultWidth)
-        setHeight(props.defaultHeight)
-    }, [open, props.defaultHeight, props.defaultWidth])
+        setWidth(defaultWidth)
+        setHeight(defaultHeight)
+    }, [open, defaultHeight, defaultWidth])
 
     return (
-        <div style={{width: width, height: height, minHeight: props.minHeight, minWidth: props.minWidth}}>
-            {props.content}
+        <div style={{width: width, height: height, minHeight: minHeight, minWidth: minWidth}} className="scaleableWrapper">
+            {content}
             <ResizeButton 
                 id="resize"
-                notScaleable={props.notScaleable}
+                notScaleable={notScaleable}
                 onMouseDown={handleDown}
                 onTouchStart={handleTouch}
                 style={{zIndex:10}}

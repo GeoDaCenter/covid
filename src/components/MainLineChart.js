@@ -59,7 +59,7 @@ const monthNames = ["Jan","Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Se
 const numberFormatter = val => val > 1000000 ? `${val/1000000}M` : val > 1000 ? `${val/1000}K` : val;
 const dateFormatter = val => { 
     let tempDate = (new Date(val).getMonth()+1)%12;
-    return `${monthNames[tempDate]}`
+    return tempDate === 0 ? val.slice(0,4) : monthNames[tempDate]
 };
 
 const CustomTick = props => <text {...props}>{props.labelFormatter(props.payload.value)}</text>
@@ -208,6 +208,7 @@ const MainLineChart = () => {
                         <XAxis 
                             dataKey="date"
                             ticks={dateRange}
+                            minTickGap={-50}
                             tick={
                                 <CustomTick
                                 style={{
@@ -223,6 +224,7 @@ const MainLineChart = () => {
                         />
                         <YAxis yAxisId="left" type="number" scale={logChart ? "log" : "linear"} domain={[0.01, 'dataMax']} allowDataOverflow 
                             ticks={selectionKeys.length === 0 ? rangeIncrement({maximum: maximums.sum}) : []} 
+                            minTickGap={1}
                             tick={
                                 <CustomTick
                                 style={{
@@ -239,6 +241,7 @@ const MainLineChart = () => {
                         </YAxis>
                         <YAxis yAxisId="right" orientation="right" scale={logChart ? "log" : "linear"} domain={[0.01, 'dataMax']} allowDataOverflow 
                             ticks={selectionKeys.length === 0 ? rangeIncrement({maximum: maximums.count}) : []}
+                            minTickGap={1}
                             tick={
                                 <CustomTick
                                     style={{
