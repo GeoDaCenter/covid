@@ -18,10 +18,11 @@ export default function useBackgroundLoadData({
         .map(dataspec => ({...dataspec, timespan}))
         .filter(filesToFetch => !(storedData[filesToFetch.name] && (storedData[filesToFetch.name].loaded?.includes(filesToFetch.timespan)||filesToFetch.date === null)))
       ).flat().filter(f => f.timespan !== false);
-      
+    
     useEffect(() => {
       if (shouldFetch && filesToFetch.length) {
         fetcher([filesToFetch[0]], dateLists).then(dataArray => {
+          // console.log(filesToFetch[0], dataArray[0])
           if (dataArray.length) {
             dataArray.forEach((response, idx) => {
               const newData = response.value;

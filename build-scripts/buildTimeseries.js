@@ -81,8 +81,8 @@ fs.readdir(directoryPath, function (err, files) {
   console.log(`Splitting ${fileList.length} files.`);
 
   fileList.forEach(function (file, idx) {
-    console.log(`${idx + 1}/${fileList.length}...`);
-    const fileName = file.split(".")[0];
+    const fileName = file.split(".").slice(0,-1).join(".");
+    console.log(`${fileName}, writing ${idx + 1}/${fileList.length}...`);
     makeFolder(fileName);
     const multiplier =
       file.split(".").length > 2 ? +file.split(".")[1].split("-")[1] : 1;

@@ -6,6 +6,9 @@ import { getParseCsvPromise, getDateLists, parsePbfData } from "../utils";
 export const fetchFile = (fileInfo, dateLists) => {
   const { name, filetype, timespan, date } = fileInfo;
   if (!name || !filetype) return () => [];
+  // console.log(`${process.env.PUBLIC_URL}/pbf/${name}${
+  //   timespan ? `.${timespan}` : ""
+  // }.pbf`)
   if (filetype === "pbf") {
     return fetch(
       `${process.env.PUBLIC_URL}/pbf/${name}${

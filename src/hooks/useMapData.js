@@ -367,6 +367,6 @@ export default function useMapData({}) {
     mapSnapshot, // string params for updater dep arrays
     bins, // bins for legend etc,
     heightScale, // height scale
-    !(dataReady && bins?.breaks && Object.keys(colorAndValueData).length),
+    !(dataReady && (bins?.breaks||lisaData) && Object.keys(colorAndValueData).length),
   ];
 }
