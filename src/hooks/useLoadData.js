@@ -5,6 +5,7 @@ import {
   getDateLists,
   getFetchParams,
   findSecondaryMonth,
+  onlyUniqueArray
 } from "../utils";
 import { useGeoda } from "../contexts/Geoda";
 import { useDataStore } from "../contexts/Data";
@@ -37,18 +38,20 @@ export default function useLoadData() {
   // current state data params
   const currDataset = findIn(datasets, "file", currentData);
   const currIndex = dataParams.nIndex || dataParams.dIndex;
-  const currTimespans = [
-    !currIndex || dateLists.isoDateList.length - currIndex < 45
+  const currRangeIndex = currIndex - (dataParams.nRange || dataParams.dRange)
+  
+  const currTimespans = [currIndex, currRangeIndex].map(index => [
+    !currIndex || dateLists.isoDateList.length - index < 30
       ? "latest"
-      : dateLists.isoDateList[currIndex]?.slice(0, 7),
-    !currIndex || dateLists.isoDateList.length - currIndex < 45
+      : dateLists.isoDateList[index]?.slice(0, 7),
+    !currIndex || dateLists.isoDateList.length - index < 30
       ? false
-      : findSecondaryMonth(currIndex, dateLists.isoDateList),
-  ];
+      : findSecondaryMonth(index, dateLists.isoDateList),
+  ]).flat().filter(f => !!f).filter(onlyUniqueArray);
 
   const { geoda, geodaReady } = useGeoda();
   const [
-    { storedData, storedGeojson, dotDensityData, resourceLayerData },
+    { storedData, storedGeojson },
     dataDispatch,
   ] = useDataStore();
   const [canLoadInBackground, setCanLoadInBackground] = useBackgroundLoadingContext();
@@ -124,6 +127,12 @@ export default function useLoadData() {
     dataDispatch,
     currTimespans,
     dateLists,
+    numeratorParams,
+    denominatorParams,
+    adjacentMonths: [
+      dateLists.isoDateList[currIndex-30]?.slice(0, 7),
+      dateLists.isoDateList[currIndex+30]?.slice(0, 7)
+    ]
   });
   
   return {

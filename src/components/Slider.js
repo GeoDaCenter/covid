@@ -7,11 +7,10 @@ import styled from "styled-components";
 import { setVariableParams } from "../actions";
 import useTickUpdate from "../hooks/useTickUpdate";
 import colors from "../config/colors";
-import { useDataStore } from "../contexts/Data";
-import dataDateRanges from "../config/dataDateRanges";
 import {debounce, findClosestValue} from "../utils";
 import useCurrentDateIndices from "../hooks/useCurrentDateIndices";
 import Ticks from './Ticks'
+import DatePicker from 'react-date-picker';
 
 const SliderContainer = styled(Grid)`
   color: white;
@@ -123,22 +122,8 @@ const SpeedSlider = styled.div`
 const RangeSlider = styled(Slider)`
   box-sizing: border-box;
   &.MuiSlider-root {
-    width: 68%;
-    margin-left: 25%;
     box-sizing: border-box;
     color: #ffffff55;
-    padding-top: 50px;
-    @media (max-width: 600px) {
-      margin-left: 24%;
-    }
-    span.MuiSlider-thumb[data-index="0"] span.MuiSlider-valueLabel span span {
-      margin-left: -30px;
-      margin-top: -30px;
-    }
-    span.MuiSlider-thumb[data-index="1"] span.MuiSlider-valueLabel span span {
-      margin-left: 30px;
-      margin-top: 30px;
-    }
   }
   span.MuiSlider-rail {
     color: white;
@@ -146,21 +131,24 @@ const RangeSlider = styled(Slider)`
     display: none;
   }
   span.MuiSlider-track {
-    color: white;
+    color: ${colors.yellow};
     height: 4px;
-    display: none;
+    opacity:0.5;
+    transform:translateY(1px);
   }
   span.MuiSlider-thumb {
     color: white;
+    width: 15px;
+    height: 15px;
+    transform: translate(-1.5px, -4px);
+    border:2px solid ${colors.gray};
     .MuiSlider-valueLabel {
-      transform: translateY(0px);
+      transform: translateY(-10px);
       pointer-events: none;
+      font-size: 15px;
       span {
         background: none;
       }
-    }
-    @media (max-width: 768px) {
-      transform: scale(1.25);
     }
   }
   span.MuiSlider-mark {
@@ -185,9 +173,9 @@ const DateH3 = styled.h3`
 const DateSelectorContainer = styled(Grid)`
   display: flex;
   justify-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
-  margin: 0;
+  margin: 0; 
   padding: 0;
   .MuiFormControl-root {
     padding: 0 0 0 20px !important;
@@ -208,6 +196,50 @@ const DateSelectorContainer = styled(Grid)`
       left: 0px;
     }
   }
+  .react-date-picker {
+    /* display: block;
+    margin:0 auto; */
+    color:white;
+    padding:.5em 0 0 0;
+}
+.react-date-picker__inputGroup__input, span {
+  color:white;
+  font-size:1rem;
+  font-weight:bold;
+  font-family: 'Lato', sans-serif;
+}
+.react-date-picker__clear-button {
+  display:none;
+}
+svg rect, svg line {
+  stroke:white;
+}
+.react-calendar {
+  background:${colors.darkgray};
+  transform:translate(-33.33%, .5em);
+  button {
+    color:white;
+    background:none;
+    transition:250ms all;
+    &:disabled {      
+      opacity:0.05;
+    }
+    &:hover {
+      background:none;
+      color: ${colors.yellow};
+    }
+    &.react-calendar__month-view__days__day--neighboringMonth {
+      opacity:0.5;
+      &:disabled {      
+        opacity:0.05;
+      }
+    }
+  }
+}
+p {
+  padding: 4px 1em 0 1em;
+  font-size:1rem;
+}
 `;
 
 const valuetext = (dates, value) => {
@@ -229,13 +261,80 @@ const formatDate = (date) => {
 };
 
 function DateTitle({
-  dates,
-  currIndex
+  dates=[],
+  currDatesAvailable=[],
+  currIndex=7,
+  currRange=7,
+  rangeType='',
+  handleChange=()=>{},
+  handleRangeChange=()=>{}
 }) {
+  if (!dates || !dates.length){
+    return null
+  }
+
+  const currDate = new Date(dates[currIndex+1]||"2020-01-01");
+  const currStartDate = new Date(dates[currIndex-currRange+1]||"2020-01-01");
+  const firstDateIdx = currDatesAvailable.indexOf(1);
+  const lastDateIdx = [...currDatesAvailable].reverse().indexOf(1);
+  const minDate = new Date(dates[firstDateIdx] || "2020-01-01");
+  const maxDate = new Date(dates.slice(-lastDateIdx)[0] || "")
+
+  const onChange = rangeType === "custom" 
+    ? (date, position) => {
+      try {
+        const dateString = JSON.stringify(date).slice(1,11);
+        const dateIdx = dates.indexOf(dateString);
+        if (position === 'start') {
+          handleRangeChange(null, [dateIdx, currIndex]);
+        } else {
+          handleRangeChange(null, [currIndex - currRange, dateIdx]);
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    : (date) => {
+      try {
+        const dateString = JSON.stringify(date).slice(1,11);
+        const dateIdx = dates.indexOf(dateString);
+        handleChange(null,dateIdx);
+      } catch (error) {
+        console.log(error)
+      }
+    }
   return <DateSelectorContainer item xs={12}>
-      <DateH3>
+    {rangeType === "custom" && 
+      <DatePicker
+            calendarAriaLabel="Toggle calendar"
+            clearAriaLabel="Clear value"
+            dayAriaLabel="Day"
+            monthAriaLabel="Month"
+            minDate={minDate}
+            maxDate={maxDate}
+            nativeInputAriaLabel="Date"
+            onChange={onChange}
+            value={currStartDate}
+            yearAriaLabel="Year"
+        />}
+        
+    {rangeType === "custom" && <p>to</p>}
+      <DatePicker
+            calendarAriaLabel="Toggle calendar"
+            clearAriaLabel="Clear value"
+            dayAriaLabel="Day"
+            monthAriaLabel="Month"
+            minDate={minDate}
+            maxDate={maxDate}
+            nativeInputAriaLabel="Date"
+            onChange={onChange}
+            value={currDate}
+            yearAriaLabel="Year"
+        />
+      {/* <DateH3>
+        {rangeType === 'custom' && dates && dates.length && currIndex-currRange !== undefined ? `${formatDate(dates[currIndex-currRange])} to ` : ""}
         {(dates && dates.length && currIndex !== undefined) ? formatDate(dates[currIndex]) : ""}
-      </DateH3>
+      </DateH3> */}
     </DateSelectorContainer>
 }
 
@@ -252,64 +351,28 @@ function DateSlider() {
     currIndex,
     currDates,
     currDatesAvailable,
-    allDates
+    allDates,
+    currRange,
+    rangeType
   ] = useCurrentDateIndices();
-
-  // const dateIndices = currTable !== undefined && currTable.dates;
-  // const dates = useSelector((state) => state.dates);
-
-  // const [timeCase, setTimeCase] = useState(0);
-  // const [dRange, setDRange] = useState(false);
-
   const [isTicking, setIsTicking, timing, setTiming] = useTickUpdate({currDatesAvailable});
-  // useEffect(() => {
-  //   if (nType === 'time-series' && dType === 'time-series') {
-  //     setTimeCase(1);
-  //   } else if (nType === 'time-series') {
-  //     setTimeCase(2);
-  //   } else if (dType === 'time-series') {
-  //     setTimeCase(3);
-  //   } else if (
-  //     variableName.includes('Testing') ||
-  //     variableName.includes('Workdays')
-  //   ) {
-  //     setTimeCase(4);
-  //   }
-  // }, [dType, nType, variableName]);
-
-  // useEffect(() => {
-  //   if (dRange) {
-  //     setDRange(true);
-  //   } else {
-  //     setDRange(false);
-  //   }
-  // }, [dRange]);
-
-  const handleChange = debounce((event, newValue) => {  // eslint-disable-line      
+  
+  const handleChange = debounce((_, newValue) => {  // eslint-disable-line      
     if (currDatesAvailable[newValue]) {
       dispatch(setVariableParams({ nIndex: newValue }));
     } else {
       dispatch(setVariableParams({ nIndex: findClosestValue(newValue, currDatesAvailable, newValue < currIndex) }));
     }
-    // const val = dateIndices.includes(newValue)
-    //   ? newValue
-    //   : dateIndices.reduce((a, b) => {
-    //       return Math.abs(b - newValue) < Math.abs(a - newValue) ? b : a;
-    //     });
+  }, 25);
 
-    // switch (timeCase) {
-    //   case 1:
-    //     dispatch(setVariableParams({ nIndex: val, dIndex: val }));
-    //     break;
-    //   case 2:
-    //     dispatch(setVariableParams({ nIndex: val }));
-    //     break;
-    //   case 3:
-    //     dispatch(setVariableParams({ dIndex: val }));
-    //     break;
-    //   default:
-    //     break;
-    // }
+  const handleRangeChange = debounce((_, newValue) => { 
+    const newIndex = Math.max(newValue[0], newValue[1]);
+    const newRange = newIndex - Math.min(newValue[0], newValue[1]);  // eslint-disable-line      
+    if (currDatesAvailable[newIndex]) {
+      dispatch(setVariableParams({ nIndex: newIndex, nRange: newRange }));
+    } else {
+      dispatch(setVariableParams({ nIndex: findClosestValue(newIndex, currDatesAvailable, newIndex < currIndex), nRange: newRange }));
+    }
   }, 25);
 
   // const handleRangeChange = debounce((event, newValue) => {
@@ -350,13 +413,18 @@ function DateSlider() {
       setIsTicking(false);
     }
   };
-
-  // if (nType !== 'characteristic' && dateIndices) {
+  const shouldShowLineSlider = rangeType !== "custom";
+  const shouldShowRangeSlider = rangeType === "custom";
   return (
     <SliderContainer container spacing={0}>
       <DateTitle
         currIndex={currIndex}
+        currRange={currRange}
+        rangeType={rangeType}
         dates={allDates}
+        handleChange={handleChange}
+        handleRangeChange={handleRangeChange}
+        currDatesAvailable={currDatesAvailable}
         />
       <Grid item xs={1} md={1} lg={1} xl={1} >
         <PlayPauseButton id="playPause" onClick={() => handlePlayPause()}>
@@ -392,7 +460,7 @@ function DateSlider() {
             <Ticks id="ticks" loaded={currDates} available={currDatesAvailable} fullLength={allDates.length} />
           </SliderAndTicksInner>
           <SliderAndTicksInner>
-            {currIndex !== undefined && <LineSlider
+            {shouldShowLineSlider && <LineSlider
               id="timeSlider"
               value={currIndex}
               // valueLabelDisplay="on"
@@ -404,6 +472,18 @@ function DateSlider() {
               max={allDates.length}
               step={1}
             />}
+            {shouldShowRangeSlider && <RangeSlider
+              id="timeSlider"
+              value={[currIndex-currRange, currIndex]}
+              onChange={handleRangeChange}
+              getAriaValueText={valuetext}
+              valueLabelFormat={valuetext}
+              aria-labelledby="aria-valuetext"
+              min={7}
+              max={allDates.length}
+              step={1}
+              />
+            }
           </SliderAndTicksInner>
         </SliderAndTicksContainer>
       </Grid>

@@ -1165,17 +1165,6 @@ var reducer = (state = INITIAL_STATE, action) => {
         Object.keys(state.storedGeojson)
       );
 
-      const storedGeojson = {
-        ...state.storedGeojson,
-        [dataName]: {
-          ...action.payload.geojson,
-          weights: {},
-          dateIndices: [],
-          properties: indexGeoProps(action.payload.geojson.data, false),
-          indices: getIdOrder(action.payload.geojson.data.features, false),
-        },
-      };
-
       let variables = [
         ...state.variables,
       ];
@@ -1222,8 +1211,6 @@ var reducer = (state = INITIAL_STATE, action) => {
           variablesList
         );
         variablesList.push(currVariable);
-        console.log(variables, variablesList)
-
         variables.unshift({
           ...action.payload.variables[i],
           variableName: currVariable,
@@ -1247,7 +1234,6 @@ var reducer = (state = INITIAL_STATE, action) => {
         datasets,
         datasetTree,
         tables,
-        storedGeojson,
         urlParamsTree,
         variableTree: {
           ...variableTree,

@@ -50,6 +50,7 @@ import { indexGeoProps } from "./indexGeoProps";
 import loadGeojsonToGeoda from "./loadGeojsonToGeoda";
 import loadJson from "./loadJson";
 import { mapFn, mapFnNb, mapFnTesting, mapFnHinge } from "./mapFunction.js";
+import { onlyUniqueArray } from './onlyUniqueArray';
 import parseBinPairs from "./parseBinPairs";
 import parseMapboxLayers from "./parseMapboxLayers";
 import { parseTooltipData } from "./parseTooltipData";
@@ -113,6 +114,7 @@ export {
   mapFnNb,
   mapFnTesting,
   mapFnHinge,
+  onlyUniqueArray,
   parseBinPairs,
   parseMapboxLayers,
   parsePbfData,

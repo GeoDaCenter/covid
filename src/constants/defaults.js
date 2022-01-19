@@ -151,7 +151,7 @@ export const INITIAL_STATE = {
   },
   panelState: {
     variables: true,
-    info: true,
+    info: false,
     tutorial: false,
     lineChart: true,
     context: false,

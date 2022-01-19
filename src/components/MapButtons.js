@@ -55,7 +55,7 @@ export const NavInlineButton = styled.button`
 
 const MapButtonContainer = styled.div`
   position: absolute;
-  right: 10px;
+  left: 10px;
   bottom: 50px;
   z-index: 10;
   transition: 250ms all;

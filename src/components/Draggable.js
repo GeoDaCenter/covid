@@ -16,8 +16,8 @@ const DragContainer = styled.div`
   background: ${colors.gray};
   padding: 0;
   box-sizing: border-box;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.7);
-  border-radius: 0.5vh;
+  /* box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.7);
+  border-radius: 0.5vh; */
   &.collapsed {
     display: none;
   }

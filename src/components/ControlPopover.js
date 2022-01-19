@@ -134,7 +134,7 @@ export default function ControlsPopover({ controlElements = [] }) {
 
   return (
     <PopoverContainer>
-      <button aria-describedby={id} variant="contained" onClick={handleClick}>
+      <button aria-describedby={id} variant="contained" onClick={handleClick} title="Open Settings">
         <Icon symbol="settings" />
       </button>
       <Popover

@@ -11,14 +11,22 @@ export default function useBackgroundLoadData({
     storedData={},
     dataDispatch=()=>{},
     currTimespans=['latest'],
-    dateLists={}
+    dateLists={},
+    numeratorParams={},
+    denominatorParams={},
+    adjacentMonths=[],
   }){  
-    const filesToFetch = currTimespans.map(timespan => 
+    const adjacentMainToFetch = adjacentMonths.map(timespan => [
+      {...numeratorParams[0], timespan},
+      {...denominatorParams[0], timespan},
+    ]).flat()
+    const tablesToFetch = currTimespans.map(timespan => 
       findAllDefaults(tables, currentGeography)
-        .map(dataspec => ({...dataspec, timespan}))
+        .map(dataspec => ({...dataspec, timespan}))).flat()
+    const filesToFetch = [...adjacentMainToFetch, ...tablesToFetch]
         .filter(filesToFetch => !(storedData[filesToFetch.name] && (storedData[filesToFetch.name].loaded?.includes(filesToFetch.timespan)||filesToFetch.date === null)))
-      ).flat().filter(f => f.timespan !== false);
-    
+        .flat().filter(f => !f.noFile && f.timespan !== false && f.timespan !== undefined);
+
     useEffect(() => {
       if (shouldFetch && filesToFetch.length) {
         fetcher([filesToFetch[0]], dateLists).then(dataArray => {

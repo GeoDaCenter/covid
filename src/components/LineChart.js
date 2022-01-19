@@ -11,6 +11,7 @@ import {
   Label,
   ResponsiveContainer,
   Legend,
+  ReferenceLine,
 } from "recharts";
 
 import {
@@ -33,9 +34,9 @@ const ChartContainer = styled.span`
   user-select: none;
   /* flex: 1 0 auto; */
   position: absolute;
-  width:100%;
-  height:100%;
-  z-index:0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
 `;
 
 const PopOutContainer = styled.div`
@@ -176,34 +177,28 @@ const CustomTooltip = (props) => {
 };
 
 const LabelText = {
-  "cases": {
+  cases: {
     x1label: "Cumulative Cases",
     x2label: "New Cases (7 Day Average)",
-    title: "Cases"
+    title: "Cases",
   },
-  "deaths":{
+  deaths: {
     x1label: "Deaths Cases",
     x2label: "New Deaths (7 Day Average)",
-    title: "Deaths"
-
+    title: "Deaths",
   },
-  "vaccines_fully_vaccinated": {
+  vaccines_fully_vaccinated: {
     x1label: "Total Vaccinations",
     x2label: "New Vaccinations (7 Day Average)",
-    title: "Population Fully Vaccinated"
-
-  }, 
-  "testing_wk_pos": {
+    title: "Population Fully Vaccinated",
+  },
+  testing_wk_pos: {
     x1label: "",
     x2label: "Testing Positivity (7 Day Average)",
-    title: "Testing Positivity"
-
-  }
-}
-function LineChartInner({
-  resetDock=()=>{},
-  docked=false
-}) {
+    title: "Testing Positivity",
+  },
+};
+function LineChartInner({ resetDock = () => {}, docked = false }) {
   const dispatch = useDispatch();
   const [currentTable, setCurrentTable] = useState("cases");
   const {
@@ -218,17 +213,22 @@ function LineChartInner({
   } = useGetLineChartData({
     table: currentTable,
   });
-  const {x1label, x2label, title} = LabelText[currentTable];
+  const { x1label, x2label, title } = LabelText[currentTable];
   const [logChart, setLogChart] = useState(false);
   const [showSummarized, setShowSummarized] = useState(true);
   const [activeLine, setActiveLine] = useState(false);
   const [populationNormalized, setPopulationNormalized] = useState(false);
+  const [shouldShowVariants, setShouldShowVariants] = useState(false);
   const handleSwitch = () => setLogChart((prev) => !prev);
   const handlePopSwitch = () => setPopulationNormalized((prev) => !prev);
   const handleSummarizedSwitch = () => setShowSummarized((prev) => !prev);
-  const handleChange = ({activeTooltipIndex}) => dispatch(setVariableParams({ nIndex: activeTooltipIndex }));
+  const handleChange = (e) =>
+    e?.activeTooltipIndex &&
+    dispatch(setVariableParams({ nIndex: e.activeTooltipIndex }));
   const handleLegendHover = (o) => setActiveLine(+o.dataKey.split("Weekly")[0]);
   const handleLegendLeave = () => setActiveLine(false);
+  const handleShouldShowVariants = () => setShouldShowVariants((prev) => !prev);
+  
   if (maximums && chartData) {
     return (
       <ChartContainer id="lineChart">
@@ -286,10 +286,19 @@ function LineChartInner({
               action: handleSummarizedSwitch,
               value: showSummarized,
             },
+            {
+              type: "switch",
+              content: "Variant Designations",
+              action: handleShouldShowVariants,
+              value: shouldShowVariants,
+            },
           ]}
         />
-        {!docked && <DockPopButton onClick={resetDock} title="Dock Line Chart Panel">
-        <Icon symbol="popOut" /></DockPopButton>}
+        {!docked && (
+          <DockPopButton onClick={resetDock} title="Dock Line Chart Panel">
+            <Icon symbol="popOut" />
+          </DockPopButton>
+        )}
         {selectionNames.length < 2 ? (
           <ChartTitle>
             <span>
@@ -302,8 +311,12 @@ function LineChartInner({
             <span>7-Day Average New Cases</span>
           </ChartTitle>
         )}
-        <ChartLabel color={colors.white} left={-45}>{x1label}</ChartLabel>
-        <ChartLabel color={colors.yellow} right={-75}>{x2label}</ChartLabel>
+        <ChartLabel color={colors.white} left={-45}>
+          {x1label}
+        </ChartLabel>
+        <ChartLabel color={colors.yellow} right={-75}>
+          {x2label}
+        </ChartLabel>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}
@@ -353,8 +366,7 @@ function LineChartInner({
                   labelFormatter={numberFormatter}
                 />
               }
-            >
-            </YAxis>
+            ></YAxis>
             <YAxis
               yAxisId="right"
               orientation="right"
@@ -377,8 +389,7 @@ function LineChartInner({
                   labelFormatter={numberFormatter}
                 />
               }
-            >
-            </YAxis>
+            ></YAxis>
             <Tooltip content={CustomTooltip} />
             <ReferenceArea
               yAxisId="left"
@@ -399,7 +410,7 @@ function LineChartInner({
                 isAnimationActive={false}
               />
             ) : (
-              selectionKeys.map((geoid, idx) => 
+              selectionKeys.map((geoid, idx) => (
                 <Line
                   type="monotone"
                   yAxisId="left"
@@ -409,7 +420,7 @@ function LineChartInner({
                   dot={false}
                   isAnimationActive={false}
                 />
-              )
+              ))
             )}
             {selectionKeys.length === 0 ? (
               <Line
@@ -432,7 +443,9 @@ function LineChartInner({
                   }`}
                   name={selectionNames[idx] + " 7-Day Ave"}
                   stroke={
-                    selectionKeys.length === 1 ? colors.yellow : selectionKeys.length > colors.qualtitiveScale.length
+                    selectionKeys.length === 1
+                      ? colors.yellow
+                      : selectionKeys.length > colors.qualtitiveScale.length
                       ? "white"
                       : colors.qualtitiveScale[idx]
                   }
@@ -463,6 +476,58 @@ function LineChartInner({
                 margin={{ top: 40, left: 0, right: 0, bottom: 50 }}
                 iconType="plainline"
               />
+            )}
+            {shouldShowVariants && (
+              <>
+                <ReferenceLine
+                  x="2020-12-18"
+                  yAxisId="left"
+                  stroke="gray"
+                  strokeWidth={0.5}
+                  label={{
+                    value: "Alpha, Beta",
+                    angle: 90,
+                    position: "left",
+                    fill: "gray",
+                  }}
+                />
+                <ReferenceLine
+                  x="2021-01-11"
+                  yAxisId="left"
+                  stroke="gray"
+                  strokeWidth={0.5}
+                  label={{
+                    value: "Gamma",
+                    angle: 90,
+                    position: "left",
+                    fill: "gray",
+                  }}
+                />
+                <ReferenceLine
+                  x="2021-05-11"
+                  yAxisId="left"
+                  stroke="gray"
+                  strokeWidth={0.5}
+                  label={{
+                    value: "Delta",
+                    angle: 90,
+                    position: "left",
+                    fill: "gray",
+                  }}
+                />
+                <ReferenceLine
+                  x="2021-11-26"
+                  yAxisId="left"
+                  stroke="gray"
+                  strokeWidth={0.5}
+                  label={{
+                    value: "Omicron",
+                    angle: 90,
+                    position: "left",
+                    fill: "gray",
+                  }}
+                />
+              </>
             )}
           </LineChart>
         </ResponsiveContainer>
