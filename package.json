@@ -60,7 +60,7 @@
     "build-sw": "node ./src/sw-build.js",
     "build": "react-scripts build",
     "pre-build": "node build-scripts/fetchLatestData && node build-scripts/buildTimeseries && node build-scripts/generateConfig",
-    "netlify-build": "npm run build && cd build && cat _redirects",
+    "netlify-build": "npm run pre-build && npm run build && cd build && cat _redirects",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
