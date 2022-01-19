@@ -11,7 +11,8 @@ const getDataForBins = ({
   if (!dataReady || !numeratorData) return [];
 
   const { nProperty, dType } = dataParams;
-  const nIndex = dataParams.nIndex || binIndex;
+  const nIndex = binIndex ||dataParams.nIndex;
+  
   const dIndex = dType === 'time-series' ? nIndex : null;
   // declare empty array for return variables
   let rtn = new Array(fixedOrder ? fixedOrder.length : numeratorData.length);

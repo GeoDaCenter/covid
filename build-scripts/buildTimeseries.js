@@ -3,6 +3,7 @@ const Pbf = require("pbf");
 const path = require("path");
 const Rows = require("./pbfReadSchema").Rows;
 const Schema = require("./pbfWriteSchema");
+const Papa = require("papaparse");
 
 const directoryPath = path.join(__dirname, "../public/pbf/");
 
@@ -58,26 +59,8 @@ const generateSummary = (fileName, dates, sumData, multiplier, row) => {
   );
 };
 const onlyUnique = (value, index, self) => self.indexOf(value) === index;
-const t0 = new Date();
-fs.readdir(directoryPath, function (err, files) {
-  //handling error
-  if (err) {
-    return console.log("Unable to scan directory: " + err);
-  }
 
-  const fileList = files.filter(
-    (file) =>
-      !(
-        // exclude dot density and already-parsed files.
-        (
-          file.includes("2020") ||
-          file.includes("2021") ||
-          file.includes("2022") ||
-          file.includes("latest") ||
-          file.includes("dotDensity")
-        )
-      )
-  );
+const splitPbfs = (fileList) => {
   console.log(`Splitting ${fileList.length} files.`);
 
   fileList.forEach(function (file, idx) {
@@ -120,6 +103,101 @@ fs.readdir(directoryPath, function (err, files) {
       fs.writeFileSync(`public/pbf/${fileName}.${month}.pbf`, binaryData);
     }
   });
+}
+const parseCsvLikePbf = (csvData, idCol, dataIndex) => {
+  let returnObj = [];
+  for (let i = 0; i < csvData.length; i++) {
+    returnObj.push({
+      geoid: csvData[i][idCol],
+      vals: Object.values(csvData[i]).slice(dataIndex),
+    })
+  }
+  return returnObj;
+}
 
-  console.log(`Done in ${new Date() - t0} ms`);
-});
+const splitCsvs = (fileList) => {
+  const multiplier = 1;
+  fileList.forEach(function ({file, idCol, dataIndex}, idx) {
+    const fileName = file.split(".").slice(0,-1).join(".");
+    makeFolder(fileName);
+    fs.readFile(`public/csv/${file}`, 'utf8', function(err, string) {
+      if (err) throw err;
+      const {data} = Papa.parse(string, {header: true});
+      const parsed = parseCsvLikePbf(data, idCol, dataIndex);
+      const sumData = generateIndividualFiles(fileName, multiplier, parsed);
+      const dates = Object.keys(data[0]).slice(dataIndex)
+      generateSummary(fileName, dates, sumData, multiplier, parsed);
+    });
+  })
+}
+
+const t0 = new Date();
+const parsePbf = () => {
+  fs.readdir(directoryPath, function (err, files) {
+    //handling error
+    if (err) {
+      return console.log("Unable to scan directory: " + err);
+    }
+
+    const fileList = files.filter(
+      (file) =>
+        !(
+          // exclude dot density and already-parsed files.
+          (
+            file.includes("2020") ||
+            file.includes("2021") ||
+            file.includes("2022") ||
+            file.includes("latest") ||
+            file.includes("dotDensity")
+          )
+        )
+    );
+    splitPbfs(fileList);
+    console.log(`Done in ${new Date() - t0} ms`);
+  });
+}
+const csvsToParse = [
+  {
+    file: 'covid_confirmed_nyt_state.csv',
+    idCol: 'fips',
+    dataIndex: 1
+  },
+  {
+    file: 'covid_confirmed_usafacts_state.csv',
+    idCol: 'StateFIPS',
+    dataIndex: 2
+  },
+  {
+    file: 'covid_confirmed_1p3a_state.csv',
+    idCol: 'GEOID',
+    dataIndex: 2
+  },
+  {
+    file: 'covid_deaths_nyt_state.csv',
+    idCol: 'fips',
+    dataIndex: 1
+  },
+  {
+    file: 'covid_deaths_usafacts_state.csv',
+    idCol: 'StateFIPS',
+    dataIndex: 2
+  },
+  {
+    file: 'covid_deaths_1p3a_state.csv',
+    idCol: 'GEOID',
+    dataIndex: 2
+  },
+  {
+    file: 'covid_wk_pos_cdc_state.csv',
+    idCol: 'state_fips',
+    dataIndex: 1
+  },
+  {
+    file: 'vaccination_fully_vaccinated_cdc_state.csv',
+    idCol: 'GEOID',
+    dataIndex: 1
+  },
+]
+
+parsePbf()
+splitCsvs(csvsToParse)

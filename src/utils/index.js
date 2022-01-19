@@ -2,6 +2,7 @@ import addSelectedChartData from "./addSelectedChartData";
 import colIndex from "./colIndex.js";
 import colLookup from "./colLookup.js";
 import dataFn from "./dataFunction.js";
+import debounce from "./debounce.js";
 import {
   findAllCurrentTables,
   findAllDefaults,
@@ -61,6 +62,7 @@ export {
   colIndex,
   colLookup,
   dataFn,
+  debounce,
   fetcher,
   fetchFile,
   findAllCurrentTables,

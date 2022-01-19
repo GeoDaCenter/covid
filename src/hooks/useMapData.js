@@ -13,8 +13,8 @@ const maxDesirableHeight = 500_000;
 const getContinuousColor = (val, breaks, colors, useZero = false) => {
   if (useZero && val === 0) return colors[0];
   if (val === null || val === undefined) return [50, 50, 50];
-  for (let i = 0; i < breaks.length; i++) {
-    if (val <= breaks[i]) return colors[i + useZero];
+  for (let i = 0 + useZero; i < breaks.length; i++) {
+    if (val <= breaks[i]) return colors[i];
   }
   return colors[colors.length - 1];
 };
@@ -49,7 +49,8 @@ const generateJoinData = ({
       };
     }
   } else {
-    const shouldUseZero = mapParams.colorScale[0] === [240, 240, 240];
+    const shouldUseZero = JSON.stringify(mapParams.colorScale[0]) === JSON.stringify([240, 240, 240])
+
     for (let i = 0; i < geoids.length; i++) {
       joinData[geoids[i]] = {
         color: getContinuousColor(
@@ -282,7 +283,7 @@ export default function useMapData({}) {
   const { geoda, geodaReady } = useGeoda();
   const [mapSnapshot, setMapSnapshot] = useState(0);
   const varId = getVarId(currentData, dataParams, mapParams, dataReady);
-
+  
   const binIndex =
     dateIndices !== null
       ? mapParams.binMode === "dynamic" &&
@@ -291,26 +292,49 @@ export default function useMapData({}) {
         : dateIndices.slice(-1)[0]
       : null;
 
-  const binData = useMemo(
-    () =>
-      getDataForBins({
-        numeratorData:
-          dataParams.numerator === "properties"
-            ? geojsonData?.properties
-            : numeratorData?.data,
-        denominatorData:
-          dataParams.denominator === "properties"
-            ? geojsonData?.properties
-            : denominatorData?.data,
-        dataParams,
-        binIndex,
-        fixedOrder:
-          geojsonData?.order?.indexOrder &&
-          Object.values(geojsonData.order.indexOrder),
-        dataReady,
-      }),
-    [JSON.stringify(dataParams), JSON.stringify(mapParams), binIndex, dataReady, currentData]
-  );
+      const binData = useMemo(
+        () =>
+          getDataForBins({
+            numeratorData:
+              dataParams.numerator === "properties"
+                ? geojsonData?.properties
+                : numeratorData?.data,
+            denominatorData:
+              dataParams.denominator === "properties"
+                ? geojsonData?.properties
+                : denominatorData?.data,
+            dataParams,
+            binIndex,
+            fixedOrder:
+              geojsonData?.order?.indexOrder &&
+              Object.values(geojsonData.order.indexOrder),
+            dataReady,
+          }),
+        [JSON.stringify({...dataParams, nIndex:0, dIndex:0}), JSON.stringify(mapParams), binIndex, dataReady, currentData]
+      );
+
+      const mapData = useMemo(
+        () => binIndex === dataParams.nIndex || dataParams.nIndex === null 
+          ? binData 
+          : getDataForBins({
+            numeratorData:
+              dataParams.numerator === "properties"
+                ? geojsonData?.properties
+                : numeratorData?.data,
+            denominatorData:
+              dataParams.denominator === "properties"
+                ? geojsonData?.properties
+                : denominatorData?.data,
+            dataParams,
+            binIndex: false,
+            fixedOrder:
+              geojsonData?.order?.indexOrder &&
+              Object.values(geojsonData.order.indexOrder),
+            dataReady,
+          }),
+        [JSON.stringify(dataParams), JSON.stringify(mapParams), dataReady, currentData]
+      );
+      
 
   const bins = useGetBins({
     currentData,
@@ -326,7 +350,7 @@ export default function useMapData({}) {
     lisaVarId    
   ] = useLisaMap({
     currentData,
-    dataForLisa: binData,
+    dataForLisa: mapData,
     mapId: geojsonData?.mapId,
     shouldUseLisa: dataReady && mapParams.mapType === "lisa",
     varId,
@@ -334,13 +358,13 @@ export default function useMapData({}) {
 
   const cartogramData = useCartogramMap({
     mapId: geojsonData?.mapId,
-    dataForCartogram: binData,
+    dataForCartogram: mapData,
     shouldUseCartogram: dataReady && mapParams.mapType === "cartogram",
   });
 
   const [colorAndValueData, heightScale] = useMemo(() => {
     const data = generateJoinData({
-      binData,
+      binData: mapData,
       bins,
       lisaData,
       cartogramData,
@@ -360,7 +384,7 @@ export default function useMapData({}) {
     currentData
     // JSON.stringify(cartogramData),
   ]);
-
+  
   return [
     geojsonData?.data, // geography
     colorAndValueData, // color and value data

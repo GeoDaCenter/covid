@@ -33,6 +33,7 @@ const ScatterChartContainer = styled.div`
   width: 100%;
   max-height:20vh;
   height:400px;
+  background:${colors.gray};
 `
 
 export default function ScatterChartComponent() {

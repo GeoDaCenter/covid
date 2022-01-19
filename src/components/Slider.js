@@ -9,7 +9,7 @@ import useTickUpdate from "../hooks/useTickUpdate";
 import colors from "../config/colors";
 import { useDataStore } from "../contexts/Data";
 import dataDateRanges from "../config/dataDateRanges";
-import {findClosestValue} from "../utils";
+import {debounce, findClosestValue} from "../utils";
 import useCurrentDateIndices from "../hooks/useCurrentDateIndices";
 import Ticks from './Ticks'
 
@@ -239,22 +239,6 @@ function DateTitle({
     </DateSelectorContainer>
 }
 
-function debounce(func, wait, immediate) {
-  var timeout;
-  return function () {
-    var context = this,
-      args = arguments;
-    var later = function () {
-      timeout = null;
-      if (!immediate) func.apply(context, args);
-    };
-    var callNow = immediate && !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-    if (callNow) func.apply(context, args);
-  };
-}
-
 const findLastDate = (array) => {
   for (let i=array.length-1; i>=0; i--) {
     if (array[i] === 1) {
@@ -301,7 +285,7 @@ function DateSlider() {
   //   }
   // }, [dRange]);
 
-  const handleChange = debounce((event, newValue) => {
+  const handleChange = debounce((event, newValue) => {  // eslint-disable-line      
     if (currDatesAvailable[newValue]) {
       dispatch(setVariableParams({ nIndex: newValue }));
     } else {
@@ -416,7 +400,7 @@ function DateSlider() {
               getAriaValueText={valuetext}
               valueLabelFormat={valuetext}
               aria-labelledby="aria-valuetext"
-              min={1}
+              min={7}
               max={allDates.length}
               step={1}
             />}

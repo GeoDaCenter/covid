@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useDataStore } from "../contexts/Data";
 import { findIn, findAllDefaults, findTableOrDefault } from "../utils";
+import dataDateRanges from "../config/dataDateRanges";
 
 async function fetchTimeSeries({
   currentGeojson,
@@ -9,7 +10,6 @@ async function fetchTimeSeries({
   selectionKeys,
   totalPopulation,
 }) {
-  const t0 = performance.now();
   const keysToFetch = selectionKeys.length
     ? ["index", ...selectionKeys]
     : ["index"];
@@ -164,6 +164,7 @@ export default function useGetLineChartData({ table = "cases" }) {
   const currentTimeseriesDataset = currTables.find(
     (t) => t.table === table
   )?.name;
+
   const currentGeojson =
     storedGeojson[currentData] && storedGeojson[currentData].properties;
   const getName = ["County", "County (Hybrid)"].includes(currDataset.geography)
@@ -188,13 +189,19 @@ export default function useGetLineChartData({ table = "cases" }) {
     }
   }, [JSON.stringify(selectionKeys), totalPopulation, table]);
   
+  const currIndex = dataParams.nType.includes("time")
+    ? dataParams.nIndex === null
+      ? dataDateRanges[currentTimeseriesDataset].lastIndexOf(1)
+      : dataParams.nIndex
+    : false
+
   return {
     ...data,
     isTimeseries: dataParams.nType.includes("time"),
     selectionKeys,
     selectionNames,
-    currRange: dataParams.nType.includes("time") ? dataParams.nRange : false,
-    currIndex: dataParams.nType.includes("time") ? dataParams.nIndex : false,
+    currRange: dataParams.nType.includes("time") ? dataParams.nRange||dataParams.nIndex : false,
+    currIndex,
     currentData
   };
 }

@@ -159,15 +159,15 @@ export default function MapTooltipContent() {
               "daily_deaths",
             ]) && (
               <>
-                Cases: {tooltipContent.cases.toLocaleString("en") || 0}
+                Cases: {(tooltipContent.cases||0).toLocaleString("en") || 0}
                 <br />
-                Deaths: {tooltipContent.deaths.toLocaleString("en") || 0}
+                Deaths: {(tooltipContent.deaths||0).toLocaleString("en") || 0}
                 <br />
                 Daily New Cases:{" "}
-                {tooltipContent.daily_cases.toLocaleString("en") || 0}
+                {(tooltipContent.daily_cases||0).toLocaleString("en") || 0}
                 <br />
                 Daily New Deaths:{" "}
-                {tooltipContent.daily_deaths.toLocaleString("en") || 0}
+                {(tooltipContent.daily_deaths||0).toLocaleString("en") || 0}
                 <br />
                 <br />
               </>

@@ -14,7 +14,7 @@ const DragContainer = styled.div`
   position: fixed;
   overflow: hidden;
   background: ${colors.gray};
-  padding: 20px 20px 0 20px;
+  padding: 0;
   box-sizing: border-box;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.7);
   border-radius: 0.5vh;
@@ -64,14 +64,21 @@ const CollapseButton = styled.button`
   }
 `;
 
-const Draggable = (props) => {
+const Draggable = ({
+  title='',
+  defaultX=0,
+  defaultY=0,
+  allowCollapse=true,
+  z,
+  content
+}) => {
   // Redux Dispatch and selector
   const dispatch = useDispatch();
-  const open = useSelector((state) => state.panelState[props.title]);
+  const open = useSelector((state) => state.panelState[title]);
 
   // Local state, dragging
-  const [X, setX] = useState(props.defaultX);
-  const [Y, setY] = useState(props.defaultY);
+  const [X, setX] = useState(defaultX);
+  const [Y, setY] = useState(defaultY);
   const [isDragging, setIsDragging] = useState(false);
 
   // Listener and touch listeners for moving
@@ -112,22 +119,22 @@ const Draggable = (props) => {
 
   // Hide Panel
   const handleCollapse = () =>
-    dispatch(setPanelState({ [props.title]: false }));
+    dispatch(setPanelState({ [title]: false }));
 
   // Props change when window changes, updates local state here
   useEffect(() => {
-    setX(props.defaultX);
-    setY(props.defaultY);
-  }, [open, props.defaultX, props.defaultY]);
+    setX(defaultX);
+    setY(defaultY);
+  }, [open, defaultX, defaultY]);
 
   // Component return
   return (
     <DragContainer
-      style={{ left: `${X}px`, top: `${Y}px`, zIndex: props.z || 1 }}
+      style={{ left: `${X}px`, top: `${Y}px`, zIndex: z || 1 }}
       className={open ? '' : 'collapsed'}
       isDragging={isDragging}
     >
-      {props.content}
+      {content}
       <DragButton
         id="resize"
         onMouseDown={handleDown}
@@ -140,7 +147,7 @@ const Draggable = (props) => {
           </g>
         </svg>
       </DragButton>
-      <CollapseButton onClick={handleCollapse}>×</CollapseButton>
+      {allowCollapse && <CollapseButton onClick={handleCollapse}>×</CollapseButton>}
     </DragContainer>
   );
 };

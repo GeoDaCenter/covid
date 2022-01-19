@@ -18,19 +18,20 @@ import {
 import dataDateRanges from "../config/dataDateRanges";
 import { fixedScales, colorScales } from "../config/scales";
 const findDefaultOrCurrent = (
-  variableTree,
+  tables,
   datasets,
-  variableName,
+  variableParams,
   datasetName
 ) => {
-  const availableGeographies = variableTree[variableName];
-  for (const geography of availableGeographies) {
-    if (geography.includes(datasetName)) {
-      return datasets.finds((dataset) => dataset.name === datasetName);
-    } else {
-      return geography[0];
-    }
+  const relevantTables = tables.filter(f => f.id === variableParams.numerator);
+  const availableGeographies = relevantTables.map(f => f.geography)
+  const availableDatasets = datasets.filter(f => datasetName === f.name && availableGeographies.includes(f.geography))
+  
+  if (availableDatasets.length) {
+    return availableDatasets[0].file
   }
+  const anyDataset = datasets.filter(f => availableGeographies.includes(f.geography))
+  return anyDataset[0].file
 };
 
 var reducer = (state = INITIAL_STATE, action) => {
@@ -644,9 +645,9 @@ var reducer = (state = INITIAL_STATE, action) => {
       )
         ? state.currentData
         : findDefaultOrCurrent(
-            state.variableTree,
+            state.tables,
             state.datasets,
-            action.payload.variable,
+            currVariableParams,
             currDataset.name
           );
       // update variable to match target, if changed
@@ -667,7 +668,7 @@ var reducer = (state = INITIAL_STATE, action) => {
       const dataName =
         currentTable.numerator?.name?.split(".")[0] ||
         currentTable.numerator?.name?.split(".")[0];
-      // pull index casesx
+      // pull index cases
       const currIndex =
         currVariableParams.nIndex ||
         currVariableParams.dIndex ||
@@ -1175,9 +1176,9 @@ var reducer = (state = INITIAL_STATE, action) => {
         },
       };
 
-      let variables = {
+      let variables = [
         ...state.variables,
-      };
+      ];
 
       const datasetTree = {
         ...state.datasetTree,
@@ -1214,13 +1215,14 @@ var reducer = (state = INITIAL_STATE, action) => {
       let variableTree = {
         [`HEADER: ${dataName}`]: {},
       };
-      const variablesList = state.variables.map((f) => f.name);
+      const variablesList = state.variables.map((f) => f.variableName);
       for (let i = 0; i < action.payload.variables.length; i++) {
         let currVariable = resolveName(
           action.payload.variables[i].variableName,
           variablesList
         );
         variablesList.push(currVariable);
+        console.log(variables, variablesList)
 
         variables.unshift({
           ...action.payload.variables[i],

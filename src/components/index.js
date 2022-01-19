@@ -1,6 +1,7 @@
 
 import {BinsContainer} from './BinsContainer';
 import BottomPanel from './BottomPanel';
+import ChartLabel from './ChartLabel';
 import { ChartTitle } from './ChartTitle';
 import ContextMenu from './ContextMenu';
 import ControlPopover from './ControlPopover';
@@ -66,6 +67,7 @@ import Trends from './Pages/Trends';
 export {
   BinsContainer,
   BottomPanel,
+  ChartLabel,
   ChartTitle,
   ContextMenu,
   ControlPopover,

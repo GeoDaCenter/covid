@@ -489,7 +489,7 @@ export default function MapSection({
       });
     }
   }, []);
-
+  
   const FullLayers = {
     choropleth: new GeoJsonLayer({
       id: "choropleth",
@@ -523,9 +523,9 @@ export default function MapSection({
       material: false,
       onHover: handleMapHover,
       onClick: handleMapClick,
-      transitions: {
-        getFillColor: colorFilter ? 250 : 0,
-      },
+      // transitions: {
+      //   getFillColor: colorFilter ? 250 : 0,
+      // },
       getPolygonOffset: 0,
       updateTriggers: {
         transitions: colorFilter,

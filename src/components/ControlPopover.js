@@ -12,9 +12,10 @@ import { StyledDropDown } from "../components";
 const PopoverContainer = styled.div`
   position: absolute;
   left: 0;
-  top: 0;
+  bottom: 2em;
   width: 2rem;
   height: 2rem;
+  z-index:500;
   button {
     width: 100%;
     height: 100%;

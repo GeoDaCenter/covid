@@ -7,7 +7,6 @@ const ResizeButton = styled.button`
   right: 10px;
   bottom: 10px;
   background: none;
-  outline: none;
   border: none;
   transform: rotate(90deg);
   cursor: nw-resize;

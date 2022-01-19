@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-
+import { setVariableParams } from "../actions";
 import {
   LineChart,
   Line,
@@ -13,34 +13,51 @@ import {
   Legend,
 } from "recharts";
 
-import Switch from "@mui/material/Switch";
 import {
   ChartTitle,
+  ChartLabel,
   ControlPopover,
+  Draggable,
+  Scaleable,
 } from "../components";
 
 import styled from "styled-components";
 import colors from "../config/colors";
 import useGetLineChartData from "../hooks/useGetLineChartData";
+import Icon from "./Icon";
 
 const ChartContainer = styled.span`
   span {
     color: white;
   }
   user-select: none;
-  min-height:200px;
+  /* flex: 1 0 auto; */
+  position: absolute;
+  width:100%;
   height:100%;
-  max-height:25vh;
-  min-width:max(300px, 15vw);
-  flex: 1 0 auto;
-  background: ${colors.gray};
-  padding:1em .5em;
-  padding-bottom:2em;
-  margin-bottom:1em;
-  border-bottom:1px solid black;
-  position: relative;
+  z-index:0;
 `;
 
+const PopOutContainer = styled.div`
+  position: relative;
+  background: ${colors.gray};
+  padding: 0;
+`;
+const DockPopButton = styled.button`
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 2em;
+  height: 2em;
+  background: none;
+  border: none;
+  padding: 0.25em;
+  z-index: 1;
+  cursor: pointer;
+  svg g {
+    fill: ${colors.yellow};
+  }
+`;
 const monthNames = [
   "Jan",
   "Feb",
@@ -158,7 +175,35 @@ const CustomTooltip = (props) => {
   return null;
 };
 
-export default function MainLineChart() {
+const LabelText = {
+  "cases": {
+    x1label: "Cumulative Cases",
+    x2label: "New Cases (7 Day Average)",
+    title: "Cases"
+  },
+  "deaths":{
+    x1label: "Deaths Cases",
+    x2label: "New Deaths (7 Day Average)",
+    title: "Deaths"
+
+  },
+  "vaccines_fully_vaccinated": {
+    x1label: "Total Vaccinations",
+    x2label: "New Vaccinations (7 Day Average)",
+    title: "Population Fully Vaccinated"
+
+  }, 
+  "testing_wk_pos": {
+    x1label: "",
+    x2label: "Testing Positivity (7 Day Average)",
+    title: "Testing Positivity"
+
+  }
+}
+function LineChartInner({
+  resetDock=()=>{},
+  docked=false
+}) {
   const dispatch = useDispatch();
   const [currentTable, setCurrentTable] = useState("cases");
   const {
@@ -171,9 +216,9 @@ export default function MainLineChart() {
     selectionKeys,
     selectionNames,
   } = useGetLineChartData({
-    table: currentTable
+    table: currentTable,
   });
-
+  const {x1label, x2label, title} = LabelText[currentTable];
   const [logChart, setLogChart] = useState(false);
   const [showSummarized, setShowSummarized] = useState(true);
   const [activeLine, setActiveLine] = useState(false);
@@ -181,14 +226,9 @@ export default function MainLineChart() {
   const handleSwitch = () => setLogChart((prev) => !prev);
   const handlePopSwitch = () => setPopulationNormalized((prev) => !prev);
   const handleSummarizedSwitch = () => setShowSummarized((prev) => !prev);
-  // const handleSetDate = ({ activeTooltipIndex }) =>
-  //   dispatch({
-  //     type: "SET_DATA_PARAMS",
-  //     payload: { nIndex: activeTooltipIndex },
-  //   });
-  const handleLegendHover = (o) => setActiveLine(+o.dataKey.split('Weekly')[0]);
+  const handleChange = ({activeTooltipIndex}) => dispatch(setVariableParams({ nIndex: activeTooltipIndex }));
+  const handleLegendHover = (o) => setActiveLine(+o.dataKey.split("Weekly")[0]);
   const handleLegendLeave = () => setActiveLine(false);
-
   if (maximums && chartData) {
     return (
       <ChartContainer id="lineChart">
@@ -196,76 +236,84 @@ export default function MainLineChart() {
           controlElements={[
             {
               type: "header",
-              content: "Line Chart Controls"
+              content: "Line Chart Controls",
             },
             {
               type: "helperText",
-              content: "Select the data to display on the chart."
+              content: "Select the data to display on the chart.",
             },
             {
-              type: "select", 
+              type: "select",
               content: {
                 label: "Line Chart Variable",
                 items: [
                   {
                     text: "Cases",
-                    value: "cases"
+                    value: "cases",
                   },
                   {
                     text: "Deaths",
-                    value: "deaths"
+                    value: "deaths",
                   },
                   {
                     text: "Fully Vaccinated Persons",
-                    value: "vaccines_fully_vaccinated"
+                    value: "vaccines_fully_vaccinated",
                   },
                   {
                     text: "Weekly Positivity",
-                    value: "testing_wk_pos"
-                  }
+                    value: "testing_wk_pos",
+                  },
                 ],
               },
               action: (e) => setCurrentTable(e.target.value),
-              value: currentTable
+              value: currentTable,
             },
             {
               type: "switch",
               content: "Logarithmic Scale",
               action: handleSwitch,
-              value: logChart
+              value: logChart,
             },
             {
               type: "switch",
               content: "Population Normalization",
               action: handlePopSwitch,
-              value: populationNormalized
+              value: populationNormalized,
             },
             {
               type: "switch",
               content: "Show Summary Line",
               action: handleSummarizedSwitch,
-              value: showSummarized
-            }
+              value: showSummarized,
+            },
           ]}
         />
+        {!docked && <DockPopButton onClick={resetDock} title="Dock Line Chart Panel">
+        <Icon symbol="popOut" /></DockPopButton>}
         {selectionNames.length < 2 ? (
           <ChartTitle>
-            <span>Total Cases and 7-Day Average New Cases
-            {selectionNames.length ? `: ${selectionNames[0]}` : ""}</span>
+            <span>
+              {title}
+              {selectionNames.length ? `: ${selectionNames[0]}` : ""}
+            </span>
           </ChartTitle>
         ) : (
-          <ChartTitle><span>7-Day Average New Cases</span></ChartTitle>
+          <ChartTitle>
+            <span>7-Day Average New Cases</span>
+          </ChartTitle>
         )}
+        <ChartLabel color={colors.white} left={-45}>{x1label}</ChartLabel>
+        <ChartLabel color={colors.yellow} right={-75}>{x2label}</ChartLabel>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}
             margin={{
-              top: 10,
-              right: 10,
-              left: 5,
-              bottom: 40,
+              top: 0,
+              right: 20,
+              left: 10,
+              bottom: 50,
             }}
-            // onClick={isTimeseries ? handleSetDate : null}
+            onClick={isTimeseries ? handleChange : null}
           >
             <XAxis
               dataKey="date"
@@ -306,17 +354,6 @@ export default function MainLineChart() {
                 />
               }
             >
-              <Label
-                value="Total Cases"
-                position="insideLeft"
-                style={{
-                  marginTop: 10,
-                  fill: colors.lightgray,
-                  fontFamily: "Lato",
-                  fontWeight: 600,
-                }}
-                angle={-90}
-              />
             </YAxis>
             <YAxis
               yAxisId="right"
@@ -341,24 +378,12 @@ export default function MainLineChart() {
                 />
               }
             >
-              <Label
-                value="7-Day Average New Cases"
-                position="insideTopRight"
-                style={{
-                  marginTop: 10,
-                  fill:
-                    selectionKeys.length < 2 ? colors.yellow : colors.lightgray,
-                  fontFamily: "Lato",
-                  fontWeight: 600,
-                }}
-                angle={-90}
-              />
             </YAxis>
             <Tooltip content={CustomTooltip} />
             <ReferenceArea
               yAxisId="left"
-              x1={currIndex - currRange}
-              x2={currIndex}
+              x1={chartData[currIndex - currRange]?.date || 0}
+              x2={chartData[currIndex]?.date || 0}
               fill="white"
               fillOpacity={0.15}
               isAnimationActive={false}
@@ -368,30 +393,30 @@ export default function MainLineChart() {
                 type="monotone"
                 yAxisId="left"
                 dataKey={`sum${populationNormalized ? "100k" : ""}`}
-                name="Total Cases"
+                name={x1label}
                 stroke={colors.lightgray}
                 dot={false}
                 isAnimationActive={false}
               />
             ) : (
-              selectionKeys.map((geoid) => {
+              selectionKeys.map((geoid, idx) => 
                 <Line
                   type="monotone"
                   yAxisId="left"
                   dataKey={`${geoid}Sum${populationNormalized ? "100k" : ""}`}
-                  name="Total Cases"
+                  name={selectionNames[idx] + " Cumulative"}
                   stroke={colors.lightgray}
                   dot={false}
                   isAnimationActive={false}
-                />;
-              })
+                />
+              )
             )}
             {selectionKeys.length === 0 ? (
               <Line
                 type="monotone"
                 yAxisId="right"
                 dataKey={`weekly${populationNormalized ? "100k" : ""}`}
-                name="7-Day Average New Cases"
+                name={x2label}
                 stroke={colors.yellow}
                 dot={false}
                 isAnimationActive={false}
@@ -400,12 +425,14 @@ export default function MainLineChart() {
               selectionKeys.map((geoid, idx) => (
                 <Line
                   type="monotone"
-                  yAxisId="left"
+                  yAxisId="right"
                   key={`line-weekly-${geoid}`}
-                  dataKey={`${geoid}Weekly${populationNormalized ? "100k" : ""}`}
+                  dataKey={`${geoid}Weekly${
+                    populationNormalized ? "100k" : ""
+                  }`}
                   name={selectionNames[idx] + " 7-Day Ave"}
                   stroke={
-                    selectionKeys.length > colors.qualtitiveScale.length
+                    selectionKeys.length === 1 ? colors.yellow : selectionKeys.length > colors.qualtitiveScale.length
                       ? "white"
                       : colors.qualtitiveScale[idx]
                   }
@@ -433,52 +460,55 @@ export default function MainLineChart() {
               <Legend
                 onMouseEnter={handleLegendHover}
                 onMouseLeave={handleLegendLeave}
+                margin={{ top: 40, left: 0, right: 0, bottom: 50 }}
+                iconType="plainline"
               />
             )}
           </LineChart>
         </ResponsiveContainer>
-        {/* <SwitchesContainer>
-          <StyledSwitch>
-            <Switch
-              checked={logChart}
-              onChange={handleSwitch}
-              name="log chart switch"
-              inputProps={{ "aria-label": "secondary checkbox" }}
-            />
-            <p>{logChart ? "Log Scale" : "Linear Scale"}</p>
-          </StyledSwitch>
-          <StyledSwitch>
-            <Switch
-              checked={populationNormalized}
-              onChange={handlePopSwitch}
-              name="population normalized chart switch"
-              inputProps={{ "aria-label": "secondary checkbox" }}
-            />
-            <p>{populationNormalized ? "Per 100k" : "Counts"}</p>
-          </StyledSwitch>
-          {selectionKeys.length > 1 && (
-            <StyledSwitch>
-              <Switch
-                checked={showSummarized}
-                onChange={handleSummarizedSwitch}
-                name="show summarized chart switch"
-                inputProps={{ "aria-label": "secondary checkbox" }}
-              />
-              <p>
-                {showSummarized
-                  ? `Show ${
-                      populationNormalized ? "Average" : "Total"
-                    } For Selection`
-                  : `Show ${
-                      currentData.includes("state") ? "States" : "Counties"
-                    }`}
-              </p>
-            </StyledSwitch>
-          )}
-        </SwitchesContainer> */}
       </ChartContainer>
     );
   } else {
-    return null
+    return null;
   }
+}
+
+export default function LineChartOuter({ defaultDimensions }) {
+  const [isPoppedOut, setIsPoppedOut] = useState(false);
+  return isPoppedOut ? (
+    <Draggable
+      z={9}
+      defaultX={defaultDimensions.defaultXLong}
+      defaultY={defaultDimensions.defaultY}
+      title="lineChart"
+      allowCollapse={false}
+      content={
+        <Scaleable
+          content={<LineChartInner resetDock={() => setIsPoppedOut(false)} />}
+          title="lineChart"
+          defaultWidth={defaultDimensions.defaultWidthLong}
+          defaultHeight={defaultDimensions.defaultHeight}
+          minHeight={defaultDimensions.minHeight}
+          minWidth={defaultDimensions.minWidth}
+        />
+      }
+    />
+  ) : (
+    <PopOutContainer
+      style={{
+        height: defaultDimensions.defaultHeight + "px",
+        minHeight: defaultDimensions.defaultHeight + "px",
+        width: defaultDimensions.defaultWidthLong + "px",
+      }}
+    >
+      <DockPopButton
+        title="Popout Line Chart Panel"
+        onClick={() => setIsPoppedOut(true)}
+        className="popout-button"
+      >
+        <Icon symbol="popOut" />
+      </DockPopButton>
+      <LineChartInner docked={true} />
+    </PopOutContainer>
+  );
 }

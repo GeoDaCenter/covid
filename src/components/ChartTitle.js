@@ -11,6 +11,7 @@ export const ChartTitle = styled.h3`
   span {
     max-width: 20ch;
     display: block;
-    margin: 0 auto;
+    margin: .5em auto;
+    font-weight: bold;
   }
 `;

@@ -95,9 +95,11 @@ const RightPaneContainer = styled.div`
   flex:0 1 auto;
   height:calc(100vh - 50px);
   display: flex;
+  position: fixed;
+  right:0;
+  top:50px;
   flex-direction:column;
   overflow:hidden;
-  background: ${colors.gray};
 
 `
 
@@ -258,7 +260,7 @@ const MapPageContainer = () => {
           isLoading={isLoading}
         />
         <RightPaneContainer>
-            {panelState.lineChart && <LineChart />}
+            {panelState.lineChart && <LineChart defaultDimensions={defaultDimensions} />}
             {panelState.scatterChart && <Scatterchart />}
             <DataPanel />
         </RightPaneContainer>
@@ -276,30 +278,6 @@ const MapPageContainer = () => {
       />
       <Popover />
       <NotificationBox />
-      {/* {panelState.lineChart && (
-        <Draggable
-          z={9}
-          defaultX={defaultDimensions.defaultXLong}
-          defaultY={defaultDimensions.defaultY}
-          title="lineChart"
-          content={
-            <Scaleable
-              content={<MainLineChart />}
-              title="lineChart"
-              content={
-                <Scaleable
-                  content={<MainLineChart />}
-                  title="lineChart"
-                  defaultWidth={defaultDimensions.defaultWidthLong}
-                  defaultHeight={defaultDimensions.defaultHeight}
-                  minHeight={defaultDimensions.minHeight}
-                  minWidth={defaultDimensions.minWidth}
-                />
-              }
-            />
-          }
-        />
-      )} */}
       {panelState.tutorial && (
         <Draggable
           z={10}

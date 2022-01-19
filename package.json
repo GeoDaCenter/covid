@@ -55,6 +55,7 @@
     "styled-components": "^5.2.1"
   },
   "scripts": {
+    "fetch-data": "node build-scripts/fetchLatestData && node build-scripts/buildTimeseries && node build-scripts/generateConfig",
     "start": "react-scripts start",
     "build-sw": "node ./src/sw-build.js",
     "build": "react-scripts build",

@@ -21,6 +21,8 @@ export const findClosestValue = (index, availableDates, decrement=false) => {
     if (decrement) {
         const decremnentAttempt = findDateDecrement(index, availableDates);
         if (decremnentAttempt !== null) return decremnentAttempt
+        const incrementAttempt = findDateIncrement(index, availableDates);
+        if (incrementAttempt !== null) return incrementAttempt
     } else {
         const incrementAttempt = findDateIncrement(index, availableDates);
         if (incrementAttempt !== null) return incrementAttempt
