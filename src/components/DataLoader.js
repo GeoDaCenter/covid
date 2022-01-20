@@ -634,7 +634,6 @@ export default function DataLoader() {
   const handleClose = () => setEditor({ open: false, idx: false });
 
   const handleLoadData = () => {
-    console.log(currentGeojson);
     dataDispatch({
       type:'LOAD_GEOJSON',
       payload: {'customdata': currentGeojson}

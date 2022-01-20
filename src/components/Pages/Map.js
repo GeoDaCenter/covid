@@ -6,7 +6,7 @@ import styled from 'styled-components';
 // first row: data loading
 // second row: data parsing for specific outputs
 // third row: data accessing
-import { getDateLists } from '../../utils'; //getVarId
+import { findIn, getDateLists } from '../../utils'; //getVarId
 
 // Actions -- Redux state manipulation following Flux architecture //
 // first row: data storage
@@ -100,6 +100,10 @@ const RightPaneContainer = styled.div`
   top:50px;
   flex-direction:column;
   overflow:hidden;
+  pointer-events:none;
+  * {
+    pointer-events:auto;
+  }
 
 `
 
@@ -218,11 +222,15 @@ const MapPageContainer = () => {
   // dispatches to the store, we need checks to make sure side effects
   // are OK to trigger. Issues arise with missing data, columns, etc.
   const mapParams = useSelector((state) => state.mapParams);
+  const dataParams = useSelector((state) => state.dataParams);
+  const currentData = useSelector((state) => state.currentData);
   const dataNote = useSelector((state) => state.dataParams.dataNote);
   const fixedScale = useSelector((state) => state.dataParams.fixedScale);
   const variableName = useSelector((state) => state.dataParams.variableName);
   const panelState = useSelector((state) => state.panelState);
   const [defaultDimensions, setDefaultDimensions] = useState(getDefaultDimensions());
+  const datasets = useSelector((state) => state.datasets);
+  const currIdCol = findIn(datasets, "file", currentData).join;
 
   // default width handlers on resize
   useEffect(() => {
@@ -236,7 +244,13 @@ const MapPageContainer = () => {
     currentBins,
     currentHeightScale,
     isLoading,
-  ] = useMapData({});
+  ] = useMapData({
+    dataParams,
+    mapParams,
+    currentData
+  });
+
+  const showTopPanel = dataParams.nType !== 'characteristic'
   
   return (
     <MapContainer>
@@ -258,6 +272,9 @@ const MapPageContainer = () => {
           currentMapID={currentMapID}
           currentHeightScale={currentHeightScale}
           isLoading={isLoading}
+          mapParams={mapParams}
+          currentData={currentData}
+          currIdCol={currIdCol}
         />
         <RightPaneContainer>
             {panelState.lineChart && <LineChart defaultDimensions={defaultDimensions} />}
@@ -267,7 +284,7 @@ const MapPageContainer = () => {
       </MapPlaneContainer>
 
       <PrintLayout />
-      <TopPanel />
+      {!!showTopPanel && <TopPanel />}
       <Legend
         variableName={variableName}
         colorScale={mapParams.colorScale}

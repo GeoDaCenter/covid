@@ -8,8 +8,7 @@ const getDataForBins = ({
   dataReady = true,
   binIndex = null,
 }) => {
-  if (!dataReady || !numeratorData) return [];
-
+  if (!dataReady || !numeratorData || !dataParams?.numerator) return [];
   const { nProperty, dType } = dataParams;
   const nIndex = binIndex ||dataParams.nIndex;
   

@@ -101,10 +101,10 @@ const GeocoderContainer = styled.div`
 `;
 
 //create your forceUpdate hook
-function useForceUpdate() {
-  const [, setValue] = useState(0); // integer state
-  return () => setValue((value) => value + 1); // update the state to force render
-}
+// function useForceUpdate() {
+//   const [, setValue] = useState(0); // integer state
+//   return () => setValue((value) => value + 1); // update the state to force render
+// }
 
 // parse dot density 1D PBF into 2D
 const chunkArray = (data, chunk) => {
@@ -120,21 +120,20 @@ export default function MapSection({
   currentMapData,
   currentMapID,
   currentHeightScale,
+  currentData,
+  mapParams,
+  currIdCol
 }) {
   // fetch pieces of state from store
-  const currentData = useSelector((state) => state.currentData);
-  const mapParams = useSelector((state) => state.mapParams);
   const dotDensityData = useSelector((state) => state.dotDensityData);
   // const currentMapData = useSelector(state => state.mapData.data);
   // const currentMapID = useSelector(state => state.mapData.params);
   // const currentHeightScale = useSelector(state => state.mapData.heightScale);
   const storedGeojson = useSelector((state) => state.storedGeojson);
-  const datasets = useSelector((state) => state.datasets);
   // const currentMapGeography = storedGeojson[currentData]?.data||[]
   const colorFilter = useSelector((state) => state.colorFilter);
-  const currIdCol = findIn(datasets, "file", currentData).join;
   const storedCartogramData = useSelector((state) => state.storedCartogramData);
-  const storedLisaData = useSelector((state) => state.storedLisaData);
+  // const storedLisaData = useSelector((state) => state.storedLisaData);
   const shouldPanMap = useSelector((state) => state.shouldPanMap);
   const panelState = useSelector((state) => state.panelState);
 
@@ -157,12 +156,11 @@ export default function MapSection({
     vaccineSites: [],
   });
   const [storedCenter, setStoredCenter] = useState(null);
-
   // interaction states
   const [multipleSelect, setMultipleSelect] = useState(false);
   const [boxSelect, setBoxSelect] = useState(false);
   const [boxSelectDims, setBoxSelectDims] = useState({});
-  const forceUpdate = useForceUpdate();
+  // const forceUpdate = useForceUpdate();
 
   const dispatch = useDispatch();
 
@@ -364,9 +362,9 @@ export default function MapSection({
     resourceLayerData.vaccineSites[0],
   ]);
 
-  useEffect(() => {
-    forceUpdate();
-  }, [currentMapID, storedCartogramData, storedLisaData]);
+  // useEffect(() => {
+  //   forceUpdate();
+  // }, [currentMapID, storedCartogramData]);
 
   useEffect(() => {
     if (shouldPanMap) {
@@ -591,10 +589,10 @@ export default function MapSection({
       radiusScale: currentData.includes("state") ? 9 : 6,
       updateTriggers: {
         data: currentMapGeography,
-        getPosition: [currentMapID, storedLisaData, storedCartogramData],
-        getFillColor: [currentMapID, storedLisaData, storedCartogramData],
-        getRadius: [currentMapID, storedLisaData, storedCartogramData],
-        transitions: [currentMapID, storedLisaData, storedCartogramData],
+        getPosition: [currentMapID, storedCartogramData],
+        getFillColor: [currentMapID, storedCartogramData],
+        getRadius: [currentMapID, storedCartogramData],
+        transitions: [currentMapID, storedCartogramData],
       },
     }),
     cartogramText: new TextLayer({
@@ -614,8 +612,8 @@ export default function MapSection({
       getText: (d) => d.properties.NAME,
       updateTriggers: {
         data: currentMapGeography,
-        getPosition: [currentMapID, storedLisaData, storedCartogramData],
-        getSize: [currentMapID, storedLisaData, storedCartogramData],
+        getPosition: [currentMapID, storedCartogramData],
+        getSize: [currentMapID, storedCartogramData],
       },
     }),
     // cartogramBackground: new PolygonLayer({

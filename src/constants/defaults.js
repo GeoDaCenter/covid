@@ -96,7 +96,6 @@ export const INITIAL_STATE = {
     overlay: paramsDict.hasOwnProperty("ovr") ? paramsDict.ovr : "",
     resource: paramsDict.hasOwnProperty("res") ? paramsDict.res : "",
     colorScale: [
-      [240, 240, 240],
       [255, 255, 204],
       [255, 237, 160],
       [254, 217, 118],

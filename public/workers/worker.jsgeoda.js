@@ -21,6 +21,7 @@ function getAllFuncs(toCheck) {
 class GeodaWorkerProxy {
   constructor() {
     this.geoda = null;
+    this.loadedDatasets = {};
   }
 
   /**
@@ -46,6 +47,9 @@ class GeodaWorkerProxy {
    */
    async loadGeoJSON(url, geoIdColumn) {
     if (this.geoda === null) await this.New();
+    if (this.loadedDatasets[url]) {
+      return [this.loadedDatasets[url], {}];
+    }
     var response = await fetch(url);
     var responseClone = await response.clone();
     var geojsonData = await response.json();
@@ -62,6 +66,7 @@ class GeodaWorkerProxy {
     for (var i=0; i<10; i++){
       try {
         var id = this.readGeoJSON(ab);
+        this.loadedDatasets[url] = id;
         return [id, geojsonData];
       } catch {}
     }

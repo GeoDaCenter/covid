@@ -70,7 +70,7 @@ const aggregateProperty = (
 const aggregateTimeseries = (table, properties, geoids, index, operation) => {
   let dataArray = [];
   let totalPopulation = 0;
-  try  {
+  try {
     if (operation === "weighted_average") {
       for (let i = 0; i < geoids.length; i++) {
         let selectionPop = properties[geoids[i]].population;
@@ -85,19 +85,23 @@ const aggregateTimeseries = (table, properties, geoids, index, operation) => {
 
     return performOperation(dataArray, operation, totalPopulation);
   } catch {
-    return null
+    return null;
   }
 };
 
 // Generate data for 2-week line charts
 const aggregate2WeekTimeSeries = (table, geoids, endIndex) => {
-  let twoWeek = new Array(14).fill(0);
-  for (let i = 0, n = 13; i < 14; i++, n--) {
-    for (let g = 0; g < geoids.length; g++) {
-      twoWeek[n] += table[geoids[g]][endIndex - i];
+  try {
+    let twoWeek = new Array(14).fill(0);
+    for (let i = 0, n = 13; i < 14; i++, n--) {
+      for (let g = 0; g < geoids.length; g++) {
+        twoWeek[n] += table[geoids[g]][endIndex - i];
+      }
     }
+    return twoWeek;
+  } catch {
+    return {};
   }
-  return twoWeek;
 };
 
 // // For more complete data functions (like population normalized)
@@ -290,7 +294,12 @@ export const generateReport = ({
     report.testing_index = testingIndex;
   }
 
-  if (testing?.dates && testingPositivity?.dates && testingCapacity?.dates && testingCcpt?.dates) {
+  if (
+    testing?.dates &&
+    testingPositivity?.dates &&
+    testingCapacity?.dates &&
+    testingCcpt?.dates
+  ) {
     report.wk_pos =
       Math.round(
         aggregateTimeseries(
@@ -498,7 +507,7 @@ export const generateReport = ({
     storedData[findIn(currTables, "table", "pct_fulltime").name];
   const pctParttime =
     storedData[findIn(currTables, "table", "pct_parttime").name];
-    
+
   const mobilityIndex =
     pctHome?.dates && pctHome.dates.includes(currIndex)
       ? currIndex
@@ -618,6 +627,6 @@ export const generateReport = ({
   //     report.doses_dist100 = (report.doses_dist / report.population) * 100;
   //   }
   // } catch {}
-  
+
   return report;
 };

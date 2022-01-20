@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import useLoadData from "./useLoadData";
 import { useGeoda } from "../contexts/Geoda";
 import { getVarId, getDataForBins } from "../utils";
@@ -11,9 +11,9 @@ import { colorScales } from "../config/scales";
 const maxDesirableHeight = 500_000;
 
 const getContinuousColor = (val, breaks, colors, useZero = false) => {
-  if (useZero && val === 0) return colors[0];
+  if (useZero && val === 0) return [240, 240, 240];
   if (val === null || val === undefined) return [50, 50, 50];
-  for (let i = 0 + useZero; i < breaks.length; i++) {
+  for (let i = 0; i < breaks.length; i++) {
     if (val <= breaks[i]) return colors[i];
   }
   return colors[colors.length - 1];
@@ -50,7 +50,6 @@ const generateJoinData = ({
     }
   } else {
     const shouldUseZero = JSON.stringify(mapParams.colorScale[0]) === JSON.stringify([240, 240, 240])
-
     for (let i = 0; i < geoids.length; i++) {
       joinData[geoids[i]] = {
         color: getContinuousColor(
@@ -268,16 +267,18 @@ function useGetBins({
   return bins;
 }
 
-export default function useMapData({}) {
-  const dataParams = useSelector((state) => state.dataParams);
-  const currentData = useSelector((state) => state.currentData);
-  const mapParams = useSelector((state) => state.mapParams);
+export default function useMapData({
+  dataParams,
+  currentData,
+  mapParams
+}) {
   const {
     geojsonData,
     numeratorData,
     denominatorData,
     dateIndices,
     dataReady,
+    dataSnapshot
   } = useLoadData();
   const dispatch = useDispatch();
   const { geoda, geodaReady } = useGeoda();
@@ -293,8 +294,8 @@ export default function useMapData({}) {
       : null;
 
       const binData = useMemo(
-        () =>
-          getDataForBins({
+        () => {
+          return getDataForBins({
             numeratorData:
               dataParams.numerator === "properties"
                 ? geojsonData?.properties
@@ -309,7 +310,7 @@ export default function useMapData({}) {
               geojsonData?.order?.indexOrder &&
               Object.values(geojsonData.order.indexOrder),
             dataReady,
-          }),
+          })},
         [JSON.stringify({...dataParams, nIndex:0, dIndex:0}), JSON.stringify(mapParams), binIndex, dataReady, currentData]
       );
 

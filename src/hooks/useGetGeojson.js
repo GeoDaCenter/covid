@@ -12,7 +12,6 @@ export default function useGetGeojson({
     dataDispatch = () => {},
   }) {
     useMemo(async () => {
-      
       if (!geodaReady) return;
       if (storedGeojson[currDataset.file]) {
         return storedGeojson[currDataset.file];
@@ -21,6 +20,7 @@ export default function useGetGeojson({
           `${process.env.PUBLIC_URL}/geojson/${currDataset.file}`,
           currDataset.join,
         );
+        console.log(mapId, data)
   
         const properties = indexGeoProps(data, currDataset.join);
   
@@ -38,7 +38,7 @@ export default function useGetGeojson({
             }
           }})
       }
-    }, [JSON.stringify(currDataset), geodaReady]);
+    }, [geodaReady && JSON.stringify(currDataset)]);
   
     if (!geodaReady){
       return [
