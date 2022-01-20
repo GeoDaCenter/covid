@@ -156,7 +156,8 @@ export const INITIAL_STATE = {
     context: false,
     contextPos: { x: null, y: null },
     dataLoader: false,
-    scatterChart: false
+    scatterChart: false,
+    reportBuilder: false
   },
   urlParams: {},
   tooltipInfo: {

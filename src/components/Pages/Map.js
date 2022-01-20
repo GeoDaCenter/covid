@@ -30,6 +30,7 @@ import {
   MapTooltipContent,
   PrintLayout,
   DataLoader,
+  ReportBuilder,
   Icon,
   IconDock,
   Scatterchart
@@ -101,6 +102,7 @@ const RightPaneContainer = styled.div`
   flex-direction:column;
   overflow:hidden;
   pointer-events:none;
+  z-index:15;
   * {
     pointer-events:auto;
   }
@@ -283,7 +285,8 @@ const MapPageContainer = () => {
         </RightPaneContainer>
       </MapPlaneContainer>
 
-      <PrintLayout />
+      {/* <PrintLayout /> */}
+      <ReportBuilder/>
       {!!showTopPanel && <TopPanel />}
       <Legend
         variableName={variableName}

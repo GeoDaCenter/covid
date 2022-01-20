@@ -32,6 +32,7 @@ import VariablePanel from './VariablePanel';
 import Popover from './TooltipPopper';
 import Preloader from './Preloader';
 import PrintLayout from './PrintLayout';
+import ReportBuilder from './ReportBuilder';
 import Scaleable from './Scaleable';
 import Scatterchart from './Scatterchart';
 import StaticNavbar from './StaticNavbar';
@@ -106,6 +107,7 @@ export {
   Ticks,
   Tooltip,
   TopPanel,
+  ReportBuilder,
   ShareButton,
   Scatterchart,
   StyledDropDown,

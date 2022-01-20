@@ -940,13 +940,12 @@ var reducer = (state = INITIAL_STATE, action) => {
       };
     }
     case "SET_PANELS":
-      let panelsObj = {
-        ...state.panelState,
-        ...action.payload.params,
-      };
       return {
         ...state,
-        panelState: panelsObj,
+        panelState: {
+          ...state.panelState,
+          ...action.payload,
+        }
       };
     case "TOGGLE_PANEL": {
       return {

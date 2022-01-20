@@ -21,6 +21,7 @@ const TopDrawer = styled.div`
   border-top:none;
   border-radius: 0;
   transition: 250ms all;
+  z-index:6;
   hr {
     opacity: 0.5;
   }
