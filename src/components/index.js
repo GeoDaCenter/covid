@@ -34,7 +34,7 @@ import Preloader from './Preloader';
 import PrintLayout from './PrintLayout';
 import ReportBuilder from './ReportBuilder/ReportBuilder';
 import Scaleable from './Scaleable';
-import Scatterchart from './Scatterchart';
+import Scatterchart, {ScatterChartInner} from './Scatterchart';
 import StaticNavbar from './StaticNavbar';
 import Ticks from './Ticks';
 import Tooltip from './Tooltip';
@@ -111,6 +111,7 @@ export {
   ReportBuilder,
   ShareButton,
   Scatterchart,
+  ScatterChartInner,
   StyledDropDown,
   StyledDropDownNoLabel,
   SwitchContainer,

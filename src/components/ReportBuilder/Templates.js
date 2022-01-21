@@ -73,7 +73,7 @@ export default function TemplateSelector({
     : templates.filter((t) => t.label === selectedTemplate);
     
   return (
-    <Grid container spacing={2} justify="center" alignContent="center" alignItems="center">
+    <Grid container spacing={2} justify="center" alignContent="center" alignItems={showTemplateCustomizer ? 'flex-start' : "center" }>
       {templatesToShow.map(({ icon, label }, idx) => (
         <Grid item xs={12} md={3} key={"template-button" + idx}>
           <TemplateButton
@@ -86,7 +86,9 @@ export default function TemplateSelector({
         </Grid>
       ))}
       {showTemplateCustomizer && (
-        <TemplateCustomzier template={templatesToShow[0]} />
+        <Grid item xs={12} md={9}>
+          <TemplateCustomzier template={templatesToShow[0]} />
+        </Grid>
       )}
     </Grid>
   );

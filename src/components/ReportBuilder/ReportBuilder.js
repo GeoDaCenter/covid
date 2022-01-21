@@ -59,15 +59,17 @@ export default function ReportBuilder() {
     (activeStep === 1 && selectedCounty !== null) ||
     activeStep === 2 ||
     activeStep === 3;
+    
   const countySelector = (
     <ComboxBox
       setValue={setSelectCounty}
       value={selectedCounty}
-      label={"County Name"}
+      label={"Type to search (eg. Miami-Dade)"}
       options={countyList}
       id="county-selector-combo-box"
     />
   );
+
   const templates = [
     {
       label: "My County's Stats",

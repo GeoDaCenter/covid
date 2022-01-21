@@ -55,24 +55,30 @@ const templates = {
       {
         type: 'text',
         width: 4,
-        height: 'auto',
+        height: 1,
         content: ({name}) => <h2>7-Day Average Report: {name}</h2>
       },
       {
         type: "textReport",
         width: 2,
-        height: "auto",
+        height: 3,
       },
       {
         type: "lineChart",
         width: 2,
-        height: 2,
+        height: 3,
       },
       {
         type: 'table',
         topic: 'COVID',
-        width: 3,
-        height: 1,
+        width: 2,
+        height: 3,
+      },
+      {
+        type: 'table',
+        topic: 'SDOH',
+        width: 2,
+        height: 3,
       }
     ],
   ],

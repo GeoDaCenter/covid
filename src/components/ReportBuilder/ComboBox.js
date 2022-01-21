@@ -24,11 +24,11 @@ const StyledPopper = styled(Popper)({
   [`& .${autocompleteClasses.listbox}`]: {
     boxSizing: "border-box",
     background: colors.darkgray,
-    height:300,
+    height:200,
     overflowY: "scroll",
     "& ul": {
       padding: 0,
-      height:300,
+      height:200,
       margin: 0,
       background: "none",
       li: {
@@ -57,7 +57,7 @@ export default function ComboBox({
         setValue(newValue);
       }}
       PopperComponent={StyledPopper}
-      open={true}
+      // open={true}
       renderInput={(params) => (
         <TextField
           {...params}

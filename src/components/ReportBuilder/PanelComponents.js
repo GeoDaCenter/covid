@@ -1,11 +1,12 @@
+import { useMemo } from "react";
 import { TextStatistics } from "../../components";
-import { useDrag } from "muuri-react";
-import { ControlPopover, LineChartInner } from "../../components";
+import { ControlPopover, LineChartInner, ScatterChartInner } from "../../components";
 import styled from "styled-components";
 import colors from "../../config/colors";
 import Icon from "../Icon";
 import countyNames from "../../meta/countyNames";
 import StatsTable from "./StatsTable";
+import useGetScatterData from "../../hooks/useGetScatterData";
 
 const PanelItemContainer = styled.div`
   border: 1px solid rgba(0, 0, 0, 0);
@@ -88,10 +89,10 @@ const heightOptions = {
   content: {
     label: "Set Height",
     items: [
-      {
-        label: "Auto",
-        value: "auto",
-      },
+      // {
+      //   label: "Auto",
+      //   value: "auto",
+      // },
       {
         label: "1",
         value: 1,
@@ -168,7 +169,7 @@ const DeleteBlock = ({ iconColor, className, onClick }) => (
     top="0px"
     className={className}
     iconColor={iconColor}
-    title="Move this content"
+    title="Remove Block"
     onClick={onClick}
   >
     <Icon symbol="remove" />
@@ -184,7 +185,7 @@ const TextReport = ({
   width,
   height,
 }) => (
-  <PanelItemContainer className={`w${width || 2} h${height || "auto"}`}>
+  <PanelItemContainer className={`w${width || 2} h${height || 3}`}>
     <TextStatistics geoid={geoid} />
     <ControlPopover
       top="0"
@@ -363,18 +364,86 @@ const LineChart = ({
   );
 };
 
+const ScatterChart = ({
+  geoid = null,
+  pageIdx = 0,
+  contentIdx = 0,
+  handleChange,
+  handleToggle,
+  handleRemove,
+  width,
+  height,
+  xAxisVar,
+  yAxisVar,
+}) => {
+  const { scatterData, timestamp } = useGetScatterData({
+    xAxisVar,
+    yAxisVar,
+  });
+  const scatterChart = useMemo(
+    () =>
+      timestamp !== null ? (
+        <ScatterChartInner
+          {...{ scatterData, xAxisVar, yAxisVar }}
+          theme="light"
+        />
+      ) : null,
+    [timestamp]
+  );
+  return (
+    <PanelItemContainer className={`w${width || 2} h${height || 2}`}>
+      {scatterChart}
+      <ControlPopover
+        className="hover-buttons"
+        top="0"
+        left="0"
+        iconColor={colors.strongOrange}
+        controlElements={[
+          {
+            type: "header",
+            content: "Controls for Scatter Chart Block",
+          },
+          {
+            type: "helperText",
+            content: "Select the data to display on the chart.",
+          },
+          {
+            ...widthOptions,
+            action: (e) =>
+              handleChange(pageIdx, contentIdx, { width: e.target.value }),
+            value: width,
+          },
+          {
+            ...heightOptions,
+            action: (e) =>
+              handleChange(pageIdx, contentIdx, { height: e.target.value }),
+            value: height,
+          },
+        ]}
+      />
+      <GrabTarget iconColor={colors.strongOrange} className="hover-buttons" />
+      <DeleteBlock
+        iconColor={colors.strongOrange}
+        className="hover-buttons"
+        onClick={() => handleRemove(pageIdx, contentIdx)}
+      />
+    </PanelItemContainer>
+  );
+};
+
 const TableReport = ({
   geoid = null,
   pageIdx = 0,
   contentIdx = 0,
   handleChange,
   handleRemove,
-  width,
-  height,
+  width=2,
+  height=3,
+  topic="COVID"
 }) => (
-  <PanelItemContainer className={`w${width || 2} h${height || 2}`}>
-    <h4>7-Day Average Summary Statistics</h4>
-    <StatsTable geoid={geoid} />
+  <PanelItemContainer className={`w${width || 2} h${height || 3}`}>
+    <h4>{topic === "COVID" ? "7-Day Average Summary Statistics" : "Health Factors (SDOH)" }</h4>
+    <StatsTable {...{topic, geoid}} />
     <ControlPopover
       top="0"
       left="0"
@@ -481,9 +550,11 @@ const mapping = {
   text: TextContainer,
   lineChart: LineChart,
   table: TableReport,
+  scatterChart: ScatterChart
 };
 
 export default function ReportComponentMapping(props) {
+  console.log(props)
   const { type } = props;
   const InnerEl = mapping[type];
   if (!InnerEl) return null;
