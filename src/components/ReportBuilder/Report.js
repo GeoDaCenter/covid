@@ -42,93 +42,123 @@ const MetaButtonsContainer = styled.div`
 `;
 const MetaButton = styled.button`
   background: none;
-  color: ${props => props.reset ? colors.strongOrange : "white"};;
-  border: 1px solid ${props => props.reset ? colors.strongOrange : "white"};
+  color: ${(props) => (props.reset ? colors.strongOrange : "white")};
+  border: 1px solid ${(props) => (props.reset ? colors.strongOrange : "white")};
   padding: 0.25em 0.5em;
-  margin-right: ${props => props.reset ? "0" : "1em"};
+  margin-right: ${(props) => (props.reset ? "0" : "1em")};
   cursor: pointer;
-`
+`;
 
 const templates = {
-    "My County's Stats": [
-        [
-            {
-                type: "textReport",
-                width: 2,
-                height: 'auto'
-            }, 
-            {
-              type: "lineChart",
-              width: 2,
-              height: 2
-          }
-        ]
+  "My County's Stats": [
+    [
+      {
+        type: 'text',
+        width: 4,
+        height: 'auto',
+        content: ({name}) => <h2>7-Day Average Report: {name}</h2>
+      },
+      {
+        type: "textReport",
+        width: 2,
+        height: "auto",
+      },
+      {
+        type: "lineChart",
+        width: 2,
+        height: 2,
+      },
+      {
+        type: 'table',
+        topic: 'COVID',
+        width: 3,
+        height: 1,
+      }
     ],
-    "A National Snapshot": [
-        [
-            {
-                type: "textReport",
-                width: 2,
-                height: 2
-            }
-        ]
-    ],    
-    "My Region's Snapshot": [
-        [
-            {
-                type: "textReport",
-                width: 2,
-                height: 2
-            }
-        ]
+  ],
+  "A National Snapshot": [
+    [
+      {
+        type: "textReport",
+        width: 2,
+        height: 2,
+      },
     ],
-    "My Neighboring County's Stats": [
-        [
-            {
-                type: "textReport",
-                width: 2,
-                height: 2
-            }
-        ]
+  ],
+  "My Region's Snapshot": [
+    [
+      {
+        type: "textReport",
+        width: 2,
+        height: 2,
+      },
     ],
-    "Something Else (Blank Report)": [[]]
-}
+  ],
+  "My Neighboring County's Stats": [
+    [
+      {
+        type: "textReport",
+        width: 2,
+        height: 2,
+      },
+    ],
+  ],
+  "Something Else (Blank Report)": [[]],
+};
 
 export default function Report({ county = {}, selectedTemplate = "" }) {
-  const [pages, setPages] = useState(templates[selectedTemplate]||[[]]);  
+  const [pages, setPages] = useState(templates[selectedTemplate] || [[]]);
   const handleAddPage = () => setPages((pages) => [...pages, []]);
-  const handleResetPages = () => setPages(templates[selectedTemplate]||[[]]);
-  const handleAddItem = () => setPages((pages) => [[...pages[0],{ type: "textReport", width: 2, height: 2 }]]);
-  const handleChange = (pageIdx, itemIdx, props) => setPages(pages => {
-    let prevPages = [...pages];
-    prevPages[pageIdx][itemIdx] = { ...prevPages[pageIdx][itemIdx], ...props };
-    return prevPages
-  })
-  
-  const handleRemove = (pageIdx, itemIdx) => setPages(pages => {
-    let prevPages = [...pages];
-    prevPages[pageIdx] = [
-      ...prevPages[pageIdx].slice(0, itemIdx),
-      ...prevPages[pageIdx].slice(itemIdx+1,)
-    ]
-    return prevPages
-  })
+  const handleResetPages = () => setPages(templates[selectedTemplate] || [[]]);
+  const handleAddItem = (pageIdx, item) =>
+    setPages((pages) => {
+      let prevPages = [...pages];
+      prevPages[pageIdx] = [...prevPages[pageIdx], item];
+      return prevPages;
+    });
 
-  const handleToggle = (pageIdx, itemIdx, prop) => setPages(pages => {
-    let prevPages = [...pages];
-    prevPages[pageIdx][itemIdx][prop] = !prevPages[pageIdx][itemIdx][prop]
-    return prevPages
-  })
+  const handleChange = (pageIdx, itemIdx, props) =>
+    setPages((pages) => {
+      let prevPages = [...pages];
+      prevPages[pageIdx][itemIdx] = {
+        ...prevPages[pageIdx][itemIdx],
+        ...props,
+      };
+      return prevPages;
+    });
 
+  const handleRemove = (pageIdx, itemIdx) =>
+    setPages((pages) => {
+      let prevPages = [...pages];
+      prevPages[pageIdx] = [
+        ...prevPages[pageIdx].slice(0, itemIdx),
+        ...prevPages[pageIdx].slice(itemIdx + 1),
+      ];
+      return prevPages;
+    });
+
+  const handleToggle = (pageIdx, itemIdx, prop) =>
+    setPages((pages) => {
+      let prevPages = [...pages];
+      prevPages[pageIdx][itemIdx][prop] = !prevPages[pageIdx][itemIdx][prop];
+      return prevPages;
+    });
   return (
     <LayoutContainer>
       {pages.map((page, idx) => (
-        <ReportPage content={page} pageIdx={idx} geoid={county.value} {...{handleToggle, handleChange, handleRemove}} />
+        <ReportPage
+          content={page}
+          pageIdx={idx}
+          geoid={county.value}
+          name={county.label}
+          {...{ handleToggle, handleChange, handleRemove, handleAddItem }}
+        />
       ))}
       <MetaButtonsContainer>
         <MetaButton onClick={handleAddPage}>Add New Page</MetaButton>
-        <MetaButton reset={true} onClick={handleResetPages}>Reset Template</MetaButton>
-        {/* <MetaButton onClick={handleAddItem}>Add Item</MetaButton> */}
+        <MetaButton reset={true} onClick={handleResetPages}>
+          Reset Template
+        </MetaButton>
       </MetaButtonsContainer>
     </LayoutContainer>
   );

@@ -5,21 +5,22 @@ import styled from "styled-components";
 import colors from "../../config/colors";
 import Icon from "../Icon";
 import countyNames from "../../meta/countyNames";
+import StatsTable from "./StatsTable";
 
 const PanelItemContainer = styled.div`
   border: 1px solid rgba(0, 0, 0, 0);
   position: relative;
   padding: 0.25em;
-  overflow:hidden;
+  overflow: hidden;
   *.hover-buttons {
-      opacity: 0.1;
-      transition:250ms opacity;
+    opacity: 0.1;
+    transition: 250ms opacity;
   }
   &:hover {
     border: 1px solid black;
     *.hover-buttons {
-        opacity: 1;
-        background:white;
+      opacity: 1;
+      background: white;
     }
   }
   &.w1 {
@@ -134,12 +135,19 @@ const GrabTargetDiv = styled.button`
   background: none;
   border: none;
   cursor: grabbing;
-  span svg g path {
+  span svg g path,
+  span svg,
+  span svg g {
     fill: ${(props) => props.iconColor};
   }
   &:hover {
     opacity: 1;
   }
+`;
+
+const DeleteBlockDiv = styled(GrabTargetDiv)`
+  cursor: pointer;
+  padding: 0.4em;
 `;
 
 const GrabTarget = ({ iconColor, className }) => (
@@ -154,7 +162,18 @@ const GrabTarget = ({ iconColor, className }) => (
   </GrabTargetDiv>
 );
 
-const TextContainer = styled(PanelItemContainer)``;
+const DeleteBlock = ({ iconColor, className, onClick }) => (
+  <DeleteBlockDiv
+    left="4em"
+    top="0px"
+    className={className}
+    iconColor={iconColor}
+    title="Move this content"
+    onClick={onClick}
+  >
+    <Icon symbol="remove" />
+  </DeleteBlockDiv>
+);
 
 const TextReport = ({
   geoid = null,
@@ -205,8 +224,13 @@ const TextReport = ({
         },
       ]}
     />
-    <GrabTarget iconColor={colors.strongOrange} 
-      className="hover-buttons" />
+    <GrabTarget iconColor={colors.strongOrange} className="hover-buttons" />
+
+    <DeleteBlock
+      iconColor={colors.strongOrange}
+      className="hover-buttons"
+      onClick={() => handleRemove(pageIdx, contentIdx)}
+    />
   </PanelItemContainer>
 );
 
@@ -239,7 +263,7 @@ const LineChart = ({
         }}
       />
       <ControlPopover
-      className="hover-buttons"
+        className="hover-buttons"
         top="0"
         left="0"
         iconColor={colors.strongOrange}
@@ -276,13 +300,15 @@ const LineChart = ({
               ],
             },
             action: (e) =>
-              handleChange(pageIdx, contentIdx, { currentTable: e.target.value }),
+              handleChange(pageIdx, contentIdx, {
+                currentTable: e.target.value,
+              }),
             value: currentTable,
           },
           {
             type: "switch",
             content: "Logarithmic Scale",
-            action: () => handleToggle(pageIdx, contentIdx, 'logChart'), //handleChange(pageIdx, contentIdx, { table: e.target.value }),
+            action: () => handleToggle(pageIdx, contentIdx, "logChart"), //handleChange(pageIdx, contentIdx, { table: e.target.value }),
             value: logChart,
           },
           // {
@@ -327,19 +353,138 @@ const LineChart = ({
           },
         ]}
       />
-      <GrabTarget iconColor={colors.strongOrange} 
-      className="hover-buttons" />
+      <GrabTarget iconColor={colors.strongOrange} className="hover-buttons" />
+      <DeleteBlock
+        iconColor={colors.strongOrange}
+        className="hover-buttons"
+        onClick={() => handleRemove(pageIdx, contentIdx)}
+      />
+    </PanelItemContainer>
+  );
+};
+
+const TableReport = ({
+  geoid = null,
+  pageIdx = 0,
+  contentIdx = 0,
+  handleChange,
+  handleRemove,
+  width,
+  height,
+}) => (
+  <PanelItemContainer className={`w${width || 2} h${height || 2}`}>
+    <h4>7-Day Average Summary Statistics</h4>
+    <StatsTable geoid={geoid} />
+    <ControlPopover
+      top="0"
+      left="0"
+      className="hover-buttons"
+      iconColor={colors.strongOrange}
+      controlElements={[
+        {
+          type: "header",
+          content: "Controls for Table Report Block",
+        },
+        {
+          type: "helperText",
+          content: "Select the data to display on the chart.",
+        },
+        {
+          type: "select",
+          content: {
+            label: "Change County",
+            items: countyNames,
+          },
+          action: (e) =>
+            handleChange(pageIdx, contentIdx, { geoid: e.target.value }),
+          value: geoid,
+        },
+        {
+          ...widthOptions,
+          action: (e) =>
+            handleChange(pageIdx, contentIdx, { width: e.target.value }),
+          value: width,
+        },
+        {
+          ...heightOptions,
+          action: (e) =>
+            handleChange(pageIdx, contentIdx, { height: e.target.value }),
+          value: height,
+        },
+      ]}
+    />
+    <GrabTarget iconColor={colors.strongOrange} className="hover-buttons" />
+
+    <DeleteBlock
+      iconColor={colors.strongOrange}
+      className="hover-buttons"
+      onClick={() => handleRemove(pageIdx, contentIdx)}
+    />
+  </PanelItemContainer>
+);
+
+const TextContainer = ({
+  geoid = null,
+  pageIdx = 0,
+  contentIdx = 0,
+  handleChange,
+  handleRemove,
+  width,
+  height,
+  content,
+  name,
+}) => {
+  const InnerComponent = content;
+  return (
+    <PanelItemContainer className={`w${width || 4} h${height || 2}`}>
+      <InnerComponent name={name} />
+      <ControlPopover
+        top="0"
+        left="0"
+        className="hover-buttons"
+        iconColor={colors.strongOrange}
+        controlElements={[
+          {
+            type: "header",
+            content: "Controls for Table Report Block",
+          },
+          {
+            type: "helperText",
+            content: "Select the data to display on the chart.",
+          },
+          {
+            ...widthOptions,
+            action: (e) =>
+              handleChange(pageIdx, contentIdx, { width: e.target.value }),
+            value: width,
+          },
+          {
+            ...heightOptions,
+            action: (e) =>
+              handleChange(pageIdx, contentIdx, { height: e.target.value }),
+            value: height,
+          },
+        ]}
+      />
+      <GrabTarget iconColor={colors.strongOrange} className="hover-buttons" />
+      <DeleteBlock
+        iconColor={colors.strongOrange}
+        className="hover-buttons"
+        onClick={() => handleRemove(pageIdx, contentIdx)}
+      />
     </PanelItemContainer>
   );
 };
 
 const mapping = {
   textReport: TextReport,
+  text: TextContainer,
   lineChart: LineChart,
+  table: TableReport,
 };
 
 export default function ReportComponentMapping(props) {
-  const { type, width, height } = props;
+  const { type } = props;
   const InnerEl = mapping[type];
   if (!InnerEl) return null;
   return <InnerEl {...props} />;

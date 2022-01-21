@@ -3,6 +3,8 @@ import styled from "styled-components";
 import colors from "../../config/colors";
 import ReportComponentMapping from "./PanelComponents";
 import { MuuriComponent } from "muuri-react";
+import { Icon } from "../../components";
+import ClickAwayListener from '@mui/material/ClickAwayListener';
 
 const pagePadding = 2;
 const LayoutPageContainer = styled.div`
@@ -64,22 +66,127 @@ const AtlasWaterMark = () => (
   </WaterMarkDiv>
 );
 
-const LayoutPage = ({ content, children }) => {
+const availableModules = [
+  {
+      type: 'Summary Description',
+      modules: [
+          {
+            type: "textReport",
+            label: 'Text Report',
+            width: 2,
+            height: 'auto'
+          }
+      ]
+  },
+    {
+        type: 'Line Chart',
+        modules: [
+            {
+              type: "lineChart",
+              label: 'Cases Line Chart',
+              width: 2,
+              height: 2,
+              currentTable: 'cases'
+            },
+            {
+              type: "lineChart",
+              label: 'Deaths Line Chart',
+              width: 2,
+              height: 2,
+              currentTable: 'deaths'
+            },
+            {
+              type: "lineChart",
+              label: 'Vaccinations Line Chart',
+              width: 2,
+              height: 2,
+              currentTable: 'vaccines_fully_vaccinated'
+            },
+            {
+              type: "lineChart",
+              label: 'Testing Positivity Line Chart',
+              width: 2,
+              height: 2,
+              currentTable: 'testing_wk_pos'
+            },
+        ]
+    },
+    {
+      type: 'Table',
+      modules: [
+        {
+          type: 'table',
+          label: 'COVID Summary Table',
+          width: 2,
+          height: "auto",
+          topic: 'COVID'
+        },
+        {
+          type: 'table',
+          label: 'Social and Structural Factors Summary Table',
+          width: 2,
+          height: "auto",
+          topic: 'SDOH'
+        }
+      ]
+    }
+]
+
+const AddItemButton = styled.button`
+    position:absolute;
+    left:0;
+    top:50%;
+    transform:translate(-50%,-50%);
+    background:${colors.lightgray};
+    width:3em;
+    height:3em;
+    border:1px solid black;
+    border-radius:50%;
+    padding:.5em;
+`
+
+const AddItemContainer = styled.div`
+    position:absolute;
+    left:3em;
+    top:50%;
+    transform:translateY(-55%);
+    background:${colors.lightgray};
+    border:1px solid black;
+    height:90%;
+`
+
+const ItemTypeContainer = styled.div`
+    padding:.5em;
+    border-bottom:1px solid ${colors.darkgray};
+    ul {
+        list-style:none;
+    }
+    ul li button {
+        background:none;
+        border:none;
+        &:before {
+            content:"+";
+            margin-right:2px;
+        }
+    }
+`
+
+const LayoutPage = ({ content, children, handleAddItem, pageIdx }) => {
   const [sort] = useState({
     value: "",
   });
-  const muuriRef = useRef(null);
-  console.log(muuriRef?.current);
+  const [openAddItem, setOpenAddItem] = useState(false);
+  const toggleOpenAddItem = () => setOpenAddItem(prev => !prev);
+
   return (
     <LayoutPageContainer>
       <MuuriComponent
         key={JSON.stringify(content)}
         dragEnabled
         dragStartPredicate={{ handle: ".content-header" }}
-        onDragStart={(e) => console.log(e)}
-        onDragEnd={(e) => console.log(e)}
-        onSort={(a, b) => console.log(a, b)}
-        ref={muuriRef}
+        // onDragStart={(e) => console.log(e)}
+        // onDragEnd={(e) => console.log(e)}
+        // onSort={(a, b) => console.log(a, b)}
         instantLayout
         propsToData={({ id }) => ({ id })}
         sort={sort.value}
@@ -89,6 +196,22 @@ const LayoutPage = ({ content, children }) => {
       </MuuriComponent>
       <DateWaterMark />
       <AtlasWaterMark />
+      
+      <AddItemButton onClick={toggleOpenAddItem}>
+          <Icon symbol="plus" />
+        </AddItemButton>
+        {openAddItem && <ClickAwayListener onClickAway={toggleOpenAddItem}>
+            <AddItemContainer>
+                {availableModules.map(({ type, modules }) => <ItemTypeContainer key={type}>
+                    <h3>{type}</h3>
+                    <ul>
+                        {modules.map((props, idx) => <li key={type + idx}>
+                            <button onClick={() => handleAddItem(pageIdx, props)}>{props.label}</button>
+                        </li>)}
+                    </ul>
+                </ItemTypeContainer>)}
+            </AddItemContainer>
+            </ClickAwayListener>}
     </LayoutPageContainer>
   );
 };
@@ -100,12 +223,14 @@ export default function ReportPage({
   handleRemove,
   handleChange,
   handleToggle,
+  handleAddItem,
+  name
 }) {
   return (
-    <LayoutPage content={content}>
+    <LayoutPage content={content} {...{ handleToggle, handleChange, handleAddItem, handleRemove, pageIdx, geoid, name }}>
       {content.map((item, index) => (
         <ReportComponentMapping
-          {...{ handleToggle, handleChange, handleRemove, pageIdx, geoid }}
+          {...{ handleToggle, handleChange, handleAddItem, handleRemove, pageIdx, geoid, name }}
           key={"page-component-" + index}
           contentIdx={index}
           {...item}
