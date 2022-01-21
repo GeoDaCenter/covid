@@ -35,21 +35,17 @@ const Time = React.lazy(() => import("./components/Pages/Time"));
 const Trends = React.lazy(() => import("./components/Pages/Trends"));
 
 const theme = createTheme({
-  overrides: {
-    MuiTooltip: {
-      borderRadius: 0,
-      tooltip: {
-        borderRadius: 0,
-      },
-    },
-    MuiPopper: {
-      borderRadius: 0,
-      tooltip: {
-        borderRadius: 0,
-      },
-    }
+  typography: {
+    fontFamily: "'Lato', sans-serif",
   },
   palette: {
+    type: 'dark',
+    background: {
+      default: '#000000',
+    },
+    text: {
+      primary: '#fff6f6',
+    },
     primary: {
       // light: will be calculated from palette.primary.main,
       main: colors.yellow,
@@ -70,6 +66,23 @@ const theme = createTheme({
     // E.g., shift from Red 500 to Red 300 or Red 700.
     tonalOffset: 0.2,
   },
+  overrides: {
+    MuiTooltip: {
+      borderRadius: 0,
+      tooltip: {
+        borderRadius: 0,
+      },
+    },
+    MuiPopper: {
+      borderRadius: 0,
+      tooltip: {
+        borderRadius: 0,
+      },
+    },
+    MuiPaper: {
+      backgroundColor:'red',
+    }
+  }
 });
 
 export default function App() {

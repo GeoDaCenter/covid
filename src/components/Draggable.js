@@ -8,6 +8,7 @@ import styled from 'styled-components';
 // Import config and actions
 import colors from '../config/colors';
 import { setPanelState } from '../actions';
+import {Icon} from '../components';
 
 // Styles - Container
 const DragContainer = styled.div`
@@ -142,11 +143,7 @@ const Draggable = ({
         onTouchStart={handleTouch}
         style={{ zIndex: 10 }}
       >
-        <svg viewBox="0 0 64 64" x="0px" y="0px">
-          <g>
-            <path d="M53.39,32.57a1.52,1.52,0,0,0-.33-1.63l-5.84-5.85a1.51,1.51,0,0,0-2.13,2.13l3.29,3.28H33.5V15.62l3.28,3.29a1.51,1.51,0,0,0,2.13-2.13l-5.85-5.84a1.5,1.5,0,0,0-2.12,0l-5.85,5.84a1.51,1.51,0,0,0,2.13,2.13l3.28-3.29V30.5H15.62l3.29-3.28a1.51,1.51,0,0,0-2.13-2.13l-5.84,5.85a1.5,1.5,0,0,0,0,2.12l5.84,5.85a1.51,1.51,0,0,0,2.13-2.13L15.62,33.5H30.5V48.38l-3.28-3.29a1.51,1.51,0,0,0-2.13,2.13l5.85,5.84a1.5,1.5,0,0,0,2.12,0l5.85-5.84a1.51,1.51,0,0,0-2.13-2.13L33.5,48.38V33.5H48.38l-3.29,3.28a1.51,1.51,0,0,0,2.13,2.13l5.84-5.85A1.51,1.51,0,0,0,53.39,32.57Z"></path>
-          </g>
-        </svg>
+        <Icon symbol="drag" />
       </DragButton>
       {allowCollapse && <CollapseButton onClick={handleCollapse}>×</CollapseButton>}
     </DragContainer>

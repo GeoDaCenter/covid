@@ -164,7 +164,7 @@ export default function IconDock(){
       id: 'report-button',
       ariaLabel: 'Report Builder',
       activeState: panelState.builder,
-      onClick: () => dispatch({ type: 'TOGGLE_PANEL', payload: 'builder' }),
+      onClick: () => dispatch({ type: 'TOGGLE_PANEL', payload: 'reportBuilder' }),
     },
     // {
     //   symbol: 'sliders',

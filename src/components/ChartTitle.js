@@ -6,12 +6,13 @@ export const ChartTitle = styled.h3`
   padding: 0;
   font-weight: normal;
   margin: 0;
-  color: white;
+  color: ${props => props.color || 'white'};
   width: 100%;
   span {
     max-width: 20ch;
     display: block;
     margin: .5em auto;
     font-weight: bold;
+  color: ${props => props.color || 'white'};
   }
 `;

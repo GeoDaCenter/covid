@@ -198,9 +198,38 @@ const LabelText = {
     title: "Testing Positivity",
   },
 };
-function LineChartInner({ resetDock = () => {}, docked = false }) {
+
+const colorSchemes = {
+  "light": {
+    highlightColor: colors.strongOrange,
+    mediumColor: colors.darkgray,
+    gridColor: colors.black
+  },
+  "dark": {
+    highlightColor: colors.yellow,
+    mediumColor: colors.lightgray,
+    gridColor: `${colors.white}88`
+
+  }
+}
+
+export function LineChartInner({
+  resetDock = () => {},
+  docked = false,
+  currentTable = "cases",
+  logChart = false,
+  showSummarized = false,
+  populationNormalized = false,
+  shouldShowVariants = false,
+  colorScheme = "dark"
+}) {
+  const {
+    highlightColor,
+    mediumColor,
+    gridColor
+  } = colorSchemes[colorScheme];
+  
   const dispatch = useDispatch();
-  const [currentTable, setCurrentTable] = useState("cases");
   const {
     currentData,
     currIndex,
@@ -213,108 +242,39 @@ function LineChartInner({ resetDock = () => {}, docked = false }) {
   } = useGetLineChartData({
     table: currentTable,
   });
-  const { x1label, x2label, title } = LabelText[currentTable];
-  const [logChart, setLogChart] = useState(false);
-  const [showSummarized, setShowSummarized] = useState(true);
+
   const [activeLine, setActiveLine] = useState(false);
-  const [populationNormalized, setPopulationNormalized] = useState(false);
-  const [shouldShowVariants, setShouldShowVariants] = useState(false);
-  const handleSwitch = () => setLogChart((prev) => !prev);
-  const handlePopSwitch = () => setPopulationNormalized((prev) => !prev);
-  const handleSummarizedSwitch = () => setShowSummarized((prev) => !prev);
   const handleChange = (e) =>
     e?.activeTooltipIndex &&
     dispatch(setVariableParams({ nIndex: e.activeTooltipIndex }));
   const handleLegendHover = (o) => setActiveLine(+o.dataKey.split("Weekly")[0]);
   const handleLegendLeave = () => setActiveLine(false);
-  const handleShouldShowVariants = () => setShouldShowVariants((prev) => !prev);
-  
+  const { x1label, x2label, title } = LabelText[currentTable];
+
   if (maximums && chartData) {
     return (
       <ChartContainer id="lineChart">
-        <ControlPopover
-          controlElements={[
-            {
-              type: "header",
-              content: "Line Chart Controls",
-            },
-            {
-              type: "helperText",
-              content: "Select the data to display on the chart.",
-            },
-            {
-              type: "select",
-              content: {
-                label: "Line Chart Variable",
-                items: [
-                  {
-                    text: "Cases",
-                    value: "cases",
-                  },
-                  {
-                    text: "Deaths",
-                    value: "deaths",
-                  },
-                  {
-                    text: "Fully Vaccinated Persons",
-                    value: "vaccines_fully_vaccinated",
-                  },
-                  {
-                    text: "Weekly Positivity",
-                    value: "testing_wk_pos",
-                  },
-                ],
-              },
-              action: (e) => setCurrentTable(e.target.value),
-              value: currentTable,
-            },
-            {
-              type: "switch",
-              content: "Logarithmic Scale",
-              action: handleSwitch,
-              value: logChart,
-            },
-            {
-              type: "switch",
-              content: "Population Normalization",
-              action: handlePopSwitch,
-              value: populationNormalized,
-            },
-            {
-              type: "switch",
-              content: "Show Summary Line",
-              action: handleSummarizedSwitch,
-              value: showSummarized,
-            },
-            {
-              type: "switch",
-              content: "Variant Designations",
-              action: handleShouldShowVariants,
-              value: shouldShowVariants,
-            },
-          ]}
-        />
         {!docked && (
           <DockPopButton onClick={resetDock} title="Dock Line Chart Panel">
             <Icon symbol="popOut" />
           </DockPopButton>
         )}
         {selectionNames.length < 2 ? (
-          <ChartTitle>
+          <ChartTitle color={gridColor}>
             <span>
               {title}
               {selectionNames.length ? `: ${selectionNames[0]}` : ""}
             </span>
           </ChartTitle>
         ) : (
-          <ChartTitle>
+          <ChartTitle color={gridColor}>
             <span>7-Day Average New Cases</span>
           </ChartTitle>
         )}
-        <ChartLabel color={colors.white} left={-45}>
+        <ChartLabel color={mediumColor} left={-45}>
           {x1label}
         </ChartLabel>
-        <ChartLabel color={colors.yellow} right={-75}>
+        <ChartLabel color={highlightColor} right={-75}>
           {x2label}
         </ChartLabel>
         <ResponsiveContainer width="100%" height="100%">
@@ -334,7 +294,7 @@ function LineChartInner({ resetDock = () => {}, docked = false }) {
               tick={
                 <CustomTick
                   style={{
-                    fill: `${colors.white}88`,
+                    fill: gridColor,
                     fontSize: "10px",
                     fontFamily: "Lato",
                     fontWeight: 600,
@@ -358,7 +318,7 @@ function LineChartInner({ resetDock = () => {}, docked = false }) {
               tick={
                 <CustomTick
                   style={{
-                    fill: colors.lightgray,
+                    fill: mediumColor,
                     fontSize: "10px",
                     fontFamily: "Lato",
                     fontWeight: 600,
@@ -381,7 +341,7 @@ function LineChartInner({ resetDock = () => {}, docked = false }) {
               tick={
                 <CustomTick
                   style={{
-                    fill: colors.yellow,
+                    fill: highlightColor,
                     fontSize: "10px",
                     fontFamily: "Lato",
                     fontWeight: 600,
@@ -405,7 +365,7 @@ function LineChartInner({ resetDock = () => {}, docked = false }) {
                 yAxisId="left"
                 dataKey={`sum${populationNormalized ? "100k" : ""}`}
                 name={x1label}
-                stroke={colors.lightgray}
+                stroke={mediumColor}
                 dot={false}
                 isAnimationActive={false}
               />
@@ -416,7 +376,7 @@ function LineChartInner({ resetDock = () => {}, docked = false }) {
                   yAxisId="left"
                   dataKey={`${geoid}Sum${populationNormalized ? "100k" : ""}`}
                   name={selectionNames[idx] + " Cumulative"}
-                  stroke={colors.lightgray}
+                  stroke={mediumColor}
                   dot={false}
                   isAnimationActive={false}
                 />
@@ -428,7 +388,7 @@ function LineChartInner({ resetDock = () => {}, docked = false }) {
                 yAxisId="right"
                 dataKey={`weekly${populationNormalized ? "100k" : ""}`}
                 name={x2label}
-                stroke={colors.yellow}
+                stroke={highlightColor}
                 dot={false}
                 isAnimationActive={false}
               />
@@ -444,7 +404,7 @@ function LineChartInner({ resetDock = () => {}, docked = false }) {
                   name={selectionNames[idx] + " 7-Day Ave"}
                   stroke={
                     selectionKeys.length === 1
-                      ? colors.yellow
+                      ? highlightColor
                       : selectionKeys.length > colors.qualtitiveScale.length
                       ? "white"
                       : colors.qualtitiveScale[idx]
@@ -463,7 +423,7 @@ function LineChartInner({ resetDock = () => {}, docked = false }) {
                 yAxisId="right"
                 dataKey="keySum"
                 name="Total For Selection"
-                stroke={colors.lightgray}
+                stroke={mediumColor}
                 strokeWidth={3}
                 dot={false}
                 isAnimationActive={false}
@@ -540,6 +500,17 @@ function LineChartInner({ resetDock = () => {}, docked = false }) {
 
 export default function LineChartOuter({ defaultDimensions }) {
   const [isPoppedOut, setIsPoppedOut] = useState(false);
+  const [currentTable, setCurrentTable] = useState("cases");
+  const [logChart, setLogChart] = useState(false);
+  const [showSummarized, setShowSummarized] = useState(true);
+  const [populationNormalized, setPopulationNormalized] = useState(false);
+  const [shouldShowVariants, setShouldShowVariants] = useState(false);
+
+  const handleSwitch = () => setLogChart((prev) => !prev);
+  const handlePopSwitch = () => setPopulationNormalized((prev) => !prev);
+  const handleSummarizedSwitch = () => setShowSummarized((prev) => !prev);
+  const handleShouldShowVariants = () => setShouldShowVariants((prev) => !prev);
+
   return isPoppedOut ? (
     <Draggable
       z={9}
@@ -549,7 +520,84 @@ export default function LineChartOuter({ defaultDimensions }) {
       allowCollapse={false}
       content={
         <Scaleable
-          content={<LineChartInner resetDock={() => setIsPoppedOut(false)} />}
+          content={
+            <ChartContainer>
+              <ControlPopover
+                bottom
+                left
+                controlElements={[
+                  {
+                    type: "header",
+                    content: "Line Chart Controls",
+                  },
+                  {
+                    type: "helperText",
+                    content: "Select the data to display on the chart.",
+                  },
+                  {
+                    type: "select",
+                    content: {
+                      label: "Line Chart Variable",
+                      items: [
+                        {
+                          text: "Cases",
+                          value: "cases",
+                        },
+                        {
+                          text: "Deaths",
+                          value: "deaths",
+                        },
+                        {
+                          text: "Fully Vaccinated Persons",
+                          value: "vaccines_fully_vaccinated",
+                        },
+                        {
+                          text: "Weekly Positivity",
+                          value: "testing_wk_pos",
+                        },
+                      ],
+                    },
+                    action: (e) => setCurrentTable(e.target.value),
+                    value: currentTable,
+                  },
+                  {
+                    type: "switch",
+                    content: "Logarithmic Scale",
+                    action: handleSwitch,
+                    value: logChart,
+                  },
+                  {
+                    type: "switch",
+                    content: "Population Normalization",
+                    action: handlePopSwitch,
+                    value: populationNormalized,
+                  },
+                  {
+                    type: "switch",
+                    content: "Show Summary Line",
+                    action: handleSummarizedSwitch,
+                    value: showSummarized,
+                  },
+                  {
+                    type: "switch",
+                    content: "Variant Designations",
+                    action: handleShouldShowVariants,
+                    value: shouldShowVariants,
+                  },
+                ]}
+              />
+              <LineChartInner
+                resetDock={() => setIsPoppedOut(false)}
+                {...{
+                  currentTable,
+                  logChart,
+                  showSummarized,
+                  populationNormalized,
+                  shouldShowVariants,
+                }}
+              />
+            </ChartContainer>
+          }
           title="lineChart"
           defaultWidth={defaultDimensions.defaultWidthLong}
           defaultHeight={defaultDimensions.defaultHeight}
@@ -573,7 +621,81 @@ export default function LineChartOuter({ defaultDimensions }) {
       >
         <Icon symbol="popOut" />
       </DockPopButton>
-      <LineChartInner docked={true} />
+
+      <ControlPopover
+        bottom
+        left
+        controlElements={[
+          {
+            type: "header",
+            content: "Line Chart Controls",
+          },
+          {
+            type: "helperText",
+            content: "Select the data to display on the chart.",
+          },
+          {
+            type: "select",
+            content: {
+              label: "Line Chart Variable",
+              items: [
+                {
+                  text: "Cases",
+                  value: "cases",
+                },
+                {
+                  text: "Deaths",
+                  value: "deaths",
+                },
+                {
+                  text: "Fully Vaccinated Persons",
+                  value: "vaccines_fully_vaccinated",
+                },
+                {
+                  text: "Weekly Positivity",
+                  value: "testing_wk_pos",
+                },
+              ],
+            },
+            action: (e) => setCurrentTable(e.target.value),
+            value: currentTable,
+          },
+          {
+            type: "switch",
+            content: "Logarithmic Scale",
+            action: handleSwitch,
+            value: logChart,
+          },
+          {
+            type: "switch",
+            content: "Population Normalization",
+            action: handlePopSwitch,
+            value: populationNormalized,
+          },
+          {
+            type: "switch",
+            content: "Show Summary Line",
+            action: handleSummarizedSwitch,
+            value: showSummarized,
+          },
+          {
+            type: "switch",
+            content: "Variant Designations",
+            action: handleShouldShowVariants,
+            value: shouldShowVariants,
+          },
+        ]}
+      />
+      <LineChartInner
+        docked={true}
+        {...{
+          currentTable,
+          logChart,
+          showSummarized,
+          populationNormalized,
+          shouldShowVariants,
+        }}
+      />
     </PopOutContainer>
   );
 }

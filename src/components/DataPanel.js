@@ -228,20 +228,25 @@ const ExpandSelect = styled(FormControl)`
 `;
 
 // DataPanel Function Component
-export default function DataPanel() {
-  const selectionKeys = useSelector((state) => state.selectionKeys);
+export default function DataPanel({
+  manualSelectionKeys=false,
+  manualOpen=false
+}) {
   const panelState = useSelector((state) => state.panelState);
+  const panelOpen = manualOpen || panelState.info;
+  const reduxSelectionKeys = useSelector((state) => state.selectionKeys);
+  const selectionKeys = manualSelectionKeys||reduxSelectionKeys;
   const [expanded, setExpanded] = useState(true);
   const sidebarData = useGetSidebarData({
     selectionKeys,
-    panelOpen: panelState.info,
+    panelOpen
   });
   const dates = useSelector((state) => state.dates);
   // Set expanded or contracted view
   const handleExpandContract = (event) => setExpanded(event.target.value);
   return (
     <DataPanelContainer
-      className={panelState.info ? "open" : ""}
+      className={panelOpen ? "open" : ""}
       id="data-panel"
       expanded={expanded}
       otherPanels={panelState.variables}

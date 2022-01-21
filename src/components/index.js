@@ -21,8 +21,8 @@ import IconDock from './IconDock';
 import InfoBox from './InfoBox';
 import Legend from './Legend';
 import FastTrackInsights from './FastTrackInsights';
+import LineChart, {LineChartInner} from './LineChart';
 import MapButtons from './MapButtons';
-import LineChart from './LineChart';
 import MapSection from './MapSection';
 import MapTooltipContent from './MapTooltipContent';
 import MemberGrid from './MemberGrid';
@@ -32,7 +32,7 @@ import VariablePanel from './VariablePanel';
 import Popover from './TooltipPopper';
 import Preloader from './Preloader';
 import PrintLayout from './PrintLayout';
-import ReportBuilder from './ReportBuilder';
+import ReportBuilder from './ReportBuilder/ReportBuilder';
 import Scaleable from './Scaleable';
 import Scatterchart from './Scatterchart';
 import StaticNavbar from './StaticNavbar';
@@ -89,8 +89,9 @@ export {
   IconDock,
   InfoBox,
   Legend,
-  MapButtons,
+  LineChartInner,
   LineChart,
+  MapButtons,
   MapSection,
   MapTooltipContent,
   MemberGrid,

@@ -11,8 +11,10 @@ import { StyledDropDown } from "../components";
 
 const PopoverContainer = styled.div`
   position: absolute;
-  left: 0;
-  bottom: 2em;
+  left: ${(props) => props.left !== undefined ? typeof props.left === 'string' ? props.left : 0 : 'initial'};
+  bottom: ${(props) => props.bottom !== undefined ? typeof props.bottom === 'string' ? props.bottom : 0 : 'initial'};
+  right: ${(props) => props.right !== undefined ? typeof props.right === 'string' ? props.right : 0 : 'initial'};
+  top: ${(props) => props.top !== undefined ? typeof props.top === 'string' ? props.top : 0 : 'initial'};
   width: 2rem;
   height: 2rem;
   z-index:500;
@@ -27,10 +29,10 @@ const PopoverContainer = styled.div`
     svg {
       width: 60%;
       height: 60%;
-      stroke: ${colors.yellow};
+      stroke: ${props => props.color};
       fill: none;
       path {
-        fill: ${colors.yellow};
+        fill: ${props => props.color};
       }
     }
     &:hover {
@@ -68,7 +70,7 @@ const SelectControl = ({ content, value, action }, rest) => (
     >
       {content.items.map((item, index) => (
         <MenuItem key={index} value={item.value}>
-          {item.text}
+          {item.text||item.label}
         </MenuItem>
       ))}
     </Select>
@@ -119,7 +121,7 @@ const ControlElementMapping = {
   // size: Size,
 };
 
-export default function ControlsPopover({ controlElements = [] }) {
+export default function ControlsPopover({ controlElements = [], top, bottom, left, right, iconColor, className }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
@@ -133,7 +135,7 @@ export default function ControlsPopover({ controlElements = [] }) {
   const id = !!anchorEl ? "simple-popover" : undefined;
 
   return (
-    <PopoverContainer>
+    <PopoverContainer className={className} top={top} bottom={bottom} left={left} right={right} color={iconColor||colors.yellow}>
       <button aria-describedby={id} variant="contained" onClick={handleClick} title="Open Settings">
         <Icon symbol="settings" />
       </button>
