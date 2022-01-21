@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import styled from "styled-components";
 import colors from "../../config/colors";
 import ReportPage from "./ReportPage";
@@ -116,6 +116,7 @@ export default function Report({ county = {}, selectedTemplate = "" }) {
   const [pages, setPages] = useState(templates[selectedTemplate] || [[]]);
   const handleAddPage = () => setPages((pages) => [...pages, []]);
   const handleResetPages = () => setPages(templates[selectedTemplate] || [[]]);
+  const gridContext = useRef({});
   const handleAddItem = (pageIdx, item) =>
     setPages((pages) => {
       let prevPages = [...pages];
@@ -149,6 +150,26 @@ export default function Report({ county = {}, selectedTemplate = "" }) {
       prevPages[pageIdx][itemIdx][prop] = !prevPages[pageIdx][itemIdx][prop];
       return prevPages;
     });
+
+  const handleGridContext = (grid, pageIdx) => {
+    gridContext.current = {
+      ...gridContext.current,
+      [pageIdx]: grid,
+    }
+  }
+
+  const handleGridUpdate = (pageIdx) => {
+    const currItems = gridContext?.current[pageIdx]?._items;
+    const currItemsOrder = currItems.map(item => item._id);
+    const itemsMin = Math.min(...currItemsOrder);
+    
+    setPages((pages) => {
+      let tempPages = [...pages];
+      tempPages[pageIdx] = currItemsOrder.map(idx => tempPages[pageIdx][idx - itemsMin]);
+      return tempPages;
+    })
+  }
+
   return (
     <LayoutContainer>
       {pages.map((page, idx) => (
@@ -157,7 +178,7 @@ export default function Report({ county = {}, selectedTemplate = "" }) {
           pageIdx={idx}
           geoid={county.value}
           name={county.label}
-          {...{ handleToggle, handleChange, handleRemove, handleAddItem }}
+          {...{ handleToggle, handleChange, handleRemove, handleAddItem, handleGridContext, handleGridUpdate }}
         />
       ))}
       <MetaButtonsContainer>

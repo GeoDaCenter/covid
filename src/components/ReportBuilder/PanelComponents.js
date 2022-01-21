@@ -1,12 +1,17 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { TextStatistics } from "../../components";
-import { ControlPopover, LineChartInner, ScatterChartInner } from "../../components";
+import {
+  ControlPopover,
+  LineChartInner,
+  ScatterChartInner,
+} from "../../components";
 import styled from "styled-components";
 import colors from "../../config/colors";
 import Icon from "../Icon";
 import countyNames from "../../meta/countyNames";
 import StatsTable from "./StatsTable";
 import useGetScatterData from "../../hooks/useGetScatterData";
+import { useGridContext } from "muuri-react";
 
 const PanelItemContainer = styled.div`
   border: 1px solid rgba(0, 0, 0, 0);
@@ -437,13 +442,17 @@ const TableReport = ({
   contentIdx = 0,
   handleChange,
   handleRemove,
-  width=2,
-  height=3,
-  topic="COVID"
+  width = 2,
+  height = 3,
+  topic = "COVID",
 }) => (
   <PanelItemContainer className={`w${width || 2} h${height || 3}`}>
-    <h4>{topic === "COVID" ? "7-Day Average Summary Statistics" : "Health Factors (SDOH)" }</h4>
-    <StatsTable {...{topic, geoid}} />
+    <h4>
+      {topic === "COVID"
+        ? "7-Day Average Summary Statistics"
+        : "Health Factors (SDOH)"}
+    </h4>
+    <StatsTable {...{ topic, geoid }} />
     <ControlPopover
       top="0"
       left="0"
@@ -550,12 +559,13 @@ const mapping = {
   text: TextContainer,
   lineChart: LineChart,
   table: TableReport,
-  scatterChart: ScatterChart
+  scatterChart: ScatterChart,
 };
 
 export default function ReportComponentMapping(props) {
-  console.log(props)
-  const { type } = props;
+  const { type, handleGridContext, pageIdx } = props;
+  const gridContext = useGridContext();
+  useEffect(() => handleGridContext(gridContext?.grid, pageIdx), []);
   const InnerEl = mapping[type];
   if (!InnerEl) return null;
   return <InnerEl {...props} />;

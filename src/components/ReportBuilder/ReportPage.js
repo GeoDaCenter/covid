@@ -185,7 +185,7 @@ const ItemTypeContainer = styled.div`
   }
 `;
 
-const LayoutPage = ({ content, children, handleAddItem, pageIdx }) => {
+const LayoutPage = ({ content, children, handleAddItem, handleGridUpdate, pageIdx }) => {
   const [sort] = useState({
     value: "",
   });
@@ -199,7 +199,7 @@ const LayoutPage = ({ content, children, handleAddItem, pageIdx }) => {
         dragEnabled
         dragStartPredicate={{ handle: ".content-header" }}
         // onDragStart={(e) => console.log(e)}
-        // onDragEnd={(e) => console.log(e)}
+        onDragEnd={() => handleGridUpdate(pageIdx)}
         // onSort={(a, b) => console.log(a, b)}
         instantLayout
         propsToData={({ id }) => ({ id })}
@@ -246,6 +246,8 @@ export default function ReportPage({
   handleChange,
   handleToggle,
   handleAddItem,
+  handleGridContext,
+  handleGridUpdate,
   name,
 }) {
   return (
@@ -256,6 +258,7 @@ export default function ReportPage({
         handleChange,
         handleAddItem,
         handleRemove,
+        handleGridUpdate,
         pageIdx,
         geoid,
         name,
@@ -268,6 +271,7 @@ export default function ReportPage({
             handleChange,
             handleAddItem,
             handleRemove,
+            handleGridContext,
             pageIdx,
             geoid,
             name,
