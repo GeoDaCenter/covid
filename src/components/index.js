@@ -1,50 +1,50 @@
 
-import {BinsContainer} from './BinsContainer';
-import BottomPanel from './BottomPanel';
-import ChartLabel from './ChartLabel';
-import { ChartTitle } from './ChartTitle';
-import ContextMenu from './ContextMenu';
-import ControlPopover from './ControlPopover';
+import {BinsContainer} from './Map/BinsContainer';
+import BinsList from './Map/BinsList';
+import ChartLabel from './Charts/ChartLabel';
+import { ChartTitle } from './Charts/ChartTitle';
+import ContextMenu from './Interface/ContextMenu';
+import ControlPopover from './Interface/ControlPopover';
 import CsvDownloader from './CsvDownloader';
 import DataDetails from './DataDetails';
-import DataLoader from './DataLoader';
-import DataPanel from './DataPanel';
-import DateSlider from './Slider';
-import Dock from './Dock';
-import Draggable from './Draggable';
-import Footer from './Footer';
-import { Gutter } from './Gutter';
+import DataLoader from './Panels/DataLoader';
+import DataPanel from './Panels/DataPanel';
+import DateSlider from './Interface/Slider';
+import Draggable from './Interface/Draggable';
+import Footer from './Layout/Footer';
+import { Gutter } from './Layout/Gutter';
 import HeroMap from './HeroMap';
-import { HoverDiv } from './HoverDiv';
-import Icon from './Icon';
-import IconDock from './IconDock';
+import { HoverDiv } from './Layout/HoverDiv';
+import Icon from './Interface/Icon';
+import IconDock from './Panels/IconDock';
 import InfoBox from './InfoBox';
-import Legend from './Legend';
+import Legend from './Map/Legend';
 import FastTrackInsights from './FastTrackInsights';
-import LineChart, {LineChartInner} from './LineChart';
-import MapButtons from './MapButtons';
-import MapSection from './MapSection';
-import MapTooltipContent from './MapTooltipContent';
-import MemberGrid from './MemberGrid';
-import NavBar from './Navbar';
-import NotificationBox from './NotificationBox';
-import VariablePanel from './VariablePanel';
-import Popover from './TooltipPopper';
-import Preloader from './Preloader';
-import PrintLayout from './PrintLayout';
-import ReportBuilder from './ReportBuilder/ReportBuilder';
-import Scaleable from './Scaleable';
-import Scatterchart, {ScatterChartInner} from './Scatterchart';
-import StaticNavbar from './StaticNavbar';
-import Ticks from './Ticks';
-import Tooltip from './Tooltip';
-import TopPanel from './TopPanel';
-import Geocoder from './Geocoder';
-import ShareButton from './ShareButton';
+import LineChart, {LineChartInner} from './Charts/LineChart';
+import MapAttribution from './Map/MapAttribution';
+import MapButtons from './Map/MapButtons';
+import MapSection from './Map/MapSection';
+import MapTooltipContent from './Map/MapTooltipContent';
+import MemberGrid from './Layout/MemberGrid';
+import NavBar from './Layout/Navbar';
+import NotificationBox from './Layout/NotificationBox';
+import VariablePanel from './Panels/VariablePanel';
+import Popover from './Interface/TooltipPopper';
+import Preloader from './Interface/Preloader';
+import PrintLayout from './Layout/PrintLayout';
+import ReportBuilder from './Panels/ReportBuilder/ReportBuilder';
+import Scaleable from './Interface/Scaleable';
+import Scatterchart, {ScatterChartInner} from './Charts/Scatterchart';
+import StaticNavbar from './Layout/StaticNavbar';
+import Ticks from './Interface/Ticks';
+import Tooltip from './Interface/Tooltip';
+import TopPanel from './Panels/TopPanel';
+import Geocoder from './Map/Geocoder';
+import ShareButton from './Map/ShareButton';
 import { SummaryStatistics } from './SummaryStatistics';
 import { TextStatistics } from './TextStatistics';
-import { StyledDropDown, StyledDropDownNoLabel } from './StyledDropDown';
-import { SwitchContainer } from './SwitchContainer';
+import { StyledDropDown, StyledDropDownNoLabel } from './Interface/StyledDropDown';
+import { SwitchContainer } from './Interface/SwitchContainer';
 
 // pages
 import About from './Pages/About';
@@ -67,7 +67,7 @@ import Trends from './Pages/Trends';
 
 export {
   BinsContainer,
-  BottomPanel,
+  BinsList,
   ChartLabel,
   ChartTitle,
   ContextMenu,
@@ -77,7 +77,6 @@ export {
   DataLoader,
   DataPanel,
   DateSlider,
-  Dock,
   Draggable,
   Geocoder,
   Gutter,
@@ -91,6 +90,7 @@ export {
   Legend,
   LineChartInner,
   LineChart,
+  MapAttribution,
   MapButtons,
   MapSection,
   MapTooltipContent,
