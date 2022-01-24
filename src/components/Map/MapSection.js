@@ -30,7 +30,7 @@ import {
   mapDidPan,
 } from "../../actions";
 import {
-  findIn,
+  // findIn,
   getCSV,
   getCartogramCenter,
   parseMapboxLayers,
@@ -40,7 +40,7 @@ import { MAPBOX_ACCESS_TOKEN } from "../../config";
 import colors from "../../config/colors";
 import MAP_STYLE from "../../config/style.json";
 import { useViewport, useSetViewport } from "../../contexts/Viewport";
-import useFindViewport from "../../hooks/useFindViewport";
+// import useFindViewport from "../../hooks/useFindViewport";
 // PBF schemas
 import * as Schemas from "../../schemas";
 
@@ -129,7 +129,7 @@ function MapSection({
   // const currentMapID = useSelector(state => state.mapData.params);
   // const currentHeightScale = useSelector(state => state.mapData.heightScale);
   const dotDensityData = useSelector(({data}) => data.dotDensityData);
-  const storedGeojson = useSelector(({data}) => data.storedGeojson);
+  // const storedGeojson = useSelector(({data}) => data.storedGeojson);
   const storedCartogramData = useSelector(({data}) => data.storedCartogramData);
   // const currentMapGeography = storedGeojson[currentData]?.data||[]
   const colorFilter = useSelector(({ui}) => ui.colorFilter);

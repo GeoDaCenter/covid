@@ -1,4 +1,3 @@
-import { useState } from "react";
 import useGetQuantileStatistics from "../hooks/useGetQuantileStatistics";
 
 export const TextStatistics = ({ geoid = null }) => {

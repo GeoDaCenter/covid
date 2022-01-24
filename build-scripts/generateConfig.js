@@ -13,7 +13,8 @@ const generateVariables = async () => {
     
     fs.writeFileSync('./src/config/variables.js', `
     // this is a generated file, do not edit directly. See Google sheets to update variable config
-    export default ${JSON.stringify(data)}
+    const variables = ${JSON.stringify(data)}; 
+    export default variables;
     `)
     return data
 }
@@ -26,7 +27,8 @@ const generateTables = async () => {
     }).data
     fs.writeFileSync('./src/config/tables.js', `
     // this is a generated file, do not edit directly. See Google sheets to update variable config
-    export default ${JSON.stringify(data)}
+    const tables = ${JSON.stringify(data)}; 
+    export default tables;
     `)
     return data
 }
@@ -45,7 +47,8 @@ const generateDatasets = async () => {
 
     fs.writeFileSync('./src/config/datasets.js', `
     // this is a generated file, do not edit directly. See Google sheets to update variable config
-    export default ${JSON.stringify(parsedData)}
+    const datasets = ${JSON.stringify(parsedData)};
+    export default datasets;
     `)
     return parsedData
 }

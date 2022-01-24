@@ -1,7 +1,7 @@
 import * as Pbf from "pbf";
 import * as Schemas from "../schemas";
 
-import { getParseCsvPromise, getDateLists, parsePbfData } from "../utils";
+import { getParseCsvPromise, parsePbfData } from "../utils";
 
 export const fetchFile = (fileInfo, dateLists) => {
   const { name, filetype, timespan, date } = fileInfo;

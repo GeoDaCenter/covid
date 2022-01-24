@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React from "react";
+import { useDispatch } from "react-redux";
 import Grid from "@mui/material/Grid";
 import Slider from "@mui/material/Slider";
 import Button from "@mui/material/Button";
@@ -7,15 +7,15 @@ import styled from "styled-components";
 import { setVariableParams } from "../../actions";
 import useTickUpdate from "../../hooks/useTickUpdate";
 import colors from "../../config/colors";
-import {debounce, findClosestValue} from "../../utils";
+import { debounce, findClosestValue } from "../../utils";
 import useCurrentDateIndices from "../../hooks/useCurrentDateIndices";
-import Ticks from './Ticks'
-import DatePicker from 'react-date-picker';
+import Ticks from "./Ticks";
+import DatePicker from "react-date-picker";
 
 const SliderContainer = styled(Grid)`
   color: white;
   box-sizing: border-box;
-  padding: 0 .5em .5em .5em;
+  padding: 0 0.5em 0.5em 0.5em;
   width: 100%;
   user-select: none;
 `;
@@ -24,7 +24,7 @@ const DateContainer = styled(Grid)`
   align-items: center;
   justify-content: center;
   p {
-    font-size:0.75rem;
+    font-size: 0.75rem;
     text-align: center;
   }
 `;
@@ -33,26 +33,23 @@ const PlayPauseButton = styled(Button)`
   background: none;
   padding: 0;
   margin: 0;
-  width:100%;
+  width: 100%;
   &.MuiButton-root {
-    min-width:auto;
-    max-width:40px;
+    min-width: auto;
+    max-width: 40px;
   }
   svg {
-    fill:white;
+    fill: white;
   }
-
 `;
 
 const SliderAndTicksContainer = styled.div`
   position: relative;
-  margin:0 1em;
-  transform:translateY(3px);
-`
+  margin: 0 1em;
+  transform: translateY(3px);
+`;
 
-const SliderAndTicksInner = styled.div`
-  
-`
+const SliderAndTicksInner = styled.div``;
 
 
 const LineSlider = styled(Slider)`
@@ -73,7 +70,7 @@ const LineSlider = styled(Slider)`
     width: 15px;
     height: 15px;
     transform: translate(-1.5px, -4px);
-    border:2px solid ${colors.gray};
+    border: 2px solid ${colors.gray};
     .MuiSlider-valueLabel {
       transform: translateY(-10px);
       pointer-events: none;
@@ -97,10 +94,11 @@ const LineSlider = styled(Slider)`
 
 const SpeedSlider = styled.div`
   position: absolute;
-  padding: 0.75em 0.5em 0.25em 0.5em;
-  width: 100%;
+  padding: 0.5em;
+  width: 15%;
+  min-width:100px;
+  max-width:200px;
   background: ${colors.gray};
-  border-radius: 0.5em;
   left: 0;
   top: calc(100% + 0.25em);
   box-shadow: 0px 0px 5px rgb(0 0 0 / 70%);
@@ -113,9 +111,8 @@ const SpeedSlider = styled.div`
   span.MuiSlider-track {
     display: initial;
   }
-  span.MuiSlider-root {
-    width: 80%;
-    margin: 0 10%;
+  span.MuiSlider-thumbColorPrimary {
+    transform:translateY(-7px);
   }
 `;
 
@@ -133,15 +130,15 @@ const RangeSlider = styled(Slider)`
   span.MuiSlider-track {
     color: ${colors.yellow};
     height: 4px;
-    opacity:0.5;
-    transform:translateY(1px);
+    opacity: 0.5;
+    transform: translateY(1px);
   }
   span.MuiSlider-thumb {
     color: white;
     width: 15px;
     height: 15px;
     transform: translate(-1.5px, -4px);
-    border:2px solid ${colors.gray};
+    border: 2px solid ${colors.gray};
     .MuiSlider-valueLabel {
       transform: translateY(-10px);
       pointer-events: none;
@@ -160,22 +157,12 @@ const RangeSlider = styled(Slider)`
   }
 `;
 
-const DateH3 = styled.h3`
-  width: 100%;
-  font-size: 1.05rem;
-  padding: 10px 0 5px 0;
-  margin: 0;
-  left: 0;
-  text-align: center;
-  pointer-events: none;
-`;
-
 const DateSelectorContainer = styled(Grid)`
   display: flex;
   justify-items: center;
   justify-content: center;
   align-items: center;
-  margin: 0; 
+  margin: 0;
   padding: 0;
   .MuiFormControl-root {
     padding: 0 0 0 20px !important;
@@ -199,152 +186,150 @@ const DateSelectorContainer = styled(Grid)`
   .react-date-picker {
     /* display: block;
     margin:0 auto; */
-    color:white;
-    padding:.5em 0 0 0;
-}
-.react-date-picker__inputGroup__input, span {
-  color:white;
-  font-size:1rem;
-  font-weight:bold;
-  font-family: 'Lato', sans-serif;
-}
-.react-date-picker__clear-button {
-  display:none;
-}
-svg rect, svg line {
-  stroke:white;
-}
-.react-calendar {
-  background:${colors.darkgray};
-  transform:translate(-33.33%, .5em);
-  button {
-    color:white;
-    background:none;
-    transition:250ms all;
-    &:disabled {      
-      opacity:0.05;
-    }
-    &:hover {
-      background:none;
-      color: ${colors.yellow};
-    }
-    &.react-calendar__month-view__days__day--neighboringMonth {
-      opacity:0.5;
-      &:disabled {      
-        opacity:0.05;
+    color: white;
+    padding: 0.5em 0 0 0;
+  }
+  .react-date-picker__inputGroup__input,
+  span {
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    font-family: "Lato", sans-serif;
+  }
+  .react-date-picker__clear-button {
+    display: none;
+  }
+  svg rect,
+  svg line {
+    stroke: white;
+  }
+  .react-calendar {
+    background: ${colors.darkgray};
+    transform: translate(-33.33%, 0.5em);
+    button {
+      color: white;
+      background: none;
+      transition: 250ms all;
+      &:disabled {
+        opacity: 0.05;
+      }
+      &:hover {
+        background: none;
+        color: ${colors.yellow};
+      }
+      &.react-calendar__month-view__days__day--neighboringMonth {
+        opacity: 0.5;
+        &:disabled {
+          opacity: 0.05;
+        }
       }
     }
   }
-}
-p {
-  padding: 4px 1em 0 1em;
-  font-size:1rem;
-}
+  p {
+    padding: 4px 1em 0 1em;
+    font-size: 1rem;
+  }
 `;
 
 const valuetext = (dates, value) => {
   const fullDate = dates[value]?.split("-");
 
-  return (
-    fullDate &&
-    `${parseInt(fullDate[1])}/${fullDate[0]?.slice(2)}`
-  );
+  return fullDate && `${parseInt(fullDate[1])}/${fullDate[0]?.slice(2)}`;
 };
 
 const speedtext = (value) => `Animation Tick Rate: ${value} milliseconds`;
 
-const formatDate = (date) => {
-  const options = { year: "numeric", month: "long", day: "numeric" };
-  let rawDate = new Date(date);
-  rawDate.setDate(rawDate.getDate() + 1);
-  return rawDate.toLocaleDateString("en-US", options);
-};
-
 function DateTitle({
-  dates=[],
-  currDatesAvailable=[],
-  currIndex=7,
-  currRange=7,
-  rangeType='',
-  handleChange=()=>{},
-  handleRangeChange=()=>{}
+  dates = [],
+  currDatesAvailable = [],
+  currIndex = 7,
+  currRange = 7,
+  rangeType = "",
+  handleChange = () => {},
+  handleRangeChange = () => {},
 }) {
-  if (!dates || !dates.length){
-    return null
+  if (!dates || !dates.length) {
+    return null;
   }
 
-  const currDate = new Date(dates[currIndex+1]||"2020-01-01");
-  const currStartDate = new Date(dates[currIndex-currRange+1]||"2020-01-01");
+  const currDate = new Date(dates[currIndex + 1] || "2020-01-01");
+  const currStartDate = new Date(
+    dates[currIndex - currRange + 1] || "2020-01-01"
+  );
   const firstDateIdx = currDatesAvailable.indexOf(1);
   const lastDateIdx = [...currDatesAvailable].reverse().indexOf(1);
   const minDate = new Date(dates[firstDateIdx] || "2020-01-01");
-  const maxDate = new Date(dates.slice(-lastDateIdx)[0] || "")
+  const maxDate = new Date(dates.slice(-lastDateIdx)[0] || "");
 
-  const onChange = rangeType === "custom" 
-    ? (date, position) => {
-      try {
-        const dateString = JSON.stringify(date).slice(1,11);
-        const dateIdx = dates.indexOf(dateString);
-        if (position === 'start') {
-          handleRangeChange(null, [dateIdx, currIndex]);
-        } else {
-          handleRangeChange(null, [currIndex - currRange, dateIdx]);
+  const onChange =
+    rangeType === "custom"
+      ? (date, position) => {
+          try {
+            const dateString = JSON.stringify(date).slice(1, 11);
+            const dateIdx = dates.indexOf(dateString);
+            if (position === "start") {
+              handleRangeChange(null, [dateIdx, currIndex]);
+            } else {
+              handleRangeChange(null, [currIndex - currRange, dateIdx]);
+            }
+          } catch (error) {
+            console.log(error);
+          }
         }
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    : (date) => {
-      try {
-        const dateString = JSON.stringify(date).slice(1,11);
-        const dateIdx = dates.indexOf(dateString);
-        handleChange(null,dateIdx);
-      } catch (error) {
-        console.log(error)
-      }
-    }
-  return <DateSelectorContainer item xs={12}>
-    {rangeType === "custom" && 
-      <DatePicker
-            calendarAriaLabel="Toggle calendar"
-            clearAriaLabel="Clear value"
-            dayAriaLabel="Day"
-            monthAriaLabel="Month"
-            minDate={minDate}
-            maxDate={maxDate}
-            nativeInputAriaLabel="Date"
-            onChange={onChange}
-            value={currStartDate}
-            yearAriaLabel="Year"
-        />}
-        
-    {rangeType === "custom" && <p>to</p>}
-      <DatePicker
-            calendarAriaLabel="Toggle calendar"
-            clearAriaLabel="Clear value"
-            dayAriaLabel="Day"
-            monthAriaLabel="Month"
-            minDate={minDate}
-            maxDate={maxDate}
-            nativeInputAriaLabel="Date"
-            onChange={onChange}
-            value={currDate}
-            yearAriaLabel="Year"
+      : (date) => {
+          try {
+            const dateString = JSON.stringify(date).slice(1, 11);
+            const dateIdx = dates.indexOf(dateString);
+            handleChange(null, dateIdx);
+          } catch (error) {
+            console.log(error);
+          }
+        };
+  return (
+    <DateSelectorContainer item xs={12}>
+      {rangeType === "custom" && (
+        <DatePicker
+          calendarAriaLabel="Toggle calendar"
+          clearAriaLabel="Clear value"
+          dayAriaLabel="Day"
+          monthAriaLabel="Month"
+          minDate={minDate}
+          maxDate={maxDate}
+          nativeInputAriaLabel="Date"
+          onChange={onChange}
+          value={currStartDate}
+          yearAriaLabel="Year"
         />
+      )}
+
+      {rangeType === "custom" && <p>to</p>}
+      <DatePicker
+        calendarAriaLabel="Toggle calendar"
+        clearAriaLabel="Clear value"
+        dayAriaLabel="Day"
+        monthAriaLabel="Month"
+        minDate={minDate}
+        maxDate={maxDate}
+        nativeInputAriaLabel="Date"
+        onChange={onChange}
+        value={currDate}
+        yearAriaLabel="Year"
+      />
       {/* <DateH3>
         {rangeType === 'custom' && dates && dates.length && currIndex-currRange !== undefined ? `${formatDate(dates[currIndex-currRange])} to ` : ""}
         {(dates && dates.length && currIndex !== undefined) ? formatDate(dates[currIndex]) : ""}
       </DateH3> */}
     </DateSelectorContainer>
+  );
 }
 
 const findLastDate = (array) => {
-  for (let i=array.length-1; i>=0; i--) {
+  for (let i = array.length - 1; i >= 0; i--) {
     if (array[i] === 1) {
       return i;
     }
   }
-}
+};
 function DateSlider() {
   const dispatch = useDispatch();
   const [
@@ -353,59 +338,48 @@ function DateSlider() {
     currDatesAvailable,
     allDates,
     currRange,
-    rangeType
+    rangeType,
   ] = useCurrentDateIndices();
-  const [isTicking, setIsTicking, timing, setTiming] = useTickUpdate({currDatesAvailable});
-  
-  const handleChange = debounce((_, newValue) => {  // eslint-disable-line      
+  const [isTicking, setIsTicking, timing, setTiming] = useTickUpdate({
+    currDatesAvailable,
+  });
+
+  const handleChange = debounce((_, newValue) => {
+    // eslint-disable-line
     if (currDatesAvailable[newValue]) {
       dispatch(setVariableParams({ nIndex: newValue }));
     } else {
-      dispatch(setVariableParams({ nIndex: findClosestValue(newValue, currDatesAvailable, newValue < currIndex) }));
+      dispatch(
+        setVariableParams({
+          nIndex: findClosestValue(
+            newValue,
+            currDatesAvailable,
+            newValue < currIndex
+          ),
+        })
+      );
     }
   }, 25);
 
-  const handleRangeChange = debounce((_, newValue) => { 
+  const handleRangeChange = debounce((_, newValue) => {
     const newIndex = Math.max(newValue[0], newValue[1]);
-    const newRange = newIndex - Math.min(newValue[0], newValue[1]);  // eslint-disable-line      
+    const newRange = newIndex - Math.min(newValue[0], newValue[1]); // eslint-disable-line
     if (currDatesAvailable[newIndex]) {
       dispatch(setVariableParams({ nIndex: newIndex, nRange: newRange }));
     } else {
-      dispatch(setVariableParams({ nIndex: findClosestValue(newIndex, currDatesAvailable, newIndex < currIndex), nRange: newRange }));
+      dispatch(
+        setVariableParams({
+          nIndex: findClosestValue(
+            newIndex,
+            currDatesAvailable,
+            newIndex < currIndex
+          ),
+          nRange: newRange,
+        })
+      );
     }
   }, 25);
 
-  // const handleRangeChange = debounce((event, newValue) => {
-  //   const val0 = dateIndices.includes(newValue[0])
-  //     ? newValue[0]
-  //     : dateIndices.reduce((a, b) => {
-  //         return Math.abs(b - newValue[0]) < Math.abs(a - newValue[0]) ? b : a;
-  //       });
-
-  //   const val1 = dateIndices.includes(newValue[1])
-  //     ? newValue[1]
-  //     : dateIndices.reduce((a, b) => {
-  //         return Math.abs(b - newValue[1]) < Math.abs(a - newValue[1]) ? b : a;
-  //       });
-
-  //   if (dRange) {
-  //     dispatch(
-  //       setVariableParams({
-  //         nIndex: val1,
-  //         nRange: val1 - val0,
-  //         rIndex: val1,
-  //         rRange: val1 - val0,
-  //       }),
-  //     );
-  //   } else {
-  //     dispatch(
-  //       setVariableParams({
-  //         nIndex: val1,
-  //         nRange: val1 - val0,
-  //       }),
-  //     );
-  //   }
-  // }, 25);
   const handlePlayPause = () => {
     if (!isTicking) {
       setIsTicking(true);
@@ -413,6 +387,7 @@ function DateSlider() {
       setIsTicking(false);
     }
   };
+
   const shouldShowLineSlider = rangeType !== "custom";
   const shouldShowRangeSlider = rangeType === "custom";
   return (
@@ -425,8 +400,8 @@ function DateSlider() {
         handleChange={handleChange}
         handleRangeChange={handleRangeChange}
         currDatesAvailable={currDatesAvailable}
-        />
-      <Grid item xs={1} md={1} lg={1} xl={1} >
+      />
+      <Grid item xs={1} md={1} lg={1} xl={1}>
         <PlayPauseButton id="playPause" onClick={() => handlePlayPause()}>
           {!isTicking ? (
             <svg x="0px" y="0px" viewBox="0 0 100 100">
@@ -451,45 +426,75 @@ function DateSlider() {
           )}
         </PlayPauseButton>
       </Grid>
-      <DateContainer item xs={1} md={1} lg={1} xl={1} style={{textAlign:'right'}}>
+      <DateContainer
+        item
+        xs={1}
+        md={1}
+        lg={1}
+        xl={1}
+        style={{ textAlign: "right" }}
+      >
         <p>{valuetext(allDates, 0)}</p>
       </DateContainer>
       <Grid item xs={9} md={9}>
         <SliderAndTicksContainer>
           <SliderAndTicksInner>
-            <Ticks id="ticks" loaded={currDates} available={currDatesAvailable} fullLength={allDates.length} />
+            <Ticks
+              id="ticks"
+              loaded={currDates}
+              available={currDatesAvailable}
+              fullLength={allDates.length}
+            />
           </SliderAndTicksInner>
           <SliderAndTicksInner>
-            {shouldShowLineSlider && <LineSlider
-              id="timeSlider"
-              value={currIndex}
-              // valueLabelDisplay="on"
-              onChange={handleChange}
-              getAriaValueText={valuetext}
-              valueLabelFormat={valuetext}
-              aria-labelledby="aria-valuetext"
-              min={7}
-              max={allDates.length}
-              step={1}
-            />}
-            {shouldShowRangeSlider && <RangeSlider
-              id="timeSlider"
-              value={[currIndex-currRange, currIndex]}
-              onChange={handleRangeChange}
-              getAriaValueText={valuetext}
-              valueLabelFormat={valuetext}
-              aria-labelledby="aria-valuetext"
-              min={7}
-              max={allDates.length}
-              step={1}
+            {shouldShowLineSlider && (
+              <LineSlider
+                id="timeSlider"
+                value={currIndex}
+                // valueLabelDisplay="on"
+                onChange={handleChange}
+                getAriaValueText={valuetext}
+                valueLabelFormat={valuetext}
+                aria-labelledby="aria-valuetext"
+                min={7}
+                max={allDates.length}
+                step={1}
               />
-            }
+            )}
+            {shouldShowRangeSlider && (
+              <RangeSlider
+                id="timeSlider"
+                value={[currIndex - currRange, currIndex]}
+                onChange={handleRangeChange}
+                getAriaValueText={valuetext}
+                valueLabelFormat={valuetext}
+                aria-labelledby="aria-valuetext"
+                min={7}
+                max={allDates.length}
+                step={1}
+              />
+            )}
           </SliderAndTicksInner>
         </SliderAndTicksContainer>
       </Grid>
-      <DateContainer item xs={1} md={1} style={{textAlign:'left'}}>
+      <DateContainer item xs={1} md={1} style={{ textAlign: "left" }}>
         <p>{valuetext(allDates, findLastDate(currDatesAvailable))}</p>
       </DateContainer>
+      {!!isTicking && (
+        <SpeedSlider>
+          <p>Animation Speed</p>
+          <LineSlider
+            value={1000 - timing}
+            onChange={(e, newValue) => setTiming(1000 - newValue)}
+            getAriaValueText={speedtext}
+            valueLabelFormat={speedtext}
+            aria-labelledby="aria-valuetext"
+            min={25}
+            max={975}
+            step={25}
+          />
+        </SpeedSlider>
+      )}
     </SliderContainer>
   );
   // } else {

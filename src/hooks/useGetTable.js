@@ -9,7 +9,6 @@ export default function useGetTable({
 }) {
   const dispatch = useDispatch();
   const storedData = useSelector(({data}) => data.storedData);
-
   useEffect(() => {
     if (shouldFetch) {
       if (!filesToFetch[0].noFile) {
@@ -17,13 +16,9 @@ export default function useGetTable({
           .then((dataArray) => {
             if (dataArray.length) {
               dataArray.forEach(({ value: newData }, idx) => {
-                if (
-                  !storedData[filesToFetch[idx]?.name] ||
-                  (!!storedData[filesToFetch[idx]?.name] &&
-                    !storedData[filesToFetch[idx]?.name]?.loaded?.includes(
-                      filesToFetch[idx]?.timespan
-                    ))
-                ) {
+                const fileExists = !!storedData[filesToFetch[idx]?.name]
+                const fileExistsAndIsLoaded = fileExists && !!storedData[filesToFetch[idx]?.name]?.loaded?.includes(filesToFetch[idx]?.timespan)
+                if (!fileExists || !fileExistsAndIsLoaded) {
                   dispatch({
                     type: "RECONCILE_TABLE",
                     payload: {
@@ -45,9 +40,12 @@ export default function useGetTable({
   const dataReady =
     (filesToFetch.length &&
     filesToFetch.every(
-      ({ name, timespan }) =>
-        storedData[name] && storedData[name]?.loaded?.includes(timespan)
-    )) || filesToFetch.length === 1 && filesToFetch[0].noFile;
+      ({ name, timespan }) => {
+        const dataIsLoaded = storedData[name] && storedData[name]?.loaded?.includes(timespan);
+        const fileIsNull =  filesToFetch.length === 1 && filesToFetch[0].noFile;
+        return (dataIsLoaded || fileIsNull)
+      }
+    ))
   const error = false;
   return [returnData, dataReady, error];
 }

@@ -75,7 +75,7 @@ const ShareURL = styled.input`
 `;
 
 function MapButtons({ boxSelect, setBoxSelect }) {
-  const selectionKeys = useSelector(({params}) => params.selectionKeys);
+  // const selectionKeys = useSelector(({params}) => params.selectionKeys);
   const panelState = useSelector(({ui}) => ui.panelState);
   const viewport = useViewport();
   const setViewport = useSetViewport();

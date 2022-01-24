@@ -72,7 +72,8 @@ function parseFiles(filesToParse) {
     })
     fs.writeFileSync('./src/config/dataDateRanges.js', `
     // this is a generated file, do not edit directly. See data-scripts/build-scripts/parseColumns.js
-    export default ${JSON.stringify(dateRanges)}
+    const ranges = ${JSON.stringify(dateRanges)};
+    export default ranges;
     `)
 };
 

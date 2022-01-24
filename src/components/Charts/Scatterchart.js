@@ -1,23 +1,23 @@
 import React, { useState, useMemo } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import {
-  LineChart,
-  Line,
+  // LineChart,
+  // Line,
   XAxis,
   YAxis,
   ZAxis,
-  ReferenceArea,
+  // ReferenceArea,
   Tooltip,
   Label,
   ResponsiveContainer,
-  Legend,
+  // Legend,
   ScatterChart,
   CartesianGrid,
   Scatter,
 } from "recharts";
 
-import Switch from "@mui/material/Switch";
+// import Switch from "@mui/material/Switch";
 
 import styled from "styled-components";
 import { ChartTitle, ControlPopover } from "../../components";
@@ -47,7 +47,7 @@ const colorSchemes = {
 };
 
 export function ScatterChartInner({ scatterData, xAxisVar, yAxisVar, theme }) {
-  const { highlightColor, mediumColor, gridColor } = colorSchemes[theme];
+  const { highlightColor, mediumColor } = colorSchemes[theme];
   return (
     <ResponsiveContainer width="100%" height="100%">
       <ScatterChart
@@ -92,7 +92,6 @@ export function ScatterChartInner({ scatterData, xAxisVar, yAxisVar, theme }) {
         <Scatter
           name="A school"
           data={scatterData}
-          fill="#8884d8"
           isAnimationActive={false}
           fill={highlightColor}
         />
@@ -101,7 +100,9 @@ export function ScatterChartInner({ scatterData, xAxisVar, yAxisVar, theme }) {
   );
 }
 
-export default function ScatterChartComponent({}) {
+export default function ScatterChartComponent({
+  props=null
+}) {
   // const dispatch = useDispatch();
   const [xAxisVar, setXAxisVar] = useState("Percent Fully Vaccinated");
   const [yAxisVar, setYAxisVar] = useState("Death Count per 100K Population");

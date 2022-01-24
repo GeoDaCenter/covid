@@ -5,8 +5,6 @@ import { Provider } from "react-redux";
 import { createStore } from "redux";
 import rootReducer from "./reducers/rootReducer";
 import { GeodaProvider } from "./contexts/Geoda";
-import { DataProvider } from "./contexts/Data";
-import { BackgroundLoadingProvider } from "./contexts/BackgroundData";
 
 import App from "./App";
 import "./index.css";
@@ -36,17 +34,13 @@ const store = createStore(
 
 ReactDOM.render(
   <React.StrictMode>
-    {/* <BackgroundLoadingProvider> */}
       <Provider store={store}>
         {/* <PersistGate persistor={persistor}> */}
         <GeodaProvider>
-          {/* <DataProvider> */}
             <App />
-          {/* </DataProvider> */}
         </GeodaProvider>
         {/* </PersistGate> */}
       </Provider>
-    {/* </BackgroundLoadingProvider> */}
   </React.StrictMode>,
   document.getElementById("root")
   // serviceWorkerRegistration.register();

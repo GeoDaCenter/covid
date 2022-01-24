@@ -66,6 +66,7 @@ export default function MapAttribution() {
           title="Mapbox"
           aria-label="Mapbox"
           role="listitem"
+          rel="noreferrer" 
         >
           © Mapbox
         </a>
@@ -75,6 +76,7 @@ export default function MapAttribution() {
           title="OpenStreetMap"
           aria-label="OpenStreetMap"
           role="listitem"
+          rel="noreferrer" 
         >
           © OpenStreetMap
         </a>
@@ -85,7 +87,7 @@ export default function MapAttribution() {
           title="Map feedback"
           aria-label="Map feedback"
           role="listitem"
-          rel="noopener nofollow"
+          rel="noreferrer" 
         >
           Improve this map
         </a>

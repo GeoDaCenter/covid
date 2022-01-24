@@ -21,7 +21,6 @@ export default function useGetScatterData({ xAxisVar, yAxisVar }) {
 
   useEffect(() => {
     if (xData?.length && yData?.length) {
-      const newData = stitch(geojsonData, xData, yData);
       setData(stitch(
         xData,
         yData,

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { findIn, findAllDefaults, findTableOrDefault } from "../utils";
+import { useSelector } from "react-redux";
+import { findIn, findAllDefaults } from "../utils";
 import dataDateRanges from "../config/dataDateRanges";
 
 async function fetchTimeSeries({
@@ -24,7 +24,7 @@ async function fetchTimeSeries({
   for (let i = 0; i < keysToFetch.length; i++) {
     const id = keysToFetch[i];
     const data = timeseriesData[i].value;
-    if (i == 0) {
+    if (i === 0) {
       const pop = totalPopulation;
       for (let j = 0; j < data.dates.length; j++) {
         const delta1 = j === 0 ? 0 : 1;

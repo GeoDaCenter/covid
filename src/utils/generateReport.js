@@ -130,13 +130,13 @@ export const generateReport = ({
   currIndex,
   currTables,
   dates,
-  defaultTables,
+  // defaultTables,
   selectionKeys,
   storedData,
   storedGeojson,
 }) => {
   let report = {};
-  const { file, geography, join, name, tables } = currDataset;
+  const { geography } = currDataset; //file, geography, join, name, tables
   const properties = storedGeojson[currentData].properties;
 
   report.name =

@@ -8,7 +8,6 @@ import {
   onlyUniqueArray
 } from "../utils";
 import { useGeoda } from "../contexts/Geoda";
-import { useBackgroundLoadingContext } from "../contexts/BackgroundData";
 import useGetTable from "./useGetTable";
 import useGetGeojson from "./useGetGeojson";
 import useBackgroundLoadData from "./useBackgroundLoadData";
@@ -71,20 +70,20 @@ export default function useLoadData() {
     currTimespans
   });
 
-  const [numeratorData, numeratorDataReady, numeratorDataError] = useGetTable({
+  const [numeratorData, numeratorDataReady] = useGetTable({
     filesToFetch: numeratorParams,
     shouldFetch: true,
     dateLists
   });
 
-  const [denominatorData, denominatorDataReady, denominatorDataError] =
+  const [denominatorData, denominatorDataReady] =
     useGetTable({
       filesToFetch: denominatorParams,
       shouldFetch: true,
       dateLists
     });
 
-  const [geojsonData, geojsonDataReady, geojsonDataError] = useGetGeojson({
+  const [geojsonData, geojsonDataReady] = useGetGeojson({
     geoda,
     geodaReady,
     currDataset,
@@ -112,7 +111,7 @@ export default function useLoadData() {
     })
   }, [numeratorDataReady, denominatorDataReady, geojsonDataReady]);
 
-  const backgroundLoading = useBackgroundLoadData({
+  useBackgroundLoadData({
     currentGeography: currDataset.geography,
     tables,
     shouldFetch: canLoadInBackground,

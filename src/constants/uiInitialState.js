@@ -1,4 +1,4 @@
-export default {
+const INITIAL_STATE ={
   anchorEl: null,
   isPlaying: false,
   mapLoaded: false,
@@ -28,3 +28,4 @@ export default {
   shouldPanMap: false,
   colorFilter: false
 }
+export default INITIAL_STATE;

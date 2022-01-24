@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useLoadData from "./useLoadData";
 import { useGeoda } from "../contexts/Geoda";
@@ -22,12 +22,12 @@ const generateJoinData = ({
   binData,
   bins,
   lisaData,
-  cartogramData,
+  // cartogramData,
   mapParams,
-  dataParams,
+  // dataParams,
   order,
   dataReady,
-  storedGeojson,
+  // storedGeojson,
 }) => {
   if (!dataReady || (mapParams.mapType !== 'lisa' && !bins.breaks) || (mapParams.mapType === 'lisa' && !lisaData.length)) return [{}, undefined];
   const geoids = Object.values(order);
@@ -278,10 +278,10 @@ export default function useMapData({
     denominatorData,
     dateIndices,
     dataReady,
-    dataSnapshot
+    // dataSnapshot
   } = useLoadData();
-  const dispatch = useDispatch();
-  const { geoda, geodaReady } = useGeoda();
+  // const dispatch = useDispatch();
+  const { geoda } = useGeoda();
   const [mapSnapshot, setMapSnapshot] = useState(0);
   const varId = getVarId(currentData, dataParams, mapParams, dataReady);
   

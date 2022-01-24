@@ -1,5 +1,5 @@
-import { findIn } from "../utils";
-import { tooltipTables } from "../config/defaults";
+// import { findIn } from "../utils";
+// import { tooltipTables } from "../config/defaults";
 
 export const parseTooltipData = ({
   currentData,
@@ -11,11 +11,11 @@ export const parseTooltipData = ({
   storedData,
 }) => {
   if (!currDataset || !storedGeojson[currentData] || !currTables) return {};
-  const { file, geography, join, name, tables } = currDataset;
+  const { geography } = currDataset; // file, geography, join, name, tables
   const properties = storedGeojson[currentData].properties;
 
   const locProperties = properties[geoid];
-  const pop = locProperties && locProperties.population;
+  // const pop = locProperties && locProperties.population;
   let tooltipData = {
     ...locProperties,
   };

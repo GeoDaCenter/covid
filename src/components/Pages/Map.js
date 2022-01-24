@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
@@ -19,7 +19,7 @@ import {
   VariablePanel,
   Legend,
   TopPanel,
-  Preloader,
+  // Preloader,
   DataPanel,
   LineChart,
   Scaleable,
@@ -28,10 +28,10 @@ import {
   NotificationBox,
   Popover,
   MapTooltipContent,
-  PrintLayout,
+  // PrintLayout,
   DataLoader,
   ReportBuilder,
-  Icon,
+  // Icon,
   IconDock,
   Scatterchart
 } from '../../components';
@@ -251,8 +251,6 @@ const MapPageContainer = () => {
     mapParams,
     currentData
   });
-
-  console.log('map page container rendered')
 
   const showTopPanel = dataParams.nType !== 'characteristic'
   

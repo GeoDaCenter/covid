@@ -1,4 +1,4 @@
-export default {
+const INITIAL_STATE = {
   storedData: {},
   storedGeojson: {},
   dotDensityData: {},
@@ -8,3 +8,5 @@ export default {
     vaccineSites: [],
   },
 };
+
+export default INITIAL_STATE

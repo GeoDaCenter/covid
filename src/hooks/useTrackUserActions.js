@@ -7,7 +7,7 @@ ReactGA.pageview(window.location.pathname + window.location.search);
 
 export default function useTrackUserActions() {
   // What dataset is being viewed?
-  const currentData = useSelector(({params}) => params.currentData);
+  // const currentData = useSelector(({params}) => params.currentData);
   // // What variable is being selected?
   // const variableName = useSelector((state) => state.dataParams.variableName);
   // // What overlay layer is being used?

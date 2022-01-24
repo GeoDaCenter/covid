@@ -53,6 +53,7 @@ export const AtlasWaterMark = () => (
     <img
       src={`${process.env.PUBLIC_URL}/img/us-covid-atlas-cluster-logo.svg`}
       style={{ width: "100%" }}
+      alt=""
     />
   </WaterMarkDiv>
 );

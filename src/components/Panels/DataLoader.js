@@ -1,6 +1,6 @@
 // Library import
-import React, { useState, useRef, useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import styled, { keyframes } from 'styled-components';
 import { useGeoda } from '../../contexts/Geoda';
 
@@ -8,7 +8,7 @@ import { setPanelState, addCustomData } from '../../actions';
 import { colorScales } from '../../config/scales';
 
 import Select from '@mui/material/Select';
-import { StyledDropDown, BinsContainer, Gutter } from '../../styled_components';
+import { StyledDropDown, Gutter } from '../../styled_components';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 
@@ -235,15 +235,15 @@ const StepButtons = ({ activeStep, setActiveStep, currentGeojson }) => (
   </>
 );
 
-const FormDropDownContainer = styled.div`
-  min-width: 100px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-  .MuiFormControl-root {
-    min-width: 100px;
-  }
-`;
+// const FormDropDownContainer = styled.div`
+//   min-width: 100px;
+//   margin: 0 auto;
+//   display: flex;
+//   justify-content: center;
+//   .MuiFormControl-root {
+//     min-width: 100px;
+//   }
+// `;
 
 const CardContainer = styled(Grid)`
   max-height: 50vh;
@@ -519,7 +519,7 @@ const addIndex = (geojson) => ({
 // DataLoader component
 export default function DataLoader() {
   const dispatch = useDispatch();
-  const customData = useSelector(({params}) => params.customData);
+  // const customData = useSelector(({params}) => params.customData);
 
   const [uploadTab, setUploadTab] = useState(true);
   const [selectedFile, setSelectedFile] = useState('');
@@ -532,7 +532,7 @@ export default function DataLoader() {
   const [currentGeojson, setCurrentGeojson] = useState({});
   const {
     geoda,
-    geodaReady
+    // geodaReady
   } = useGeoda();
 
   const closePanel = () => dispatch(setPanelState({ dataLoader: false }));

@@ -29,7 +29,7 @@ const currentData = paramsDict.hasOwnProperty("src")
   : defaultData;
 const currDataset = findIn(datasets, "file", currentData);
 
-export default {
+const INITIAL_STATE = {
   // Default data state
   currentData,
   currentTable: {
@@ -127,3 +127,6 @@ export default {
   selectionKeys: [],
   selectionNames: [],
 };
+
+
+export default INITIAL_STATE

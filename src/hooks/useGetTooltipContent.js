@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import {useMemo} from 'react';
 import { useSelector } from 'react-redux';
 import { findIn, findAllDefaults, parseTooltipData } from '../utils';
 
@@ -8,7 +8,7 @@ export default function useGetTooltipContent({
 }){
     // pieces of redux state
     const currentData = useSelector(({params}) => params.currentData);
-    const dates = useSelector(({params}) => params.dates);
+    // const dates = useSelector(({params}) => params.dates);
     const dataParams = useSelector(({params}) => params.dataParams);
     const datasets = useSelector(({params}) => params.datasets);
     const tables = useSelector(({params}) => params.tables);

@@ -8,10 +8,11 @@ import colors from '../../config/colors';
 const TopDrawer = styled.div`
   position: fixed;
   top: 50px;
-  left: calc(50vw - 225px);
+  left: calc(50vw);
+  transform:translateX(-50%);
   background: ${colors.gray};
   width: 90vw;
-  max-width: 450px;
+  max-width: 900px;
   box-sizing: border-box;
   padding: 0;
   margin: 0;

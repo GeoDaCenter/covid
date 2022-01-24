@@ -1,4 +1,4 @@
-import { INITIAL_STATE } from "../constants/defaults";
+import INITIAL_STATE from "../constants/paramsInitialState";
 import {
   // getDataForCharts,
   // generateMapData,
@@ -12,37 +12,46 @@ import {
   // findDefault,
   findTableOrDefault,
   findClosestValue,
-  findNextIndex
+  findNextIndex,
 } from "../utils";
 
 import dataDateRanges from "../config/dataDateRanges";
-import { fixedScales, colorScales } from "../config/scales";
+import { colorScales } from "../config/scales";
 const findDefaultOrCurrent = (
   tables,
   datasets,
   variableParams,
   datasetName
 ) => {
-  const relevantTables = tables.filter(f => f.id === variableParams.numerator);
-  const availableGeographies = relevantTables.map(f => f.geography)
-  const availableDatasets = datasets.filter(f => datasetName === f.name && availableGeographies.includes(f.geography))
-  
+  const relevantTables = tables.filter(
+    (f) => f.id === variableParams.numerator
+  );
+  const availableGeographies = relevantTables.map((f) => f.geography);
+  const availableDatasets = datasets.filter(
+    (f) => datasetName === f.name && availableGeographies.includes(f.geography)
+  );
+
   if (availableDatasets.length) {
-    return availableDatasets[0].file
+    return availableDatasets[0].file;
   }
-  const anyDataset = datasets.filter(f => availableGeographies.includes(f.geography))
-  return anyDataset[0].file
+  const anyDataset = datasets.filter((f) =>
+    availableGeographies.includes(f.geography)
+  );
+  return anyDataset[0].file;
 };
 
 var reducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case "SET_CURRENT_DATA": {
       const prevDataset = findIn(state.datasets, "file", state.currentData);
-      const currDataset = state.datasets.find(f => f.geography === prevDataset.geography && f.name === action.payload);
+      const currDataset = state.datasets.find(
+        (f) =>
+          f.geography === prevDataset.geography && f.name === action.payload
+      );
       if (!currDataset) {
         return state;
       }
-      
+
       const currentTable = {
         numerator: findTableOrDefault(
           currDataset,
@@ -70,39 +79,40 @@ var reducer = (state = INITIAL_STATE, action) => {
         ...state,
         dates: action.payload.data,
       };
-    case 'INCREMENT_DATE': {
-      const {
-        index, 
-        currDatesAvailable
-      } = action.payload;     
+    case "INCREMENT_DATE": {
+      const { index, currDatesAvailable } = action.payload;
       const nextIndex = findNextIndex({
-          currDatesAvailable,
-          currDateIndex: state.dataParams.nIndex,
-          step: index
-        })
+        currDatesAvailable,
+        currDateIndex: state.dataParams.nIndex,
+        step: index,
+      });
       if (nextIndex === false) {
         return {
           ...state,
         };
       } else {
         return {
-          ...state,          
+          ...state,
           dataParams: {
             ...state.dataParams,
             nIndex: nextIndex,
             dIndex: nextIndex,
-          }
-        }
+          },
+        };
       }
     }
-    case "CHANGE_GEOGRAPHY":{
+    case "CHANGE_GEOGRAPHY": {
       const newGeog = action.payload;
-      const relevantDatasets = state.datasets.filter(f => f.geography === newGeog);
+      const relevantDatasets = state.datasets.filter(
+        (f) => f.geography === newGeog
+      );
       if (relevantDatasets.length === 0) {
-        return state
+        return state;
       }
       const currentDataset = findIn(state.datasets, "file", state.currentData);
-      const sameDatasetDifferentGeography = relevantDatasets.filter(f => f.name == currentDataset.name);
+      const sameDatasetDifferentGeography = relevantDatasets.filter(
+        (f) => f.name === currentDataset.name
+      );
       if (sameDatasetDifferentGeography.length > 0) {
         return {
           ...state,
@@ -285,21 +295,7 @@ var reducer = (state = INITIAL_STATE, action) => {
             ? state.dataParams.nRange
             : state.storedRange,
         dataParams,
-        // mapData:
-        //   state.mapParams.binMode !== 'dynamic' &&
-        //   state.mapParams.mapType !== 'lisa' &&
-        //   shallowEqual(state.dataParams, dataParams)
-        //     ? generateMapData({ ...state, dataParams })
-        //     : state.mapData,
-        currentTable,
-        tooltipInfo: {
-          x: state.tooltipInfo.x,
-          y: state.tooltipInfo.y,
-          geoid: state.tooltipInfo.geoid,
-        },
-        // sidebarData: state.selectionKeys.length
-        //   ? generateReport(state.selectionKeys, state)
-        //   : state.sidebarData,
+        currentTable
       };
     }
     case "SET_MAP_PARAMS": {
@@ -318,7 +314,7 @@ var reducer = (state = INITIAL_STATE, action) => {
             mapParams.colorScale = colorScales.lisa;
             break;
           case "hinge15_breaks":
-            mapParams.colorScale = colorScales.hinge15_breaks
+            mapParams.colorScale = colorScales.hinge15_breaks;
             break;
           default:
             mapParams.colorScale = dataParams.colorScale
@@ -358,6 +354,7 @@ var reducer = (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "SET_ANCHOR_EL":
       return {
         ...state,
         anchorEl: action.payload.anchorEl,
@@ -455,9 +452,7 @@ var reducer = (state = INITIAL_STATE, action) => {
         Object.keys(state.storedGeojson)
       );
 
-      let variables = [
-        ...state.variables,
-      ];
+      let variables = [...state.variables];
 
       const datasetTree = {
         ...state.datasetTree,

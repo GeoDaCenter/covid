@@ -275,22 +275,22 @@ const dotDensityAcsGroups = [
   },
 ];
 
-const BYODButton = styled.button`
-  background: none;
-  color: ${colors.white};
-  border: 1px solid white;
-  cursor: pointer;
-  padding: 0.25em 0.5em;
-  margin: 0.25em 0;
-  border-radius: 0.5em;
-  text-transform: capitalize;
-  font-size: 0.75rem;
-  transition: 250ms all;
-  &:hover {
-    color: ${colors.yellow};
-    border-color: ${colors.yellow};
-  }
-`;
+// const BYODButton = styled.button`
+//   background: none;
+//   color: ${colors.white};
+//   border: 1px solid white;
+//   cursor: pointer;
+//   padding: 0.25em 0.5em;
+//   margin: 0.25em 0;
+//   border-radius: 0.5em;
+//   text-transform: capitalize;
+//   font-size: 0.75rem;
+//   transition: 250ms all;
+//   &:hover {
+//     color: ${colors.yellow};
+//     border-color: ${colors.yellow};
+//   }
+// `;
 const onlyUnique = (value, index, self) => self.indexOf(value) === index;
 
 function VariablePanel() {
@@ -318,11 +318,11 @@ function VariablePanel() {
   const dType = useSelector(({params}) => params.dataParams.dType);
   const rangeType = useSelector(({params}) => params.dataParams.rangeType);
 
-  const variables = useSelector(({params}) => params.variables);
+  // const variables = useSelector(({params}) => params.variables);
   const datasets = useSelector(({params}) => params.datasets);
   const currentPreset = findIn(datasets, 'file', currentData);
   const variableTree = useSelector(({params}) => params.variableTree);
-  const datasetTree = useSelector(({params}) => params.datasetTree);
+  // const datasetTree = useSelector(({params}) => params.datasetTree);
   const urlParamsTree = useSelector(({params}) => params.urlParamsTree);
   const allGeographies = Object.values(variableTree)
     .flatMap((o) => Object.keys(o))

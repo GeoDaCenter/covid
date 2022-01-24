@@ -180,7 +180,7 @@ const Legend = ({
       payload: color,
     });
   };
-  const { bins: currentBins, breaks: currentBreaks } = bins;
+  const { bins: currentBins } = bins;
 
   return (
     <BottomPanel id="bottomPanel">

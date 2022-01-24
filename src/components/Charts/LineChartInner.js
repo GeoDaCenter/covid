@@ -9,7 +9,7 @@ import {
   YAxis,
   ReferenceArea,
   Tooltip,
-  Label,
+  // Label,
   ResponsiveContainer,
   Legend,
   ReferenceLine,
@@ -214,7 +214,7 @@ function LineChartInner({
 
   const dispatch = useDispatch();
   const {
-    currentData,
+    // currentData,
     currIndex,
     currRange,
     chartData,
@@ -399,7 +399,6 @@ function LineChartInner({
                 />
               ))
             )}
-            //{" "}
             {selectionKeys.length > 1 && showSummarized && (
               <Line
                 type="monotone"

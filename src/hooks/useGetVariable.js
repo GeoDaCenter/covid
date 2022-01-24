@@ -51,7 +51,7 @@ export default function useGetVariable({
     })
   );
 
-  const [[numData, numReady, numError], [denData, denReady, denError]] = [
+  const [[numData, numReady], [denData, denReady]] = [
     useGetTable({
       filesToFetch: fetchParams[0],
       shouldFetch: canLoadInBackground,
