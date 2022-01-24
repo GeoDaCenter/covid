@@ -3,7 +3,7 @@ import styled from "styled-components";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import colors from "../../../../config/colors";
 
-const availableModules = [
+const defaultModules = [
   {
     type: "Summary Description",
     modules: [
@@ -110,7 +110,7 @@ const AddItemContainer = styled.div`
 `;
 
 export function AvailableModulesList({
-  availableModules = availableModules,
+  availableModules = defaultModules,
   handleAddItem = () => {},
   handleClose = () => {},
   pageIdx = 0

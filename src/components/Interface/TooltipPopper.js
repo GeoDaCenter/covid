@@ -35,7 +35,7 @@ const TooltipContentDiv = styled(Popper)`
 const Popover = () => {
   const dispatch = useDispatch();
 
-  const anchorEl = useSelector((state) => state.anchorEl);
+  const anchorEl = useSelector(({ui}) => ui.anchorEl);
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popper' : undefined;
 

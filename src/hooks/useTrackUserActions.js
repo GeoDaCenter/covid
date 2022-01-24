@@ -7,7 +7,7 @@ ReactGA.pageview(window.location.pathname + window.location.search);
 
 export default function useTrackUserActions() {
   // What dataset is being viewed?
-  const currentData = useSelector((state) => state.currentData);
+  const currentData = useSelector(({params}) => params.currentData);
   // // What variable is being selected?
   // const variableName = useSelector((state) => state.dataParams.variableName);
   // // What overlay layer is being used?
@@ -21,7 +21,7 @@ export default function useTrackUserActions() {
   // // What counties or states are being selected?
   // const selectionKeys = useSelector(state => state.selectionKeys);
   // What are the default datasets?
-  const datasets = useSelector((state) => state.datasets);
+  const datasets = useSelector(({params}) => params.datasets);
   const baseDatasetNum = useRef(datasets.length);
 
   useEffect(() => {

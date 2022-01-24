@@ -173,7 +173,7 @@ const Legend = ({
   note,
 }) => {
   const dispatch = useDispatch();
-  const colorFilter = useSelector((state) => state.colorFilter);
+  const colorFilter = useSelector(({ui}) => ui.colorFilter);
   const handleHover = (color) => {
     dispatch({
       type: 'SET_COLOR_FILTER',
@@ -304,4 +304,4 @@ const Legend = ({
   );
 };
 
-export default Legend;
+export default React.memo(Legend);

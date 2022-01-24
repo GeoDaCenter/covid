@@ -1,13 +1,15 @@
 import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { fetcher } from "../utils";
 
 export default function useGetTable({
   filesToFetch = [],
   shouldFetch = false,
-  storedData = {},
-  dataDispatch = () => {},
   dateLists = {}
 }) {
+  const dispatch = useDispatch();
+  const storedData = useSelector(({data}) => data.storedData);
+
   useEffect(() => {
     if (shouldFetch) {
       if (!filesToFetch[0].noFile) {
@@ -22,7 +24,7 @@ export default function useGetTable({
                       filesToFetch[idx]?.timespan
                     ))
                 ) {
-                  dataDispatch({
+                  dispatch({
                     type: "RECONCILE_TABLE",
                     payload: {
                       name: filesToFetch[idx].name,

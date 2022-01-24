@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { stitch } from "../utils";
-import { useDataStore } from "../contexts/Data";
 import useGetVariable from "./useGetVariable";
 
 export default function useGetScatterData({ xAxisVar, yAxisVar }) {
-  const [{ storedGeojson }] = useDataStore();
+  const storedGeojson = useSelector(({ data }) => data.storedGeojson);
   // pieces of redux state
-  const currentData = useSelector((state) => state.currentData);
+  const currentData = useSelector(({params}) => params.currentData);
   const geojsonData = storedGeojson[currentData];
   const [data, setData] = useState({
     data: [],

@@ -105,7 +105,7 @@ export default function ScatterChartComponent({}) {
   // const dispatch = useDispatch();
   const [xAxisVar, setXAxisVar] = useState("Percent Fully Vaccinated");
   const [yAxisVar, setYAxisVar] = useState("Death Count per 100K Population");
-  const variables = useSelector((state) => state.variables);
+  const variables = useSelector(({params}) => params.variables);
   const { scatterData, timestamp } = useGetScatterData({
     xAxisVar,
     yAxisVar,

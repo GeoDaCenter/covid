@@ -497,4 +497,4 @@ function DateSlider() {
   // }
 }
 
-export default DateSlider;
+export default React.memo(DateSlider);

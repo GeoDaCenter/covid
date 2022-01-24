@@ -52,7 +52,7 @@ const Scaleable = (props) => {
     window.addEventListener('touchend', removeTouchListener);
   };
 
-  const open = useSelector((state) => state.panelState[props.title]);
+  const open = useSelector(({ui}) => ui.panelState[props.title]);
 
   useEffect(() => {
     setWidth(props.defaultWidth);

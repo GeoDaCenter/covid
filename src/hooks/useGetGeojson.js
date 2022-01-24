@@ -1,3 +1,4 @@
+import { useDispatch } from "react-redux";
 import { useMemo } from "react";
 import { indexGeoProps, getIdOrder } from "../utils";
 
@@ -6,8 +7,8 @@ export default function useGetGeojson({
   geodaReady = false,
   currDataset = {},
   storedGeojson = {},
-  dataDispatch = () => {},
 }) {
+  const dispatch = useDispatch();
   useMemo(async () => {
     if (!geodaReady) return;
     if (storedGeojson[currDataset.file]) {
@@ -19,7 +20,7 @@ export default function useGetGeojson({
       );
       const properties = indexGeoProps(data, currDataset.join);
       const order = getIdOrder(data?.features || [], currDataset.join);
-      dataDispatch({
+      dispatch({
         type: "LOAD_GEOJSON",
         payload: {
           [currDataset.file]: {

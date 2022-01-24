@@ -8,7 +8,6 @@ import {
   onlyUniqueArray
 } from "../utils";
 import { useGeoda } from "../contexts/Geoda";
-import { useDataStore } from "../contexts/Data";
 import { useBackgroundLoadingContext } from "../contexts/BackgroundData";
 import useGetTable from "./useGetTable";
 import useGetGeojson from "./useGetGeojson";
@@ -29,10 +28,10 @@ const dateLists = getDateLists();
 export default function useLoadData() {
   // pieces of redux state
   const dispatch = useDispatch();
-  const dataParams = useSelector((state) => state.dataParams);
-  const currentData = useSelector((state) => state.currentData);
-  const datasets = useSelector((state) => state.datasets);
-  const tables = useSelector((state) => state.tables);
+  const dataParams = useSelector(({params}) => params.dataParams);
+  const currentData = useSelector(({params}) => params.currentData);
+  const datasets = useSelector(({params}) => params.datasets);
+  const tables = useSelector(({params}) => params.tables);
   const [firstLoad, setFirstLoad] = useState(true);
 
   // current state data params
@@ -50,11 +49,9 @@ export default function useLoadData() {
   ]).flat().filter(f => !!f).filter(onlyUniqueArray);
 
   const { geoda, geodaReady } = useGeoda();
-  const [
-    { storedData, storedGeojson },
-    dataDispatch,
-  ] = useDataStore();
-  const [canLoadInBackground, setCanLoadInBackground] = useBackgroundLoadingContext();
+  // const storedData = useSelector(({data}) => data.storedData);
+  const storedGeojson = useSelector(({data}) => data.storedGeojson);
+  const canLoadInBackground = useSelector(({data}) => data.canLoadInBackground);
 
   const numeratorParams = getFetchParams({
     dataParams,
@@ -71,32 +68,27 @@ export default function useLoadData() {
     currDataset,
     predicate: "denominator",
     dateList: dateLists["isoDateList"],
-    currTimespans,
+    currTimespans
   });
 
   const [numeratorData, numeratorDataReady, numeratorDataError] = useGetTable({
     filesToFetch: numeratorParams,
     shouldFetch: true,
-    storedData,
-    dataDispatch,
-    dateLists,
+    dateLists
   });
 
   const [denominatorData, denominatorDataReady, denominatorDataError] =
     useGetTable({
       filesToFetch: denominatorParams,
       shouldFetch: true,
-      storedData,
-      dataDispatch,
-      dateLists,
+      dateLists
     });
 
   const [geojsonData, geojsonDataReady, geojsonDataError] = useGetGeojson({
     geoda,
     geodaReady,
     currDataset,
-    storedGeojson,
-    dataDispatch,
+    storedGeojson
   });
   const dateIndices = numeratorData ? numeratorData.dates : null;
 
@@ -114,17 +106,16 @@ export default function useLoadData() {
   }, [numeratorData && (numeratorData?.dates && numeratorData.dates.slice(-1)[0])]);
 
   useEffect(() => {
-    setCanLoadInBackground(
-      !!numeratorDataReady && !!denominatorDataReady && !!geojsonDataReady
-    );
+    dispatch({
+      type:'SET_CAN_LOAD_IN_BACKGROUND',
+      payload: !!numeratorDataReady && !!denominatorDataReady && !!geojsonDataReady
+    })
   }, [numeratorDataReady, denominatorDataReady, geojsonDataReady]);
 
   const backgroundLoading = useBackgroundLoadData({
     currentGeography: currDataset.geography,
     tables,
     shouldFetch: canLoadInBackground,
-    storedData,
-    dataDispatch,
     currTimespans,
     dateLists,
     numeratorParams,

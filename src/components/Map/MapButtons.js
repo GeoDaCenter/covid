@@ -74,9 +74,9 @@ const ShareURL = styled.input`
   left: 110%;
 `;
 
-export default function MapButtons({ boxSelect, setBoxSelect }) {
-  const selectionKeys = useSelector((state) => state.selectionKeys);
-  const panelState = useSelector((state) => state.panelState);
+function MapButtons({ boxSelect, setBoxSelect }) {
+  const selectionKeys = useSelector(({params}) => params.selectionKeys);
+  const panelState = useSelector(({ui}) => ui.panelState);
   const viewport = useViewport();
   const setViewport = useSetViewport();
 
@@ -175,3 +175,5 @@ export default function MapButtons({ boxSelect, setBoxSelect }) {
     </MapButtonContainer>
   );
 }
+
+export default React.memo(MapButtons);

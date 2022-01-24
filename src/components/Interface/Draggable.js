@@ -76,7 +76,7 @@ const Draggable = ({
 }) => {
   // Redux Dispatch and selector
   const dispatch = useDispatch();
-  const open = useSelector((state) => state.panelState[title]);
+  const open = useSelector(({ui}) => ui.panelState[title]);
 
   // Local state, dragging
   const [X, setX] = useState(defaultX);

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useDataStore } from "../contexts/Data";
 import { findIn, findAllDefaults, findTableOrDefault } from "../utils";
 import dataDateRanges from "../config/dataDateRanges";
 
@@ -141,12 +140,12 @@ export default function useGetLineChartData({ table = "cases" }) {
   });
 
   // pieces of redux state
-  const currentData = useSelector((state) => state.currentData);
-  const datasets = useSelector((state) => state.datasets);
-  const dataParams = useSelector((state) => state.dataParams);
-  const tables = useSelector((state) => state.tables);
-  const selectionKeys = useSelector((state) => state.selectionKeys);
-  const [{ storedGeojson }] = useDataStore();
+  const currentData = useSelector(({params}) => params.currentData);
+  const datasets = useSelector(({params}) => params.datasets);
+  const dataParams = useSelector(({params}) => params.dataParams);
+  const tables = useSelector(({params}) => params.tables);
+  const selectionKeys = useSelector(({params}) => params.selectionKeys);
+  const storedGeojson = useSelector(({data}) => data.storedGeojson);
   // current state data params
   const currDataset = findIn(datasets, "file", currentData);
   const currTables = [

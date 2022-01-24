@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 // import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import { createStore } from "redux";
-import rootReducer from "./reducers";
+import rootReducer from "./reducers/rootReducer";
 import { GeodaProvider } from "./contexts/Geoda";
 import { DataProvider } from "./contexts/Data";
 import { BackgroundLoadingProvider } from "./contexts/BackgroundData";
@@ -27,35 +27,26 @@ import "./index.css";
 
 const store = createStore(
   rootReducer,
-  // typeof window === "object" &&
-  //   window.__REDUX_DEVTOOLS_EXTENSION__ &&
-  //   window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&
-  //   window.__REDUX_DEVTOOLS_EXTENSION__({
-  //     stateSanitizer: (state) =>
-  //       state.storedGeojson
-  //         ? {
-  //             ...state,
-  //             storedData: "<<EXCLUDED>>",
-  //             storedGeojson: "<<EXCLUDED>>",
-  //           }
-  //         : state,
-  //   })
+  typeof window === "object" &&
+    window.__REDUX_DEVTOOLS_EXTENSION__ &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&
+    window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 // const persistor = persistStore(store)
 
 ReactDOM.render(
   <React.StrictMode>
-    <BackgroundLoadingProvider>
+    {/* <BackgroundLoadingProvider> */}
       <Provider store={store}>
         {/* <PersistGate persistor={persistor}> */}
         <GeodaProvider>
-          <DataProvider>
+          {/* <DataProvider> */}
             <App />
-          </DataProvider>
+          {/* </DataProvider> */}
         </GeodaProvider>
         {/* </PersistGate> */}
       </Provider>
-    </BackgroundLoadingProvider>
+    {/* </BackgroundLoadingProvider> */}
   </React.StrictMode>,
   document.getElementById("root")
   // serviceWorkerRegistration.register();

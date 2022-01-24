@@ -115,7 +115,7 @@ const chunkArray = (data, chunk) => {
   return tempArray;
 };
 
-export default function MapSection({
+function MapSection({
   currentMapGeography,
   currentMapData,
   currentMapID,
@@ -125,17 +125,17 @@ export default function MapSection({
   currIdCol
 }) {
   // fetch pieces of state from store
-  const dotDensityData = useSelector((state) => state.dotDensityData);
   // const currentMapData = useSelector(state => state.mapData.data);
   // const currentMapID = useSelector(state => state.mapData.params);
   // const currentHeightScale = useSelector(state => state.mapData.heightScale);
-  const storedGeojson = useSelector((state) => state.storedGeojson);
+  const dotDensityData = useSelector(({data}) => data.dotDensityData);
+  const storedGeojson = useSelector(({data}) => data.storedGeojson);
+  const storedCartogramData = useSelector(({data}) => data.storedCartogramData);
   // const currentMapGeography = storedGeojson[currentData]?.data||[]
-  const colorFilter = useSelector((state) => state.colorFilter);
-  const storedCartogramData = useSelector((state) => state.storedCartogramData);
+  const colorFilter = useSelector(({ui}) => ui.colorFilter);
   // const storedLisaData = useSelector((state) => state.storedLisaData);
-  const shouldPanMap = useSelector((state) => state.shouldPanMap);
-  const panelState = useSelector((state) => state.panelState);
+  const shouldPanMap = useSelector(({ui}) => ui.shouldPanMap);
+  const panelState = useSelector(({ui}) => ui.panelState);
 
   const isPoint = currentMapGeography?.features
     ? currentMapGeography.features[0].geometry.type === "Point"
@@ -143,7 +143,7 @@ export default function MapSection({
 
   const viewport = useViewport();
   const setViewport = useSetViewport();
-  const currMapViewport = useFindViewport(storedGeojson[currentData]?.mapId);
+  const currMapViewport = null//useFindViewport(storedGeojson[currentData]?.mapId);
   // component state elements
   // hover and highlight geographibes
   const [hoverGeog, setHoverGeog] = useState(null);
@@ -965,3 +965,5 @@ export default function MapSection({
     </MapContainerOuter>
   );
 }
+
+export default React.memo(MapSection)

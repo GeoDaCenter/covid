@@ -206,7 +206,7 @@ const tutorialInfo = [
 // Infobox component
 const InfoBox = () => {
   // Redux -- just panel state open/closed
-  const panelOpen = useSelector((state) => state.panelState.tutorial);
+  const panelOpen = useSelector(({ui}) => ui.panelState.tutorial);
 
   // Selected Article (local state)
   const [currArticle, setCurrArticle] = useState('welcome');

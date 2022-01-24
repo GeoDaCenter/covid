@@ -7,8 +7,6 @@ import {
   getFetchParams,
   findSecondaryMonth,
 } from "../utils";
-import { useDataStore } from "../contexts/Data";
-import { useBackgroundLoadingContext } from "../contexts/BackgroundData";
 import useGetTable from "./useGetTable";
 const dateLists = getDateLists();
 
@@ -17,16 +15,16 @@ export default function useGetVariable({
   priorityLoad = false,
   dataset = false,
 }) {
-  const [contextCanLoad] = useBackgroundLoadingContext();
-  const canLoadInBackground = priorityLoad || contextCanLoad;
-  const [{ storedData, storedGeojson }, dataDispatch] = useDataStore();
+  const canLoadInBackground = useSelector(({data}) => data.canLoadInBackground);
+  const storedData = useSelector(({ data }) => data.storedData);
+  const storedGeojson = useSelector(({ data }) => data.storedGeojson);
   // pieces of redux state
-  const stateDataset = useSelector((state) => state.currentData);
+  const stateDataset = useSelector(({params}) => params.currentData);
   const currentData = dataset || stateDataset;
-  const dataParams = useSelector((state) => state.dataParams);
-  const datasets = useSelector((state) => state.datasets);
-  const tables = useSelector((state) => state.tables);
-  const variables = useSelector((state) => state.variables);
+  const dataParams = useSelector(({params}) => params.dataParams);
+  const datasets = useSelector(({params}) => params.datasets);
+  const tables = useSelector(({params}) => params.tables);
+  const variables = useSelector(({params}) => params.variables);
   const geojsonData = storedGeojson[currentData];
   // current state data params
   const currIndex = dataParams.nIndex || dataParams.dIndex;
@@ -58,14 +56,12 @@ export default function useGetVariable({
       filesToFetch: fetchParams[0],
       shouldFetch: canLoadInBackground,
       storedData,
-      dataDispatch,
       dateLists,
     }),
     useGetTable({
       filesToFetch: fetchParams[1],
       shouldFetch: canLoadInBackground,
       storedData,
-      dataDispatch,
       dateLists,
     }),
   ];

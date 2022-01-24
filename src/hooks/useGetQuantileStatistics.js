@@ -1,5 +1,4 @@
 import { useSelector } from "react-redux";
-import { useDataStore } from "../contexts/Data";
 import useGetVariable from "./useGetVariable";
 import { quantile, quantileRank } from 'simple-statistics'
 import { useEffect, useState } from "react";
@@ -10,10 +9,10 @@ export default function useGetQuantileStatistics({
     geoid=null,
     getStateStats=true,
 }){
-    const [{ storedGeojson }] = useDataStore();
+    const storedGeojson = useSelector(({ data }) => data.storedGeojson);
     const [stats, setStats] = useState({});
     // pieces of redux state
-    const currentData = useSelector((state) => state.currentData);
+    const currentData = useSelector(({params}) => params.currentData);
     const geojsonData = storedGeojson[dataset||currentData];
     const geoidProperties = geojsonData?.properties && geojsonData.properties[geoid];
     const data = useGetVariable({

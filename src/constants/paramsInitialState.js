@@ -4,6 +4,7 @@ import {
   variableTree,
   urlParamsTree,
 } from "../config/index";
+
 import variables from "../config/variables";
 import tables from "../config/tables";
 import datasets from "../config/datasets";
@@ -28,32 +29,27 @@ const currentData = paramsDict.hasOwnProperty("src")
   : defaultData;
 const currDataset = findIn(datasets, "file", currentData);
 
-export const INITIAL_STATE = {
+export default {
   // Default data state
   currentData,
+  currentTable: {
+    numerator: findTableOrDefault(currDataset, tables, "cases"),
+    denominator: "properties",
+  },
+  currentZVariable: null,
   currentMethod: paramsDict.hasOwnProperty("mthd")
     ? paramsDict.mthd
     : "natural_breaks",
+  // defaults
   datasets,
+  dates: {},
   tables,
   variables,
   datasetTree,
   variableTree,
   urlParamsTree,
-  // Large data storage
-  lazyFetched: false,
-  
-  storedData: {},
-  storedGeojson: {},
-  dotDensityData: {},
-  resourceLayerData: {
-    clinics: [],
-    hospitals: [],
-    vaccineSites: [],
-  },
-  dotDensityData: [],
-  centroids: {},
-  // data and map params
+  urlParams: {},
+  // params
   dataParams: {
     variableName: "Confirmed Count per 100K Population",
     numerator: "cases",
@@ -127,49 +123,7 @@ export const INITIAL_STATE = {
   chartParams: {
     table: "cases",
     populationNormalized: false,
-  },
-  // current data
-  chartData: [{}],
-  currentTable: {
-    numerator: findTableOrDefault(currDataset, tables, "cases"),
-    denominator: "properties",
-  },
-  currentZVariable: null,
-  dates: {},
-  mapData: {
-    data: [],
-    params: [],
-  },
-  sidebarData: {},
-  // selection info
+  },  
   selectionKeys: [],
   selectionNames: [],
-  // UI tags
-  anchorEl: null,
-  isPlaying: false,
-  mapLoaded: false,
-  notification: {
-    info: null,
-    location: "",
-  },
-  panelState: {
-    variables: true,
-    info: false,
-    tutorial: false,
-    lineChart: true,
-    context: false,
-    contextPos: { x: null, y: null },
-    dataLoader: false,
-    scatterChart: false,
-    reportBuilder: false
-  },
-  urlParams: {},
-  tooltipInfo: {
-    x: 0,
-    y: 0,
-    data: null,
-  },
-  shouldUpdate: true,
-  isLoading: true,
-  mapScreenshotData: {},
 };

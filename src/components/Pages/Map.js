@@ -223,15 +223,15 @@ const MapPageContainer = () => {
   // These selectors access different pieces of the store. While App mainly
   // dispatches to the store, we need checks to make sure side effects
   // are OK to trigger. Issues arise with missing data, columns, etc.
-  const mapParams = useSelector((state) => state.mapParams);
-  const dataParams = useSelector((state) => state.dataParams);
-  const currentData = useSelector((state) => state.currentData);
-  const dataNote = useSelector((state) => state.dataParams.dataNote);
-  const fixedScale = useSelector((state) => state.dataParams.fixedScale);
-  const variableName = useSelector((state) => state.dataParams.variableName);
-  const panelState = useSelector((state) => state.panelState);
+  const mapParams = useSelector(({params}) => params.mapParams);
+  const dataParams = useSelector(({params}) => params.dataParams);
+  const currentData = useSelector(({params}) => params.currentData);
+  const dataNote = useSelector(({params}) => params.dataParams.dataNote);
+  const fixedScale = useSelector(({params}) => params.dataParams.fixedScale);
+  const variableName = useSelector(({params}) => params.dataParams.variableName);
+  const panelState = useSelector(({ui}) => ui.panelState);
   const [defaultDimensions, setDefaultDimensions] = useState(getDefaultDimensions());
-  const datasets = useSelector((state) => state.datasets);
+  const datasets = useSelector(({params}) => params.datasets);
   const currIdCol = findIn(datasets, "file", currentData).join;
 
   // default width handlers on resize
@@ -251,6 +251,8 @@ const MapPageContainer = () => {
     mapParams,
     currentData
   });
+
+  console.log('map page container rendered')
 
   const showTopPanel = dataParams.nType !== 'characteristic'
   

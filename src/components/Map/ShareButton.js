@@ -7,9 +7,9 @@ import { getURLParams } from '../../utils';
 
 export default function ShareButton() {
   const viewport = useViewport();
-  const currentData = useSelector((state) => state.currentData);
-  const mapParams = useSelector((state) => state.mapParams);
-  const dataParams = useSelector((state) => state.dataParams);
+  const currentData = useSelector(({params}) => params.currentData);
+  const mapParams = useSelector(({params}) => params.mapParams);
+  const dataParams = useSelector(({params}) => params.dataParams);
 
   const [shared, setShared] = useState(false);
 

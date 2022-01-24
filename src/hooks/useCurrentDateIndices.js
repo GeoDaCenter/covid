@@ -1,17 +1,16 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useDataStore } from '../contexts/Data';
 import dataDateRanges from "../config/dataDateRanges";
 
 export default function useCurrentDateIndices() {
-    const [{ storedData }] = useDataStore();    
-    const nIndex = useSelector((state) => state.dataParams.nIndex);
-    const dIndex = useSelector((state) => state.dataParams.dIndex);
-    const nRange = useSelector((state) => state.dataParams.nRange);
-    const dRange = useSelector((state) => state.dataParams.dRange);
-    const rangeType = useSelector((state) => state.dataParams.rangeType)
-    const dates = useSelector((state) => state.dates);
-    const currentTable = useSelector((state) => state.currentTable);
+    const storedData = useSelector(({ data }) => data.storedData);
+    const nIndex = useSelector(({params}) => params.dataParams.nIndex);
+    const dIndex = useSelector(({params}) => params.dataParams.dIndex);
+    const nRange = useSelector(({params}) => params.dataParams.nRange);
+    const dRange = useSelector(({params}) => params.dataParams.dRange);
+    const rangeType = useSelector(({params}) => params.dataParams.rangeType)
+    const dates = useSelector(({params}) => params.dates);
+    const currentTable = useSelector(({params}) => params.currentTable);
     const currDates = storedData[currentTable?.numerator?.name?.split('.')[0]]?.dates;
     const currDatesAvailable = dataDateRanges[currentTable?.numerator?.name?.split('.')[0]];
     const currentIndex = (nIndex||dIndex) === null 

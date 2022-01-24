@@ -61,7 +61,7 @@ const CloseNotification = styled.button`
 
 const NotificationBox = () => {
   const dispatch = useDispatch();
-  const notification = useSelector((state) => state.notification);
+  const notification = useSelector(({ui}) => ui.notification);
 
   return (
     notification.info && (

@@ -3,7 +3,6 @@ import React, { useState, useRef, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled, { keyframes } from 'styled-components';
 import { useGeoda } from '../../contexts/Geoda';
-import { useDataStore } from '../../contexts/Data';
 
 import { setPanelState, addCustomData } from '../../actions';
 import { colorScales } from '../../config/scales';
@@ -520,8 +519,7 @@ const addIndex = (geojson) => ({
 // DataLoader component
 export default function DataLoader() {
   const dispatch = useDispatch();
-  const [_, dataDispatch] = useDataStore();
-  const customData = useSelector((state) => state.customData);
+  const customData = useSelector(({params}) => params.customData);
 
   const [uploadTab, setUploadTab] = useState(true);
   const [selectedFile, setSelectedFile] = useState('');
@@ -634,7 +632,7 @@ export default function DataLoader() {
   const handleClose = () => setEditor({ open: false, idx: false });
 
   const handleLoadData = () => {
-    dataDispatch({
+    dispatch({
       type:'LOAD_GEOJSON',
       payload: {'customdata': currentGeojson}
     })

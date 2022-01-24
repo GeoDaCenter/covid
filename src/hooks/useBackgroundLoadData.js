@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
     findAllDefaults,
     fetcher
@@ -8,14 +9,14 @@ export default function useBackgroundLoadData({
     currentGeography='',
     shouldFetch=false,
     tables=[],
-    storedData={},
-    dataDispatch=()=>{},
     currTimespans=['latest'],
     dateLists={},
     numeratorParams={},
     denominatorParams={},
     adjacentMonths=[],
   }){  
+    const dispatch = useDispatch();
+    const storedData = useSelector(({data}) => data.storedData);
     const adjacentMainToFetch = adjacentMonths.map(timespan => [
       {...numeratorParams[0], timespan},
       {...denominatorParams[0], timespan},
@@ -36,7 +37,7 @@ export default function useBackgroundLoadData({
               const newData = response.value;
               if (!(storedData[filesToFetch[idx]?.name] && storedData[filesToFetch[idx]?.name][filesToFetch[idx]?.loaded?.includes(filesToFetch[idx]?.timespan)])) {
                 if (newData && newData.data) {
-                  dataDispatch({
+                  dispatch({
                     type: 'RECONCILE_TABLE',
                     payload: {
                       name: filesToFetch[idx].name,
@@ -45,7 +46,7 @@ export default function useBackgroundLoadData({
                     }
                   })
                 } else if (response.status === 'rejected') {
-                  dataDispatch({
+                  dispatch({
                     type: 'RECONCILE_TABLE',
                     payload: {
                       name: filesToFetch[idx].name,

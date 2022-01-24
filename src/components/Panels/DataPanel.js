@@ -232,16 +232,16 @@ export default function DataPanel({
   manualSelectionKeys=false,
   manualOpen=false
 }) {
-  const panelState = useSelector((state) => state.panelState);
+  const panelState = useSelector(({ui}) => ui.panelState);
   const panelOpen = manualOpen || panelState.info;
-  const reduxSelectionKeys = useSelector((state) => state.selectionKeys);
+  const reduxSelectionKeys = useSelector(({params}) => params.selectionKeys);
   const selectionKeys = manualSelectionKeys||reduxSelectionKeys;
   const [expanded, setExpanded] = useState(true);
   const sidebarData = useGetSidebarData({
     selectionKeys,
     panelOpen
   });
-  const dates = useSelector((state) => state.dates);
+  const dates = useSelector(({params}) => params.dates);
   // Set expanded or contracted view
   const handleExpandContract = (event) => setExpanded(event.target.value);
   return (

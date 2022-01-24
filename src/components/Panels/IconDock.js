@@ -119,10 +119,10 @@ const DockLabels = styled.div`
 
 `
 
-export default function IconDock(){
+function IconDock(){
   const dispatch = useDispatch();
   const [hoveredIcon, setHoveredIcon] = useState(null);
-  const panelState = useSelector(state => state.panelState);
+  const panelState = useSelector(({ui}) => ui.panelState);
   const buttons = [
     {
       symbol: 'settings',
@@ -217,3 +217,5 @@ export default function IconDock(){
     </DockContainerOuter>
   );
 };
+
+export default React.memo(IconDock)

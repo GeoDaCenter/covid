@@ -19,8 +19,8 @@ import {
   setVariableParams,
   setMapParams,
   setCurrentData,
-  setPanelState,
-  setParametersAndData,
+  // setPanelState,
+  // setParametersAndData,
   setNotification,
   changeDotDensityMode,
   toggleDotDensityRace,
@@ -293,36 +293,37 @@ const BYODButton = styled.button`
 `;
 const onlyUnique = (value, index, self) => self.indexOf(value) === index;
 
-export default function VariablePanel() {
+function VariablePanel() {
+  console.log('variable panel');
   const dispatch = useDispatch();
   const variablePanelRef = useRef(null);
-  const currentData = useSelector((state) => state.currentData);
+  const currentData = useSelector(({params}) => params.currentData);
 
-  const binMode = useSelector((state) => state.mapParams.binMode);
-  const mapType = useSelector((state) => state.mapParams.mapType);
-  const vizType = useSelector((state) => state.mapParams.vizType);
+  const binMode = useSelector(({params}) => params.mapParams.binMode);
+  const mapType = useSelector(({params}) => params.mapParams.mapType);
+  const vizType = useSelector(({params}) => params.mapParams.vizType);
   const dotDensityParams = useSelector(
-    (state) => state.mapParams.dotDensityParams,
+    ({params}) => params.mapParams.dotDensityParams,
   );
 
-  const overlay = useSelector((state) => state.mapParams.overlay);
-  const resource = useSelector((state) => state.mapParams.resource);
+  const overlay = useSelector(({params}) => params.mapParams.overlay);
+  const resource = useSelector(({params}) => params.mapParams.resource);
 
-  const panelState = useSelector((state) => state.panelState);
+  const panelState = useSelector(({ui}) => ui.panelState);
 
-  const numerator = useSelector((state) => state.dataParams.numerator);
-  const variableName = useSelector((state) => state.dataParams.variableName);
-  const nType = useSelector((state) => state.dataParams.nType);
-  const nRange = useSelector((state) => state.dataParams.nRange);
-  const dType = useSelector((state) => state.dataParams.dType);
-  const rangeType = useSelector((state) => state.dataParams.rangeType);
+  const numerator = useSelector(({params}) => params.dataParams.numerator);
+  const variableName = useSelector(({params}) => params.dataParams.variableName);
+  const nType = useSelector(({params}) => params.dataParams.nType);
+  const nRange = useSelector(({params}) => params.dataParams.nRange);
+  const dType = useSelector(({params}) => params.dataParams.dType);
+  const rangeType = useSelector(({params}) => params.dataParams.rangeType);
 
-  const variables = useSelector((state) => state.variables);
-  const datasets = useSelector((state) => state.datasets);
+  const variables = useSelector(({params}) => params.variables);
+  const datasets = useSelector(({params}) => params.datasets);
   const currentPreset = findIn(datasets, 'file', currentData);
-  const variableTree = useSelector((state) => state.variableTree);
-  const datasetTree = useSelector((state) => state.datasetTree);
-  const urlParamsTree = useSelector((state) => state.urlParamsTree);
+  const variableTree = useSelector(({params}) => params.variableTree);
+  const datasetTree = useSelector(({params}) => params.datasetTree);
+  const urlParamsTree = useSelector(({params}) => params.urlParamsTree);
   const allGeographies = Object.values(variableTree)
     .flatMap((o) => Object.keys(o))
     .filter(onlyUnique);
@@ -916,3 +917,5 @@ export default function VariablePanel() {
     </VariablePanelContainer>
   );
 }
+
+export default React.memo(VariablePanel)

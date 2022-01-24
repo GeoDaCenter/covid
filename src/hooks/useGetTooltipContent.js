@@ -1,6 +1,5 @@
 import React, {useMemo} from 'react';
 import { useSelector } from 'react-redux';
-import { useDataStore } from '../contexts/Data';
 import { findIn, findAllDefaults, parseTooltipData } from '../utils';
 
 export default function useGetTooltipContent({
@@ -8,11 +7,11 @@ export default function useGetTooltipContent({
     geoid=null
 }){
     // pieces of redux state
-    const currentData = useSelector((state) => state.currentData);
-    const dates = useSelector((state) => state.dates);
-    const dataParams = useSelector((state) => state.dataParams);
-    const datasets = useSelector((state) => state.datasets);
-    const tables = useSelector((state) => state.tables);
+    const currentData = useSelector(({params}) => params.currentData);
+    const dates = useSelector(({params}) => params.dates);
+    const dataParams = useSelector(({params}) => params.dataParams);
+    const datasets = useSelector(({params}) => params.datasets);
+    const tables = useSelector(({params}) => params.tables);
 
     // current state data params
     const currIndex = dataParams.nIndex||dataParams.dIndex;
@@ -22,10 +21,8 @@ export default function useGetTooltipContent({
         ...findAllDefaults(tables, currDataset.geography).map(dataspec => ({...dataspec}))
     ].filter((entry, index, self) => self.findIndex(f => f.table === entry.table) === index)
     
-    const [{
-      storedData,
-      storedGeojson,
-    }] = useDataStore();
+    const storedGeojson = useSelector(({data}) => data.storedGeojson);
+    const storedData = useSelector(({data}) => data.storedData);
 
     const tooltipContent = useMemo(() => {
         if (data) {

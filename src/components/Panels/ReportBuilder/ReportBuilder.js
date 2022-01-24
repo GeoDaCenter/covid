@@ -48,7 +48,7 @@ const steps = [
 
 export default function ReportBuilder() {
   const dispatch = useDispatch();
-  const open = useSelector((state) => state.panelState.reportBuilder);
+  const open = useSelector(({ui}) => ui.panelState.reportBuilder);
   const handleClose = () =>
     dispatch({ type: "TOGGLE_PANEL", payload: "reportBuilder" });
   const [activeStep, setActiveStep] = useState(0);

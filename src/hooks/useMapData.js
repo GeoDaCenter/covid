@@ -1,10 +1,9 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useLoadData from "./useLoadData";
 import { useGeoda } from "../contexts/Geoda";
 import { getVarId, getDataForBins } from "../utils";
 import { fixedScales } from "../config/scales";
-import { useDataStore } from "../contexts/Data";
 import { colorScales } from "../config/scales";
 // function getAndCacheWeights
 // function getAndCacheCentroids
@@ -85,7 +84,8 @@ export function useLisaMap({
   varId,
 }) {
   const { geoda, geodaReady } = useGeoda();
-  const [{ storedGeojson }, dataDispatch] = useDataStore();
+  const dispatch = useDispatch();
+  const storedGeojson = useSelector(({data})=>data.storedGeojson);
   const [data, setData] = useState({
     lisaData: [],
     lisaVarId: '',
@@ -104,7 +104,7 @@ export function useLisaMap({
             lisaVarId: varId,
           });
           if (shouldCacheWeights) {
-            dataDispatch({
+            dispatch({
               type: "ADD_WEIGHTS",
               payload: {
                 id: currentData,
@@ -158,7 +158,7 @@ export function useCartogramMap({
 
 const getAsyncBins = async (geoda, mapParams, binData) =>
   mapParams.mapType === "natural_breaks"
-    ? await geoda.naturalBreaks(mapParams.nBins, binData)
+    ? await geoda.quantileBreaks(mapParams.nBins, binData)
     : await geoda.hinge15Breaks(binData);
 
 function useGetBins({
@@ -385,7 +385,6 @@ export default function useMapData({
     currentData
     // JSON.stringify(cartogramData),
   ]);
-  
   return [
     geojsonData?.data, // geography
     colorAndValueData, // color and value data

@@ -5,8 +5,8 @@ import { incrementDate } from '../actions';
 export default function useTickUpdate({
   currDatesAvailable
 }) {
-  const nIndex = useSelector((state) => state.dataParams.nIndex);
-  const mapType = useSelector((state) => state.mapParams.mapType);
+  const nIndex = useSelector(({params}) => params.dataParams.nIndex);
+  const mapType = useSelector(({params}) => params.mapParams.mapType);
   const [isTicking, setIsTicking] = useState(false);
   const [tickTimer, setTickTimer] = useState(100);
   const [tickTimeout, setTickTimeout] = useState();

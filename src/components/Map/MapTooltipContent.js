@@ -9,7 +9,7 @@ import { hasProps } from "../../utils";
 
 export default function MapTooltipContent() {
   // destructure the object for cleaner formatting
-  const { x, y, data, geoid } = useSelector((state) => state.tooltipInfo) || {};
+  const { x, y, data, geoid } = useSelector(({ui}) => ui.tooltipInfo) || {};
   const tooltipRef = useRef(null);
   const tooltipContent = useGetTooltipContent({ data, geoid });
   if (!tooltipContent || !Object.keys(tooltipContent).length) return <></>;
