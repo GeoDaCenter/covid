@@ -3,6 +3,7 @@ import { TextContainerReport } from "./TextContainerReport";
 import { LineChartReport } from "./LineChartReport"
 import { TableReport } from "./TableReport";
 import { ScatterChartReport } from "./ScatterChartReport";
+import MapReport from "./MapReport";
 
 const mapping = {
   textReport: TextReport,
@@ -10,6 +11,7 @@ const mapping = {
   lineChart: LineChartReport,
   table: TableReport,
   scatterChart: ScatterChartReport,
+  map: MapReport
 };
 
 export default function ReportComponentMapping(props) {

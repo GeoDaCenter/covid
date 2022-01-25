@@ -63,6 +63,7 @@ const generateJoinData = ({
   }
   return [joinData, maxDesirableHeight / Math.max(...binData)];
 };
+
 const getLisa = async (currentGeojson, geoda, dataForLisa) => {
   const weights =
     currentGeojson && "Queen" in currentGeojson.weights
@@ -392,5 +393,6 @@ export default function useMapData({
     bins, // bins for legend etc,
     heightScale, // height scale
     !(dataReady && (bins?.breaks||lisaData) && Object.keys(colorAndValueData).length),
+    geojsonData
   ];
 }

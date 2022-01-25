@@ -13,6 +13,11 @@ export const templates = {
           height: 3,
         },
         {
+          type: "map",
+          width:2,
+          height:2
+        },
+        {
           type: "lineChart",
           width: 2,
           height: 3,

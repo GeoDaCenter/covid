@@ -1,0 +1,1318 @@
+{
+    "version": 8,
+    "name": "Experimental - Light",
+    "metadata": {
+        "mapbox:type": "default",
+        "mapbox:origin": "basic-v1",
+        "mapbox:sdk-support": {
+            "js": "1.9.0",
+            "android": "8.6.0",
+            "ios": "5.6.0"
+        },
+        "mapbox:autocomposite": true,
+        "mapbox:groups": {
+            "Administrative boundaries, admin": {
+                "name": "Administrative boundaries, admin",
+                "collapsed": true
+            },
+            "Natural features, natural-labels": {
+                "name": "Natural features, natural-labels",
+                "collapsed": true
+            },
+            "Place labels, place-labels": {
+                "name": "Place labels, place-labels",
+                "collapsed": false
+            },
+            "Point of interest labels, poi-labels": {
+                "name": "Point of interest labels, poi-labels",
+                "collapsed": true
+            },
+            "bedb775d0e55b2c07e35fe626e8855d8": {"name": "Group"}
+        },
+        "mapbox:uiParadigm": "layers"
+    },
+    "center": [-86.23191968412014, 42.68905053941222],
+    "zoom": 6.8854605545176515,
+    "bearing": 0,
+    "pitch": 0,
+    "sources": {
+        "composite": {
+            "url": "mapbox://lixun910.5k6jyt33,lixun910.7s0ljdc6,mapbox.mapbox-streets-v8,lixun910.405bjdze,lixun910.5bmq1hai,lixun910.3iql0bc1,lixun910.c1k7tmzy,lixun910.62ab73ca,mapbox.mapbox-terrain-v2",
+            "type": "vector"
+        }
+    },
+    "sprite": "mapbox://sprites/lixun910/ckytclh9g000a14qf1y5k9292/ei6q81b5ywryaykkp3eopmi80",
+    "glyphs": "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
+    "layers": [
+        {
+            "id": "blackbelt-geom",
+            "type": "fill",
+            "source": "composite",
+            "source-layer": "blackbelt-highlight-3vhzb8",
+            "layout": {"visibility": "none"},
+            "paint": {
+                "fill-color": "hsla(0, 0%, 0%, 0.5)",
+                "fill-outline-color": "hsla(0, 0%, 0%, 0)"
+            }
+        },
+        {
+            "id": "segregated_cities-geom",
+            "type": "fill",
+            "source": "composite",
+            "source-layer": "segregated_cities-9w47nz",
+            "layout": {"visibility": "none"},
+            "paint": {
+                "fill-outline-color": "hsla(0, 0%, 0%, 0)",
+                "fill-color": "hsla(0, 0%, 0%, 0.5)"
+            }
+        },
+        {
+            "id": "native_american_reservations-geom",
+            "type": "fill",
+            "source": "composite",
+            "source-layer": "nativeamericanreservations-hi-4aqk3l",
+            "layout": {"visibility": "none"},
+            "paint": {
+                "fill-outline-color": "hsla(0, 0%, 0%, 0)",
+                "fill-color": "hsla(0, 0%, 0%, 0.5)"
+            }
+        },
+        {
+            "id": "uscongress-districts-geom",
+            "type": "line",
+            "source": "composite",
+            "source-layer": "US_Congressional_Districts-4jecfj",
+            "layout": {"visibility": "none"},
+            "paint": {"line-color": "hsl(0, 0%, 12%)"}
+        },
+        {
+            "id": "hillshade",
+            "type": "fill",
+            "source": "composite",
+            "source-layer": "hillshade",
+            "layout": {},
+            "paint": {
+                "fill-color": "hsl(0, 0%, 10%)",
+                "fill-outline-color": "hsla(0, 0%, 0%, 0)",
+                "fill-opacity": 0.1
+            }
+        },
+        {
+            "id": "water",
+            "type": "fill",
+            "source": "composite",
+            "source-layer": "water",
+            "layout": {},
+            "paint": {
+                "fill-color": [
+                    "case",
+                    ["==", ["id"], 0],
+                    "hsl(0, 0%, 85%)",
+                    "hsl(0, 0%, 85%)"
+                ],
+                "fill-outline-color": "hsla(0, 0%, 0%, 0)",
+                "fill-antialias": false
+            }
+        },
+        {
+            "id": "admin-1-boundary-bg",
+            "type": "line",
+            "source": "composite",
+            "source-layer": "admin",
+            "filter": [
+                "all",
+                ["==", ["get", "admin_level"], 1],
+                ["==", ["get", "maritime"], "false"],
+                ["match", ["get", "worldview"], ["all", "US"], true, false]
+            ],
+            "layout": {"line-join": "bevel"},
+            "paint": {
+                "line-color": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    8,
+                    "hsl(216, 36%, 16%)",
+                    16,
+                    "rgb(52, 52, 52)"
+                ],
+                "line-width": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    7,
+                    3.75,
+                    12,
+                    5.5
+                ],
+                "line-opacity": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    7,
+                    0,
+                    8,
+                    0.75
+                ],
+                "line-dasharray": [1, 0],
+                "line-translate": [0, 0],
+                "line-blur": ["interpolate", ["linear"], ["zoom"], 3, 0, 8, 3]
+            }
+        },
+        {
+            "id": "admin-0-boundary-bg",
+            "type": "line",
+            "source": "composite",
+            "source-layer": "admin",
+            "minzoom": 1,
+            "filter": [
+                "all",
+                ["==", ["get", "admin_level"], 0],
+                ["==", ["get", "maritime"], "false"],
+                ["match", ["get", "worldview"], ["all", "US"], true, false]
+            ],
+            "paint": {
+                "line-width": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    2,
+                    2,
+                    10,
+                    5
+                ],
+                "line-color": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    6,
+                    "hsl(216, 36%, 16%)",
+                    8,
+                    "rgb(52, 52, 52)"
+                ],
+                "line-opacity": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    3,
+                    0,
+                    4,
+                    0.5
+                ],
+                "line-translate": [0, 0],
+                "line-blur": ["interpolate", ["linear"], ["zoom"], 3, 0, 10, 2]
+            }
+        },
+        {
+            "id": "admin-1-boundary",
+            "type": "line",
+            "source": "composite",
+            "source-layer": "admin",
+            "filter": [
+                "all",
+                ["==", ["get", "admin_level"], 1],
+                ["==", ["get", "maritime"], "false"],
+                ["match", ["get", "worldview"], ["all", "US"], true, false]
+            ],
+            "layout": {"line-join": "round", "line-cap": "round"},
+            "paint": {
+                "line-dasharray": [
+                    "step",
+                    ["zoom"],
+                    ["literal", [2, 0]],
+                    7,
+                    ["literal", [2, 2, 6, 2]]
+                ],
+                "line-width": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    7,
+                    1,
+                    12,
+                    1.5
+                ],
+                "line-opacity": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    2,
+                    0,
+                    3,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "admin-0-boundary",
+            "type": "line",
+            "source": "composite",
+            "source-layer": "admin",
+            "minzoom": 1,
+            "filter": [
+                "all",
+                ["==", ["get", "admin_level"], 0],
+                ["==", ["get", "disputed"], "false"],
+                ["==", ["get", "maritime"], "false"],
+                ["match", ["get", "worldview"], ["all", "US"], true, false]
+            ],
+            "layout": {"line-join": "round", "line-cap": "round"},
+            "paint": {
+                "line-color": "hsl(0, 0%, 51%)",
+                "line-width": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    3,
+                    0.5,
+                    10,
+                    2
+                ],
+                "line-dasharray": [10, 0]
+            }
+        },
+        {
+            "id": "admin-0-boundary-disputed",
+            "type": "line",
+            "source": "composite",
+            "source-layer": "admin",
+            "minzoom": 1,
+            "filter": [
+                "all",
+                ["==", ["get", "disputed"], "true"],
+                ["==", ["get", "admin_level"], 0],
+                ["==", ["get", "maritime"], "false"],
+                ["match", ["get", "worldview"], ["all", "US"], true, false]
+            ],
+            "layout": {"line-join": "round"},
+            "paint": {
+                "line-color": "rgb(130, 130, 130)",
+                "line-width": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    3,
+                    0.5,
+                    10,
+                    2
+                ],
+                "line-dasharray": [
+                    "step",
+                    ["zoom"],
+                    ["literal", [3.25, 3.25]],
+                    6,
+                    ["literal", [2.5, 2.5]],
+                    7,
+                    ["literal", [2, 2.25]],
+                    8,
+                    ["literal", [1.75, 2]]
+                ]
+            }
+        },
+        {
+            "id": "waterway-label",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "natural_label",
+            "minzoom": 13,
+            "filter": [
+                "all",
+                [
+                    "case",
+                    ["==", ["get", "disputed"], "true"],
+                    [
+                        "all",
+                        [
+                            "match",
+                            ["get", "class"],
+                            [
+                                "canal",
+                                "river",
+                                "stream",
+                                "disputed_canal",
+                                "disputed_river",
+                                "disputed_stream"
+                            ],
+                            true,
+                            false
+                        ],
+                        [
+                            "match",
+                            ["get", "worldview"],
+                            ["all", "US"],
+                            true,
+                            false
+                        ]
+                    ],
+                    [
+                        "match",
+                        ["get", "class"],
+                        ["canal", "river", "stream"],
+                        true,
+                        false
+                    ]
+                ],
+                ["==", ["geometry-type"], "LineString"]
+            ],
+            "layout": {
+                "text-font": ["Lato Italic", "Arial Unicode MS Regular"],
+                "text-max-angle": 30,
+                "symbol-spacing": [
+                    "interpolate",
+                    ["linear", 1],
+                    ["zoom"],
+                    15,
+                    250,
+                    17,
+                    400
+                ],
+                "text-size": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    13,
+                    12,
+                    18,
+                    16
+                ],
+                "symbol-placement": "line",
+                "text-pitch-alignment": "viewport",
+                "text-field": ["coalesce", ["get", "name_en"], ["get", "name"]]
+            },
+            "paint": {"text-color": "hsl(197, 16%, 90%)"}
+        },
+        {
+            "id": "natural-line-label",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "natural_label",
+            "minzoom": 4,
+            "filter": [
+                "all",
+                [
+                    "case",
+                    ["==", ["get", "disputed"], "true"],
+                    [
+                        "all",
+                        [
+                            "match",
+                            ["get", "class"],
+                            [
+                                "glacier",
+                                "landform",
+                                "disputed_glacier",
+                                "disputed_landform"
+                            ],
+                            true,
+                            false
+                        ],
+                        [
+                            "match",
+                            ["get", "worldview"],
+                            ["all", "US"],
+                            true,
+                            false
+                        ]
+                    ],
+                    [
+                        "match",
+                        ["get", "class"],
+                        ["glacier", "landform"],
+                        true,
+                        false
+                    ]
+                ],
+                ["==", ["geometry-type"], "LineString"],
+                ["<=", ["get", "filterrank"], 2],
+                ["match", ["get", "iso_3166_1"], ["US"], true, false]
+            ],
+            "layout": {
+                "text-size": [
+                    "step",
+                    ["zoom"],
+                    ["step", ["get", "sizerank"], 18, 5, 12],
+                    17,
+                    ["step", ["get", "sizerank"], 18, 13, 12]
+                ],
+                "text-max-angle": 30,
+                "text-field": ["coalesce", ["get", "name_en"], ["get", "name"]],
+                "text-font": ["Lato Bold", "Arial Unicode MS Regular"],
+                "symbol-placement": "line-center",
+                "text-pitch-alignment": "viewport"
+            },
+            "paint": {
+                "text-halo-width": 0.5,
+                "text-halo-color": "hsl(216, 43%, 0%)",
+                "text-halo-blur": 0.5,
+                "text-color": [
+                    "step",
+                    ["zoom"],
+                    [
+                        "step",
+                        ["get", "sizerank"],
+                        "hsl(184, 2%, 91%)",
+                        5,
+                        "hsl(184, 7%, 81%)"
+                    ],
+                    17,
+                    [
+                        "step",
+                        ["get", "sizerank"],
+                        "hsl(184, 2%, 91%)",
+                        13,
+                        "hsl(184, 7%, 81%)"
+                    ]
+                ]
+            }
+        },
+        {
+            "id": "natural-point-label",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "natural_label",
+            "minzoom": 4,
+            "filter": [
+                "all",
+                [
+                    "case",
+                    ["==", ["get", "disputed"], "true"],
+                    [
+                        "all",
+                        [
+                            "match",
+                            ["get", "class"],
+                            [
+                                "dock",
+                                "glacier",
+                                "landform",
+                                "water_feature",
+                                "wetland",
+                                "disputed_dock",
+                                "disputed_glacier",
+                                "disputed_landform",
+                                "disputed_water_feature",
+                                "disputed_wetland"
+                            ],
+                            true,
+                            false
+                        ],
+                        [
+                            "match",
+                            ["get", "worldview"],
+                            ["all", "US"],
+                            true,
+                            false
+                        ]
+                    ],
+                    [
+                        "match",
+                        ["get", "class"],
+                        [
+                            "dock",
+                            "glacier",
+                            "landform",
+                            "water_feature",
+                            "wetland"
+                        ],
+                        true,
+                        false
+                    ]
+                ],
+                ["==", ["geometry-type"], "Point"],
+                ["<=", ["get", "filterrank"], 2],
+                ["match", ["get", "iso_3166_1"], ["US"], true, false]
+            ],
+            "layout": {
+                "text-size": [
+                    "step",
+                    ["zoom"],
+                    ["step", ["get", "sizerank"], 18, 5, 12],
+                    17,
+                    ["step", ["get", "sizerank"], 18, 13, 12]
+                ],
+                "icon-image": [
+                    "step",
+                    ["zoom"],
+                    ["concat", ["get", "maki"], "-11"],
+                    15,
+                    ["concat", ["get", "maki"], "-15"]
+                ],
+                "text-font": ["Lato Bold", "Arial Unicode MS Regular"],
+                "text-offset": [
+                    "step",
+                    ["zoom"],
+                    [
+                        "step",
+                        ["get", "sizerank"],
+                        ["literal", [0, 0]],
+                        5,
+                        ["literal", [0, 0.75]]
+                    ],
+                    17,
+                    [
+                        "step",
+                        ["get", "sizerank"],
+                        ["literal", [0, 0]],
+                        13,
+                        ["literal", [0, 0.75]]
+                    ]
+                ],
+                "text-anchor": [
+                    "step",
+                    ["zoom"],
+                    ["step", ["get", "sizerank"], "center", 5, "top"],
+                    17,
+                    ["step", ["get", "sizerank"], "center", 13, "top"]
+                ],
+                "text-field": ["coalesce", ["get", "name_en"], ["get", "name"]]
+            },
+            "paint": {
+                "icon-opacity": [
+                    "step",
+                    ["zoom"],
+                    ["step", ["get", "sizerank"], 0, 5, 1],
+                    17,
+                    ["step", ["get", "sizerank"], 0, 13, 1]
+                ],
+                "text-halo-color": "hsl(216, 43%, 0%)",
+                "text-halo-width": 0.5,
+                "text-halo-blur": 0.5,
+                "text-color": [
+                    "step",
+                    ["zoom"],
+                    [
+                        "step",
+                        ["get", "sizerank"],
+                        "hsl(184, 2%, 91%)",
+                        5,
+                        "hsl(184, 7%, 81%)"
+                    ],
+                    17,
+                    [
+                        "step",
+                        ["get", "sizerank"],
+                        "hsl(184, 2%, 91%)",
+                        13,
+                        "hsl(184, 7%, 81%)"
+                    ]
+                ]
+            }
+        },
+        {
+            "id": "water-line-label",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "natural_label",
+            "filter": [
+                "all",
+                [
+                    "case",
+                    ["==", ["get", "disputed"], "true"],
+                    [
+                        "all",
+                        [
+                            "match",
+                            ["get", "class"],
+                            [
+                                "bay",
+                                "ocean",
+                                "reservoir",
+                                "sea",
+                                "water",
+                                "disputed_bay",
+                                "disputed_ocean",
+                                "disputed_reservoir",
+                                "disputed_sea",
+                                "disputed_water"
+                            ],
+                            true,
+                            false
+                        ],
+                        [
+                            "match",
+                            ["get", "worldview"],
+                            ["all", "US"],
+                            true,
+                            false
+                        ]
+                    ],
+                    [
+                        "match",
+                        ["get", "class"],
+                        ["bay", "ocean", "reservoir", "sea", "water"],
+                        true,
+                        false
+                    ]
+                ],
+                ["==", ["geometry-type"], "LineString"]
+            ],
+            "layout": {
+                "text-size": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    7,
+                    ["step", ["get", "sizerank"], 24, 6, 18, 12, 12],
+                    10,
+                    ["step", ["get", "sizerank"], 18, 9, 12],
+                    18,
+                    ["step", ["get", "sizerank"], 18, 9, 16]
+                ],
+                "text-max-angle": 30,
+                "text-letter-spacing": [
+                    "match",
+                    ["get", "class"],
+                    "ocean",
+                    0.25,
+                    ["sea", "bay"],
+                    0.15,
+                    0
+                ],
+                "text-font": ["Lato Italic", "Arial Unicode MS Regular"],
+                "symbol-placement": "line-center",
+                "text-pitch-alignment": "viewport",
+                "text-field": ["coalesce", ["get", "name_en"], ["get", "name"]],
+                "visibility": "none"
+            },
+            "paint": {
+                "text-color": [
+                    "match",
+                    ["get", "class"],
+                    ["bay", "ocean", "sea"],
+                    "hsl(197, 44%, 26%)",
+                    "hsl(197, 16%, 90%)"
+                ]
+            }
+        },
+        {
+            "id": "water-point-label",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "natural_label",
+            "filter": [
+                "all",
+                [
+                    "case",
+                    ["==", ["get", "disputed"], "true"],
+                    [
+                        "all",
+                        [
+                            "match",
+                            ["get", "class"],
+                            [
+                                "bay",
+                                "ocean",
+                                "reservoir",
+                                "sea",
+                                "water",
+                                "disputed_bay",
+                                "disputed_ocean",
+                                "disputed_reservoir",
+                                "disputed_sea",
+                                "disputed_water"
+                            ],
+                            true,
+                            false
+                        ],
+                        [
+                            "match",
+                            ["get", "worldview"],
+                            ["all", "US"],
+                            true,
+                            false
+                        ]
+                    ],
+                    [
+                        "match",
+                        ["get", "class"],
+                        ["bay", "ocean", "reservoir", "sea", "water"],
+                        true,
+                        false
+                    ]
+                ],
+                ["==", ["geometry-type"], "Point"]
+            ],
+            "layout": {
+                "text-line-height": 1.3,
+                "text-size": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    7,
+                    ["step", ["get", "sizerank"], 24, 6, 18, 12, 12],
+                    10,
+                    ["step", ["get", "sizerank"], 18, 9, 12]
+                ],
+                "text-font": ["Lato Italic", "Arial Unicode MS Regular"],
+                "text-field": ["coalesce", ["get", "name_en"], ["get", "name"]],
+                "text-letter-spacing": [
+                    "match",
+                    ["get", "class"],
+                    "ocean",
+                    0.25,
+                    ["bay", "sea"],
+                    0.15,
+                    0.01
+                ],
+                "text-max-width": [
+                    "match",
+                    ["get", "class"],
+                    "ocean",
+                    4,
+                    "sea",
+                    5,
+                    ["bay", "water"],
+                    7,
+                    10
+                ],
+                "visibility": "none"
+            },
+            "paint": {
+                "text-color": [
+                    "match",
+                    ["get", "class"],
+                    ["bay", "ocean", "sea"],
+                    "hsl(197, 44%, 26%)",
+                    "hsl(197, 16%, 90%)"
+                ]
+            }
+        },
+        {
+            "id": "poi-label",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "poi_label",
+            "minzoom": 6,
+            "filter": [
+                "all",
+                [
+                    "<=",
+                    ["get", "filterrank"],
+                    ["+", ["step", ["zoom"], 0, 16, 1, 17, 2], 0]
+                ],
+                ["match", ["get", "iso_3166_1"], ["US"], true, false]
+            ],
+            "layout": {
+                "text-size": [
+                    "step",
+                    ["zoom"],
+                    ["step", ["get", "sizerank"], 18, 5, 12],
+                    17,
+                    ["step", ["get", "sizerank"], 18, 13, 12]
+                ],
+                "icon-image": [
+                    "step",
+                    ["zoom"],
+                    ["concat", ["get", "maki"], "-11"],
+                    15,
+                    ["concat", ["get", "maki"], "-15"]
+                ],
+                "text-font": ["Lato Bold", "Arial Unicode MS Regular"],
+                "text-offset": [
+                    "step",
+                    ["zoom"],
+                    [
+                        "step",
+                        ["get", "sizerank"],
+                        ["literal", [0, 0]],
+                        5,
+                        ["literal", [0, 0.75]]
+                    ],
+                    17,
+                    [
+                        "step",
+                        ["get", "sizerank"],
+                        ["literal", [0, 0]],
+                        13,
+                        ["literal", [0, 0.75]]
+                    ]
+                ],
+                "text-anchor": [
+                    "step",
+                    ["zoom"],
+                    ["step", ["get", "sizerank"], "center", 5, "top"],
+                    17,
+                    ["step", ["get", "sizerank"], "center", 13, "top"]
+                ],
+                "text-field": ["coalesce", ["get", "name_en"], ["get", "name"]]
+            },
+            "paint": {
+                "icon-opacity": [
+                    "step",
+                    ["zoom"],
+                    ["step", ["get", "sizerank"], 0, 5, 1],
+                    17,
+                    ["step", ["get", "sizerank"], 0, 13, 1]
+                ],
+                "text-halo-color": [
+                    "match",
+                    ["get", "class"],
+                    "park_like",
+                    "hsl(170, 42%, 0%)",
+                    "education",
+                    "hsl(213, 38%, 0%)",
+                    "medical",
+                    "hsl(204, 24%, 5%)",
+                    "hsl(216, 43%, 0%)"
+                ],
+                "text-halo-width": 0.5,
+                "text-halo-blur": 0.5,
+                "text-color": [
+                    "step",
+                    ["zoom"],
+                    [
+                        "step",
+                        ["get", "sizerank"],
+                        [
+                            "match",
+                            ["get", "class"],
+                            "food_and_drink",
+                            "hsl(180, 15%, 100%)",
+                            "park_like",
+                            "hsl(107, 1%, 84%)",
+                            "education",
+                            "hsl(213, 11%, 100%)",
+                            "medical",
+                            "hsl(204, 6%, 100%)",
+                            "hsl(184, 2%, 91%)"
+                        ],
+                        5,
+                        [
+                            "match",
+                            ["get", "class"],
+                            "food_and_drink",
+                            "hsl(180, 24%, 87%)",
+                            "park_like",
+                            "hsl(107, 0%, 73%)",
+                            "education",
+                            "hsl(213, 27%, 100%)",
+                            "medical",
+                            "hsl(204, 7%, 100%)",
+                            "hsl(184, 7%, 81%)"
+                        ]
+                    ],
+                    17,
+                    [
+                        "step",
+                        ["get", "sizerank"],
+                        [
+                            "match",
+                            ["get", "class"],
+                            "food_and_drink",
+                            "hsl(180, 15%, 100%)",
+                            "park_like",
+                            "hsl(107, 1%, 84%)",
+                            "education",
+                            "hsl(213, 11%, 100%)",
+                            "medical",
+                            "hsl(204, 6%, 100%)",
+                            "hsl(184, 2%, 91%)"
+                        ],
+                        13,
+                        [
+                            "match",
+                            ["get", "class"],
+                            "food_and_drink",
+                            "hsl(180, 24%, 87%)",
+                            "park_like",
+                            "hsl(107, 0%, 73%)",
+                            "education",
+                            "hsl(213, 27%, 100%)",
+                            "medical",
+                            "hsl(204, 7%, 100%)",
+                            "hsl(184, 7%, 81%)"
+                        ]
+                    ]
+                ]
+            }
+        },
+        {
+            "id": "settlement-minor-label",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "place_label",
+            "minzoom": 5.25,
+            "maxzoom": 15,
+            "filter": [
+                "all",
+                ["<=", ["get", "filterrank"], 4],
+                [
+                    "case",
+                    ["==", ["get", "disputed"], "true"],
+                    [
+                        "all",
+                        [
+                            "match",
+                            ["get", "class"],
+                            ["settlement", "disputed_settlement"],
+                            true,
+                            false
+                        ],
+                        [
+                            "match",
+                            ["get", "worldview"],
+                            ["all", "US"],
+                            true,
+                            false
+                        ]
+                    ],
+                    ["==", ["get", "class"], "settlement"]
+                ],
+                [
+                    "step",
+                    ["zoom"],
+                    true,
+                    8,
+                    [">=", ["get", "symbolrank"], 11],
+                    10,
+                    [">=", ["get", "symbolrank"], 12],
+                    11,
+                    [">=", ["get", "symbolrank"], 13],
+                    12,
+                    [">=", ["get", "symbolrank"], 15],
+                    13,
+                    [">=", ["get", "symbolrank"], 11],
+                    14,
+                    [">=", ["get", "symbolrank"], 13]
+                ],
+                ["match", ["get", "iso_3166_1"], ["US"], true, false]
+            ],
+            "layout": {
+                "text-line-height": 1.1,
+                "text-size": [
+                    "interpolate",
+                    ["cubic-bezier", 0.2, 0, 0.9, 1],
+                    ["zoom"],
+                    3,
+                    [
+                        "step",
+                        ["get", "symbolrank"],
+                        13.200000000000001,
+                        9,
+                        12.100000000000001,
+                        10,
+                        11.55,
+                        12,
+                        10.450000000000001,
+                        14,
+                        9.350000000000001,
+                        16,
+                        7.15,
+                        17,
+                        4.4
+                    ],
+                    13,
+                    [
+                        "step",
+                        ["get", "symbolrank"],
+                        27.500000000000004,
+                        9,
+                        25.3,
+                        10,
+                        23.1,
+                        11,
+                        20.900000000000002,
+                        12,
+                        19.8,
+                        13,
+                        18.700000000000003,
+                        15,
+                        16.5
+                    ]
+                ],
+                "icon-image": "",
+                "text-font": ["Lato Bold", "Arial Unicode MS Regular"],
+                "text-padding": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    0,
+                    50,
+                    10,
+                    5
+                ],
+                "text-offset": [
+                    "step",
+                    ["zoom"],
+                    ["literal", [0, 0]],
+                    8,
+                    ["literal", [0, 0]]
+                ],
+                "text-anchor": ["step", ["zoom"], "center", 8, "center"],
+                "text-field": ["coalesce", ["get", "name_en"], ["get", "name"]],
+                "text-max-width": 7
+            },
+            "paint": {
+                "text-halo-color": "hsl(216, 0%, 100%)",
+                "text-halo-width": 1,
+                "icon-opacity": ["step", ["zoom"], 1, 8, 0],
+                "text-halo-blur": 0.5
+            }
+        },
+        {
+            "id": "settlement-major-label",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "place_label",
+            "maxzoom": 15,
+            "filter": [
+                "all",
+                ["<=", ["get", "filterrank"], 4],
+                [
+                    "case",
+                    ["==", ["get", "disputed"], "true"],
+                    [
+                        "all",
+                        [
+                            "match",
+                            ["get", "class"],
+                            ["settlement", "disputed_settlement"],
+                            true,
+                            false
+                        ],
+                        [
+                            "match",
+                            ["get", "worldview"],
+                            ["all", "US"],
+                            true,
+                            false
+                        ]
+                    ],
+                    ["==", ["get", "class"], "settlement"]
+                ],
+                [
+                    "step",
+                    ["zoom"],
+                    false,
+                    8,
+                    ["<", ["get", "symbolrank"], 11],
+                    10,
+                    ["<", ["get", "symbolrank"], 12],
+                    11,
+                    ["<", ["get", "symbolrank"], 13],
+                    12,
+                    ["<", ["get", "symbolrank"], 15],
+                    13,
+                    [">=", ["get", "symbolrank"], 11],
+                    14,
+                    [">=", ["get", "symbolrank"], 13]
+                ],
+                ["match", ["get", "iso_3166_1"], ["US"], true, false]
+            ],
+            "layout": {
+                "icon-image": "",
+                "text-font": ["Lato Bold", "Arial Unicode MS Regular"],
+                "text-offset": [
+                    "step",
+                    ["zoom"],
+                    ["literal", [0, 0]],
+                    8,
+                    ["literal", [0, 0]]
+                ],
+                "text-anchor": ["step", ["zoom"], "center", 8, "center"],
+                "text-field": ["coalesce", ["get", "name_en"], ["get", "name"]],
+                "text-max-width": 7,
+                "text-line-height": 1.1,
+                "text-size": [
+                    "interpolate",
+                    ["cubic-bezier", 0.2, 0, 0.9, 1],
+                    ["zoom"],
+                    8,
+                    [
+                        "step",
+                        ["get", "symbolrank"],
+                        30.599999999999998,
+                        9,
+                        28.9,
+                        10,
+                        25.5
+                    ],
+                    15,
+                    [
+                        "step",
+                        ["get", "symbolrank"],
+                        47.6,
+                        9,
+                        44.199999999999996,
+                        10,
+                        39.1,
+                        11,
+                        35.699999999999996,
+                        12,
+                        34,
+                        13,
+                        32.3,
+                        15,
+                        27.2
+                    ]
+                ]
+            },
+            "paint": {
+                "text-halo-color": "hsla(0, 0%, 100%, 0.63)",
+                "text-halo-width": 1,
+                "icon-opacity": ["step", ["zoom"], 1, 8, 0],
+                "text-halo-blur": 1
+            }
+        },
+        {
+            "id": "state-label",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "place_label",
+            "minzoom": 3,
+            "maxzoom": 9,
+            "filter": [
+                "all",
+                [
+                    "case",
+                    ["==", ["get", "disputed"], "true"],
+                    [
+                        "all",
+                        [
+                            "match",
+                            ["get", "class"],
+                            ["state", "disputed_state"],
+                            true,
+                            false
+                        ],
+                        [
+                            "match",
+                            ["get", "worldview"],
+                            ["all", "US"],
+                            true,
+                            false
+                        ]
+                    ],
+                    ["==", ["get", "class"], "state"]
+                ],
+                ["match", ["get", "iso_3166_1"], ["US"], true, false]
+            ],
+            "layout": {
+                "text-size": [
+                    "interpolate",
+                    ["cubic-bezier", 0.85, 0.7, 0.65, 1],
+                    ["zoom"],
+                    4,
+                    [
+                        "step",
+                        ["get", "symbolrank"],
+                        13,
+                        6,
+                        12.35,
+                        7,
+                        11.700000000000001
+                    ],
+                    9,
+                    [
+                        "step",
+                        ["get", "symbolrank"],
+                        31.200000000000003,
+                        6,
+                        23.400000000000002,
+                        7,
+                        18.2
+                    ]
+                ],
+                "text-transform": "uppercase",
+                "text-font": ["Lato Black", "Arial Unicode MS Bold"],
+                "text-field": [
+                    "step",
+                    ["zoom"],
+                    [
+                        "step",
+                        ["get", "symbolrank"],
+                        ["coalesce", ["get", "name_en"], ["get", "name"]],
+                        5,
+                        [
+                            "coalesce",
+                            ["get", "abbr"],
+                            ["get", "name_en"],
+                            ["get", "name"]
+                        ]
+                    ],
+                    5,
+                    ["coalesce", ["get", "name_en"], ["get", "name"]]
+                ],
+                "text-letter-spacing": 0.15,
+                "text-max-width": 6
+            },
+            "paint": {
+                "text-color": "rgb(0, 0, 0)",
+                "text-halo-color": "hsl(216, 43%, 100%)",
+                "text-halo-width": 1
+            }
+        },
+        {
+            "id": "uscongress-label",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "district_centroids-c05zce",
+            "layout": {
+                "text-field": [
+                    "concat",
+                    ["to-string", ["get", "State Code"]],
+                    "-",
+                    ["get", "District"]
+                ],
+                "text-font": ["Lato Bold", "Arial Unicode MS Regular"],
+                "text-size": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    5,
+                    10,
+                    8,
+                    36
+                ],
+                "visibility": "none"
+            },
+            "paint": {
+                "text-halo-width": 1,
+                "text-halo-blur": 1,
+                "text-halo-color": "hsl(0, 0%, 100%)"
+            }
+        },
+        {
+            "id": "segregated_cities-label",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "segregated_cities_names-1zlyqc",
+            "layout": {
+                "text-field": ["to-string", ["get", "NAMELSAD"]],
+                "text-font": ["Lato Bold", "Arial Unicode MS Regular"],
+                "text-size": ["interpolate", ["linear"], ["zoom"], 4, 8, 9, 24],
+                "visibility": "none"
+            },
+            "paint": {
+                "text-halo-width": 1,
+                "text-halo-blur": 1,
+                "text-halo-color": "hsl(0, 0%, 100%)"
+            }
+        },
+        {
+            "id": "native_american_reservations-label",
+            "type": "symbol",
+            "source": "composite",
+            "source-layer": "am_in_centroids-079med",
+            "layout": {
+                "text-field": ["to-string", ["get", "IND_NAME"]],
+                "text-font": ["Lato Bold", "Arial Unicode MS Regular"],
+                "text-size": ["interpolate", ["linear"], ["zoom"], 4, 8, 9, 24],
+                "symbol-sort-key": ["*", ["get", "AREA"], ["-", 1]],
+                "visibility": "none"
+            },
+            "paint": {
+                "text-halo-color": "hsl(0, 0%, 100%)",
+                "text-halo-width": 1,
+                "text-halo-blur": 1
+            }
+        }
+    ],
+    "created": "2022-01-24T23:55:58.013Z",
+    "modified": "2022-01-24T23:57:15.364Z",
+    "id": "ckytclh9g000a14qf1y5k9292",
+    "owner": "lixun910",
+    "visibility": "private",
+    "protected": false,
+    "draft": false
+}

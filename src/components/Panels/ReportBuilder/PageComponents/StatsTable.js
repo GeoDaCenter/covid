@@ -86,7 +86,6 @@ const SdohStatsTable = ({ geoid }) => {
 };
 
 export default function StatsTable({ geoid = 17031, topic = "COVID" }) {
-  console.log(topic)
   switch (topic) {
     case "COVID":
       return <CovidStatsTable geoid={geoid} />;

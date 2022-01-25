@@ -3,7 +3,7 @@ export const MAPBOX_ACCESS_TOKEN =
   'pk.eyJ1IjoibGl4dW45MTAiLCJhIjoiY2locXMxcWFqMDAwenQ0bTFhaTZmbnRwaiJ9.VRNeNnyb96Eo-CorkJmIqg';
 
 
-export const defaultData = 'county_nyt.geojson';
+export const defaultData = 'county_usfacts.geojson';
 // export const defaultTables = {
 //   County: {
 //     // 'predictions':{

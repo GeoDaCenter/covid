@@ -38,11 +38,17 @@ import {
 } from "../../utils";
 import { MAPBOX_ACCESS_TOKEN } from "../../config";
 import colors from "../../config/colors";
-import MAP_STYLE from "../../config/style.json";
+import MAP_STYLE_DARK from "../../config/style.json";
+import MAP_STYLE_LIGHT from "../../config/style_light.json";
 import { useViewport, useSetViewport } from "../../contexts/Viewport";
 // import useFindViewport from "../../hooks/useFindViewport";
 // PBF schemas
 import * as Schemas from "../../schemas";
+
+const MAP_STYLES = {
+  light: MAP_STYLE_LIGHT,
+  dark: MAP_STYLE_DARK,
+};
 
 const view = new MapView({ repeat: true });
 
@@ -59,7 +65,7 @@ const ICON_MAPPING = {
 const MapContainerOuter = styled.div`
   position: relative;
   /* width: 100%; */
-  height: calc(100vh - 50px);
+  height: ${(props) => (props.isReport ? "100%" : "calc(100vh - 50px)")};
   flex: 1;
 `;
 const MapContainer = styled.div`
@@ -68,7 +74,7 @@ const MapContainer = styled.div`
     transition: 125ms all;
   }
   height: 100%;
-  background: ${colors.darkgray};
+  background: ${(props) => (props.isReport ? colors.white : colors.darkgray)};
   overflow: hidden;
   @media (max-width: 600px) {
     div.mapboxgl-ctrl-geocoder {
@@ -122,32 +128,40 @@ function MapSection({
   currentHeightScale,
   currentData,
   mapParams,
-  currIdCol
+  currIdCol,
+  manualViewport = false,
+  hoverGeoid = null,
+  highlightGeoids = [],
+  theme = "dark",
 }) {
+  const isReport = !!manualViewport;
   // fetch pieces of state from store
   // const currentMapData = useSelector(state => state.mapData.data);
   // const currentMapID = useSelector(state => state.mapData.params);
   // const currentHeightScale = useSelector(state => state.mapData.heightScale);
-  const dotDensityData = useSelector(({data}) => data.dotDensityData);
+  const dotDensityData = useSelector(({ data }) => data.dotDensityData);
   // const storedGeojson = useSelector(({data}) => data.storedGeojson);
-  const storedCartogramData = useSelector(({data}) => data.storedCartogramData);
+  const storedCartogramData = useSelector(
+    ({ data }) => data.storedCartogramData
+  );
   // const currentMapGeography = storedGeojson[currentData]?.data||[]
-  const colorFilter = useSelector(({ui}) => ui.colorFilter);
+  const colorFilter = useSelector(({ ui }) => ui.colorFilter);
   // const storedLisaData = useSelector((state) => state.storedLisaData);
-  const shouldPanMap = useSelector(({ui}) => ui.shouldPanMap);
-  const panelState = useSelector(({ui}) => ui.panelState);
+  const shouldPanMap = useSelector(({ ui }) => ui.shouldPanMap);
+  const panelState = useSelector(({ ui }) => ui.panelState);
 
   const isPoint = currentMapGeography?.features
     ? currentMapGeography.features[0].geometry.type === "Point"
     : false;
 
-  const viewport = useViewport();
+  const contextViewport = useViewport();
+  const viewport = manualViewport || contextViewport;
   const setViewport = useSetViewport();
-  const currMapViewport = null//useFindViewport(storedGeojson[currentData]?.mapId);
+  const currMapViewport = null; //useFindViewport(storedGeojson[currentData]?.mapId);
   // component state elements
   // hover and highlight geographibes
-  const [hoverGeog, setHoverGeog] = useState(null);
-  const [highlightGeog, setHighlightGeog] = useState([]);
+  const [hoverGeog, setHoverGeog] = useState(hoverGeoid);
+  const [highlightGeog, setHighlightGeog] = useState(highlightGeoids);
   const [glContext, setGLContext] = useState();
   // async fetched data and cartogram center
   const [resourceLayerData, setResourceLayerData] = useState({
@@ -160,7 +174,6 @@ function MapSection({
   const [multipleSelect, setMultipleSelect] = useState(false);
   const [boxSelect, setBoxSelect] = useState(false);
   const [boxSelectDims, setBoxSelectDims] = useState({});
-  // const forceUpdate = useForceUpdate();
 
   const dispatch = useDispatch();
 
@@ -177,44 +190,46 @@ function MapSection({
 
   // shared view broadcast
   useEffect(() => {
-    document.addEventListener(visibilityChange, () => {
-      setBoxSelect(false);
-      setMultipleSelect(false);
-    });
-    document.addEventListener("contextmenu", (e) => {
-      e.preventDefault();
-    });
+    if (!isReport) {
+      document.addEventListener(visibilityChange, () => {
+        setBoxSelect(false);
+        setMultipleSelect(false);
+      });
+      document.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+      });
 
-    window.addEventListener("storage", () => {
-      // When local storage changes, dump the list to the console.
-      const SHARED_GEOID = localStorage.getItem("SHARED_GEOID");
-      if (SHARED_GEOID !== null) {
-        setHighlightGeog(SHARED_GEOID.split(",").map((d) => parseInt(d)));
-      }
-      const SHARED_VIEW = JSON.parse(localStorage.getItem("SHARED_VIEW"));
-      if (
-        !document.hasFocus() &&
-        SHARED_VIEW !== null &&
-        shallowCompare(SHARED_VIEW, viewport) &&
-        SHARED_VIEW.hasOwnProperty("latitude")
-      ) {
-        setViewport({
-          longitude: SHARED_VIEW.longitude,
-          latitude: SHARED_VIEW.latitude,
-          zoom: SHARED_VIEW.zoom,
-          bearing: SHARED_VIEW.bearing || 0,
-          pitch: SHARED_VIEW.pitch || 0,
-        });
-      }
-    });
-    window.addEventListener("contextmenu", (e) => {
-      dispatch(
-        openContextMenu({
-          x: e.pageX,
-          y: e.pageY,
-        })
-      );
-    });
+      window.addEventListener("storage", () => {
+        // When local storage changes, dump the list to the console.
+        const SHARED_GEOID = localStorage.getItem("SHARED_GEOID");
+        if (SHARED_GEOID !== null) {
+          setHighlightGeog(SHARED_GEOID.split(",").map((d) => parseInt(d)));
+        }
+        const SHARED_VIEW = JSON.parse(localStorage.getItem("SHARED_VIEW"));
+        if (
+          !document.hasFocus() &&
+          SHARED_VIEW !== null &&
+          shallowCompare(SHARED_VIEW, viewport) &&
+          SHARED_VIEW.hasOwnProperty("latitude")
+        ) {
+          setViewport({
+            longitude: SHARED_VIEW.longitude,
+            latitude: SHARED_VIEW.latitude,
+            zoom: SHARED_VIEW.zoom,
+            bearing: SHARED_VIEW.bearing || 0,
+            pitch: SHARED_VIEW.pitch || 0,
+          });
+        }
+      });
+      window.addEventListener("contextmenu", (e) => {
+        dispatch(
+          openContextMenu({
+            x: e.pageX,
+            y: e.pageY,
+          })
+        );
+      });
+    }
   }, []);
 
   // change map center on viztype change
@@ -380,6 +395,7 @@ function MapSection({
     }
   }, [currMapViewport]);
 
+  const MAP_STYLE = MAP_STYLES[theme];
   const mapRef = useRef();
   const deckRef = useRef();
 
@@ -403,15 +419,20 @@ function MapSection({
         setTooltipInfo(
           x,
           y,
-          object?.properties ? object.properties[currIdCol] : object,
-        ),
+          object?.properties ? object.properties[currIdCol] : object
+        )
       );
     } else {
       hoverGeog && setHoverGeog(null);
       dispatch(setTooltipInfo(x, y, null));
     }
 
-    if (!isPoint && object && object?.properties && object?.properties[currIdCol]) {
+    if (
+      !isPoint &&
+      object &&
+      object?.properties &&
+      object?.properties[currIdCol]
+    ) {
       if (object?.properties[currIdCol] !== hoverGeog)
         setHoverGeog(object?.properties[currIdCol]);
     } else {
@@ -487,7 +508,7 @@ function MapSection({
       });
     }
   }, []);
-  
+
   const FullLayers = {
     choropleth: new GeoJsonLayer({
       id: "choropleth",
@@ -905,9 +926,9 @@ function MapSection({
       );
     }
   }, []);
-
+  console.log()
   return (
-    <MapContainerOuter>
+    <MapContainerOuter isReport={isReport}>
       <MapContainer
         onKeyDown={handleKeyDown}
         onKeyUp={handleKeyUp}
@@ -918,6 +939,7 @@ function MapSection({
         id="mapContainer"
         onMouseUp={(e) => boxSelect && handleBoxSelect(e)}
         panelState={panelState}
+        isReport={isReport}
       >
         <IndicatorBox style={{ ...boxSelectDims }} />
         <DeckGL
@@ -940,7 +962,7 @@ function MapSection({
           glOptions={{ stencil: true }}
         >
           <MapboxGLMap
-            reuseMaps
+            reuseMaps={!isReport}
             ref={mapRef}
             mapStyle={MAP_STYLE}
             gl={glContext}
@@ -952,18 +974,22 @@ function MapSection({
             }}
           ></MapboxGLMap>
         </DeckGL>
-        <MapButtons boxSelect={boxSelect} setBoxSelect={setBoxSelect} />
-        <GeocoderContainer>
-          <Geocoder
-            id="Geocoder"
-            placeholder={"Search by location"}
-            API_KEY={MAPBOX_ACCESS_TOKEN}
-            onChange={handleGeocoder}
-          />
-        </GeocoderContainer>
+        {!isReport && (
+          <MapButtons boxSelect={boxSelect} setBoxSelect={setBoxSelect} />
+        )}
+        {!isReport && (
+          <GeocoderContainer>
+            <Geocoder
+              id="Geocoder"
+              placeholder={"Search by location"}
+              API_KEY={MAPBOX_ACCESS_TOKEN}
+              onChange={handleGeocoder}
+            />
+          </GeocoderContainer>
+        )}
       </MapContainer>
     </MapContainerOuter>
   );
 }
 
-export default React.memo(MapSection)
+export default React.memo(MapSection);
