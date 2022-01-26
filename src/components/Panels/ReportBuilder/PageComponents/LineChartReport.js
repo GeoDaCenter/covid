@@ -5,9 +5,29 @@ import {
   DeleteBlock,
   widthOptions,
   heightOptions,
+  CenteredChartTitle
 } from "./PageComponentsLayout";
 import colors from "../../../../config/colors";
 import countyList from "../../../../meta/countyNames";
+
+const tableOptions = [
+  {
+    text: "Cases",
+    value: "cases",
+  },
+  {
+    text: "Deaths",
+    value: "deaths",
+  },
+  {
+    text: "Fully Vaccinated Persons",
+    value: "vaccines_fully_vaccinated",
+  },
+  {
+    text: "Weekly Positivity",
+    value: "testing_wk_pos",
+  },
+]
 
 export const LineChartReport = ({
   geoid = [],
@@ -26,6 +46,9 @@ export const LineChartReport = ({
 }) => {
   return (
     <PanelItemContainer className={`w${width || 2} h${height || 2}`}>
+      <CenteredChartTitle>
+        <h3>{tableOptions.find(f => f.value === table)?.text}</h3>
+      </CenteredChartTitle>
       <LineChartInner
         docked={true}
         colorScheme="light"
@@ -57,24 +80,7 @@ export const LineChartReport = ({
             type: "select",
             content: {
               label: "Change Table",
-              items: [
-                {
-                  text: "Cases",
-                  value: "cases",
-                },
-                {
-                  text: "Deaths",
-                  value: "deaths",
-                },
-                {
-                  text: "Fully Vaccinated Persons",
-                  value: "vaccines_fully_vaccinated",
-                },
-                {
-                  text: "Weekly Positivity",
-                  value: "testing_wk_pos",
-                },
-              ],
+              items: tableOptions,
             },
             action: (e) =>
               handleChange(pageIdx, contentIdx, {

@@ -123,14 +123,13 @@ const dateRange = getDateRange({
   endDate: new Date(),
 });
 
-const CustomTooltip = (props) => {
+const CustomTooltip = ({ active, payload, background }) => {
   try {
-    if (props.active) {
-      let data = props.payload;
+    if (active) {
       return (
         <div
           style={{
-            background: colors.darkgray,
+            background: background,
             padding: "10px",
             borderRadius: "4px",
             boxShadow:
@@ -138,14 +137,13 @@ const CustomTooltip = (props) => {
           }}
         >
           <p style={{ color: "white", padding: "5px 0 0 0" }}>
-            {data[0].payload.date}
+            {payload[0].date}
           </p>
-          {data.map((data) => (
+          {payload.map((data) => (
             <p
               style={{
                 color: data.color,
                 padding: "5px 0 0 0",
-                textShadow: `2px 2px 4px ${colors.black}`,
                 fontWeight: 600,
               }}
             >
@@ -192,11 +190,13 @@ const colorSchemes = {
     highlightColor: colors.strongOrange,
     mediumColor: colors.darkgray,
     gridColor: colors.black,
+    backgroundColor: colors.white,
   },
   dark: {
     highlightColor: colors.yellow,
     mediumColor: colors.lightgray,
     gridColor: `${colors.white}88`,
+    backgroundColor: colors.black,
   },
 };
 
@@ -209,9 +209,10 @@ function LineChartInner({
   populationNormalized = false,
   shouldShowVariants = false,
   colorScheme = "dark",
-  geoid = []
+  geoid = [],
 }) {
-  const { highlightColor, mediumColor, gridColor } = colorSchemes[colorScheme];
+  const { highlightColor, mediumColor, gridColor, backgroundColor } =
+    colorSchemes[colorScheme];
 
   const dispatch = useDispatch();
   const {
@@ -225,7 +226,7 @@ function LineChartInner({
     selectionNames,
   } = useGetLineChartData({
     table,
-    geoid
+    geoid,
   });
 
   const [activeLine, setActiveLine] = useState(false);
@@ -335,7 +336,17 @@ function LineChartInner({
                 />
               }
             ></YAxis>
-            <Tooltip content={CustomTooltip} />
+            <Tooltip
+              content={({ active, payload }) => (
+                <CustomTooltip
+                  background={backgroundColor}
+                  {...{
+                    active,
+                    payload,
+                  }}
+                />
+              )}
+            />
             <ReferenceArea
               yAxisId="left"
               x1={chartData[currIndex - currRange]?.date || 0}

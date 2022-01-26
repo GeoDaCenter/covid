@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useSelector } from "react-redux";
 import useGetScatterData from "../../../../hooks/useGetScatterData";
 import { ControlPopover, ScatterChartInner } from "../../../../components";
 import {
@@ -7,11 +8,12 @@ import {
   DeleteBlock,
   widthOptions,
   heightOptions,
+  CenteredChartTitle
 } from "./PageComponentsLayout";
 import colors from "../../../../config/colors";
-import { useSelector } from "react-redux";
 
 const RadiusRange = Array(10).fill(0).map((_,idx) => ({value: idx+1, label: `${idx+1}`}));
+
 export const ScatterChartReport = ({
   geoid = null,
   pageIdx = 0,
@@ -44,6 +46,9 @@ export const ScatterChartReport = ({
   );
   return (
     <PanelItemContainer className={`w${width || 2} h${height || 2}`}>
+      <CenteredChartTitle>
+        <h3>{xAxisVar} (x) vs {yAxisVar} (y)</h3>
+      </CenteredChartTitle>
       {scatterChart}
       <ControlPopover
         className="hover-buttons"
