@@ -319,12 +319,12 @@ export const variableTree = {
   },
   'HEADER:vaccination': {},
   'Percent Fully Vaccinated': {
-    'County (Hybrid)': ['CDC'],
+    // 'County (Hybrid)': ['CDC'],
     County: ['CDC'],
     State: ['CDC'],
   },
   'Percent Received At Least One Dose': {
-    'County (Hybrid)': ['CDC'],
+    // 'County (Hybrid)': ['CDC'],
     County: ['CDC'],
     State: ['CDC'],
   },
@@ -419,10 +419,10 @@ export const urlParamsTree = {
     name: 'CDC',
     geography: 'County',
   },
-  'cdc_h.geojson': {
-    name: 'CDC',
-    geography: 'County (Hybrid)',
-  },
+  // 'cdc_h.geojson': {
+  //   name: 'CDC',
+  //   geography: 'County (Hybrid)',
+  // },
   'safegraph.geojson': {
     name: 'Safegraph',
     geography: 'County',

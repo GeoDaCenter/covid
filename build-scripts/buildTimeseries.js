@@ -131,6 +131,20 @@ const splitCsvs = (fileList) => {
   })
 }
 
+const excludeList = [
+  'covid_ccpt_cdc.pbf',
+  'covid_confirmed_cdc.e-2.pbf',
+  'covid_confirmed_cdc.pbf',
+  'covid_confirmed_usafacts_h.pbf',
+  'covid_deaths_cdc.e-2.pbf',
+  'covid_deaths_cdc.pbf',
+  'covid_deaths_usafacts_h.pbf',
+  'covid_tcap_cdc.pbf',
+  'covid_wk_pos_cdc.pbf',
+  'vaccination_fully_vaccinated_cdc_h.pbf',
+  'vaccination_one_or_more_doses_cdc_h.pbf'
+]
+
 const t0 = new Date();
 const parsePbf = () => {
   fs.readdir(directoryPath, function (err, files) {
@@ -151,7 +165,7 @@ const parsePbf = () => {
             file.includes("dotDensity")
           )
         )
-    );
+    ).filter(file => !(excludeList.includes(file)))
     splitPbfs(fileList);
     console.log(`Done in ${new Date() - t0} ms`);
   });
