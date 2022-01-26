@@ -152,7 +152,7 @@ def parseVaccinationData(vaccinationDataList):
 
 def parseCountyVaccinationData():
     raw = pd.read_csv('https://data.cdc.gov/api/views/8xkx-amqh/rows.csv?accessType=DOWNLOAD')
-    raw = raw[(raw.Recip_State != 'HI')&(raw.Recip_State != 'TX')&(raw.FIPS != 'UNK')]
+    raw = raw[(raw.Recip_State != 'HI')&(raw.FIPS != 'UNK')]
     raw['Date'] = pd.to_datetime(raw['Date'], format='%m/%d/%Y')
     raw = raw.sort_values('Date')
     
