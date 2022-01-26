@@ -142,14 +142,14 @@ const checkboxSets = [
         label: 'County - One or More Doses Administered - CDC',
         name: 'vaccination_one_or_more_doses_cdc',
       },
-      {
-        label: 'Hybrid - Vaccine Series Complete (Fully Vaccinated) - CDC',
-        name: 'vaccination_fully_vaccinated_cdc_h',
-      },
-      {
-        label: 'Hybrid - One or More Doses Administered - CDC',
-        name: 'vaccination_one_or_more_doses_cdc_h',
-      },
+      // {
+      //   label: 'Hybrid - Vaccine Series Complete (Fully Vaccinated) - CDC',
+      //   name: 'vaccination_fully_vaccinated_cdc_h',
+      // },
+      // {
+      //   label: 'Hybrid - One or More Doses Administered - CDC',
+      //   name: 'vaccination_one_or_more_doses_cdc_h',
+      // },
       {
         label: 'State - Vaccine Series Complete (Fully Vaccinated) - CDC',
         name: 'vaccination_fully_vaccinated_cdc_state',

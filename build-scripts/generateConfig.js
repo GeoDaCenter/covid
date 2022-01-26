@@ -9,7 +9,7 @@ const generateVariables = async () => {
     const data = Papa.parse(csvString, {
         header: true,
         dynamicTyping: true,
-    }).data
+    }).data.filter(f => f.deprecated != 1)
     
     fs.writeFileSync('./src/config/variables.js', `
     // this is a generated file, do not edit directly. See Google sheets to update variable config
@@ -24,7 +24,7 @@ const generateTables = async () => {
     const data = Papa.parse(csvString, {
         header: true,
         dynamicTyping: true,
-    }).data
+    }).data.filter(f => f.deprecated != 1)
     fs.writeFileSync('./src/config/tables.js', `
     // this is a generated file, do not edit directly. See Google sheets to update variable config
     const tables = ${JSON.stringify(data)}; 
@@ -38,7 +38,7 @@ const generateDatasets = async () => {
     const data = Papa.parse(csvString, {
         header: true,
         dynamicTyping: true,
-    }).data
+    }).data.filter(f => f.deprecated != 1)
 
     const parsedData = data.map(d => ({
         ...d,
@@ -59,7 +59,7 @@ const generateDefaults = async () => {
     const data = Papa.parse(csvString, {
         header: true,
         dynamicTyping: true,
-    }).data
+    }).data.filter(f => f.deprecated != 1)
 
     let fileString =  `// this is a generated file, do not edit directly. See Google sheets to update variable config \n`
     data.forEach(d => {

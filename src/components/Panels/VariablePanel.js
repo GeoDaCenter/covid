@@ -329,7 +329,7 @@ function VariablePanel() {
     .flatMap((o) => Object.values(o))
     .flatMap((o) => o)
     .filter(onlyUnique);
-  const isCustom = !['State', 'County', 'County (Hybrid)'].includes(
+  const isCustom = !['State', 'County'].includes(
     currentPreset.geography,
   );
 

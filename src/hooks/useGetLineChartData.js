@@ -168,7 +168,7 @@ export default function useGetLineChartData({ table = "cases", geoid = [] }) {
 
   const currentGeojson =
     storedGeojson[currentData] && storedGeojson[currentData].properties;
-  const getName = ["County", "County (Hybrid)"].includes(currDataset.geography)
+  const getName = ["County"].includes(currDataset.geography)
     ? (key) => currentGeojson[key].NAME + ", " + currentGeojson[key].state_abbr
     : (key) => currentGeojson[key].NAME;
   const selectionNames = selectionKeys.map(getName);

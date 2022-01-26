@@ -141,10 +141,10 @@ export const generateReport = ({
 
   report.name =
     selectionKeys.length > 3
-      ? ["County", "County (Hybrid)"].includes(geography)
+      ? ["County"].includes(geography)
         ? "Selected Counties"
         : "Selected States"
-      : ["County", "County (Hybrid)"].includes(geography)
+      : ["County"].includes(geography)
       ? selectionKeys
           .map(
             (key) => properties[key].NAME + ", " + properties[key].state_abbr

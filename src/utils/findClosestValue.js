@@ -18,6 +18,10 @@ export const findDateDecrement = (index, availableDates) => {
 }
 
 export const findClosestValue = (index, availableDates, decrement=false) => {
+    if (!availableDates || !availableDates.length){
+        return index
+    }
+
     if (decrement) {
         const decremnentAttempt = findDateDecrement(index, availableDates);
         if (decremnentAttempt !== null) return decremnentAttempt

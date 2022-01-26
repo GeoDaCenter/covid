@@ -21,7 +21,7 @@ export const parseTooltipData = ({
   };
 
   if (locProperties) {
-    tooltipData.name = ["County", "County (Hybrid)"].includes(geography)
+    tooltipData.name = ["County"].includes(geography)
       ? locProperties.NAME + ", " + locProperties.state_abbr
       : locProperties.NAME;
   }
