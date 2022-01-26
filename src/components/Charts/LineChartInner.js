@@ -203,7 +203,7 @@ const colorSchemes = {
 function LineChartInner({
   resetDock = () => {},
   docked = false,
-  currentTable = "cases",
+  table = "cases",
   logChart = false,
   showSummarized = false,
   populationNormalized = false,
@@ -224,7 +224,7 @@ function LineChartInner({
     selectionKeys,
     selectionNames,
   } = useGetLineChartData({
-    table: currentTable,
+    table,
     geoid
   });
 
@@ -234,7 +234,7 @@ function LineChartInner({
     dispatch(setVariableParams({ nIndex: e.activeTooltipIndex }));
   const handleLegendHover = (o) => setActiveLine(+o.dataKey.split("Weekly")[0]);
   const handleLegendLeave = () => setActiveLine(false);
-  const { x1label, x2label, title } = LabelText[currentTable];
+  const { x1label, x2label, title } = LabelText[table];
 
   if (maximums && chartData) {
     return (

@@ -82,14 +82,14 @@ const SelectControl = ({ content, value, action, active=false }, rest) => (
 );
 
 const SelectMultiControl = ({ content, value, action }, rest) => (
-  <StyledDropDown style={{marginTop: '1.5em', width: '100%'}}>
+  <StyledDropDown style={{marginTop: '1.5em', width: '100%', maxWidth:'400px'}}>
     <InputLabel htmlFor="variableSelect">{content.label}</InputLabel>
     <Select
       MenuProps={{ id: "variableMenu" }}
       multiple
       value={value}
       onChange={action}
-      // renderValue={(selected) => selected.join(', ')}
+      renderValue={(selected) => selected.join(', ')}
       {...rest}
     >
       {content.items.map((item, index) => (

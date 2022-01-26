@@ -46,7 +46,7 @@ const DockPopButton = styled.button`
 
 export default function LineChartOuter({ defaultDimensions }) {
   const [isPoppedOut, setIsPoppedOut] = useState(false);
-  const [currentTable, setCurrentTable] = useState("cases");
+  const [table, setTable] = useState("cases");
   const [logChart, setLogChart] = useState(false);
   const [showSummarized, setShowSummarized] = useState(true);
   const [populationNormalized, setPopulationNormalized] = useState(false);
@@ -103,8 +103,8 @@ export default function LineChartOuter({ defaultDimensions }) {
                         },
                       ],
                     },
-                    action: (e) => setCurrentTable(e.target.value),
-                    value: currentTable,
+                    action: (e) => setTable(e.target.value),
+                    value: table,
                   },
                   {
                     type: "switch",
@@ -135,7 +135,7 @@ export default function LineChartOuter({ defaultDimensions }) {
               <LineChartInner
                 resetDock={() => setIsPoppedOut(false)}
                 {...{
-                  currentTable,
+                  table,
                   logChart,
                   showSummarized,
                   populationNormalized,
@@ -203,8 +203,8 @@ export default function LineChartOuter({ defaultDimensions }) {
                 },
               ],
             },
-            action: (e) => setCurrentTable(e.target.value),
-            value: currentTable,
+            action: (e) => setTable(e.target.value),
+            value: table,
           },
           {
             type: "switch",
@@ -235,7 +235,7 @@ export default function LineChartOuter({ defaultDimensions }) {
       <LineChartInner
         docked={true}
         {...{
-          currentTable,
+          table,
           logChart,
           showSummarized,
           populationNormalized,

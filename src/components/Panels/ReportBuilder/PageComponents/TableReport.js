@@ -6,28 +6,61 @@ import {
   widthOptions,
   heightOptions,
 } from "./PageComponentsLayout";
+// import {
+//   onlyUniqueArray,
+//   removeListItem
+// } from '../../../../utils';
 import colors from "../../../../config/colors";
 import StatsTable from "./StatsTable";
 import countyNames from "../../../../meta/countyNames";
 
+const CommunityContextMetrics = [
+  "Uninsured Percent",
+  "Over 65 Years Percent",
+  "Life Expectancy",
+  "Percent Essential Workers",
+  "Self-rated Health",
+  "Adult Obesity",
+  "Diabetes Prevalence",
+  "Adult Smoking",
+  "Excessive Drinking",
+  "Drug Overdose Deaths",
+  "Children in Poverty",
+  "Income Inequality",
+  "Median Household Income",
+  "Food Insecurity",
+  "Unemployment",
+  "Preventable Hospital Stays",
+  "Residential Segregation (Black - White)",
+  "Severe Housing Problems",
+].map((f) => ({ value: f, label: f }));
+
+const CovidMetrics = [
+  "Cases",
+  "Deaths",
+  "Vaccination",
+  "Testing"
+].map((f) => ({ value: f, label: f }));
+
 export const TableReport = ({
-    geoid = null,
-    pageIdx = 0,
-    contentIdx = 0,
-    handleChange,
-    handleRemove,
-    width = 2,
-    height = 3,
-    topic = "COVID",
-    metrics = []
-  }) => {
-    return <PanelItemContainer className={`w${width || 2} h${height || 3}`}>
+  geoid = null,
+  pageIdx = 0,
+  contentIdx = 0,
+  handleChange,
+  handleRemove,
+  width = 2,
+  height = 3,
+  topic = "COVID",
+  metrics = [],
+}) => {
+  return (
+    <PanelItemContainer className={`w${width || 2} h${height || 3}`}>
       <h4>
         {topic === "COVID"
           ? "7-Day Average Summary Statistics"
           : "Community Health Context"}
       </h4>
-      <StatsTable {...{ topic, geoid }} />
+      <StatsTable {...{ topic, geoid, metrics }} />
       <ControlPopover
         top="0"
         left="0"
@@ -55,16 +88,10 @@ export const TableReport = ({
           {
             type: "selectMulti",
             content: {
-              label: "Change County",
-              items: [{
-                label: "All",
-                value: null
-              },{
-                label: "New York",
-                value: "36061"
-              }],
+              label: "Add or Remove Metrics",
+              items: topic === "COVID" ? CovidMetrics : CommunityContextMetrics
             },
-            action: (e) => handleChange(pageIdx, contentIdx, { metrics: [...metrics, ...e.target.value] }),
+            action: (e) => handleChange(pageIdx, contentIdx, {metrics: e.target.value}),
             value: metrics,
           },
           {
@@ -82,11 +109,12 @@ export const TableReport = ({
         ]}
       />
       <GrabTarget iconColor={colors.strongOrange} className="hover-buttons" />
-  
+
       <DeleteBlock
         iconColor={colors.strongOrange}
         className="hover-buttons"
         onClick={() => handleRemove(pageIdx, contentIdx)}
       />
     </PanelItemContainer>
-  }
+  );
+};

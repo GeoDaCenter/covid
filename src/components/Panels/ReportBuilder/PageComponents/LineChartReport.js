@@ -17,7 +17,7 @@ export const LineChartReport = ({
   handleRemove,
   width,
   height,
-  currentTable,
+  table,
   logChart,
   showSummarized,
   populationNormalized,
@@ -30,7 +30,7 @@ export const LineChartReport = ({
         colorScheme="light"
         geoid={typeof geoid === "number" || typeof geoid === "string" ? [geoid] : geoid}
         {...{
-          currentTable,
+          table,
           logChart,
           showSummarized,
           populationNormalized,
@@ -77,9 +77,9 @@ export const LineChartReport = ({
             },
             action: (e) =>
               handleChange(pageIdx, contentIdx, {
-                currentTable: e.target.value,
+                table: e.target.value,
               }),
-            value: currentTable,
+            value: table,
           },
           {
             type: "switch",

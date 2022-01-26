@@ -95,7 +95,7 @@ export default function TemplateSelector({
         </Grid>
       ))}
       
-      {previousReports?.length && !showTemplateCustomizer && <Grid item xs={12} md={3}>
+      {!!previousReports?.length && !showTemplateCustomizer && <Grid item xs={12} md={3}>
         <Selector 
           content={{items: previousReports.map(f=>({label:f, value:f})), label: "Previous Reports"}}
           value={previousReport}
@@ -106,7 +106,7 @@ export default function TemplateSelector({
           acitve={previousReport !== false}
         />
         </Grid>}
-        {previousReport && showTemplateCustomizer && 
+        {!!previousReport && !!showTemplateCustomizer && 
         <Grid item xs={12} md={12}>
           <h3>Click next to keep working on your report {previousReport}</h3>
           </Grid>}

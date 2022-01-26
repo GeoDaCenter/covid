@@ -17,6 +17,7 @@ export default function Reducer(state = INITIAL_STATE, action) {
       };
     }
     case "CHANGE_REPORT_ITEM": {
+      console.log(action)
       const { reportName, pageIdx, itemIdx, props } = action.payload;
       let spec = state.reports[reportName].spec;
       spec[pageIdx][itemIdx] = {

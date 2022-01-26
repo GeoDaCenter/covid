@@ -55,6 +55,7 @@ import { onlyUniqueArray } from './onlyUniqueArray';
 import parseBinPairs from "./parseBinPairs";
 import parseMapboxLayers from "./parseMapboxLayers";
 import { parseTooltipData } from "./parseTooltipData";
+import { removeListItem } from "./removeListItem";
 import resolveName from "./resolveName";
 import shallowCompare from "./shallowCompare";
 import { shallowEqual } from "./shallowEqual";
@@ -122,6 +123,7 @@ export {
   parseMapboxLayers,
   parsePbfData,
   parseTooltipData,
+  removeListItem,
   resolveName,
   shallowCompare,
   shallowEqual,

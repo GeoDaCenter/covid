@@ -4,31 +4,79 @@ import useGetQuantileStatistics from "./useGetQuantileStatistics";
 const combineObjs = (...objs) => Object.assign({}, ...objs);
 
 export default function useGetSdohStatistics({ geoid = null }) {
-  const uninsuredStats = useGetQuantileStatistics({
-    variable: "Uninsured Percent",
-    geoid,
-  });
-
-  const over65stats = useGetQuantileStatistics({
-    variable: "Over 65 Years Percent",
-    geoid,
-  });
-
-  const lifeExpectancy = useGetQuantileStatistics({
-    variable: "Life Expectancy",
-    geoid,
-  });
-
-  const essentialWorkers = useGetQuantileStatistics({
-    variable: "Percent Essential Workers",
-    geoid,
-  });
-
   const allStats = [
-    uninsuredStats,
-    over65stats,
-    lifeExpectancy,
-    essentialWorkers,
+    useGetQuantileStatistics({
+      variable: "Uninsured Percent",
+      geoid,
+    }),
+    useGetQuantileStatistics({
+      variable: "Over 65 Years Percent",
+      geoid,
+    }),
+    useGetQuantileStatistics({
+      variable: "Life Expectancy",
+      geoid,
+    }),
+    useGetQuantileStatistics({
+      variable: "Percent Essential Workers",
+      geoid,
+    }),
+    useGetQuantileStatistics({
+      variable: "Severe Housing Problems",
+      geoid,
+    }),
+    useGetQuantileStatistics({
+      variable: "Residential Segregation (Black - White)",
+      geoid,
+    }),
+    useGetQuantileStatistics({
+      variable: "Preventable Hospital Stays",
+      geoid,
+    }),
+    useGetQuantileStatistics({
+      variable: "Unemployment",
+      geoid,
+    }),
+    useGetQuantileStatistics({
+      variable: "Food Insecurity",
+      geoid,
+    }),
+    useGetQuantileStatistics({
+      variable: "Median Household Income",
+      geoid,
+    }),
+    useGetQuantileStatistics({
+      variable: "Income Inequality",
+      geoid,
+    }),
+    useGetQuantileStatistics({
+      variable: "Children in Poverty",
+      geoid,
+    }),
+    useGetQuantileStatistics({
+      variable: "Drug Overdose Deaths",
+      geoid,
+    }),
+    useGetQuantileStatistics({
+      variable: "Excessive Drinking",
+      geoid,
+    }),
+    useGetQuantileStatistics({
+      variable: "Adult Smoking",
+      geoid,
+    }),
+    useGetQuantileStatistics({
+      variable: "Diabetes Prevalence",
+      geoid,
+    }),
+    useGetQuantileStatistics({
+      variable: "Adult Obesity",
+      geoid,
+    }),
+    useGetQuantileStatistics({
+      variable: "Self-rated Health",
+      geoid,
+    }),
   ];
 
   const name =
