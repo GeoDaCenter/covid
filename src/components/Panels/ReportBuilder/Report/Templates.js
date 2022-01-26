@@ -5,7 +5,9 @@ export const templates = {
           type: 'text',
           width: 2,
           height: 1,
-          content: ({name}) => <h2>7-Day Average Report: {name}</h2>
+          content: {
+            preset: '7day',
+          }
         },
         {
           type: "textReport",

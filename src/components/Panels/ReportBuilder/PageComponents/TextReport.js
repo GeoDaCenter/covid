@@ -17,9 +17,10 @@ export const TextReport = ({
   handleRemove,
   width,
   height,
+  format="bullet"
 }) => (
   <PanelItemContainer className={`w${width || 2} h${height || 3}`}>
-    <TextStatistics geoid={geoid} />
+    <TextStatistics geoid={geoid} format={format} />
     <ControlPopover
       top="0"
       left="0"

@@ -19,7 +19,7 @@ export const TextContainerReport = ({
   content,
   name,
 }) => {
-  const InnerComponent = content;
+  const InnerComponent = typeof content === "string" ? <p>{content}</p> : {'7day': ({name}) => <h2>7-Day Average Report: {name}</h2>}[content?.preset];
   return (
     <PanelItemContainer className={`w${width || 4} h${height || 1}`}>
       <InnerComponent name={name} />

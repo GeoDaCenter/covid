@@ -10,7 +10,7 @@ import countyList from "../../../meta/countyNames";
 
 import StepperComponent from "./InterfaceComponents/Stepper";
 import TemplateSelector from "./TemplateSelector";
-import {ControlElementMapping} from "../../../components";
+// import {ControlElementMapping} from "../../../components";
 import Report from "./Report/Report";
 
 const style = {
@@ -58,6 +58,7 @@ export default function ReportBuilder() {
   const [selectedCounty, setSelectCounty] = useState(null);
   const [selectedDate, setSelectedDate] = useState({value: null, label: 'Latest Available Data'});
   const [templateName, setTemplateName] = useState('Template Name');
+  const [previousReport, setPreviousReport] = useState(false);
   const [hasChangedName, setHasChangedName] = useState(false);
   const handleRenameTemplate = (e) => {
     setTemplateName(e.target.value);
@@ -72,6 +73,7 @@ export default function ReportBuilder() {
   const canProgress =
     (activeStep === 0 && selectedTemplate !== null) ||
     (activeStep === 1 && selectedCounty !== null) ||
+    previousReport ||
     activeStep === 2 ||
     activeStep === 3;
 
@@ -143,7 +145,7 @@ export default function ReportBuilder() {
     },
     {
       label: "Something Else (Blank Report)",
-      icon: "",
+      icon: false,
       customization: {
         label: "What is the name of your county?",
         input: "",
@@ -203,10 +205,12 @@ export default function ReportBuilder() {
                 setSelectedTemplate={setSelectedTemplate}
                 templates={templates}
                 showTemplateCustomizer={activeStep === 1}
+                previousReport={previousReport}
+                setPreviousReport={setPreviousReport}
               />
             </>
           )}
-          {activeStep === 2 && <Report reportName={templateName}/>}
+          {activeStep === 2 && <Report reportName={previousReport||templateName}/>}
         </ModalInner>
       </Box>
     </Modal>

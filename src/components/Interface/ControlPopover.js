@@ -63,8 +63,8 @@ const PopoverContent = styled.div`
 const H3 = ({ content }) => <h3>{content}</h3>;
 const P = ({ content }) => <p>{content}</p>;
 const Label = ({ content }) => <label>{content}</label>;
-const SelectControl = ({ content, value, action }, rest) => (
-  <StyledDropDown style={{marginTop: '1.5em', width: '100%'}}>
+const SelectControl = ({ content, value, action, active=false }, rest) => (
+  <StyledDropDown style={{marginTop: '1.5em', width: '100%'}} active={active}>
     <InputLabel htmlFor="variableSelect">{content.label}</InputLabel>
     <Select
       MenuProps={{ id: "variableMenu" }}

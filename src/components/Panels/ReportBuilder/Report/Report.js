@@ -1,9 +1,9 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ReportPage from "../ReportPage/ReportPage";
 import { LayoutContainer } from "./LayoutContainer";
 import { MetaButtonsContainer, MetaButton } from "./MetaButtons";
-import { templates } from "./Templates";
+// import { templates } from "./Templates";
 
 export default function Report({
   reportName = "",

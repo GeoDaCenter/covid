@@ -13,8 +13,7 @@ export default function Reducer(state = INITIAL_STATE, action) {
         },
       }
       return {
-        reports,
-        cachedReports: JSON.stringify(reports)
+        reports
       };
     }
     case "CHANGE_REPORT_ITEM": {
@@ -33,8 +32,7 @@ export default function Reducer(state = INITIAL_STATE, action) {
       };
 
       return {
-        reports,
-        cachedReports: JSON.stringify(reports),
+        reports
       };
     }
     case "ADD_REPORT_ITEM": {
@@ -51,8 +49,7 @@ export default function Reducer(state = INITIAL_STATE, action) {
       };
 
       return {
-        reports,
-        cachedReports: JSON.stringify(reports),
+        reports
       };
     }
     case "DELETE_REPORT_ITEM": {
@@ -72,8 +69,7 @@ export default function Reducer(state = INITIAL_STATE, action) {
       };
 
       return {
-        reports,
-        cachedReports: JSON.stringify(reports),
+        reports
       };
     }
     case "TOGGLE_REPORT_ITEM": {
@@ -89,8 +85,7 @@ export default function Reducer(state = INITIAL_STATE, action) {
       };
 
       return {
-        reports,
-        cachedReports: JSON.stringify(reports),
+        reports
       };
     }
     case "REORDER_REPORT_ITEMS": {
@@ -107,8 +102,7 @@ export default function Reducer(state = INITIAL_STATE, action) {
         },
       };
       return {
-        reports,
-        cachedReports: JSON.stringify(reports)
+        reports
       }
     }
     case "ADD_REPORT_PAGE": {
@@ -124,16 +118,14 @@ export default function Reducer(state = INITIAL_STATE, action) {
         },
       };
       return {
-        reports,
-        cachedReports: JSON.stringify(reports),
+        reports
       }
     }
     case "DELETE_REPORT": {
       let reports = {...state.reports};
       delete reports[action.payload];
       return {
-        reports,
-        cachedReports: JSON.stringify(reports),
+        reports
       }
     }
     default:

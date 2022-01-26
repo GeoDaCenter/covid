@@ -11,7 +11,7 @@ const TopDrawer = styled.div`
   left: calc(50vw);
   transform:translateX(-50%);
   background: ${colors.gray};
-  width: 50vw;
+  width: 40vw;
   max-width: 900px;
   box-sizing: border-box;
   padding: 0;

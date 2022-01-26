@@ -1,8 +1,9 @@
+import { useSelector } from "react-redux";
 import { Grid } from "@mui/material";
 import styled from "styled-components";
-import { ControlElementMapping, Icon } from "../../../components";
+import { ControlElementMapping, Gutter, Icon } from "../../../components";
 import colors from "../../../config/colors";
-
+const Selector = ControlElementMapping["select"];
 const TemplateButton = styled.button`
   background: none;
   color: ${colors.white};
@@ -68,24 +69,47 @@ export default function TemplateSelector({
   setSelectedTemplate = () => {},
   templates = [],
   showTemplateCustomizer = false,
+  previousReport = false,
+  setPreviousReport = () => {}
 }) {
+  const reports = useSelector(({ report }) => report.reports);
+  const previousReports = Object.keys(reports||{})||[]
+  
   const templatesToShow = !showTemplateCustomizer
     ? templates
     : templates.filter((t) => t.label === selectedTemplate);
-    
   return (
     <Grid container spacing={2} justify="center" alignContent="center" alignItems={showTemplateCustomizer ? 'flex-start' : "center" }>
       {templatesToShow.map(({ icon, label }, idx) => (
         <Grid item xs={12} md={3} key={"template-button" + idx}>
           <TemplateButton
-            onClick={() => setSelectedTemplate(label)}
+            onClick={() => {
+              setSelectedTemplate(label)
+              setPreviousReport(false)
+            }}
             className={selectedTemplate === label ? "selected" : ""}
           >
-            <Icon symbol={icon} />
+            {icon ? <Icon symbol={icon} /> : <Gutter h={25} />}
             {label}
           </TemplateButton>
         </Grid>
       ))}
+      
+      {previousReports?.length && !showTemplateCustomizer && <Grid item xs={12} md={3}>
+        <Selector 
+          content={{items: previousReports.map(f=>({label:f, value:f})), label: "Previous Reports"}}
+          value={previousReport}
+          action={(e) => {
+            setPreviousReport(e.target.value)
+            setSelectedTemplate("")
+          }}
+          acitve={previousReport !== false}
+        />
+        </Grid>}
+        {previousReport && showTemplateCustomizer && 
+        <Grid item xs={12} md={12}>
+          <h3>Click next to keep working on your report {previousReport}</h3>
+          </Grid>}
       {showTemplateCustomizer && (
         <Grid item xs={12} md={9}>
           <TemplateCustomzier template={templatesToShow[0]} />

@@ -1,5 +1,4 @@
 const INITIAL_STATE ={
-    reports: {},
-    cachedReports: {} 
+    reports: {}
   }
   export default INITIAL_STATE;
