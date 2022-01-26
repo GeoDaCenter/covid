@@ -5,7 +5,7 @@ import ChartLabel from './Charts/ChartLabel';
 import { ChartTitle } from './Charts/ChartTitle';
 import ComboBox from './Interface/ComboBox';
 import ContextMenu from './Interface/ContextMenu';
-import ControlPopover from './Interface/ControlPopover';
+import ControlPopover, {ControlElementMapping} from './Interface/ControlPopover';
 import CsvDownloader from './CsvDownloader';
 import DataDetails from './DataDetails';
 import DataLoader from './Panels/DataLoader';
@@ -75,6 +75,7 @@ export {
   ChartTitle,
   ComboBox,
   ContextMenu,
+  ControlElementMapping,
   ControlPopover,
   CsvDownloader,
   DataDetails,

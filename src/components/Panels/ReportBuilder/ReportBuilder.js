@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Box from "@mui/material/Box";
 // import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -10,7 +10,7 @@ import countyList from "../../../meta/countyNames";
 
 import StepperComponent from "./InterfaceComponents/Stepper";
 import TemplateSelector from "./TemplateSelector";
-import {ComboBox} from "../../../components";
+import {ControlElementMapping} from "../../../components";
 import Report from "./Report/Report";
 
 const style = {
@@ -49,38 +49,73 @@ const steps = [
 export default function ReportBuilder() {
   const dispatch = useDispatch();
   const open = useSelector(({ui}) => ui.panelState.reportBuilder);
+  const dates = useSelector(({params}) => params.dates);
+  const dateInputs = useMemo(() => [{value: null, label: 'Latest Available Data'},...(dates?.map(f => ({label: f, value: f}))||[])], [dates.length]);
   const handleClose = () =>
     dispatch({ type: "TOGGLE_PANEL", payload: "reportBuilder" });
   const [activeStep, setActiveStep] = useState(0);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [selectedCounty, setSelectCounty] = useState(null);
-
+  const [selectedDate, setSelectedDate] = useState({value: null, label: 'Latest Available Data'});
+  const [templateName, setTemplateName] = useState('Template Name');
+  const [hasChangedName, setHasChangedName] = useState(false);
+  const handleRenameTemplate = (e) => {
+    setTemplateName(e.target.value);
+    setHasChangedName(true);
+  }
+  useEffect(() => {
+    if (!hasChangedName){
+      setTemplateName(`${selectedTemplate} - ${selectedCounty?.label||''} - ${selectedDate?.label||''}`)
+    }
+  },[selectedCounty, selectedDate, selectedTemplate]);
+  
   const canProgress =
     (activeStep === 0 && selectedTemplate !== null) ||
     (activeStep === 1 && selectedCounty !== null) ||
     activeStep === 2 ||
     activeStep === 3;
-    
-  const countySelector = (
-    <ComboBox
-      setValue={setSelectCounty}
-      value={selectedCounty}
-      label={"Type to search (eg. Miami-Dade)"}
-      options={countyList}
-      id="county-selector-combo-box"
-    />
-  );
 
   const templates = [
     {
       label: "My County's Stats",
       icon: "placeMarker",
-      customization: {
+      customization: [{
         label: selectedCounty
           ? `You selected ${selectedCounty?.label}. Click 'Next' to continue`
           : "What is the name of your county?",
-        input: countySelector,
+        input: {
+            type: "comboBox",
+            content: {
+              label: "Type to search (eg. Miami-Dade)",
+              items: countyList,
+            },
+            action: setSelectCounty,
+            value: selectedCounty,
+        },
       },
+        {
+          label: "What date would you like to see?",
+          input: {
+            type: "comboBox",
+            content: {
+              label: "Select a date",
+              items: dateInputs,
+            },
+            action: setSelectedDate,
+            value: selectedDate,
+        }
+    },{
+        label: "What would you like to name your report?",
+        input: {
+          type: "textInput",
+          content: {
+            label: "Type a name",
+          },
+          action: handleRenameTemplate,
+          value: templateName,
+        },
+    }
+  ],
     },
     {
       label: "A National Snapshot",
@@ -115,6 +150,20 @@ export default function ReportBuilder() {
       },
     },
   ];
+
+  useEffect(() => {
+    if (activeStep === 2) {
+      dispatch({
+        type: "ADD_NEW_REPORT",
+        payload: {
+          reportName: templateName,
+          spec: selectedTemplate,
+          county: selectedCounty,
+          date: selectedDate,
+        },
+      });
+    }
+  },[activeStep])
 
   return (
     <Modal
@@ -157,7 +206,7 @@ export default function ReportBuilder() {
               />
             </>
           )}
-          {activeStep === 2 && <Report county={selectedCounty} selectedTemplate={selectedTemplate} />}
+          {activeStep === 2 && <Report reportName={templateName}/>}
         </ModalInner>
       </Box>
     </Modal>

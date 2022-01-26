@@ -32,6 +32,8 @@ import {
 export default function ReportPage({
   content,
   geoid,
+  date,
+  dateIndex,
   pageIdx,
   handleRemove,
   handleChange,
@@ -43,7 +45,7 @@ export default function ReportPage({
 }) {
   const [openAddItem, setOpenAddItem] = useState(false);
   const toggleOpenAddItem = () => setOpenAddItem((prev) => !prev);
-
+  
   return (
     <LayoutPageContainer>
       <MuuriComponent
@@ -64,6 +66,9 @@ export default function ReportPage({
               pageIdx,
               geoid,
               name,
+              date,
+              index,
+              dateIndex,
             }}
             key={"page-component-" + index}
             contentIdx={index}

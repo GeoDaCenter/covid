@@ -9,7 +9,7 @@ export function getFetchParams({
   tables,
   predicate,
   dateList,
-  currTimespans
+  currTimespans=[]
 }){
   const tableName = dataParams[predicate] 
   

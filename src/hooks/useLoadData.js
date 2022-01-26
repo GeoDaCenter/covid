@@ -5,7 +5,8 @@ import {
   getDateLists,
   getFetchParams,
   findSecondaryMonth,
-  onlyUniqueArray
+  onlyUniqueArray,
+  getLastDateIndex
 } from "../utils";
 import { useGeoda } from "../contexts/Geoda";
 import useGetTable from "./useGetTable";
@@ -38,7 +39,30 @@ export default function useLoadData({
 
   // current state data params
   const currDataset = findIn(datasets, "file", currentData);
-  const currIndex = dataParams.nIndex || dataParams.dIndex;
+  const isTimeSeries = dataParams.nType.includes("time") || dataParams.dType.includes("time");
+  
+  const _n = getFetchParams({
+    dataParams,
+    tables,
+    currDataset,
+    predicate: "numerator",
+    dateList: dateLists["isoDateList"]
+  });
+
+  const _d = getFetchParams({
+    dataParams,
+    tables,
+    currDataset,
+    predicate: "denominator",
+    dateList: dateLists["isoDateList"]
+  });
+
+  console.log(_n, _d)
+
+  const currIndex = dataParams.nIndex || dataParams.dIndex;//isTimeSeries && (dataParams.nIndex !== null || dataParams.dIndex !== null) 
+    // ? dataParams.nIndex || dataParams.dIndex
+    // : getLastDateIndex(currentData);
+  
   const currRangeIndex = currIndex - (dataParams.nRange || dataParams.dRange)
   
   const currTimespans = [currIndex, currRangeIndex].map(index => [

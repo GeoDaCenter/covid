@@ -1,5 +1,5 @@
-import React, { useReducer, useRef, useMemo } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useRef, useMemo } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import useMapData from "../../../../hooks/useMapData";
 import useGetReportViewport from "../../../../hooks/useGetReportViewport";
@@ -18,8 +18,6 @@ import {
 import { findIn } from "../../../../utils";
 import colors from "../../../../config/colors";
 import countyNames from "../../../../meta/countyNames";
-import INITIAL_STATE from "../../../../constants/paramsInitialState";
-import reducer from "../../../../reducers/paramsReducer";
 import { colorScales } from "../../../../config/scales";
 
 const defaultMapParams = { 
@@ -72,11 +70,12 @@ function ReportMap({
   variable = "Percent Fully Vaccinated",
   mapType = "natural_breaks",
   scale = "county",
-  nIndex = 500,
   handleChange,
   handleRemove,
   width,
   height,
+  date,
+  dateIndex
 }) {
 
   const variableTree = useSelector(({ params }) => params.variableTree);
@@ -84,10 +83,10 @@ function ReportMap({
   const variableList = Object.keys(variableTree)
     .filter((f) => !f.includes("HEADER"))
     .map((f) => ({ label: f, value: f }));
-
+console.log(date, dateIndex)
   const dataParams = {
     ...(findIn(variables, "variableName", variable) || {}),
-    nIndex
+    nIndex: dateIndex
   };
 
   const mapParams = {
@@ -122,9 +121,9 @@ function ReportMap({
     neighborsViewport,
     secondOrderNeighborsViewport,
     stateViewport,
-    neighbors,
-    secondOrderNeighbors,
-    stateNeighbors,
+    // neighbors,
+    // secondOrderNeighbors,
+    // stateNeighbors,
   ] = useGetReportViewport({
     geoid,
     currentData,

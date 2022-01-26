@@ -1,6 +1,6 @@
 import { Grid } from "@mui/material";
 import styled from "styled-components";
-import { Icon } from "../../../components";
+import { ControlElementMapping, Icon } from "../../../components";
 import colors from "../../../config/colors";
 
 const TemplateButton = styled.button`
@@ -41,9 +41,9 @@ const TemplateButton = styled.button`
 `;
 
 const CustomizerCointainer = styled.div`
-  h2 {
+  h3 {
     display:block;
-    margin-bottom:1em;
+    margin:1.5em 0 .5em 0;
   }
 `
 const InputContainer = styled.div`
@@ -51,15 +51,16 @@ const InputContainer = styled.div`
 `
 
 function TemplateCustomzier({ template = {} }) {
-  if (!template?.customization) return null;
-  const {label, input} = template.customization;
-
-  return <CustomizerCointainer>
-    <h2>{label}</h2>
+  if (!template?.customization || !template.customization.length) return null;
+  return template.customization.map(({label, input}, index) => {
+    const InnerElement = ControlElementMapping[input.type];
+    return <CustomizerCointainer key={`${index}-${input.type}`}>
+    <h3>{label}</h3>
     <InputContainer>
-      {input}
+      <InnerElement {...input} />
     </InputContainer>
   </CustomizerCointainer>
+  })
 }
 
 export default function TemplateSelector({

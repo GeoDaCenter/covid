@@ -42,7 +42,7 @@ const INITIAL_STATE = {
     : "natural_breaks",
   // defaults
   datasets,
-  dates: {},
+  dates: [],
   tables,
   variables,
   datasetTree,

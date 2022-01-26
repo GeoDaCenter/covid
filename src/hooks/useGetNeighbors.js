@@ -39,8 +39,7 @@ export default function useGetNeighbors({
   const dispatch = useDispatch();
   const [neighbors, setNeighbors] = useState({
     neighbors: [],
-    secondOrderNeighbors: [],
-    neighbors: []
+    secondOrderNeighbors: []
   });
 
   const { geoda, geodaReady } = useGeoda();

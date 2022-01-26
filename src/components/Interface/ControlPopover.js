@@ -4,6 +4,7 @@ import Popover from "@mui/material/Popover";
 import MenuItem from "@mui/material/MenuItem";
 import Switch from "@mui/material/Switch";
 import Select from "@mui/material/Select";
+import TextField from "@mui/material/TextField";
 import styled from "styled-components";
 import { ComboBox, Icon, StyledDropDown, StyledSlider } from "../../components";
 import colors from "../../config/colors";
@@ -137,14 +138,28 @@ const SliderControl = ({ content, value, action }) => <StyledSliderContainer>
   />
 </StyledSliderContainer>
 
-const ControlElementMapping = {
+const StyledTextField = styled(TextField)`
+  label.MuiInputLabel-root  {
+    color: ${colors.white};
+  }
+  input.MuiInput-input:before, .MuiInputBase-input{
+    border-bottom:1px solid ${colors.white};
+  }
+`
+const TextInputControl = ({ content, value, action }) => 
+  <StyledTextField fullWidth id="standard-basic" variant="standard" 
+  value={value}
+  onChange={action}/>
+
+export const ControlElementMapping = {
   header: H3,
   helperText: P,
   label: Label,
   select: SelectControl,
   switch: SwitchControl,
   slider: SliderControl,
-  comboBox: ComboBoxControl
+  comboBox: ComboBoxControl,
+  textInput: TextInputControl
   // geocoder: Geocoder,
   // size: Size,
 };
