@@ -209,6 +209,7 @@ function LineChartInner({
   populationNormalized = false,
   shouldShowVariants = false,
   colorScheme = "dark",
+  geoid = []
 }) {
   const { highlightColor, mediumColor, gridColor } = colorSchemes[colorScheme];
 
@@ -224,6 +225,7 @@ function LineChartInner({
     selectionNames,
   } = useGetLineChartData({
     table: currentTable,
+    geoid
   });
 
   const [activeLine, setActiveLine] = useState(false);
@@ -254,10 +256,10 @@ function LineChartInner({
             <span>7-Day Average New Cases</span>
           </ChartTitle>
         )}
-        <ChartLabel color={mediumColor} left={-45}>
+        <ChartLabel color={mediumColor} left={-35}>
           {x1label}
         </ChartLabel>
-        <ChartLabel color={highlightColor} right={-75}>
+        <ChartLabel color={highlightColor} right={-65}>
           {x2label}
         </ChartLabel>
         <ResponsiveContainer width="100%" height="100%">

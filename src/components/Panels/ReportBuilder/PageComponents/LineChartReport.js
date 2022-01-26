@@ -9,7 +9,7 @@ import {
 import colors from "../../../../config/colors";
 
 export const LineChartReport = ({
-  geoid = null,
+  geoid = [],
   pageIdx = 0,
   contentIdx = 0,
   handleChange,
@@ -28,12 +28,14 @@ export const LineChartReport = ({
       <LineChartInner
         docked={true}
         colorScheme="light"
+        geoid={typeof geoid === "number" || typeof geoid === "string" ? [geoid] : geoid}
         {...{
           currentTable,
           logChart,
           showSummarized,
           populationNormalized,
           shouldShowVariants,
+          
         }}
       />
       <ControlPopover

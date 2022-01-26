@@ -21,7 +21,6 @@ export const TableReport = ({
     topic = "COVID",
     metrics = []
   }) => {
-    console.log(metrics)
     return <PanelItemContainer className={`w${width || 2} h${height || 3}`}>
       <h4>
         {topic === "COVID"

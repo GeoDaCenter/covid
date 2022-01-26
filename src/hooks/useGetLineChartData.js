@@ -48,16 +48,16 @@ async function fetchTimeSeries({
         const delta2 = j < 6 ? j : 7;
         chartData[j] = {
           ...chartData[j],
-          keySum: chartData[j].keySum || 0 + data[j],
-          keySum100k: chartData[j].keySum100k || 0 + (data[j] / pop) * 100000,
-          keyDaily: chartData[j].keyDaily || 0 + (data[j] - data[j - delta1]),
+          keySum: chartData[j]?.keySum || 0 + data[j],
+          keySum100k: chartData[j]?.keySum100k || 0 + (data[j] / pop) * 100000,
+          keyDaily: chartData[j]?.keyDaily || 0 + (data[j] - data[j - delta1]),
           keyDaily100k:
-            chartData[j].keyDaily100k ||
+            chartData[j]?.keyDaily100k ||
             0 + ((data[j] - data[j - delta1]) / pop) * 100000,
           keyWeekly:
-            chartData[j].keyWeekly || 0 + (data[j] - data[j - delta2]) / 7,
+            chartData[j]?.keyWeekly || 0 + (data[j] - data[j - delta2]) / 7,
           keyWeekly100k:
-            chartData[j].keyWeekly100k ||
+            chartData[j]?.keyWeekly100k ||
             0 + (((data[j] - data[j - delta2]) / pop) * 100000) / 7,
           [`${id}Sum`]: data[j],
           [`${id}Sum100k`]: (data[j] / pop) * 100000,
@@ -133,7 +133,7 @@ async function fetchTimeSeries({
   };
 }
 
-export default function useGetLineChartData({ table = "cases" }) {
+export default function useGetLineChartData({ table = "cases", geoid = [] }) {
   const [data, setData] = useState({
     maximums: {},
     chartData: [],
@@ -144,7 +144,9 @@ export default function useGetLineChartData({ table = "cases" }) {
   const datasets = useSelector(({params}) => params.datasets);
   const dataParams = useSelector(({params}) => params.dataParams);
   const tables = useSelector(({params}) => params.tables);
-  const selectionKeys = useSelector(({params}) => params.selectionKeys);
+  const stateKeys = useSelector(({params}) => params.selectionKeys);
+  const selectionKeys = geoid.length ? geoid : stateKeys;
+  
   const storedGeojson = useSelector(({data}) => data.storedGeojson);
   // current state data params
   const currDataset = findIn(datasets, "file", currentData);

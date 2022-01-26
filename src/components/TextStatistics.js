@@ -53,7 +53,6 @@ export const TextStatistics = ({ geoid = null, format = "bullet" }) => {
     variable: "7 Day Tests Performed per 100K Population",
     geoid,
   });
-  console.log(testingPositivityStats, testingVolumeStats)
 
   const name =
     cases100kStats && cases100kStats.geoidProperties

@@ -318,11 +318,9 @@ function VariablePanel() {
   const dType = useSelector(({params}) => params.dataParams.dType);
   const rangeType = useSelector(({params}) => params.dataParams.rangeType);
 
-  // const variables = useSelector(({params}) => params.variables);
   const datasets = useSelector(({params}) => params.datasets);
   const currentPreset = findIn(datasets, 'file', currentData);
   const variableTree = useSelector(({params}) => params.variableTree);
-  // const datasetTree = useSelector(({params}) => params.datasetTree);
   const urlParamsTree = useSelector(({params}) => params.urlParamsTree);
   const allGeographies = Object.values(variableTree)
     .flatMap((o) => Object.keys(o))

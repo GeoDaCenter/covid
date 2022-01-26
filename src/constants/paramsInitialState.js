@@ -1,6 +1,5 @@
 import {
   defaultData,
-  datasetTree,
   variableTree,
   urlParamsTree,
 } from "../config/index";
@@ -45,7 +44,6 @@ const INITIAL_STATE = {
   dates: [],
   tables,
   variables,
-  datasetTree,
   variableTree,
   urlParamsTree,
   urlParams: {},
