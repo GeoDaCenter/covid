@@ -43,6 +43,7 @@ export default function ReportPage({
   handleGridContext,
   handleGridUpdate,
   name,
+  reportName
 }) {
   const [openAddItem, setOpenAddItem] = useState(false);
   const toggleOpenAddItem = () => setOpenAddItem((prev) => !prev);
@@ -70,6 +71,7 @@ export default function ReportPage({
               date,
               index,
               dateIndex,
+              reportName
             }}
             key={"page-component-" + index}
             contentIdx={index}

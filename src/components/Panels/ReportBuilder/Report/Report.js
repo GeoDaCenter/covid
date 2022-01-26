@@ -103,6 +103,7 @@ export default function Report({
             handleAddItem,
             handleGridContext,
             handleGridUpdate,
+            reportName
           }}
         />
       ))}

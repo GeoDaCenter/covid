@@ -9,7 +9,9 @@ import {
   heightOptions,
 } from "./PageComponentsLayout";
 import colors from "../../../../config/colors";
+import { useSelector } from "react-redux";
 
+const RadiusRange = Array(10).fill(0).map((_,idx) => ({value: idx+1, label: `${idx+1}`}));
 export const ScatterChartReport = ({
   geoid = null,
   pageIdx = 0,
@@ -21,7 +23,11 @@ export const ScatterChartReport = ({
   height,
   xAxisVar,
   yAxisVar,
+  radius = 4,
 }) => {
+  const variables = useSelector(({params}) => params.variables);
+  const ScatterPlotVars = useMemo(() => variables.map(({variableName}) => ({label:variableName, value:variableName})), [variables.length])
+
   const { scatterData, timestamp } = useGetScatterData({
     xAxisVar,
     yAxisVar,
@@ -30,7 +36,7 @@ export const ScatterChartReport = ({
     () =>
       timestamp !== null ? (
         <ScatterChartInner
-          {...{ scatterData, xAxisVar, yAxisVar }}
+          {...{ scatterData, xAxisVar, yAxisVar, radius }}
           theme="light"
         />
       ) : null,
@@ -53,6 +59,46 @@ export const ScatterChartReport = ({
             type: "helperText",
             content: "Select the data to display on the chart.",
           },
+          {
+            type: "select",
+            content: {
+              label: "Change X Variable",
+              items: ScatterPlotVars,
+            },
+            action: (e) =>
+              handleChange(pageIdx, contentIdx, { xAxisVar: e.target.value }),
+            value: xAxisVar,
+          },
+          {
+            type: "select",
+            content: {
+              label: "Change Y Variable",
+              items: ScatterPlotVars,
+            },
+            action: (e) =>
+              handleChange(pageIdx, contentIdx, { yAxisVar: e.target.value }),
+            value: yAxisVar,
+          },
+          {
+            type: "select",
+            content: {
+              label: "Change Y Variable",
+              items: ScatterPlotVars,
+            },
+            action: (e) =>
+              handleChange(pageIdx, contentIdx, { yAxisVar: e.target.value }),
+            value: yAxisVar,
+          },
+          {
+            type: "select",
+            content: {
+              label: "Change Dot Radius",
+              items: RadiusRange,
+            },
+            action: (e) =>
+              handleChange(pageIdx, contentIdx, { radius: e.target.value }),
+            value: radius,
+          },          
           {
             ...widthOptions,
             action: (e) =>

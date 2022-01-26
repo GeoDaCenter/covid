@@ -7,6 +7,7 @@ import {
   heightOptions,
 } from "./PageComponentsLayout";
 import colors from "../../../../config/colors";
+import countyList from "../../../../meta/countyNames";
 
 export const LineChartReport = ({
   geoid = [],
@@ -84,37 +85,31 @@ export const LineChartReport = ({
           {
             type: "switch",
             content: "Logarithmic Scale",
-            action: () => handleToggle(pageIdx, contentIdx, "logChart"), //handleChange(pageIdx, contentIdx, { table: e.target.value }),
+            action: () => handleToggle(pageIdx, contentIdx, "logChart"),
             value: logChart,
           },
-          // {
-          //   type: "switch",
-          //   content: "Population Normalization",
-          //   action: handlePopSwitch,
-          //   value: populationNormalized,
-          // },
-          // {
-          //   type: "switch",
-          //   content: "Show Summary Line",
-          //   action: handleSummarizedSwitch,
-          //   value: showSummarized,
-          // },
-          // {
-          //   type: "switch",
-          //   content: "Variant Designations",
-          //   action: handleShouldShowVariants,
-          //   value: shouldShowVariants,
-          // },
-          // {
-          //   type: "select",
-          //   content: {
-          //     label: "Change County",
-          //     items: countyNames,
-          //   },
-          //   action: (e) =>
-          //     handleChange(pageIdx, contentIdx, { geoid: e.target.value }),
-          //   value: geoid,
-          // },
+          {
+            type: "switch",
+            content: "Normalize to 100K Population",
+            action: () => handleToggle(pageIdx, contentIdx, "populationNormalized"),
+            value: populationNormalized,
+          },
+          {
+            type: "switch",
+            content: "Show Variant Designation Dates",
+            action: () => handleToggle(pageIdx, contentIdx, "shouldShowVariants"),
+            value: shouldShowVariants,
+          },
+          {
+            type: "comboBox",
+            content: {
+              label: "Change County",
+              items: countyList,
+            },
+            action: (e) =>
+              handleChange(pageIdx, contentIdx, { geoid: e.target.value }),
+            value: geoid,
+          },
           {
             ...widthOptions,
             action: (e) =>

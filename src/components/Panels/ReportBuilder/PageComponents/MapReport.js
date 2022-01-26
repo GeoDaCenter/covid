@@ -90,19 +90,29 @@ function ReportMap({
   geoid = 17031,
   pageIdx = 0,
   contentIdx = 0,
-  variable = "Percent Fully Vaccinated",
-  mapType = "natural_breaks",
-  scale = "county",
+  // variable = "Percent Fully Vaccinated",
+  // mapType = "natural_breaks",
+  // scale = "county",
   handleChange,
   handleRemove,
-  width,
-  height,
+  // width,
+  // height,
   date,
   dateIndex,
+  reportName
 }) {
   const dates = useSelector(({ params }) => params.dates);
   const variableTree = useSelector(({ params }) => params.variableTree);
   const variables = useSelector(({ params }) => params.variables);
+  const item = useSelector(({ report }) => report.reports[reportName] && report.reports[reportName].spec[pageIdx][contentIdx])||{};
+  const {
+    width,
+    height,
+    variable= "Percent Fully Vaccinated",
+    mapType= "natural_breaks",
+    scale= "county"
+  } = item;
+
   const variableList = Object.keys(variableTree)
     .filter((f) => !f.includes("HEADER"))
     .map((f) => ({ label: f, value: f }));

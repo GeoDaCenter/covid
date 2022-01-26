@@ -37,7 +37,7 @@ const colorSchemes = {
   light: {
     highlightColor: colors.strongOrange,
     mediumColor: colors.darkgray,
-    gridColor: colors.black,
+    gridColor: `${colors.black}22`,
   },
   dark: {
     highlightColor: colors.yellow,
@@ -46,8 +46,8 @@ const colorSchemes = {
   },
 };
 
-export function ScatterChartInner({ scatterData, xAxisVar, yAxisVar, theme }) {
-  const { highlightColor, mediumColor } = colorSchemes[theme];
+export function ScatterChartInner({ scatterData, xAxisVar, yAxisVar, theme, radius=2 }) {
+  const { highlightColor, mediumColor, gridColor } = colorSchemes[theme];
   return (
     <ResponsiveContainer width="100%" height="100%">
       <ScatterChart
@@ -58,7 +58,7 @@ export function ScatterChartInner({ scatterData, xAxisVar, yAxisVar, theme }) {
           left: 0,
         }}
       >
-        <CartesianGrid isAnimationActive={false} stroke={mediumColor} />
+        <CartesianGrid isAnimationActive={false} stroke={gridColor} />
         <XAxis type="number" dataKey="x" name={xAxisVar}>
           <Label
             value={xAxisVar}
@@ -83,7 +83,7 @@ export function ScatterChartInner({ scatterData, xAxisVar, yAxisVar, theme }) {
             angle={-90}
           />
         </YAxis>
-        <ZAxis type="number" dataKey="" range={[2, 2]} />
+        <ZAxis type="number" dataKey="" range={[radius, radius]} />
 
         <Tooltip
           cursor={{ strokeDasharray: "3 3" }}
