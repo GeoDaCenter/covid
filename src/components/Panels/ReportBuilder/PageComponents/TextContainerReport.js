@@ -8,6 +8,12 @@ import {
 } from "./PageComponentsLayout";
 import colors from "../../../../config/colors";
 
+const TextComponentMapping = {
+  '7day': ({name}) => <h2>7-Day Average Report: {name}</h2>,
+  'regional': ({name}) => <h2>Regional Snapshot: {name}</h2>,
+  'neighbors': ({name}) => <h2>Neighbor Comparison: {name}</h2>,
+  'national': () => <h2>National Overview</h2>
+}
 export const TextContainerReport = ({
   geoid = null,
   pageIdx = 0,
@@ -19,7 +25,9 @@ export const TextContainerReport = ({
   content,
   name,
 }) => {
-  const InnerComponent = typeof content === "string" ? <p>{content}</p> : {'7day': ({name}) => <h2>7-Day Average Report: {name}</h2>}[content?.preset];
+  
+  const InnerComponent = typeof content === "string" ? () => <h2>{content}</h2> : TextComponentMapping[content?.preset];
+  
   return (
     <PanelItemContainer className={`w${width || 4} h${height || 1}`}>
       <InnerComponent name={name} />

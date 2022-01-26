@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import bbox from "@turf/bbox";
 import { fitBounds } from "@math.gl/web-mercator";
 import useGetNeighbors from "./useGetNeighbors";
@@ -23,6 +24,18 @@ export default function useGetReportViewport({
     currentData,
     geojsonData,
   });
+
+  const nationalViewport = useMemo(() => {
+    if (!!mapWidth && !!mapHeight){
+      const bounds = fitBounds({
+        width: mapWidth,
+        height: mapHeight,
+        bounds: [[-125.109215,25.043926],[-66.925621,49.295128]]
+      })
+      return {...bounds, zoom: bounds.zoom*.85}
+    } 
+    return DEFAULT_VIEWPORT}
+  , [mapWidth, mapHeight]);
 
   const [countyViewport, neighborsViewport, secondOrderViewport, stateViewport] =
     geojsonData?.data?.features?.length &&
@@ -61,5 +74,5 @@ export default function useGetReportViewport({
         )
       : [DEFAULT_VIEWPORT, DEFAULT_VIEWPORT, DEFAULT_VIEWPORT];
 
-  return [countyViewport, neighborsViewport, secondOrderViewport, stateViewport, neighbors, secondOrderNeighbors, stateNeighbors];
+  return [countyViewport, neighborsViewport, secondOrderViewport, stateViewport, nationalViewport, neighbors, secondOrderNeighbors, stateNeighbors];
 }

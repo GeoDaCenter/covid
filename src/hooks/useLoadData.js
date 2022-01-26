@@ -44,8 +44,13 @@ export default function useLoadData({
     dataParams?.dType && dataParams.dType.includes("time")
   ]
   const isTimeSeries =  nIsTimeSeries || dIsTimeSeries;
-  
-  const _n = getFetchParams({
+
+  const { geoda, geodaReady } = useGeoda();
+  // const storedData = useSelector(({data}) => data.storedData);
+  const storedGeojson = useSelector(({data}) => data.storedGeojson);
+  const canLoadInBackground = useSelector(({data}) => data.canLoadInBackground);
+
+  const defaultNumeratorParams = getFetchParams({
     dataParams,
     tables,
     currDataset,
@@ -53,20 +58,18 @@ export default function useLoadData({
     dateList: dateLists["isoDateList"]
   });
 
-  // const _d = getFetchParams({
-  //   dataParams,
-  //   tables,
-  //   currDataset,
-  //   predicate: "denominator",
-  //   dateList: dateLists["isoDateList"]
-  // });
-  
+  const defaultDenominatorParams = getFetchParams({
+    dataParams,
+    tables,
+    currDataset,
+    predicate: "denominator",
+    dateList: dateLists["isoDateList"]
+  });
+
   const currIndex = isTimeSeries
-    ? getClosestIndex(dataParams.nIndex || dataParams.dIndex, _n[0].name||'')||30
+    ? getClosestIndex(dataParams.nIndex || dataParams.dIndex, defaultNumeratorParams.name||'')||30
     : null
-    
-  const currRangeIndex = currIndex - (dataParams.nRange || dataParams.dRange)
-  
+  const currRangeIndex = currIndex - (dataParams.nRange || dataParams.dRange) 
   const currTimespans = [currIndex, currRangeIndex].map(index => [
     !currIndex || dateLists.isoDateList.length - index < 30
       ? "latest"
@@ -76,29 +79,11 @@ export default function useLoadData({
       : findSecondaryMonth(index, dateLists.isoDateList),
   ]).flat().filter(f => !!f).filter(onlyUniqueArray);
 
-  const { geoda, geodaReady } = useGeoda();
-  // const storedData = useSelector(({data}) => data.storedData);
-  const storedGeojson = useSelector(({data}) => data.storedGeojson);
-  const canLoadInBackground = useSelector(({data}) => data.canLoadInBackground);
-
-  const numeratorParams = getFetchParams({
-    dataParams,
-    tables,
-    currDataset,
-    predicate: "numerator",
-    dateList: dateLists["isoDateList"],
-    currTimespans,
-  });
-
-  const denominatorParams = getFetchParams({
-    dataParams,
-    tables,
-    currDataset,
-    predicate: "denominator",
-    dateList: dateLists["isoDateList"],
-    currTimespans
-  });
-
+  const [numeratorParams, denominatorParams] = [
+    currTimespans.map(timespan => ({...defaultNumeratorParams, timespan})),
+    currTimespans.map(timespan => ({...defaultDenominatorParams, timespan}))
+  ]
+  
   const [numeratorData, numeratorDataReady] = useGetTable({
     filesToFetch: numeratorParams,
     shouldFetch: true,

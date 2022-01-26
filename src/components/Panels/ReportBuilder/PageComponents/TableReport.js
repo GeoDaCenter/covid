@@ -52,15 +52,16 @@ export const TableReport = ({
   height = 3,
   topic = "COVID",
   metrics = [],
+  includedColumns = ["variable","geoidData","stateQ50","q50"]
 }) => {
   return (
     <PanelItemContainer className={`w${width || 2} h${height || 3}`}>
       <h4>
-        {topic === "COVID"
+        {topic.includes("COVID")
           ? "7-Day Average Summary Statistics"
           : "Community Health Context"}
       </h4>
-      <StatsTable {...{ topic, geoid, metrics }} />
+      <StatsTable {...{ topic, geoid, metrics, includedColumns }} />
       <ControlPopover
         top="0"
         left="0"

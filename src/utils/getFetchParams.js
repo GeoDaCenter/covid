@@ -7,20 +7,15 @@ export function getFetchParams({
   dataParams,
   currDataset,
   tables,
-  predicate,
-  dateList,
-  currTimespans=['latest']
+  predicate
 }){
   const tableName = dataParams[predicate] 
   
   if (tableName === 'properties') {
-    return [{
+    return {
       noFile: true
-    }]
+    }
   }
   
-  return currTimespans.filter(t => !!t).map(timespan => ({
-    ...findTableOrDefault(currDataset, tables, tableName),
-    timespan
-  }))
+  return findTableOrDefault(currDataset, tables, tableName)
 }

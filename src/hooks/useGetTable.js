@@ -11,7 +11,7 @@ export default function useGetTable({
   const storedData = useSelector(({data}) => data.storedData);
   useEffect(() => {
     if (shouldFetch) {
-      if (!filesToFetch[0].noFile) {
+      if (!!filesToFetch[0] && !filesToFetch[0].noFile) {
         fetcher(filesToFetch, dateLists)
           .then((dataArray) => {
             if (dataArray.length) {

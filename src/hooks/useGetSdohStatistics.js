@@ -3,7 +3,10 @@ import useGetQuantileStatistics from "./useGetQuantileStatistics";
 
 const combineObjs = (...objs) => Object.assign({}, ...objs);
 
-export default function useGetSdohStatistics({ geoid = null }) {
+export default function useGetSdohStatistics({
+  geoid = null,
+  includedColumns = ["variable", "geoidData", "stateQ50", "q50"],
+}) {
   const allStats = [
     useGetQuantileStatistics({
       variable: "Uninsured Percent",
@@ -102,10 +105,30 @@ export default function useGetSdohStatistics({ geoid = null }) {
       accessor: "stateQ50",
     },
     {
+      Header: "National Total",
+      accessor: "nationalSummary",
+    },
+    {
       Header: "National Median",
       accessor: "q50",
     },
-  ];
+    {
+      Header: "25th Percentile",
+      accessor: "q25",
+    },
+    {
+      Header: "75 Percentile",
+      accessor: "q75",
+    },
+    {
+      Header: "Lowest",
+      accessor: "min",
+    },
+    {
+      Header: "Highest",
+      accessor: "max",
+    },
+  ].filter((c) => includedColumns.includes(c.accessor));
 
   const dataReady = allStats.every((dataset) => !!dataset.variable);
 

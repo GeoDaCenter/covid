@@ -154,6 +154,7 @@ function ReportMap({
     neighborsViewport,
     secondOrderNeighborsViewport,
     stateViewport,
+    nationalViewport
     // neighbors,
     // secondOrderNeighbors,
     // stateNeighbors,
@@ -171,6 +172,7 @@ function ReportMap({
     neighbors: neighborsViewport,
     region: secondOrderNeighborsViewport,
     state: stateViewport,
+    national: nationalViewport
   }[scale];
 
   const mapInner = useMemo(
@@ -282,6 +284,10 @@ function ReportMap({
                 {
                   value: "state",
                   label: "State",
+                },
+                {
+                  value: "national",
+                  label: "National (Lower 48)",
                 },
               ],
             },

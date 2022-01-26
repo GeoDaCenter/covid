@@ -73,6 +73,7 @@ export default function ReportBuilder() {
   const canProgress =
     (activeStep === 0 && selectedTemplate !== null) ||
     (activeStep === 1 && selectedCounty !== null) ||
+    selectedTemplate === "A National Snapshot" ||
     previousReport ||
     activeStep === 2 ||
     activeStep === 3;
@@ -122,10 +123,30 @@ export default function ReportBuilder() {
     {
       label: "A National Snapshot",
       icon: "usMap",
-      customization: {
-        label: "What is the name of your county?",
-        input: "",
-      },
+      customization: [
+        {
+          label: "What date would you like to see?",
+          input: {
+            type: "comboBox",
+            content: {
+              label: "Select a date",
+              items: dateInputs,
+            },
+            action: setSelectedDate,
+            value: selectedDate,
+        }
+    },{
+        label: "What would you like to name your report?",
+        input: {
+          type: "textInput",
+          content: {
+            label: "Type a name",
+          },
+          action: handleRenameTemplate,
+          value: templateName,
+        },
+    }
+  ],
     },
     {
       label: "My Region's Snapshot",

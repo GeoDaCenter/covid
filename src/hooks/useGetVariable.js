@@ -6,6 +6,8 @@ import {
   getDataForBins,
   getFetchParams,
   findSecondaryMonth,
+  getClosestIndex,
+  onlyUniqueArray,
 } from "../utils";
 import useGetTable from "./useGetTable";
 const dateLists = getDateLists();
@@ -15,40 +17,68 @@ export default function useGetVariable({
   priorityLoad = false,
   dataset = false,
 }) {
-  const canLoadInBackground = useSelector(({data}) => data.canLoadInBackground);
+  const canLoadInBackground = useSelector(
+    ({ data }) => data.canLoadInBackground
+  );
   const storedData = useSelector(({ data }) => data.storedData);
   const storedGeojson = useSelector(({ data }) => data.storedGeojson);
   // pieces of redux state
-  const stateDataset = useSelector(({params}) => params.currentData);
+  const stateDataset = useSelector(({ params }) => params.currentData);
   const currentData = dataset || stateDataset;
-  const dataParams = useSelector(({params}) => params.dataParams);
-  const datasets = useSelector(({params}) => params.datasets);
-  const tables = useSelector(({params}) => params.tables);
-  const variables = useSelector(({params}) => params.variables);
+  const dataParams = useSelector(({ params }) => params.dataParams);
+  const datasets = useSelector(({ params }) => params.datasets);
+  const tables = useSelector(({ params }) => params.tables);
+  const variables = useSelector(({ params }) => params.variables);
   const geojsonData = storedGeojson[currentData];
   // current state data params
-  const currIndex = dataParams.nIndex || dataParams.dIndex;
+
+  const params = findIn(variables, "variableName", variable);
   const currDataset = findIn(datasets, "file", currentData);
 
-  const currTimespans = [
-    !currIndex || dateLists.isoDateList.length - currIndex < 45
-      ? "latest"
-      : dateLists.isoDateList[currIndex]?.slice(0, 7),
-    !currIndex || dateLists.isoDateList.length - currIndex < 45
-      ? false
-      : findSecondaryMonth(currIndex, dateLists.isoDateList),
+  const [nIsTimeSeries, dIsTimeSeries] = [
+    params?.nType && params.nType.includes("time"),
+    params?.dType && params.dType.includes("time"),
   ];
-  const params = findIn(variables, "variableName", variable);
+  const isTimeSeries = nIsTimeSeries || dIsTimeSeries;
 
-  const fetchParams = [params, params].map((dataParams, i) =>
+  const [defaultNumeratorParams, defaultDenominatorParams] = [
+    params,
+    params,
+  ].map((dataParams, i) =>
     getFetchParams({
       dataParams,
       tables,
       currDataset,
-      predicate: i % 2 ? "denominator" : "numerator",
+      predicate: i === 1 ? "denominator" : "numerator",
       dateList: dateLists["isoDateList"],
-      currTimespans,
     })
+  );
+
+  const currIndex = isTimeSeries
+    ? getClosestIndex(
+        dataParams.nIndex || dataParams.dIndex,
+        defaultNumeratorParams.name || ""
+      ) || 30
+    : null;
+  const currRangeIndex = currIndex - (dataParams.nRange || dataParams.dRange);
+  const currTimespans = [currIndex, currRangeIndex]
+    .map((index) => [
+      !currIndex || dateLists.isoDateList.length - index < 30
+        ? "latest"
+        : dateLists.isoDateList[index]?.slice(0, 7),
+      !currIndex || dateLists.isoDateList.length - index < 30
+        ? false
+        : findSecondaryMonth(index, dateLists.isoDateList),
+    ])
+    .flat()
+    .filter((f) => !!f)
+    .filter(onlyUniqueArray);
+  const fetchParams = [defaultNumeratorParams, defaultDenominatorParams].map(
+    (params) =>
+      currTimespans.map((timespan, i) => ({
+        ...params,
+        timespan,
+      }))
   );
 
   const [[numData, numReady], [denData, denReady]] = [
