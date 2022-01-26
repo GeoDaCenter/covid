@@ -5,13 +5,24 @@ import colors from "../../../../config/colors";
 
 const defaultModules = [
   {
+    type: "Maps",
+    modules: [
+      {
+        type: "map",
+        label: "Map",
+        width: 2,
+        height: 3
+      },
+    ],
+  },
+  {
     type: "Summary Description",
     modules: [
       {
         type: "textReport",
         label: "Text Report",
         width: 2,
-        height: 3,
+        height: 4,
       },
     ],
   },

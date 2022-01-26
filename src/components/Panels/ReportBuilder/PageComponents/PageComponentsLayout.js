@@ -29,26 +29,38 @@ export const PanelItemContainer = styled.div`
   &.w4 {
     width: 100%;
   }
+  &.h05 {
+    height: 2.5em;
+  }
   &.h1 {
-    height: 10em;
+    height: 5em;
   }
   &.h2 {
-    height: 20em;
+    height: 10em;
   }
   &.h3 {
-    height: 30em;
+    height: 15em;
   }
   &.h4 {
-    height: 40em;
+    height: 20em;
   }
   &.h5 {
-    height: 50em;
+    height: 25em;
   }
   &.h6 {
-    height: 60em;
+    height: 30em;
   }
-  &.hauto {
-    height: auto;
+  &.h7 {
+    height: 35em;
+  }
+  &.h8 {
+    height: 40em;
+  }
+  &.h9 {
+    height: 45em;
+  }
+  &.h10 {
+    height: 50em;
   }
 `;
 
@@ -82,10 +94,10 @@ export const heightOptions = {
   content: {
     label: "Set Height",
     items: [
-      // {
-      //   label: "Auto",
-      //   value: "auto",
-      // },
+      {
+        label: ".5",
+        value: '05',
+      },
       {
         label: "1",
         value: 1,
@@ -93,10 +105,6 @@ export const heightOptions = {
       {
         label: "2",
         value: 2,
-      },
-      {
-        label: "3",
-        value: 3,
       },
       {
         label: "3",
@@ -114,6 +122,22 @@ export const heightOptions = {
         label: "6",
         value: 6,
       },
+      {
+        label: "7",
+        value: 7,
+      },
+      {
+        label: "8",
+        value: 8,
+      },
+      {
+        label: "9",
+        value: 9,
+      },
+      {
+        label: "10",
+        value: 10,
+      },
     ],
   },
 };
@@ -129,6 +153,7 @@ export const GrabTargetDiv = styled.button`
   background: none;
   border: none;
   cursor: grabbing;
+  z-index:500;
   span svg g path,
   span svg,
   span svg g {

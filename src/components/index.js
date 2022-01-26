@@ -3,6 +3,7 @@ import {BinsContainer} from './Map/BinsContainer';
 import BinsList from './Map/BinsList';
 import ChartLabel from './Charts/ChartLabel';
 import { ChartTitle } from './Charts/ChartTitle';
+import ComboBox from './Interface/ComboBox';
 import ContextMenu from './Interface/ContextMenu';
 import ControlPopover from './Interface/ControlPopover';
 import CsvDownloader from './CsvDownloader';
@@ -18,7 +19,7 @@ import { HoverDiv } from './Layout/HoverDiv';
 import Icon from './Interface/Icon';
 import IconDock from './Panels/IconDock';
 import InfoBox from './InfoBox';
-import Legend from './Map/Legend';
+import Legend, {LegendInner} from './Map/Legend';
 import FastTrackInsights from './FastTrackInsights';
 import LineChart from './Charts/LineChart';
 import LineChartInner from './Charts/LineChartInner';
@@ -37,6 +38,7 @@ import ReportBuilder from './Panels/ReportBuilder/ReportBuilder';
 import Scaleable from './Interface/Scaleable';
 import Scatterchart, {ScatterChartInner} from './Charts/Scatterchart';
 import StaticNavbar from './Layout/StaticNavbar';
+import {StyledSlider} from './Interface/StyledSlider';
 import Ticks from './Interface/Ticks';
 import Tooltip from './Interface/Tooltip';
 import TopPanel from './Panels/TopPanel';
@@ -71,6 +73,7 @@ export {
   BinsList,
   ChartLabel,
   ChartTitle,
+  ComboBox,
   ContextMenu,
   ControlPopover,
   CsvDownloader,
@@ -89,6 +92,7 @@ export {
   IconDock,
   InfoBox,
   Legend,
+  LegendInner,
   LineChartInner,
   LineChart,
   MapAttribution,
@@ -104,7 +108,8 @@ export {
   PrintLayout,
   Scaleable,
   StaticNavbar,
-  SummaryStatistics,
+  StyledSlider,
+  SummaryStatistics,  
   TextStatistics,
   Ticks,
   Tooltip,

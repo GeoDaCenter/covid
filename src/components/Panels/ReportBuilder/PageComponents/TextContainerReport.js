@@ -21,7 +21,7 @@ export const TextContainerReport = ({
 }) => {
   const InnerComponent = content;
   return (
-    <PanelItemContainer className={`w${width || 4} h${height || 2}`}>
+    <PanelItemContainer className={`w${width || 4} h${height || 1}`}>
       <InnerComponent name={name} />
       <ControlPopover
         top="0"

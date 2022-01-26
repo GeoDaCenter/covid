@@ -5,9 +5,9 @@ import MenuItem from "@mui/material/MenuItem";
 import Switch from "@mui/material/Switch";
 import Select from "@mui/material/Select";
 import styled from "styled-components";
-import { Icon } from "../../components";
+import { ComboBox, Icon, StyledDropDown, StyledSlider } from "../../components";
 import colors from "../../config/colors";
-import { StyledDropDown } from "../../components";
+import {  } from "../../components";
 
 const PopoverContainer = styled.div`
   position: absolute;
@@ -18,6 +18,7 @@ const PopoverContainer = styled.div`
   width: 2rem;
   height: 2rem;
   z-index:500;
+  overflow-y:visible;
   button {
     width: 100%;
     height: 100%;
@@ -46,7 +47,8 @@ const PopoverContent = styled.div`
   border:1px solid ${colors.yellow};
   color: ${colors.white};
   padding: 1em;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y:visible;
 `;
 //   {
 //   type: header | helperText | label | select | switch | geocoder | size
@@ -75,6 +77,16 @@ const SelectControl = ({ content, value, action }, rest) => (
       ))}
     </Select>
   </StyledDropDown>
+);
+const ComboBoxControl = ({ content, value, action }, rest) => (
+    <ComboBox
+      MenuProps={{ id: "variableMenu" }}
+      value={value}
+      setValue={action}
+      options={content.items}
+      label={content.label}
+      {...rest}
+    />
 );
 
 const StyledSwitch = styled.div`
@@ -111,12 +123,28 @@ const SwitchControl = ({ content, value, action }, rest) => <StyledSwitch>
   <p>{content}</p>
 </StyledSwitch>
 
+const StyledSliderContainer = styled.div`
+  span.MuiSlider-rail {
+    display:initial;
+  }
+`
+
+const SliderControl = ({ content, value, action }) => <StyledSliderContainer>
+  <label>{content.label}</label>
+  <StyledSlider
+    {...{value, ...content}}
+    onChange={action}
+  />
+</StyledSliderContainer>
+
 const ControlElementMapping = {
   header: H3,
   helperText: P,
   label: Label,
   select: SelectControl,
   switch: SwitchControl,
+  slider: SliderControl,
+  comboBox: ComboBoxControl
   // geocoder: Geocoder,
   // size: Size,
 };

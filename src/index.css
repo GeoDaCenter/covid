@@ -28,6 +28,7 @@ div.MuiPaper-root.MuiPopover-paper {
   border:1px solid white;
   border-radius:0;
 }
+
 #mouse-over-popover div.MuiPaper-root.MuiPopover-paper {
   color: white;
   padding: 10px;

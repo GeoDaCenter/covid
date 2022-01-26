@@ -11,6 +11,9 @@ import { debounce, findClosestValue } from "../../utils";
 import useCurrentDateIndices from "../../hooks/useCurrentDateIndices";
 import Ticks from "./Ticks";
 import DatePicker from "react-date-picker";
+import {
+  StyledSlider
+} from '../../components'
 
 const SliderContainer = styled(Grid)`
   color: white;
@@ -52,45 +55,6 @@ const SliderAndTicksContainer = styled.div`
 const SliderAndTicksInner = styled.div``;
 
 
-const LineSlider = styled(Slider)`
-  &.MuiSlider-root {
-    box-sizing: border-box;
-    color: #ffffff55;
-  }
-  span.MuiSlider-rail {
-    display: none;
-  }
-  span.MuiSlider-track {
-    // color:white;
-    // height:4px;
-    display: none;
-  }
-  span.MuiSlider-thumb {
-    color: white;
-    width: 15px;
-    height: 15px;
-    transform: translate(-1.5px, -4px);
-    border: 2px solid ${colors.gray};
-    .MuiSlider-valueLabel {
-      transform: translateY(-10px);
-      pointer-events: none;
-      font-size: 15px;
-      span {
-        background: none;
-      }
-    }
-  }
-  span.MuiSlider-mark {
-    width: 1px;
-    height: 2px;
-  }
-  // .MuiSlider-valueLabel span{
-  //     transform:translateX(-100%);
-  // }
-  span.MuiSlider-thumb.MuiSlider-active {
-    box-shadow: 0px 0px 10px rgba(200, 200, 200, 0.5);
-  }
-`;
 
 const SpeedSlider = styled.div`
   position: absolute;
@@ -448,7 +412,7 @@ function DateSlider() {
           </SliderAndTicksInner>
           <SliderAndTicksInner>
             {shouldShowLineSlider && (
-              <LineSlider
+              <StyledSlider
                 id="timeSlider"
                 value={currIndex}
                 // valueLabelDisplay="on"
@@ -483,7 +447,7 @@ function DateSlider() {
       {!!isTicking && (
         <SpeedSlider>
           <p>Animation Speed</p>
-          <LineSlider
+          <StyledSlider
             value={1000 - timing}
             onChange={(e, newValue) => setTiming(1000 - newValue)}
             getAriaValueText={speedtext}

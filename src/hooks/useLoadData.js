@@ -24,11 +24,14 @@ const dateLists = getDateLists();
 // accumulate: yeah or nea
 // }
 
-export default function useLoadData() {
+export default function useLoadData({
+  dataParams,
+  currentData
+}) {
   // pieces of redux state
   const dispatch = useDispatch();
-  const dataParams = useSelector(({params}) => params.dataParams);
-  const currentData = useSelector(({params}) => params.currentData);
+  // const dataParams = useSelector(({params}) => params.dataParams);
+  // const currentData = useSelector(({params}) => params.currentData);
   const datasets = useSelector(({params}) => params.datasets);
   const tables = useSelector(({params}) => params.tables);
   const [firstLoad, setFirstLoad] = useState(true);

@@ -280,7 +280,10 @@ export default function useMapData({
     dateIndices,
     dataReady,
     // dataSnapshot
-  } = useLoadData();
+  } = useLoadData({
+    dataParams,
+    currentData
+  });
   // const dispatch = useDispatch();
   const { geoda } = useGeoda();
   const [mapSnapshot, setMapSnapshot] = useState(0);

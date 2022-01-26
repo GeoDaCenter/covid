@@ -24,12 +24,12 @@ export default function useGetReportViewport({
     geojsonData,
   });
 
-  const [neighborsViewport, secondOrderViewport, stateViewport] =
+  const [countyViewport, neighborsViewport, secondOrderViewport, stateViewport] =
     geojsonData?.data?.features?.length &&
     neighbors?.length &&
     secondOrderNeighbors?.length &&
     stateNeighbors?.length
-      ? [neighbors, secondOrderNeighbors, stateNeighbors].map(
+      ? [[geoid],neighbors, secondOrderNeighbors, stateNeighbors].map(
           (neighborList) => {
             if (!neighborList || !neighborList?.length) return null;
             const tempBbox = bbox({
@@ -61,5 +61,5 @@ export default function useGetReportViewport({
         )
       : [DEFAULT_VIEWPORT, DEFAULT_VIEWPORT, DEFAULT_VIEWPORT];
 
-  return [neighborsViewport, secondOrderViewport, stateViewport, neighbors, secondOrderNeighbors, stateNeighbors];
+  return [countyViewport, neighborsViewport, secondOrderViewport, stateViewport, neighbors, secondOrderNeighbors, stateNeighbors];
 }

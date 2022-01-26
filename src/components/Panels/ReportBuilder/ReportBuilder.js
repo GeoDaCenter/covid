@@ -10,7 +10,7 @@ import countyList from "../../../meta/countyNames";
 
 import StepperComponent from "./InterfaceComponents/Stepper";
 import TemplateSelector from "./TemplateSelector";
-import ComboxBox from "./InterfaceComponents/ComboBox";
+import {ComboBox} from "../../../components";
 import Report from "./Report/Report";
 
 const style = {
@@ -62,7 +62,7 @@ export default function ReportBuilder() {
     activeStep === 3;
     
   const countySelector = (
-    <ComboxBox
+    <ComboBox
       setValue={setSelectCounty}
       value={selectedCounty}
       label={"Type to search (eg. Miami-Dade)"}

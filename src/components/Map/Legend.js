@@ -1,14 +1,9 @@
-import React from 'react';
-import Grid from '@mui/material/Grid';
-import styled from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  BinsList,
-  Gutter,
-  Tooltip,
-  Icon
-} from '../../components';
-import colors from '../../config/colors';
+import React from "react";
+import Grid from "@mui/material/Grid";
+import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { BinsList, Gutter, Tooltip, Icon } from "../../components";
+import colors from "../../config/colors";
 
 const BottomPanel = styled.div`
   position: fixed;
@@ -19,7 +14,7 @@ const BottomPanel = styled.div`
   width: 38vw;
   max-width: 500px;
   box-sizing: border-box;
-  padding: .5em 1em;
+  padding: 0.5em 1em;
   margin: 0;
   border: 1px solid ${colors.black};
   border-bottom: none;
@@ -88,8 +83,8 @@ const IconContainer = styled.div`
 
 const LegendTitle = styled.h3`
   text-align: center;
-  font-family: 'Lato', sans-serif;
-  font-weight:bold;
+  font-family: "Lato", sans-serif;
+  font-weight: bold;
   padding: 0;
   margin: 0;
 `;
@@ -113,7 +108,7 @@ const BinLabels = styled.div`
     text-align: center;
   }
   .bin:nth-of-type(1) {
-    transform: ${(props) => (props.firstBinZero ? 'translateX(-45%)' : 'none')};
+    transform: ${(props) => (props.firstBinZero ? "translateX(-45%)" : "none")};
   }
   .tooltipText {
     margin-top: -5px;
@@ -147,7 +142,7 @@ const BinBars = styled.div`
     }
   }
   .bin:nth-of-type(1) {
-    transform: ${(props) => (props.firstBinZero ? 'scaleX(0.35)' : 'none')};
+    transform: ${(props) => (props.firstBinZero ? "scaleX(0.35)" : "none")};
   }
 `;
 
@@ -164,6 +159,49 @@ const DataNote = styled.p`
   }
 `;
 
+export const LegendInner = ({
+  currentBins,
+  colorScale,
+  fixedScale,
+  handleHover = () => {},
+  colorFilter,
+}) => (
+  <span>
+    <BinBars
+      firstBinZero={
+        `${colorScale[0]}` === `240,240,240` && fixedScale === undefined
+      }
+    >
+      {colorScale.map((color) => (
+        <button
+          onMouseEnter={() => handleHover(color)}
+          onMouseLeave={() => handleHover(null)}
+          onFocus={() => handleHover(color)}
+          onBlur={() => handleHover(null)}
+          className={`bin color ${colorFilter === color && "active"}`}
+          key={`${color[0]}${color[1]}`}
+        >
+          <span
+            style={{
+              backgroundColor: `rgb(${color[0]},${color[1]},${color[2]})`,
+            }}
+          ></span>
+        </button>
+      ))}
+    </BinBars>
+    <BinLabels
+      firstBinZero={`${colorScale[0]}` === `240,240,240`}
+      binLength={currentBins?.length}
+    >
+      {`${colorScale[0]}` === `240,240,240` && fixedScale === null && (
+        <div className="bin firstBin">0</div>
+      )}
+
+      {currentBins !== undefined && <BinsList data={currentBins} />}
+    </BinLabels>
+  </span>
+);
+
 const Legend = ({
   variableName,
   colorScale,
@@ -173,10 +211,10 @@ const Legend = ({
   note,
 }) => {
   const dispatch = useDispatch();
-  const colorFilter = useSelector(({ui}) => ui.colorFilter);
+  const colorFilter = useSelector(({ ui }) => ui.colorFilter);
   const handleHover = (color) => {
     dispatch({
-      type: 'SET_COLOR_FILTER',
+      type: "SET_COLOR_FILTER",
       payload: color,
     });
   };
@@ -191,44 +229,15 @@ const Legend = ({
           </Grid>
           <Grid item xs={12}>
             {colorScale !== undefined && (
-              <span>
-                <BinBars
-                  firstBinZero={
-                    `${colorScale[0]}` === `240,240,240` &&
-                    fixedScale === undefined
-                  }
-                >
-                  {colorScale.map((color) => (
-                    <button
-                      onMouseEnter={() => handleHover(color)}
-                      onMouseLeave={() => handleHover(null)}
-                      onFocus={() => handleHover(color)}
-                      onBlur={() => handleHover(null)}
-                      className={`bin color ${
-                        colorFilter === color && 'active'
-                      }`}
-                      key={`${color[0]}${color[1]}`}
-                    >
-                      <span
-                        style={{
-                          backgroundColor: `rgb(${color[0]},${color[1]},${color[2]})`,
-                        }}
-                      ></span>
-                    </button>
-                  ))}
-                </BinBars>
-                <BinLabels
-                  firstBinZero={`${colorScale[0]}` === `240,240,240`}
-                  binLength={currentBins?.length}
-                >
-                  {`${colorScale[0]}` === `240,240,240` &&
-                    fixedScale === null && (
-                      <div className="bin firstBin">0</div>
-                    )}
-
-                  {currentBins !== undefined && <BinsList data={currentBins} />}
-                </BinLabels>
-              </span>
+              <LegendInner
+                {...{
+                  currentBins,
+                  colorScale,
+                  fixedScale,
+                  handleHover,
+                  colorFilter,
+                }}
+              />
             )}
           </Grid>
         </Grid>
@@ -237,7 +246,7 @@ const Legend = ({
           <IconContainer>
             <span className="icons-title">Icons:</span>
 
-            {resource.includes('clinics') && (
+            {resource.includes("clinics") && (
               <>
                 <img
                   src={`${process.env.PUBLIC_URL}/assets/img/clinic_icon.png`}
@@ -246,7 +255,7 @@ const Legend = ({
                 <span className="icons-text">Clinics</span>
               </>
             )}
-            {resource.includes('hospitals') && (
+            {resource.includes("hospitals") && (
               <>
                 <img
                   src={`${process.env.PUBLIC_URL}/assets/img/hospital_icon.png`}
@@ -255,7 +264,7 @@ const Legend = ({
                 <span className="icons-text">Hospital</span>
               </>
             )}
-            {resource.includes('vaccination') && (
+            {resource.includes("vaccination") && (
               <>
                 <img
                   src={`${process.env.PUBLIC_URL}/assets/img/federal_site.png`}
@@ -267,7 +276,7 @@ const Legend = ({
                 </span>
               </>
             )}
-            {resource.includes('vaccination') && (
+            {resource.includes("vaccination") && (
               <>
                 <img
                   src={`${process.env.PUBLIC_URL}/assets/img/participating_clinic.png`}
@@ -279,7 +288,7 @@ const Legend = ({
                 </span>
               </>
             )}
-            {resource.includes('vaccination') && (
+            {resource.includes("vaccination") && (
               <>
                 <img
                   src={`${process.env.PUBLIC_URL}/assets/img/invited_clinic.png`}

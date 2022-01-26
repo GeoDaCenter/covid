@@ -3,7 +3,7 @@ export const templates = {
       [
         {
           type: 'text',
-          width: 4,
+          width: 2,
           height: 1,
           content: ({name}) => <h2>7-Day Average Report: {name}</h2>
         },
@@ -15,7 +15,7 @@ export const templates = {
         {
           type: "map",
           width:2,
-          height:2
+          height:4
         },
         {
           type: "lineChart",
