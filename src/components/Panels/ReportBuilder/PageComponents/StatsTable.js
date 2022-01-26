@@ -95,7 +95,6 @@ const SdohStatsTable = ({ geoid, metrics, includedColumns }) => {
 };
 
 export default function StatsTable({ geoid = 17031, topic = "COVID", metrics=[], includedColumns }) {
-  console.log(includedColumns)
   switch (topic) {
     case "COVID":
       return <CovidStatsTable {...{metrics, geoid, includedColumns}} />;

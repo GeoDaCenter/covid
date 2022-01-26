@@ -36,7 +36,7 @@ export const templates = {
         type: "table",
         topic: "COVID",
         width: 2,
-        height: 4,
+        height: 5,
         metrics: ["Cases", "Deaths", "Vaccination", "Testing"],
       },
       {
@@ -172,16 +172,124 @@ export const templates = {
         scale: "national",
         mapType: "lisa"
       }
-    ],
-    
+    ],    
   ],
   "My Region's Snapshot": [
     [
       {
-        type: "textReport",
-        width: 2,
-        height: 2,
+        type: "text",
+        width: 4,
+        height: 1,
+        content: "Regional Snapshot"
       },
+      {
+        type: "map",
+        width: 2,
+        height: 5,
+        variable: "Confirmed Count per 100K Population",
+        scale: "region"
+      },
+      {
+        type: "map",
+        width: 2,
+        height: 5,
+        variable: "Death Count per 100K Population",
+        scale: "region"
+      },
+      {
+        type: "map",
+        width: 2,
+        height: 5,
+        variable: "Percent Fully Vaccinated",
+        scale: "region"
+      },
+      {
+        type: "map",
+        width: 2,
+        height: 5,
+        variable: "7 Day Testing Positivity Rate Percent",
+        scale: "region"
+      },
+      {
+        type: "table",
+        topic: "COVID-REGIONAL",
+        width: 4,
+        height: 4,
+        metrics: ["Cases", "Deaths", "Vaccination", "Testing"],
+        includedColumns: ["variable","geoidData","stateQ50","q50","regionalSummary","regionalHighest","regionalLowest"],
+      },
+    ],
+    [
+      {
+        type: "text",
+        width: 4,
+        height: 1,
+        content: "National Trends and Historic Data"
+      },
+      {
+        type: "lineChart",
+        width: 2,
+        height: 5,
+        table: "cases"
+      },
+      {
+        type: "lineChart",
+        width: 2,
+        height: 5,
+        table: "deaths"
+      },
+      {
+        type: "lineChart",
+        width: 2,
+        height: 5,
+        table: "vaccines_fully_vaccinated"
+      },
+      {
+        type: "lineChart",
+        width: 2,
+        height: 5,
+        table: "testing_wk_pos"
+      },
+    ],
+    [
+      {
+        type: "text",
+        width: 4,
+        height: 1,
+        content: "Hotspots"
+      },
+      {
+        type: "map",
+        width: 2,
+        height: 5,
+        variable: "Confirmed Count per 100K Population",
+        scale: "region",
+        mapType: "lisa"
+      },
+      {
+        type: "map",
+        width: 2,
+        height: 5,
+        variable: "Death Count per 100K Population",
+        scale: "region",
+        mapType: "lisa"
+      },
+      {
+        type: "map",
+        width: 2,
+        height: 5,
+        variable: "Percent Fully Vaccinated",
+        scale: "region",
+        mapType: "hinge15_breaks"
+      },
+      {
+        type: "map",
+        width: 2,
+        height: 5,
+        variable: "7 Day Testing Positivity Rate Percent",
+        scale: "region",
+        mapType: "lisa"
+      }
     ],
   ],
   "My Neighboring County's Stats": [

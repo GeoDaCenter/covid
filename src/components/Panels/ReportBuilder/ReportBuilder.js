@@ -34,9 +34,9 @@ const ModalInner = styled.div`
   position: relative;
   padding-bottom: 4em;
   max-height: 100vh;
-  min-height:40vh;
-  overflow:hidden;
-  transition:250ms all;
+  min-height: 40vh;
+  overflow: hidden;
+  transition: 250ms all;
 `;
 
 const steps = [
@@ -48,32 +48,47 @@ const steps = [
 
 export default function ReportBuilder() {
   const dispatch = useDispatch();
-  const open = useSelector(({ui}) => ui.panelState.reportBuilder);
-  const dates = useSelector(({params}) => params.dates);
-  const dateInputs = useMemo(() => [{value: null, label: 'Latest Available Data'},...(dates?.map(f => ({label: f, value: f}))||[])], [dates.length]);
+  const open = useSelector(({ ui }) => ui.panelState.reportBuilder);
+  const dates = useSelector(({ params }) => params.dates);
+  const dateInputs = useMemo(
+    () => [
+      { value: null, label: "Latest Available Data" },
+      ...(dates?.map((f) => ({ label: f, value: f })) || []),
+    ],
+    [dates.length]
+  );
   const handleClose = () =>
     dispatch({ type: "TOGGLE_PANEL", payload: "reportBuilder" });
   const [activeStep, setActiveStep] = useState(0);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [selectedCounty, setSelectCounty] = useState(null);
-  const [selectedDate, setSelectedDate] = useState({value: null, label: 'Latest Available Data'});
-  const [templateName, setTemplateName] = useState('Template Name');
+  const [selectedDate, setSelectedDate] = useState({
+    value: null,
+    label: "Latest Available Data",
+  });
+  const [templateName, setTemplateName] = useState("Template Name");
   const [previousReport, setPreviousReport] = useState(false);
   const [hasChangedName, setHasChangedName] = useState(false);
   const handleRenameTemplate = (e) => {
     setTemplateName(e.target.value);
     setHasChangedName(true);
-  }
+  };
   useEffect(() => {
-    if (!hasChangedName){
-      setTemplateName(`${selectedTemplate} - ${selectedCounty?.label||''} - ${selectedDate?.label||''}`)
+    if (!hasChangedName) {
+      setTemplateName(
+        `${selectedTemplate} - ${selectedCounty?.label || ""} - ${
+          selectedDate?.label || ""
+        }`
+      );
     }
-  },[selectedCounty, selectedDate, selectedTemplate]);
-  
+  }, [selectedCounty, selectedDate, selectedTemplate]);
+
   const canProgress =
     (activeStep === 0 && selectedTemplate !== null) ||
     (activeStep === 1 && selectedCounty !== null) ||
-    selectedTemplate === "A National Snapshot" ||
+    ["A National Snapshot", "Something Else (Blank Report)"].includes(
+      selectedTemplate
+    ) ||
     previousReport ||
     activeStep === 2 ||
     activeStep === 3;
@@ -82,11 +97,12 @@ export default function ReportBuilder() {
     {
       label: "My County's Stats",
       icon: "placeMarker",
-      customization: [{
-        label: selectedCounty
-          ? `You selected ${selectedCounty?.label}. Click 'Next' to continue`
-          : "What is the name of your county?",
-        input: {
+      customization: [
+        {
+          label: selectedCounty
+            ? `You selected ${selectedCounty?.label}. Click 'Next' to continue`
+            : "What is the name of your county?",
+          input: {
             type: "comboBox",
             content: {
               label: "Type to search (eg. Miami-Dade)",
@@ -94,8 +110,8 @@ export default function ReportBuilder() {
             },
             action: setSelectCounty,
             value: selectedCounty,
+          },
         },
-      },
         {
           label: "What date would you like to see?",
           input: {
@@ -106,19 +122,20 @@ export default function ReportBuilder() {
             },
             action: setSelectedDate,
             value: selectedDate,
-        }
-    },{
-        label: "What would you like to name your report?",
-        input: {
-          type: "textInput",
-          content: {
-            label: "Type a name",
           },
-          action: handleRenameTemplate,
-          value: templateName,
         },
-    }
-  ],
+        {
+          label: "What would you like to name your report?",
+          input: {
+            type: "textInput",
+            content: {
+              label: "Type a name",
+            },
+            action: handleRenameTemplate,
+            value: templateName,
+          },
+        },
+      ],
     },
     {
       label: "A National Snapshot",
@@ -134,43 +151,123 @@ export default function ReportBuilder() {
             },
             action: setSelectedDate,
             value: selectedDate,
-        }
-    },{
-        label: "What would you like to name your report?",
-        input: {
-          type: "textInput",
-          content: {
-            label: "Type a name",
           },
-          action: handleRenameTemplate,
-          value: templateName,
         },
-    }
-  ],
+        {
+          label: "What would you like to name your report?",
+          input: {
+            type: "textInput",
+            content: {
+              label: "Type a name",
+            },
+            action: handleRenameTemplate,
+            value: templateName,
+          },
+        },
+      ],
     },
     {
       label: "My Region's Snapshot",
       icon: "focus",
-      customization: {
-        label: "What is the name of your county?",
-        input: "",
-      },
+      customization: [
+        {
+          label: selectedCounty
+            ? `You selected ${selectedCounty?.label}. Click 'Next' to continue`
+            : "What is the name of your county?",
+          input: {
+            type: "comboBox",
+            content: {
+              label: "Type to search (eg. Miami-Dade)",
+              items: countyList,
+            },
+            action: setSelectCounty,
+            value: selectedCounty,
+          },
+        },
+        {
+          label: "What date would you like to see?",
+          input: {
+            type: "comboBox",
+            content: {
+              label: "Select a date",
+              items: dateInputs,
+            },
+            action: setSelectedDate,
+            value: selectedDate,
+          },
+        },
+        {
+          label: "What would you like to name your report?",
+          input: {
+            type: "textInput",
+            content: {
+              label: "Type a name",
+            },
+            action: handleRenameTemplate,
+            value: templateName,
+          },
+        },
+      ],
     },
     {
       label: "My neighboring county's stats",
       icon: "neighbors",
-      customization: {
-        label: "What is the name of your county?",
-        input: "",
-      },
+      customization: [
+        {
+          label: selectedCounty
+            ? `You selected ${selectedCounty?.label}. Click 'Next' to continue`
+            : "What is the name of your county?",
+          input: {
+            type: "comboBox",
+            content: {
+              label: "Type to search (eg. Miami-Dade)",
+              items: countyList,
+            },
+            action: setSelectCounty,
+            value: selectedCounty,
+          },
+        },
+        {
+          label: "What date would you like to see?",
+          input: {
+            type: "comboBox",
+            content: {
+              label: "Select a date",
+              items: dateInputs,
+            },
+            action: setSelectedDate,
+            value: selectedDate,
+          },
+        },
+        {
+          label: "What would you like to name your report?",
+          input: {
+            type: "textInput",
+            content: {
+              label: "Type a name",
+            },
+            action: handleRenameTemplate,
+            value: templateName,
+          },
+        },
+      ],
     },
     {
       label: "Something Else (Blank Report)",
       icon: false,
-      customization: {
-        label: "What is the name of your county?",
-        input: "",
-      },
+      customization: [
+        {
+          label: "What would you like to name your report?",
+          input: {
+            type: "textInput",
+            content: {
+              label: "Type a name",
+            },
+            action: handleRenameTemplate,
+            value: templateName,
+          },
+        },
+      ],
     },
   ];
 
@@ -186,7 +283,7 @@ export default function ReportBuilder() {
         },
       });
     }
-  },[activeStep])
+  }, [activeStep]);
 
   return (
     <Modal
@@ -231,7 +328,9 @@ export default function ReportBuilder() {
               />
             </>
           )}
-          {activeStep === 2 && <Report reportName={previousReport||templateName}/>}
+          {activeStep === 2 && (
+            <Report reportName={previousReport || templateName} />
+          )}
         </ModalInner>
       </Box>
     </Modal>

@@ -21,8 +21,7 @@ export default function useGetReportViewport({
 }) {
   const [neighbors, secondOrderNeighbors, stateNeighbors] = useGetNeighbors({
     geoid,
-    currentData,
-    geojsonData,
+    currentData
   });
 
   const nationalViewport = useMemo(() => {

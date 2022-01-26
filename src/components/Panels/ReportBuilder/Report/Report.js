@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ReportPage from "../ReportPage/ReportPage";
 import { LayoutContainer } from "./LayoutContainer";
 import { MetaButtonsContainer, MetaButton } from "./MetaButtons";
+import useGetNeighbors from "../../../../hooks/useGetNeighbors";
 // import { templates } from "./Templates";
 
 export default function Report({
@@ -14,7 +15,14 @@ export default function Report({
   const county = report?.county || {};
   const date = report?.date || {};
   const gridContext = useRef({});
+  const geoid = report?.county?.value;
+  const currentData = "county_usfacts.geojson";
+  const [neighbors, secondOrderNeighbors, stateNeighbors] = useGetNeighbors({
+    geoid,
+    currentData,
+  });
 
+  console.log(neighbors, secondOrderNeighbors, stateNeighbors)
   const handleAddPage = () =>
     dispatch({
       type: "ADD_REPORT_PAGE",
