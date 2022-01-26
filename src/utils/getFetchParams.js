@@ -9,7 +9,7 @@ export function getFetchParams({
   tables,
   predicate,
   dateList,
-  currTimespans=[]
+  currTimespans=['latest']
 }){
   const tableName = dataParams[predicate] 
   

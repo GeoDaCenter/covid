@@ -279,21 +279,28 @@ export default function useMapData({
     denominatorData,
     dateIndices,
     dataReady,
+    currIndex
     // dataSnapshot
   } = useLoadData({
     dataParams,
     currentData
   });
+  
+  const combinedParams = {
+    ...dataParams,
+    nIndex:  dataParams?.nType && dataParams.nType.includes("time") ? currIndex : dataParams.nIndex,
+    dIndex:  dataParams?.dType && dataParams.dType.includes("time") ? currIndex : dataParams.dIndex,
+  }
   // const dispatch = useDispatch();
   const { geoda } = useGeoda();
   const [mapSnapshot, setMapSnapshot] = useState(0);
-  const varId = getVarId(currentData, dataParams, mapParams, dataReady);
+  const varId = getVarId(currentData, combinedParams, mapParams, dataReady);
   
   const binIndex =
     dateIndices !== null
       ? mapParams.binMode === "dynamic" &&
-        dateIndices?.indexOf(dataParams.nIndex) !== -1
-        ? dataParams.nIndex
+        dateIndices?.indexOf(combinedParams.nIndex) !== -1
+        ? combinedParams.nIndex
         : dateIndices.slice(-1)[0]
       : null;
 
@@ -301,50 +308,50 @@ export default function useMapData({
         () => {
           return getDataForBins({
             numeratorData:
-              dataParams.numerator === "properties"
+              combinedParams.numerator === "properties"
                 ? geojsonData?.properties
                 : numeratorData?.data,
             denominatorData:
-              dataParams.denominator === "properties"
+              combinedParams.denominator === "properties"
                 ? geojsonData?.properties
                 : denominatorData?.data,
-            dataParams,
+            dataParams: combinedParams,
             binIndex,
             fixedOrder:
               geojsonData?.order?.indexOrder &&
               Object.values(geojsonData.order.indexOrder),
             dataReady,
           })},
-        [JSON.stringify({...dataParams, nIndex:0, dIndex:0}), JSON.stringify(mapParams), binIndex, dataReady, currentData]
+        [JSON.stringify({...combinedParams, nIndex:0, dIndex:0}), JSON.stringify(mapParams), binIndex, dataReady, currentData]
       );
 
       const mapData = useMemo(
-        () => binIndex === dataParams.nIndex || dataParams.nIndex === null 
+        () => binIndex === combinedParams.nIndex || combinedParams.nIndex === null 
           ? binData 
           : getDataForBins({
             numeratorData:
-              dataParams.numerator === "properties"
+              combinedParams.numerator === "properties"
                 ? geojsonData?.properties
                 : numeratorData?.data,
             denominatorData:
-              dataParams.denominator === "properties"
+              combinedParams.denominator === "properties"
                 ? geojsonData?.properties
                 : denominatorData?.data,
-            dataParams,
+            dataParams: combinedParams,
             binIndex: false,
             fixedOrder:
               geojsonData?.order?.indexOrder &&
               Object.values(geojsonData.order.indexOrder),
             dataReady,
           }),
-        [JSON.stringify(dataParams), JSON.stringify(mapParams), dataReady, currentData]
+        [JSON.stringify(combinedParams), JSON.stringify(mapParams), dataReady, currentData]
       );
       
 
   const bins = useGetBins({
     currentData,
     mapParams,
-    dataParams,
+    dataParams: combinedParams,
     binData,
     geoda,
     dataReady,
@@ -366,7 +373,7 @@ export default function useMapData({
     dataForCartogram: mapData,
     shouldUseCartogram: dataReady && mapParams.mapType === "cartogram",
   });
-
+  
   const [colorAndValueData, heightScale] = useMemo(() => {
     const data = generateJoinData({
       binData: mapData,
@@ -374,14 +381,14 @@ export default function useMapData({
       lisaData,
       cartogramData,
       mapParams,
-      dataParams,
+      dataParams: combinedParams,
       order: geojsonData?.order?.indexOrder,
       dataReady,
     });
     !!data && setMapSnapshot(`${new Date().getTime()}`.slice(-6));
     return data;
   }, [
-    mapParams.binMode !== 'dynamic' && mapParams.mapType === 'natural_breaks' && dataParams.nIndex,
+    mapParams.binMode !== 'dynamic' && mapParams.mapType === 'natural_breaks' && combinedParams.nIndex,
     dataReady,
     // JSON.stringify(dataParams),
     JSON.stringify(bins),
@@ -389,6 +396,7 @@ export default function useMapData({
     currentData
     // JSON.stringify(cartogramData),
   ]);
+    
   return [
     geojsonData?.data, // geography
     colorAndValueData, // color and value data
@@ -396,6 +404,7 @@ export default function useMapData({
     bins, // bins for legend etc,
     heightScale, // height scale
     !(dataReady && (bins?.breaks||lisaData) && Object.keys(colorAndValueData).length),
-    geojsonData
+    geojsonData,
+    currIndex
   ];
 }

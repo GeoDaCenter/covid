@@ -20,34 +20,34 @@ import colors from "../../../../config/colors";
 import countyNames from "../../../../meta/countyNames";
 import { colorScales } from "../../../../config/scales";
 
-const defaultMapParams = { 
-    "mapType": "natural_breaks",
-    "bins": {
-        "bins": [],
-        "breaks": []
+const defaultMapParams = {
+  mapType: "natural_breaks",
+  bins: {
+    bins: [],
+    breaks: [],
+  },
+  binMode: "",
+  fixedScale: null,
+  nBins: 8,
+  vizType: "2D",
+  activeGeoid: "",
+  overlay: "",
+  resource: "",
+  dotDensityParams: {
+    raceCodes: {
+      1: true,
+      2: true,
+      3: true,
+      4: true,
+      5: false,
+      6: false,
+      7: false,
+      8: true,
     },
-    "binMode": "",
-    "fixedScale": null,
-    "nBins": 8,
-    "vizType": "2D",
-    "activeGeoid": "",
-    "overlay": "",
-    "resource": "",
-    "dotDensityParams": {
-        "raceCodes": {
-            "1": true,
-            "2": true,
-            "3": true,
-            "4": true,
-            "5": false,
-            "6": false,
-            "7": false,
-            "8": true
-        },
-        "colorCOVID": false,
-        "backgroundTransparency": 0.01
-    }
-}
+    colorCOVID: false,
+    backgroundTransparency: 0.01,
+  },
+};
 
 const MapTitle = styled.div`
   position: absolute;
@@ -57,12 +57,35 @@ const MapTitle = styled.div`
   width: 100%;
   background: rgba(255, 255, 255, 0.85);
   padding: 0.25rem 0.5rem;
+  font-size:1rem;
 `;
+const MapAttribution = styled(MapTitle)`
+  left:initial;
+  top: initial;
+  right:0;
+  bottom:0;
+  width:auto;
+  font-size:0.65rem;
+`
 const NoInteraction = ({ children }) => (
   <div style={{ pointerEvents: "none", width: "100%", height: "100%" }}>
     {children}
   </div>
 );
+
+const getColorScale = (mapType, dataParams) => {
+  switch (mapType) {
+    case "natural_breaks":
+      return colorScales[dataParams.colorScale] || colorScales.natural_breaks;
+    case "hinge15_breaks":
+      return colorScales.hinge15_breaks;
+    case "lisa":
+      return colorScales.lisa;
+    default:
+      return [];
+  }
+};
+
 function ReportMap({
   geoid = 17031,
   pageIdx = 0,
@@ -75,25 +98,25 @@ function ReportMap({
   width,
   height,
   date,
-  dateIndex
+  dateIndex,
 }) {
-
+  const dates = useSelector(({ params }) => params.dates);
   const variableTree = useSelector(({ params }) => params.variableTree);
   const variables = useSelector(({ params }) => params.variables);
   const variableList = Object.keys(variableTree)
     .filter((f) => !f.includes("HEADER"))
     .map((f) => ({ label: f, value: f }));
-console.log(date, dateIndex)
+
   const dataParams = {
     ...(findIn(variables, "variableName", variable) || {}),
-    nIndex: dateIndex
+    nIndex: dateIndex,
   };
 
   const mapParams = {
     ...defaultMapParams,
     mapType,
-    colorScale: (colorScales[dataParams.colorScale]||[])
-  }
+    colorScale: getColorScale(mapType, dataParams),
+  };
 
   const mapContainerRef = useRef(null);
   const { width: mapWidth, height: mapHeight } =
@@ -110,12 +133,12 @@ console.log(date, dateIndex)
     currentHeightScale,
     isLoading,
     geojsonData,
+    currIndex,
   ] = useMapData({
     dataParams,
     mapParams,
     currentData,
   });
-  
   const [
     countyViewport,
     neighborsViewport,
@@ -174,6 +197,9 @@ console.log(date, dateIndex)
           fixedScale={dataParams.fixedScale}
         />
       </MapTitle>
+      <MapAttribution>
+        Source: USA Facts via US Covid Atlas :: Date: {dates[currIndex]}
+      </MapAttribution>
       {mapInner}
       <ControlPopover
         top="0"
@@ -206,28 +232,51 @@ console.log(date, dateIndex)
               items: variableList,
             },
             action: (e) =>
-            handleChange(pageIdx, contentIdx, { variable: e.target.value }),
+              handleChange(pageIdx, contentIdx, { variable: e.target.value }),
+          },
+          {
+            type: "select",
+            content: {
+              label: "Change Map Type",
+              items: [{
+                label: "Natural Breaks",
+                value: "natural_breaks",
+              },{
+                label: "Box Map",
+                value: "hinge15_breaks",
+              },{
+                label: "Hotspot",
+                value: "lisa",
+              }],
+            },
+            action: (e) =>
+              handleChange(pageIdx, contentIdx, { mapType: e.target.value }),
           },
           {
             type: "select",
             content: {
               label: "Change View Scale",
-              items: [{
-                value: "county",
-                label: "County"
-              },{
-                value: "neighbors",
-                label: "Neighboring Counties"
-              },{
-                value: "region",
-                label: "Region"
-              },{
-                value: "state",
-                label: "State"
-              }],
+              items: [
+                {
+                  value: "county",
+                  label: "County",
+                },
+                {
+                  value: "neighbors",
+                  label: "Neighboring Counties",
+                },
+                {
+                  value: "region",
+                  label: "Region",
+                },
+                {
+                  value: "state",
+                  label: "State",
+                },
+              ],
             },
             action: (e) =>
-            handleChange(pageIdx, contentIdx, { scale: e.target.value }),
+              handleChange(pageIdx, contentIdx, { scale: e.target.value }),
           },
           {
             ...widthOptions,

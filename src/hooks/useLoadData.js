@@ -6,7 +6,7 @@ import {
   getFetchParams,
   findSecondaryMonth,
   onlyUniqueArray,
-  getLastDateIndex
+  getClosestIndex
 } from "../utils";
 import { useGeoda } from "../contexts/Geoda";
 import useGetTable from "./useGetTable";
@@ -39,7 +39,7 @@ export default function useLoadData({
 
   // current state data params
   const currDataset = findIn(datasets, "file", currentData);
-  const isTimeSeries = dataParams.nType.includes("time") || dataParams.dType.includes("time");
+  const isTimeSeries = dataParams?.nType && dataParams.nType.includes("time") || dataParams?.dType && dataParams.dType.includes("time");
   
   const _n = getFetchParams({
     dataParams,
@@ -56,13 +56,11 @@ export default function useLoadData({
     predicate: "denominator",
     dateList: dateLists["isoDateList"]
   });
-
-  console.log(_n, _d)
-
-  const currIndex = dataParams.nIndex || dataParams.dIndex;//isTimeSeries && (dataParams.nIndex !== null || dataParams.dIndex !== null) 
-    // ? dataParams.nIndex || dataParams.dIndex
-    // : getLastDateIndex(currentData);
   
+  const currIndex = isTimeSeries
+    ? getClosestIndex(dataParams.nIndex || dataParams.dIndex, _n[0].name||'')||30
+    : null
+    
   const currRangeIndex = currIndex - (dataParams.nRange || dataParams.dRange)
   
   const currTimespans = [currIndex, currRangeIndex].map(index => [
@@ -157,6 +155,7 @@ export default function useLoadData({
     numeratorData,
     denominatorData,
     dateIndices,
-    dataReady: !!numeratorDataReady && !!denominatorDataReady && !!geojsonDataReady
+    dataReady: !!numeratorDataReady && !!denominatorDataReady && !!geojsonDataReady,
+    currIndex
   };
 }

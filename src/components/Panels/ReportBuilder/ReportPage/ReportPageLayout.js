@@ -42,6 +42,19 @@ const WaterMarkDiv = styled.div`
   }
 `;
 
+const AttributionDiv = styled.div`
+  position:absolute;
+  left:50%;
+  bottom:${pagePadding}em;
+  transform:translateX(-50%);
+  text-align:center;
+  h5 {
+    margin:0 0 .5em 0;
+    padding:0;
+    line-height:1;
+  }
+`
+
 export const DateWaterMark = () => (
   <WaterMarkDiv left bottom>
     <p>Generated on {Date().toLocaleString()}</p>
@@ -57,3 +70,7 @@ export const AtlasWaterMark = () => (
     />
   </WaterMarkDiv>
 );
+
+export const Attribution = () => <AttributionDiv>
+  <h5>uscovidatlas.org &#8193; @uscovidatlas</h5>
+  </AttributionDiv>

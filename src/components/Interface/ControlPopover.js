@@ -5,6 +5,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Switch from "@mui/material/Switch";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
+import Checkbox from "@mui/material/Checkbox";
 import styled from "styled-components";
 import { ComboBox, Icon, StyledDropDown, StyledSlider } from "../../components";
 import colors from "../../config/colors";
@@ -79,6 +80,28 @@ const SelectControl = ({ content, value, action }, rest) => (
     </Select>
   </StyledDropDown>
 );
+
+const SelectMultiControl = ({ content, value, action }, rest) => (
+  <StyledDropDown style={{marginTop: '1.5em', width: '100%'}}>
+    <InputLabel htmlFor="variableSelect">{content.label}</InputLabel>
+    <Select
+      MenuProps={{ id: "variableMenu" }}
+      multiple
+      value={value}
+      onChange={action}
+      // renderValue={(selected) => selected.join(', ')}
+      {...rest}
+    >
+      {content.items.map((item, index) => (
+        <MenuItem key={index} value={item.value}>
+          <Checkbox checked={value.indexOf(item.value) > -1} />
+          {item.text||item.label}
+        </MenuItem>
+      ))}
+    </Select>
+  </StyledDropDown>
+);
+
 const ComboBoxControl = ({ content, value, action }, rest) => (
     <ComboBox
       MenuProps={{ id: "variableMenu" }}
@@ -159,7 +182,8 @@ export const ControlElementMapping = {
   switch: SwitchControl,
   slider: SliderControl,
   comboBox: ComboBoxControl,
-  textInput: TextInputControl
+  textInput: TextInputControl,
+  selectMulti: SelectMultiControl
   // geocoder: Geocoder,
   // size: Size,
 };

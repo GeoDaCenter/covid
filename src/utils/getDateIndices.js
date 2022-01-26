@@ -1,13 +1,18 @@
 
+import { findClosestValue } from ".";
 import dataDateRanges from "../config/dataDateRanges";
 
 export const getLastIndex = (arr, val=true) => {
     let tempArr = [...arr].reverse();
     let lastIndex = tempArr.findIndex(item => item === val);
-    return lastIndex
+    return arr.length - lastIndex - 1;
 };
 
-export const getLastDateIndex = (dataName) => {
+export const getClosestIndex = (index, dataName) => {
     const currDatesAvailable = dataDateRanges[dataName.split('.')[0]];
-    return getLastIndex(currDatesAvailable, 1)
+    if (index !== null){
+        return findClosestValue(index, currDatesAvailable, true);
+    } else {
+        return getLastIndex(currDatesAvailable||[], 1)
+    }
 }

@@ -9,6 +9,7 @@ import {
   LayoutPageContainer,
   DateWaterMark,
   AtlasWaterMark,
+  Attribution
 } from "./ReportPageLayout";
 
 // const options = {
@@ -78,6 +79,7 @@ export default function ReportPage({
       </MuuriComponent>
       <DateWaterMark />
       <AtlasWaterMark />
+      <Attribution />
 
       <AddItemButton onClick={toggleOpenAddItem}>
         <Icon symbol="plus" />

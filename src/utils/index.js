@@ -40,7 +40,7 @@ import getGzipData from "./getGzipData";
 import { getIdOrder } from "./getIdOrder";
 import getJson from "./getJson";
 import getJsonPure from "./getJsonPure";
-import { getLastDateIndex, getLastIndex } from "./getDateIndices";
+import { getClosestIndex, getLastIndex } from "./getDateIndices";
 import getLisaValues from "./getLisaValues";
 import {getParseCsvPromise, getParseCSV} from "./getParseCSV";
 import getParsePbf, { parsePbfData } from "./getParsePbf";
@@ -100,7 +100,7 @@ export {
   getIdOrder,
   getJson,
   getJsonPure,
-  getLastDateIndex,
+  getClosestIndex,
   getLastIndex,
   getLisaValues,
   getParseCSV,

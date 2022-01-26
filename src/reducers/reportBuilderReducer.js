@@ -93,7 +93,7 @@ export default function Reducer(state = INITIAL_STATE, action) {
         cachedReports: JSON.stringify(reports),
       };
     }
-    case "REORDER_REPORT_ITEM": {
+    case "REORDER_REPORT_ITEMS": {
       const { reportName, pageIdx, itemsMin, currItemsOrder } = action.payload;
       let spec = state.reports[reportName].spec;
       spec[pageIdx] = currItemsOrder.map(

@@ -19,12 +19,14 @@ export const TableReport = ({
     width = 2,
     height = 3,
     topic = "COVID",
-  }) => (
-    <PanelItemContainer className={`w${width || 2} h${height || 3}`}>
+    metrics = []
+  }) => {
+    console.log(metrics)
+    return <PanelItemContainer className={`w${width || 2} h${height || 3}`}>
       <h4>
         {topic === "COVID"
           ? "7-Day Average Summary Statistics"
-          : "Health Factors (SDOH)"}
+          : "Community Health Context"}
       </h4>
       <StatsTable {...{ topic, geoid }} />
       <ControlPopover
@@ -52,6 +54,21 @@ export const TableReport = ({
             value: geoid,
           },
           {
+            type: "selectMulti",
+            content: {
+              label: "Change County",
+              items: [{
+                label: "All",
+                value: null
+              },{
+                label: "New York",
+                value: "36061"
+              }],
+            },
+            action: (e) => handleChange(pageIdx, contentIdx, { metrics: [...metrics, ...e.target.value] }),
+            value: metrics,
+          },
+          {
             ...widthOptions,
             action: (e) =>
               handleChange(pageIdx, contentIdx, { width: e.target.value }),
@@ -73,5 +90,4 @@ export const TableReport = ({
         onClick={() => handleRemove(pageIdx, contentIdx)}
       />
     </PanelItemContainer>
-  );
-  
+  }
