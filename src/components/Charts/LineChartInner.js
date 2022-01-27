@@ -139,13 +139,14 @@ const CustomTooltip = ({ active, payload, background }) => {
           <p style={{ color: background === "#000000" ? "white" : "black", padding: "5px 0 0 0" }}>
             {payload[0].payload.date}
           </p>
-          {payload.map((data) => (
+          {payload.map((data, idx) => (
             <p
               style={{
                 color: data.color,
                 padding: "5px 0 0 0",
                 fontWeight: 600,
               }}
+              key={`tooltip-inner-text-${idx}`}
             >
               {data.name}:{" "}
               {Number.isInteger(Math.floor(data.payload[data.dataKey]))
@@ -390,6 +391,7 @@ function LineChartInner({
                   strokeDasharray={"2,2"}
                   dot={false}
                   isAnimationActive={false}
+                  key={`line-${idx}`}
                 />
               ))
             )}

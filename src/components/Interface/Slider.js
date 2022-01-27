@@ -58,25 +58,25 @@ const SliderAndTicksInner = styled.div``;
 
 const SpeedSlider = styled.div`
   position: absolute;
-  padding: 0.5em;
+  padding: 1em 1em 0 .5em !important;
   width: 15%;
   min-width:100px;
-  max-width:200px;
+  max-width:150px;
   background: ${colors.gray};
   left: 0;
   top: calc(100% + 0.25em);
-  box-shadow: 0px 0px 5px rgb(0 0 0 / 70%);
+  /* box-shadow: 0px 0px 5px rgb(0 0 0 / 70%); */
   p {
     text-align: center;
   }
   span.MuiSlider-rail {
-    display: initial;
+    display: initial !important;
   }
   span.MuiSlider-track {
-    display: initial;
+    display: initial !important;
   }
   span.MuiSlider-thumbColorPrimary {
-    transform:translateY(-7px);
+    transform:translateY(-7px) !important;
   }
 `;
 
