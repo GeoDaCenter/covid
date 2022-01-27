@@ -14,44 +14,44 @@ const TextReportContainer = styled.span`
   }
 
 `;
-export const TextStatistics = ({ geoid = null, format = "bullet" }) => {
+export const TextStatistics = ({ geoid = null, format = "bullet", dateIndex = false}) => {
   const cases100kStats = useGetQuantileStatistics({
     variable: "Confirmed Count per 100K Population",
-    geoid,
+    geoid,dateIndex
   });
   const casesStats = useGetQuantileStatistics({
     variable: "Confirmed Count",
-    geoid,
+    geoid,dateIndex
   });
 
   const deaths100kStats = useGetQuantileStatistics({
     variable: "Death Count per 100K Population",
-    geoid,
+    geoid,dateIndex
   });
 
   const deathsStats = useGetQuantileStatistics({
     variable: "Death Count",
-    geoid,
+    geoid,dateIndex
   });
 
   const vaccinationStats = useGetQuantileStatistics({
     variable: "Percent Fully Vaccinated",
-    geoid,
+    geoid,dateIndex
   });
 
   const vaccination1DoseStats = useGetQuantileStatistics({
     variable: "Percent Received At Least One Dose",
-    geoid,
+    geoid,dateIndex
   });
 
   const testingPositivityStats = useGetQuantileStatistics({
     variable: "7 Day Testing Positivity Rate Percent",
-    geoid,
+    geoid,dateIndex
   });
 
   const testingVolumeStats = useGetQuantileStatistics({
     variable: "7 Day Tests Performed per 100K Population",
-    geoid,
+    geoid,dateIndex
   });
 
   const name =

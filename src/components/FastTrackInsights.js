@@ -163,7 +163,7 @@ const CustomTooltip = (props) => {
           <p style={{ color: 'white', padding: '5px 0 0 0' }}>
             {data[0].payload.date}
           </p>
-          {data.map((data) => (
+          {data.map((data, idx) => (
             <p
               style={{
                 color: data.color,
@@ -171,6 +171,7 @@ const CustomTooltip = (props) => {
                 textShadow: `2px 2px 4px ${colors.black}`,
                 fontWeight: 600,
               }}
+              key={`tooltip-chart-entry-${idx}`}
             >
               {data.name === 'dailyNew'
                 ? 'Daily New Cases'

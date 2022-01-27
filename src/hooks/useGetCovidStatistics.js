@@ -5,40 +5,41 @@ const combineObjs = (...objs) => Object.assign({}, ...objs);
 export default function useGetCovidStatistics({
   geoid = null,
   includedColumns = ["variable", "geoidData", "stateQ50", "q50"],
-  neighborIds = []
+  neighborIds = [],
+  dateIndex= false
 }) {
   const allStats = [
     useGetQuantileStatistics({
       variable: "Confirmed Count per 100K Population",
-      geoid,neighborIds
+      geoid,neighborIds,dateIndex
     }),
     useGetQuantileStatistics({
       variable: "Confirmed Count",
-      geoid,neighborIds
+      geoid,neighborIds,dateIndex
     }),
     useGetQuantileStatistics({
       variable: "Death Count per 100K Population",
-      geoid,neighborIds
+      geoid,neighborIds,dateIndex
     }),
     useGetQuantileStatistics({
       variable: "Death Count",
-      geoid,neighborIds
+      geoid,neighborIds,dateIndex
     }),
     useGetQuantileStatistics({
       variable: "Percent Fully Vaccinated",
-      geoid,neighborIds
+      geoid,neighborIds,dateIndex
     }),
     useGetQuantileStatistics({
       variable: "Percent Received At Least One Dose",
-      geoid,neighborIds
+      geoid,neighborIds,dateIndex
     }),
     useGetQuantileStatistics({
       variable: "7 Day Testing Positivity Rate Percent",
-      geoid,neighborIds
+      geoid,neighborIds,dateIndex
     }),
     useGetQuantileStatistics({
       variable: "7 Day Tests Performed per 100K Population",
-      geoid,neighborIds
+      geoid,neighborIds,dateIndex
     }),
   ];
 

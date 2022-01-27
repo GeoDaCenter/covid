@@ -77,7 +77,7 @@ export default function ReportBuilder() {
   const dateInputs = useMemo(
     () => [
       { value: null, label: "Latest Available Data" },
-      ...(dates?.map((f) => ({ label: f, value: f })) || []),
+      ...(dates ? dates.map((f, idx) => ({ label: f, value: idx })).reverse() : []),
     ],
     [dates.length]
   );

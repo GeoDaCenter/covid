@@ -8,8 +8,10 @@ export default function useGetTable({
   dateLists = {},
 }) {
   const dispatch = useDispatch();
-  const accessedData = useSelector(({ data }) =>
-    filesToFetch.map((fileSchema) => data.storedData[fileSchema.name])
+  const accessedData = useSelector(({ data }) => 
+    filesToFetch.map((fileSchema) => {
+      return data.storedData[fileSchema.name]
+    })
   );
 
   useEffect(() => {
@@ -30,9 +32,9 @@ export default function useGetTable({
                 dispatch({
                   type: "RECONCILE_TABLE",
                   payload: {
-                    name: filesToFetch[idx].name,
+                    name: cleanedFilesToFetch[idx].name,
                     newData,
-                    timespan: filesToFetch[idx].timespan,
+                    timespan: cleanedFilesToFetch[idx].timespan,
                   },
                 });
               });

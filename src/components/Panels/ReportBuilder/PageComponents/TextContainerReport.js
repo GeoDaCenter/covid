@@ -7,6 +7,7 @@ import {
   heightOptions,
 } from "./PageComponentsLayout";
 import colors from "../../../../config/colors";
+import { useSelector } from "react-redux";
 
 const TextComponentMapping = {
   '7day': ({name}) => <h2>7-Day Average Report: {name}</h2>,
@@ -24,13 +25,15 @@ export const TextContainerReport = ({
   height,
   content,
   name,
+  dateIndex
 }) => {
-  
+  const currDate = useSelector(({params}) => dateIndex === null ? params.dates.slice(-1,)[0] : params.dates[dateIndex]);  
   const InnerComponent = typeof content === "string" ? () => <h2>{content}</h2> : TextComponentMapping[content?.preset];
   
   return (
     <PanelItemContainer className={`w${width || 4} h${height || 1}`}>
       <InnerComponent name={name} />
+      <h3>Data as of {currDate}</h3>
       <ControlPopover
         top="0"
         left="0"

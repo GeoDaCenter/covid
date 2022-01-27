@@ -67,7 +67,7 @@ const MapContainerOuter = styled.div`
   /* width: 100%; */
   height: ${(props) => (props.isReport ? "100%" : "calc(100vh - 50px)")};
   flex: 1;
-  pointer-events: ${props => props.noData ? "none" : "initial"};
+  pointer-events: ${props => props.noData || props.isReport ? "none" : "auto"};
 `;
 const MapContainer = styled.div`
   #deckgl-wrapper {

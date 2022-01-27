@@ -68,7 +68,7 @@ const MapAttribution = styled(MapTitle)`
   font-size:0.65rem;
 `
 const NoInteraction = ({ children }) => (
-  <div style={{ pointerEvents: "none", width: "100%", height: "100%" }}>
+  <div style={{ pointerEvents: "none !important", width: "100%", height: "100%" }}>
     {children}
   </div>
 );
@@ -116,7 +116,7 @@ function ReportMap({
   const variableList = Object.keys(variableTree)
     .filter((f) => !f.includes("HEADER"))
     .map((f) => ({ label: f, value: f }));
-
+    
   const dataParams = {
     ...(findIn(variables, "variableName", variable) || {}),
     nIndex: dateIndex,
@@ -125,6 +125,7 @@ function ReportMap({
   const mapParams = {
     ...defaultMapParams,
     mapType,
+    binMode: "dynamic",
     colorScale: getColorScale(mapType, dataParams),
   };
 

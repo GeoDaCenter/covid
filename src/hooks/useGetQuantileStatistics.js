@@ -8,7 +8,8 @@ export default function useGetQuantileStatistics({
     dataset=null,
     geoid=null,
     getStateStats=true,
-    neighborIds = []
+    neighborIds = [],
+    dateIndex = false,
 }){
     const [stats, setStats] = useState({});
     // pieces of redux state
@@ -17,6 +18,7 @@ export default function useGetQuantileStatistics({
     const geoidProperties = geojsonData?.properties && geojsonData.properties[geoid];
     const data = useGetVariable({
         variable,
+        dateIndex
     });
 
     useEffect(() => {

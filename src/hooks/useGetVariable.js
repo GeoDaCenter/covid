@@ -16,6 +16,7 @@ export default function useGetVariable({
   variable,
   priorityLoad = false,
   dataset = false,
+  dateIndex = false,
 }) {
   const canLoadInBackground = useSelector(
     ({ data }) => data.canLoadInBackground
@@ -54,7 +55,7 @@ export default function useGetVariable({
 
   const currIndex = isTimeSeries
     ? getClosestIndex(
-        dataParams.nIndex || dataParams.dIndex,
+        dateIndex || dataParams.nIndex || dataParams.dIndex,
         defaultNumeratorParams.name || ""
       ) || 30
     : null;

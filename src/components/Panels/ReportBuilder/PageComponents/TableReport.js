@@ -54,6 +54,7 @@ export const TableReport = ({
   neighbors,
   secondOrderNeighbors,
   geogToInclude = "county",
+  dateIndex
 }) => {
   const ids = {
     county: geoid,
@@ -68,7 +69,7 @@ export const TableReport = ({
           ? "7-Day Average Summary Statistics"
           : "Community Health Context"}
       </h4>
-      <StatsTable {...{ topic, metrics, includedColumns, geoid, ids }} />
+      <StatsTable {...{ topic, metrics, includedColumns, geoid, ids, dateIndex }} />
       <ControlPopover
         top="0"
         left="0"
