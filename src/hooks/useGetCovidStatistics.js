@@ -122,7 +122,7 @@ export default function useGetCovidStatistics({
           )
         )
         .flat(),
-    [dataReady]
+    [dataReady, JSON.stringify(neighborIds)]
   );
   return [tableData, columns, dataReady];
 }

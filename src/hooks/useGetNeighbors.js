@@ -33,7 +33,7 @@ const getNeighbors = async (weights, geoda, idx) => {
   };
 };
 
-export default function useGetNeighbors({ geoid = null, currentData }) {
+export default function useGetNeighbors({ geoid = null, currentData, updateTrigger = null }) {
   const dispatch = useDispatch();
   const { geoda, geodaReady } = useGeoda();
   const storedGeojson = useSelector(({data}) => data.storedGeojson);  
@@ -93,7 +93,7 @@ export default function useGetNeighbors({ geoid = null, currentData }) {
         }
       );
     }
-  }, [geoid, currentData, geodaReady]);
+  }, [geoid, currentData, geodaReady, updateTrigger]);
 
   return [neighbors.neighbors, neighbors.secondOrderNeighbors, neighbors.state];
 }

@@ -22,7 +22,9 @@ export default function Report({ reportName = "", activeStep }) {
   const [neighbors, secondOrderNeighbors, stateNeighbors] = useGetNeighbors({
     geoid,
     currentData,
+    updateTrigger: JSON.stringify(report)
   });
+  console.log(neighbors, secondOrderNeighbors, stateNeighbors)
 
   const handleAddPage = () =>
     dispatch({
