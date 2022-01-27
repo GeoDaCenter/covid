@@ -67,6 +67,7 @@ const MapContainerOuter = styled.div`
   /* width: 100%; */
   height: ${(props) => (props.isReport ? "100%" : "calc(100vh - 50px)")};
   flex: 1;
+  pointer-events: ${props => props.noData ? "none" : "initial"};
 `;
 const MapContainer = styled.div`
   #deckgl-wrapper {
@@ -134,6 +135,8 @@ function MapSection({
   highlightGeoids = [],
   theme = "dark",
 }) {
+  const noData = Object.keys(currentMapData).length === 0;
+  // console.log(noData)
   const isReport = !!manualViewport;
   // fetch pieces of state from store
   // const currentMapData = useSelector(state => state.mapData.data);
@@ -149,6 +152,7 @@ function MapSection({
   // const storedLisaData = useSelector((state) => state.storedLisaData);
   const shouldPanMap = useSelector(({ ui }) => ui.shouldPanMap);
   const panelState = useSelector(({ ui }) => ui.panelState);
+  const uiLeftPadding = useSelector(({ui}) => ui.panelState.variables ? ui.variableMenuWidth : 0);
 
   const isPoint = currentMapGeography?.features
     ? currentMapGeography.features[0].geometry.type === "Point"
@@ -876,7 +880,7 @@ function MapSection({
 
         let layerIds = ["choropleth"];
         let features = deckRef.current.pickObjects({
-          x: left,
+          x: left - 50 - uiLeftPadding,
           y: top - 50,
           width,
           height,
@@ -928,7 +932,7 @@ function MapSection({
   }, []);
   
   return (
-    <MapContainerOuter isReport={isReport}>
+    <MapContainerOuter {...{noData, isReport}}>
       <MapContainer
         onKeyDown={handleKeyDown}
         onKeyUp={handleKeyUp}

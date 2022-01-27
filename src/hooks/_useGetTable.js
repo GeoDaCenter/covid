@@ -53,7 +53,7 @@ export default function useGetTable({
         const fileIsNull = filesToFetch.length === 1 && filesToFetch[0].noFile;
         return dataIsLoaded || fileIsNull || missingParams;
       });
-    const returnData = dataReady ? accessedData[0] : undefined;
+    const returnData = dataReady ? accessedData[0] : {};
     const error = false;
     return {
       returnData,

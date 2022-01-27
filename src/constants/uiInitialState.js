@@ -26,6 +26,7 @@ const INITIAL_STATE ={
   isLoading: true,
   mapScreenshotData: {},
   shouldPanMap: false,
-  colorFilter: false
+  colorFilter: false,
+  variableMenuWidth: 0
 }
 export default INITIAL_STATE;

@@ -135,8 +135,8 @@ export default function Report({ reportName = "", activeStep }) {
             Reports' drop down to see up-to-date data.
           </h4>
           <p>
-            Currently, you may export your report pages or JPGs or PDF pages.
-            Soon we will add the ability to export a single PDF. To leave the
+            Currently, you may export your report pages as JPGs.
+            We plan to add an export feature as a single PDF. To leave the
             report builder, click 'finish' below.
           </p>
           <p>
@@ -153,9 +153,9 @@ export default function Report({ reportName = "", activeStep }) {
           <PrintButton onClick={() => handlePrint("JPG")}>
             Export JPGs
           </PrintButton>
-          <PrintButton onClick={() => handlePrint("PDF")}>
+          {/* <PrintButton onClick={() => handlePrint("PDF")}>
             Export PDF
-          </PrintButton>
+          </PrintButton> */}
         </PrintContainer>
       )}
       {pages.map((page, idx) => (

@@ -10,11 +10,10 @@ export default function useGetQuantileStatistics({
     getStateStats=true,
     neighborIds = []
 }){
-    const storedGeojson = useSelector(({ data }) => data.storedGeojson);
     const [stats, setStats] = useState({});
     // pieces of redux state
     const currentData = useSelector(({params}) => params.currentData);
-    const geojsonData = storedGeojson[dataset||currentData];
+    const geojsonData = useSelector(({ data }) => data.storedGeojson[dataset||currentData]);
     const geoidProperties = geojsonData?.properties && geojsonData.properties[geoid];
     const data = useGetVariable({
         variable,

@@ -20,16 +20,14 @@ export default function useGetVariable({
   const canLoadInBackground = useSelector(
     ({ data }) => data.canLoadInBackground
   );
-  const storedData = useSelector(({ data }) => data.storedData);
-  const storedGeojson = useSelector(({ data }) => data.storedGeojson);
   // pieces of redux state
   const stateDataset = useSelector(({ params }) => params.currentData);
   const currentData = dataset || stateDataset;
+  const geojsonData = useSelector(({ data }) => data.storedGeojson[currentData]);
   const dataParams = useSelector(({ params }) => params.dataParams);
   const datasets = useSelector(({ params }) => params.datasets);
   const tables = useSelector(({ params }) => params.tables);
   const variables = useSelector(({ params }) => params.variables);
-  const geojsonData = storedGeojson[currentData];
   // current state data params
 
   const params = findIn(variables, "variableName", variable);
@@ -85,13 +83,11 @@ export default function useGetVariable({
     useGetTable({
       filesToFetch: fetchParams[0],
       shouldFetch: canLoadInBackground,
-      storedData,
       dateLists,
     }),
     useGetTable({
       filesToFetch: fetchParams[1],
       shouldFetch: canLoadInBackground,
-      storedData,
       dateLists,
     }),
   ];

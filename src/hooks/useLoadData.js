@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import {
   findIn,
   getDateLists,
@@ -38,7 +38,7 @@ export default function useLoadData({
   const tables = useSelector(({params}) => params.tables);
   // const dataParams = useSelector(({params}) => params.dataParams);
   // const currentData = useSelector(({params}) => params.currentData);
-  const [firstLoad, setFirstLoad] = useState(true);
+  const firstLoad = useRef(true)
 
   // current state data params
   const currDataset = findIn(datasets, "file", currentData);
@@ -107,14 +107,14 @@ export default function useLoadData({
 
   // First load fix numerator index
   useEffect(() => {
-    if (firstLoad && numeratorData?.dates && numeratorData.dates.slice(-1)[0]) {
+    if (firstLoad.current && numeratorData?.dates && numeratorData.dates.slice(-1)[0]) {
       dispatch({
         type: "SET_DATA_PARAMS",
         payload: {
           nIndex: numeratorData.dates.slice(-1)[0],
         },
       });
-      setFirstLoad(false);
+      firstLoad.current = false;
     }
   }, [numeratorData && (numeratorData?.dates && numeratorData.dates.slice(-1)[0])]);
 
