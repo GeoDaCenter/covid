@@ -9,7 +9,7 @@ const TemplateButton = styled.button`
   color: ${colors.white};
   border: 1px solid ${colors.white};
   padding: 0 1em 2em 1em;
-  max-width: 150px;
+  max-width: 7vw;
   margin: 1em auto;
   display: block;
   cursor: pointer;
@@ -31,11 +31,13 @@ const TemplateButton = styled.button`
   }
   @media (max-width: 900px) {
     width: 100%;
-    max-width: 100%;
+    max-width: 100vw;
     max-height: 20vh;
     svg {
       /* height:100%; */
+      max-width: 10vw;
       width: initial;
+      padding:0;
       aspect-ratio: initial;
     }
   }

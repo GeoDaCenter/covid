@@ -926,7 +926,7 @@ function MapSection({
       );
     }
   }, []);
-  console.log()
+  
   return (
     <MapContainerOuter isReport={isReport}>
       <MapContainer
@@ -959,7 +959,7 @@ function MapSection({
           controller={true}
           pickingRadius={20}
           onWebGLInitialized={setGLContext}
-          glOptions={{ stencil: true }}
+          glOptions={{ stencil: true, preserveDrawingBuffer: isReport }}
         >
           <MapboxGLMap
             reuseMaps={!isReport}

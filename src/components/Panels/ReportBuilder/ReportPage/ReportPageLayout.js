@@ -12,6 +12,10 @@ export const LayoutPageContainer = styled.div`
   position: relative;
   color: black;
   padding: ${pagePadding}em;
+
+  @media (max-width:1440px){
+    width:100%;
+  }
 `;
 
 export const AddItemButton = styled.button`

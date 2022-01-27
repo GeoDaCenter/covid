@@ -11,7 +11,7 @@ const cleanVals = (vals, multiplier) => {
   const returnVals = [];
   for (let i = 0; i < vals.length; i++) {
     if (vals[i] === -999 || vals[i] === -9999) {
-      returnVals.push(null);
+      returnVals.push(0);
     } else {
       returnVals.push(vals[i] * multiplier);
     }

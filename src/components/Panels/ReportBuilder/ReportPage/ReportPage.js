@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useLayoutEffect, useState, useRef } from "react";
 import ReportComponentMapping from "../PageComponents/PageComponents";
 import { MuuriComponent } from "muuri-react";
 
@@ -44,13 +44,19 @@ export default function ReportPage({
   handleGridUpdate,
   name,
   reportName,
-  neighbors, secondOrderNeighbors, stateNeighbors
+  neighbors, secondOrderNeighbors, stateNeighbors,
+  onMount
 }) {
   const [openAddItem, setOpenAddItem] = useState(false);
   const toggleOpenAddItem = () => setOpenAddItem((prev) => !prev);
-  
+  const pageRef = useRef(null)
+
+  useLayoutEffect(() => {
+    onMount(pageRef)
+  },[])
+
   return (
-    <LayoutPageContainer>
+    <LayoutPageContainer ref={pageRef}>
       <MuuriComponent
         key={JSON.stringify(content)}
         dragEnabled

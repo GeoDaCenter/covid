@@ -19,13 +19,25 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 1140,
-  maxWidth: "80vw",
+  maxWidth: {
+    xs: "100vw",
+    sm: "100vw",
+    md: "100vw",
+    lg: "80vw",
+    xl: "80vw",
+  },
   bgcolor: colors.gray,
   border: "1px solid #000",
   fontFamily: "'Lato', sans-serif",
   color: "white",
   boxShadow: 0,
-  p: 4,
+  p: {
+    xs: 1,
+    sm: 2,
+    md: 2,
+    lg: 4,
+    xl: 4,
+  },
 };
 
 const ModalInner = styled.div`
@@ -37,6 +49,18 @@ const ModalInner = styled.div`
   min-height: 40vh;
   overflow: hidden;
   transition: 250ms all;
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.5em;
+  background:none;
+  color:white;
+  border:none;
+  font-size:1.5rem;
+  cursor:pointer;
 `;
 
 const steps = [
@@ -328,10 +352,14 @@ export default function ReportBuilder() {
               />
             </>
           )}
-          {activeStep === 2 && (
-            <Report reportName={previousReport || templateName} />
+          {activeStep >= 2 && (
+            <Report
+              reportName={previousReport || templateName}
+              activeStep={activeStep}
+            />
           )}
         </ModalInner>
+        <CloseButton onClick={handleClose} title="Close Report Builder">×</CloseButton>
       </Box>
     </Modal>
   );

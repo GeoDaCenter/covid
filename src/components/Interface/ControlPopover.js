@@ -169,6 +169,20 @@ const StyledTextField = styled(TextField)`
     border-bottom:1px solid ${colors.white};
   }
 `
+
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: -.5em;
+  right: -.125em;
+  padding: 0.75em;
+  background:none;
+  color:white;
+  border:none;
+  font-size:1rem;
+  cursor:pointer;
+`;
+
 const TextInputControl = ({ content, value, action }) => 
   <StyledTextField fullWidth id="standard-basic" variant="standard" 
   value={value}
@@ -234,7 +248,8 @@ export default function ControlsPopover({ controlElements = [], top, bottom, lef
             }
           })}
         </PopoverContent>
-      </Popover>
+      {!!anchorEl && <CloseButton onClick={handleClose} title="Close Panel">×</CloseButton>}
+      </Popover>      
     </PopoverContainer>
   );
 }

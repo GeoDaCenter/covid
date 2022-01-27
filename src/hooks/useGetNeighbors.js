@@ -39,7 +39,7 @@ export default function useGetNeighbors({ geoid = null, currentData }) {
   const storedGeojson = useSelector(({data}) => data.storedGeojson);  
   const datasets = useSelector(({params}) => params.datasets);
   const currDataset = findIn(datasets, "file", currentData);
-  const [geojsonData, geojsonDataReady] = useGetGeojson({
+  const [geojsonData] = useGetGeojson({
     geoda,
     geodaReady,
     currDataset,
