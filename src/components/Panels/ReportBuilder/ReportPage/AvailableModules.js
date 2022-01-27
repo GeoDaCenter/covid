@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
+// import ClickAwayListener from "@mui/material/ClickAwayListener";
 import colors from "../../../../config/colors";
 import { Box, Modal } from "@mui/material";
 const defaultModules = [
@@ -135,6 +135,7 @@ const style = {
   color: "white",
   boxShadow: 0,
   overflowY: "scroll",
+  overflowX: "hidden",
   zIndex: 10000,
   p: {
     xs: 1,
@@ -145,6 +146,20 @@ const style = {
   },
 };
 
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: -.5em;
+  right: -.125em;
+  padding: 0.75em;
+  background:none;
+  color:white;
+  border:none;
+  font-size:1rem;
+  cursor:pointer;
+`;
+
+
 export function AvailableModulesList({
   availableModules = defaultModules,
   handleAddItem = () => {},
@@ -152,7 +167,6 @@ export function AvailableModulesList({
   pageIdx = 0,
   open,
 }) {
-  console.log(open)
   return (
     <Modal
       open={open}
@@ -179,6 +193,7 @@ export function AvailableModulesList({
             </ItemTypeContainer>
           ))}
         </AddItemContainer>
+      <CloseButton onClick={handleClose} title="Close Panel">×</CloseButton>
       </Box>
     </Modal>
   );
