@@ -105,7 +105,7 @@ export default function useGetSdohStatistics({
       accessor: "stateQ50",
     },
     {
-      Header: "National Total",
+      Header: "National Summary",
       accessor: "nationalSummary",
     },
     {

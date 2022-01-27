@@ -66,7 +66,7 @@ const numberFormatter = (val) =>
   val > 1000000 ? `${val / 1000000}M` : val > 1000 ? `${val / 1000}K` : val;
 const dateFormatter = (val) => {
   let tempDate = (new Date(val).getMonth() + 1) % 12;
-  return `${monthNames[tempDate]}`;
+  return tempDate === 0 ? val.slice(0, 4) : monthNames[tempDate];
 };
 
 const CustomTick = (props) => (
@@ -169,7 +169,7 @@ const LabelText = {
     title: "Cases",
   },
   deaths: {
-    x1label: "Deaths Cases",
+    x1label: "Cumulative Deaths",
     x2label: "New Deaths (7 Day Average)",
     title: "Deaths",
   },
@@ -213,6 +213,10 @@ function LineChartInner({
 }) {
   const { highlightColor, mediumColor, gridColor, backgroundColor } =
     colorSchemes[colorScheme];
+  const qualtitiveScale = {
+    light: colors.qualtitiveScaleLight,
+    dark: colors.qualtitiveScaleDark,
+  }[colorScheme];
 
   const dispatch = useDispatch();
   const {
@@ -260,7 +264,10 @@ function LineChartInner({
         <ChartLabel color={mediumColor} left={-35}>
           {x1label}
         </ChartLabel>
-        <ChartLabel color={highlightColor} right={-65}>
+        <ChartLabel
+          color={highlightColor}
+          right={colorScheme === "light" ? -45 : -65}
+        >
           {x2label}
         </ChartLabel>
         <ResponsiveContainer width="100%" height="100%">
@@ -268,15 +275,16 @@ function LineChartInner({
             data={chartData}
             margin={{
               top: 0,
-              right: 20,
-              left: 10,
-              bottom: 50,
+              right: colorScheme === "light" ? 30 : 20,
+              left: 5,
+              bottom: 60,
             }}
             onClick={isTimeseries ? handleChange : null}
           >
             <XAxis
               dataKey="date"
               ticks={dateRange}
+              minTickGap={-50}
               tick={
                 <CustomTick
                   style={{
@@ -372,7 +380,14 @@ function LineChartInner({
                   yAxisId="left"
                   dataKey={`${geoid}Sum${populationNormalized ? "100k" : ""}`}
                   name={selectionNames[idx] + " Cumulative"}
-                  stroke={mediumColor}
+                  stroke={
+                    selectionKeys.length === 1
+                      ? highlightColor
+                      : selectionKeys.length > qualtitiveScale.length
+                      ? mediumColor
+                      : qualtitiveScale[idx]
+                  }
+                  strokeDasharray={"2,2"}
                   dot={false}
                   isAnimationActive={false}
                 />
@@ -401,9 +416,9 @@ function LineChartInner({
                   stroke={
                     selectionKeys.length === 1
                       ? highlightColor
-                      : selectionKeys.length > colors.qualtitiveScale.length
-                      ? "white"
-                      : colors.qualtitiveScale[idx]
+                      : selectionKeys.length > qualtitiveScale.length
+                      ? highlightColor
+                      : qualtitiveScale[idx]
                   }
                   dot={false}
                   isAnimationActive={false}
@@ -424,7 +439,7 @@ function LineChartInner({
                 isAnimationActive={false}
               />
             )}
-            {selectionKeys.length < colors.qualtitiveScale.length && (
+            {selectionKeys.length < qualtitiveScale.length && (
               <Legend
                 onMouseEnter={handleLegendHover}
                 onMouseLeave={handleLegendLeave}

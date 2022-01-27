@@ -19,7 +19,21 @@ const colors = {
       count: ['#1f78b4', '#33a02c', '#e31a1c', '#ff7f00', '#6a3d9a', '#b15928'],
       sum: ['#a6cee3', '#b2df8a', '#fb9a99', '#fdbf6f', '#cab2d6', '#ffff99'],
     },
-    qualtitiveScale: [
+    qualtitiveScaleLight: [
+      '#a6cee3',
+      '#1f78b4',
+      '#b2df8a',
+      '#33a02c',
+      '#fb9a99',
+      '#e31a1c',
+      '#fdbf6f',
+      '#ff7f00',
+      '#cab2d6',
+      '#6a3d9a',
+      '#ffff99',
+      '#b15928'
+    ],
+    qualtitiveScaleDark: [
       '#8dd3c7',
       '#ffffb3',
       '#bebada',

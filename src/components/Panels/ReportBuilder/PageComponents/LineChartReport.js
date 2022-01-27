@@ -43,16 +43,24 @@ export const LineChartReport = ({
   showSummarized,
   populationNormalized,
   shouldShowVariants,
+  neighbors, secondOrderNeighbors,
+  linesToShow="county"
 }) => {
+  const ids = {
+    county: geoid,
+    neighbors,
+    secondOrderNeighbors,
+  }[linesToShow]
+  
   return (
-    <PanelItemContainer className={`w${width || 2} h${height || 2}`}>
+    <PanelItemContainer className={`w${width || 2} h${height || 2}`} style={{padding:'1em 1em 0 0'}}>
       <CenteredChartTitle>
         <h3>{tableOptions.find(f => f.value === table)?.text}</h3>
       </CenteredChartTitle>
       <LineChartInner
         docked={true}
         colorScheme="light"
-        geoid={typeof geoid === "number" || typeof geoid === "string" ? [geoid] : geoid}
+        geoid={typeof ids === "number" || typeof ids === "string" ? [ids] : ids}
         {...{
           table,
           logChart,

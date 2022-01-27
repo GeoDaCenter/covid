@@ -31,10 +31,13 @@ export default function useLoadData({
 }) {
   // pieces of redux state
   const dispatch = useDispatch();
-  // const dataParams = useSelector(({params}) => params.dataParams);
-  // const currentData = useSelector(({params}) => params.currentData);
+  const { geoda, geodaReady } = useGeoda();
+  const storedGeojson = useSelector(({data}) => data.storedGeojson);
+  const canLoadInBackground = useSelector(({data}) => data.canLoadInBackground);
   const datasets = useSelector(({params}) => params.datasets);
   const tables = useSelector(({params}) => params.tables);
+  // const dataParams = useSelector(({params}) => params.dataParams);
+  // const currentData = useSelector(({params}) => params.currentData);
   const [firstLoad, setFirstLoad] = useState(true);
 
   // current state data params
@@ -45,10 +48,7 @@ export default function useLoadData({
   ]
   const isTimeSeries =  nIsTimeSeries || dIsTimeSeries;
 
-  const { geoda, geodaReady } = useGeoda();
   // const storedData = useSelector(({data}) => data.storedData);
-  const storedGeojson = useSelector(({data}) => data.storedGeojson);
-  const canLoadInBackground = useSelector(({data}) => data.canLoadInBackground);
 
   const defaultNumeratorParams = getFetchParams({
     dataParams,
@@ -69,6 +69,7 @@ export default function useLoadData({
   const currIndex = isTimeSeries
     ? getClosestIndex(dataParams.nIndex || dataParams.dIndex, defaultNumeratorParams.name||'')||30
     : null
+
   const currRangeIndex = currIndex - (dataParams.nRange || dataParams.dRange) 
   const currTimespans = [currIndex, currRangeIndex].map(index => [
     !currIndex || dateLists.isoDateList.length - index < 30
@@ -96,7 +97,6 @@ export default function useLoadData({
       shouldFetch: true,
       dateLists
     });
-
   const [geojsonData, geojsonDataReady] = useGetGeojson({
     geoda,
     geodaReady,

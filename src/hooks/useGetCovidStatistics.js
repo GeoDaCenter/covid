@@ -5,39 +5,40 @@ const combineObjs = (...objs) => Object.assign({}, ...objs);
 export default function useGetCovidStatistics({
   geoid = null,
   includedColumns = ["variable", "geoidData", "stateQ50", "q50"],
+  neighborIds = []
 }) {
   const allStats = [
     useGetQuantileStatistics({
       variable: "Confirmed Count per 100K Population",
-      geoid,
+      geoid,neighborIds
     }),
     useGetQuantileStatistics({
       variable: "Confirmed Count",
-      geoid,
+      geoid,neighborIds
     }),
     useGetQuantileStatistics({
       variable: "Death Count per 100K Population",
-      geoid,
+      geoid,neighborIds
     }),
     useGetQuantileStatistics({
       variable: "Death Count",
-      geoid,
+      geoid,neighborIds
     }),
     useGetQuantileStatistics({
       variable: "Percent Fully Vaccinated",
-      geoid,
+      geoid,neighborIds
     }),
     useGetQuantileStatistics({
       variable: "Percent Received At Least One Dose",
-      geoid,
+      geoid,neighborIds
     }),
     useGetQuantileStatistics({
       variable: "7 Day Testing Positivity Rate Percent",
-      geoid,
+      geoid,neighborIds
     }),
     useGetQuantileStatistics({
       variable: "7 Day Tests Performed per 100K Population",
-      geoid,
+      geoid,neighborIds
     }),
   ];
 
@@ -64,11 +65,19 @@ export default function useGetCovidStatistics({
       accessor: "stateQ50",
     },
     {
-      Header: "National Total",
+      Header: "Region Median",
+      accessor: "regionQ50",
+    },
+    {
+      Header: "Region Summary",
+      accessor: "regionSummary",
+    },
+    {
+      Header: "National Summary",
       accessor: "nationalSummary",
     },
     {
-      Header: "National Median",
+      Header: "Median (50th pctile)",
       accessor: "q50",
     },
     {
@@ -76,8 +85,16 @@ export default function useGetCovidStatistics({
       accessor: "q25",
     },
     {
-      Header: "75 Percentile",
+      Header: "75th Percentile",
       accessor: "q75",
+    },
+    {
+      Header: "Region Lowest",
+      accessor: "regionMin",
+    },
+    {
+      Header: "Region Highest",
+      accessor: "regionMax",
     },
     {
       Header: "Lowest",

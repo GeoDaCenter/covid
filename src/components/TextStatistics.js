@@ -108,7 +108,7 @@ export const TextStatistics = ({ geoid = null, format = "bullet" }) => {
   if (format === "bullet") {
     return (
       <TextReportContainer>
-        <h4>7-Day Daily Averages for {name}</h4>
+        <h4>7-Day Average Summary for {name}</h4>
         {cases100kStats.geoidData !== undefined && casesStats.geoidData !== undefined && (
           <>
             <p className="list-header">Cases</p>

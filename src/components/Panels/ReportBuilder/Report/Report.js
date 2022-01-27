@@ -16,13 +16,12 @@ export default function Report({
   const date = report?.date || {};
   const gridContext = useRef({});
   const geoid = report?.county?.value;
-  const currentData = "county_usfacts.geojson";
+  const currentData = "county_usfacts.geojson";  
   const [neighbors, secondOrderNeighbors, stateNeighbors] = useGetNeighbors({
     geoid,
     currentData,
   });
-
-  console.log(neighbors, secondOrderNeighbors, stateNeighbors)
+  
   const handleAddPage = () =>
     dispatch({
       type: "ADD_REPORT_PAGE",
@@ -111,7 +110,8 @@ export default function Report({
             handleAddItem,
             handleGridContext,
             handleGridUpdate,
-            reportName
+            reportName,
+            neighbors, secondOrderNeighbors, stateNeighbors
           }}
         />
       ))}

@@ -210,7 +210,7 @@ export default function ReportBuilder() {
       ],
     },
     {
-      label: "My neighboring county's stats",
+      label: "My Neighboring County's Stats",
       icon: "neighbors",
       customization: [
         {

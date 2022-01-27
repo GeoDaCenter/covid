@@ -36,9 +36,9 @@ const WaterMarkDiv = styled.div`
   p {
     font-size: 0.5rem;
   }
-  max-width: 20%;
+  max-width: 35%;
   img {
-    width: 100%;
+    width: 50%;
   }
 `;
 
@@ -57,7 +57,10 @@ const AttributionDiv = styled.div`
 
 export const DateWaterMark = () => (
   <WaterMarkDiv left bottom>
-    <p>Generated on {Date().toLocaleString()}</p>
+    <p>
+      Data from USA Facts, CDC, Census ACS. Map Data (c) OpenStreetMap Contributors, Mapbox.
+      Generated on {new Date().toISOString().slice(0,10)}
+    </p>
   </WaterMarkDiv>
 );
 

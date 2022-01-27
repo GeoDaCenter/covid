@@ -11,7 +11,7 @@ export default function useGetTable({
   const storedData = useSelector(({data}) => data.storedData);
   useEffect(() => {
     if (shouldFetch) {
-      if (!!filesToFetch[0] && !filesToFetch[0].noFile) {
+      if (filesToFetch[0] && !filesToFetch[0].noFile) {
         fetcher(filesToFetch, dateLists)
           .then((dataArray) => {
             if (dataArray.length) {
@@ -41,9 +41,10 @@ export default function useGetTable({
     (filesToFetch.length &&
     filesToFetch.every(
       ({ name, timespan }) => {
+        const missingParams = !name || !timespan;
         const dataIsLoaded = storedData[name] && storedData[name]?.loaded?.includes(timespan);
         const fileIsNull =  filesToFetch.length === 1 && filesToFetch[0].noFile;
-        return (dataIsLoaded || fileIsNull)
+        return (dataIsLoaded || fileIsNull || missingParams)
       }
     ))
   const error = false;

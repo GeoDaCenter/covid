@@ -67,10 +67,11 @@ const CovidVarMapping = {
   "Testing":["7 Day Testing Positivity Rate Percent", "7 Day Tests Performed per 100K Population"]
 }
 
-const CovidStatsTable = ({ geoid, metrics, includedColumns }) => {
+const CovidStatsTable = ({ geoid, metrics, includedColumns, ids }) => {
   const [data, columns, dataReady] = useGetCovidStatistics({
     geoid,
-    includedColumns
+    includedColumns,
+    neighborIds: ids
   });
   const currVariables = metrics.map(metric => CovidVarMapping[metric]).flat()
   const filteredData = data.filter((d) => currVariables.includes(d.variable));
@@ -81,10 +82,11 @@ const CovidStatsTable = ({ geoid, metrics, includedColumns }) => {
   return innerTable;
 };
 
-const SdohStatsTable = ({ geoid, metrics, includedColumns }) => {
+const SdohStatsTable = ({ geoid, metrics, includedColumns, ids }) => {
   const [data, columns, dataReady] = useGetSdohStatistics({
     geoid,
-    includedColumns
+    includedColumns,
+    neighborIds: ids
   });
   const filteredData = data.filter((d) => metrics.includes(d.variable));
   const innerTable = useMemo(
@@ -94,15 +96,11 @@ const SdohStatsTable = ({ geoid, metrics, includedColumns }) => {
   return innerTable;
 };
 
-export default function StatsTable({ geoid = 17031, topic = "COVID", metrics=[], includedColumns }) {
+export default function StatsTable({ geoid = 17031, topic = "COVID", metrics=[], includedColumns, ids=[] }) {
   switch (topic) {
-    case "COVID":
-      return <CovidStatsTable {...{metrics, geoid, includedColumns}} />;
     case "SDOH":
-      return <SdohStatsTable {...{metrics, geoid, includedColumns}} />;
-    case "COVID-NATIONAL":
-      return <CovidStatsTable {...{metrics, geoid, includedColumns}} />;
+      return <SdohStatsTable {...{metrics, geoid, includedColumns, ids}} />;
     default:
-      return null;
+      return <CovidStatsTable {...{metrics, geoid, includedColumns, ids}} />;
   }
 }

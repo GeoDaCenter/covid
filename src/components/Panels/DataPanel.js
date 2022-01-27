@@ -316,15 +316,15 @@ export default function DataPanel({
                     />
                   )}
                 </div>
-                <p>7-Day Daily Average of New Cases</p>
+                <p>7-Day Average of New Cases</p>
                 <h3>{sidebarData.cases7d?.toFixed(2).toLocaleString("en")}</h3>
-                <p>7-Day Daily Average of New Cases per 100k Population</p>
+                <p>7-Day Average of New Cases per 100k Population</p>
                 <h3>
                   {sidebarData.cases100k?.toFixed(2).toLocaleString("en")}
                 </h3>
                 <p>7-Day Average New Deaths</p>
                 <h3>{sidebarData.deaths7d?.toFixed(2).toLocaleString("en")}</h3>
-                <p>7-Day Daily Average of New Deaths per 100k Population</p>
+                <p>7-Day Average of New Deaths per 100k Population</p>
                 <h3>
                   {sidebarData.deaths100k?.toFixed(2).toLocaleString("en")}
                 </h3>

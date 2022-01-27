@@ -35,12 +35,10 @@ const CommunityContextMetrics = [
   "Severe Housing Problems",
 ].map((f) => ({ value: f, label: f }));
 
-const CovidMetrics = [
-  "Cases",
-  "Deaths",
-  "Vaccination",
-  "Testing"
-].map((f) => ({ value: f, label: f }));
+const CovidMetrics = ["Cases", "Deaths", "Vaccination", "Testing"].map((f) => ({
+  value: f,
+  label: f,
+}));
 
 export const TableReport = ({
   geoid = null,
@@ -52,8 +50,17 @@ export const TableReport = ({
   height = 3,
   topic = "COVID",
   metrics = [],
-  includedColumns = ["variable","geoidData","stateQ50","q50"]
+  includedColumns = ["variable", "geoidData", "stateQ50", "q50"],
+  neighbors,
+  secondOrderNeighbors,
+  geogToInclude = "county",
 }) => {
+  const ids = {
+    county: geoid,
+    neighbors,
+    secondOrderNeighbors,
+    national: null
+  }[geogToInclude];
   return (
     <PanelItemContainer className={`w${width || 2} h${height || 3}`}>
       <h4>
@@ -61,7 +68,7 @@ export const TableReport = ({
           ? "7-Day Average Summary Statistics"
           : "Community Health Context"}
       </h4>
-      <StatsTable {...{ topic, geoid, metrics, includedColumns }} />
+      <StatsTable {...{ topic, metrics, includedColumns, geoid, ids }} />
       <ControlPopover
         top="0"
         left="0"
@@ -90,9 +97,10 @@ export const TableReport = ({
             type: "selectMulti",
             content: {
               label: "Add or Remove Metrics",
-              items: topic === "COVID" ? CovidMetrics : CommunityContextMetrics
+              items: topic === "COVID" ? CovidMetrics : CommunityContextMetrics,
             },
-            action: (e) => handleChange(pageIdx, contentIdx, {metrics: e.target.value}),
+            action: (e) =>
+              handleChange(pageIdx, contentIdx, { metrics: e.target.value }),
             value: metrics,
           },
           {
