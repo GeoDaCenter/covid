@@ -10,6 +10,21 @@ export default function Reducer(state = INITIAL_STATE, action) {
         [reportName]: {
           ...action.payload,
           spec: templates[spec],
+          defaultTemplate: spec
+        },
+      }      
+      return {
+        reports
+      };
+    }
+    case "RESET_REPORT": {
+      const { reportName } = action.payload;
+      const prev = state.reports[reportName];
+      const reports = {
+        ...state.reports,
+        [reportName]: {
+          ...prev,
+          spec: templates[prev.defaultTemplate],
         },
       }
       return {

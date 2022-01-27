@@ -87,16 +87,6 @@ export const ScatterChartReport = ({
           {
             type: "select",
             content: {
-              label: "Change Y Variable",
-              items: ScatterPlotVars,
-            },
-            action: (e) =>
-              handleChange(pageIdx, contentIdx, { yAxisVar: e.target.value }),
-            value: yAxisVar,
-          },
-          {
-            type: "select",
-            content: {
               label: "Change Dot Radius",
               items: RadiusRange,
             },

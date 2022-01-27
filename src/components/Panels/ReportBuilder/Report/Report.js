@@ -30,7 +30,13 @@ export default function Report({ reportName = "", activeStep }) {
       payload: reportName,
     });
 
-  const handleResetPages = () => {};
+  // const handleResetPages = () => dispatch({
+  //   type: "RESET_REPORT",
+  //   payload: {
+  //     reportName
+  //   },
+  // });
+
   const handleAddItem = (pageIdx, item) =>
     dispatch({
       type: "ADD_REPORT_ITEM",
@@ -183,9 +189,9 @@ export default function Report({ reportName = "", activeStep }) {
       ))}
       <MetaButtonsContainer>
         <MetaButton onClick={handleAddPage}>Add New Page</MetaButton>
-        <MetaButton reset={true} onClick={handleResetPages}>
+        {/* <MetaButton reset={true} onClick={handleResetPages}>
           Reset Template
-        </MetaButton>
+        </MetaButton> */}
       </MetaButtonsContainer>
     </LayoutContainer>
   );

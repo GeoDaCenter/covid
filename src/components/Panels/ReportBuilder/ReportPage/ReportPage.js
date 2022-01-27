@@ -88,20 +88,21 @@ export default function ReportPage({
           />
         ))}
       </MuuriComponent>
+      
+      
+      <AddItemButton onClick={toggleOpenAddItem}>
+        <Icon symbol="plus" /> Add to this page
+      </AddItemButton>
       <DateWaterMark />
       <AtlasWaterMark />
       <Attribution />
 
-      <AddItemButton onClick={toggleOpenAddItem}>
-        <Icon symbol="plus" />
-      </AddItemButton>
-      {openAddItem && (
-        <AvailableModulesList
-          handleAddItem={handleAddItem}
-          handleClose={toggleOpenAddItem}
-          pageIdx={pageIdx}
-        />
-      )}
+      <AvailableModulesList
+        handleAddItem={handleAddItem}
+        handleClose={toggleOpenAddItem}
+        pageIdx={pageIdx}
+        open={openAddItem}
+      />
     </LayoutPageContainer>
   );
 }

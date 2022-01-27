@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import colors from "../../../../config/colors";
-
+import { Box, Modal } from "@mui/material";
 const defaultModules = [
   {
     type: "Maps",
@@ -11,7 +11,7 @@ const defaultModules = [
         type: "map",
         label: "Map",
         width: 2,
-        height: 3
+        height: 3,
       },
     ],
   },
@@ -39,7 +39,7 @@ const defaultModules = [
       },
       {
         type: "table",
-        label: "Social & Structural Factors Summary Table",
+        label: "Community Health Context",
         width: 2,
         height: 3,
         topic: "SDOH",
@@ -96,7 +96,7 @@ const defaultModules = [
 
 const ItemTypeContainer = styled.div`
   padding: 0.5em;
-  border-bottom: 1px solid ${colors.darkgray};
+  border-bottom: 1px solid ${colors.white};
   ul {
     list-style: none;
   }
@@ -107,43 +107,79 @@ const ItemTypeContainer = styled.div`
       content: "+";
       margin-right: 2px;
     }
+    color:white;
   }
 `;
 
 const AddItemContainer = styled.div`
-  position: absolute;
-  left: 3em;
+  /* position: absolute; */
+  /* left: 3em;
   top: 50%;
-  transform: translateY(-55%);
-  background: ${colors.lightgray};
-  border: 1px solid black;
-  height: 90%;
+  transform: translateY(-55%); */
+  /* background: ${colors.lightgray}; */
+  border: 1px solid ${colors.lightgray};
+  color:white;
+  /* height: 90%; */
 `;
+
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: '50vw',
+  bgcolor: colors.gray,
+  border: "1px solid #000",
+  fontFamily: "'Lato', sans-serif",
+  color: "white",
+  boxShadow: 0,
+  overflowY: "scroll",
+  zIndex: 10000,
+  p: {
+    xs: 1,
+    sm: 2,
+    md: 2,
+    lg: 4,
+    xl: 4,
+  },
+};
 
 export function AvailableModulesList({
   availableModules = defaultModules,
   handleAddItem = () => {},
   handleClose = () => {},
-  pageIdx = 0
+  pageIdx = 0,
+  open,
 }) {
+  console.log(open)
   return (
-    <ClickAwayListener onClickAway={handleClose}>
-      <AddItemContainer>
-        {availableModules.map(({ type, modules }) => (
-          <ItemTypeContainer key={type}>
-            <h3>{type}</h3>
-            <ul>
-              {modules.map((props, idx) => (
-                <li key={type + idx}>
-                  <button onClick={() => handleAddItem(pageIdx, props)}>
-                    {props.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </ItemTypeContainer>
-        ))}
-      </AddItemContainer>
-    </ClickAwayListener>
+    <Modal
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box sx={style}>
+        <p>Add items to this page</p>
+        <br/>
+        <AddItemContainer>
+          {availableModules.map(({ type, modules }) => (
+            <ItemTypeContainer key={type}>
+              <h3>{type}</h3>
+              <ul>
+                {modules.map((props, idx) => (
+                  <li key={type + idx}>
+                    <button onClick={() => handleAddItem(pageIdx, props)}>
+                      {props.label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </ItemTypeContainer>
+          ))}
+        </AddItemContainer>
+      </Box>
+    </Modal>
   );
 }

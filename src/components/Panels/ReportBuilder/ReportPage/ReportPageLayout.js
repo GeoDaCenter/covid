@@ -25,16 +25,19 @@ export const LayoutPageContainer = styled.div`
 `;
 
 export const AddItemButton = styled.button`
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translate(-50%, -50%);
   background: ${colors.lightgray};
-  width: 3em;
-  height: 3em;
+  height: 2em;
   border: 1px solid black;
-  border-radius: 50%;
-  padding: 0.5em;
+  padding: .25em .5em;
+  color: black;
+  font-size:1rem;
+  display: block;
+  margin:0 auto;
+  cursor: pointer;
+  svg {
+    width:.75rem;
+    height:.75rem;
+  }
 `;
 
 const WaterMarkDiv = styled.div`
