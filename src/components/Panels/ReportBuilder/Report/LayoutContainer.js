@@ -30,6 +30,10 @@ export const LayoutContainer = styled.div`
     background-repeat: no-repeat, no-repeat;
     background-size: 50%, 100%;
   }
+  @media print {
+    overflow-y: visible;
+    width:100%;
+  }
 `;
 
 

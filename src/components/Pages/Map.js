@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import styled from 'styled-components';
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import styled from "styled-components";
 
 // Helper and Utility functions //
 // first row: data loading
 // second row: data parsing for specific outputs
 // third row: data accessing
-import { findIn, getDateLists } from '../../utils'; //getVarId
+import { findIn, getDateLists } from "../../utils"; //getVarId
 
 // Actions -- Redux state manipulation following Flux architecture //
 // first row: data storage
 // second row: data and metadata handling
 // third row: map and variable parameters
-import { setDates, setNotification, setPanelState } from '../../actions';
+import { setDates, setNotification, setPanelState } from "../../actions";
 import {
   MapSection,
   NavBar,
@@ -33,13 +33,13 @@ import {
   ReportBuilder,
   // Icon,
   IconDock,
-  Scatterchart
-} from '../../components';
-import { ViewportProvider } from '../../contexts/Viewport';
-import { fitBounds } from '@math.gl/web-mercator';
-import colors from '../../config/colors';
+  Scatterchart,
+} from "../../components";
+import { ViewportProvider } from "../../contexts/Viewport";
+import { fitBounds } from "@math.gl/web-mercator";
+import colors from "../../config/colors";
 
-import useMapData from '../../hooks/useMapData';
+import useMapData from "../../hooks/useMapData";
 
 // Main function, App. This function does 2 things:
 // 1: App manages the majority of the side effects when the state changes.
@@ -59,13 +59,13 @@ for (const [key, value] of new URLSearchParams(window.location.search)) {
   paramsDict[key] = value;
 }
 
-const defaultViewport = paramsDict.hasOwnProperty('lat')
+const defaultViewport = paramsDict.hasOwnProperty("lat")
   ? {
       latitude: +paramsDict.lat,
       longitude: +paramsDict.lon,
       zoom: +paramsDict.z,
-      pitch: paramsDict.viz === '3D' ? 30 : 0,
-      bearing: paramsDict.viz === '3D' ? -30 : 0,
+      pitch: paramsDict.viz === "3D" ? 30 : 0,
+      bearing: paramsDict.viz === "3D" ? -30 : 0,
     }
   : fitBounds({
       width: window.innerWidth,
@@ -86,28 +86,38 @@ const MapOuterContainer = styled.div`
 `;
 
 const MapPlaneContainer = styled.div`
-  display:flex;
-  flex-direction:row;
-  width:100%;
-  height:100%;
-`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+`;
 
 const RightPaneContainer = styled.div`
-  flex:0 1 auto;
-  height:calc(100vh - 50px);
+  flex: 0 1 auto;
+  height: calc(100vh - 50px);
   display: flex;
   position: fixed;
-  right:0;
-  top:50px;
-  flex-direction:column;
-  overflow:hidden;
-  pointer-events:none;
-  z-index:15;
+  right: 0;
+  top: 50px;
+  flex-direction: column;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 15;
   * {
-    pointer-events:auto;
+    pointer-events: auto;
   }
+`;
 
-`
+const MapApp = styled.div`
+  overflow: hidden;
+  max-height: 100vh;
+  @media print {
+    display: none;
+    * {
+      display: none;
+    }
+  }
+`;
 
 export default function Map() {
   const dispatch = useDispatch();
@@ -124,9 +134,9 @@ export default function Map() {
       paramsDict[key] = value;
     }
 
-    if (!paramsDict.hasOwnProperty('v')) {
+    if (!paramsDict.hasOwnProperty("v")) {
       // do nothing, most of the time
-    } else if (paramsDict['v'] === '1') {
+    } else if (paramsDict["v"] === "1") {
       dispatch(
         setNotification(
           `
@@ -141,8 +151,8 @@ export default function Map() {
           </a>
           </p>
         `,
-          'center',
-        ),
+          "center"
+        )
       );
     }
 
@@ -153,7 +163,7 @@ export default function Map() {
           info: false,
           tutorial: false,
           lineChart: false,
-        }),
+        })
       );
     }
 
@@ -162,14 +172,14 @@ export default function Map() {
 
   return (
     <>
-      <div className="Map-App" style={{ overflow: 'hidden', maxHeight: '100vh' }}>
+      <MapApp className="Map-App">
         <NavBar />
         <MapOuterContainer>
           <ViewportProvider defaultViewport={defaultViewport}>
             <MapPageContainer />
           </ViewportProvider>
         </MapOuterContainer>
-      </div>
+      </MapApp>
     </>
   );
 }
@@ -223,20 +233,27 @@ const MapPageContainer = () => {
   // These selectors access different pieces of the store. While App mainly
   // dispatches to the store, we need checks to make sure side effects
   // are OK to trigger. Issues arise with missing data, columns, etc.
-  const mapParams = useSelector(({params}) => params.mapParams);
-  const dataParams = useSelector(({params}) => params.dataParams);
-  const currentData = useSelector(({params}) => params.currentData);
-  const dataNote = useSelector(({params}) => params.dataParams.dataNote);
-  const fixedScale = useSelector(({params}) => params.dataParams.fixedScale);
-  const variableName = useSelector(({params}) => params.dataParams.variableName);
-  const panelState = useSelector(({ui}) => ui.panelState);
-  const [defaultDimensions, setDefaultDimensions] = useState(getDefaultDimensions());
-  const datasets = useSelector(({params}) => params.datasets);
+  const mapParams = useSelector(({ params }) => params.mapParams);
+  const dataParams = useSelector(({ params }) => params.dataParams);
+  const currentData = useSelector(({ params }) => params.currentData);
+  const dataNote = useSelector(({ params }) => params.dataParams.dataNote);
+  const fixedScale = useSelector(({ params }) => params.dataParams.fixedScale);
+  const variableName = useSelector(
+    ({ params }) => params.dataParams.variableName
+  );
+  const panelState = useSelector(({ ui }) => ui.panelState);
+  const [defaultDimensions, setDefaultDimensions] = useState(
+    getDefaultDimensions()
+  );
+  const datasets = useSelector(({ params }) => params.datasets);
   const currIdCol = findIn(datasets, "file", currentData).join;
 
   // default width handlers on resize
   useEffect(() => {
-    typeof window && window.addEventListener('resize', () => setDefaultDimensions({ ...getDefaultDimensions() }));
+    typeof window &&
+      window.addEventListener("resize", () =>
+        setDefaultDimensions({ ...getDefaultDimensions() })
+      );
   }, []);
 
   const [
@@ -249,11 +266,11 @@ const MapPageContainer = () => {
   ] = useMapData({
     dataParams,
     mapParams,
-    currentData
+    currentData,
   });
 
-  const showTopPanel = dataParams.nType !== 'characteristic'
-  
+  const showTopPanel = dataParams.nType !== "characteristic";
+
   return (
     <MapContainer>
       {isLoading && (
@@ -279,14 +296,16 @@ const MapPageContainer = () => {
           currIdCol={currIdCol}
         />
         <RightPaneContainer>
-            {panelState.lineChart && <LineChart defaultDimensions={defaultDimensions} />}
-            {panelState.scatterChart && <Scatterchart />}
-            <DataPanel />
+          {panelState.lineChart && (
+            <LineChart defaultDimensions={defaultDimensions} />
+          )}
+          {panelState.scatterChart && <Scatterchart />}
+          <DataPanel />
         </RightPaneContainer>
       </MapPlaneContainer>
 
       {/* <PrintLayout /> */}
-      <ReportBuilder/>
+      <ReportBuilder />
       {!!showTopPanel && <TopPanel />}
       <Legend
         variableName={variableName}

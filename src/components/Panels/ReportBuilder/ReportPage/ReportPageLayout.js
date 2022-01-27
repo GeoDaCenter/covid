@@ -12,6 +12,12 @@ export const LayoutPageContainer = styled.div`
   position: relative;
   color: black;
   padding: ${pagePadding}em;
+  
+  @media print {
+    overflow-y: visible;
+    width:100%;
+    page-break-after: always;
+  }
 
   @media (max-width:1440px){
     width:100%;
