@@ -28,9 +28,10 @@ export default function Downloader(){
                 <h2>CITATION</h2>
                 <hr/>
                 <p>
-                    <code>Li, Xun, Lin, Qinyun, and Kolak, Marynia. The U.S. COVID-19 Atlas, 2020. https://www.uscovidatlas.org</code>
+                    <code>Marynia Kolak, Qinyun Lin, Dylan Halpern, Susan Paykin, Aresha Martinez-Cardoso, and Xun Li. 
+                        The US Covid Atlas, 2021. Center for Spatial Data Science at University of Chicago. https://www.uscovidatlas.org</code>
                     <br/><br/>
-                    For a list of all contributors to the Atlas, please visit our <a href="/about#team">about</a> page.
+                    For a list of all contributors to the Atlas, please visit our <a href="/About#team">about</a> page. For questions or comments, <a href="/contact">contact us</a>.
                 </p>
                 <Gutter h={10}/>
                 <CsvDownloader/>
