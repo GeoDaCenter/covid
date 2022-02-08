@@ -1,4 +1,4 @@
-name: Daily Data Pull 0.0.10g
+name: Daily Data Pull 0.0.11
 
 on:
   schedule:
@@ -25,6 +25,9 @@ jobs:
       
       - name: cdc vaccination data
         run: python data-scripts/cdc/getCdcVaccinationData.py
+        
+      - name: cdc mask mandate data
+        run: python data-scripts/cdc/getMaskMandateData.py
 
       - name: cdc county data
         run: python data-scripts/cdc/getCdcCountyData.py
