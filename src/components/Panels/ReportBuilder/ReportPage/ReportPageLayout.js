@@ -6,21 +6,39 @@ const pagePadding = 2;
 export const LayoutPageContainer = styled.div`
   background: white;
   border: 1px solid black;
-  aspect-ratio: 0.77;
-  width: 80%;
+  width: 80em;
+  height:100em;
   margin: 0.25em auto;
   position: relative;
   color: black;
-  padding: ${pagePadding}em;
-  
+  padding: ${pagePadding}em;  
   @media print {
     overflow-y: visible;
-    width:100%;
     page-break-after: always;
   }
-
-  @media (max-width:1440px){
-    width:100%;
+  transform:scale(${props => (props.pageWidth||0)/1280});
+  transform-origin: 0 0;
+  .react-grid-item > .react-resizable-handle {
+    width:1em;
+    height:1em;
+    font-weight:bold;
+    position:absolute;
+    right:0;
+    bottom:.5em;
+    z-index:50000000;
+  }
+  .react-grid-item > .react-resizable-handle:after {
+    border-right-color: rgba(255, 255, 255, 0.5);
+    border-bottom-color: rgba(255, 255, 255, 0.5);
+    content:'↘';
+  }
+  
+  .react-grid-placeholder {
+    background:rgba(255,255,0,0.1);
+    transition:250ms all;
+    .react-resizable-handle {
+      display:none;
+    }
   }
 `;
 

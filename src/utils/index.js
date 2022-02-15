@@ -17,9 +17,9 @@ import {
   fetchFile,
   fetcher
 } from './fetcher'
-import {findClosestValue, findDateIncrement, findDateDecrement} from "./findClosestValue";
+import { findClosestValue, findDateIncrement, findDateDecrement } from "./findClosestValue";
 import { findNextIndex, findPreviousIndex } from "./findNextIndex";
-import {findSecondaryMonth} from './findSecondaryMonth'
+import { findSecondaryMonth } from './findSecondaryMonth'
 // import { generateMapData } from './generateMapData';
 import { generateReport } from "./generateReport";
 import geojsonArrayBuffer from "./geojsonArrayBuffer";
@@ -42,7 +42,7 @@ import getJson from "./getJson";
 import getJsonPure from "./getJsonPure";
 import { getClosestIndex, getLastIndex } from "./getDateIndices";
 import getLisaValues from "./getLisaValues";
-import {getParseCsvPromise, getParseCSV} from "./getParseCSV";
+import { getParseCsvPromise, getParseCSV } from "./getParseCSV";
 import getParsePbf, { parsePbfData } from "./getParsePbf";
 import getURLParams from "./getURLParams";
 import getVarId from "./getVarId";
@@ -51,6 +51,11 @@ import { indexGeoProps } from "./indexGeoProps";
 import loadGeojsonToGeoda from "./loadGeojsonToGeoda";
 import loadJson from "./loadJson";
 import { mapFn, mapFnNb, mapFnTesting, mapFnHinge } from "./mapFunction.js";
+import {
+  matchVarRequests,
+  replaceInlineVars,
+  matchAndReplaceInlineVars,
+} from './matchAndReplaceInlineVars';
 import { onlyUniqueArray } from './onlyUniqueArray';
 import parseBinPairs from "./parseBinPairs";
 import parseMapboxLayers from "./parseMapboxLayers";
@@ -118,6 +123,9 @@ export {
   mapFnNb,
   mapFnTesting,
   mapFnHinge,
+  matchVarRequests,
+  replaceInlineVars,
+  matchAndReplaceInlineVars,
   onlyUniqueArray,
   parseBinPairs,
   parseMapboxLayers,

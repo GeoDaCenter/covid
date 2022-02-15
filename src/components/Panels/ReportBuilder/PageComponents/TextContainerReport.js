@@ -31,7 +31,7 @@ export const TextContainerReport = ({
   const InnerComponent = typeof content === "string" ? () => <h2>{content}</h2> : TextComponentMapping[content?.preset];
   
   return (
-    <PanelItemContainer className={`w${width || 4} h${height || 1}`}>
+    <PanelItemContainer>
       <InnerComponent name={name} />
       <h3>Data as of {currDate}</h3>
       <ControlPopover

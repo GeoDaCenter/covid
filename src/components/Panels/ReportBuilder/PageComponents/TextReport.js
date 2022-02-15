@@ -20,7 +20,7 @@ export const TextReport = ({
   format="bullet",
   dateIndex
 }) => (
-  <PanelItemContainer className={`w${width || 2} h${height || 3}`}>
+  <PanelItemContainer>
     <TextStatistics {...{geoid, format, dateIndex}} />
     <ControlPopover
       top="0"

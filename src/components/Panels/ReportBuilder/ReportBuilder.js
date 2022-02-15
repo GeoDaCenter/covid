@@ -302,8 +302,13 @@ export default function ReportBuilder() {
         payload: {
           reportName: templateName,
           spec: selectedTemplate,
-          county: selectedCounty,
-          date: selectedDate,
+          meta: {
+            county: selectedCounty?.label,
+            state: selectedCounty?.label && selectedCounty.label.split(',').slice(-1)[0],
+            geoid: selectedCounty?.value,
+            date: selectedDate?.label,
+            dateIndex: selectedDate?.value,
+          }
         },
       });
     }

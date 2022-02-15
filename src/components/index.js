@@ -1,11 +1,11 @@
 
-import {BinsContainer} from './Map/BinsContainer';
+import { BinsContainer } from './Map/BinsContainer';
 import BinsList from './Map/BinsList';
 import ChartLabel from './Charts/ChartLabel';
 import { ChartTitle } from './Charts/ChartTitle';
 import ComboBox from './Interface/ComboBox';
 import ContextMenu from './Interface/ContextMenu';
-import ControlPopover, {ControlElementMapping} from './Interface/ControlPopover';
+import ControlPopover, { ControlElementMapping } from './Interface/ControlPopover';
 import CsvDownloader from './CsvDownloader';
 import DataDetails from './DataDetails';
 import DataLoader from './Panels/DataLoader';
@@ -19,7 +19,7 @@ import { HoverDiv } from './Layout/HoverDiv';
 import Icon from './Interface/Icon';
 import IconDock from './Panels/IconDock';
 import InfoBox from './InfoBox';
-import Legend, {LegendInner} from './Map/Legend';
+import Legend, { LegendInner } from './Map/Legend';
 import FastTrackInsights from './FastTrackInsights';
 import LineChart from './Charts/LineChart';
 import LineChartInner from './Charts/LineChartInner';
@@ -28,6 +28,12 @@ import MapButtons from './Map/MapButtons';
 import MapSection from './Map/MapSection';
 import MapTooltipContent from './Map/MapTooltipContent';
 import MemberGrid from './Layout/MemberGrid';
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  MetricsTable
+} from './Charts/MetricsTable'
 import NavBar from './Layout/Navbar';
 import NotificationBox from './Layout/NotificationBox';
 import VariablePanel from './Panels/VariablePanel';
@@ -36,9 +42,9 @@ import Preloader from './Interface/Preloader';
 import PrintLayout from './Layout/PrintLayout';
 import ReportBuilder from './Panels/ReportBuilder/ReportBuilder';
 import Scaleable from './Interface/Scaleable';
-import Scatterchart, {ScatterChartInner} from './Charts/Scatterchart';
+import Scatterchart, { ScatterChartInner } from './Charts/Scatterchart';
 import StaticNavbar from './Layout/StaticNavbar';
-import {StyledSlider} from './Interface/StyledSlider';
+import { StyledSlider } from './Interface/StyledSlider';
 import Ticks from './Interface/Ticks';
 import Tooltip from './Interface/Tooltip';
 import TopPanel from './Panels/TopPanel';
@@ -110,8 +116,12 @@ export {
   Scaleable,
   StaticNavbar,
   StyledSlider,
-  SummaryStatistics,  
-  TextStatistics,
+  SummaryStatistics,
+  TextStatistics, 
+  Table,
+  TableHeader,
+  TableRow,
+  MetricsTable,
   Ticks,
   Tooltip,
   TopPanel,

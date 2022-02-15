@@ -45,7 +45,7 @@ export const ScatterChartReport = ({
     [timestamp]
   );
   return (
-    <PanelItemContainer className={`w${width || 2} h${height || 2}`}>
+    <PanelItemContainer>
       <CenteredChartTitle>
         <h3>{xAxisVar} (x) vs {yAxisVar} (y)</h3>
       </CenteredChartTitle>

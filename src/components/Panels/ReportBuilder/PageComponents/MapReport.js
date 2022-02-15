@@ -199,7 +199,6 @@ function ReportMap({
   );
   return (
     <PanelItemContainer
-      className={`w${width || 2} h${height || 6}`}
       ref={mapContainerRef}
     >
       <MapTitle>

@@ -1,6 +1,7 @@
-import React, { useLayoutEffect, useState, useRef } from "react";
+import React, { useMemo, useState, useRef, useEffect } from "react";
 import ReportComponentMapping from "../PageComponents/PageComponents";
-import { MuuriComponent } from "muuri-react";
+import { useDispatch } from "react-redux";
+import { Responsive, WidthProvider } from "react-grid-layout";
 
 import { Icon } from "../../../../components";
 import { AvailableModulesList } from "./AvailableModules";
@@ -11,7 +12,9 @@ import {
   AtlasWaterMark,
   Attribution
 } from "./ReportPageLayout";
+import { useSelector } from "react-redux";
 
+const ResponsiveGridLayout = WidthProvider(Responsive);
 // const options = {
 //   layoutDuration: 400,
 //   dragRelease: {
@@ -31,65 +34,71 @@ import {
 // };
 
 export default function ReportPage({
-  content,
-  geoid,
-  date,
-  dateIndex,
   pageIdx,
-  handleRemove,
-  handleChange,
-  handleToggle,
-  handleAddItem,
-  handleGridContext,
-  handleGridUpdate,
-  name,
+  pageWidth,
   reportName,
-  neighbors, secondOrderNeighbors, stateNeighbors,
   onMount
 }) {
+  const dispatch = useDispatch();
+  const [isSettled, setIsSettled] = useState(false)
   const [openAddItem, setOpenAddItem] = useState(false);
   const toggleOpenAddItem = () => setOpenAddItem((prev) => !prev);
-  const pageRef = useRef(null)
+  const initialLayout = useSelector(({ report }) => report.reports[reportName] && report.reports[reportName].layout && report.reports[reportName].layout[pageIdx])
+  const layout = useMemo(() => initialLayout, [initialLayout.length])
+  const pageRef = useRef(null);
 
-  useLayoutEffect(() => {
-    onMount(pageRef)
-  },[])
+  useEffect(() => {
+    onMount(pageRef, pageIdx)
+    setIsSettled(true)
+  }, [pageIdx])
 
+  const handleAddItem = (pageIdx, item) =>
+    dispatch({
+      type: "ADD_REPORT_ITEM",
+      payload: {
+        reportName,
+        pageIdx,
+        item,
+      },
+    });
+    
   return (
-    <LayoutPageContainer ref={pageRef}>
-      <MuuriComponent
-        key={JSON.stringify(content)}
-        dragEnabled
-        dragStartPredicate={{ handle: ".content-header" }}
-        onDragEnd={() => handleGridUpdate(pageIdx)}
-        onMount={(grid) => handleGridContext(grid, pageIdx)}
-        instantLayout
-        // {...options}
+    <LayoutPageContainer ref={pageRef} {...{ pageWidth }}>
+      {isSettled && <ResponsiveGridLayout
+        className="layout"
+        layouts={{
+          lg: layout,
+          md: layout,
+          sm: layout,
+          xs: layout,
+          xxs: layout
+        }}
+        layout={layout}
+        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+        cols={{ lg: 4, md: 4, sm: 4, xs: 4, xxs: 4 }}
+        rowHeight={160}
+        draggableHandle={'.content-header'}
+        autoSize={false}
+        onLayoutChange={(e) => console.log(e)}
+        isDraggable
+        compactType="vertical"
+        isRearrangeable
+        isResizable
+        resizeHandles={['se']}
       >
-        {content.map((item, index) => (
-          <ReportComponentMapping
-            {...{
-              handleToggle,
-              handleChange,
-              handleRemove,
-              pageIdx,
-              geoid,
-              name,
-              date,
-              index,
-              dateIndex,
-              reportName,
-              neighbors, secondOrderNeighbors, stateNeighbors
+        {layout.map(({ i }) => (
+          <div key={i}>
 
-            }}
-            key={"page-component-" + index}
-            contentIdx={index}
-            {...item}
-          />
+            <ReportComponentMapping
+              key={i}
+              itemId={i}
+              {...{ pageIdx, reportName }}
+            />
+          </div>
         ))}
-      </MuuriComponent>
-      
-      
+
+      </ResponsiveGridLayout>}
+
       <AddItemButton onClick={toggleOpenAddItem}>
         <Icon symbol="plus" /> Add to this page
       </AddItemButton>

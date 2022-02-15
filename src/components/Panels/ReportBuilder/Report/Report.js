@@ -11,20 +11,20 @@ import useGetNeighbors from "../../../../hooks/useGetNeighbors";
 // import { templates } from "./Templates";
 export default function Report({ reportName = "", activeStep }) {
   const dispatch = useDispatch();
-  const report = useSelector(({ report }) => report.reports[reportName]) || {};
-  const pages = report?.spec || [];
-  const county = report?.county || {};
-  const date = report?.date || {};
+  // const report = useSelector(({report}) => report.reports[reportName])
+  const pages = useSelector(({report}) => report.reports[reportName] && report.reports[reportName].layout && new Array(report.reports[reportName].layout.length).fill(null))
+  const geoid = useSelector(({report}) => report.reports[reportName] && report.reports[reportName].meta?.geoid)
   const gridContext = useRef({});
   const pagesRef = useRef({});
-  const geoid = report?.county?.value;
+  const containerRef = useRef(null)
   const currentData = "county_usfacts.geojson";
+  const pageWidth = containerRef?.current?.clientWidth;
+
   const [neighbors, secondOrderNeighbors, stateNeighbors] = useGetNeighbors({
     geoid,
     currentData,
-    updateTrigger: JSON.stringify(report)
+    updateTrigger: JSON.stringify(reportName)
   });
-  console.log(neighbors, secondOrderNeighbors, stateNeighbors)
 
   const handleAddPage = () =>
     dispatch({
@@ -32,53 +32,13 @@ export default function Report({ reportName = "", activeStep }) {
       payload: reportName,
     });
 
-  // const handleResetPages = () => dispatch({
-  //   type: "RESET_REPORT",
-  //   payload: {
-  //     reportName
-  //   },
-  // });
-
-  const handleAddItem = (pageIdx, item) =>
+  const handleUpdateMeta = () =>
     dispatch({
-      type: "ADD_REPORT_ITEM",
+      type: "UPDATE_REPORT_META",
       payload: {
         reportName,
-        pageIdx,
-        item,
-      },
-    });
-
-  const handleChange = (pageIdx, itemIdx, props) =>
-    dispatch({
-      type: "CHANGE_REPORT_ITEM",
-      payload: {
-        reportName,
-        pageIdx,
-        itemIdx,
-        props,
-      },
-    });
-
-  const handleRemove = (pageIdx, itemIdx) =>
-    dispatch({
-      type: "DELETE_REPORT_ITEM",
-      payload: {
-        reportName,
-        pageIdx,
-        itemIdx,
-      },
-    });
-
-  const handleToggle = (pageIdx, itemIdx, prop) =>
-    dispatch({
-      type: "TOGGLE_REPORT_ITEM",
-      payload: {
-        reportName,
-        pageIdx,
-        itemIdx,
-        prop,
-      },
+        props: {neighbors, secondOrderNeighbors, stateNeighbors}
+      }
     });
 
   const handleGridContext = (grid, pageIdx) => {
@@ -131,9 +91,8 @@ export default function Report({ reportName = "", activeStep }) {
       }
     );
   };
-
   return (
-    <LayoutContainer ref={pagesRef}>
+    <LayoutContainer ref={containerRef}>
       {activeStep === 3 && (
         <PrintContainer>
           <h2>Nice work!</h2>
@@ -166,27 +125,11 @@ export default function Report({ reportName = "", activeStep }) {
           </PrintButton> */}
         </PrintContainer>
       )}
-      {pages.map((page, idx) => (
+      {!!pages && pages.map((_, pageIdx) => (
         <ReportPage
-          content={page}
-          pageIdx={idx}
-          geoid={county.value}
-          name={county.label}
-          date={date.label}
-          dateIndex={date.value}
-          onMount={(ref) => handleRef(ref, idx)}
-          {...{
-            handleToggle,
-            handleChange,
-            handleRemove,
-            handleAddItem,
-            handleGridContext,
-            handleGridUpdate,
-            reportName,
-            neighbors,
-            secondOrderNeighbors,
-            stateNeighbors,
-          }}
+          onMount={handleRef}
+          key={`report-page-${reportName}-${pageIdx}`}
+          {...{handleGridContext, handleGridUpdate, pageIdx, reportName, pageWidth}}
         />
       ))}
       <MetaButtonsContainer>
@@ -198,3 +141,21 @@ export default function Report({ reportName = "", activeStep }) {
     </LayoutContainer>
   );
 }
+
+
+  // const handleResetPages = () => dispatch({
+  //   type: "RESET_REPORT",
+  //   payload: {
+  //     reportName
+  //   },
+  // });
+
+  // const handleAddItem = (pageIdx, item) =>
+  //   dispatch({
+  //     type: "ADD_REPORT_ITEM",
+  //     payload: {
+  //       reportName,
+  //       pageIdx,
+  //       item,
+  //     },
+  //   });

@@ -6,6 +6,8 @@ export const PanelItemContainer = styled.div`
   position: relative;
   padding: 0.25em;
   overflow: hidden;
+  width:100%;
+  height:100%;
   *.hover-buttons {
     opacity: 0.1;
     transition: 250ms opacity;

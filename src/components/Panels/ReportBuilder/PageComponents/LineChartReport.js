@@ -53,7 +53,7 @@ export const LineChartReport = ({
   }[linesToShow]
   
   return (
-    <PanelItemContainer className={`w${width || 2} h${height || 2}`} style={{padding:'1em 1em 0 0'}}>
+    <PanelItemContainer style={{padding:'1em 1em 0 0'}}>
       <CenteredChartTitle>
         <h3>{tableOptions.find(f => f.value === table)?.text}</h3>
       </CenteredChartTitle>

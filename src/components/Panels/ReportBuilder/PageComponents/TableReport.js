@@ -1,4 +1,4 @@
-import { ControlPopover } from "../../../../components";
+import { ControlPopover, MetricsTable } from "../../../../components";
 import {
   PanelItemContainer,
   GrabTarget,
@@ -11,8 +11,8 @@ import {
 //   removeListItem
 // } from '../../../../utils';
 import colors from "../../../../config/colors";
-import StatsTable from "./StatsTable";
 import countyNames from "../../../../meta/countyNames";
+import { matchAndReplaceInlineVars } from "../../../../utils";
 
 const CommunityContextMetrics = [
   "Uninsured Percent",
@@ -39,6 +39,12 @@ const CovidMetrics = ["Cases", "Deaths", "Vaccination", "Testing"].map((f) => ({
   value: f,
   label: f,
 }));
+const CovidVarMapping = {
+  "Cases":["Confirmed Count per 100K Population", "Confirmed Count"],
+  "Deaths":["Death Count per 100K Population", "Death Count"],
+  "Vaccination":["Percent Fully Vaccinated", "Percent Received At Least One Dose"],
+  "Testing":["7 Day Testing Positivity Rate Percent", "7 Day Tests Performed per 100K Population"]
+}
 
 export const TableReport = ({
   geoid = null,
@@ -50,26 +56,39 @@ export const TableReport = ({
   height = 3,
   topic = "COVID",
   metrics = [],
-  includedColumns = ["variable", "geoidData", "stateQ50", "q50"],
+  includedColumns = [{header:'Metric',accessor:"variable", },{header:'',accessor:"geoidData", },{header:'',accessor:"stateQ50", },{header:'National Median',accessor:"q50"}],
   neighbors,
   secondOrderNeighbors,
   geogToInclude = "county",
-  dateIndex
+  dateIndex,
+  name,
+  metaDict={}
 }) => {
-  const ids = {
+  const neighborIds = {
     county: geoid,
     neighbors,
     secondOrderNeighbors,
     national: null
   }[geogToInclude];
+
+  const variableNames = topic === "COVID"
+    ? metrics.map(metric => CovidVarMapping[metric]).flat()
+    : metrics
+
+
+  const parsedIncludedColumns = includedColumns.map(({accessor, header}) => ({
+    accessor,
+    header: matchAndReplaceInlineVars(header, metaDict)
+  }))
+  
   return (
-    <PanelItemContainer className={`w${width || 2} h${height || 3}`}>
+    <PanelItemContainer>
       <h4>
         {topic.includes("COVID")
           ? "7-Day Average Summary Statistics"
           : "Community Health Context"}
       </h4>
-      <StatsTable {...{ topic, metrics, includedColumns, geoid, ids, dateIndex }} />
+      <MetricsTable {...{ metrics: variableNames, includedColumns, geoid, neighborIds, dateIndex, name }} />
       <ControlPopover
         top="0"
         left="0"
