@@ -89,7 +89,7 @@ const getColorScale = (mapType, dataParams) => {
 function ReportMap({
   geoid = 17031,
   pageIdx = 0,
-  contentIdx = 0,
+  itemId = '',
   // variable = "Percent Fully Vaccinated",
   // mapType = "natural_breaks",
   // scale = "county",
@@ -99,19 +99,14 @@ function ReportMap({
   // height,
   date,
   dateIndex,
-  reportName
+  reportName='',
+  variable="Percent Fully Vaccinated",
+  mapType="natural_breaks",
+  scale="county",
 }) {
   const dates = useSelector(({ params }) => params.dates);
   const variableTree = useSelector(({ params }) => params.variableTree);
   const variables = useSelector(({ params }) => params.variables);
-  const item = useSelector(({ report }) => report.reports[reportName] && report.reports[reportName].spec[pageIdx][contentIdx])||{};
-  const {
-    width,
-    height,
-    variable= "Percent Fully Vaccinated",
-    mapType= "natural_breaks",
-    scale= "county"
-  } = item;
 
   const variableList = Object.keys(variableTree)
     .filter((f) => !f.includes("HEADER"))
@@ -234,7 +229,7 @@ function ReportMap({
               items: countyNames,
             },
             action: ({ value }) =>
-              handleChange(pageIdx, contentIdx, { geoid: value }),
+              handleChange({ geoid: value }),
             value: geoid,
           },
           {
@@ -244,7 +239,7 @@ function ReportMap({
               items: variableList,
             },
             action: (e) =>
-              handleChange(pageIdx, contentIdx, { variable: e.target.value }),
+              handleChange({ variable: e.target.value }),
           },
           {
             type: "select",
@@ -262,7 +257,7 @@ function ReportMap({
               }],
             },
             action: (e) =>
-              handleChange(pageIdx, contentIdx, { mapType: e.target.value }),
+              handleChange({ mapType: e.target.value }),
           },
           {
             type: "select",
@@ -292,20 +287,8 @@ function ReportMap({
               ],
             },
             action: (e) =>
-              handleChange(pageIdx, contentIdx, { scale: e.target.value }),
-          },
-          {
-            ...widthOptions,
-            action: (e) =>
-              handleChange(pageIdx, contentIdx, { width: e.target.value }),
-            value: width,
-          },
-          {
-            ...heightOptions,
-            action: (e) =>
-              handleChange(pageIdx, contentIdx, { height: e.target.value }),
-            value: height,
-          },
+              handleChange({ scale: e.target.value }),
+          }
         ]}
       />
       <GrabTarget iconColor={colors.strongOrange} className="hover-buttons" />
@@ -313,7 +296,7 @@ function ReportMap({
       <DeleteBlock
         iconColor={colors.strongOrange}
         className="hover-buttons"
-        onClick={() => handleRemove(pageIdx, contentIdx)}
+        onClick={() => handleRemove(pageIdx, itemId)}
       />
     </PanelItemContainer>
   );

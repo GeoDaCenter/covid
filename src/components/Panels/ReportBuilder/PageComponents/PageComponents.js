@@ -20,42 +20,40 @@ export default function ReportComponentMapping({ itemId, pageIdx, reportName }) 
   const meta = useSelector(({ report }) => report.reports[reportName] && report.reports[reportName].meta)
   const itemProps = useSelector(({ report }) => report.reports[reportName] && report.reports[reportName].items && report.reports[reportName].items[itemId])
 
-  const handleChange = (props) => { }
-  // dispatch({
-  //   type: "CHANGE_REPORT_ITEM",
-  //   payload: {
-  //     reportName,
-  //     pageIdx,
-  //     // itemIdx,
-  //     props,
-  //   },
-  // });
+  const handleChange = (props) => dispatch({
+    type: "CHANGE_REPORT_ITEM",
+    payload: {
+      reportName,
+      pageIdx,
+      itemId: itemProps.key,
+      props,
+    }
+  });
 
-  const handleRemove = (pageIdx, itemIdx) => { }
-  // dispatch({
-  //   type: "DELETE_REPORT_ITEM",
-  //   payload: {
-  //     reportName,
-  //     pageIdx,
-  //     // itemIdx,
-  //   },
-  // });
+  const handleRemove = () => dispatch({
+    type: "DELETE_REPORT_ITEM",
+    payload: {
+      reportName,
+      pageIdx,
+      itemId: itemProps.key,
+    }
+  });
 
-  const handleToggle = (pageIdx, itemIdx, prop) => { }
-  // dispatch({
-  //   type: "TOGGLE_REPORT_ITEM",
-  //   payload: {
-  //     reportName,
-  //     pageIdx,
-  //     // itemIdx,
-  //     prop,
-  //   },
-  // });
+  const handleToggle = (prop) => dispatch({
+    type: "TOGGLE_REPORT_ITEM",
+    payload: {
+      reportName,
+      pageIdx,
+      itemId: itemProps.key,
+      prop,
+    }
+  });
+
   if (!itemProps) return null;
 
   const { type } = itemProps;
   const InnerEl = mapping[type];
 
   if (!InnerEl) return null;
-  return <InnerEl {...{ ...meta, ...itemProps, handleRemove, handleToggle, handleChange }} />
+  return <InnerEl {...{ ...meta, ...itemProps, itemId, reportName, handleRemove, handleToggle, handleChange }} />
 }

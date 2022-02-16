@@ -91,25 +91,28 @@ export default function Reducer(state = INITIAL_STATE, action) {
     //     reports
     //   };
     // }
-    // case "CHANGE_REPORT_ITEM": {
-    //   const { reportName, pageIdx, itemIdx, props } = action.payload;
-    //   let spec = state.reports[reportName].spec;
-    //   spec[pageIdx][itemIdx] = {
-    //     ...spec[pageIdx][itemIdx],
-    //     ...props,
-    //   };
-    //   const reports = {
-    //     ...state.reports,
-    //     [reportName]: {
-    //       ...state.reports[reportName],
-    //       spec
-    //     },
-    //   };
+    case "CHANGE_REPORT_ITEM": {
+      const { reportName, itemId, props } = action.payload;
 
-    //   return {
-    //     reports
-    //   };
-    // }
+      let items = state.reports[reportName].items;
+
+      items[itemId] = {
+        ...items[itemId],
+        ...props,
+      };
+      
+      const reports = {
+        ...state.reports,
+        [reportName]: {
+          ...state.reports[reportName],
+          items
+        },
+      };
+
+      return {
+        reports
+      };
+    }
     // case "ADD_REPORT_ITEM": {
     //   const { reportName, pageIdx, item } = action.payload;
     //   let spec = state.reports[reportName].spec;
