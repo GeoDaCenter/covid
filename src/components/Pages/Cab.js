@@ -22,12 +22,6 @@ const CabPage = styled.div`
 `
 const cabMembers = [
     {
-        "name": "Jay Bhatt", 
-        "img": "cab/jbhatt.jpg", 
-        "title": "Chief Clinical Product Officer and Medical Director, Medical Home Network",
-        "bio":`Jay Bhatt, D.O., MPH, MPA is a physician executive, internist, geriatrician, public health innovator and widely quoted expert on healthcare transformation and improving healthcare outcomes.These include cross-sector initiatives; the application of predictive analytics and informatics; using Medicare and Medicaid as opportunities to redesign the healthcare system; addressing the social determinants of health to lower costs, improve outcomes and eliminate inequities; technology innovation; and emergency preparedness.`
-    },
-    {
         "name": "Jim Bloyd", 
         "link": "-", 
         "img": "cab/jbloyd.jpg", 
@@ -58,6 +52,12 @@ const cabMembers = [
         "img": "cab/mgivens.jpg", 
         "title": "Associate Director,  University of Wisconsin Population Health Institute; co-Director, County Health Rankings & Roadmaps program ",
         "bio":'Marjory Givens MPH, PhD  is the Associate Director of the University of Wisconsin Population Health Institute (UWPHI) and co-Director of the County Health Rankings & Roadmaps program. Before joining the Institute, Marjory was an officer with the Health Impact Project at The Pew Charitable Trusts. Marjory has worked to make health and equity routine considerations in shaping the places where we live, learn, work, and play. Marjory has conducted public health research in laboratory and community-based settings, ranging from investigations using biomedical models to health impact assessments and evaluation of community interventions. '
+    },
+    {
+        "name": "Michelle Levander", 
+        "img": "cab/mlevander.jpeg", 
+        "title": "Director, Center for Health Journalism at USC Annenberg School for Communication and Journalism; Editor-in-chief, CenterforHealthJournalism.org",
+        "bio":'Michelle Levander is the founding director of the Center for Health Journalism at USC Annenberg and editor-in-chief of CenterforHealthJournalism.org. The Center, which she launched in 2004, partners with journalists and their newsrooms to support ambitious reporting on health policy, health equity and health conditions in underserved communities. She previously worked for more than 15 years as a reporter and editor in New York, California, Mexico and Hong Kong, and has received awards from the Overseas Press Club of America, the InterAmerican Press Association, the Society of Professional Journalists L.A. and a Northern California Emmy (español). Michelle has a bachelor’s degree in history and literature from the University of California, Berkeley and a master’s degree in journalism from Columbia University.'
     },
     {
         "name": "Daryl McGraw", 
