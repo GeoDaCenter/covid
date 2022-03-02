@@ -1,4 +1,14 @@
 GEOID,NAME,average,state_abbr,state_name
+46055,Haakon County ,27.45,SD,South Dakota
+46105,Perkins County ,0.0,SD,South Dakota
+46107,Potter County ,18.43,SD,South Dakota
+46031,Corson County ,17.14,SD,South Dakota
+46041,Dewey County ,1700.74,SD,South Dakota
+46137,Ziebach County ,736.12,SD,South Dakota
+46117,Stanley County ,4.77,SD,South Dakota
+46093,Meade County ,35.94,SD,South Dakota
+46129,Walworth County ,10.37,SD,South Dakota
+46119,Sully County ,10.73,SD,South Dakota
 19083,Hardin County ,431.23,IA,Iowa
 19141,O'Brien County ,417.96,IA,Iowa
 19081,Hancock County ,502.52,IA,Iowa
@@ -16,7 +26,6 @@ GEOID,NAME,average,state_abbr,state_name
 19033,Cerro Gordo County ,532.42,IA,Iowa
 19041,Clay County ,346.79,IA,Iowa
 19107,Keokuk County ,361.34,IA,Iowa
-19071,Fremont County ,303.43,IA,Iowa
 19039,Clarke County ,374.0,IA,Iowa
 19035,Cherokee County ,473.37,IA,Iowa
 19051,Davis County ,297.45,IA,Iowa
@@ -46,7 +55,6 @@ GEOID,NAME,average,state_abbr,state_name
 19047,Crawford County ,416.1,IA,Iowa
 19093,Ida County ,551.52,IA,Iowa
 19143,Osceola County ,263.99,IA,Iowa
-19129,Mills County ,513.85,IA,Iowa
 19171,Tama County ,383.49,IA,Iowa
 19147,Palo Alto County ,444.9,IA,Iowa
 19181,Warren County ,501.84,IA,Iowa
@@ -54,7 +62,6 @@ GEOID,NAME,average,state_abbr,state_name
 19135,Monroe County ,317.94,IA,Iowa
 19183,Washington County ,432.9,IA,Iowa
 19177,Van Buren County ,300.63,IA,Iowa
-19085,Harrison County ,439.39,IA,Iowa
 19037,Chickasaw County ,338.87,IA,Iowa
 19105,Jones County ,376.45,IA,Iowa
 19167,Sioux County ,281.82,IA,Iowa
@@ -64,7 +71,6 @@ GEOID,NAME,average,state_abbr,state_name
 19055,Delaware County ,305.45,IA,Iowa
 19103,Johnson County ,486.49,IA,Iowa
 19165,Shelby County ,295.63,IA,Iowa
-19193,Woodbury County ,533.21,IA,Iowa
 19057,Des Moines County ,461.04,IA,Iowa
 19015,Boone County ,339.3,IA,Iowa
 19067,Floyd County ,429.71,IA,Iowa
@@ -72,11 +78,9 @@ GEOID,NAME,average,state_abbr,state_name
 19189,Winnebago County ,508.13,IA,Iowa
 19091,Humboldt County ,413.67,IA,Iowa
 19005,Allamakee County ,305.68,IA,Iowa
-19133,Monona County ,378.42,IA,Iowa
 19139,Muscatine County ,376.85,IA,Iowa
 19163,Scott County ,400.49,IA,Iowa
 19159,Ringgold County ,255.1,IA,Iowa
-19155,Pottawattamie County ,580.58,IA,Iowa
 19029,Cass County ,338.98,IA,Iowa
 19059,Dickinson County ,403.71,IA,Iowa
 19009,Audubon County ,304.11,IA,Iowa
@@ -98,17 +102,42 @@ GEOID,NAME,average,state_abbr,state_name
 19087,Henry County ,480.35,IA,Iowa
 19131,Mitchell County ,430.01,IA,Iowa
 19101,Jefferson County ,497.87,IA,Iowa
-51720,City of Norton,118.15,VA,Virginia
-51683,City of Manassas,65.47,VA,Virginia
-23025,Somerset County ,89.02,ME,Maine
-23021,Piscataquis County ,131.97,ME,Maine
-23029,Washington County ,129.36,ME,Maine
-23003,Aroostook County ,207.58,ME,Maine
-23019,Penobscot County ,152.51,ME,Maine
-46041,Dewey County ,1700.74,SD,South Dakota
-46137,Ziebach County ,736.12,SD,South Dakota
-46093,Meade County ,35.94,SD,South Dakota
-27055,Houston County ,103.34,MN,Minnesota
-27091,Martin County ,38.64,MN,Minnesota
-27045,Fillmore County ,36.25,MN,Minnesota
-21025,Breathitt County ,89.31,KY,Kentucky
+17071,Henderson County ,22.83,IL,Illinois
+17015,Carroll County ,22.56,IL,Illinois
+17085,Jo Daviess County ,15.7,IL,Illinois
+17131,Mercer County ,16.39,IL,Illinois
+17161,Rock Island County ,12.19,IL,Illinois
+16047,Gooding County ,136.56,ID,Idaho
+16073,Owyhee County ,44.9,ID,Idaho
+16025,Camas County ,16.12,ID,Idaho
+21237,Wolfe County ,168.11,KY,Kentucky
+21153,Magoffin County ,68.8,KY,Kentucky
+21195,Pike County ,88.81,KY,Kentucky
+21175,Morgan County ,146.24,KY,Kentucky
+21025,Breathitt County ,105.65,KY,Kentucky
+29199,Scotland County ,5.83,MO,Missouri
+29197,Schuyler County ,34.91,MO,Missouri
+29129,Mercer County ,23.39,MO,Missouri
+29171,Putnam County ,2.97,MO,Missouri
+29227,Worth County ,14.01,MO,Missouri
+29147,Nodaway County ,16.47,MO,Missouri
+29045,Clark County ,18.91,MO,Missouri
+51720,City of Norton,128.89,VA,Virginia
+51167,Russell County ,91.74,VA,Virginia
+51153,Prince William County ,2.97,VA,Virginia
+51195,Wise County ,96.64,VA,Virginia
+51191,Washington County ,66.43,VA,Virginia
+51683,City of Manassas,69.26,VA,Virginia
+48087,Collingsworth County ,57.22,TX,Texas
+27043,Faribault County ,20.56,MN,Minnesota
+27063,Jackson County ,9.95,MN,Minnesota
+27099,Mower County ,23.09,MN,Minnesota
+27055,Houston County ,68.89,MN,Minnesota
+27091,Martin County ,27.19,MN,Minnesota
+27047,Freeborn County ,27.14,MN,Minnesota
+27045,Fillmore County ,30.78,MN,Minnesota
+2060,Bristol Bay Borough ,0.0,AK,Alaska
+2220,City and Borough of Sitka,22.89,AK,Alaska
+55043,Grant County ,11.03,WI,Wisconsin
+55023,Crawford County ,22.8,WI,Wisconsin
+15009,Maui County ,13.31,HI,Hawaii
