@@ -38,6 +38,7 @@ export default function App(){
               <Route path="/contact" component={Contact}/>
               <Route path="/contact.html" component={Contact}/>
               <Route path="/insights" component={Insights}/>
+              <Route path="/research" component={() => <Insights defaultTab={1} />}/>
               <Route path="/api" component={Api}/>
               <Route path="/api.html" component={Api}/>
               <Route path="/data" component={Data}/>
