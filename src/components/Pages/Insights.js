@@ -121,24 +121,22 @@ const products = [
 ]
 
 const research = [
-    // {
-    //     'title': 'Assessing Structural Barriers & Racial Disparities of COVID-19 Mortality With Spatial Analysis',
-    //     'description': <p>
-    //         <i>Qinyun Lin, Susan Paykin, Dylan Halpern, Aresha Martinez-Cardoso, and Marynia Kolak</i>
-    //         <br /><br />
-    //         {`Importance: While social determinants of health (SDOH) are important drivers of health inequities among racialized groups and urban-rural contexts, SDOH have not been explicitly linked to COVID-19 mortality rates across racial/ethnic groups and rural, suburban, and urban contexts.
-    //         Objectives: Explore the spatial and racial trends of COVID-19 mortality during the first year of the pandemic.
-    //         Design, Setting, and Participants: An observational, cross-sectional study of all U.S. counties. We identify “concentrated longitudinal impact counties” (CLICs), counties with a relatively high racial/ethnic population and high levels of COVID-19 mortality. We then explored the SDOH that may be associated with mortality across CLICs and urban-rural contexts.
-    //         Exposure(s): Four indices to measure multiple dimensions of SDOH, including socioeconomic status, mobility, urban characteristics, and immigrant community characteristics. Social factors specifically linked to COVID-19 mortality were also explored (e.g., internet access).
-    //         Main Outcome(s) and Measure(s): County-level COVID-19 mortality rates (deaths per 100k).
-    //         Results: We identified 347, 198, and 33 CLICs for Black, Hispanic, and white populations, respectively. Most Hispanic CLICs are in urban areas and linked to a high percentage of uninsured, working aged people. Most white CLICs are in rural areas with large senior populations and limited access to quality healthcare. Black CLICs are found across urban, suburban, and rural areas, and experience numerous disadvantages, including income inequality and poorer access to health care. In urban areas, the mixed immigrant cohesion and accessibility (MICA) index is negatively related to COVID-19 mortality (– 23.947, SE = 6.497, p < 0.001), meaning that mortality rates in urban areas are linked to immigrant communities with traditional family structures, multiple accessibility stressors and overcrowding housing problems. Higher COVID-19 mortality rates are also associated with more preventable hospital stays in rural areas (0.009, SE = 0.002, p < 0.001) and higher SES vulnerability in suburban areas (– 21.472, SE = 3.450, p < 0.001). Across all community types, places with more limited internet access experienced more severe mortality, especially in urban areas (5.198, SE = 0.884, p < 0.001).
-    //         `}
-    //         <br /><br />
-    //     </p>,
-    //     'thumbnail': `${process.env.PUBLIC_URL}/research/structuralBarriers.jpg`,
-    //     'alt': 'Four maps highlighting the number of days each county spent in the most severe 20% of COVID-19 mortality.',
-    //     'link': 'http://jamanetwork.com/journals/jamanetworkopen/fullarticle/10.1001/jamanetworkopen.2022.0984',
-    // },
+    {
+        'title': 'Assessing Structural Barriers & Racial Disparities of COVID-19 Mortality With Spatial Analysis',
+        'description': <p>
+            <i>Qinyun Lin, Susan Paykin, Dylan Halpern, Aresha Martinez-Cardoso, and Marynia Kolak</i>
+            <br /><br />
+            <b>Question</b>  How do the associations between structural factors and COVID-19 mortality help explain the disproportionate outcomes experienced by different racial and ethnic groups?
+            <br/>
+            <b>Findings</b>  In this cross-sectional study of 3142 counties in 50 US states and the District of Columbia, the associations between different measures of social determinants of health and COVID-19 mortality varied across racial and ethnic groups (Black or African American, Hispanic or Latinx, and non-Hispanic White populations) and different community types (rural, suburban, and urban areas).
+            <br/>
+            <b>Meaning</b>  Findings from this study suggest the need for future research that addresses health inequity and guides policies and programs by further exploring the different dimensions and regional patterns of social determinants of health.
+            <br /><br/>
+        </p>,
+        'thumbnail': `${process.env.PUBLIC_URL}/research/structuralBarriers.jpg`,
+        'alt': 'Four maps highlighting the number of days each county spent in the most severe 20% of COVID-19 mortality.',
+        'link': 'http://jamanetwork.com/journals/jamanetworkopen/fullarticle/10.1001/jamanetworkopen.2022.0984',
+    },
     {
         'title': 'Dimensions of uncertainty: a spatiotemporal review of five COVID-19 datasets',
         'description': <p>
