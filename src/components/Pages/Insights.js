@@ -132,7 +132,6 @@ const research = [
             <br/>
             <b>Meaning</b>  Findings from this study suggest the need for future research that addresses health inequity and guides policies and programs by further exploring the different dimensions and regional patterns of social determinants of health.
             <br /><br/>
-            <br /><br/>
             <a href="https://uscovidatlas.org/research-briefs/structural-barriers-covid.pdf">Read the Research Brief</a>
         </p>,
         'thumbnail': `${process.env.PUBLIC_URL}/research/structuralBarriers.jpg`,
