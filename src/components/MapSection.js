@@ -328,7 +328,7 @@ export default function MapSection(){
         }
     }
 
-    const getScatterColor = (geoid) => currentMapData[geoid]?.color;
+    const getScatterColor = (geoid) => currentMapData[geoid]?.color||[0,0,0];
 
     const handleMapClick = (info, e) => {
         if (e.rightButton) return;
@@ -523,7 +523,7 @@ export default function MapSection(){
             pickable:false,
             filled:true,
             getPosition: f => [f[1]/1e5, f[2]/1e5],
-            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? getScatterColor(f[3]) : colors.dotDensity[f[0]],
+            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? getScatterColor(currentData.includes("state") ? (f[3]+"").slice(0, (f[3]+"").length-3) : f[3]) : colors.dotDensity[f[0]],
             getRadius: 100,  
             radiusMinPixels: Math.sqrt(viewport.zoom)-1.5,
             getFilterValue: f => (f[0]===8 && mapParams.dotDensityParams.raceCodes[f[0]]) ? 1 : 0,
@@ -545,7 +545,7 @@ export default function MapSection(){
             pickable:false,
             filled:true,
             getPosition: f => [f[1]/1e5, f[2]/1e5],
-            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? getScatterColor(f[3]) : colors.dotDensity[f[0]],
+            getFillColor: f => mapParams.dotDensityParams.colorCOVID ? getScatterColor(currentData.includes("state") ? (f[3]+"").slice(0, (f[3]+"").length-3) : f[3]) : colors.dotDensity[f[0]],
             getRadius: 100,  
             radiusMinPixels: Math.sqrt(viewport.zoom)-1.5,
             getFilterValue: f => (f[0]!==8 && mapParams.dotDensityParams.raceCodes[f[0]]) ? 1 : 0,

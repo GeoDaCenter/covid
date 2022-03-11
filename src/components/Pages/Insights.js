@@ -137,6 +137,7 @@ const research = [
         'thumbnail': `${process.env.PUBLIC_URL}/research/structuralBarriers.jpg`,
         'alt': 'Four maps highlighting the number of days each county spent in the most severe 20% of COVID-19 mortality.',
         'link': 'http://jamanetwork.com/journals/jamanetworkopen/fullarticle/10.1001/jamanetworkopen.2022.0984',
+        'researchBrief': 'https://uscovidatlas.org/research-briefs/structural-barriers-covid.pdf'
     },
     {
         'title': 'Dimensions of uncertainty: a spatiotemporal review of five COVID-19 datasets',
@@ -256,7 +257,6 @@ export default function Insights({
                                     <p className="date">{article.pubDate?.split(' ')[0]}</p>
 
                                 </a>
-
                             </Grid>
                         </ArticleCard>
                     )}
@@ -282,6 +282,12 @@ export default function Insights({
                                     </a>
                                     {entry.description}
                                     <a href={entry.link} target="_blank" rel="noopeener noreferrer">Read the full article</a>
+                                    
+                                    {!!entry.researchBrief && <>
+                                    <Gutter h={10} />
+                                    <a href={entry.researchBrief} target="_blank" rel="noopener noreferrer">
+                                        Research the research brief
+                                    </a></>}
                                 </Grid>
                             </ProductCard>
                             <hr />
