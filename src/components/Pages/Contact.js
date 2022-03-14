@@ -304,7 +304,7 @@ const press = {
             'link': 'https://news.uchicago.edu/story/demographics-alone-dont-explain-covid-19-mortality-rates-place-matters-too',
             'text': "Demographics alone don't explain COVID-19 mortality rates—-place matters too",
             'date': '(March 11, 2022)'
-        },
+        }
     ]
 }
 
@@ -489,7 +489,7 @@ export default function Contact(){
                 <Gutter h={40}/> */}
                 <h2>MEDIA COVERAGE</h2>
                 <hr/>
-                {['2021','2020'].map((year, index) => 
+                {['2022','2021','2020'].map((year, index) => 
                     <Accordion square expanded={expanded === `panel${index}`} onChange={() => setExpanded(prev => prev === `panel${index}` ? 'panelX' : `panel${index}`)}>
                         <AccordionSummary aria-controls={`panel${index}d-content`} id={`panel${index}d-header`}>
                         <h2><b>{year}</b></h2>
