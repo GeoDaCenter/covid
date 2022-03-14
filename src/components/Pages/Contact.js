@@ -297,6 +297,14 @@ const press = {
             'text': 'Notable Maps Visualizing COVID-19 and Surrounding Impacts',
             'date': '(February 5, 2021)'
         }
+    ],
+    '2022': [
+        {
+            'name': 'University of Chicago:',
+            'link': 'https://news.uchicago.edu/story/demographics-alone-dont-explain-covid-19-mortality-rates-place-matters-too',
+            'text': "Demographics alone don't explain COVID-19 mortality rates—-place matters too",
+            'date': '(March 11, 2022)'
+        },
     ]
 }
 
