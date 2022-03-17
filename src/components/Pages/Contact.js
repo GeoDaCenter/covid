@@ -300,10 +300,22 @@ const press = {
     ],
     '2022': [
         {
+            'name': 'Vox:',
+            'link': 'https://www.vox.com/22979086/covid-pandemic-deaths-mortality-broadband-internet-access',
+            'text': "The surprising link between Covid-19 deaths and internet access",
+            'date': '(March 16, 2022)'
+        },
+        {
             'name': 'University of Chicago:',
             'link': 'https://news.uchicago.edu/story/demographics-alone-dont-explain-covid-19-mortality-rates-place-matters-too',
             'text': "Demographics alone don't explain COVID-19 mortality rates—-place matters too",
             'date': '(March 11, 2022)'
+        },
+        {
+            'name': 'UMN Center for Infectious Disease Research and Policy:',
+            'link': 'https://www.cidrap.umn.edu/news-perspective/2022/03/covid-deaths-vary-race-community-social-factors',
+            'text': "COVID deaths vary by race, community, social factors",
+            'date': '(March 7, 2022)'
         }
     ]
 }
