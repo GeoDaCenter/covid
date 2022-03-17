@@ -1,9 +1,10 @@
 const fs = require('fs');
+const path = require('path');
 const axios = require('axios');
 const Papa = require('papaparse');
 
 const baseUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTVLk2BtmeEL6LF6vlDJBvgL_JVpvddfMCYjQPwgVtlzTanUlscDNBsRKiJBb3Vn7jumMJ_BEBkc4vi/pub?output=csv'
-
+const basePath = path.join(__dirname, '../src/config');
 const generateVariables = async () => {
     const csvString = await axios.get(baseUrl + '&gid=0').then(res => res.data);
     const data = Papa.parse(csvString, {
@@ -11,7 +12,7 @@ const generateVariables = async () => {
         dynamicTyping: true,
     }).data.filter(f => f.deprecated != 1)
     
-    fs.writeFileSync('./src/config/variables.js', `
+    fs.writeFileSync(path.join(basePath, 'variables.js'), `
     // this is a generated file, do not edit directly. See Google sheets to update variable config
     const variables = ${JSON.stringify(data)}; 
     export default variables;
@@ -25,7 +26,7 @@ const generateTables = async () => {
         header: true,
         dynamicTyping: true,
     }).data.filter(f => f.deprecated != 1)
-    fs.writeFileSync('./src/config/tables.js', `
+    fs.writeFileSync(path.join(basePath, 'tables.js'), `
     // this is a generated file, do not edit directly. See Google sheets to update variable config
     const tables = ${JSON.stringify(data)}; 
     export default tables;
@@ -45,7 +46,7 @@ const generateDatasets = async () => {
         tables: d.tables ? d.tables.split(',').map(info => ({ [info.split(':')[0]]: info.split(':')[1] })).reduce((prev, curr) => ({...prev, ...curr})) : {}
     }))
 
-    fs.writeFileSync('./src/config/datasets.js', `
+    fs.writeFileSync(path.join(basePath, 'datasets.js'), `
     // this is a generated file, do not edit directly. See Google sheets to update variable config
     const datasets = ${JSON.stringify(parsedData)};
     export default datasets;
@@ -71,7 +72,7 @@ const generateDefaults = async () => {
         }
     })
 
-    fs.writeFileSync('./src/config/defaults.js', fileString)
+    fs.writeFileSync(path.join(basePath, 'defaults.js'), fileString)
     return data
 }
 
@@ -92,7 +93,7 @@ const generateLegacyDatasets = async () => {
             tables: returnTables
         }
     })
-    fs.writeFileSync('./src/config/legacyDatasets.js',  `// this is a generated file, do not edit directly. See Google sheets to update variable config \n export default ${JSON.stringify(returnObj)}`)
+    fs.writeFileSync(path.join(basePath, 'legacyDatasets.js'),  `// this is a generated file, do not edit directly. See Google sheets to update variable config \n export default ${JSON.stringify(returnObj)}`)
 }
 
 console.log('Generating variables, tables, datasets, and defaults from CMS.')
@@ -165,14 +166,14 @@ function parseFiles(filesToParse) {
     const dateRanges = {};
     filesToParse.forEach(file => {
         try {
-            const fileData = fs.readFileSync(`public/csv/${file}.csv`, 'utf-8');
+            const fileData = fs.readFileSync(path.join(__dirname,`../public/csv/${file}.csv`), 'utf-8');
             const fields = Papa.parse(fileData, { header: true }).meta.fields
             dateRanges[file] = isoDateList.map(date => fields.includes(date) ? 1 : 0)
         } catch (error) {
             console.log(error)
         }
     })
-    fs.writeFileSync('./src/config/dataDateRanges.js', `
+    fs.writeFileSync(path.join(basePath, 'dataDateRanges.js'), `
     // this is a generated file, do not edit directly. See data-scripts/build-scripts/parseColumns.js
     export default ${JSON.stringify(dateRanges)}
     `)

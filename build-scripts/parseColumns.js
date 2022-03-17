@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const Papa = require('papaparse');
 
 const getDateLists = () => {
@@ -63,14 +64,14 @@ function parseFiles(filesToParse) {
     const dateRanges = {};
     filesToParse.forEach(file => {
         try {
-            const fileData = fs.readFileSync(`public/csv/${file}.csv`, 'utf-8');
+            const fileData = fs.readFileSync(path.join(__dirname, `../public/csv/${file}.csv`), 'utf-8');
             const fields = Papa.parse(fileData, { header: true }).meta.fields
             dateRanges[file] = isoDateList.map(date => fields.includes(date) ? 1 : 0)
         } catch (error) {
             console.log(error)
         }
     })
-    fs.writeFileSync('./src/config/dataDateRanges.js', `
+    fs.writeFileSync(path.join(__dirname, '../src/config/dataDateRanges.js'), `
     // this is a generated file, do not edit directly. See data-scripts/build-scripts/parseColumns.js
     const ranges = ${JSON.stringify(dateRanges)};
     export default ranges;

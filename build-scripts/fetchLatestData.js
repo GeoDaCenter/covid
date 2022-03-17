@@ -1,15 +1,15 @@
 const fs = require("fs");
+const path = require('path');
 const axios = require("axios");
 var AdmZip = require("adm-zip");
 
 const BASE_URL = "https://d27o3hdsxhdrv9.cloudfront.net/zip/";
-
 const filesToUnpack = ["csv.zip", "pbf.zip", "geojson.zip"];
 
 const makeFolder = (folderName) => {
   try {
-    fs.mkdirSync(`public/${folderName}`);
-  } catch {}
+    fs.mkdirSync(path.join(__dirname, `../public/${folderName}`));
+  } catch { }
 };
 
 const main = async () => {
@@ -25,11 +25,11 @@ const main = async () => {
     )
   );
   console.log('fetched data, parsing csv')
-  new AdmZip(latestCsv).extractAllTo("./public/csv/", true);
+  new AdmZip(latestCsv).extractAllTo(path.join(__dirname, "../public/csv/"), true);
   console.log('...parsing pbf...')
-  new AdmZip(latestPbf).extractAllTo("./public/pbf/", true);
+  new AdmZip(latestPbf).extractAllTo(path.join(__dirname, "../public/pbf/"), true);
   console.log('...parsing geojson...')
-  new AdmZip(latestGeoJson).extractAllTo("./public/geojson/", true);
+  new AdmZip(latestGeoJson).extractAllTo(path.join(__dirname, "../public/geojson/"), true);
   console.log('Parsing complete. Generating time-series data.')
 };
 

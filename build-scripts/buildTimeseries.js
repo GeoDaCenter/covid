@@ -22,11 +22,11 @@ const cleanVals = (vals, multiplier) => {
 console.log("Building timeseries...");
 const makeFolder = (fileName) => {
   try {
-    fs.mkdirSync(`public/timeseries`);
+    fs.mkdirSync(path.join(__dirname, `../public/timeseries`));
   } catch {}
 
   try {
-    fs.mkdirSync(`public/timeseries/${fileName}`);
+    fs.mkdirSync(path.join(__dirname, `../public/timeseries/${fileName}`));
   } catch {}
 };
 
@@ -35,8 +35,7 @@ const generateIndividualFiles = (fileName, multiplier, row) => {
   for (let i = 0; i < row.length; i++) {
     const entry = row[i];
     const values = cleanVals(entry.vals, multiplier);
-    fs.writeFileSync(
-      `public/timeseries/${fileName}/${entry.geoid}.json`,
+    fs.writeFileSync(path.join(__dirname, `../public/timeseries/${fileName}/${entry.geoid}.json`),
       `${JSON.stringify(values)}`
     );
     for (let j = 0; j < values.length; j++) {
@@ -47,8 +46,7 @@ const generateIndividualFiles = (fileName, multiplier, row) => {
 };
 
 const generateSummary = (fileName, dates, sumData, multiplier, row) => {
-  fs.writeFileSync(
-    `public/timeseries/${fileName}/index.json`,
+  fs.writeFileSync(path.join(__dirname, `../public/timeseries/${fileName}/index.json`),
     `{
         "dates": ${JSON.stringify(dates)},
         "sumData": ${JSON.stringify(sumData)},
@@ -70,7 +68,7 @@ const splitPbfs = (fileList) => {
     const multiplier =
       file.split(".").length > 2 ? +file.split(".")[1].split("-")[1] : 1;
     const { dates, row } = Rows.read(
-      new Pbf(fs.readFileSync(`public/pbf/${file}`))
+      new Pbf(fs.readFileSync(path.join(__dirname, `../public/pbf/${file}`)))
     );
     const reversedDates = [...dates].reverse();
     const sumData = generateIndividualFiles(fileName, multiplier, row);
@@ -100,7 +98,7 @@ const splitPbfs = (fileList) => {
       monthData.setDatesList(dates.slice(range[0], range[1]));
       monthData.setRowList(rowData);
       const binaryData = monthData.serializeBinary();
-      fs.writeFileSync(`public/pbf/${fileName}.${month}.pbf`, binaryData);
+      fs.writeFileSync(path.join(__dirname, `../public/pbf/${fileName}.${month}.pbf`), binaryData);
     }
   });
 }
@@ -120,7 +118,7 @@ const splitCsvs = (fileList) => {
   fileList.forEach(function ({file, idCol, dataIndex}, idx) {
     const fileName = file.split(".").slice(0,-1).join(".");
     makeFolder(fileName);
-    fs.readFile(`public/csv/${file}`, 'utf8', function(err, string) {
+    fs.readFile(path.join(__dirname, `../public/csv/${file}`), 'utf8', function(err, string) {
       if (err) throw err;
       const {data} = Papa.parse(string, {header: true});
       const parsed = parseCsvLikePbf(data, idCol, dataIndex);
