@@ -12,7 +12,7 @@ import {
 // } from '../../../../utils';
 import colors from "../../../../config/colors";
 import countyNames from "../../../../meta/countyNames";
-import { matchAndReplaceInlineVars } from "../../../../utils";
+// import { matchAndReplaceInlineVars } from "../../../../utils";
 
 const CommunityContextMetrics = [
   "Uninsured Percent",
@@ -76,10 +76,10 @@ export const TableReport = ({
     : metrics
 
 
-  const parsedIncludedColumns = includedColumns.map(({accessor, header}) => ({
-    accessor,
-    header: matchAndReplaceInlineVars(header, metaDict)
-  }))
+  // const parsedIncludedColumns = includedColumns.map(({accessor, header}) => ({
+  //   accessor,
+  //   header: matchAndReplaceInlineVars(header, metaDict)
+  // }))
   
   return (
     <PanelItemContainer>

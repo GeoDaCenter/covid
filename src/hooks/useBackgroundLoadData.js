@@ -2,16 +2,16 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   findAllDefaults,
-  fetcher
+  // fetcher
 } from '../utils';
-import { createSelector } from 'reselect'
+// import { createSelector } from 'reselect'
 import _FetcherWorker from 'comlink-loader!../utils/fetcher';// eslint-disable-line import/no-webpack-loader-syntax
 const FetcherWorker = new _FetcherWorker();
 
-const selectNumCompletedTodos = createSelector(
-  ({ data }) => data.storedData,
-  (tables) => Object.keys(tables)
-)
+// const selectNumCompletedTodos = createSelector(
+//   ({ data }) => data.storedData,
+//   (tables) => Object.keys(tables)
+// )
 
 export default function useBackgroundLoadData({
   currentGeography = '',
@@ -23,7 +23,7 @@ export default function useBackgroundLoadData({
   denominatorParams = {},
   adjacentMonths = [],
 }) {
-  const tableKeys = useSelector(selectNumCompletedTodos)
+  // const tableKeys = useSelector(selectNumCompletedTodos)
   const dispatch = useDispatch();
   const storedData = useSelector(({ data }) => data.storedData);
 
@@ -63,6 +63,12 @@ export default function useBackgroundLoadData({
                   timespan: filesToFetch[idx].timespan
                 }
               }
+            }
+            return {
+              name: null,
+              newData: {},
+              error: true,
+              timespan: null
             }
           })
           dispatch({

@@ -12,8 +12,8 @@ import {
   PanelItemContainer,
   GrabTarget,
   DeleteBlock,
-  widthOptions,
-  heightOptions,
+  // widthOptions,
+  // heightOptions,
 } from "./PageComponentsLayout";
 import { findIn } from "../../../../utils";
 import colors from "../../../../config/colors";

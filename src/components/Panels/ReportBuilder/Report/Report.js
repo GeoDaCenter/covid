@@ -7,24 +7,24 @@ import {
   PrintButton,
 } from "./LayoutContainer";
 import { MetaButtonsContainer, MetaButton } from "./MetaButtons";
-import useGetNeighbors from "../../../../hooks/useGetNeighbors";
+// import useGetNeighbors from "../../../../hooks/useGetNeighbors";
 // import { templates } from "./Templates";
 export default function Report({ reportName = "", activeStep }) {
   const dispatch = useDispatch();
   // const report = useSelector(({report}) => report.reports[reportName])
   const pages = useSelector(({report}) => report.reports[reportName] && report.reports[reportName].layout && new Array(report.reports[reportName].layout.length).fill(null))
-  const geoid = useSelector(({report}) => report.reports[reportName] && report.reports[reportName].meta?.geoid)
+  // const geoid = useSelector(({report}) => report.reports[reportName] && report.reports[reportName].meta?.geoid)
   const gridContext = useRef({});
   const pagesRef = useRef({});
   const containerRef = useRef(null)
-  const currentData = "county_usfacts.geojson";
+  // const currentData = "county_usfacts.geojson";
   const pageWidth = containerRef?.current?.clientWidth;
 
-  const [neighbors, secondOrderNeighbors, stateNeighbors] = useGetNeighbors({
-    geoid,
-    currentData,
-    updateTrigger: JSON.stringify(reportName)
-  });
+  // const [neighbors, secondOrderNeighbors, stateNeighbors] = useGetNeighbors({
+  //   geoid,
+  //   currentData,
+  //   updateTrigger: JSON.stringify(reportName)
+  // });
 
   const handleAddPage = () =>
     dispatch({
@@ -32,14 +32,14 @@ export default function Report({ reportName = "", activeStep }) {
       payload: reportName,
     });
 
-  const handleUpdateMeta = () =>
-    dispatch({
-      type: "UPDATE_REPORT_META",
-      payload: {
-        reportName,
-        props: {neighbors, secondOrderNeighbors, stateNeighbors}
-      }
-    });
+  // const handleUpdateMeta = () =>
+  //   dispatch({
+  //     type: "UPDATE_REPORT_META",
+  //     payload: {
+  //       reportName,
+  //       props: {neighbors, secondOrderNeighbors, stateNeighbors}
+  //     }
+  //   });
 
   const handleGridContext = (grid, pageIdx) => {
     gridContext.current = {
