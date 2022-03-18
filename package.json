@@ -69,14 +69,15 @@
     "worker-loader": "2.0.0"
   },
   "scripts": {
+    "start": "react-app-rewired start",
+    "dev": "react-app-rewired start",
     "fetch-data": "node build-scripts/fetchLatestData && node build-scripts/buildTimeseries && node build-scripts/generateConfig && node build-scripts/parseColumns",
-    "start": "react-scripts start",
-    "build-sw": "node ./src/sw-build.js",
-    "build": "react-scripts build",
     "pre-build": "node build-scripts/fetchLatestData && node build-scripts/buildTimeseries && node build-scripts/generateConfig && node build-scripts/parseColumns",
+    "build-sw": "node ./src/sw-build.js",
     "netlify-build": "npm run pre-build && npm run build && cd build && cat _redirects",
+    "build": "react-app-rewired build",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "test": "react-scripts test",
+    "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
