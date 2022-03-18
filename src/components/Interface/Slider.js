@@ -69,12 +69,12 @@ const SpeedSlider = styled.div`
   p {
     text-align: center;
   }
-  span.MuiSlider-rail {
-    display: initial !important;
-  }
-  span.MuiSlider-track {
-    display: initial !important;
-  }
+  // span.MuiSlider-rail {
+  //   display: initial !important;
+  // }
+  // span.MuiSlider-track {
+  //   display: initial !important;
+  // }
   span.MuiSlider-thumbColorPrimary {
     transform:translateY(-7px) !important;
   }
@@ -86,11 +86,11 @@ const RangeSlider = styled(Slider)`
     box-sizing: border-box;
     color: #ffffff55;
   }
-  span.MuiSlider-rail {
-    color: white;
-    height: 4px;
-    display: none;
-  }
+  // span.MuiSlider-rail {
+  //   color: white;
+  //   height: 4px;
+  //   display: none;
+  // }
   span.MuiSlider-track {
     color: ${colors.yellow};
     height: 4px;
@@ -323,7 +323,7 @@ function DateSlider() {
         })
       );
     }
-  }, 25);
+  }, 5);
 
   const handleRangeChange = debounce((_, newValue) => {
     const newIndex = Math.max(newValue[0], newValue[1]);

@@ -271,7 +271,7 @@ export const report = (
 
 export const popOut = (
   <svg viewBox="0 0 17 17">
-    <g stroke="none" stroke-width="1" fill="none" fillRule="evenodd">
+    <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
       <g
         transform="translate(-578.000000, -253.000000)"
         fillRule="nonzero"

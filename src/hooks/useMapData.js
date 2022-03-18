@@ -285,7 +285,7 @@ export default function useMapData({
     dataParams,
     currentData
   });
-  
+  // console.log('MAP DATA RENDERED')
   const combinedParams = {
     ...dataParams,
     nIndex:  dataParams?.nType && dataParams.nType.includes("time") ? currIndex : dataParams.nIndex,
@@ -397,12 +397,13 @@ export default function useMapData({
     // JSON.stringify(cartogramData),
   ]);
     
+  const sanitizedHeightScale = !isNaN(heightScale) && heightScale !== Infinity ? heightScale : 1;
   return [
     geojsonData?.data, // geography
     colorAndValueData, // color and value data
     mapSnapshot, // string params for updater dep arrays
     bins, // bins for legend etc,
-    heightScale, // height scale
+    sanitizedHeightScale, // height scale
     !(dataReady && (bins?.breaks||lisaData) && Object.keys(colorAndValueData).length),
     geojsonData,
     currIndex

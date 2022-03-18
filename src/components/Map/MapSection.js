@@ -539,10 +539,9 @@ function MapSection({
       filled: true,
       wireframe: false,
       extruded: mapParams.vizType === "3D",
-      opacity:
-        mapParams.vizType === "dotDensity"
-          ? mapParams.dotDensityParams.backgroundTransparency
-          : 0.8,
+      opacity: mapParams.vizType === "dotDensity"
+        ? mapParams.dotDensityParams.backgroundTransparency
+        : 0.8,
       material: false,
       onHover: handleMapHover,
       onClick: handleMapClick,
@@ -787,8 +786,8 @@ function MapSection({
 
   const getLayers = useCallback(
     (layers, vizType, overlays, resources, currData) => {
-      var LayerArray = [];
-
+      let LayerArray = [];
+      
       if (vizType === "cartogram") {
         // LayerArray.push(layers['cartogramBackground'])
         LayerArray.push(layers["cartogram"]);

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import styled from "styled-components";
 
 const TickMarsContainer = styled.div`
@@ -9,34 +9,33 @@ const TickMarsContainer = styled.div`
   position:absolute;
   top:calc(50% + 1px);
   transform:translateY(-50%);
-  span {
-    height:100%;
-    flex:1;
-    min-width:0;
-  }
 `;
 
-export default function Ticks({ loaded, available, fullLength }) {
-  const ticks = useMemo(() => {
-    if (!loaded || !available || !fullLength) return null;
-    const items = [];
+const TickCanvas = styled.canvas`
+  width:100%;
+  height:6px;
+  transform:translateY(1px);
+`
+export default function Ticks({ available, fullLength }) {
+  const canvasRef = useRef(null);
+  const draw = (ctx, startX, color) => {
+    ctx.beginPath();
+    ctx.fillStyle = color;
+    ctx.fillRect(startX, 0, startX+1, 50);
+  }
+
+  useEffect(() => {
+    console.log('rendering ticks')
+    const canvas = canvasRef.current
+    const context = canvas.getContext('2d')
     for (let i = 0; i < fullLength; i++) {
-      items.push(
-        <span
-          key={i}
-          style={{ background: loaded.includes(i) || available[i]
-            ? "white" 
-            : "black" 
-          }}
-        />
-      );
+      draw(context, context.canvas.width*(i/fullLength), available[i] ? 'white' : 'black')
     }
-    return items;
-  }, [fullLength, JSON.stringify(loaded), JSON.stringify(available)]);
+  },[fullLength, JSON.stringify(available)])
   
   return (
     <TickMarsContainer>
-      {ticks}
+      <TickCanvas ref={canvasRef} />
     </TickMarsContainer>
   );
 }

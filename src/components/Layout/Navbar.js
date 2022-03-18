@@ -403,7 +403,7 @@ export default function NavBar(props) {
       {currentDropdown && (
         <SuperDropdown light={props.light}>
           {pageDropDowns[currentDropdown].map((entry) => (
-            <PageSection>
+            <PageSection key={entry.header}>
               <a href={entry.link}>
                 {entry.header}
                 <span>❱</span>

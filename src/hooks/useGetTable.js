@@ -15,7 +15,7 @@ export default function useGetTable({
   );
 
   useEffect(() => {
-    console.log("loading files...");
+    
     if (shouldFetch) {
       if (filesToFetch[0] && !filesToFetch[0].noFile) {
         const cleanedFilesToFetch = filesToFetch.filter((fileSchema, idx) => {

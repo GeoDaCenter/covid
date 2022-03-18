@@ -47,7 +47,7 @@ export default function useLoadData({
     dataParams?.dType && dataParams.dType.includes("time")
   ]
   const isTimeSeries =  nIsTimeSeries || dIsTimeSeries;
-
+  // console.log('USE LOAD DATA RENDERED')
   // const storedData = useSelector(({data}) => data.storedData);
 
   const defaultNumeratorParams = getFetchParams({

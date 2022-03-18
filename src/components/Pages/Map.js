@@ -229,7 +229,7 @@ const getDefaultDimensions = () => ({
   minWidth: window.innerWidth <= 1024 ? window.innerWidth * 0.5 : 200,
 });
 
-const MapPageContainer = () => {
+const MapContainerInner = () => {
   // These selectors access different pieces of the store. While App mainly
   // dispatches to the store, we need checks to make sure side effects
   // are OK to trigger. Issues arise with missing data, columns, etc.
@@ -241,21 +241,8 @@ const MapPageContainer = () => {
   const variableName = useSelector(
     ({ params }) => params.dataParams.variableName
   );
-  const panelState = useSelector(({ ui }) => ui.panelState);
-  const [defaultDimensions, setDefaultDimensions] = useState(
-    getDefaultDimensions()
-  );
   const datasets = useSelector(({ params }) => params.datasets);
   const currIdCol = findIn(datasets, "file", currentData).join;
-
-  // default width handlers on resize
-  useEffect(() => {
-    typeof window &&
-      window.addEventListener("resize", () =>
-        setDefaultDimensions({ ...getDefaultDimensions() })
-      );
-  }, []);
-
   const [
     currentMapGeography,
     currentMapData,
@@ -268,12 +255,45 @@ const MapPageContainer = () => {
     mapParams,
     currentData,
   });
+  return <>    
+    <MapSection
+      currentMapGeography={currentMapGeography}
+      currentMapData={currentMapData}
+      currentMapID={currentMapID}
+      currentHeightScale={currentHeightScale}
+      isLoading={isLoading}
+      mapParams={mapParams}
+      currentData={currentData}
+      currIdCol={currIdCol}
+    />
+    <Legend
+      variableName={variableName}
+      colorScale={mapParams.colorScale}
+      bins={currentBins}
+      fixedScale={fixedScale}
+      resource={mapParams.resource}
+      note={dataNote}
+    />
+  </>
+}
+const MapPageContainer = () => {
+  const panelState = useSelector(({ ui }) => ui.panelState);
+  const showTopPanel = useSelector(({params}) => params.dataParams.nType !== "characteristic");
+  const [defaultDimensions, setDefaultDimensions] = useState(
+    getDefaultDimensions()
+  );
+  // default width handlers on resize
+  useEffect(() => {
+    typeof window &&
+      window.addEventListener("resize", () =>
+        setDefaultDimensions({ ...getDefaultDimensions() })
+      );
+  }, []);
 
-  const showTopPanel = dataParams.nType !== "characteristic";
 
   return (
     <MapContainer>
-      {isLoading && (
+      {false && (
         <div id="loadingIcon">
           <img
             src={`${process.env.PUBLIC_URL}/assets/img/animated_cluster.svg`}
@@ -285,16 +305,7 @@ const MapPageContainer = () => {
       <MapPlaneContainer>
         <IconDock />
         <VariablePanel />
-        <MapSection
-          currentMapGeography={currentMapGeography}
-          currentMapData={currentMapData}
-          currentMapID={currentMapID}
-          currentHeightScale={currentHeightScale}
-          isLoading={isLoading}
-          mapParams={mapParams}
-          currentData={currentData}
-          currIdCol={currIdCol}
-        />
+        <MapContainerInner />
         <RightPaneContainer>
           {panelState.lineChart && (
             <LineChart defaultDimensions={defaultDimensions} />
@@ -307,14 +318,6 @@ const MapPageContainer = () => {
       {/* <PrintLayout /> */}
       <ReportBuilder />
       {!!showTopPanel && <TopPanel />}
-      <Legend
-        variableName={variableName}
-        colorScale={mapParams.colorScale}
-        bins={currentBins}
-        fixedScale={fixedScale}
-        resource={mapParams.resource}
-        note={dataNote}
-      />
       <Popover />
       <NotificationBox />
       {panelState.tutorial && (
