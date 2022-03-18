@@ -300,6 +300,12 @@ const press = {
     ],
     '2022': [
         {
+            'name': 'Fox News:',
+            'link': 'https://www.foxnews.com/health/covid-deaths-counties-lower-internet',
+            'text': "More COVID deaths reported in US counties with lower internet access: study",
+            'date': '(March 17, 2022)'
+        },
+        {
             'name': 'Vox:',
             'link': 'https://www.vox.com/22979086/covid-pandemic-deaths-mortality-broadband-internet-access',
             'text': "The surprising link between Covid-19 deaths and internet access",
