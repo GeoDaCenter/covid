@@ -300,6 +300,12 @@ const press = {
     ],
     '2022': [
         {
+            'name': 'New York Post:',
+            'link': 'https://nypost.com/2022/03/18/study-finds-more-covid-deaths-were-reported-in-us-counties-with-lower-internet-access/',
+            'text': "Study finds more COVID deaths were reported in US counties with lower internet access",
+            'date': '(March 18, 2022)'
+        },
+        {
             'name': 'Fox News:',
             'link': 'https://www.foxnews.com/health/covid-deaths-counties-lower-internet',
             'text': "More COVID deaths reported in US counties with lower internet access: study",
