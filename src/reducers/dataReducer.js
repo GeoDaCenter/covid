@@ -79,14 +79,22 @@ export default function reducer(state = INITIAL_STATE, action) {
     }
     case "RECONCILE_TABLES": {
       // expected shape: // type: 'RECILE_TABLES', payload: { data: { dataset1: {data,dates,columns}}}
+      let t0 = performance.now();
       let storedData = {
         ...state.storedData,
       };
       action.payload.data.forEach(dataset => reconcileData(dataset, storedData))      
+      console.log('DATALOADED IN' , performance.now() - t0, 'ms');
       return {
         ...state,
         storedData,
       };
+    }
+    case "SET_DATA": {
+      return {
+        ...state,
+        storedData: action.payload.storedData
+      }
     }
     case "ADD_WEIGHTS": {
       // id, weights

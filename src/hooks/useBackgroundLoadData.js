@@ -43,42 +43,53 @@ export default function useBackgroundLoadData({
       .flat().filter(f => !f.noFile && f.timespan !== false && f.timespan !== undefined);
 
     if (shouldFetch && filesToFetch.length) {
-      const getData = async () => FetcherWorker.fetcher(filesToFetch, dateLists)
-      getData().then(dataArray => {
-        if (dataArray.length) {
-          const mappedData = dataArray.map((response, idx) => {
-            const newData = response.value;
-            if (!(storedData[filesToFetch[idx]?.name] && storedData[filesToFetch[idx]?.name][filesToFetch[idx]?.loaded?.includes(filesToFetch[idx]?.timespan)])) {
-              if (newData && newData.data) {
-                return {
-                  name: filesToFetch[idx].name,
-                  newData,
-                  timespan: filesToFetch[idx].timespan
-                }
-              } else if (response.status === 'rejected') {
-                return {
-                  name: filesToFetch[idx].name,
-                  newData: {},
-                  error: true,
-                  timespan: filesToFetch[idx].timespan
-                }
-              }
-            }
-            return {
-              name: null,
-              newData: {},
-              error: true,
-              timespan: null
-            }
-          })
-          dispatch({
-            type: 'RECONCILE_TABLES',
-            payload: {
-              data: mappedData
-            }
-          })
-        }
+      let t0 = performance.now()
+      const getData = async () => FetcherWorker.fetchAndReconcile(filesToFetch, dateLists, storedData)
+      getData().then(newData => {
+        console.log(t0 - performance.now())
+        dispatch({
+          type:"SET_DATA",
+          payload: {
+            storedData: newData
+          }
+        })
+        console.log(t0 - performance.now())
       })
+      // getData().then(dataArray => {
+      //   if (dataArray.length) {
+      //     const mappedData = dataArray.map((response, idx) => {
+      //       const newData = response.value;
+      //       if (!(storedData[filesToFetch[idx]?.name] && storedData[filesToFetch[idx]?.name][filesToFetch[idx]?.loaded?.includes(filesToFetch[idx]?.timespan)])) {
+      //         if (newData && newData.data) {
+      //           return {
+      //             name: filesToFetch[idx].name,
+      //             newData,
+      //             timespan: filesToFetch[idx].timespan
+      //           }
+      //         } else if (response.status === 'rejected') {
+      //           return {
+      //             name: filesToFetch[idx].name,
+      //             newData: {},
+      //             error: true,
+      //             timespan: filesToFetch[idx].timespan
+      //           }
+      //         }
+      //       }
+      //       return {
+      //         name: null,
+      //         newData: {},
+      //         error: true,
+      //         timespan: null
+      //       }
+      //     })
+      //     dispatch({
+      //       type: 'RECONCILE_TABLES',
+      //       payload: {
+      //         data: mappedData
+      //       }
+      //     })
+      //   }
+      // })
     }
   }, [shouldFetch]);
 };

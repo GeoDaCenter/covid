@@ -295,9 +295,9 @@ export default function useMapData({
   const { geoda } = useGeoda();
   const [mapSnapshot, setMapSnapshot] = useState(0);
   const varId = getVarId(currentData, combinedParams, mapParams, dataReady);
-  
+  // debugger;
   const binIndex =
-    dateIndices !== null
+    !!dateIndices
       ? mapParams.binMode === "dynamic" &&
         dateIndices?.indexOf(combinedParams.nIndex) !== -1
         ? combinedParams.nIndex

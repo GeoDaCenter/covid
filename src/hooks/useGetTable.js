@@ -1,6 +1,8 @@
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetcher } from "../utils";
+import _FetcherWorker from 'comlink-loader!../utils/fetcher';// eslint-disable-line import/no-webpack-loader-syntax
+const FetcherWorker = new _FetcherWorker();
 
 export default function useGetTable({
   filesToFetch = [],
@@ -25,7 +27,8 @@ export default function useGetTable({
             !!accessedData[idx]?.loaded?.includes(fileSchema?.timespan);
           return !fileExists || !fileExistsAndIsLoaded;
         });
-        fetcher(cleanedFilesToFetch, dateLists)
+        const getData = async () => FetcherWorker.fetcher(cleanedFilesToFetch, dateLists)
+        getData()
           .then((dataArray) => {
             if (dataArray.length) {
               dataArray.forEach(({ value: newData }, idx) => {
