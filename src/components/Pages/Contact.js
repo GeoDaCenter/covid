@@ -300,6 +300,12 @@ const press = {
     ],
     '2022': [
         {
+            'name': 'Marketplace Tech:',
+            'link': 'https://www.marketplace.org/shows/marketplace-tech/limited-internet-access-linked-to-higher-covid-death-rates/',
+            'text': "Limited internet access linked to higher COVID death rates",
+            'date': '(March 23, 2022)'
+        },
+        {
             'name': 'New York Post:',
             'link': 'https://nypost.com/2022/03/18/study-finds-more-covid-deaths-were-reported-in-us-counties-with-lower-internet-access/',
             'text': "Study finds more COVID deaths were reported in US counties with lower internet access",
