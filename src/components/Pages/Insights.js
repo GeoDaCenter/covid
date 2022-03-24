@@ -5,6 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import { ContentContainer, Gutter } from '../../styled_components';
 import { NavBar, Footer } from '../';
 import { colors } from '../../config';
+import MediaAccordian from '../MediaAccordian';
 
 const InsightsPage = styled.div`
     background:white;
@@ -210,12 +211,12 @@ export default function Insights({
 
     const [tabValue, setTabValue] = useState(
         window.location.hash.length
-            ? ['#blog', '#research', '#stories'].indexOf(window.location.hash)
+            ? ['#blog', '#research', '#stories', '#press'].indexOf(window.location.hash)
             : defaultTab
     );
 
     const handleHashChange = () => {
-        setTabValue(['#blog', '#research', '#stories'].indexOf(window.location.hash))
+        setTabValue(['#blog', '#research', '#stories', '#press'].indexOf(window.location.hash))
     }
 
     useEffect(() => {
@@ -238,6 +239,7 @@ export default function Insights({
                     <Tab {...a11yProps(0)} active={tabValue === 0} onClick={() => setTabValue(0)}>Blog</Tab>
                     <Tab {...a11yProps(1)} active={tabValue === 1} onClick={() => setTabValue(1)}>Research</Tab>
                     <Tab {...a11yProps(2)} active={tabValue === 2} onClick={() => setTabValue(2)}>Stories</Tab>
+                    <Tab {...a11yProps(3)} active={tabValue === 3} onClick={() => setTabValue(3)}>Press</Tab>
                 </TabBar>
                 <TabPanel display={tabValue === 0}>
                     <Gutter h={20} />
@@ -317,6 +319,16 @@ export default function Insights({
                                 <a href={entry.link}>See more</a>
                             </Grid>
                         </ProductCard>)}
+                </TabPanel>
+                <TabPanel display={tabValue === 3}>
+                <Gutter h={20} />
+                    <p>
+                        Atlas research, insights, and data have been featured in leading national and local media outlets, including NPR, The Washington Post, Scientific American, and The Root.
+                        Find featured press coverage, op-eds, and interviews below. 
+                    </p>
+                    <hr />
+                    <Gutter h={20} />
+                    <MediaAccordian> </MediaAccordian>
                 </TabPanel>
             </ContentContainer>
             <Footer />
