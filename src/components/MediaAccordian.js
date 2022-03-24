@@ -340,7 +340,7 @@ const press = {
 
 
 export default function MediaAccordian(){
-    const [expanded, setExpanded] = useState('panelX');
+    const [expanded, setExpanded] = useState('panel0');
 return <div> <h2>IN THE PRESS</h2>
                 <hr/>
                 {['2022','2021','2020'].map((year, index) => 
