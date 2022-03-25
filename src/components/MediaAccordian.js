@@ -300,6 +300,11 @@ const press = {
     ],
     '2022': [
         {
+            'name': 'Advisory Board:',
+            'link': 'https://www.advisory.com/daily-briefing/2022/03/24/internet-access',
+            'text': "How internet access impacts health outcomes",
+            'date': '(March 24, 2022)'
+        },{
             'name': 'Marketplace Tech:',
             'link': 'https://www.marketplace.org/shows/marketplace-tech/limited-internet-access-linked-to-higher-covid-death-rates/',
             'text': "Limited internet access linked to higher COVID death rates",
