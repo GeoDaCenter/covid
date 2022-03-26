@@ -1,25 +1,57 @@
 GEOID,NAME,average,state_abbr,state_name
-48049,Brown County ,45.31,TX,Texas
-48195,Hansford County ,20.6,TX,Texas
-48129,Donley County ,42.18,TX,Texas
-48317,Martin County ,12.72,TX,Texas
-48107,Crosby County ,19.5,TX,Texas
-48179,Gray County ,15.74,TX,Texas
+48049,Brown County ,60.79,TX,Texas
+48115,Dawson County ,5.51,TX,Texas
+48317,Martin County ,15.27,TX,Texas
+48143,Erath County ,3.1,TX,Texas
+48107,Crosby County ,9.75,TX,Texas
 48087,Collingsworth County ,28.61,TX,Texas
-48295,Lipscomb County ,45.3,TX,Texas
-48475,Ward County ,6.17,TX,Texas
-48039,Brazoria County ,5.77,TX,Texas
-48153,Floyd County ,21.9,TX,Texas
-48169,Garza County ,22.72,TX,Texas
-48345,Motley County ,49.43,TX,Texas
-48369,Parmer County ,7.25,TX,Texas
-48473,Waller County ,18.29,TX,Texas
-48339,Montgomery County ,21.15,TX,Texas
-48483,Wheeler County ,13.03,TX,Texas
-48191,Hall County ,37.18,TX,Texas
-48157,Fort Bend County ,20.29,TX,Texas
-48045,Briscoe County ,9.24,TX,Texas
+48389,Reeves County ,5.67,TX,Texas
+48433,Stonewall County ,0.0,TX,Texas
+48071,Chambers County ,4.61,TX,Texas
+48475,Ward County ,1.23,TX,Texas
+48039,Brazoria County ,6.66,TX,Texas
+48153,Floyd County ,17.03,TX,Texas
+48501,Yoakum County ,10.0,TX,Texas
+48333,Mills County ,5.83,TX,Texas
+48169,Garza County ,6.82,TX,Texas
+48345,Motley County ,24.72,TX,Texas
+48193,Hamilton County ,1.73,TX,Texas
+48133,Eastland County ,5.47,TX,Texas
+48125,Dickens County ,116.04,TX,Texas
+48291,Liberty County ,48.16,TX,Texas
+48473,Waller County ,12.57,TX,Texas
+48495,Winkler County ,3.66,TX,Texas
+48219,Hockley County ,5.55,TX,Texas
+48339,Montgomery County ,22.55,TX,Texas
+48191,Hall County ,32.53,TX,Texas
+48373,Polk County ,2.99,TX,Texas
+48269,King County ,0.0,TX,Texas
+48045,Briscoe County ,18.48,TX,Texas
+48101,Cottle County ,0.0,TX,Texas
+48415,Scurry County ,0.0,TX,Texas
 48445,Terry County ,18.12,TX,Texas
+22073,Ouachita Parish ,1.65,LA,Louisiana
+22049,Jackson Parish ,3.59,LA,Louisiana
+22059,LaSalle Parish ,12.42,LA,Louisiana
+22041,Franklin Parish ,2.81,LA,Louisiana
+22025,Catahoula Parish ,1.44,LA,Louisiana
+22083,Richland Parish ,3.49,LA,Louisiana
+22127,Winn Parish ,4.93,LA,Louisiana
+12123,Taylor County ,0.0,FL,Florida
+12061,Indian River County ,0.0,FL,Florida
+12103,Pinellas County ,0.0,FL,Florida
+12029,Dixie County ,0.0,FL,Florida
+12035,Flagler County ,0.0,FL,Florida
+12053,Hernando County ,0.0,FL,Florida
+12125,Union County ,0.0,FL,Florida
+12087,Monroe County ,0.0,FL,Florida
+12085,Martin County ,0.0,FL,Florida
+12075,Levy County ,0.0,FL,Florida
+12011,Broward County ,0.0,FL,Florida
+12111,St. Lucie County ,0.0,FL,Florida
+12086,Miami-Dade County ,0.0,FL,Florida
+12117,Seminole County ,0.0,FL,Florida
+12031,Duval County ,0.0,FL,Florida
 21215,Spencer County ,14.09,KY,Kentucky
 21069,Fleming County ,22.69,KY,Kentucky
 21067,Fayette County ,16.0,KY,Kentucky
@@ -40,6 +72,7 @@ GEOID,NAME,average,state_abbr,state_name
 21191,Pendleton County ,5.9,KY,Kentucky
 21117,Kenton County ,23.77,KY,Kentucky
 21169,Metcalfe County ,11.42,KY,Kentucky
+21123,LaRue County ,4.04,KY,Kentucky
 21047,Christian County ,23.72,KY,Kentucky
 21197,Powell County ,28.99,KY,Kentucky
 21147,McCreary County ,64.81,KY,Kentucky
@@ -51,7 +84,7 @@ GEOID,NAME,average,state_abbr,state_name
 21039,Carlisle County ,53.12,KY,Kentucky
 21137,Lincoln County ,22.2,KY,Kentucky
 21065,Estill County ,8.98,KY,Kentucky
-21151,Madison County ,6.37,KY,Kentucky
+21035,Calloway County ,4.42,KY,Kentucky
 21199,Pulaski County ,104.23,KY,Kentucky
 21201,Robertson County ,46.66,KY,Kentucky
 21195,Pike County ,24.09,KY,Kentucky
@@ -63,6 +96,7 @@ GEOID,NAME,average,state_abbr,state_name
 21135,Lewis County ,23.3,KY,Kentucky
 21139,Livingston County ,75.57,KY,Kentucky
 21017,Bourbon County ,10.64,KY,Kentucky
+21083,Graves County ,3.06,KY,Kentucky
 21165,Menifee County ,40.15,KY,Kentucky
 21239,Woodford County ,13.69,KY,Kentucky
 21203,Rockcastle County ,5.94,KY,Kentucky
@@ -99,73 +133,153 @@ GEOID,NAME,average,state_abbr,state_name
 21021,Boyle County ,7.64,KY,Kentucky
 21181,Nicholas County ,62.37,KY,Kentucky
 21115,Johnson County ,11.26,KY,Kentucky
+21013,Bell County ,7.88,KY,Kentucky
 21043,Carter County ,18.32,KY,Kentucky
 21193,Perry County ,53.6,KY,Kentucky
 21231,Wayne County ,189.93,KY,Kentucky
-5059,Hot Spring County ,12.36,AR,Arkansas
-5111,Poinsett County ,36.23,AR,Arkansas
-5037,Cross County ,13.45,AR,Arkansas
-5061,Howard County ,12.8,AR,Arkansas
-5097,Montgomery County ,27.01,AR,Arkansas
-5099,Nevada County ,16.93,AR,Arkansas
-5067,Jackson County ,34.0,AR,Arkansas
-5135,Sharp County ,21.79,AR,Arkansas
-5055,Greene County ,11.85,AR,Arkansas
-5093,Mississippi County ,53.03,AR,Arkansas
-5031,Craighead County ,41.76,AR,Arkansas
-5103,Ouachita County ,13.63,AR,Arkansas
-5109,Pike County ,27.76,AR,Arkansas
-5063,Independence County ,7.67,AR,Arkansas
-5075,Lawrence County ,31.71,AR,Arkansas
-5021,Clay County ,14.23,AR,Arkansas
-5081,Little River County ,12.66,AR,Arkansas
-5147,Woodruff County ,6.44,AR,Arkansas
-29027,Callaway County ,5.73,MO,Missouri
-29069,Dunklin County ,26.76,MO,Missouri
-29133,Mississippi County ,6.23,MO,Missouri
-36067,Onondaga County ,34.22,NY,New York
-36023,Cortland County ,19.89,NY,New York
-36113,Warren County ,9.53,NY,New York
-36031,Essex County ,23.46,NY,New York
-36089,St. Lawrence County ,17.73,NY,New York
-36033,Franklin County ,30.44,NY,New York
-16047,Gooding County ,34.85,ID,Idaho
-16055,Kootenai County ,59.06,ID,Idaho
-16079,Shoshone County ,33.07,ID,Idaho
-16053,Jerome County ,43.9,ID,Idaho
-16017,Bonner County ,28.43,ID,Idaho
-16039,Elmore County ,9.73,ID,Idaho
-16063,Lincoln County ,26.85,ID,Idaho
-16067,Minidoka County ,39.5,ID,Idaho
-16009,Benewah County ,262.57,ID,Idaho
-16025,Camas County ,16.12,ID,Idaho
-50019,Orleans County ,28.67,VT,Vermont
-50017,Orange County ,10.37,VT,Vermont
-50005,Caledonia County ,37.09,VT,Vermont
-50015,Lamoille County ,17.53,VT,Vermont
-50023,Washington County ,26.87,VT,Vermont
-50009,Essex County ,57.53,VT,Vermont
+5059,Hot Spring County ,9.38,AR,Arkansas
+5111,Poinsett County ,30.29,AR,Arkansas
+5077,Lee County ,1.52,AR,Arkansas
+5037,Cross County ,10.09,AR,Arkansas
+5067,Jackson County ,24.88,AR,Arkansas
+5135,Sharp County ,22.63,AR,Arkansas
+5055,Greene County ,9.92,AR,Arkansas
+5093,Mississippi County ,61.04,AR,Arkansas
+5031,Craighead County ,42.17,AR,Arkansas
+5075,Lawrence County ,44.57,AR,Arkansas
+5021,Clay County ,11.38,AR,Arkansas
+51840,City of Winchester,0.0,VA,Virginia
+51580,City of Covington,0.0,VA,Virginia
+51790,City of Staunton,0.0,VA,Virginia
+51720,City of Norton,0.0,VA,Virginia
+51530,City of Buena Vista,0.0,VA,Virginia
+51660,City of Harrisonburg,0.0,VA,Virginia
+51735,City of Poquoson,0.0,VA,Virginia
+51775,City of Salem,0.0,VA,Virginia
+51685,City of Manassas Park,0.0,VA,Virginia
+51610,City of Falls Church,0.0,VA,Virginia
+51690,City of Martinsville,0.0,VA,Virginia
+51760,City of Richmond,0.0,VA,Virginia
+51770,City of Roanoke,0.0,VA,Virginia
+51820,City of Waynesboro,0.0,VA,Virginia
+51131,Northampton County ,0.0,VA,Virginia
+51680,City of Lynchburg,0.0,VA,Virginia
+51115,Mathews County ,0.0,VA,Virginia
+51670,City of Hopewell,0.0,VA,Virginia
+51750,City of Radford,0.0,VA,Virginia
+51595,City of Emporia,0.0,VA,Virginia
+51540,City of Charlottesville,0.0,VA,Virginia
+51830,City of Williamsburg,0.0,VA,Virginia
+51570,City of Colonial Heights,0.0,VA,Virginia
+51640,City of Galax,0.0,VA,Virginia
+51683,City of Manassas,0.0,VA,Virginia
+51678,City of Lexington,0.0,VA,Virginia
+8113,San Miguel County ,25.1,CO,Colorado
+8039,Elbert County ,14.76,CO,Colorado
+8025,Crowley County ,7.61,CO,Colorado
+8041,El Paso County ,17.94,CO,Colorado
+8119,Teller County ,8.89,CO,Colorado
+8087,Morgan County ,15.17,CO,Colorado
+8067,La Plata County ,12.44,CO,Colorado
+8051,Gunnison County ,19.87,CO,Colorado
+8033,Dolores County ,15.52,CO,Colorado
+8053,Hinsdale County ,0.0,CO,Colorado
+8065,Lake County ,9.42,CO,Colorado
+8093,Park County ,8.21,CO,Colorado
+8014,City and County of Broomfield,17.28,CO,Colorado
+8037,Eagle County ,15.77,CO,Colorado
+8027,Custer County ,18.47,CO,Colorado
+8091,Ouray County ,27.23,CO,Colorado
+8005,Arapahoe County ,15.28,CO,Colorado
+8071,Las Animas County ,12.09,CO,Colorado
+8055,Huerfano County ,17.36,CO,Colorado
+35025,Lea County ,2.04,NM,New Mexico
+35015,Eddy County ,2.74,NM,New Mexico
+36067,Onondaga County ,39.94,NY,New York
+36011,Cayuga County ,23.85,NY,New York
+36023,Cortland County ,25.23,NY,New York
+36113,Warren County ,11.08,NY,New York
+36031,Essex County ,17.03,NY,New York
+36089,St. Lawrence County ,13.3,NY,New York
+36035,Fulton County ,13.56,NY,New York
+36053,Madison County ,16.02,NY,New York
+36033,Franklin County ,28.18,NY,New York
+16047,Gooding County ,20.72,ID,Idaho
+16055,Kootenai County ,45.2,ID,Idaho
+16057,Latah County ,2.91,ID,Idaho
+16079,Shoshone County ,19.39,ID,Idaho
+16053,Jerome County ,14.02,ID,Idaho
+16063,Lincoln County ,18.79,ID,Idaho
+50019,Orleans County ,33.44,VT,Vermont
+50017,Orange County ,13.33,VT,Vermont
+50007,Chittenden County ,24.07,VT,Vermont
+50001,Addison County ,18.95,VT,Vermont
+50005,Caledonia County ,47.89,VT,Vermont
+50003,Bennington County ,7.16,VT,Vermont
+50015,Lamoille County ,18.66,VT,Vermont
+50023,Washington County ,31.27,VT,Vermont
+50009,Essex County ,78.24,VT,Vermont
+40015,Caddo County ,5.36,OK,Oklahoma
 40033,Cotton County ,24.09,OK,Oklahoma
+40057,Harmon County ,5.25,OK,Oklahoma
+40075,Kiowa County ,3.17,OK,Oklahoma
 40141,Tillman County ,20.91,OK,Oklahoma
-40007,Beaver County ,10.55,OK,Oklahoma
 40137,Stephens County ,6.17,OK,Oklahoma
 40051,Grady County ,5.74,OK,Oklahoma
 32009,Esmeralda County ,276.69,NV,Nevada
 32001,Churchill County ,53.55,NV,Nevada
 32021,Mineral County ,966.73,NV,Nevada
-22049,Jackson Parish ,6.28,LA,Louisiana
-22059,LaSalle Parish ,16.25,LA,Louisiana
-22127,Winn Parish ,6.9,LA,Louisiana
-37111,McDowell County ,25.02,NC,North Carolina
-37195,Wilson County ,10.01,NC,North Carolina
-37163,Sampson County ,6.29,NC,North Carolina
-37101,Johnston County ,9.64,NC,North Carolina
-37107,Lenoir County ,10.48,NC,North Carolina
-2185,North Slope Borough ,35.0,AK,Alaska
-2070,Dillingham Census Area ,123.47,AK,Alaska
-2050,Bethel Census Area ,51.47,AK,Alaska
-2188,Northwest Arctic Borough ,62.8,AK,Alaska
-2180,Nome Census Area ,126.66,AK,Alaska
-8065,Lake County ,7.53,CO,Colorado
-8037,Eagle County ,12.35,CO,Colorado
-53063,Spokane County ,11.82,WA,Washington
+17151,Pope County ,3.36,IL,Illinois
+17069,Hardin County ,3.56,IL,Illinois
+38079,Rolette County ,0.0,ND,North Dakota
+38041,Hettinger County ,0.0,ND,North Dakota
+38009,Bottineau County ,0.0,ND,North Dakota
+13259,Stewart County ,7.09,GA,Georgia
+13215,Muscogee County ,3.63,GA,Georgia
+37111,McDowell County ,18.37,NC,North Carolina
+37061,Duplin County ,5.32,NC,North Carolina
+37079,Greene County ,2.04,NC,North Carolina
+37163,Sampson County ,6.52,NC,North Carolina
+37101,Johnston County ,10.24,NC,North Carolina
+37107,Lenoir County ,10.23,NC,North Carolina
+2060,Bristol Bay Borough ,0.0,AK,Alaska
+2290,Yukon-Koyukuk Census Area ,21.11,AK,Alaska
+2185,North Slope Borough ,53.95,AK,Alaska
+2020,Municipality of Anchorage,23.3,AK,Alaska
+2070,Dillingham Census Area ,209.62,AK,Alaska
+2130,Ketchikan Gateway Borough ,34.15,AK,Alaska
+2170,Matanuska-Susitna Borough ,14.5,AK,Alaska
+2122,Kenai Peninsula Borough ,32.14,AK,Alaska
+2050,Bethel Census Area ,66.52,AK,Alaska
+2158,Kusilvak Census Area ,0.0,AK,Alaska
+2188,Northwest Arctic Borough ,118.22,AK,Alaska
+2180,Nome Census Area ,204.39,AK,Alaska
+2220,City and Borough of Sitka,50.68,AK,Alaska
+2164,Lake and Peninsula Borough ,0.0,AK,Alaska
+29155,Pemiscot County ,3.36,MO,Missouri
+29069,Dunklin County ,48.83,MO,Missouri
+29149,Oregon County ,1.34,MO,Missouri
+29133,Mississippi County ,27.02,MO,Missouri
+28131,Stone County ,0.0,MS,Mississippi
+28125,Sharkey County ,0.0,MS,Mississippi
+31175,Valley County ,6.76,NE,Nebraska
+47157,Shelby County ,2.36,TN,Tennessee
+47137,Pickett County ,0.0,TN,Tennessee
+47151,Scott County ,7.16,TN,Tennessee
+47013,Campbell County ,27.72,TN,Tennessee
+47161,Stewart County ,2.15,TN,Tennessee
+47019,Carter County ,4.05,TN,Tennessee
+25005,Bristol County ,14.8,MA,Massachusetts
+25027,Worcester County ,16.33,MA,Massachusetts
+25021,Norfolk County ,18.62,MA,Massachusetts
+25011,Franklin County ,23.76,MA,Massachusetts
+33009,Grafton County ,21.63,NH,New Hampshire
+33007,Coos County ,4.9,NH,New Hampshire
+55029,Door County ,2.6,WI,Wisconsin
+53075,Whitman County ,1.18,WA,Washington
+53063,Spokane County ,5.91,WA,Washington
+6051,Mono County ,5.04,CA,California
+6071,San Bernardino County ,5.39,CA,California
+1113,Russell County ,1.72,AL,Alabama
+15009,Maui County ,6.05,HI,Hawaii
+46065,Hughes County ,4.05,SD,South Dakota
