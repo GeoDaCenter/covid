@@ -537,7 +537,7 @@ function MapSection({
       pickable: true,
       stroked: false,
       filled: true,
-      wireframe: false,
+      wireframe: true,
       extruded: mapParams.vizType === "3D",
       opacity: mapParams.vizType === "dotDensity"
         ? mapParams.dotDensityParams.backgroundTransparency

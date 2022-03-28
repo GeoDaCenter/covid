@@ -1,60 +1,42 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import colors from '../../config/colors';
 
 const PreloaderContainer = styled.div`
   position: fixed;
-  width: 100%;
-  height: 100%;
-  z-index: 500;
-  top: 0;
-  left: 0;
-  background: ${colors.gray};
-  transition: 500ms opacity;
-  img {
-    width: 100px;
-    height: 86px;
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-  }
-  @keyframes fade {
-    0% {
-      fill-opacity: 1;
-    }
-    50% {
-      fill-opacity: 0.25;
-    }
-    100% {
-      fill-opacity: 1;
-    }
-  }
-  &.fadeOut {
-    opacity: 0;
-    pointer-events: none;
-  }
+  top:${({quiet}) => quiet ? '92%' : '50%'};
+  left:50%;
+  transform:translate(-50%,-50%);
+  min-width:100px;
+  min-height:50px;
+  background:${({quiet}) => quiet ? 'none' : colors.darkgray};
+  z-index:500;
+  color:white;
+  padding:1em;
+  font-size:${({quiet}) => quiet ? '.75rem' : '1rem'};
+  text-align:center;
+  pointer-events:none;
+  font-family:'Lato', sans-serif;
 `;
 
-const Preloader = (props) => {
-  const [isHidden, setIsHidden] = useState(false);
-
-  if (props.loaded) {
-    setTimeout(() => {
-      setIsHidden(true);
-    }, 500);
-  }
-
+const Preloader = ({
+  loading=false,
+  position="centered",
+  message="Loading",
+  quiet=false,
+}) => {
   return (
     <PreloaderContainer
-      className={props.loaded ? 'fadeOut' : ''}
-      style={{ display: isHidden ? 'none' : 'initial' }}
+      style={{ display: !loading ? 'none' : 'initial' }}
       id="preloaderContainer"
+      position={position}
+      quiet={quiet}
     >
       <img
-        src={`${process.env.PUBLIC_URL}/assets/img/animated_cluster.svg`}
+        src={`${process.env.PUBLIC_URL}/icons/loading.svg`}
         alt="Preloader"
       />
+      <p>{message}</p>
     </PreloaderContainer>
   );
 };

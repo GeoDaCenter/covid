@@ -5,14 +5,17 @@ import { incrementDate } from '../actions';
 export default function useTickUpdate({
   currDatesAvailable
 }) {
+  const isTicking = useSelector(({data}) => data.isTicking)
+  const dispatch = useDispatch();
+  const setIsTicking = (bool) => dispatch({type: 'SET_TICKING', payload: bool})
+
   const nIndex = useSelector(({params}) => params.dataParams.nIndex);
   const mapType = useSelector(({params}) => params.mapParams.mapType);
-  const [isTicking, setIsTicking] = useState(false);
+  // const [isTicking, setIsTicking] = useState(false);
   const [tickTimer, setTickTimer] = useState(100);
   const [tickTimeout, setTickTimeout] = useState();
   const [resetTimeout, setResetTimeout] = useState();
 
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (isTicking) dispatch(incrementDate(1, currDatesAvailable));

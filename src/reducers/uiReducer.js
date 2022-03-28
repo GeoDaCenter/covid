@@ -23,7 +23,6 @@ export default function Reducer(state = INITIAL_STATE, action) {
         tooltipInfo,
       };
     }
-
     case "SET_START_PLAYING": {
       let dateObj = {
         ...state.dataParams,

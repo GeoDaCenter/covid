@@ -19,7 +19,7 @@ import {
   VariablePanel,
   Legend,
   TopPanel,
-  // Preloader,
+  Preloader,
   DataPanel,
   LineChart,
   Scaleable,
@@ -250,12 +250,17 @@ const MapContainerInner = () => {
     currentBins,
     currentHeightScale,
     isLoading,
+    ,
+    ,
+    isBackgroundLoading
   ] = useMapData({
     dataParams,
     mapParams,
     currentData,
   });
+  
   return <>    
+    <Preloader loading={isLoading || isBackgroundLoading} quiet={isBackgroundLoading} message={isBackgroundLoading ? 'Additional data loading' : 'Loading'}/>
     <MapSection
       currentMapGeography={currentMapGeography}
       currentMapData={currentMapData}

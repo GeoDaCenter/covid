@@ -83,6 +83,7 @@ export function useLisaMap({
   dataForLisa = [],
   shouldUseLisa = false,
   varId,
+  dataReady
 }) {
   const { geoda, geodaReady } = useGeoda();
   const dispatch = useDispatch();
@@ -96,7 +97,8 @@ export function useLisaMap({
       shouldUseLisa &&
       geodaReady &&
       dataForLisa.length &&
-      storedGeojson[currentData]
+      storedGeojson[currentData] &&
+      dataReady
     ) {
       getLisa(storedGeojson[currentData], geoda, dataForLisa).then(
         ({ lisaValues, shouldCacheWeights, weights }) => {
@@ -118,7 +120,7 @@ export function useLisaMap({
     } else {
       return null;
     }
-  }, [geodaReady, currentData, shouldUseLisa, varId]);
+  }, [geodaReady, currentData, shouldUseLisa, varId, dataReady]);
   return [
     data.lisaData,
     data.lisaVarId    
@@ -279,8 +281,8 @@ export default function useMapData({
     denominatorData,
     dateIndices,
     dataReady,
-    currIndex
-    // dataSnapshot
+    currIndex,
+    isBackgroundLoading
   } = useLoadData({
     dataParams,
     currentData
@@ -366,6 +368,7 @@ export default function useMapData({
     mapId: geojsonData?.mapId,
     shouldUseLisa: dataReady && mapParams.mapType === "lisa",
     varId,
+    dataReady
   });
 
   const cartogramData = useCartogramMap({
@@ -373,7 +376,6 @@ export default function useMapData({
     dataForCartogram: mapData,
     shouldUseCartogram: dataReady && mapParams.mapType === "cartogram",
   });
-  
   const [colorAndValueData, heightScale] = useMemo(() => {
     const data = generateJoinData({
       binData: mapData,
@@ -406,6 +408,7 @@ export default function useMapData({
     sanitizedHeightScale, // height scale
     !(dataReady && (bins?.breaks||lisaData) && Object.keys(colorAndValueData).length),
     geojsonData,
-    currIndex
+    currIndex,
+    isBackgroundLoading
   ];
 }

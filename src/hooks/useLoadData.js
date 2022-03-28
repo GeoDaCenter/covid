@@ -124,8 +124,10 @@ export default function useLoadData({
       payload: !!numeratorDataReady && !!denominatorDataReady && !!geojsonDataReady
     })
   }, [numeratorDataReady, denominatorDataReady, geojsonDataReady]);
-
-  useBackgroundLoadData({
+  
+  const {
+    isBackgroundLoading
+  } = useBackgroundLoadData({
     currentGeography: currDataset.geography,
     tables,
     shouldFetch: canLoadInBackground,
@@ -145,6 +147,7 @@ export default function useLoadData({
     denominatorData,
     dateIndices,
     dataReady: !!numeratorDataReady && !!denominatorDataReady && !!geojsonDataReady,
-    currIndex
+    currIndex,
+    isBackgroundLoading
   };
 }

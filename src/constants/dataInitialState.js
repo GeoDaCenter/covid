@@ -7,6 +7,7 @@ const INITIAL_STATE = {
     hospitals: [],
     vaccineSites: [],
   },
+  isTicking: false
 };
 
 export default INITIAL_STATE

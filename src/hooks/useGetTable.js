@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetcher } from "../utils";
+// import { fetcher } from "../utils";
 import _FetcherWorker from 'comlink-loader!../utils/fetcher';// eslint-disable-line import/no-webpack-loader-syntax
 const FetcherWorker = new _FetcherWorker();
 
@@ -15,7 +15,7 @@ export default function useGetTable({
       return data.storedData[fileSchema.name]
     })
   );
-
+  
   useEffect(() => {
     
     if (shouldFetch) {
@@ -65,7 +65,7 @@ export default function useGetTable({
       dataReady,
       error,
     };
-  }, [JSON.stringify(accessedData[0]?.loaded)]);
+  }, [JSON.stringify(accessedData[0]?.loaded), JSON.stringify(filesToFetch)]);
   
   return [returnData, dataReady, error];
 }

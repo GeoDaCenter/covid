@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import {
   findAllDefaults,
   // fetcher
@@ -7,11 +7,6 @@ import {
 // import { createSelector } from 'reselect'
 import _FetcherWorker from 'comlink-loader!../utils/fetcher';// eslint-disable-line import/no-webpack-loader-syntax
 const FetcherWorker = new _FetcherWorker();
-
-// const selectNumCompletedTodos = createSelector(
-//   ({ data }) => data.storedData,
-//   (tables) => Object.keys(tables)
-// )
 
 export default function useBackgroundLoadData({
   currentGeography = '',
@@ -23,12 +18,10 @@ export default function useBackgroundLoadData({
   denominatorParams = {},
   adjacentMonths = [],
 }) {
-  // const tableKeys = useSelector(selectNumCompletedTodos)
   const dispatch = useDispatch();
-  const storedData = useSelector(({ data }) => data.storedData);
+  const [isBackgroundLoading, setIsBackgroundLoading] = useState(false)
 
   useEffect(() => {
-
     const adjacentMainToFetch = adjacentMonths.map(timespan => [
       { ...numeratorParams[0], timespan },
       { ...denominatorParams[0], timespan },
@@ -39,57 +32,24 @@ export default function useBackgroundLoadData({
         .map(dataspec => ({ ...dataspec, timespan }))).flat()
 
     const filesToFetch = [...adjacentMainToFetch, ...tablesToFetch]
-      .filter(filesToFetch => !(storedData[filesToFetch.name] && (storedData[filesToFetch.name].loaded?.includes(filesToFetch.timespan) || filesToFetch.date === null)))
       .flat().filter(f => !f.noFile && f.timespan !== false && f.timespan !== undefined);
 
     if (shouldFetch && filesToFetch.length) {
-      let t0 = performance.now()
-      const getData = async () => FetcherWorker.fetchAndReconcile(filesToFetch, dateLists, storedData)
-      getData().then(newData => {
-        console.log(t0 - performance.now())
+      const getData = async () => FetcherWorker.fetcher(filesToFetch, dateLists)
+      setIsBackgroundLoading(true)
+      getData().then(data => {
         dispatch({
-          type:"SET_DATA",
+          type:"RECONCILE_TABLES",
           payload: {
-            storedData: newData
+            data
           }
         })
-        console.log(t0 - performance.now())
+        setIsBackgroundLoading(false)
       })
-      // getData().then(dataArray => {
-      //   if (dataArray.length) {
-      //     const mappedData = dataArray.map((response, idx) => {
-      //       const newData = response.value;
-      //       if (!(storedData[filesToFetch[idx]?.name] && storedData[filesToFetch[idx]?.name][filesToFetch[idx]?.loaded?.includes(filesToFetch[idx]?.timespan)])) {
-      //         if (newData && newData.data) {
-      //           return {
-      //             name: filesToFetch[idx].name,
-      //             newData,
-      //             timespan: filesToFetch[idx].timespan
-      //           }
-      //         } else if (response.status === 'rejected') {
-      //           return {
-      //             name: filesToFetch[idx].name,
-      //             newData: {},
-      //             error: true,
-      //             timespan: filesToFetch[idx].timespan
-      //           }
-      //         }
-      //       }
-      //       return {
-      //         name: null,
-      //         newData: {},
-      //         error: true,
-      //         timespan: null
-      //       }
-      //     })
-      //     dispatch({
-      //       type: 'RECONCILE_TABLES',
-      //       payload: {
-      //         data: mappedData
-      //       }
-      //     })
-      //   }
-      // })
     }
   }, [shouldFetch]);
+
+  return {
+    isBackgroundLoading
+  }
 };

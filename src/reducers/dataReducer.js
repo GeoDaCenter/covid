@@ -78,13 +78,10 @@ export default function reducer(state = INITIAL_STATE, action) {
       };
     }
     case "RECONCILE_TABLES": {
-      // expected shape: // type: 'RECILE_TABLES', payload: { data: { dataset1: {data,dates,columns}}}
-      let t0 = performance.now();
       let storedData = {
         ...state.storedData,
       };
       action.payload.data.forEach(dataset => reconcileData(dataset, storedData))      
-      console.log('DATALOADED IN' , performance.now() - t0, 'ms');
       return {
         ...state,
         storedData,
@@ -129,10 +126,16 @@ export default function reducer(state = INITIAL_STATE, action) {
           [action.payload.id]: action.payload.data,
         },
       };
+    case "SET_TICKING": {
+      return {
+        ...state,
+        isTicking: action.payload
+      }
+    }
     case "SET_CAN_LOAD_IN_BACKGROUND":
       return {
         ...state,
-        canLoadInBackground: action.payload,
+        canLoadInBackground: action.payload && !state.isTicking,
       }
     default:
       return state;
