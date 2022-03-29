@@ -300,6 +300,12 @@ const press = {
     ],
     '2022': [
         {
+            'name': 'Futuricity:',
+            'link': 'https://www.futurity.org/demographics-covid-19-mortality-rates-place-2718012/',
+            'text': "How does where people live affect COVID-19 mortality rates?",
+            'date': '(March 29, 2022)'
+        },
+        {
             'name': 'Atlantico (France):',
             'link': 'https://atlantico.fr/article/decryptage/le-surprenant-lien-entre-acces-a-internet-et-mortalite-covid',
             'text': "Le surprenant lien entre accès à internet et mortalité Covid / The surprising link between internet access and Covid mortality",
