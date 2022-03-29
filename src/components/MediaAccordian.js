@@ -300,7 +300,7 @@ const press = {
     ],
     '2022': [
         {
-            'name': 'Futuricity:',
+            'name': 'Futurity:',
             'link': 'https://www.futurity.org/demographics-covid-19-mortality-rates-place-2718012/',
             'text': "How does where people live affect COVID-19 mortality rates?",
             'date': '(March 29, 2022)'
