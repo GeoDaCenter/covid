@@ -83,25 +83,24 @@ export const fetcher = async (filesToFetch = [], dateLists) =>
     
     }
 
-export const fetchAndReconcile = async (filesToFetch=[], dateLists, storedData) => {
+export const fetchAndClean = async (filesToFetch=[], dateLists) => {
   const dataArray = await fetcher(filesToFetch, dateLists);
   if (dataArray.length) {
+
     const mappedData = dataArray.map((response, idx) => {
       const newData = response.value;
-      if (!(storedData[filesToFetch[idx]?.name] && storedData[filesToFetch[idx]?.name][filesToFetch[idx]?.loaded?.includes(filesToFetch[idx]?.timespan)])) {
-        if (newData && newData.data) {
-          return {
-            name: filesToFetch[idx].name,
-            newData,
-            timespan: filesToFetch[idx].timespan
-          }
-        } else if (response.status === 'rejected') {
-          return {
-            name: filesToFetch[idx].name,
-            newData: {},
-            error: true,
-            timespan: filesToFetch[idx].timespan
-          }
+      if (newData && newData.data) {
+        return {
+          name: filesToFetch[idx].name,
+          newData,
+          timespan: filesToFetch[idx].timespan
+        }
+      } else if (response.status === 'rejected') {
+        return {
+          name: filesToFetch[idx].name,
+          newData: {},
+          error: true,
+          timespan: filesToFetch[idx].timespan
         }
       }
       return {
@@ -111,10 +110,7 @@ export const fetchAndReconcile = async (filesToFetch=[], dateLists, storedData) 
         timespan: null
       }
     })
-    let tempStoredData = {
-      ...storedData,
-    };
-    mappedData.forEach(dataset => reconcileData(dataset, tempStoredData))     
-    return tempStoredData
+    
+    return mappedData
   }
 }

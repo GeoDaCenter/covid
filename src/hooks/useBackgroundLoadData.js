@@ -35,9 +35,10 @@ export default function useBackgroundLoadData({
       .flat().filter(f => !f.noFile && f.timespan !== false && f.timespan !== undefined);
 
     if (shouldFetch && filesToFetch.length) {
-      const getData = async () => FetcherWorker.fetcher(filesToFetch, dateLists)
+      const getData = async () => FetcherWorker.fetchAndClean(filesToFetch, dateLists)
       setIsBackgroundLoading(true)
       getData().then(data => {
+        console.log(data)
         dispatch({
           type:"RECONCILE_TABLES",
           payload: {

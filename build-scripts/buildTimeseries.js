@@ -98,7 +98,9 @@ const splitPbfs = (fileList) => {
       monthData.setDatesList(dates.slice(range[0], range[1]));
       monthData.setRowList(rowData);
       const binaryData = monthData.serializeBinary();
-      fs.writeFileSync(path.join(__dirname, `../public/pbf/${fileName}.${month}.pbf`), binaryData);
+      const pathName = path.join(__dirname, `../public/pbf/${fileName}.${month}.pbf`);
+      console.log(`Exporting ${pathName}`)
+      fs.writeFileSync(pathName, binaryData);
     }
   });
 }
