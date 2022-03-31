@@ -66,12 +66,6 @@ const cabMembers = [
         "bio":'Daryl M. McGraw is a Senior Manager of Racial Justice & Equity at C4 Innovations and the founder and president of Formerly Inc. His skills include policy development, contract management, and project coordination, and he collaborates with grassroots peer-advocacy agencies and the Connecticut Department of Corrections. Daryl is the former Program Director for the Yale University Department of Psychiatry. In this role, he served as the Director of the Office of Recovery Community Affairs for Connecticut’s Department of Mental Health and Addiction Services. He holds state certifications as an addictions counselor, recovery support specialist, and criminal justice professional. He has a bachelor’s degree in human services and a master’s degree in organizational management and leadership, both from  Springfield College.'
     },
     {
-        "name": "Jamelle Watson", 
-        "img": "cab/jwatson.jpg", 
-        "title": "Director of Research, Data for Black Lives",
-        "bio":'As Director of Research at Data for Black Lives, Jamelle Watson-Daniels is building a research strategy and agenda to uplift Black organizers/activists and establish a just standard for rigorous research development. She is crafting a vision for the role of Data for Black Lives in the fields of machine learning, algorithmic fairness/accountability/recourse, artificial intelligence, etc. Jamelle is a scientist, researcher and visionary from a small town outside of St. Louis, MO. With her interdisciplinary research experiences, Jamelle focuses on empowering and centering those most marginalized in the mission to use data as protest, accountability and collective action. Her personal research interests involve utilizing techniques from optimization, network modeling, data science, algorithmic fairness and more.  From initial conception to algorithmic deployment, Jamelle believes agency and power must be shifted from the hands of a few tech giants to the masses of people fighting for liberation.'
-    },
-    {
         'name': <>Joseph M. <i>(Sïraata)</i> Yracheta</>,
         'img':'cab/jyracheta.jpg',
         'title':'Executive Director,  Native Biodata Consortium',
@@ -82,6 +76,12 @@ const cabMembers = [
         'img': 'cab/azhang.jpg',
         'title': 'Communications Manager & Quantitative Committee Co-Lead, AAPI COVID-19 Project',
         'bio': 'Amy Zhang, MA, is a PhD student in Sociology at the University of Texas at Austin who serves as the Communications Manager and Quantitative Committee Co-Lead for the AAPI COVID-19 Project (ACP), a mixed-methods research collaborative investigating how the COVID-19 pandemic impacts the lives of Asians, Asian Americans, Native Hawaiians, and Pacific Islanders in the United States. ACP researchers aim to uncover multiple layers of harm — not just the virus itself and its subsequent impacts on economic security, but also the correlated intensification of racism and xenophobia impacting A/AAs and NHPIs. Amy is broadly interested in social relationships and health, particularly at the intersections of gender, race, and immigrant status.'
+    },
+    {
+        "name": "Chelsea Cross", 
+        "img": "", 
+        "title": "Chief of Staff, Data for Black Lives",
+        "bio":'Coming soon'
     }
 ]
 
