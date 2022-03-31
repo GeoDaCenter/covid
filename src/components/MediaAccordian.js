@@ -300,6 +300,12 @@ const press = {
     ],
     '2022': [
         {
+            'name': 'Politico:',
+            'link': 'hhttps://www.politico.com/newsletters/future-pulse/2022/03/30/amazons-telehealth-gold-rush-00021222',
+            'text': "Amazon's telehealth gold rush",
+            'date': '(March 30, 2022)'
+        },
+        {
             'name': 'Futurity:',
             'link': 'https://www.futurity.org/demographics-covid-19-mortality-rates-place-2718012/',
             'text': "How does where people live affect COVID-19 mortality rates?",
