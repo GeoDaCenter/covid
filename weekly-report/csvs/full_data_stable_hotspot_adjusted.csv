@@ -1,60 +1,84 @@
 GEOID,NAME,average,state_abbr,state_name
-48049,Brown County ,69.67,TX,Texas
-48305,Lynn County ,82.4,TX,Texas
-48317,Martin County ,12.72,TX,Texas
+48049,Brown County ,56.26,TX,Texas
+48305,Lynn County ,68.87,TX,Texas
+48317,Martin County ,17.81,TX,Texas
 48107,Crosby County ,12.19,TX,Texas
-48389,Reeves County ,9.92,TX,Texas
+48155,Foard County ,10.15,TX,Texas
+48389,Reeves County ,10.39,TX,Texas
+48433,Stonewall County ,15.47,TX,Texas
 48079,Cochran County ,14.76,TX,Texas
 48011,Armstrong County ,29.82,TX,Texas
 48165,Gaines County ,47.1,TX,Texas
-48153,Floyd County ,8.51,TX,Texas
-48501,Yoakum County ,117.51,TX,Texas
-48219,Hockley County ,16.96,TX,Texas
-48413,Schleicher County ,7.0,TX,Texas
+48263,Kent County ,57.22,TX,Texas
+48153,Floyd County ,7.3,TX,Texas
+48501,Yoakum County ,118.34,TX,Texas
+48169,Garza County ,6.82,TX,Texas
+48345,Motley County ,12.36,TX,Texas
+48125,Dickens County ,12.89,TX,Texas
+48219,Hockley County ,17.58,TX,Texas
+48371,Pecos County ,6.78,TX,Texas
 48059,Callahan County ,25.42,TX,Texas
 48069,Castro County ,11.01,TX,Texas
 48235,Irion County ,9.37,TX,Texas
 48045,Briscoe County ,32.34,TX,Texas
-48033,Borden County ,10.74,TX,Texas
-48445,Terry County ,73.04,TX,Texas
-51065,Fluvanna County ,16.03,VA,Virginia
+48445,Terry County ,93.99,TX,Texas
+51065,Fluvanna County ,20.93,VA,Virginia
 51183,Sussex County ,8.08,VA,Virginia
-51075,Goochland County ,20.65,VA,Virginia
-51037,Charlotte County ,28.35,VA,Virginia
-51109,Louisa County ,26.45,VA,Virginia
-51007,Amelia County ,10.0,VA,Virginia
-51135,Nottoway County ,34.56,VA,Virginia
-51031,Campbell County ,43.5,VA,Virginia
-51036,Charles City County ,9.19,VA,Virginia
-51610,City of Falls Church,26.91,VA,Virginia
+51075,Goochland County ,21.6,VA,Virginia
+51037,Charlotte County ,31.89,VA,Virginia
+51109,Louisa County ,28.47,VA,Virginia
+51007,Amelia County ,9.45,VA,Virginia
+51135,Nottoway County ,36.41,VA,Virginia
+51031,Campbell County ,48.03,VA,Virginia
+51036,Charles City County ,7.15,VA,Virginia
+51610,City of Falls Church,27.93,VA,Virginia
 51690,City of Martinsville,59.43,VA,Virginia
-51089,Henry County ,47.21,VA,Virginia
-51029,Buckingham County ,21.42,VA,Virginia
-51019,Bedford County ,21.18,VA,Virginia
+51089,Henry County ,49.29,VA,Virginia
+51029,Buckingham County ,24.36,VA,Virginia
+51019,Bedford County ,19.16,VA,Virginia
 51049,Cumberland County ,25.55,VA,Virginia
-51087,Henrico County ,12.33,VA,Virginia
-51143,Pittsylvania County ,19.11,VA,Virginia
-51053,Dinwiddie County ,10.85,VA,Virginia
+51087,Henrico County ,13.51,VA,Virginia
+51143,Pittsylvania County ,22.47,VA,Virginia
 51083,Halifax County ,6.98,VA,Virginia
-51111,Lunenburg County ,18.62,VA,Virginia
-51067,Franklin County ,8.76,VA,Virginia
-51011,Appomattox County ,22.01,VA,Virginia
-51145,Powhatan County ,35.5,VA,Virginia
-51147,Prince Edward County ,52.27,VA,Virginia
-51041,Chesterfield County ,19.99,VA,Virginia
-1109,Pike County ,8.34,AL,Alabama
-1045,Dale County ,57.72,AL,Alabama
-1031,Coffee County ,31.06,AL,Alabama
-1061,Geneva County ,65.52,AL,Alabama
+51111,Lunenburg County ,19.78,VA,Virginia
+51067,Franklin County ,9.27,VA,Virginia
+51011,Appomattox County ,24.3,VA,Virginia
+51145,Powhatan County ,36.5,VA,Virginia
+51147,Prince Edward County ,53.52,VA,Virginia
+51041,Chesterfield County ,20.81,VA,Virginia
+1109,Pike County ,8.55,AL,Alabama
+1045,Dale County ,58.01,AL,Alabama
+1031,Coffee County ,31.2,AL,Alabama
+1061,Geneva County ,65.79,AL,Alabama
 1005,Barbour County ,50.15,AL,Alabama
-1069,Houston County ,45.38,AL,Alabama
+1069,Houston County ,45.11,AL,Alabama
 1067,Henry County ,50.47,AL,Alabama
+8047,Gilpin County ,10.85,CO,Colorado
+8113,San Miguel County ,13.45,CO,Colorado
+8013,Boulder County ,21.34,CO,Colorado
+8039,Elbert County ,8.52,CO,Colorado
+8025,Crowley County ,172.55,CO,Colorado
+8041,El Paso County ,19.53,CO,Colorado
+8101,Pueblo County ,23.46,CO,Colorado
+8043,Fremont County ,15.5,CO,Colorado
+8119,Teller County ,10.37,CO,Colorado
+8087,Morgan County ,14.16,CO,Colorado
+8067,La Plata County ,11.15,CO,Colorado
+8051,Gunnison County ,6.91,CO,Colorado
+8033,Dolores County ,11.64,CO,Colorado
+8061,Kiowa County ,14.79,CO,Colorado
+8089,Otero County ,8.97,CO,Colorado
+8093,Park County ,13.55,CO,Colorado
+8014,City and County of Broomfield,16.64,CO,Colorado
+8037,Eagle County ,11.83,CO,Colorado
+8123,Weld County ,20.89,CO,Colorado
+8073,Lincoln County ,60.51,CO,Colorado
+8005,Arapahoe County ,14.74,CO,Colorado
 36099,Seneca County ,22.49,NY,New York
 36097,Schuyler County ,23.82,NY,New York
 36015,Chemung County ,13.58,NY,New York
 36067,Onondaga County ,48.85,NY,New York
 36077,Otsego County ,18.85,NY,New York
-36007,Broome County ,16.31,NY,New York
 36017,Chenango County ,11.08,NY,New York
 36109,Tompkins County ,56.68,NY,New York
 36011,Cayuga County ,37.79,NY,New York
@@ -82,6 +106,7 @@ GEOID,NAME,average,state_abbr,state_name
 21161,Mason County ,44.97,KY,Kentucky
 21205,Rowan County ,28.57,KY,Kentucky
 21145,McCracken County ,32.5,KY,Kentucky
+21129,Lee County ,16.93,KY,Kentucky
 21191,Pendleton County ,19.68,KY,Kentucky
 21117,Kenton County ,14.36,KY,Kentucky
 21147,McCreary County ,84.65,KY,Kentucky
@@ -120,35 +145,27 @@ GEOID,NAME,average,state_abbr,state_name
 21043,Carter County ,8.9,KY,Kentucky
 21193,Perry County ,45.11,KY,Kentucky
 21231,Wayne County ,126.51,KY,Kentucky
-16055,Kootenai County ,6.93,ID,Idaho
-8039,Elbert County ,7.1,CO,Colorado
-8025,Crowley County ,175.08,CO,Colorado
-8041,El Paso County ,15.53,CO,Colorado
-8101,Pueblo County ,19.04,CO,Colorado
-8061,Kiowa County ,14.79,CO,Colorado
-8089,Otero County ,9.35,CO,Colorado
-8123,Weld County ,16.05,CO,Colorado
-8073,Lincoln County ,63.09,CO,Colorado
-8005,Arapahoe County ,12.14,CO,Colorado
-40033,Cotton County ,19.28,OK,Oklahoma
-40141,Tillman County ,12.36,OK,Oklahoma
-13259,Stewart County ,61.47,GA,Georgia
+13259,Stewart County ,67.39,GA,Georgia
 13099,Early County ,8.28,GA,Georgia
 13061,Clay County ,23.8,GA,Georgia
 13239,Quitman County ,34.52,GA,Georgia
+13053,Chattahoochee County ,274.65,GA,Georgia
 2290,Yukon-Koyukuk Census Area ,7.91,AK,Alaska
-2185,North Slope Borough ,35.73,AK,Alaska
-2050,Bethel Census Area ,29.3,AK,Alaska
-2188,Northwest Arctic Borough ,99.75,AK,Alaska
-2180,Nome Census Area ,94.28,AK,Alaska
-25005,Bristol County ,8.77,MA,Massachusetts
-50007,Chittenden County ,23.36,VT,Vermont
-50001,Addison County ,22.82,VT,Vermont
-50011,Franklin County ,19.09,VT,Vermont
-50015,Lamoille County ,9.05,VT,Vermont
-37101,Johnston County ,6.8,NC,North Carolina
-37107,Lenoir County ,8.86,NC,North Carolina
+2185,North Slope Borough ,45.2,AK,Alaska
+2170,Matanuska-Susitna Borough ,13.81,AK,Alaska
+2050,Bethel Census Area ,36.43,AK,Alaska
+2188,Northwest Arctic Borough ,126.53,AK,Alaska
+2180,Nome Census Area ,99.32,AK,Alaska
+22059,LaSalle Parish ,6.69,LA,Louisiana
+50013,Grand Isle County ,21.54,VT,Vermont
+50007,Chittenden County ,26.93,VT,Vermont
+50001,Addison County ,22.43,VT,Vermont
+50005,Caledonia County ,17.61,VT,Vermont
+50011,Franklin County ,22.0,VT,Vermont
+50015,Lamoille County ,10.46,VT,Vermont
+23027,Waldo County ,10.33,ME,Maine
+37101,Johnston County ,6.61,NC,North Carolina
+37107,Lenoir County ,6.99,NC,North Carolina
 47013,Campbell County ,15.3,TN,Tennessee
-53063,Spokane County ,12.09,WA,Washington
-29133,Mississippi County ,46.24,MO,Missouri
-44005,Newport County ,15.22,RI,Rhode Island
+29133,Mississippi County ,45.72,MO,Missouri
+17003,Alexander County ,7.65,IL,Illinois
