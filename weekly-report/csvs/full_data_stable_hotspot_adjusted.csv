@@ -1,23 +1,22 @@
 GEOID,NAME,average,state_abbr,state_name
-48049,Brown County ,55.51,TX,Texas
-48305,Lynn County ,24.6,TX,Texas
-48115,Dawson County ,40.22,TX,Texas
-48317,Martin County ,16.54,TX,Texas
+48049,Brown County ,57.77,TX,Texas
+48305,Lynn County ,19.68,TX,Texas
+48115,Dawson County ,41.87,TX,Texas
+48317,Martin County ,15.27,TX,Texas
 48433,Stonewall County ,10.31,TX,Texas
-48079,Cochran County ,17.22,TX,Texas
+48079,Cochran County ,14.76,TX,Texas
 48011,Armstrong County ,29.82,TX,Texas
-48165,Gaines County ,37.61,TX,Texas
-48263,Kent County ,9.54,TX,Texas
-48501,Yoakum County ,118.34,TX,Texas
-48125,Dickens County ,9.67,TX,Texas
-48219,Hockley County ,16.65,TX,Texas
-48059,Callahan County ,14.52,TX,Texas
-48069,Castro County ,10.09,TX,Texas
+48165,Gaines County ,31.64,TX,Texas
+48501,Yoakum County ,87.5,TX,Texas
+48075,Childress County ,8.9,TX,Texas
+48219,Hockley County ,15.73,TX,Texas
+48191,Hall County ,11.62,TX,Texas
+48059,Callahan County ,12.45,TX,Texas
+48069,Castro County ,9.17,TX,Texas
 48045,Briscoe County ,32.34,TX,Texas
-48101,Cottle County ,8.8,TX,Texas
-48445,Terry County ,130.23,TX,Texas
+48101,Cottle County ,88.02,TX,Texas
+48445,Terry County ,151.18,TX,Texas
 51065,Fluvanna County ,32.34,VA,Virginia
-51183,Sussex County ,6.84,VA,Virginia
 51075,Goochland County ,24.78,VA,Virginia
 51037,Charlotte County ,32.48,VA,Virginia
 51109,Louisa County ,28.47,VA,Virginia
@@ -42,30 +41,50 @@ GEOID,NAME,average,state_abbr,state_name
 51083,Halifax County ,7.6,VA,Virginia
 51111,Lunenburg County ,20.36,VA,Virginia
 51067,Franklin County ,9.4,VA,Virginia
-51085,Hanover County ,12.1,VA,Virginia
 51011,Appomattox County ,24.3,VA,Virginia
 51145,Powhatan County ,37.0,VA,Virginia
 51147,Prince Edward County ,54.76,VA,Virginia
 51041,Chesterfield County ,20.87,VA,Virginia
 1109,Pike County ,8.13,AL,Alabama
-1045,Dale County ,52.5,AL,Alabama
-1031,Coffee County ,30.78,AL,Alabama
+1045,Dale County ,52.35,AL,Alabama
+1031,Coffee County ,30.92,AL,Alabama
 1061,Geneva County ,46.92,AL,Alabama
 1005,Barbour County ,49.87,AL,Alabama
-1069,Houston County ,44.83,AL,Alabama
+1069,Houston County ,44.9,AL,Alabama
 1067,Henry County ,50.06,AL,Alabama
-36099,Seneca County ,17.13,NY,New York
-36067,Onondaga County ,34.56,NY,New York
-36017,Chenango County ,7.98,NY,New York
-36109,Tompkins County ,35.45,NY,New York
-36011,Cayuga County ,26.23,NY,New York
-36023,Cortland County ,20.48,NY,New York
-36075,Oswego County ,38.08,NY,New York
-36065,Oneida County ,16.4,NY,New York
-36107,Tioga County ,11.51,NY,New York
-36053,Madison County ,21.42,NY,New York
-36019,Clinton County ,11.4,NY,New York
-36045,Jefferson County ,8.36,NY,New York
+36099,Seneca County ,26.62,NY,New York
+36097,Schuyler County ,31.76,NY,New York
+36015,Chemung County ,15.75,NY,New York
+36067,Onondaga County ,49.88,NY,New York
+36077,Otsego County ,18.85,NY,New York
+36007,Broome County ,24.14,NY,New York
+36017,Chenango County ,13.44,NY,New York
+36109,Tompkins County ,49.95,NY,New York
+36039,Greene County ,12.0,NY,New York
+36011,Cayuga County ,41.28,NY,New York
+36115,Washington County ,11.55,NY,New York
+36123,Yates County ,12.85,NY,New York
+36023,Cortland County ,33.84,NY,New York
+36079,Putnam County ,18.31,NY,New York
+36069,Ontario County ,19.9,NY,New York
+36087,Rockland County ,16.53,NY,New York
+36031,Essex County ,23.27,NY,New York
+36075,Oswego County ,60.51,NY,New York
+36065,Oneida County ,28.75,NY,New York
+36071,Orange County ,15.9,NY,New York
+36119,Westchester County ,20.53,NY,New York
+36043,Herkimer County ,20.8,NY,New York
+36107,Tioga County ,21.55,NY,New York
+36057,Montgomery County ,17.49,NY,New York
+36117,Wayne County ,19.81,NY,New York
+36053,Madison County ,36.84,NY,New York
+36049,Lewis County ,9.89,NY,New York
+36019,Clinton County ,20.51,NY,New York
+36033,Franklin County ,19.3,NY,New York
+36045,Jefferson County ,14.35,NY,New York
+36047,Kings County ,17.57,NY,New York
+36081,Queens County ,12.93,NY,New York
+36005,Bronx County ,8.36,NY,New York
 21069,Fleming County ,62.65,KY,Kentucky
 21067,Fayette County ,7.69,KY,Kentucky
 21049,Clark County ,40.02,KY,Kentucky
@@ -75,10 +94,8 @@ GEOID,NAME,average,state_abbr,state_name
 21237,Wolfe County ,30.66,KY,Kentucky
 21161,Mason County ,44.97,KY,Kentucky
 21205,Rowan County ,28.57,KY,Kentucky
-21145,McCracken County ,32.5,KY,Kentucky
 21129,Lee County ,16.93,KY,Kentucky
 21191,Pendleton County ,19.68,KY,Kentucky
-21117,Kenton County ,14.36,KY,Kentucky
 21147,McCreary County ,84.65,KY,Kentucky
 21001,Adair County ,36.38,KY,Kentucky
 21045,Casey County ,22.16,KY,Kentucky
@@ -88,18 +105,14 @@ GEOID,NAME,average,state_abbr,state_name
 21199,Pulaski County ,75.28,KY,Kentucky
 21201,Robertson County ,13.33,KY,Kentucky
 21125,Laurel County ,70.62,KY,Kentucky
-21133,Letcher County ,21.73,KY,Kentucky
 21135,Lewis County ,8.47,KY,Kentucky
 21165,Menifee County ,52.41,KY,Kentucky
-21239,Woodford County ,6.84,KY,Kentucky
 21155,Marion County ,8.17,KY,Kentucky
 21057,Cumberland County ,48.95,KY,Kentucky
 21105,Hickman County ,40.66,KY,Kentucky
 21073,Franklin County ,32.66,KY,Kentucky
-21109,Jackson County ,7.48,KY,Kentucky
 21053,Clinton County ,100.73,KY,Kentucky
 21173,Montgomery County ,113.48,KY,Kentucky
-21209,Scott County ,79.95,KY,Kentucky
 21023,Bracken County ,47.3,KY,Kentucky
 21007,Ballard County ,40.61,KY,Kentucky
 21235,Whitley County ,18.41,KY,Kentucky
@@ -116,58 +129,66 @@ GEOID,NAME,average,state_abbr,state_name
 21043,Carter County ,8.9,KY,Kentucky
 21193,Perry County ,45.11,KY,Kentucky
 21231,Wayne County ,126.51,KY,Kentucky
-56033,Sheridan County ,21.9,WY,Wyoming
-56031,Platte County ,36.24,WY,Wyoming
+56033,Sheridan County ,18.8,WY,Wyoming
+56031,Platte County ,37.88,WY,Wyoming
 56009,Converse County ,29.6,WY,Wyoming
-56001,Albany County ,13.87,WY,Wyoming
-56025,Natrona County ,28.0,WY,Wyoming
-56017,Hot Springs County ,22.89,WY,Wyoming
-56005,Campbell County ,24.1,WY,Wyoming
-56029,Park County ,37.77,WY,Wyoming
-56045,Weston County ,24.14,WY,Wyoming
+56001,Albany County ,14.25,WY,Wyoming
+56025,Natrona County ,28.27,WY,Wyoming
+56017,Hot Springs County ,24.42,WY,Wyoming
+56005,Campbell County ,24.25,WY,Wyoming
+56029,Park County ,38.26,WY,Wyoming
 56019,Johnson County ,15.94,WY,Wyoming
-56013,Fremont County ,37.96,WY,Wyoming
-56021,Laramie County ,25.59,WY,Wyoming
+56013,Fremont County ,38.85,WY,Wyoming
+56021,Laramie County ,26.18,WY,Wyoming
 56003,Big Horn County ,37.81,WY,Wyoming
-56039,Teton County ,15.8,WY,Wyoming
-56027,Niobrara County ,26.26,WY,Wyoming
-56035,Sublette County ,20.82,WY,Wyoming
-56007,Carbon County ,25.38,WY,Wyoming
-56043,Washakie County ,43.93,WY,Wyoming
-8039,Elbert County ,8.8,CO,Colorado
-8025,Crowley County ,175.08,CO,Colorado
-8041,El Paso County ,16.8,CO,Colorado
-8101,Pueblo County ,21.25,CO,Colorado
-8061,Kiowa County ,9.86,CO,Colorado
-8089,Otero County ,7.8,CO,Colorado
-8123,Weld County ,18.66,CO,Colorado
+56039,Teton County ,18.28,WY,Wyoming
+56027,Niobrara County ,23.34,WY,Wyoming
+56035,Sublette County ,20.1,WY,Wyoming
+56007,Carbon County ,26.77,WY,Wyoming
+56043,Washakie County ,47.45,WY,Wyoming
+8113,San Miguel County ,9.86,CO,Colorado
+8039,Elbert County ,7.38,CO,Colorado
+8025,Crowley County ,104.03,CO,Colorado
+8041,El Paso County ,15.57,CO,Colorado
+8101,Pueblo County ,23.16,CO,Colorado
+8067,La Plata County ,11.41,CO,Colorado
+8061,Kiowa County ,14.79,CO,Colorado
 8121,Washington County ,7.38,CO,Colorado
-8073,Lincoln County ,63.09,CO,Colorado
-8005,Arapahoe County ,12.63,CO,Colorado
+8073,Lincoln County ,66.95,CO,Colorado
+8005,Arapahoe County ,12.24,CO,Colorado
 13259,Stewart County ,72.11,GA,Georgia
-13099,Early County ,8.97,GA,Georgia
+13099,Early County ,8.28,GA,Georgia
 13061,Clay County ,23.8,GA,Georgia
 13239,Quitman County ,34.52,GA,Georgia
 13053,Chattahoochee County ,230.2,GA,Georgia
-44001,Bristol County ,22.93,RI,Rhode Island
 44003,Kent County ,20.71,RI,Rhode Island
 44005,Newport County ,20.21,RI,Rhode Island
-2185,North Slope Borough ,40.1,AK,Alaska
-2170,Matanuska-Susitna Borough ,12.77,AK,Alaska
-2050,Bethel Census Area ,34.05,AK,Alaska
-2188,Northwest Arctic Borough ,120.06,AK,Alaska
-2180,Nome Census Area ,83.48,AK,Alaska
+34013,Essex County ,15.96,NJ,New Jersey
+34035,Somerset County ,16.2,NJ,New Jersey
+34039,Union County ,14.19,NJ,New Jersey
+34003,Bergen County ,22.35,NJ,New Jersey
+2185,North Slope Borough ,30.62,AK,Alaska
+2050,Bethel Census Area ,26.53,AK,Alaska
+2188,Northwest Arctic Borough ,97.9,AK,Alaska
+2180,Nome Census Area ,62.61,AK,Alaska
 22059,LaSalle Parish ,10.99,LA,Louisiana
-50013,Grand Isle County ,19.49,VT,Vermont
-50007,Chittenden County ,28.78,VT,Vermont
-50001,Addison County ,24.17,VT,Vermont
-50011,Franklin County ,23.31,VT,Vermont
-50015,Lamoille County ,10.74,VT,Vermont
-34039,Union County ,12.61,NJ,New Jersey
-23027,Waldo County ,9.6,ME,Maine
-25005,Bristol County ,8.73,MA,Massachusetts
-25021,Norfolk County ,16.58,MA,Massachusetts
-9011,New London County ,12.25,CT,Connecticut
-37101,Johnston County ,8.63,NC,North Carolina
+50013,Grand Isle County ,21.54,VT,Vermont
+50025,Windham County ,10.1,VT,Vermont
+50007,Chittenden County ,33.54,VT,Vermont
+50001,Addison County ,27.27,VT,Vermont
+50005,Caledonia County ,15.49,VT,Vermont
+50011,Franklin County ,25.5,VT,Vermont
+50003,Bennington County ,13.52,VT,Vermont
+50015,Lamoille County ,12.72,VT,Vermont
+25005,Bristol County ,9.47,MA,Massachusetts
+25027,Worcester County ,12.7,MA,Massachusetts
+25021,Norfolk County ,18.45,MA,Massachusetts
+25011,Franklin County ,18.43,MA,Massachusetts
+25025,Suffolk County ,26.6,MA,Massachusetts
+9011,New London County ,14.72,CT,Connecticut
+33019,Sullivan County ,10.77,NH,New Hampshire
+33001,Belknap County ,10.95,NH,New Hampshire
+33013,Merrimack County ,11.42,NH,New Hampshire
+33003,Carroll County ,17.32,NH,New Hampshire
 29133,Mississippi County ,22.34,MO,Missouri
 47027,Clay County ,58.55,TN,Tennessee
