@@ -1,152 +1,157 @@
 GEOID,NAME,average,state_abbr,state_name
-17093,Kendall County ,17.14,IL,Illinois
-17043,DuPage County ,190.14,IL,Illinois
-17031,Cook County ,918.79,IL,Illinois
-17089,Kane County ,70.86,IL,Illinois
-17197,Will County ,94.5,IL,Illinois
-17097,Lake County ,125.29,IL,Illinois
-17111,McHenry County ,40.21,IL,Illinois
+17093,Kendall County ,19.29,IL,Illinois
+17043,DuPage County ,206.43,IL,Illinois
+17031,Cook County ,999.21,IL,Illinois
+17089,Kane County ,79.0,IL,Illinois
+17197,Will County ,103.93,IL,Illinois
+17097,Lake County ,140.14,IL,Illinois
+17111,McHenry County ,44.64,IL,Illinois
 12103,Pinellas County ,51.36,FL,Florida
 12011,Broward County ,189.64,FL,Florida
-12105,Polk County ,33.43,FL,Florida
 12021,Collier County ,26.36,FL,Florida
-12099,Palm Beach County ,139.14,FL,Florida
-12069,Lake County ,25.07,FL,Florida
 12086,Miami-Dade County ,394.86,FL,Florida
 12009,Brevard County ,37.64,FL,Florida
 12117,Seminole County ,28.43,FL,Florida
-12101,Pasco County ,27.71,FL,Florida
-36067,Onondaga County ,260.93,NY,New York
-36093,Schenectady County ,40.21,NY,New York
-36011,Cayuga County ,34.5,NY,New York
-36037,Genesee County ,10.86,NY,New York
-36023,Cortland County ,20.71,NY,New York
-36079,Putnam County ,26.79,NY,New York
-36103,Suffolk County ,340.0,NY,New York
-36061,New York County ,799.86,NY,New York
-36069,Ontario County ,37.71,NY,New York
-36087,Rockland County ,79.0,NY,New York
-36051,Livingston County ,13.21,NY,New York
-36075,Oswego County ,81.86,NY,New York
-36059,Nassau County ,453.57,NY,New York
-36071,Orange County ,90.79,NY,New York
-36119,Westchester County ,308.29,NY,New York
-36043,Herkimer County ,27.14,NY,New York
-36027,Dutchess County ,53.5,NY,New York
-36021,Columbia County ,10.64,NY,New York
-36063,Niagara County ,50.43,NY,New York
-36117,Wayne County ,26.64,NY,New York
-36053,Madison County ,33.5,NY,New York
-36009,Cattaraugus County ,10.29,NY,New York
-36047,Kings County ,643.64,NY,New York
-36081,Queens County ,477.64,NY,New York
-36005,Bronx County ,179.21,NY,New York
-36085,Richmond County ,123.29,NY,New York
-8013,Boulder County ,80.86,CO,Colorado
-8059,Jefferson County ,126.93,CO,Colorado
-8035,Douglas County ,57.57,CO,Colorado
-8031,City and County of Denver,146.14,CO,Colorado
-8014,City and County of Broomfield,12.57,CO,Colorado
-8001,Adams County ,87.86,CO,Colorado
-8005,Arapahoe County ,109.79,CO,Colorado
-48091,Comal County ,19.36,TX,Texas
-48039,Brazoria County ,13.71,TX,Texas
-48061,Cameron County ,81.14,TX,Texas
-48167,Galveston County ,23.36,TX,Texas
-48339,Montgomery County ,55.93,TX,Texas
-48113,Dallas County ,72.07,TX,Texas
-48201,Harris County ,322.79,TX,Texas
-48121,Denton County ,27.5,TX,Texas
-48157,Fort Bend County ,135.29,TX,Texas
-51013,Arlington County ,84.71,VA,Virginia
-51153,Prince William County ,51.07,VA,Virginia
-51107,Loudoun County ,54.71,VA,Virginia
-51059,Fairfax County ,177.0,VA,Virginia
-51510,City of Alexandria,43.14,VA,Virginia
-27003,Anoka County ,25.86,MN,Minnesota
-27123,Ramsey County ,65.14,MN,Minnesota
-27019,Carver County ,11.07,MN,Minnesota
-27139,Scott County ,11.43,MN,Minnesota
-27037,Dakota County ,45.57,MN,Minnesota
-34021,Mercer County ,78.5,NJ,New Jersey
-34007,Camden County ,77.57,NJ,New Jersey
-34013,Essex County ,183.21,NJ,New Jersey
-34035,Somerset County ,79.79,NJ,New Jersey
-34001,Atlantic County ,30.71,NJ,New Jersey
-34039,Union County ,108.5,NJ,New Jersey
-34031,Passaic County ,89.21,NJ,New Jersey
-34005,Burlington County ,81.5,NJ,New Jersey
-34041,Warren County ,15.43,NJ,New Jersey
-34027,Morris County ,125.86,NJ,New Jersey
-34003,Bergen County ,288.0,NJ,New Jersey
-34015,Gloucester County ,31.64,NJ,New Jersey
-34025,Monmouth County ,163.5,NJ,New Jersey
-34019,Hunterdon County ,24.71,NJ,New Jersey
-34017,Hudson County ,143.07,NJ,New Jersey
-34037,Sussex County ,28.57,NJ,New Jersey
-34029,Ocean County ,109.43,NJ,New Jersey
-34023,Middlesex County ,201.43,NJ,New Jersey
-55089,Ozaukee County ,13.57,WI,Wisconsin
-55101,Racine County ,19.0,WI,Wisconsin
-55059,Kenosha County ,21.14,WI,Wisconsin
-26125,Oakland County ,108.57,MI,Michigan
-26099,Macomb County ,69.07,MI,Michigan
-26163,Wayne County ,118.07,MI,Michigan
-26161,Washtenaw County ,66.86,MI,Michigan
-25017,Middlesex County ,492.79,MA,Massachusetts
-25015,Hampshire County ,54.64,MA,Massachusetts
-25009,Essex County ,156.5,MA,Massachusetts
-25005,Bristol County ,77.43,MA,Massachusetts
-25023,Plymouth County ,74.57,MA,Massachusetts
-25027,Worcester County ,150.64,MA,Massachusetts
-25021,Norfolk County ,171.5,MA,Massachusetts
-25011,Franklin County ,16.36,MA,Massachusetts
-25013,Hampden County ,90.21,MA,Massachusetts
-25025,Suffolk County ,281.43,MA,Massachusetts
-25003,Berkshire County ,38.86,MA,Massachusetts
-33015,Rockingham County ,79.07,NH,New Hampshire
-33011,Hillsborough County ,93.14,NH,New Hampshire
-33013,Merrimack County ,27.43,NH,New Hampshire
-33005,Cheshire County ,23.36,NH,New Hampshire
-9001,Fairfield County ,232.93,CT,Connecticut
-9013,Tolland County ,24.5,CT,Connecticut
-9005,Litchfield County ,29.57,CT,Connecticut
-9011,New London County ,61.43,CT,Connecticut
-9015,Windham County ,14.0,CT,Connecticut
-9003,Hartford County ,155.21,CT,Connecticut
-9009,New Haven County ,167.0,CT,Connecticut
-9007,Middlesex County ,28.29,CT,Connecticut
-6029,Kern County ,23.43,CA,California
-6111,Ventura County ,23.57,CA,California
-6001,Alameda County ,91.29,CA,California
-6037,Los Angeles County ,553.64,CA,California
-6013,Contra Costa County ,43.14,CA,California
-6075,City and County of San Francisco,73.71,CA,California
-6081,San Mateo County ,82.0,CA,California
-6073,San Diego County ,137.71,CA,California
-6041,Marin County ,13.64,CA,California
-6065,Riverside County ,38.36,CA,California
-6087,Santa Cruz County ,22.29,CA,California
-6059,Orange County ,95.86,CA,California
-6071,San Bernardino County ,133.36,CA,California
-24027,Howard County ,35.29,MD,Maryland
-24033,Prince George's County ,87.29,MD,Maryland
-24003,Anne Arundel County ,49.64,MD,Maryland
-24021,Frederick County ,20.14,MD,Maryland
-24031,Montgomery County ,163.86,MD,Maryland
-24510,Baltimore City ,67.43,MD,Maryland
-24017,Charles County ,19.07,MD,Maryland
-42045,Delaware County ,56.57,PA,Pennsylvania
-42091,Montgomery County ,96.07,PA,Pennsylvania
-42029,Chester County ,59.14,PA,Pennsylvania
-42011,Berks County ,21.57,PA,Pennsylvania
-42017,Bucks County ,52.43,PA,Pennsylvania
-42077,Lehigh County ,31.57,PA,Pennsylvania
-42101,Philadelphia County ,212.5,PA,Pennsylvania
-53061,Snohomish County ,104.0,WA,Washington
-53035,Kitsap County ,22.79,WA,Washington
-53053,Pierce County ,78.93,WA,Washington
-53033,King County ,520.57,WA,Washington
-53029,Island County ,9.79,WA,Washington
-23031,York County ,28.43,ME,Maine
-44007,Providence County ,79.0,RI,Rhode Island
+26049,Genesee County ,30.79,MI,Michigan
+26125,Oakland County ,255.0,MI,Michigan
+26147,St. Clair County ,18.86,MI,Michigan
+26115,Monroe County ,12.86,MI,Michigan
+26093,Livingston County ,24.5,MI,Michigan
+26099,Macomb County ,160.43,MI,Michigan
+26163,Wayne County ,277.86,MI,Michigan
+26161,Washtenaw County ,148.71,MI,Michigan
+4019,Pima County ,68.29,AZ,Arizona
+4021,Pinal County ,65.29,AZ,Arizona
+4007,Gila County ,39.36,AZ,Arizona
+36067,Onondaga County ,280.93,NY,New York
+36093,Schenectady County ,43.71,NY,New York
+36011,Cayuga County ,37.0,NY,New York
+36037,Genesee County ,12.5,NY,New York
+36023,Cortland County ,22.36,NY,New York
+36079,Putnam County ,28.5,NY,New York
+36103,Suffolk County ,369.5,NY,New York
+36061,New York County ,874.5,NY,New York
+36069,Ontario County ,42.57,NY,New York
+36087,Rockland County ,83.36,NY,New York
+36051,Livingston County ,14.29,NY,New York
+36075,Oswego County ,89.21,NY,New York
+36059,Nassau County ,490.29,NY,New York
+36071,Orange County ,98.5,NY,New York
+36119,Westchester County ,331.21,NY,New York
+36027,Dutchess County ,58.07,NY,New York
+36021,Columbia County ,11.86,NY,New York
+36063,Niagara County ,55.64,NY,New York
+36117,Wayne County ,30.71,NY,New York
+36053,Madison County ,36.36,NY,New York
+36009,Cattaraugus County ,12.07,NY,New York
+36047,Kings County ,716.71,NY,New York
+36081,Queens County ,534.71,NY,New York
+36005,Bronx County ,209.21,NY,New York
+36085,Richmond County ,138.43,NY,New York
+8013,Boulder County ,80.0,CO,Colorado
+8059,Jefferson County ,108.36,CO,Colorado
+8035,Douglas County ,56.64,CO,Colorado
+8031,City and County of Denver,143.64,CO,Colorado
+8014,City and County of Broomfield,12.07,CO,Colorado
+8001,Adams County ,90.57,CO,Colorado
+8005,Arapahoe County ,111.14,CO,Colorado
+51013,Arlington County ,96.93,VA,Virginia
+51153,Prince William County ,53.43,VA,Virginia
+51760,City of Richmond,48.29,VA,Virginia
+51107,Loudoun County ,59.64,VA,Virginia
+51059,Fairfax County ,193.5,VA,Virginia
+51510,City of Alexandria,48.21,VA,Virginia
+27003,Anoka County ,27.14,MN,Minnesota
+27123,Ramsey County ,67.0,MN,Minnesota
+27019,Carver County ,10.71,MN,Minnesota
+27139,Scott County ,12.29,MN,Minnesota
+27037,Dakota County ,48.71,MN,Minnesota
+34021,Mercer County ,70.64,NJ,New Jersey
+34007,Camden County ,74.5,NJ,New Jersey
+34013,Essex County ,172.36,NJ,New Jersey
+34035,Somerset County ,75.5,NJ,New Jersey
+34001,Atlantic County ,30.36,NJ,New Jersey
+34039,Union County ,104.36,NJ,New Jersey
+34031,Passaic County ,79.79,NJ,New Jersey
+34005,Burlington County ,77.93,NJ,New Jersey
+34041,Warren County ,14.21,NJ,New Jersey
+34027,Morris County ,122.07,NJ,New Jersey
+34003,Bergen County ,266.14,NJ,New Jersey
+34015,Gloucester County ,31.14,NJ,New Jersey
+34025,Monmouth County ,158.79,NJ,New Jersey
+34019,Hunterdon County ,21.93,NJ,New Jersey
+34017,Hudson County ,126.79,NJ,New Jersey
+34037,Sussex County ,27.43,NJ,New Jersey
+34029,Ocean County ,100.57,NJ,New Jersey
+34023,Middlesex County ,183.29,NJ,New Jersey
+55089,Ozaukee County ,14.43,WI,Wisconsin
+55101,Racine County ,20.57,WI,Wisconsin
+55059,Kenosha County ,18.86,WI,Wisconsin
+44001,Bristol County ,19.43,RI,Rhode Island
+44003,Kent County ,55.93,RI,Rhode Island
+44005,Newport County ,28.71,RI,Rhode Island
+44007,Providence County ,176.21,RI,Rhode Island
+48039,Brazoria County ,14.57,TX,Texas
+48061,Cameron County ,77.5,TX,Texas
+48167,Galveston County ,24.14,TX,Texas
+48339,Montgomery County ,58.0,TX,Texas
+48113,Dallas County ,69.71,TX,Texas
+48201,Harris County ,319.71,TX,Texas
+48121,Denton County ,26.71,TX,Texas
+48157,Fort Bend County ,142.43,TX,Texas
+25017,Middlesex County ,497.21,MA,Massachusetts
+25015,Hampshire County ,54.86,MA,Massachusetts
+25009,Essex County ,157.79,MA,Massachusetts
+25005,Bristol County ,75.64,MA,Massachusetts
+25023,Plymouth County ,75.86,MA,Massachusetts
+25027,Worcester County ,151.14,MA,Massachusetts
+25021,Norfolk County ,170.29,MA,Massachusetts
+25011,Franklin County ,16.64,MA,Massachusetts
+25013,Hampden County ,97.36,MA,Massachusetts
+25025,Suffolk County ,274.43,MA,Massachusetts
+25003,Berkshire County ,42.36,MA,Massachusetts
+33015,Rockingham County ,83.21,NH,New Hampshire
+33011,Hillsborough County ,98.86,NH,New Hampshire
+33013,Merrimack County ,28.93,NH,New Hampshire
+33005,Cheshire County ,24.43,NH,New Hampshire
+9001,Fairfield County ,231.21,CT,Connecticut
+9013,Tolland County ,24.93,CT,Connecticut
+9005,Litchfield County ,32.0,CT,Connecticut
+9011,New London County ,60.43,CT,Connecticut
+9015,Windham County ,13.86,CT,Connecticut
+9003,Hartford County ,162.29,CT,Connecticut
+9009,New Haven County ,171.64,CT,Connecticut
+9007,Middlesex County ,27.86,CT,Connecticut
+6029,Kern County ,26.86,CA,California
+6111,Ventura County ,40.0,CA,California
+6001,Alameda County ,149.29,CA,California
+6037,Los Angeles County ,854.36,CA,California
+6013,Contra Costa County ,63.57,CA,California
+6075,City and County of San Francisco,116.43,CA,California
+6081,San Mateo County ,126.14,CA,California
+6073,San Diego County ,204.07,CA,California
+6041,Marin County ,24.07,CA,California
+6065,Riverside County ,68.57,CA,California
+6087,Santa Cruz County ,26.71,CA,California
+6085,Santa Clara County ,170.57,CA,California
+6059,Orange County ,153.93,CA,California
+6071,San Bernardino County ,202.07,CA,California
+24027,Howard County ,36.93,MD,Maryland
+24033,Prince George's County ,89.93,MD,Maryland
+24003,Anne Arundel County ,50.79,MD,Maryland
+24021,Frederick County ,20.5,MD,Maryland
+24031,Montgomery County ,166.57,MD,Maryland
+24510,Baltimore City ,67.5,MD,Maryland
+24017,Charles County ,18.86,MD,Maryland
+42045,Delaware County ,59.0,PA,Pennsylvania
+42091,Montgomery County ,95.79,PA,Pennsylvania
+42029,Chester County ,60.93,PA,Pennsylvania
+42017,Bucks County ,53.79,PA,Pennsylvania
+42077,Lehigh County ,31.93,PA,Pennsylvania
+42101,Philadelphia County ,192.14,PA,Pennsylvania
+53061,Snohomish County ,120.79,WA,Washington
+53035,Kitsap County ,28.79,WA,Washington
+53053,Pierce County ,88.71,WA,Washington
+53033,King County ,567.79,WA,Washington
+53029,Island County ,11.93,WA,Washington
+23031,York County ,33.14,ME,Maine
