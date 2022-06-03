@@ -42,6 +42,12 @@ const cabMembers = [
         "bio":"Germán A. Cadenas PhD is an assistant professor in the Counseling Psychology Program at Lehigh's College of Education. Cadenas focuses his research on the psychology of undocumented immigrants and underrepresented minorities, particularly their critical consciousness development and its links to higher education outcomes, work and career development, and psychological wellbeing.  Professor Cadenas has conducted several research studies related to DACA students and higher education."
     },
     {
+        "name": "Chelsea Cross", 
+        "img": "cab/ccross.jpg", 
+        "title": "Chief of Staff, Data for Black Lives",
+        "bio":'Chelsea Cross is the Chief of Staff at Data for Black Lives (D4BL). Ever since she was a child, she knew she wanted to impact the world directly. After studying public health at Brown University, Chelsea went on to serve the indigenous population of Hawai’i as a teacher while earning a master’s degree in education from Johns Hopkins University. Witnessing in her classroom, day after day, the social determinants of health affect her students’ academic performance, Chelsea went back into the medical field and became one of the youngest managers of the largest hospital network in Hawai’i–Kapiolani Medical Center–before moving to Wisconsin frustrated with the policies in both the medical and education sectors. Motivated, Chelsea shifted her focus to politics, where her background would propel and enable her to continue to make a change in this world. As a Black woman and a Jew, she is no stranger to navigating spaces with conflicting identities. Chelsea managed multiple statewide political campaigns before joining D4BL. Her current passion lies in the conundrum that is establishing transparent messaging and providing robust data in America, 2022, that creates a seat at the table for everyone. The fight to ensure everyone’s needs in Maslow’s Hierarchy are met is the type of challenge that Chelsea relishes. She brings passion, a desire to learn, and enthusiasm to this world.'
+    },
+    {
         "name": 'Laurie Francis',
         "img": "cab/lfrancis.jpg",
         "title": "Chief Executive Officer, Partnership Health Center",
@@ -76,12 +82,6 @@ const cabMembers = [
         'img': 'cab/azhang.jpg',
         'title': 'Communications Manager & Quantitative Committee Co-Lead, AAPI COVID-19 Project',
         'bio': 'Amy Zhang, MA, is a PhD student in Sociology at the University of Texas at Austin who serves as the Communications Manager and Quantitative Committee Co-Lead for the AAPI COVID-19 Project (ACP), a mixed-methods research collaborative investigating how the COVID-19 pandemic impacts the lives of Asians, Asian Americans, Native Hawaiians, and Pacific Islanders in the United States. ACP researchers aim to uncover multiple layers of harm — not just the virus itself and its subsequent impacts on economic security, but also the correlated intensification of racism and xenophobia impacting A/AAs and NHPIs. Amy is broadly interested in social relationships and health, particularly at the intersections of gender, race, and immigrant status.'
-    },
-    {
-        "name": "Chelsea Cross", 
-        "img": "", 
-        "title": "Chief of Staff, Data for Black Lives",
-        "bio":'Coming soon'
     }
 ]
 
