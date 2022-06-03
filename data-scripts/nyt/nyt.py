@@ -4,9 +4,9 @@ import pandas as pd
 dir_path = os.path.dirname(os.path.realpath(__file__))
 repo_root = os.path.abspath(os.path.join(dir_path, '..', '..'))
 
-def parseNYT(url):
+def parseNYT(urls: list):
     # read in CORS compatible CSV
-    NYTData = pd.read_csv(url)
+    NYTData = pd.concat([pd.read_csv(url) for url in urls])
     # filter for features missing FIPS at the county level
     if 'county' in NYTData.columns:
         NYTData.loc[NYTData.county == 'New York City', 'fips'] = 36061
@@ -42,8 +42,12 @@ def parseNYT(url):
 
 if __name__ == '__main__':
     # return CSV ready DataFrames for State and County Data
-    stateData = parseNYT("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv")
-    countyData = parseNYT("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv")
+    stateData = parseNYT(["https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv"])
+    countyData = parseNYT([
+        "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties-2020.csv",
+        "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties-2021.csv",
+        "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties-2022.csv"
+    ])
 
     # export CSVs to local folder and public
     # countyData['cases'].to_csv('./covid_confirmed_nyt.csv', index=False)
