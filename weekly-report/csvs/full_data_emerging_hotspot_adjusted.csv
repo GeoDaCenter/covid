@@ -1,20 +1,4 @@
 GEOID,NAME,average,state_abbr,state_name
-35028,Los Alamos County ,127.63,NM,New Mexico
-35043,Sandoval County ,61.5,NM,New Mexico
-35061,Valencia County ,43.63,NM,New Mexico
-35051,Sierra County ,43.62,NM,New Mexico
-35055,Taos County ,60.38,NM,New Mexico
-35033,Mora County ,21.92,NM,New Mexico
-35031,McKinley County ,82.36,NM,New Mexico
-35039,Rio Arriba County ,67.24,NM,New Mexico
-35045,San Juan County ,42.26,NM,New Mexico
-35003,Catron County ,20.18,NM,New Mexico
-35001,Bernalillo County ,51.14,NM,New Mexico
-35023,Hidalgo County ,26.15,NM,New Mexico
-35049,Santa Fe County ,59.19,NM,New Mexico
-35057,Torrance County ,22.9,NM,New Mexico
-35029,Luna County ,36.5,NM,New Mexico
-35006,Cibola County ,69.9,NM,New Mexico
 12123,Taylor County ,45.25,FL,Florida
 12061,Indian River County ,82.51,FL,Florida
 12073,Leon County ,112.91,FL,Florida
@@ -25,6 +9,7 @@ GEOID,NAME,average,state_abbr,state_name
 12093,Okeechobee County ,45.07,FL,Florida
 12035,Flagler County ,76.14,FL,Florida
 12053,Hernando County ,81.32,FL,Florida
+12091,Okaloosa County ,68.39,FL,Florida
 12121,Suwannee County ,38.7,FL,Florida
 12027,DeSoto County ,62.4,FL,Florida
 12007,Bradford County ,44.48,FL,Florida
@@ -54,6 +39,7 @@ GEOID,NAME,average,state_abbr,state_name
 12075,Levy County ,57.91,FL,Florida
 12081,Manatee County ,89.34,FL,Florida
 12063,Jackson County ,51.58,FL,Florida
+12089,Nassau County ,93.79,FL,Florida
 12011,Broward County ,122.17,FL,Florida
 12105,Polk County ,109.04,FL,Florida
 12021,Collier County ,61.12,FL,Florida
@@ -75,126 +61,94 @@ GEOID,NAME,average,state_abbr,state_name
 12013,Calhoun County ,41.54,FL,Florida
 12015,Charlotte County ,74.76,FL,Florida
 12101,Pasco County ,91.74,FL,Florida
+12079,Madison County ,64.18,FL,Florida
 12115,Sarasota County ,98.82,FL,Florida
 12023,Columbia County ,47.13,FL,Florida
 12031,Duval County ,86.76,FL,Florida
-21069,Fleming County ,26.64,KY,Kentucky
-21067,Fayette County ,50.96,KY,Kentucky
-21087,Green County ,44.06,KY,Kentucky
-21217,Taylor County ,47.06,KY,Kentucky
-21063,Elliott County ,93.12,KY,Kentucky
-21237,Wolfe County ,81.09,KY,Kentucky
-21205,Rowan County ,53.06,KY,Kentucky
-21191,Pendleton County ,23.61,KY,Kentucky
-21117,Kenton County ,61.33,KY,Kentucky
-21169,Metcalfe County ,28.56,KY,Kentucky
-21079,Garrard County ,25.56,KY,Kentucky
-21229,Washington County ,46.36,KY,Kentucky
-21001,Adair County ,54.94,KY,Kentucky
-21089,Greenup County ,43.14,KY,Kentucky
-21045,Casey County ,30.75,KY,Kentucky
-21153,Magoffin County ,69.93,KY,Kentucky
-21039,Carlisle County ,67.87,KY,Kentucky
-21137,Lincoln County ,193.33,KY,Kentucky
-21199,Pulaski County ,28.51,KY,Kentucky
-21201,Robertson County ,40.0,KY,Kentucky
-21127,Lawrence County ,52.5,KY,Kentucky
-21133,Letcher County ,39.69,KY,Kentucky
-21135,Lewis County ,41.3,KY,Kentucky
-21139,Livingston County ,32.39,KY,Kentucky
-21017,Bourbon County ,45.39,KY,Kentucky
-21083,Graves County ,61.29,KY,Kentucky
-21009,Barren County ,29.11,KY,Kentucky
-21159,Martin County ,28.77,KY,Kentucky
-21165,Menifee County ,37.92,KY,Kentucky
-21239,Woodford County ,39.41,KY,Kentucky
-21203,Rockcastle County ,24.62,KY,Kentucky
-21155,Marion County ,31.2,KY,Kentucky
-21057,Cumberland County ,36.18,KY,Kentucky
-21167,Mercer County ,30.54,KY,Kentucky
-21209,Scott County ,66.2,KY,Kentucky
-21007,Ballard County ,86.53,KY,Kentucky
-21097,Harrison County ,104.84,KY,Kentucky
-21119,Knott County ,46.04,KY,Kentucky
-21175,Morgan County ,74.2,KY,Kentucky
-21011,Bath County ,34.93,KY,Kentucky
-21081,Grant County ,98.62,KY,Kentucky
-21025,Breathitt County ,74.06,KY,Kentucky
-21207,Russell County ,65.15,KY,Kentucky
-21021,Boyle County ,163.33,KY,Kentucky
-21181,Nicholas County ,64.39,KY,Kentucky
-21115,Johnson County ,91.31,KY,Kentucky
-21043,Carter County ,62.82,KY,Kentucky
-21193,Perry County ,91.82,KY,Kentucky
-56033,Sheridan County ,153.75,WY,Wyoming
-56031,Platte County ,41.18,WY,Wyoming
-56009,Converse County ,34.7,WY,Wyoming
-56001,Albany County ,65.24,WY,Wyoming
-56025,Natrona County ,27.82,WY,Wyoming
-56041,Uinta County ,35.35,WY,Wyoming
-56017,Hot Springs County ,82.42,WY,Wyoming
-56005,Campbell County ,37.13,WY,Wyoming
-56029,Park County ,26.49,WY,Wyoming
-56019,Johnson County ,77.17,WY,Wyoming
-56013,Fremont County ,72.72,WY,Wyoming
-56021,Laramie County ,47.09,WY,Wyoming
-56003,Big Horn County ,45.61,WY,Wyoming
-56039,Teton County ,93.55,WY,Wyoming
-56027,Niobrara County ,23.34,WY,Wyoming
-56037,Sweetwater County ,68.32,WY,Wyoming
-56035,Sublette County ,40.2,WY,Wyoming
-56007,Carbon County ,46.15,WY,Wyoming
-56043,Washakie County ,175.74,WY,Wyoming
+21069,Fleming County ,34.53,KY,Kentucky
+21049,Clark County ,36.24,KY,Kentucky
+21055,Crittenden County ,25.16,KY,Kentucky
+21161,Mason County ,50.8,KY,Kentucky
+21205,Rowan County ,44.9,KY,Kentucky
+21191,Pendleton County ,33.45,KY,Kentucky
+21197,Powell County ,34.78,KY,Kentucky
+21211,Shelby County ,25.04,KY,Kentucky
+21153,Magoffin County ,18.05,KY,Kentucky
+21201,Robertson County ,153.32,KY,Kentucky
+21135,Lewis County ,27.53,KY,Kentucky
+21017,Bourbon County ,36.17,KY,Kentucky
+21165,Menifee County ,35.69,KY,Kentucky
+21073,Franklin County ,46.58,KY,Kentucky
+21187,Owen County ,15.96,KY,Kentucky
+21173,Montgomery County ,78.22,KY,Kentucky
+21209,Scott County ,40.04,KY,Kentucky
+21157,Marshall County ,21.54,KY,Kentucky
+21023,Bracken County ,73.96,KY,Kentucky
+21097,Harrison County ,123.97,KY,Kentucky
+21175,Morgan County ,44.09,KY,Kentucky
+21011,Bath County ,38.43,KY,Kentucky
+21081,Grant County ,31.54,KY,Kentucky
+21221,Trigg County ,33.86,KY,Kentucky
+21181,Nicholas County ,76.46,KY,Kentucky
 37063,Durham County ,54.31,NC,North Carolina
 37077,Granville County ,40.04,NC,North Carolina
+37135,Orange County ,48.17,NC,North Carolina
+37111,McDowell County ,24.39,NC,North Carolina
+37183,Wake County ,52.29,NC,North Carolina
 37145,Person County ,36.35,NC,North Carolina
-1053,Escambia County ,24.49,AL,Alabama
-1061,Geneva County ,22.65,AL,Alabama
-8013,Boulder County ,226.9,CO,Colorado
-8039,Elbert County ,90.84,CO,Colorado
-8025,Crowley County ,86.27,CO,Colorado
-8041,El Paso County ,193.4,CO,Colorado
-8101,Pueblo County ,185.46,CO,Colorado
-8043,Fremont County ,134.04,CO,Colorado
-8119,Teller County ,121.45,CO,Colorado
-8087,Morgan County ,73.31,CO,Colorado
-8003,Alamosa County ,205.89,CO,Colorado
-8103,Rio Blanco County ,150.26,CO,Colorado
-8021,Conejos County ,189.49,CO,Colorado
-8059,Jefferson County ,180.74,CO,Colorado
-8083,Montezuma County ,78.85,CO,Colorado
-8035,Douglas County ,200.67,CO,Colorado
-8069,Larimer County ,216.34,CO,Colorado
-8029,Delta County ,83.8,CO,Colorado
-8089,Otero County ,113.04,CO,Colorado
-8117,Summit County ,213.14,CO,Colorado
-8077,Mesa County ,124.67,CO,Colorado
-8081,Moffat County ,106.1,CO,Colorado
-8011,Bent County ,108.21,CO,Colorado
-8031,City and County of Denver,216.16,CO,Colorado
-8075,Logan County ,82.99,CO,Colorado
-8085,Montrose County ,108.0,CO,Colorado
-8014,City and County of Broomfield,202.66,CO,Colorado
-8001,Adams County ,187.94,CO,Colorado
-8037,Eagle County ,154.8,CO,Colorado
-8123,Weld County ,189.8,CO,Colorado
-8045,Garfield County ,139.35,CO,Colorado
-8049,Grand County ,76.8,CO,Colorado
-8107,Routt County ,158.51,CO,Colorado
+37037,Chatham County ,30.5,NC,North Carolina
+37097,Iredell County ,27.33,NC,North Carolina
+37069,Franklin County ,38.96,NC,North Carolina
+37031,Carteret County ,32.75,NC,North Carolina
+1053,Escambia County ,25.64,AL,Alabama
+1061,Geneva County ,25.88,AL,Alabama
+8013,Boulder County ,234.74,CO,Colorado
+8039,Elbert County ,94.25,CO,Colorado
+8025,Crowley County ,88.81,CO,Colorado
+8041,El Paso County ,202.11,CO,Colorado
+8101,Pueblo County ,194.05,CO,Colorado
+8043,Fremont County ,140.42,CO,Colorado
+8119,Teller County ,130.93,CO,Colorado
+8087,Morgan County ,77.35,CO,Colorado
+8003,Alamosa County ,231.96,CO,Colorado
+8103,Rio Blanco County ,165.73,CO,Colorado
+8021,Conejos County ,212.3,CO,Colorado
+8059,Jefferson County ,188.96,CO,Colorado
+8083,Montezuma County ,86.57,CO,Colorado
+8035,Douglas County ,208.58,CO,Colorado
+8069,Larimer County ,228.34,CO,Colorado
+8029,Delta County ,86.15,CO,Colorado
+8089,Otero County ,120.05,CO,Colorado
+8117,Summit County ,221.59,CO,Colorado
+8077,Mesa County ,131.81,CO,Colorado
+8081,Moffat County ,111.57,CO,Colorado
+8099,Prowers County ,55.71,CO,Colorado
+8011,Bent County ,113.12,CO,Colorado
+8031,City and County of Denver,224.11,CO,Colorado
+8075,Logan County ,88.92,CO,Colorado
+8085,Montrose County ,112.16,CO,Colorado
+8014,City and County of Broomfield,211.09,CO,Colorado
+8001,Adams County ,194.98,CO,Colorado
+8037,Eagle County ,162.16,CO,Colorado
+8123,Weld County ,200.4,CO,Colorado
+8045,Garfield County ,144.47,CO,Colorado
+8049,Grand County ,77.75,CO,Colorado
+8107,Routt County ,166.55,CO,Colorado
 8009,Baca County ,96.23,CO,Colorado
-8105,Rio Grande County ,135.92,CO,Colorado
-8005,Arapahoe County ,200.55,CO,Colorado
-8071,Las Animas County ,91.68,CO,Colorado
-8055,Huerfano County ,78.12,CO,Colorado
+8105,Rio Grande County ,143.47,CO,Colorado
+8005,Arapahoe County ,208.27,CO,Colorado
+8071,Las Animas County ,102.77,CO,Colorado
+8055,Huerfano County ,91.14,CO,Colorado
+35043,Sandoval County ,26.89,NM,New Mexico
+35055,Taos County ,31.27,NM,New Mexico
+35039,Rio Arriba County ,32.71,NM,New Mexico
+35045,San Juan County ,21.74,NM,New Mexico
+51037,Charlotte County ,23.62,VA,Virginia
+51117,Mecklenburg County ,18.06,VA,Virginia
+48389,Reeves County ,18.89,TX,Texas
+48475,Ward County ,16.03,TX,Texas
 4001,Apache County ,44.94,AZ,Arizona
-34013,Essex County ,36.2,NJ,New Jersey
-34039,Union County ,35.41,NJ,New Jersey
-34003,Bergen County ,43.07,NJ,New Jersey
-30031,Gallatin County ,39.83,MT,Montana
-30075,Powder River County ,44.12,MT,Montana
+30101,Toole County ,22.97,MT,Montana
 30007,Broadwater County ,22.04,MT,Montana
 49019,Grand County ,44.57,UT,Utah
 49037,San Juan County ,30.85,UT,Utah
-51059,Fairfax County ,33.26,VA,Virginia
-51083,Halifax County ,34.91,VA,Virginia
-48427,Starr County ,27.28,TX,Texas
