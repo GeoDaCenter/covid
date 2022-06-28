@@ -1,52 +1,52 @@
-FIPS,State,County,LfExpRt,SlfHlthPrc
-1,Alabama,,75.4,22
-2,Alaska,,78.8,18
-4,Arizona,,79.9,19
-5,Arkansas,,75.9,23
-6,California,,81.6,17
-8,Colorado,,80.5,14
-9,Connecticut,,80.9,14
-10,Delaware,,78.4,18
-11,District of Columbia,,78.6,13
-12,Florida,,80,17
-13,Georgia,,77.8,18
-15,Hawaii,,82.3,14
-16,Idaho,,79.3,15
-17,Illinois,,79.3,17
-18,Indiana,,77,20
-19,Iowa,,79.4,14
-20,Kansas,,78.5,16
-21,Kentucky,,75.4,24
-22,Louisiana,,76.1,22
-23,Maine,,78.7,15
-24,Maryland,,79.1,15
-25,Massachusetts,,80.5,14
-26,Michigan,,78,17
-27,Minnesota,,80.9,12
-28,Mississippi,,74.9,24
-29,Missouri,,77.3,18
-30,Montana,,78.8,15
-31,Nebraska,,79.6,14
-32,Nevada,,78.5,20
-33,New Hampshire,,79.5,13
-34,New Jersey,,80.4,18
-35,New Mexico,,78.1,21
-36,New York,,81.3,17
-37,North Carolina,,78,18
-38,North Dakota,,79.9,15
-39,Ohio,,76.9,18
-40,Oklahoma,,76,21
-41,Oregon,,79.8,17
-42,Pennsylvania,,78.3,18
-44,Rhode Island,,79.9,16
-45,South Carolina,,77,18
-46,South Dakota,,79.1,13
-47,Tennessee,,76,20
-48,Texas,,79.1,21
-49,Utah,,79.9,14
-50,Vermont,,79.7,13
-51,Virginia,,79.5,16
-53,Washington,,80.4,16
-54,West Virginia,,74.8,24
-55,Wisconsin,,79.4,17
-56,Wyoming,,79,15
+FIPS,State,Name,LfExpRt
+1,AL,Alabama,74.8
+2,AK,Alaska,78.6
+4,AZ,Arizona,79.1
+5,AR,Arkansas,75.5
+6,CA,California,81.0
+8,CO,Colorado,80.0
+9,CT,Connecticut,80.1
+10,DE,Delaware,78.0
+11,DC,District of Columbia,78.0
+12,FL,Florida,79.7
+13,GA,Georgia,77.3
+15,HI,Hawaii,82.3
+16,ID,Idaho,79.2
+17,IL,Illinois,78.6
+18,IN,Indiana,76.5
+19,IA,Iowa,78.7
+20,KS,Kansas,77.8
+21,KY,Kentucky,75.1
+22,LA,Louisiana,75.2
+23,ME,Maine,78.6
+24,MD,Maryland,78.6
+25,MA,Massachusetts,80.2
+26,MI,Michigan,77.5
+27,MN,Minnesota,80.4
+28,MS,Mississippi,73.9
+29,MO,Missouri,76.6
+30,MT,Montana,78.4
+31,NE,Nebraska,79.0
+32,NV,Nevada,78.1
+33,NH,New Hampshire,79.6
+34,NJ,New Jersey,79.5
+35,NM,New Mexico,76.9
+36,NY,New York,80.3
+37,NC,North Carolina,77.7
+38,ND,North Dakota,78.8
+39,OH,Ohio,76.5
+40,OK,Oklahoma,75.5
+41,OR,Oregon,79.7
+42,PA,Pennsylvania,78.0
+44,RI,Rhode Island,79.4
+45,SC,South Carolina,76.4
+46,SD,South Dakota,78.2
+47,TN,Tennessee,75.3
+48,TX,Texas,78.4
+49,UT,Utah,79.7
+50,VT,Vermont,79.7
+51,VA,Virginia,79.1
+53,WA,Washington,80.2
+54,WV,West Virginia,74.3
+55,WI,Wisconsin,78.9
+56,WY,Wyoming,78.1
