@@ -5927,6 +5927,7 @@ __metadata:
     jszip: ^3.6.0
     lodash: ^4.17.20
     pbf: ^3.2.1
+    rambda: ^7.1.4
     react: ^17.0.1
     react-dom: ^17.0.1
     react-ga: ^3.3.0
@@ -14268,6 +14269,13 @@ __metadata:
   dependencies:
     performance-now: ^2.1.0
   checksum: 50ba284e481c8185dbcf45fc4618ba3aec580bb50c9121385d5698cb6012fe516d2015b1df6dd407a7b7c58d44be8086108236affbce1861edd6b44637c8cd52
+  languageName: node
+  linkType: hard
+
+"rambda@npm:^7.1.4":
+  version: 7.1.4
+  resolution: "rambda@npm:7.1.4"
+  checksum: 05683dcb1bc76504beabb83a8b39488738ba744e12eda43ea29a00b28e61d2be923b9310c575aa5a70c25bf2195de070aa8351b78b6ebc212ceb455ef8544cdb
   languageName: node
   linkType: hard
 
