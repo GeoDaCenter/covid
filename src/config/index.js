@@ -276,7 +276,7 @@ export const colors = {
     ]
 }
 
-export const defaultData = 'county_usfacts.geojson';
+export const defaultData = 'county_nyt.geojson';
 export const defaultTables = {
     'County': {
         // 'predictions':{

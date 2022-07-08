@@ -11,6 +11,7 @@ import MuiAccordion from '@material-ui/core/Accordion';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import { colors } from '../../config';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 const ContactPage = styled.div`
     background:white;
@@ -186,7 +187,7 @@ export default function Contact(){
 
     const handleChange = (e) => setFormData(prev => ({...prev, [e.target.name]: e.target.value}))
     const handleSelect = (e) => setFormData(prev => ({...prev, 'Category': e.target.value}))
-    
+    const [canContact, setCanContact] = useState(false)
     return (
        <ContactPage>
             <NavBar light/>
@@ -280,7 +281,10 @@ export default function Contact(){
                                     />
                             </InputBlock>
                             <InputBlock>
-                                <button type="submit" id="submit-form">Submit</button>
+                            <ReCAPTCHA
+                                sitekey='6LdnBtMgAAAAAIDBBGzZJz09LFKLGNz8A_cjk-Ep'
+                                onChange={e => setCanContact(true)}/>
+                                <button type="submit" id="submit-form" disabled={!canContact} style={{opacity: canContact ? 1 : 0.5, cursor: canContact ? "pointer" : "not-allowed"}}>Submit</button>
                             </InputBlock>
                         </Grid>
                     </Grid>
