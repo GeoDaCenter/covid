@@ -9,4 +9,5 @@ pandas_gbq
 protobuf == 3.20.*
 pygeoda
 regex
+boto3
 requests
