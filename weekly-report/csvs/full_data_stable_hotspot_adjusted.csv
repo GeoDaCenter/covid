@@ -2,12 +2,9 @@ GEOID,NAME,average,state_abbr,state_name
 37017,Bladen County ,36.79,NC,North Carolina
 37167,Stanly County ,35.41,NC,North Carolina
 37185,Warren County ,31.38,NC,North Carolina
-37063,Durham County ,36.69,NC,North Carolina
 37015,Bertie County ,46.18,NC,North Carolina
-37199,Yancey County ,29.51,NC,North Carolina
 37057,Davidson County ,36.52,NC,North Carolina
 37077,Granville County ,36.03,NC,North Carolina
-37159,Rowan County ,39.76,NC,North Carolina
 37123,Montgomery County ,26.65,NC,North Carolina
 37093,Hoke County ,36.76,NC,North Carolina
 37125,Moore County ,28.38,NC,North Carolina
@@ -22,33 +19,27 @@ GEOID,NAME,average,state_abbr,state_name
 37035,Catawba County ,45.57,NC,North Carolina
 37141,Pender County ,35.58,NC,North Carolina
 37065,Edgecombe County ,39.11,NC,North Carolina
-37151,Randolph County ,31.43,NC,North Carolina
 37193,Wilkes County ,41.53,NC,North Carolina
 37081,Guilford County ,33.51,NC,North Carolina
 37111,McDowell County ,44.02,NC,North Carolina
 37195,Wilson County ,41.54,NC,North Carolina
 37183,Wake County ,34.71,NC,North Carolina
 37067,Forsyth County ,39.73,NC,North Carolina
-37025,Cabarrus County ,34.0,NC,North Carolina
 37095,Hyde County ,23.84,NC,North Carolina
 37127,Nash County ,33.59,NC,North Carolina
 37037,Chatham County ,29.48,NC,North Carolina
 37085,Harnett County ,32.88,NC,North Carolina
 37061,Duplin County ,42.57,NC,North Carolina
 37097,Iredell County ,37.76,NC,North Carolina
-37021,Buncombe County ,28.88,NC,North Carolina
 37049,Craven County ,34.23,NC,North Carolina
 37069,Franklin County ,36.32,NC,North Carolina
-37133,Onslow County ,41.44,NC,North Carolina
 37079,Greene County ,29.92,NC,North Carolina
 37033,Caswell County ,28.58,NC,North Carolina
 37117,Martin County ,48.02,NC,North Carolina
 37011,Avery County ,23.67,NC,North Carolina
 37013,Beaufort County ,31.15,NC,North Carolina
-37187,Washington County ,51.12,NC,North Carolina
 37163,Sampson County ,35.4,NC,North Carolina
 37027,Caldwell County ,55.46,NC,North Carolina
-37001,Alamance County ,35.23,NC,North Carolina
 37101,Johnston County ,36.92,NC,North Carolina
 37031,Carteret County ,28.71,NC,North Carolina
 37051,Cumberland County ,38.84,NC,North Carolina
@@ -57,7 +48,6 @@ GEOID,NAME,average,state_abbr,state_name
 37059,Davie County ,41.17,NC,North Carolina
 37171,Surry County ,61.23,NC,North Carolina
 37009,Ashe County ,26.4,NC,North Carolina
-37113,Macon County ,24.08,NC,North Carolina
 37157,Rockingham County ,29.43,NC,North Carolina
 37197,Yadkin County ,56.13,NC,North Carolina
 37023,Burke County ,46.9,NC,North Carolina
@@ -104,106 +94,75 @@ GEOID,NAME,average,state_abbr,state_name
 1117,Shelby County ,39.15,AL,Alabama
 1005,Barbour County ,54.58,AL,Alabama
 1065,Hale County ,28.79,AL,Alabama
-1069,Houston County ,40.18,AL,Alabama
 1093,Marion County ,46.01,AL,Alabama
-1105,Perry County ,34.64,AL,Alabama
 1095,Marshall County ,53.83,AL,Alabama
 1021,Chilton County ,30.08,AL,Alabama
 1011,Bullock County ,37.95,AL,Alabama
 1049,DeKalb County ,56.68,AL,Alabama
-1067,Henry County ,44.22,AL,Alabama
 1029,Cleburne County ,20.56,AL,Alabama
 1051,Elmore County ,47.76,AL,Alabama
 1107,Pickens County ,53.84,AL,Alabama
-1081,Lee County ,36.28,AL,Alabama
 1033,Colbert County ,75.89,AL,Alabama
 54023,Grant County ,82.22,WV,West Virginia
-54005,Boone County ,46.64,WV,West Virginia
-54069,Ohio County ,30.22,WV,West Virginia
-54045,Logan County ,47.12,WV,West Virginia
-54033,Harrison County ,40.95,WV,West Virginia
-54021,Gilmer County ,33.95,WV,West Virginia
-54019,Fayette County ,40.95,WV,West Virginia
-54011,Cabell County ,28.85,WV,West Virginia
-54059,Mingo County ,27.43,WV,West Virginia
-54051,Marshall County ,39.05,WV,West Virginia
-54031,Hardy County ,87.72,WV,West Virginia
-54057,Mineral County ,50.28,WV,West Virginia
-54055,Mercer County ,43.34,WV,West Virginia
-54103,Wetzel County ,22.42,WV,West Virginia
-54101,Webster County ,29.35,WV,West Virginia
-54083,Randolph County ,55.05,WV,West Virginia
-54025,Greenbrier County ,39.61,WV,West Virginia
-54097,Upshur County ,40.64,WV,West Virginia
-54089,Summers County ,31.82,WV,West Virginia
-54077,Preston County ,24.28,WV,West Virginia
-54081,Raleigh County ,46.94,WV,West Virginia
-54079,Putnam County ,33.03,WV,West Virginia
-54071,Pendleton County ,32.39,WV,West Virginia
-54053,Mason County ,44.01,WV,West Virginia
-54043,Lincoln County ,55.58,WV,West Virginia
-54099,Wayne County ,20.7,WV,West Virginia
-54017,Doddridge County ,20.92,WV,West Virginia
-54063,Monroe County ,66.83,WV,West Virginia
-54041,Lewis County ,56.61,WV,West Virginia
-54091,Taylor County ,34.13,WV,West Virginia
-54061,Monongalia County ,29.32,WV,West Virginia
-54027,Hampshire County ,31.49,WV,West Virginia
-54039,Kanawha County ,25.12,WV,West Virginia
-54107,Wood County ,39.32,WV,West Virginia
-54035,Jackson County ,33.23,WV,West Virginia
-54047,McDowell County ,48.69,WV,West Virginia
-54075,Pocahontas County ,40.19,WV,West Virginia
-54001,Barbour County ,45.26,WV,West Virginia
-54013,Calhoun County ,21.25,WV,West Virginia
-54109,Wyoming County ,64.81,WV,West Virginia
+54105,Wirt County ,48.05,WV,West Virginia
+54005,Boone County ,59.17,WV,West Virginia
+54045,Logan County ,51.35,WV,West Virginia
+54049,Marion County ,48.3,WV,West Virginia
+54033,Harrison County ,45.87,WV,West Virginia
+54021,Gilmer County ,37.43,WV,West Virginia
+54007,Braxton County ,41.01,WV,West Virginia
+54019,Fayette County ,48.08,WV,West Virginia
+54011,Cabell County ,30.87,WV,West Virginia
+54059,Mingo County ,30.89,WV,West Virginia
+54031,Hardy County ,98.56,WV,West Virginia
+54057,Mineral County ,59.44,WV,West Virginia
+54055,Mercer County ,53.97,WV,West Virginia
+54103,Wetzel County ,35.68,WV,West Virginia
+54067,Nicholas County ,43.15,WV,West Virginia
+54101,Webster County ,33.54,WV,West Virginia
+54083,Randolph County ,59.47,WV,West Virginia
+54025,Greenbrier County ,45.27,WV,West Virginia
+54097,Upshur County ,58.93,WV,West Virginia
+54089,Summers County ,37.31,WV,West Virginia
+54077,Preston County ,27.02,WV,West Virginia
+54081,Raleigh County ,50.13,WV,West Virginia
+54079,Putnam County ,37.82,WV,West Virginia
+54071,Pendleton County ,37.46,WV,West Virginia
+54053,Mason County ,51.7,WV,West Virginia
+54093,Tucker County ,23.38,WV,West Virginia
+54043,Lincoln County ,64.39,WV,West Virginia
+54099,Wayne County ,22.99,WV,West Virginia
+54017,Doddridge County ,25.1,WV,West Virginia
+54063,Monroe County ,74.26,WV,West Virginia
+54041,Lewis County ,67.58,WV,West Virginia
+54091,Taylor County ,36.24,WV,West Virginia
+54061,Monongalia County ,34.68,WV,West Virginia
+54027,Hampshire County ,31.18,WV,West Virginia
+54039,Kanawha County ,29.92,WV,West Virginia
+54107,Wood County ,46.42,WV,West Virginia
+54035,Jackson County ,36.68,WV,West Virginia
+54047,McDowell County ,55.01,WV,West Virginia
+54075,Pocahontas County ,44.38,WV,West Virginia
+54001,Barbour County ,39.71,WV,West Virginia
+54013,Calhoun County ,24.14,WV,West Virginia
+54109,Wyoming County ,68.1,WV,West Virginia
 20133,Neosho County ,28.35,KS,Kansas
-20073,Greenwood County ,38.29,KS,Kansas
 20001,Allen County ,34.5,KS,Kansas
-20009,Barton County ,20.0,KS,Kansas
-20003,Anderson County ,27.29,KS,Kansas
 20113,McPherson County ,30.44,KS,Kansas
 20207,Woodson County ,40.56,KS,Kansas
 20187,Stanton County ,27.7,KS,Kansas
 20141,Osborne County ,35.68,KS,Kansas
-20205,Wilson County ,48.0,KS,Kansas
 20191,Sumner County ,22.78,KS,Kansas
 20081,Haskell County ,22.94,KS,Kansas
-20093,Kearny County ,21.8,KS,Kansas
 20051,Ellis County ,28.94,KS,Kansas
-20159,Rice County ,32.19,KS,Kansas
-20179,Sheridan County ,25.65,KS,Kansas
-20115,Marion County ,19.0,KS,Kansas
-20015,Butler County ,27.3,KS,Kansas
-20135,Ness County ,31.42,KS,Kansas
 20055,Finney County ,19.91,KS,Kansas
-20173,Sedgwick County ,23.38,KS,Kansas
-20099,Labette County ,27.0,KS,Kansas
 20065,Graham County ,19.65,KS,Kansas
-55041,Forest County ,44.36,WI,Wisconsin
-55085,Oneida County ,27.28,WI,Wisconsin
-55125,Vilas County ,24.15,WI,Wisconsin
-55057,Juneau County ,35.69,WI,Wisconsin
-55103,Richland County ,39.1,WI,Wisconsin
-55025,Dane County ,30.37,WI,Wisconsin
-55123,Vernon County ,20.6,WI,Wisconsin
-55043,Grant County ,19.85,WI,Wisconsin
-55021,Columbia County ,41.01,WI,Wisconsin
-55067,Langlade County ,32.05,WI,Wisconsin
-55111,Sauk County ,64.92,WI,Wisconsin
-55083,Oconto County ,25.68,WI,Wisconsin
-55069,Lincoln County ,30.78,WI,Wisconsin
-55075,Marinette County ,33.66,WI,Wisconsin
-55049,Iowa County ,39.01,WI,Wisconsin
-55037,Florence County ,31.29,WI,Wisconsin
 40077,Latimer County ,21.78,OK,Oklahoma
 40011,Blaine County ,34.11,OK,Oklahoma
 40107,Okfuskee County ,50.7,OK,Oklahoma
-40105,Nowata County ,20.64,OK,Oklahoma
 40073,Kingfisher County ,33.39,OK,Oklahoma
 40015,Caddo County ,33.84,OK,Oklahoma
 40097,Mayes County ,31.2,OK,Oklahoma
-40041,Delaware County ,35.28,OK,Oklahoma
 40109,Oklahoma County ,31.61,OK,Oklahoma
 40133,Seminole County ,31.05,OK,Oklahoma
 40063,Hughes County ,21.76,OK,Oklahoma
@@ -213,12 +172,9 @@ GEOID,NAME,average,state_abbr,state_name
 40071,Kay County ,40.58,OK,Oklahoma
 40009,Beckham County ,37.58,OK,Oklahoma
 40111,Okmulgee County ,32.33,OK,Oklahoma
-40065,Jackson County ,40.24,OK,Oklahoma
 40049,Garvin County ,26.19,OK,Oklahoma
 40125,Pottawatomie County ,52.08,OK,Oklahoma
 40121,Pittsburg County ,51.02,OK,Oklahoma
-40089,McCurtain County ,38.57,OK,Oklahoma
-40131,Rogers County ,38.93,OK,Oklahoma
 40055,Greer County ,33.65,OK,Oklahoma
 40143,Tulsa County ,31.35,OK,Oklahoma
 40005,Atoka County ,32.95,OK,Oklahoma
@@ -233,11 +189,7 @@ GEOID,NAME,average,state_abbr,state_name
 40047,Garfield County ,37.67,OK,Oklahoma
 40101,Muskogee County ,34.02,OK,Oklahoma
 40135,Sequoyah County ,30.05,OK,Oklahoma
-40023,Choctaw County ,48.94,OK,Oklahoma
-40145,Wagoner County ,30.28,OK,Oklahoma
-40149,Washita County ,33.74,OK,Oklahoma
 40037,Creek County ,41.05,OK,Oklahoma
-40103,Noble County ,20.66,OK,Oklahoma
 40081,Lincoln County ,32.38,OK,Oklahoma
 40127,Pushmataha County ,44.33,OK,Oklahoma
 40003,Alfalfa County ,25.61,OK,Oklahoma
@@ -246,123 +198,211 @@ GEOID,NAME,average,state_abbr,state_name
 40087,McClain County ,33.09,OK,Oklahoma
 40113,Osage County ,26.72,OK,Oklahoma
 40021,Cherokee County ,32.33,OK,Oklahoma
-22073,Ouachita Parish ,30.57,LA,Louisiana
-22031,De Soto Parish ,49.87,LA,Louisiana
-22049,Jackson Parish ,27.36,LA,Louisiana
-22027,Claiborne Parish ,38.91,LA,Louisiana
-22079,Rapides Parish ,23.51,LA,Louisiana
-22043,Grant Parish ,42.83,LA,Louisiana
-22059,LaSalle Parish ,30.1,LA,Louisiana
-22041,Franklin Parish ,25.66,LA,Louisiana
-22015,Bossier Parish ,48.25,LA,Louisiana
-22081,Red River Parish ,38.13,LA,Louisiana
-22025,Catahoula Parish ,20.22,LA,Louisiana
-22083,Richland Parish ,46.4,LA,Louisiana
-22021,Caldwell Parish ,71.46,LA,Louisiana
-22007,Assumption Parish ,21.7,LA,Louisiana
-22127,Winn Parish ,38.93,LA,Louisiana
-22061,Lincoln Parish ,28.36,LA,Louisiana
-22069,Natchitoches Parish ,37.4,LA,Louisiana
-22013,Bienville Parish ,32.4,LA,Louisiana
-22117,Washington Parish ,41.21,LA,Louisiana
-22095,St. John the Baptist Parish ,29.59,LA,Louisiana
-5145,White County ,28.37,AR,Arkansas
-5111,Poinsett County ,51.67,AR,Arkansas
-5073,Lafayette County ,20.66,AR,Arkansas
-5123,St. Francis County ,36.13,AR,Arkansas
-5037,Cross County ,29.42,AR,Arkansas
-5079,Lincoln County ,25.04,AR,Arkansas
-5025,Cleveland County ,21.71,AR,Arkansas
-5067,Jackson County ,34.42,AR,Arkansas
-5003,Ashley County ,23.65,AR,Arkansas
-5139,Union County ,21.03,AR,Arkansas
-5031,Craighead County ,39.46,AR,Arkansas
-5041,Desha County ,19.23,AR,Arkansas
-5117,Prairie County ,45.05,AR,Arkansas
-5095,Monroe County ,19.71,AR,Arkansas
-5063,Independence County ,35.84,AR,Arkansas
-5085,Lonoke County ,22.75,AR,Arkansas
-5075,Lawrence County ,38.99,AR,Arkansas
-5147,Woodruff County ,62.21,AR,Arkansas
-51141,Patrick County ,51.59,VA,Virginia
-51790,City of Staunton,44.11,VA,Virginia
+22073,Ouachita Parish ,35.7,LA,Louisiana
+22067,Morehouse Parish ,19.51,LA,Louisiana
+22049,Jackson Parish ,26.91,LA,Louisiana
+22027,Claiborne Parish ,39.36,LA,Louisiana
+22079,Rapides Parish ,23.62,LA,Louisiana
+22059,LaSalle Parish ,35.84,LA,Louisiana
+22041,Franklin Parish ,42.88,LA,Louisiana
+22015,Bossier Parish ,51.65,LA,Louisiana
+22081,Red River Parish ,33.15,LA,Louisiana
+22025,Catahoula Parish ,27.44,LA,Louisiana
+22083,Richland Parish ,56.87,LA,Louisiana
+22021,Caldwell Parish ,74.32,LA,Louisiana
+22007,Assumption Parish ,24.84,LA,Louisiana
+22047,Iberville Parish ,35.11,LA,Louisiana
+22127,Winn Parish ,43.37,LA,Louisiana
+22061,Lincoln Parish ,24.59,LA,Louisiana
+22069,Natchitoches Parish ,38.86,LA,Louisiana
+22013,Bienville Parish ,30.83,LA,Louisiana
+22065,Madison Parish ,29.89,LA,Louisiana
+22095,St. John the Baptist Parish ,29.92,LA,Louisiana
+5145,White County ,27.55,AR,Arkansas
+5111,Poinsett County ,49.89,AR,Arkansas
+5073,Lafayette County ,23.76,AR,Arkansas
+5037,Cross County ,27.31,AR,Arkansas
+5079,Lincoln County ,27.64,AR,Arkansas
+5025,Cleveland County ,26.05,AR,Arkansas
+5067,Jackson County ,37.32,AR,Arkansas
+5003,Ashley County ,20.17,AR,Arkansas
+5031,Craighead County ,43.72,AR,Arkansas
+5041,Desha County ,20.43,AR,Arkansas
+5117,Prairie County ,42.46,AR,Arkansas
+5063,Independence County ,38.91,AR,Arkansas
+5075,Lawrence County ,41.57,AR,Arkansas
+51141,Patrick County ,55.99,VA,Virginia
+51790,City of Staunton,52.0,VA,Virginia
+51037,Charlotte County ,31.3,VA,Virginia
 51007,Amelia County ,42.23,VA,Virginia
-51051,Dickenson County ,31.04,VA,Virginia
-51720,City of Norton,93.09,VA,Virginia
-51177,Spotsylvania County ,31.91,VA,Virginia
-51197,Wythe County ,35.54,VA,Virginia
-51530,City of Buena Vista,32.37,VA,Virginia
-51135,Nottoway County ,39.17,VA,Virginia
-51079,Greene County ,24.66,VA,Virginia
-51091,Highland County ,77.43,VA,Virginia
-51009,Amherst County ,19.04,VA,Virginia
-51063,Floyd County ,26.9,VA,Virginia
-51185,Tazewell County ,49.23,VA,Virginia
+51051,Dickenson County ,33.42,VA,Virginia
+51720,City of Norton,73.4,VA,Virginia
+51177,Spotsylvania County ,35.66,VA,Virginia
+51197,Wythe County ,45.17,VA,Virginia
+51530,City of Buena Vista,42.42,VA,Virginia
+51135,Nottoway County ,43.78,VA,Virginia
+51079,Greene County ,27.6,VA,Virginia
+51091,Highland County ,80.66,VA,Virginia
+51009,Amherst County ,24.42,VA,Virginia
+51063,Floyd County ,35.56,VA,Virginia
+51185,Tazewell County ,78.42,VA,Virginia
 51045,Craig County ,33.53,VA,Virginia
-51690,City of Martinsville,46.34,VA,Virginia
-51167,Russell County ,69.32,VA,Virginia
-51161,Roanoke County ,31.6,VA,Virginia
-51089,Henry County ,52.89,VA,Virginia
-51121,Montgomery County ,24.93,VA,Virginia
-51077,Grayson County ,60.08,VA,Virginia
-51015,Augusta County ,83.0,VA,Virginia
-51023,Botetourt County ,45.8,VA,Virginia
-51179,Stafford County ,36.26,VA,Virginia
-51019,Bedford County ,28.42,VA,Virginia
-51035,Carroll County ,55.72,VA,Virginia
-51139,Page County ,23.16,VA,Virginia
-51173,Smyth County ,86.7,VA,Virginia
-51143,Pittsylvania County ,37.29,VA,Virginia
-51069,Frederick County ,28.69,VA,Virginia
-51195,Wise County ,95.73,VA,Virginia
-51169,Scott County ,47.71,VA,Virginia
-51191,Washington County ,52.65,VA,Virginia
-51111,Lunenburg County ,34.32,VA,Virginia
-51171,Shenandoah County ,35.51,VA,Virginia
-51067,Franklin County ,34.3,VA,Virginia
-51750,City of Radford,38.08,VA,Virginia
-51021,Bland County ,49.86,VA,Virginia
-51027,Buchanan County ,20.0,VA,Virginia
-51155,Pulaski County ,55.29,VA,Virginia
-51005,Alleghany County ,34.11,VA,Virginia
-51105,Lee County ,79.02,VA,Virginia
-51640,City of Galax,94.69,VA,Virginia
-51125,Nelson County ,25.08,VA,Virginia
-51147,Prince Edward County ,55.7,VA,Virginia
-51071,Giles County ,50.55,VA,Virginia
+51047,Culpeper County ,20.1,VA,Virginia
+51690,City of Martinsville,51.25,VA,Virginia
+51167,Russell County ,80.79,VA,Virginia
+51161,Roanoke County ,38.32,VA,Virginia
+51089,Henry County ,61.75,VA,Virginia
+51029,Buckingham County ,22.26,VA,Virginia
+51121,Montgomery County ,30.83,VA,Virginia
+51077,Grayson County ,73.64,VA,Virginia
+51015,Augusta County ,71.62,VA,Virginia
+51023,Botetourt County ,50.96,VA,Virginia
+51179,Stafford County ,40.42,VA,Virginia
+51019,Bedford County ,33.19,VA,Virginia
+51035,Carroll County ,72.06,VA,Virginia
+51139,Page County ,26.47,VA,Virginia
+51049,Cumberland County ,25.55,VA,Virginia
+51173,Smyth County ,92.22,VA,Virginia
+51143,Pittsylvania County ,39.03,VA,Virginia
+51069,Frederick County ,32.55,VA,Virginia
+51195,Wise County ,93.53,VA,Virginia
+51169,Scott County ,52.9,VA,Virginia
+51191,Washington County ,57.24,VA,Virginia
+51111,Lunenburg County ,40.72,VA,Virginia
+51171,Shenandoah County ,41.32,VA,Virginia
+51067,Franklin County ,39.63,VA,Virginia
+51750,City of Radford,48.62,VA,Virginia
+51021,Bland County ,54.29,VA,Virginia
+51003,Albemarle County ,20.82,VA,Virginia
+51155,Pulaski County ,60.09,VA,Virginia
+51005,Alleghany County ,36.45,VA,Virginia
+51105,Lee County ,96.19,VA,Virginia
+51640,City of Galax,105.45,VA,Virginia
+51125,Nelson County ,25.56,VA,Virginia
+51147,Prince Edward County ,63.48,VA,Virginia
+51071,Giles County ,57.77,VA,Virginia
+51117,Mecklenburg County ,20.38,VA,Virginia
+21215,Spencer County ,36.02,KY,Kentucky
+21069,Fleming County ,44.4,KY,Kentucky
+21067,Fayette County ,37.65,KY,Kentucky
+21049,Clark County ,48.19,KY,Kentucky
+21087,Green County ,69.98,KY,Kentucky
+21019,Boyd County ,60.9,KY,Kentucky
+21217,Taylor County ,28.29,KY,Kentucky
+21063,Elliott County ,51.31,KY,Kentucky
+21033,Caldwell County ,29.75,KY,Kentucky
+21237,Wolfe County ,182.95,KY,Kentucky
+21141,Logan County ,43.36,KY,Kentucky
+21161,Mason County ,35.4,KY,Kentucky
+21233,Webster County ,46.15,KY,Kentucky
+21071,Floyd County ,56.68,KY,Kentucky
+21227,Warren County ,57.4,KY,Kentucky
+21205,Rowan County ,79.3,KY,Kentucky
+21077,Gallatin County ,40.22,KY,Kentucky
+21129,Lee County ,50.79,KY,Kentucky
+21191,Pendleton County ,49.19,KY,Kentucky
+21117,Kenton County ,27.84,KY,Kentucky
+21169,Metcalfe County ,24.28,KY,Kentucky
+21123,LaRue County ,49.45,KY,Kentucky
+21047,Christian County ,39.83,KY,Kentucky
+21079,Garrard County ,45.34,KY,Kentucky
+21197,Powell County ,115.95,KY,Kentucky
+21147,McCreary County ,98.02,KY,Kentucky
+21211,Shelby County ,43.97,KY,Kentucky
+21229,Washington County ,20.8,KY,Kentucky
+21001,Adair County ,64.22,KY,Kentucky
+21089,Greenup County ,56.12,KY,Kentucky
+21045,Casey County ,59.24,KY,Kentucky
+21153,Magoffin County ,82.9,KY,Kentucky
+21137,Lincoln County ,71.84,KY,Kentucky
+21065,Estill County ,53.9,KY,Kentucky
+21029,Bullitt County ,48.27,KY,Kentucky
+21027,Breckinridge County ,71.86,KY,Kentucky
+21151,Madison County ,46.03,KY,Kentucky
+21031,Butler County ,44.84,KY,Kentucky
+21199,Pulaski County ,45.43,KY,Kentucky
+21201,Robertson County ,20.0,KY,Kentucky
+21059,Daviess County ,38.95,KY,Kentucky
+21195,Pike County ,40.51,KY,Kentucky
+21095,Harlan County ,185.06,KY,Kentucky
+21121,Knox County ,100.79,KY,Kentucky
+21125,Laurel County ,84.39,KY,Kentucky
+21127,Lawrence County ,58.83,KY,Kentucky
+21133,Letcher County ,62.37,KY,Kentucky
+21135,Lewis County ,56.66,KY,Kentucky
+21017,Bourbon County ,63.83,KY,Kentucky
+21009,Barren County ,37.28,KY,Kentucky
+21149,McLean County ,30.62,KY,Kentucky
+21159,Martin County ,88.69,KY,Kentucky
+21165,Menifee County ,94.79,KY,Kentucky
+21183,Ohio County ,53.71,KY,Kentucky
+21239,Woodford County ,63.5,KY,Kentucky
+21113,Jessamine County ,39.24,KY,Kentucky
+21203,Rockcastle County ,111.64,KY,Kentucky
+21179,Nelson County ,67.2,KY,Kentucky
+21051,Clay County ,62.0,KY,Kentucky
+21155,Marion County ,42.71,KY,Kentucky
+21057,Cumberland County ,28.73,KY,Kentucky
+21167,Mercer County ,61.42,KY,Kentucky
+21073,Franklin County ,57.94,KY,Kentucky
+21109,Jackson County ,48.61,KY,Kentucky
+21093,Hardin County ,72.62,KY,Kentucky
+21099,Hart County ,26.46,KY,Kentucky
+21005,Anderson County ,27.33,KY,Kentucky
+21085,Grayson County ,44.75,KY,Kentucky
+21131,Leslie County ,81.17,KY,Kentucky
+21187,Owen County ,23.94,KY,Kentucky
+21173,Montgomery County ,58.67,KY,Kentucky
+21209,Scott County ,39.37,KY,Kentucky
+21177,Muhlenberg County ,63.89,KY,Kentucky
+21023,Bracken County ,24.94,KY,Kentucky
+21235,Whitley County ,94.41,KY,Kentucky
+21097,Harrison County ,71.55,KY,Kentucky
+21119,Knott County ,68.15,KY,Kentucky
+21175,Morgan County ,84.95,KY,Kentucky
+21011,Bath County ,94.32,KY,Kentucky
+21103,Henry County ,42.46,KY,Kentucky
+21107,Hopkins County ,88.85,KY,Kentucky
+21081,Grant County ,52.18,KY,Kentucky
+21189,Owsley County ,91.23,KY,Kentucky
+21025,Breathitt County ,81.69,KY,Kentucky
+21207,Russell County ,55.1,KY,Kentucky
+21021,Boyle County ,39.88,KY,Kentucky
+21181,Nicholas County ,57.34,KY,Kentucky
+21115,Johnson County ,80.99,KY,Kentucky
+21013,Bell County ,67.26,KY,Kentucky
+21043,Carter County ,76.69,KY,Kentucky
+21193,Perry County ,131.89,KY,Kentucky
+21231,Wayne County ,79.02,KY,Kentucky
 28115,Pontotoc County ,27.37,MS,Mississippi
 28081,Lee County ,37.77,MS,Mississippi
 28087,Lowndes County ,24.76,MS,Mississippi
 28155,Webster County ,33.43,MS,Mississippi
 28141,Tishomingo County ,35.57,MS,Mississippi
 28057,Itawamba County ,51.11,MS,Mississippi
-28043,Grenada County ,22.83,MS,Mississippi
-28025,Clay County ,29.93,MS,Mississippi
-28017,Chickasaw County ,46.71,MS,Mississippi
 28095,Monroe County ,35.48,MS,Mississippi
-28103,Noxubee County ,34.3,MS,Mississippi
-28147,Walthall County ,30.33,MS,Mississippi
 28091,Marion County ,28.06,MS,Mississippi
-28035,Forrest County ,24.31,MS,Mississippi
 28117,Prentiss County ,37.46,MS,Mississippi
-28145,Union County ,38.79,MS,Mississippi
-39051,Fulton County ,33.6,OH,Ohio
-39113,Montgomery County ,29.78,OH,Ohio
-39173,Wood County ,26.66,OH,Ohio
+30065,Musselshell County ,28.23,MT,Montana
+30041,Hill County ,32.59,MT,Montana
+30015,Chouteau County ,33.31,MT,Montana
+30027,Fergus County ,49.42,MT,Montana
+30085,Roosevelt County ,36.26,MT,Montana
+30079,Prairie County ,26.61,MT,Montana
+30005,Blaine County ,46.72,MT,Montana
+30083,Richland County ,19.49,MT,Montana
+30069,Petroleum County ,49.6,MT,Montana
+30045,Judith Basin County ,21.97,MT,Montana
 39141,Ross County ,46.26,OH,Ohio
 39071,Highland County ,41.02,OH,Ohio
-39101,Marion County ,39.79,OH,Ohio
-39127,Perry County ,38.31,OH,Ohio
 39031,Coshocton County ,35.54,OH,Ohio
 39063,Hancock County ,30.1,OH,Ohio
 39027,Clinton County ,29.15,OH,Ohio
 39077,Huron County ,35.07,OH,Ohio
-39041,Delaware County ,21.54,OH,Ohio
 39131,Pike County ,65.06,OH,Ohio
-39089,Licking County ,33.79,OH,Ohio
 39045,Fairfield County ,28.07,OH,Ohio
 39175,Wyandot County ,36.19,OH,Ohio
-39067,Harrison County ,41.53,OH,Ohio
+39015,Brown County ,41.86,OH,Ohio
 39053,Gallia County ,66.24,OH,Ohio
 39105,Meigs County ,47.8,OH,Ohio
 39073,Hocking County ,47.38,OH,Ohio
@@ -374,120 +414,40 @@ GEOID,NAME,average,state_abbr,state_name
 39079,Jackson County ,75.11,OH,Ohio
 39117,Morrow County ,29.2,OH,Ohio
 39119,Muskingum County ,38.59,OH,Ohio
-39065,Hardin County ,29.67,OH,Ohio
 39129,Pickaway County ,28.49,OH,Ohio
 39145,Scioto County ,49.75,OH,Ohio
 39147,Seneca County ,37.98,OH,Ohio
 39157,Tuscarawas County ,29.41,OH,Ohio
 39009,Athens County ,40.19,OH,Ohio
-39047,Fayette County ,29.42,OH,Ohio
-39059,Guernsey County ,66.57,OH,Ohio
+39025,Clermont County ,36.56,OH,Ohio
 39013,Belmont County ,24.83,OH,Ohio
 39163,Vinton County ,32.69,OH,Ohio
 39139,Richland County ,37.39,OH,Ohio
-39115,Morgan County ,23.32,OH,Ohio
-39095,Lucas County ,26.5,OH,Ohio
-26059,Hillsdale County ,27.74,MI,Michigan
-26053,Gogebic County ,20.85,MI,Michigan
-26049,Genesee County ,29.38,MI,Michigan
-26065,Ingham County ,33.23,MI,Michigan
-26013,Baraga County ,26.87,MI,Michigan
-26043,Dickinson County ,48.05,MI,Michigan
-26125,Oakland County ,31.3,MI,Michigan
-26091,Lenawee County ,34.38,MI,Michigan
-26061,Houghton County ,22.79,MI,Michigan
-26071,Iron County ,77.09,MI,Michigan
-26115,Monroe County ,32.83,MI,Michigan
-26093,Livingston County ,29.6,MI,Michigan
-26131,Ontonagon County ,32.32,MI,Michigan
-26075,Jackson County ,33.85,MI,Michigan
-26109,Menominee County ,34.74,MI,Michigan
-26161,Washtenaw County ,33.3,MI,Michigan
-26103,Marquette County ,30.73,MI,Michigan
-26025,Calhoun County ,34.1,MI,Michigan
-30065,Musselshell County ,28.23,MT,Montana
-30111,Yellowstone County ,30.01,MT,Montana
-30041,Hill County ,32.59,MT,Montana
-30015,Chouteau County ,33.31,MT,Montana
-30027,Fergus County ,49.42,MT,Montana
-30085,Roosevelt County ,36.26,MT,Montana
-30079,Prairie County ,26.61,MT,Montana
-30005,Blaine County ,46.72,MT,Montana
-30049,Lewis and Clark County ,23.32,MT,Montana
-30083,Richland County ,19.49,MT,Montana
-30069,Petroleum County ,49.6,MT,Montana
-30071,Phillips County ,36.37,MT,Montana
-30045,Judith Basin County ,21.97,MT,Montana
-35025,Lea County ,33.1,NM,New Mexico
-35031,McKinley County ,41.08,NM,New Mexico
-35015,Eddy County ,18.9,NM,New Mexico
-21063,Elliott County ,27.56,KY,Kentucky
-21237,Wolfe County ,91.97,KY,Kentucky
-21071,Floyd County ,30.18,KY,Kentucky
-21205,Rowan County ,36.44,KY,Kentucky
-21129,Lee County ,30.68,KY,Kentucky
-21197,Powell County ,49.86,KY,Kentucky
-21089,Greenup County ,23.77,KY,Kentucky
-21153,Magoffin County ,42.3,KY,Kentucky
-21199,Pulaski County ,24.72,KY,Kentucky
-21095,Harlan County ,104.77,KY,Kentucky
-21121,Knox County ,46.53,KY,Kentucky
-21125,Laurel County ,38.69,KY,Kentucky
-21127,Lawrence County ,28.96,KY,Kentucky
-21133,Letcher County ,34.65,KY,Kentucky
-21135,Lewis County ,20.65,KY,Kentucky
-21165,Menifee County ,41.26,KY,Kentucky
-21051,Clay County ,20.78,KY,Kentucky
-21131,Leslie County ,53.89,KY,Kentucky
-21173,Montgomery County ,31.65,KY,Kentucky
-21119,Knott County ,42.82,KY,Kentucky
-21175,Morgan County ,37.1,KY,Kentucky
-21011,Bath County ,40.17,KY,Kentucky
-21189,Owsley County ,41.61,KY,Kentucky
-21025,Breathitt County ,46.83,KY,Kentucky
-21115,Johnson County ,38.15,KY,Kentucky
-21013,Bell County ,38.62,KY,Kentucky
-21193,Perry County ,68.73,KY,Kentucky
-12049,Hardee County ,53.52,FL,Florida
-12121,Suwannee County ,60.01,FL,Florida
+35025,Lea County ,31.47,NM,New Mexico
+35015,Eddy County ,21.14,NM,New Mexico
+46103,Pennington County ,36.08,SD,South Dakota
+46071,Jackson County ,34.77,SD,South Dakota
+46033,Custer County ,35.83,SD,South Dakota
 12027,DeSoto County ,25.51,FL,Florida
 12007,Bradford County ,36.27,FL,Florida
 12041,Gilchrist County ,29.2,FL,Florida
-12055,Highlands County ,34.98,FL,Florida
 12125,Union County ,49.22,FL,Florida
 12019,Clay County ,29.77,FL,Florida
-12119,Sumter County ,26.39,FL,Florida
 12001,Alachua County ,30.32,FL,Florida
 12003,Baker County ,40.62,FL,Florida
-12127,Volusia County ,25.92,FL,Florida
-12077,Liberty County ,43.55,FL,Florida
-12095,Orange County ,28.19,FL,Florida
 12081,Manatee County ,32.06,FL,Florida
 12063,Jackson County ,34.92,FL,Florida
 12105,Polk County ,42.07,FL,Florida
 12057,Hillsborough County ,32.36,FL,Florida
-12069,Lake County ,30.31,FL,Florida
-12047,Hamilton County ,23.03,FL,Florida
 12067,Lafayette County ,36.76,FL,Florida
-12097,Osceola County ,37.29,FL,Florida
-12079,Madison County ,25.91,FL,Florida
 12023,Columbia County ,43.93,FL,Florida
-46103,Pennington County ,36.08,SD,South Dakota
-46007,Bennett County ,29.1,SD,South Dakota
-46071,Jackson County ,34.77,SD,South Dakota
-46033,Custer County ,35.83,SD,South Dakota
-13285,Troup County ,35.83,GA,Georgia
-13135,Gwinnett County ,24.6,GA,Georgia
-13149,Heard County ,21.41,GA,Georgia
-13055,Chattooga County ,26.19,GA,Georgia
-13291,Union County ,23.21,GA,Georgia
-13139,Hall County ,33.64,GA,Georgia
-48389,Reeves County ,25.03,TX,Texas
-48495,Winkler County ,19.23,TX,Texas
+48389,Reeves County ,24.56,TX,Texas
 42059,Greene County ,45.38,PA,Pennsylvania
 42125,Washington County ,37.41,PA,Pennsylvania
-42051,Fayette County ,48.05,PA,Pennsylvania
-42129,Westmoreland County ,32.38,PA,Pennsylvania
-4001,Apache County ,65.81,AZ,Arizona
+55057,Juneau County ,31.63,WI,Wisconsin
+55103,Richland County ,35.84,WI,Wisconsin
+55025,Dane County ,29.58,WI,Wisconsin
+13055,Chattooga County ,26.19,GA,Georgia
+13139,Hall County ,33.64,GA,Georgia
 4017,Navajo County ,41.79,AZ,Arizona
 4009,Graham County ,46.2,AZ,Arizona
