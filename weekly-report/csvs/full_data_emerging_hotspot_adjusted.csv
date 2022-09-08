@@ -1,94 +1,109 @@
 GEOID,NAME,average,state_abbr,state_name
-17023,Clark County ,469.09,IL,Illinois
-17093,Kendall County ,467.23,IL,Illinois
-17009,Brown County ,419.48,IL,Illinois
-17187,Warren County ,358.42,IL,Illinois
-17181,Union County ,589.71,IL,Illinois
-17083,Jersey County ,495.85,IL,Illinois
-17123,Marshall County ,433.63,IL,Illinois
-17171,Scott County ,345.33,IL,Illinois
-17091,Kankakee County ,388.33,IL,Illinois
-17071,Henderson County ,2828.51,IL,Illinois
-17087,Johnson County ,677.9,IL,Illinois
-17011,Bureau County ,363.34,IL,Illinois
-17177,Stephenson County ,420.4,IL,Illinois
-17155,Putnam County ,303.32,IL,Illinois
-17169,Schuyler County ,592.54,IL,Illinois
-17075,Iroquois County ,329.64,IL,Illinois
-17191,Wayne County ,668.93,IL,Illinois
-17199,Williamson County ,645.73,IL,Illinois
-17145,Perry County ,536.45,IL,Illinois
-17051,Fayette County ,507.67,IL,Illinois
-17065,Hamilton County ,418.79,IL,Illinois
-17153,Pulaski County ,471.01,IL,Illinois
-17105,Livingston County ,357.1,IL,Illinois
-17129,Menard County ,496.71,IL,Illinois
-17179,Tazewell County ,352.95,IL,Illinois
-17041,Douglas County ,485.51,IL,Illinois
-17109,McDonough County ,417.35,IL,Illinois
-17113,McLean County ,430.92,IL,Illinois
-17175,Stark County ,368.83,IL,Illinois
-17053,Ford County ,415.84,IL,Illinois
-17183,Vermilion County ,607.82,IL,Illinois
-17013,Calhoun County ,529.32,IL,Illinois
-17101,Lawrence County ,609.76,IL,Illinois
-17047,Edwards County ,489.58,IL,Illinois
-17151,Pope County ,443.8,IL,Illinois
-17141,Ogle County ,371.56,IL,Illinois
-17103,Lee County ,438.58,IL,Illinois
-17081,Jefferson County ,453.25,IL,Illinois
-17135,Montgomery County ,549.58,IL,Illinois
-17045,Edgar County ,518.84,IL,Illinois
-17115,Macon County ,560.77,IL,Illinois
-17061,Greene County ,286.41,IL,Illinois
-17017,Cass County ,577.52,IL,Illinois
-17039,De Witt County ,307.23,IL,Illinois
-17165,Saline County ,778.22,IL,Illinois
-17015,Carroll County ,336.49,IL,Illinois
-17033,Crawford County ,673.57,IL,Illinois
-17143,Peoria County ,372.97,IL,Illinois
-17063,Grundy County ,375.89,IL,Illinois
-17173,Shelby County ,410.28,IL,Illinois
-17107,Logan County ,497.92,IL,Illinois
-17055,Franklin County ,604.62,IL,Illinois
-17193,White County ,590.78,IL,Illinois
-17067,Hancock County ,349.41,IL,Illinois
-17127,Massac County ,381.15,IL,Illinois
-17119,Madison County ,410.55,IL,Illinois
-17159,Richland County ,521.74,IL,Illinois
-17185,Wabash County ,666.58,IL,Illinois
-17025,Clay County ,675.83,IL,Illinois
-17085,Jo Daviess County ,285.27,IL,Illinois
-17167,Sangamon County ,638.39,IL,Illinois
-17139,Moultrie County ,433.34,IL,Illinois
-17195,Whiteside County ,474.7,IL,Illinois
-17007,Boone County ,377.36,IL,Illinois
-17203,Woodford County ,315.4,IL,Illinois
-17029,Coles County ,492.33,IL,Illinois
-17069,Hardin County ,748.32,IL,Illinois
-17035,Cumberland County ,456.25,IL,Illinois
-17121,Marion County ,539.78,IL,Illinois
-17077,Jackson County ,518.72,IL,Illinois
-17147,Piatt County ,334.81,IL,Illinois
-17149,Pike County ,497.83,IL,Illinois
-17059,Gallatin County ,687.0,IL,Illinois
-17189,Washington County ,337.08,IL,Illinois
-17125,Mason County ,352.53,IL,Illinois
-17095,Knox County ,415.97,IL,Illinois
-17079,Jasper County ,458.43,IL,Illinois
-17201,Winnebago County ,440.29,IL,Illinois
-17057,Fulton County ,477.56,IL,Illinois
-17117,Macoupin County ,432.46,IL,Illinois
-17131,Mercer County ,365.95,IL,Illinois
-17021,Christian County ,554.56,IL,Illinois
-17137,Morgan County ,516.22,IL,Illinois
-17157,Randolph County ,492.05,IL,Illinois
-17161,Rock Island County ,437.2,IL,Illinois
-17005,Bond County ,341.07,IL,Illinois
-17073,Henry County ,422.82,IL,Illinois
-17001,Adams County ,592.7,IL,Illinois
-17027,Clinton County ,370.54,IL,Illinois
-17019,Champaign County ,610.04,IL,Illinois
-17049,Effingham County ,479.9,IL,Illinois
-17003,Alexander County ,328.06,IL,Illinois
-19111,Lee County ,32.26,IA,Iowa
+17023,Clark County ,489.84,IL,Illinois
+17093,Kendall County ,487.97,IL,Illinois
+17009,Brown County ,455.86,IL,Illinois
+17187,Warren County ,376.55,IL,Illinois
+17181,Union County ,608.06,IL,Illinois
+17083,Jersey County ,521.74,IL,Illinois
+17123,Marshall County ,444.54,IL,Illinois
+17171,Scott County ,353.82,IL,Illinois
+17091,Kankakee County ,407.37,IL,Illinois
+17071,Henderson County ,2843.03,IL,Illinois
+17087,Johnson County ,693.77,IL,Illinois
+17011,Bureau County ,377.03,IL,Illinois
+17177,Stephenson County ,435.18,IL,Illinois
+17155,Putnam County ,305.8,IL,Illinois
+17169,Schuyler County ,600.63,IL,Illinois
+17075,Iroquois County ,335.73,IL,Illinois
+17191,Wayne County ,707.92,IL,Illinois
+17199,Williamson County ,665.69,IL,Illinois
+17145,Perry County ,568.52,IL,Illinois
+17051,Fayette County ,536.6,IL,Illinois
+17065,Hamilton County ,432.69,IL,Illinois
+17153,Pulaski County ,491.38,IL,Illinois
+17105,Livingston County ,376.37,IL,Illinois
+17129,Menard County ,511.73,IL,Illinois
+17179,Tazewell County ,364.15,IL,Illinois
+17041,Douglas County ,507.25,IL,Illinois
+17109,McDonough County ,432.16,IL,Illinois
+17113,McLean County ,444.11,IL,Illinois
+17175,Stark County ,384.42,IL,Illinois
+17053,Ford County ,430.77,IL,Illinois
+17013,Calhoun County ,541.08,IL,Illinois
+17101,Lawrence County ,639.76,IL,Illinois
+17047,Edwards County ,504.95,IL,Illinois
+17151,Pope County ,450.53,IL,Illinois
+17141,Ogle County ,389.65,IL,Illinois
+17103,Lee County ,458.85,IL,Illinois
+17081,Jefferson County ,469.34,IL,Illinois
+17135,Montgomery County ,570.76,IL,Illinois
+17045,Edgar County ,531.06,IL,Illinois
+17115,Macon County ,579.81,IL,Illinois
+17061,Greene County ,300.46,IL,Illinois
+17017,Cass County ,588.8,IL,Illinois
+17039,De Witt County ,317.02,IL,Illinois
+17165,Saline County ,810.06,IL,Illinois
+17015,Carroll County ,348.26,IL,Illinois
+17033,Crawford County ,684.8,IL,Illinois
+17143,Peoria County ,381.11,IL,Illinois
+17063,Grundy County ,394.55,IL,Illinois
+17173,Shelby County ,427.29,IL,Illinois
+17107,Logan County ,509.17,IL,Illinois
+17055,Franklin County ,626.17,IL,Illinois
+17193,White County ,618.28,IL,Illinois
+17067,Hancock County ,359.67,IL,Illinois
+17127,Massac County ,390.06,IL,Illinois
+17159,Richland County ,541.53,IL,Illinois
+17185,Wabash County ,685.09,IL,Illinois
+17025,Clay County ,703.68,IL,Illinois
+17167,Sangamon County ,664.05,IL,Illinois
+17139,Moultrie County ,450.83,IL,Illinois
+17195,Whiteside County ,490.92,IL,Illinois
+17007,Boone County ,398.94,IL,Illinois
+17203,Woodford County ,326.07,IL,Illinois
+17029,Coles County ,511.39,IL,Illinois
+17069,Hardin County ,816.02,IL,Illinois
+17035,Cumberland County ,465.45,IL,Illinois
+17121,Marion County ,565.67,IL,Illinois
+17077,Jackson County ,550.68,IL,Illinois
+17147,Piatt County ,343.51,IL,Illinois
+17149,Pike County ,510.53,IL,Illinois
+17059,Gallatin County ,723.01,IL,Illinois
+17189,Washington County ,352.22,IL,Illinois
+17125,Mason County ,366.01,IL,Illinois
+17095,Knox County ,433.06,IL,Illinois
+17079,Jasper County ,468.85,IL,Illinois
+17057,Fulton County ,491.28,IL,Illinois
+17117,Macoupin County ,448.7,IL,Illinois
+17131,Mercer County ,379.61,IL,Illinois
+17021,Christian County ,575.19,IL,Illinois
+17137,Morgan County ,541.12,IL,Illinois
+17157,Randolph County ,518.83,IL,Illinois
+17161,Rock Island County ,446.94,IL,Illinois
+17005,Bond County ,355.6,IL,Illinois
+17073,Henry County ,439.57,IL,Illinois
+17001,Adams County ,615.71,IL,Illinois
+17027,Clinton County ,386.87,IL,Illinois
+17019,Champaign County ,652.19,IL,Illinois
+17049,Effingham County ,496.2,IL,Illinois
+34021,Mercer County ,2722.51,NJ,New Jersey
+34007,Camden County ,2739.1,NJ,New Jersey
+34011,Cumberland County ,2860.96,NJ,New Jersey
+34013,Essex County ,3762.02,NJ,New Jersey
+34035,Somerset County ,2363.59,NJ,New Jersey
+34001,Atlantic County ,2536.42,NJ,New Jersey
+34039,Union County ,3188.9,NJ,New Jersey
+34031,Passaic County ,3705.17,NJ,New Jersey
+34005,Burlington County ,2526.78,NJ,New Jersey
+34041,Warren County ,2910.55,NJ,New Jersey
+34027,Morris County ,2834.9,NJ,New Jersey
+34003,Bergen County ,3043.4,NJ,New Jersey
+34015,Gloucester County ,2193.51,NJ,New Jersey
+34025,Monmouth County ,3323.59,NJ,New Jersey
+34019,Hunterdon County ,2632.41,NJ,New Jersey
+34033,Salem County ,2413.43,NJ,New Jersey
+34017,Hudson County ,3552.67,NJ,New Jersey
+34037,Sussex County ,2683.5,NJ,New Jersey
+34029,Ocean County ,2904.26,NJ,New Jersey
+34023,Middlesex County ,3397.92,NJ,New Jersey
+48429,Stephens County ,50.3,TX,Texas
