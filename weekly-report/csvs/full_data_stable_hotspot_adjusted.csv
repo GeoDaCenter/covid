@@ -1,105 +1,4 @@
 GEOID,NAME,average,state_abbr,state_name
-37017,Bladen County ,19.24,NC,North Carolina
-37167,Stanly County ,27.23,NC,North Carolina
-37105,Lee County ,22.57,NC,North Carolina
-37185,Warren County ,19.61,NC,North Carolina
-37063,Durham County ,21.65,NC,North Carolina
-37057,Davidson County ,24.03,NC,North Carolina
-37077,Granville County ,23.9,NC,North Carolina
-37159,Rowan County ,17.14,NC,North Carolina
-37181,Vance County ,21.04,NC,North Carolina
-37123,Montgomery County ,24.56,NC,North Carolina
-37093,Hoke County ,20.8,NC,North Carolina
-37125,Moore County ,27.41,NC,North Carolina
-37003,Alexander County ,18.86,NC,North Carolina
-37005,Alleghany County ,39.06,NC,North Carolina
-37191,Wayne County ,22.93,NC,North Carolina
-37109,Lincoln County ,21.31,NC,North Carolina
-37135,Orange County ,17.74,NC,North Carolina
-37083,Halifax County ,19.74,NC,North Carolina
-37035,Catawba County ,21.19,NC,North Carolina
-37065,Edgecombe County ,23.97,NC,North Carolina
-37151,Randolph County ,19.94,NC,North Carolina
-37193,Wilkes County ,21.49,NC,North Carolina
-37081,Guilford County ,22.32,NC,North Carolina
-37195,Wilson County ,17.3,NC,North Carolina
-37183,Wake County ,16.64,NC,North Carolina
-37067,Forsyth County ,25.11,NC,North Carolina
-37025,Cabarrus County ,17.62,NC,North Carolina
-37165,Scotland County ,17.42,NC,North Carolina
-37127,Nash County ,17.78,NC,North Carolina
-37145,Person County ,25.44,NC,North Carolina
-37037,Chatham County ,17.19,NC,North Carolina
-37085,Harnett County ,18.68,NC,North Carolina
-37137,Pamlico County ,10.65,NC,North Carolina
-37061,Duplin County ,15.48,NC,North Carolina
-37097,Iredell County ,19.67,NC,North Carolina
-37021,Buncombe County ,15.66,NC,North Carolina
-37049,Craven County ,22.66,NC,North Carolina
-37069,Franklin County ,23.55,NC,North Carolina
-37133,Onslow County ,14.55,NC,North Carolina
-37079,Greene County ,11.56,NC,North Carolina
-37033,Caswell County ,16.02,NC,North Carolina
-37117,Martin County ,19.52,NC,North Carolina
-37013,Beaufort County ,26.01,NC,North Carolina
-37187,Washington County ,14.1,NC,North Carolina
-37163,Sampson County ,22.7,NC,North Carolina
-37027,Caldwell County ,38.08,NC,North Carolina
-37001,Alamance County ,29.27,NC,North Carolina
-37101,Johnston County ,23.5,NC,North Carolina
-37031,Carteret County ,17.83,NC,North Carolina
-37051,Cumberland County ,22.86,NC,North Carolina
-37107,Lenoir County ,17.85,NC,North Carolina
-37147,Pitt County ,18.73,NC,North Carolina
-37059,Davie County ,28.75,NC,North Carolina
-37153,Richmond County ,18.02,NC,North Carolina
-37171,Surry County ,19.81,NC,North Carolina
-37009,Ashe County ,9.87,NC,North Carolina
-37129,New Hanover County ,11.31,NC,North Carolina
-37157,Rockingham County ,20.27,NC,North Carolina
-37197,Yadkin County ,35.46,NC,North Carolina
-37023,Burke County ,24.36,NC,North Carolina
-42113,Sullivan County ,11.56,PA,Pennsylvania
-42015,Bradford County ,28.43,PA,Pennsylvania
-42035,Clinton County ,16.27,PA,Pennsylvania
-42039,Crawford County ,20.97,PA,Pennsylvania
-42121,Venango County ,24.14,PA,Pennsylvania
-42069,Lackawanna County ,20.84,PA,Pennsylvania
-42053,Forest County ,10.69,PA,Pennsylvania
-42047,Elk County ,18.44,PA,Pennsylvania
-42085,Mercer County ,12.68,PA,Pennsylvania
-42123,Warren County ,32.29,PA,Pennsylvania
-42117,Tioga County ,15.07,PA,Pennsylvania
-42109,Snyder County ,24.71,PA,Pennsylvania
-42049,Erie County ,17.47,PA,Pennsylvania
-42065,Jefferson County ,16.85,PA,Pennsylvania
-42079,Luzerne County ,24.72,PA,Pennsylvania
-42103,Pike County ,15.19,PA,Pennsylvania
-42033,Clearfield County ,22.08,PA,Pennsylvania
-42131,Wyoming County ,19.68,PA,Pennsylvania
-42107,Schuylkill County ,16.22,PA,Pennsylvania
-42061,Huntingdon County ,19.34,PA,Pennsylvania
-42063,Indiana County ,22.24,PA,Pennsylvania
-42067,Juniata County ,17.45,PA,Pennsylvania
-42081,Lycoming County ,14.61,PA,Pennsylvania
-42127,Wayne County ,19.4,PA,Pennsylvania
-42027,Centre County ,11.68,PA,Pennsylvania
-42025,Carbon County ,27.6,PA,Pennsylvania
-42129,Westmoreland County ,15.46,PA,Pennsylvania
-42037,Columbia County ,23.3,PA,Pennsylvania
-42097,Northumberland County ,17.72,PA,Pennsylvania
-42089,Monroe County ,17.48,PA,Pennsylvania
-42077,Lehigh County ,14.73,PA,Pennsylvania
-42083,McKean County ,11.45,PA,Pennsylvania
-42119,Union County ,12.67,PA,Pennsylvania
-42115,Susquehanna County ,27.3,PA,Pennsylvania
-1043,Cullman County ,11.8,AL,Alabama
-1059,Franklin County ,17.66,AL,Alabama
-1121,Talladega County ,11.44,AL,Alabama
-1055,Etowah County ,20.68,AL,Alabama
-1115,St. Clair County ,11.29,AL,Alabama
-1127,Walker County ,11.3,AL,Alabama
-1093,Marion County ,14.3,AL,Alabama
 21215,Spencer County ,34.45,KY,Kentucky
 21069,Fleming County ,22.69,KY,Kentucky
 21067,Fayette County ,22.75,KY,Kentucky
@@ -128,7 +27,6 @@ GEOID,NAME,average,state_abbr,state_name
 21047,Christian County ,12.36,KY,Kentucky
 21079,Garrard County ,26.38,KY,Kentucky
 21197,Powell County ,47.54,KY,Kentucky
-21015,Boone County ,24.68,KY,Kentucky
 21147,McCreary County ,86.27,KY,Kentucky
 21211,Shelby County ,25.95,KY,Kentucky
 21229,Washington County ,38.63,KY,Kentucky
@@ -136,6 +34,7 @@ GEOID,NAME,average,state_abbr,state_name
 21089,Greenup County ,46.13,KY,Kentucky
 21003,Allen County ,38.47,KY,Kentucky
 21111,Jefferson County ,16.04,KY,Kentucky
+21041,Carroll County ,24.01,KY,Kentucky
 21045,Casey County ,30.3,KY,Kentucky
 21153,Magoffin County ,35.53,KY,Kentucky
 21137,Lincoln County ,36.21,KY,Kentucky
@@ -203,125 +102,210 @@ GEOID,NAME,average,state_abbr,state_name
 21193,Perry County ,95.8,KY,Kentucky
 21231,Wayne County ,38.82,KY,Kentucky
 21213,Simpson County ,28.47,KY,Kentucky
-36099,Seneca County ,18.57,NY,New York
-36101,Steuben County ,17.02,NY,New York
-36015,Chemung County ,21.16,NY,New York
-36067,Onondaga County ,22.03,NY,New York
-36025,Delaware County ,13.03,NY,New York
-36077,Otsego County ,15.77,NY,New York
-36007,Broome County ,21.49,NY,New York
-36109,Tompkins County ,13.67,NY,New York
-36093,Schenectady County ,17.48,NY,New York
-36011,Cayuga County ,21.46,NY,New York
-36091,Saratoga County ,19.07,NY,New York
-36023,Cortland County ,19.3,NY,New York
-36083,Rensselaer County ,17.79,NY,New York
-36031,Essex County ,17.03,NY,New York
-36075,Oswego County ,30.23,NY,New York
-36065,Oneida County ,22.28,NY,New York
-36105,Sullivan County ,21.75,NY,New York
-36043,Herkimer County ,19.2,NY,New York
-36027,Dutchess County ,15.87,NY,New York
-36107,Tioga County ,20.97,NY,New York
-36035,Fulton County ,33.49,NY,New York
-36057,Montgomery County ,24.13,NY,New York
-36053,Madison County ,21.62,NY,New York
-36049,Lewis County ,10.43,NY,New York
-36041,Hamilton County ,12.49,NY,New York
-36013,Chautauqua County ,14.21,NY,New York
+26087,Lapeer County ,14.17,MI,Michigan
+26049,Genesee County ,14.43,MI,Michigan
+26065,Ingham County ,18.99,MI,Michigan
+26125,Oakland County ,20.35,MI,Michigan
+26091,Lenawee County ,19.37,MI,Michigan
+26061,Houghton County ,11.39,MI,Michigan
+26045,Eaton County ,25.91,MI,Michigan
+26071,Iron County ,14.65,MI,Michigan
+26155,Shiawassee County ,23.05,MI,Michigan
+26115,Monroe County ,18.99,MI,Michigan
+26093,Livingston County ,16.26,MI,Michigan
+26099,Macomb County ,24.12,MI,Michigan
+26163,Wayne County ,22.02,MI,Michigan
+26075,Jackson County ,25.04,MI,Michigan
+26037,Clinton County ,26.13,MI,Michigan
+26109,Menominee County ,26.44,MI,Michigan
+26161,Washtenaw County ,17.76,MI,Michigan
+26103,Marquette County ,17.5,MI,Michigan
+37185,Warren County ,14.98,NC,North Carolina
+37057,Davidson County ,19.78,NC,North Carolina
+37159,Rowan County ,14.79,NC,North Carolina
+37123,Montgomery County ,20.9,NC,North Carolina
+37003,Alexander County ,14.62,NC,North Carolina
+37005,Alleghany County ,18.88,NC,North Carolina
+37151,Randolph County ,16.09,NC,North Carolina
+37193,Wilkes County ,16.9,NC,North Carolina
+37081,Guilford County ,19.04,NC,North Carolina
+37183,Wake County ,13.85,NC,North Carolina
+37067,Forsyth County ,18.19,NC,North Carolina
+37127,Nash County ,14.67,NC,North Carolina
+37037,Chatham County ,12.38,NC,North Carolina
+37097,Iredell County ,15.19,NC,North Carolina
+37049,Craven County ,13.65,NC,North Carolina
+37069,Franklin County ,17.83,NC,North Carolina
+37117,Martin County ,14.25,NC,North Carolina
+37101,Johnston County ,16.25,NC,North Carolina
+37031,Carteret County ,13.99,NC,North Carolina
+37107,Lenoir County ,12.11,NC,North Carolina
+37059,Davie County ,24.32,NC,North Carolina
+37171,Surry County ,18.53,NC,North Carolina
+37009,Ashe County ,8.8,NC,North Carolina
+37157,Rockingham County ,15.42,NC,North Carolina
+37197,Yadkin County ,30.91,NC,North Carolina
+36099,Seneca County ,24.35,NY,New York
+36101,Steuben County ,21.74,NY,New York
+36097,Schuyler County ,21.44,NY,New York
+36015,Chemung County ,26.16,NY,New York
+36067,Onondaga County ,26.69,NY,New York
+36025,Delaware County ,15.85,NY,New York
+36077,Otsego County ,20.16,NY,New York
+36007,Broome County ,27.04,NY,New York
+36017,Chenango County ,18.32,NY,New York
+36109,Tompkins County ,18.94,NY,New York
+36093,Schenectady County ,22.55,NY,New York
+36039,Greene County ,11.55,NY,New York
+36011,Cayuga County ,26.51,NY,New York
+36037,Genesee County ,24.21,NY,New York
+36121,Wyoming County ,17.43,NY,New York
+36115,Washington County ,25.76,NY,New York
+36123,Yates County ,22.85,NY,New York
+36091,Saratoga County ,23.72,NY,New York
+36095,Schoharie County ,21.64,NY,New York
+36055,Monroe County ,17.62,NY,New York
+36023,Cortland County ,23.75,NY,New York
+36079,Putnam County ,21.56,NY,New York
+36113,Warren County ,32.46,NY,New York
+36061,New York County ,22.88,NY,New York
+36029,Erie County ,20.15,NY,New York
+36083,Rensselaer County ,23.39,NY,New York
+36069,Ontario County ,24.86,NY,New York
+36087,Rockland County ,19.77,NY,New York
+36031,Essex County ,21.0,NY,New York
+36051,Livingston County ,20.34,NY,New York
+36075,Oswego County ,38.2,NY,New York
+36059,Nassau County ,24.05,NY,New York
+36065,Oneida County ,28.17,NY,New York
+36071,Orange County ,27.74,NY,New York
+36105,Sullivan County ,26.12,NY,New York
+36089,St. Lawrence County ,21.45,NY,New York
+36119,Westchester County ,20.8,NY,New York
+36043,Herkimer County ,24.23,NY,New York
+36027,Dutchess County ,19.27,NY,New York
+36073,Orleans County ,18.56,NY,New York
+36107,Tioga County ,26.8,NY,New York
+36035,Fulton County ,38.28,NY,New York
+36021,Columbia County ,17.59,NY,New York
+36063,Niagara County ,17.0,NY,New York
+36057,Montgomery County ,28.18,NY,New York
+36117,Wayne County ,20.99,NY,New York
+36053,Madison County ,27.53,NY,New York
+36049,Lewis County ,15.24,NY,New York
+36111,Ulster County ,21.27,NY,New York
+36033,Franklin County ,28.04,NY,New York
+36045,Jefferson County ,24.96,NY,New York
+36009,Cattaraugus County ,19.86,NY,New York
+36041,Hamilton County ,14.05,NY,New York
+36013,Chautauqua County ,19.01,NY,New York
+36001,Albany County ,23.07,NY,New York
+36047,Kings County ,17.62,NY,New York
+36081,Queens County ,21.55,NY,New York
+36005,Bronx County ,17.82,NY,New York
+36085,Richmond County ,30.63,NY,New York
+55015,Calumet County ,11.76,WI,Wisconsin
+55097,Portage County ,19.53,WI,Wisconsin
+55125,Vilas County ,15.22,WI,Wisconsin
+55005,Barron County ,14.36,WI,Wisconsin
+55115,Shawano County ,20.9,WI,Wisconsin
+55129,Washburn County ,14.11,WI,Wisconsin
+55025,Dane County ,18.97,WI,Wisconsin
+55073,Marathon County ,18.17,WI,Wisconsin
+55027,Dodge County ,17.17,WI,Wisconsin
+55067,Langlade County ,17.52,WI,Wisconsin
+55083,Oconto County ,19.59,WI,Wisconsin
+55133,Waukesha County ,14.11,WI,Wisconsin
+55135,Waupaca County ,18.61,WI,Wisconsin
+55047,Green Lake County ,11.81,WI,Wisconsin
 51580,City of Covington,16.64,VA,Virginia
-51051,Dickenson County ,119.84,VA,Virginia
-51167,Russell County ,22.41,VA,Virginia
-51083,Halifax County ,10.47,VA,Virginia
-51027,Buchanan County ,98.41,VA,Virginia
-46011,Brookings County ,10.43,SD,South Dakota
-46035,Davison County ,19.74,SD,South Dakota
-46029,Codington County ,16.33,SD,South Dakota
-46031,Corson County ,22.28,SD,South Dakota
-46071,Jackson County ,19.56,SD,South Dakota
-46003,Aurora County ,15.53,SD,South Dakota
-46023,Charles Mix County ,23.7,SD,South Dakota
-46119,Sully County ,10.73,SD,South Dakota
-46057,Hamlin County ,11.9,SD,South Dakota
-20009,Barton County ,16.0,KS,Kansas
-20021,Cherokee County ,11.59,KS,Kansas
-38045,LaMoure County ,13.94,ND,North Dakota
-38073,Ransom County ,33.31,ND,North Dakota
-38015,Burleigh County ,21.49,ND,North Dakota
-38027,Eddy County ,12.35,ND,North Dakota
-38001,Adams County ,18.23,ND,North Dakota
-38093,Stutsman County ,12.21,ND,North Dakota
-38065,Oliver County ,15.55,ND,North Dakota
-38059,Morton County ,21.51,ND,North Dakota
-38003,Barnes County ,32.96,ND,North Dakota
-38029,Emmons County ,31.96,ND,North Dakota
-38085,Sioux County ,12.95,ND,North Dakota
-38063,Nelson County ,17.12,ND,North Dakota
-38039,Griggs County ,31.52,ND,North Dakota
-38103,Wells County ,17.61,ND,North Dakota
-38089,Stark County ,19.9,ND,North Dakota
-38021,Dickey County ,21.56,ND,North Dakota
-38037,Grant County ,27.01,ND,North Dakota
-38043,Kidder County ,11.61,ND,North Dakota
-38105,Williams County ,10.9,ND,North Dakota
-30091,Sheridan County ,15.99,MT,Montana
-30105,Valley County ,11.38,MT,Montana
-30041,Hill County ,12.17,MT,Montana
-30029,Flathead County ,16.68,MT,Montana
-30039,Granite County ,17.48,MT,Montana
-30015,Chouteau County ,51.82,MT,Montana
-30077,Powell County ,14.58,MT,Montana
-30013,Cascade County ,15.9,MT,Montana
-30005,Blaine County ,28.67,MT,Montana
-30049,Lewis and Clark County ,18.42,MT,Montana
-30099,Teton County ,15.27,MT,Montana
-30019,Daniels County ,20.37,MT,Montana
-30007,Broadwater County ,9.79,MT,Montana
-30081,Ravalli County ,14.83,MT,Montana
-30073,Pondera County ,14.18,MT,Montana
-30089,Sanders County ,12.4,MT,Montana
-30051,Liberty County ,46.99,MT,Montana
-55005,Barron County ,13.73,WI,Wisconsin
-55115,Shawano County ,21.25,WI,Wisconsin
-55129,Washburn County ,10.47,WI,Wisconsin
-55067,Langlade County ,11.93,WI,Wisconsin
-55083,Oconto County ,15.41,WI,Wisconsin
-53027,Grays Harbor County ,22.83,WA,Washington
-54059,Mingo County ,16.74,WV,West Virginia
-54099,Wayne County ,9.48,WV,West Virginia
-54047,McDowell County ,14.87,WV,West Virginia
-23009,Hancock County ,18.99,ME,Maine
+51051,Dickenson County ,137.99,VA,Virginia
+51167,Russell County ,40.92,VA,Virginia
+51161,Roanoke County ,13.74,VA,Virginia
+51023,Botetourt County ,16.99,VA,Virginia
+51027,Buchanan County ,109.06,VA,Virginia
+51105,Lee County ,108.32,VA,Virginia
+42015,Bradford County ,33.44,PA,Pennsylvania
+42105,Potter County ,12.65,PA,Pennsylvania
+42069,Lackawanna County ,24.52,PA,Pennsylvania
+42085,Mercer County ,13.13,PA,Pennsylvania
+42123,Warren County ,22.48,PA,Pennsylvania
+42117,Tioga County ,22.0,PA,Pennsylvania
+42109,Snyder County ,23.83,PA,Pennsylvania
+42049,Erie County ,14.68,PA,Pennsylvania
+42079,Luzerne County ,24.25,PA,Pennsylvania
+42103,Pike County ,13.13,PA,Pennsylvania
+42131,Wyoming County ,20.71,PA,Pennsylvania
+42093,Montour County ,24.21,PA,Pennsylvania
+42107,Schuylkill County ,16.37,PA,Pennsylvania
+42067,Juniata County ,12.8,PA,Pennsylvania
+42081,Lycoming County ,15.86,PA,Pennsylvania
+42127,Wayne County ,20.24,PA,Pennsylvania
+42129,Westmoreland County ,14.2,PA,Pennsylvania
+42037,Columbia County ,26.53,PA,Pennsylvania
+42097,Northumberland County ,16.71,PA,Pennsylvania
+42017,Bucks County ,13.24,PA,Pennsylvania
+42089,Monroe County ,16.2,PA,Pennsylvania
+42119,Union County ,15.83,PA,Pennsylvania
+42115,Susquehanna County ,23.15,PA,Pennsylvania
+54005,Boone County ,12.21,WV,West Virginia
+54045,Logan County ,21.77,WV,West Virginia
+54059,Mingo County ,18.77,WV,West Virginia
+54063,Monroe County ,21.75,WV,West Virginia
+54047,McDowell County ,11.89,WV,West Virginia
+34021,Mercer County ,21.83,NJ,New Jersey
+34011,Cumberland County ,21.88,NJ,New Jersey
+34013,Essex County ,18.87,NJ,New Jersey
+34035,Somerset County ,20.34,NJ,New Jersey
+34001,Atlantic County ,18.14,NJ,New Jersey
+34039,Union County ,19.53,NJ,New Jersey
+34031,Passaic County ,18.81,NJ,New Jersey
+34005,Burlington County ,19.94,NJ,New Jersey
+34041,Warren County ,17.94,NJ,New Jersey
+34027,Morris County ,20.13,NJ,New Jersey
+34003,Bergen County ,21.18,NJ,New Jersey
+34025,Monmouth County ,19.58,NJ,New Jersey
+34019,Hunterdon County ,19.48,NJ,New Jersey
+34017,Hudson County ,17.95,NJ,New Jersey
+34037,Sussex County ,23.19,NJ,New Jersey
+34023,Middlesex County ,21.12,NJ,New Jersey
+28007,Attala County ,9.99,MS,Mississippi
+28145,Union County ,13.1,MS,Mississippi
+48475,Ward County ,11.71,TX,Texas
+23009,Hancock County ,19.78,ME,Maine
 23025,Somerset County ,19.44,ME,Maine
-23027,Waldo County ,16.31,ME,Maine
-23021,Piscataquis County ,19.88,ME,Maine
-23029,Washington County ,20.06,ME,Maine
-23003,Aroostook County ,21.34,ME,Maine
-23019,Penobscot County ,20.71,ME,Maine
-44001,Bristol County ,19.87,RI,Rhode Island
-44003,Kent County ,24.11,RI,Rhode Island
-44005,Newport County ,22.01,RI,Rhode Island
-44007,Providence County ,26.25,RI,Rhode Island
-44009,Washington County ,17.71,RI,Rhode Island
+23027,Waldo County ,16.85,ME,Maine
+23007,Franklin County ,15.7,ME,Maine
+23021,Piscataquis County ,31.72,ME,Maine
+23029,Washington County ,28.4,ME,Maine
+23001,Androscoggin County ,17.42,ME,Maine
+23003,Aroostook County ,21.24,ME,Maine
+23019,Penobscot County ,19.77,ME,Maine
+44001,Bristol County ,19.28,RI,Rhode Island
+44003,Kent County ,21.27,RI,Rhode Island
+44005,Newport County ,23.13,RI,Rhode Island
+44007,Providence County ,24.59,RI,Rhode Island
+44009,Washington County ,16.01,RI,Rhode Island
+9001,Fairfield County ,11.93,CT,Connecticut
+9005,Litchfield County ,13.81,CT,Connecticut
+9015,Windham County ,12.44,CT,Connecticut
+9003,Hartford County ,15.65,CT,Connecticut
+2185,North Slope Borough ,19.69,AK,Alaska
+2188,Northwest Arctic Borough ,99.75,AK,Alaska
+2180,Nome Census Area ,33.11,AK,Alaska
 25015,Hampshire County ,21.98,MA,Massachusetts
 25005,Bristol County ,18.39,MA,Massachusetts
 25027,Worcester County ,18.0,MA,Massachusetts
 25021,Norfolk County ,15.8,MA,Massachusetts
+25011,Franklin County ,19.84,MA,Massachusetts
 25013,Hampden County ,27.18,MA,Massachusetts
 25003,Berkshire County ,26.2,MA,Massachusetts
-40099,Murray County ,24.2,OK,Oklahoma
-40069,Johnston County ,14.88,OK,Oklahoma
-40035,Craig County ,23.16,OK,Oklahoma
-40049,Garvin County ,9.76,OK,Oklahoma
-40123,Pontotoc County ,32.22,OK,Oklahoma
-39015,Brown County ,17.5,OH,Ohio
-39087,Lawrence County ,21.92,OH,Ohio
-39001,Adams County ,11.79,OH,Ohio
-39145,Scioto County ,16.18,OH,Ohio
-39025,Clermont County ,13.29,OH,Ohio
-39061,Hamilton County ,10.77,OH,Ohio
-9005,Litchfield County ,15.49,CT,Connecticut
-9011,New London County ,17.29,CT,Connecticut
-9015,Windham County ,14.04,CT,Connecticut
-9003,Hartford County ,16.45,CT,Connecticut
-22123,West Carroll Parish ,18.53,LA,Louisiana
-34003,Bergen County ,12.96,NJ,New Jersey
+39015,Brown County ,11.45,OH,Ohio
+39087,Lawrence County ,21.09,OH,Ohio
+39145,Scioto County ,11.78,OH,Ohio
+39025,Clermont County ,12.55,OH,Ohio
+49029,Morgan County ,50.16,UT,Utah
+49045,Tooele County ,10.96,UT,Utah
+17069,Hardin County ,12.47,IL,Illinois
+50001,Addison County ,9.09,VT,Vermont
+50003,Bennington County ,25.25,VT,Vermont
