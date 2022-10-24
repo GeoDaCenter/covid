@@ -179,13 +179,13 @@ if __name__ == "__main__":
     # columns and csv output names to loop through
     colsToParse = [
         {
-            'column':'new_cases_7_day_rolling_average',
+            'column':'cases_7_day_count_change',
             'csv':'covid_confirmed_cdc',
             'roundTo':1,
             'operation':None
         },
         {
-            'column':'new_deaths_7_day_rolling_average',
+            'column':'deaths_7_day_count_change',
             'csv':'covid_deaths_cdc',
             'roundTo':1,
             'operation':None
@@ -211,7 +211,7 @@ if __name__ == "__main__":
     # numerator/denominators to loop through
     colsToCalculate = [
         {
-            'numerator':'new_cases_7_day_rolling_average',
+            'numerator':'cases_7_day_count_change',
             'denominator':'new_test_results_reported_7_day_rolling_average',
             'csv':'covid_ccpt_cdc',
             'roundTo':4
