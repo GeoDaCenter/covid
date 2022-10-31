@@ -1,0 +1,48 @@
+name: Package Data 0.0.1
+
+on:
+  # schedule:
+  #   - cron: '0 */8 * * *' # runs at midnight, 8am, and 4pm UTC
+  workflow_dispatch:
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: checkout repo content
+        uses: actions/checkout@v2
+
+      - name: setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7.7' # install the python version needed
+
+      - name: install python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r data-scripts/requirements.txt
+
+      - name: pbf
+        run: python data-scripts/pbf/CsvToPbf.py  
+
+      - name: commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "Atlas Bot"
+          git add -A
+          git commit -m "Repackage Data" -a
+          
+      - name: push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: master
+
+      - name: execute s3 push
+        run: python data-scripts/aws/upload-to-s3.py
+        env:
+          S3_DEPLOYER_ID: ${{ secrets.S3_DEPLOYER_ID }}
+          S3_DEPLOYER_KEY: ${{ secrets.S3_DEPLOYER_KEY }}
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+      
