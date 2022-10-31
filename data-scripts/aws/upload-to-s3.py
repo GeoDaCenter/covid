@@ -65,4 +65,17 @@ if __name__ == '__main__':
             zipAndUpload(folder, s3, covid_bucket)
         except Exception as e:
             print(e)
+
+    # after upload, invalidate cache
+    client = boto3.client('cloudfront')
+    response = client.create_invalidation(
+        DistributionId="E3QDCMOLUFN0O1",
+        InvalidationBatch={
+            'Paths': {
+                'Quantity': 1,
+                'Items': ['/*'],
+            },
+            'CallerReference': str(time()).replace(".", "")
+        }
+    )
 # %%
