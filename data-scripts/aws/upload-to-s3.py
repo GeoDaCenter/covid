@@ -2,6 +2,7 @@
 import boto3
 import os
 import shutil
+from datetime import time
 
 AWS_ACCESS_KEY_ID = os.getenv('S3_DEPLOYER_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('S3_DEPLOYER_KEY')
@@ -67,8 +68,14 @@ if __name__ == '__main__':
             print(e)
 
     # after upload, invalidate cache
-    client = boto3.client('cloudfront')
-    response = client.create_invalidation(
+    cdn_client = boto3.client('cloudfront',
+        aws_access_key_id=AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=AWS_SECRET_ACCESS_KEY
+    )
+
+    print('Invalidating cache...')
+
+    response = cdn_client.create_invalidation(
         DistributionId="E3QDCMOLUFN0O1",
         InvalidationBatch={
             'Paths': {
@@ -78,4 +85,6 @@ if __name__ == '__main__':
             'CallerReference': str(time()).replace(".", "")
         }
     )
+
+    print('Previous cache invalidated. Building site.')
 # %%
