@@ -56,6 +56,11 @@ jobs:
           G_ID: ${{secrets.GOOGLE_G_ID}}
           G_CERT_URL: ${{secrets.GOOGLE_G_CERT_URL}}
       
+      - name: update timestamp 
+        run: python data-scripts/github/last-updated.py
+        env:
+          FILENAME: data_pipelines_timestamp
+
       - name: commit files
         run: |
           git config --local user.email "action@github.com"
