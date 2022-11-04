@@ -124,11 +124,6 @@ fileList = [
         'fileName':'mask_mandate_cdc',
         'joinColumn':'GEOID',
         'dateIndex':1
-    },
-    {
-        'fileName':'mask_mandate_cdc_update',
-        'joinColumn':'GEOID',
-        'dateIndex':1
     }
 
 ]
