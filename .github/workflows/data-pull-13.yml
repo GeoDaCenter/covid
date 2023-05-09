@@ -1,8 +1,8 @@
 name: Daily Data Pull 0.0.13
 
 on:
-  schedule:
-    - cron: '0 */8 * * *' # runs at midnight, 8am, and 4pm UTC
+  #schedule:
+    #- cron: '0 */8 * * *' # runs at midnight, 8am, and 4pm UTC
   workflow_dispatch:
 
 jobs:
