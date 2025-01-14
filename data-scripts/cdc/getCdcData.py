@@ -35,10 +35,13 @@ def downloadCDCdata():
 
     # download any files we're missing in the xlsx folder
     for url in cleanedLinks:
-        r = requests.get(url)
-        date = url[-21:-13]
-        if f"./xlsx\\CDC_{url[-21:-13]}.xlsx" not in downloadFiles:
-            with open(f"./xlsx/CDC_{date}.xlsx", 'wb') as f:
+        print(url)
+
+        d = url[-21:-13]
+        outfile = f"./xlsx/CDC_{d}.xlsx"
+        if outfile not in downloadFiles:
+            r = requests.get(url)
+            with open(outfile, 'wb') as f:
                 f.write(r.content)
 
 def findColumn(columns, search):
@@ -47,16 +50,27 @@ def findColumn(columns, search):
             return column
     return None
 
+def parse_date(datestr):
+
+    d = None
+    try:
+        d = datetime.strptime(datestr, '%B %d')
+    except Exception as e:
+        print(e)
+
+    return d
+
 def parseCDCdata(fileList):
     for index, file in enumerate(fileList):
+        print(f"parsing: {file}")
         # import excel sheets
         raw = pd.read_excel(file, sheet_name="Counties")
         # snag case and testing dates -- these are different each day 
         # typically the testing weekly data is 2 days behind  ¯\_(ツ)_/¯
-        endOfWeekCases = f"{raw.columns[14].split('(')[-1].split(' ')[0]} {raw.columns[14].split('-')[-1][:-1]}"
-        endofWeekCases = datetime.strptime(endOfWeekCases, '%B %d')
-        endOfWeekTesting = f"{raw.columns[32].split('(')[-1].split(' ')[0]} {raw.columns[32].split('-')[-1][:-1]}"
-        endOfWeekTesting = datetime.strptime(endOfWeekTesting, '%B %d')
+        endOfWeekCasesDS = f"{raw.columns[14].split('(')[-1].split(' ')[0]} {raw.columns[14].split('-')[-1][:-1]}"
+        endofWeekCases = parse_date(endOfWeekCasesDS)
+        endOfWeekTestingDS = f"{raw.columns[32].split('(')[-1].split(' ')[0]} {raw.columns[32].split('-')[-1][:-1]}"
+        endOfWeekTesting = parse_date(endOfWeekTestingDS)
         year = file[-13:-9]
         # set second row as column index
         # this is to handle the CDC excel formatting
