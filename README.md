@@ -1,6 +1,6 @@
 # README
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/f97601fe-2d82-482a-befe-b58f1bd7aa90/deploy-status)](https://app.netlify.com/sites/hardcore-wozniak-6dbde2/deploys)
+> Maintainer note, Jan 2025: This repository has been archived, and is no longer updated. See [geodacenter/covid-v3](https://github.com/geodacenter/covid-v3) for the production US Covid Atlas site, published through Netlify. The  Github Pages build of this repository is disabled, and even though the CNAME record here doesn't *look* properly configured ("DNS check unsuccessful"), it contiues to perform a redirect to the correct published location: [uscovidatlas.org](https://uscovidatlas.org). If this CNAME stops working, then the Github Pages build can be reinstated (from the `/docs` directory) and the JS redirects in `/docs/*.html` pages will takeover. (CNAME seems like a better solution for SEO, though, so we'll use that for the time being.)
 
 The U.S. COVID-19 Atlas provides county-level visualizations and analytics to reveal a more detailed pandemic landscape with local hotspots of surging COVID cases that are missed by state-level data. 
 
@@ -40,7 +40,7 @@ We have multiple datasets planned for future inclusion in the atlas, including:
 
 ### Data Details
 #### USAFacts
-You can access USAFacts data via our API <a href="https://theuscovidatlas.org/api.html" target="_blank">here</a>.
+You can access USAFacts data via our API <a href="https://uscovidatlas.org/api.html" target="_blank">here</a>.
 <!-- DEPRICATED >
 <!-- You can download the most updated county level data merged with USAFacts [here](https://github.com/GeoDaCenter/covid/tree/master/): 
 + usafacts_confirmed_*date*.geojson: the county level data (confirmed cases) using [*USAFacts*](https://usafacts.org/visualizations/coronavirus-covid-19-spread-map/?utm_source=MailChimp&utm_campaign=census-covid2), together with population and number of hospital beds. 
