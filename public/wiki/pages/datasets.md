@@ -1,5 +1,5 @@
 # Data Sources
-<i>Read detailed information [here](https://theuscovidatlas.org/data.html)</i>
+<i>Read detailed information [here](https://uscovidatlas.org/data.html)</i>
 ## COVID Data
 ### [USA Facts](https://usafacts.org/visualizations/coronavirus-covid-19-spread-map)
 Available at the county level this data aggregates from CDC, state- and local-level public health agencies. 

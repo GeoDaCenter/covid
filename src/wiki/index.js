@@ -192,7 +192,7 @@ export const pages = {
         "content":
             <div>
                 <h1 id="data-sources">Data Sources</h1>
-                <p><i>Read more detailed information <a href="https://theuscovidatlas.org/data.html">here</a></i></p>
+                <p><i>Read more detailed information <a href="https://uscovidatlas.org/data.html">here</a></i></p>
                 <br/>
                 <h2 id="covid-data">COVID Data</h2>
                 <h3 id="-usa-facts-https-usafacts-org-visualizations-coronavirus-covid-19-spread-map-"><a href="https://usafacts.org/visualizations/coronavirus-covid-19-spread-map">USA Facts</a></h3>
@@ -293,7 +293,7 @@ export const pages = {
                 The US Covid Atlas team is always working to improve the platform and its ability to generate insights.
             </p>
             <p>
-                Please contact the team at <a href="mailto:contact@theuscovidatlas.org">contact@theuscovidatlas.org</a> or reach out on social media below.
+                Please contact the team at <a href="https://uscovidatlas.org/contact">https://uscovidatlas.org/contact</a> or reach out on social media below.
             </p>
             <div className="social-container">
                 <a href="https://twitter.com/covid_atlas" target="_blank" rel="noopener noreferrer">

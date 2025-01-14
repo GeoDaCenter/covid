@@ -797,7 +797,7 @@ export default function VariablePanel(){
         {/* <h3>Help us improve the Atlas!</h3>
         <p>
           <a href="https://docs.google.com/forms/d/e/1FAIpQLSf0KdYeVyvwnz0RLnZijY3kdyFe1SwXukPc--a1HFPE1NRxyw/viewform?usp=sf_link" target="_blank" rel="noopener noreferrer">Take the Atlas v2 survey here </a>
-          or share your thoughts at <a href="mailto:contact@theuscovidatlas.org" target="_blank" rel="noopener noreferrer">contact@theuscovidatlas.org.</a>
+          or share your thoughts at <a href="https://uscovidatlas.org/contact" target="_blank" rel="noopener noreferrer">https://uscovidatlas.org/contact</a>
         </p>
         <hr></hr> */}
         <p className="note">

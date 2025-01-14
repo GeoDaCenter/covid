@@ -376,7 +376,7 @@ const CsvDownloader = () => {
                     </p>
                 </Grid>
                 <Grid item xs={12} md={4}>
-                    <button onClick={() => GetFiles(checkboxes)} ping="https://theuscovidatlas.org/trackdownloads.html">Download Data</button>
+                    <button onClick={() => GetFiles(checkboxes)} ping="https://uscovidatlas.org/trackdownloads.html">Download Data</button>
                 </Grid>
             </Grid>
             <Gutter h={20}/>

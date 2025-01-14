@@ -70,7 +70,7 @@ const Insights = () => {
                 <br/>
                 <h3>API Domain</h3>
                 <br/>
-                <p>All API requests should be made to: <CodeBold>https://api.theuscovidatlas.org</CodeBold></p>
+                <p>All API requests should be made to: <CodeBold>https://api.uscovidatlas.org</CodeBold></p>
                 <Gutter h={40}/>
                 <h3>Confirmed COVID Cases, Death</h3>
                 <br/>
@@ -154,7 +154,7 @@ const Insights = () => {
                     <code>
                         import requests
                         <br/><br/>
-                        url = 'https://api.theuscovidatlas.org/v1/lisa/?state=AZ&category=lisa'
+                        url = 'https://api.uscovidatlas.org/v1/lisa/?state=AZ&category=lisa'
                         <br/><br/>
                         {`header = {'your-api-key': 'your-api-secret-key'}`}
                         <br/><br/>
